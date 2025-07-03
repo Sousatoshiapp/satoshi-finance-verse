@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LessonCard } from "@/components/lesson-card";
 import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
 const lessons = [
@@ -49,13 +50,34 @@ const lessons = [
 ];
 
 export default function Dashboard() {
-  const [userStats] = useState({
+  const [userStats, setUserStats] = useState({
     level: 3,
     currentXP: 245,
     nextLevelXP: 400,
     streak: 7,
     completedLessons: 3
   });
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Verificar se usuário existe, se não redirecionar para welcome
+    const userData = localStorage.getItem('satoshi_user');
+    if (!userData) {
+      navigate('/welcome');
+      return;
+    }
+    
+    // Carregar dados do usuário
+    const user = JSON.parse(userData);
+    setUserStats({
+      level: user.level || 1,
+      currentXP: user.xp || 0,
+      nextLevelXP: (user.level || 1) * 100,
+      streak: user.streak || 0,
+      completedLessons: user.completedLessons || 0
+    });
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
@@ -70,7 +92,9 @@ export default function Dashboard() {
             
             <div className="flex items-center gap-4">
               <StreakBadge days={userStats.streak} />
-              <Button variant="outline" size="sm">Perfil</Button>
+              <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
+                Perfil
+              </Button>
             </div>
           </div>
         </div>
@@ -112,6 +136,26 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Quick Navigation */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <Button variant="outline" onClick={() => navigate('/quiz')} className="flex flex-col gap-2 h-20">
+            <span className="text-2xl">🧠</span>
+            <span className="text-sm">Quiz</span>
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/leaderboard')} className="flex flex-col gap-2 h-20">
+            <span className="text-2xl">🏆</span>
+            <span className="text-sm">Ranking</span>
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/store')} className="flex flex-col gap-2 h-20">
+            <span className="text-2xl">🛒</span>
+            <span className="text-sm">Loja</span>
+          </Button>
+          <Button variant="outline" onClick={() => navigate('/profile')} className="flex flex-col gap-2 h-20">
+            <span className="text-2xl">👤</span>
+            <span className="text-sm">Perfil</span>
+          </Button>
         </div>
 
         {/* Lessons Section */}
