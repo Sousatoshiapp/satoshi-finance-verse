@@ -8,63 +8,63 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Satoshi Finance App - Gamified Design System */
-    --background: 248 250 255;
-    --foreground: 226 232 240;
+    /* Satoshi Finance App - Dark Theme with Green Accents */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 255 255 255;
-    --card-foreground: 51 65 85;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 255 255 255;
-    --popover-foreground: 51 65 85;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Primary: Vibrant Green (success/money) */
-    --primary: 142 69% 58%;
-    --primary-foreground: 255 255 255;
-    --primary-glow: 142 69% 68%;
+    /* Primary: Bright lime green #adff2f */
+    --primary: 80 100% 59%;
+    --primary-foreground: 0 0% 8%;
+    --primary-glow: 80 100% 69%;
 
-    /* Secondary: Golden Yellow (achievement) */
-    --secondary: 45 93% 58%;
-    --secondary-foreground: 51 65 85;
+    /* Secondary: Darker green */
+    --secondary: 0 0% 16%;
+    --secondary-foreground: 0 0% 98%;
 
-    /* Success: Rich Green */
-    --success: 120 60% 50%;
-    --success-foreground: 255 255 255;
+    /* Success: Same lime green */
+    --success: 80 100% 59%;
+    --success-foreground: 0 0% 8%;
 
-    /* Warning: Orange */
-    --warning: 38 92% 50%;
-    --warning-foreground: 255 255 255;
+    /* Warning: Bright yellow */
+    --warning: 60 100% 50%;
+    --warning-foreground: 0 0% 8%;
 
-    /* Muted: Light background tones */
-    --muted: 248 250 255;
-    --muted-foreground: 100 116 139;
+    /* Muted: Dark grays */
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 70%;
 
-    /* Accent: Purple for premium features */
-    --accent: 262 83% 58%;
-    --accent-foreground: 255 255 255;
+    /* Accent: Lime green */
+    --accent: 80 100% 59%;
+    --accent-foreground: 0 0% 8%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 255 255 255;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 226 232 240;
-    --input: 248 250 255;
-    --ring: 142 69% 58%;
+    --border: 0 0% 20%;
+    --input: 0 0% 16%;
+    --ring: 80 100% 59%;
 
-    /* Gamification colors */
-    --experience: 142 69% 58%;
-    --streak: 38 92% 50%;
-    --achievement: 45 93% 58%;
+    /* Gamification colors - all lime green */
+    --experience: 80 100% 59%;
+    --streak: 80 100% 59%;
+    --achievement: 80 100% 59%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(142 69% 58%), hsl(142 69% 68%));
-    --gradient-secondary: linear-gradient(135deg, hsl(45 93% 58%), hsl(45 93% 68%));
-    --gradient-hero: linear-gradient(135deg, hsl(142 69% 58%), hsl(262 83% 58%));
-    --gradient-card: linear-gradient(145deg, hsl(255 255 255 / 0.8), hsl(248 250 255));
+    /* Gradients with black and lime */
+    --gradient-primary: linear-gradient(135deg, hsl(80 100% 59%), hsl(80 100% 69%));
+    --gradient-secondary: linear-gradient(135deg, hsl(0 0% 16%), hsl(0 0% 20%));
+    --gradient-hero: linear-gradient(135deg, hsl(0 0% 8%), hsl(80 100% 59%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 12%), hsl(0 0% 16%));
 
-    /* Shadows */
-    --shadow-primary: 0 10px 30px -10px hsl(142 69% 58% / 0.3);
-    --shadow-secondary: 0 10px 30px -10px hsl(45 93% 58% / 0.3);
-    --shadow-card: 0 4px 20px -4px hsl(226 232 240 / 0.5);
+    /* Shadows with lime glow */
+    --shadow-primary: 0 10px 30px -10px hsl(80 100% 59% / 0.3);
+    --shadow-secondary: 0 10px 30px -10px hsl(80 100% 59% / 0.2);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.8);
 
     --radius: 1rem;
 
