@@ -2,6 +2,7 @@ import { useState } from "react";
 import { QuizCard } from "@/components/quiz-card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Button } from "@/components/ui/button";
+import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -147,8 +148,8 @@ export default function Quiz() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="px-4 py-4">
+        <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate("/")}>
@@ -185,6 +186,8 @@ export default function Quiz() {
           onAnswer={handleAnswer}
         />
       </div>
+      
+      <FloatingNavbar />
     </div>
   );
 }

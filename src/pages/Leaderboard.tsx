@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -50,8 +51,8 @@ export default function Leaderboard() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-card/50 backdrop-blur-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="px-4 py-4">
+        <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
@@ -169,6 +170,8 @@ export default function Leaderboard() {
           </div>
         </Card>
       </div>
+      
+      <FloatingNavbar />
     </div>
   );
 }

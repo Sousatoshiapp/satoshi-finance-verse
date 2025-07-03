@@ -3,6 +3,7 @@ import { LessonCard } from "@/components/lesson-card";
 import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { Button } from "@/components/ui/button";
+import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -82,8 +83,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="px-4 py-4">
+        <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <img src={satoshiMascot} alt="Satoshi" className="w-10 h-10" />
@@ -195,6 +196,8 @@ export default function Dashboard() {
           </Button>
         </div>
       </div>
+      
+      <FloatingNavbar />
     </div>
   );
 }
