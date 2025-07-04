@@ -115,15 +115,6 @@ export default function Store() {
     setPurchasing(item.id);
 
     try {
-      if (userProfile.points < item.price) {
-        toast({
-          title: "Pontos Insuficientes",
-          description: `Você precisa de ${item.price} pontos`,
-          variant: "destructive"
-        });
-        return;
-      }
-
       if (userProfile.level < item.level_required) {
         toast({
           title: "Nível Insuficiente", 
@@ -133,39 +124,40 @@ export default function Store() {
         return;
       }
 
-      // Purchase item
-      if (type === 'avatar') {
-        await supabase.from('user_avatars').insert({
-          user_id: userProfile.id,
-          avatar_id: item.id
+      // For products, use Stripe payment
+      if (type === 'product') {
+        const { data, error } = await supabase.functions.invoke('create-payment', {
+          body: {
+            productId: item.id,
+            productName: item.name,
+            amount: item.price * 100, // Convert to centavos
+          }
         });
-        setUserAvatars(prev => [...prev, item.id]);
-      } else {
-        const product = item as Product;
-        await supabase.from('user_products').insert({
-          user_id: userProfile.id,
-          product_id: item.id,
-          expires_at: product.duration_hours ? 
-            new Date(Date.now() + product.duration_hours * 60 * 60 * 1000).toISOString() : null
-        });
-        setUserProducts(prev => [...prev, item.id]);
-        
-        // Apply instant effects
-        if (product.effects?.instant_points) {
-          await supabase.from('profiles').update({
-            points: userProfile.points - item.price + product.effects.instant_points
-          }).eq('id', userProfile.id);
-          setUserProfile(prev => prev ? { 
-            ...prev, 
-            points: prev.points - item.price + product.effects.instant_points 
-          } : null);
-          toast({
-            title: "🎉 Item Comprado!",
-            description: `${item.name} ativado! +${product.effects.instant_points} pontos!`,
-          });
-          return;
+
+        if (error) {
+          throw new Error(error.message);
         }
+
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
+        return;
       }
+
+      // For avatars, use the existing points system
+      if (userProfile.points < item.price) {
+        toast({
+          title: "Pontos Insuficientes",
+          description: `Você precisa de ${item.price} pontos`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      await supabase.from('user_avatars').insert({
+        user_id: userProfile.id,
+        avatar_id: item.id
+      });
+      setUserAvatars(prev => [...prev, item.id]);
 
       // Deduct points
       await supabase.from('profiles').update({
@@ -175,7 +167,7 @@ export default function Store() {
       setUserProfile(prev => prev ? { ...prev, points: prev.points - item.price } : null);
 
       toast({
-        title: "🎉 Item Comprado!",
+        title: "🎉 Avatar Comprado!",
         description: `${item.name} foi adicionado à sua coleção`,
       });
 
@@ -183,7 +175,7 @@ export default function Store() {
       console.error('Error purchasing item:', error);
       toast({
         title: "Erro na Compra",
-        description: "Não foi possível comprar o item",
+        description: "Não foi possível processar a compra",
         variant: "destructive"
       });
     } finally {
