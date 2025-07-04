@@ -54,6 +54,15 @@ export default function Store() {
 
   useEffect(() => {
     loadStoreData();
+    
+    // Check for payment success
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const paymentType = urlParams.get('type');
+    
+    if (paymentStatus === 'success' && paymentType === 'beetz') {
+      processBeetzPayment();
+    }
   }, [navigate]);
 
   const loadStoreData = async () => {
@@ -132,6 +141,41 @@ export default function Store() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const processBeetzPayment = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (!sessionId) return;
+
+    try {
+      const { data, error } = await supabase.functions.invoke('process-beetz-payment', {
+        body: { sessionId }
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      toast({
+        title: "🎉 Compra Realizada!",
+        description: "Seus Beetz foram adicionados à sua conta",
+      });
+
+      // Reload store data to update points
+      loadStoreData();
+      
+      // Clean URL parameters
+      window.history.replaceState({}, document.title, "/store");
+    } catch (error) {
+      console.error('Error processing Beetz payment:', error);
+      toast({
+        title: "Erro no Pagamento",
+        description: "Não foi possível processar o pagamento de Beetz",
+        variant: "destructive"
+      });
     }
   };
 
