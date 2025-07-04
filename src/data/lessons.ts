@@ -30,9 +30,9 @@ export interface Lesson {
 export const lessons: Lesson[] = [
   {
     id: 1,
-    title: "Orçamento Pessoal",
-    description: "Aprenda a controlar seus gastos e criar um orçamento que funciona para você",
-    progress: 3,
+    title: "Quiz: Orçamento Pessoal",
+    description: "Teste seus conhecimentos sobre planejamento financeiro e controle de gastos",
+    progress: 0,
     totalLessons: 5,
     difficulty: "Básico",
     icon: "💰",
@@ -40,304 +40,237 @@ export const lessons: Lesson[] = [
     lessons: [
       {
         id: 1,
-        title: "O que é um Orçamento?",
-        content: `Um orçamento pessoal é um plano que ajuda você a controlar suas finanças, mostrando quanto dinheiro entra e sai da sua conta todo mês.
-
-**Por que fazer um orçamento?**
-- Controle total dos seus gastos
-- Evitar dívidas desnecessárias  
-- Conseguir economizar dinheiro
-- Realizar seus sonhos financeiros
-
-**Componentes básicos:**
-1. **Receitas**: Todo dinheiro que você recebe
-2. **Gastos fixos**: Contas que não mudam (aluguel, internet)
-3. **Gastos variáveis**: Compras do dia a dia (comida, transporte)
-4. **Poupança**: Dinheiro guardado para o futuro
-
-Lembre-se: um bom orçamento é aquele que você consegue seguir!`,
+        title: "O que é Orçamento?",
+        content: "**Orçamento pessoal** é um plano que ajuda você a controlar suas finanças.\n\nÉ uma ferramenta fundamental para:\n• Saber para onde vai seu dinheiro\n• Planejar gastos futuros\n• Alcançar seus objetivos financeiros\n• Evitar dívidas desnecessárias\n\nCom um bom orçamento, você tem controle total sobre sua vida financeira!",
+        xpReward: 50,
         quiz: {
-          question: "Qual é a principal função de um orçamento pessoal?",
+          question: "Qual é o objetivo principal de um orçamento pessoal?",
           options: [
-            { id: "a", text: "Apenas controlar gastos", isCorrect: false },
-            { id: "b", text: "Planejar e controlar suas finanças pessoais", isCorrect: true },
-            { id: "c", text: "Eliminar todos os gastos", isCorrect: false },
-            { id: "d", text: "Ganhar mais dinheiro", isCorrect: false }
+            { id: "a", text: "Gastar todo o dinheiro disponível", isCorrect: false },
+            { id: "b", text: "Controlar e planejar as finanças pessoais", isCorrect: true },
+            { id: "c", text: "Apenas anotar os gastos", isCorrect: false },
+            { id: "d", text: "Investir em ações", isCorrect: false }
           ]
-        },
-        xpReward: 25
+        }
       },
       {
         id: 2,
-        title: "Calculando sua Renda",
-        content: `Para criar um orçamento eficaz, você precisa saber exatamente quanto dinheiro entra na sua conta.
-
-**Tipos de renda para considerar:**
-- Salário líquido (após descontos)
-- Freelances e trabalhos extras
-- Rendimentos de investimentos
-- Mesada ou ajuda da família
-- Vendas ocasionais
-
-**Dica importante:** Use sempre o valor líquido (o que realmente cai na sua conta), não o valor bruto.
-
-**Renda variável:** Se sua renda muda todo mês, use a média dos últimos 3-6 meses como base, mas seja conservador!
-
-**Exercício prático:** Anote todas suas fontes de renda do último mês. Essa será a base do seu orçamento.`,
+        title: "Receitas vs Despesas",
+        content: "**Receitas** são todo o dinheiro que entra:\n• Salário\n• Freelances\n• Renda extra\n• Investimentos\n\n**Despesas** são todo o dinheiro que sai:\n• Moradia\n• Alimentação\n• Transporte\n• Lazer\n\nA regra de ouro: Receitas > Despesas = Vida financeira saudável!",
+        xpReward: 50,
         quiz: {
-          question: "Qual valor de renda você deve usar no orçamento?",
+          question: "Para ter uma vida financeira saudável, qual regra devemos seguir?",
           options: [
-            { id: "a", text: "Valor bruto (antes dos descontos)", isCorrect: false },
-            { id: "b", text: "Valor líquido (o que realmente recebe)", isCorrect: true },
-            { id: "c", text: "Apenas o salário fixo", isCorrect: false },
-            { id: "d", text: "Uma estimativa aproximada", isCorrect: false }
+            { id: "a", text: "Receitas = Despesas", isCorrect: false },
+            { id: "b", text: "Receitas > Despesas", isCorrect: true },
+            { id: "c", text: "Receitas < Despesas", isCorrect: false },
+            { id: "d", text: "Não importa a relação", isCorrect: false }
           ]
-        },
-        xpReward: 25
+        }
       },
       {
         id: 3,
-        title: "Identificando seus Gastos",
-        content: `Agora vamos descobrir para onde vai seu dinheiro. Muitas pessoas se surpreendem ao ver seus gastos reais!
-
-**Gastos Fixos (não mudam):**
-- Aluguel/Financiamento
-- Plano de celular
-- Internet
-- Seguros
-- Assinaturas (Netflix, Spotify)
-
-**Gastos Variáveis (mudam todo mês):**
-- Alimentação
-- Transporte
-- Roupas
-- Entretenimento
-- Gastos médicos
-
-**Como rastrear:** Use um app ou caderno por 1 semana para anotar TUDO que você gasta, até o cafezinho!
-
-**Meta:** Seus gastos devem ser menor que sua renda. Se não for, precisamos ajustar!`,
+        title: "Método 50-30-20",
+        content: "O **método 50-30-20** é uma forma simples de organizar seu orçamento:\n\n• **50%** para necessidades básicas (moradia, alimentação, transporte)\n• **30%** para desejos (lazer, hobbies, compras)\n• **20%** para poupança e investimentos\n\nEste método garante que você cubra o essencial, tenha diversão e ainda poupe para o futuro!",
+        xpReward: 50,
         quiz: {
-          question: "Qual a diferença entre gastos fixos e variáveis?",
+          question: "No método 50-30-20, qual porcentagem deve ser destinada à poupança?",
           options: [
-            { id: "a", text: "Fixos são mais caros que variáveis", isCorrect: false },
-            { id: "b", text: "Fixos não mudam de valor, variáveis podem mudar", isCorrect: true },
-            { id: "c", text: "Variáveis são sempre opcionais", isCorrect: false },
-            { id: "d", text: "Não há diferença real entre eles", isCorrect: false }
+            { id: "a", text: "50%", isCorrect: false },
+            { id: "b", text: "30%", isCorrect: false },
+            { id: "c", text: "20%", isCorrect: true },
+            { id: "d", text: "10%", isCorrect: false }
           ]
-        },
-        xpReward: 25
+        }
       },
       {
         id: 4,
-        title: "Criando seu Primeiro Orçamento",
-        content: `Agora vamos juntar tudo e criar seu orçamento pessoal!
-
-**Fórmula simples:**
-Renda - Gastos Fixos - Poupança = Dinheiro para Gastos Variáveis
-
-**Regra 50-30-20:**
-- 50% para necessidades (gastos fixos)
-- 30% para desejos (lazer, entretenimento)
-- 20% para poupança/investimentos
-
-**Passos práticos:**
-1. Liste sua renda total
-2. Anote todos os gastos fixos
-3. Defina quanto quer poupar (mínimo 10%)
-4. O resto é para gastos variáveis
-5. Acompanhe diariamente por 1 mês
-
-**Lembre-se:** O primeiro orçamento nunca é perfeito. Ajuste conforme necessário!`,
-        xpReward: 25
+        title: "Emergências Financeiras",
+        content: "A **reserva de emergência** é fundamental para sua segurança financeira.\n\n**Valor ideal:** 6 a 12 meses de gastos essenciais\n\n**Para que serve:**\n• Perda de emprego\n• Problemas de saúde\n• Reparos urgentes\n• Oportunidades inesperadas\n\nSem reserva de emergência, qualquer imprevisto pode virar uma grande dívida!",
+        xpReward: 50,
+        quiz: {
+          question: "Qual o valor ideal para uma reserva de emergência?",
+          options: [
+            { id: "a", text: "1 a 2 meses de gastos", isCorrect: false },
+            { id: "b", text: "3 a 4 meses de gastos", isCorrect: false },
+            { id: "c", text: "6 a 12 meses de gastos", isCorrect: true },
+            { id: "d", text: "1 ano de salário", isCorrect: false }
+          ]
+        }
       },
       {
         id: 5,
-        title: "Mantendo o Orçamento em Dia",
-        content: `Criar o orçamento é só o começo. O segredo está em mantê-lo funcionando!
-
-**Dicas para não desistir:**
-- Revise semanalmente
-- Use apps para facilitar o controle
-- Seja realista com seus limites
-- Perdoe-se se sair do orçamento às vezes
-- Comemore quando conseguir seguir o plano
-
-**Sinais de que precisa ajustar:**
-- Sempre estourando o limite
-- Não conseguindo poupar nada
-- Sentindo que é muito restritivo
-- Esquecendo de anotar gastos
-
-**Ferramentas úteis:**
-- Apps: GuiaBolso, Organizze, Mobills
-- Planilhas: Google Sheets ou Excel
-- Método físico: Envelope com dinheiro
-
-**Objetivo final:** Tornar o controle financeiro um hábito natural!`,
-        xpReward: 25
+        title: "Planejamento de Metas",
+        content: "**Metas financeiras** dão propósito ao seu dinheiro!\n\n**Metas de curto prazo (até 1 ano):**\n• Viagem\n• Curso\n• Gadget\n\n**Metas de médio prazo (1-5 anos):**\n• Carro\n• Casa própria\n• Especialização\n\n**Metas de longo prazo (5+ anos):**\n• Aposentadoria\n• Educação dos filhos\n• Independência financeira\n\nCom metas claras, você se motiva a economizar e investir!",
+        xpReward: 50,
+        quiz: {
+          question: "Qual é um exemplo de meta financeira de longo prazo?",
+          options: [
+            { id: "a", text: "Comprar um celular novo", isCorrect: false },
+            { id: "b", text: "Fazer uma viagem", isCorrect: false },
+            { id: "c", text: "Planejamento da aposentadoria", isCorrect: true },
+            { id: "d", text: "Jantar em um restaurante caro", isCorrect: false }
+          ]
+        }
       }
     ]
   },
   {
     id: 2,
-    title: "Poupança Inteligente",
-    description: "Descubra estratégias para economizar dinheiro e construir sua reserva de emergência",
+    title: "Quiz: Cartão de Crédito",
+    description: "Aprenda a usar o cartão de crédito de forma inteligente e evite armadilhas",
     progress: 0,
     totalLessons: 4,
-    difficulty: "Básico",
-    icon: "🏦",
-    isLocked: false,
+    difficulty: "Intermediário",
+    icon: "💳",
+    isLocked: true,
     lessons: [
       {
         id: 1,
-        title: "Por que Poupar é Importante?",
-        content: `Poupar dinheiro é uma das habilidades mais importantes para sua segurança financeira.
-
-**Benefícios de ter uma poupança:**
-- Segurança em emergências (perda de emprego, problemas de saúde)
-- Liberdade para aproveitar oportunidades
-- Menos estresse financeiro
-- Possibilidade de realizar sonhos
-
-**Tipos de poupança:**
-1. **Reserva de emergência**: 6 meses de gastos básicos
-2. **Objetivos específicos**: Viagem, carro, casa
-3. **Aposentadoria**: Para o futuro distante
-
-**Mito comum:** "Não ganho o suficiente para poupar"
-**Verdade:** Qualquer quantia, mesmo R$ 10, já é um começo!
-
-O importante é criar o hábito. Comece pequeno e vá aumentando gradualmente.`,
-        xpReward: 30
+        title: "Como Funciona o Cartão",
+        content: "O **cartão de crédito** é uma ferramenta financeira poderosa quando usada corretamente.\n\n**Como funciona:**\n• Você compra e paga depois\n• O banco te empresta o dinheiro\n• Você paga na próxima fatura\n• Se não pagar tudo, cobra juros\n\n**Vantagens:**\n• Conveniência\n• Segurança\n• Pontos e benefícios\n• Histórico de crédito\n\n**Cuidados:**\n• Juros altos no rotativo\n• Facilidade de gastar demais",
+        xpReward: 60,
+        quiz: {
+          question: "Qual o maior risco do cartão de crédito?",
+          options: [
+            { id: "a", text: "Perder o cartão físico", isCorrect: false },
+            { id: "b", text: "Entrar no rotativo com juros altos", isCorrect: true },
+            { id: "c", text: "Não ganhar pontos", isCorrect: false },
+            { id: "d", text: "Ter limite baixo", isCorrect: false }
+          ]
+        }
       },
       {
         id: 2,
-        title: "Estratégias para Economizar",
-        content: `Existem várias maneiras inteligentes de economizar dinheiro no dia a dia.
-
-**Estratégias de economia:**
-
-**1. Pague-se primeiro**
-- Assim que receber, já separe o dinheiro da poupança
-- Trate como uma conta obrigatória
-
-**2. Regra dos 30 dias**
-- Para compras não essenciais, espere 30 dias
-- Muitas vezes você vai perceber que não precisava
-
-**3. Compare preços**
-- Use apps como Zoom ou Buscape
-- Pesquise em 3 lugares diferentes antes de comprar
-
-**4. Evite desperdícios**
-- Aproveite promoções de verdade
-- Compre genéricos
-- Reutilize e conserte quando possível
-
-**5. Automatize a poupança**
-- Configure transferência automática para a poupança
-- Use o "dinheiro esquecido" que sobra na conta`,
-        xpReward: 30
+        title: "Rotativo e Parcelamento",
+        content: "**Rotativo** é quando você paga apenas parte da fatura.\n\n**Juros do rotativo:** Entre 300% a 500% ao ano!\n\n**Parcelamento:**\n• Juros menores que o rotativo\n• Parcelas fixas\n• Planejamento mais fácil\n\n**Melhor opção:** Sempre pagar a fatura integral!\n\nSe não conseguir, prefira o parcelamento ao rotativo.",
+        xpReward: 60,
+        quiz: {
+          question: "Entre rotativo e parcelamento, qual tem juros menores?",
+          options: [
+            { id: "a", text: "Rotativo", isCorrect: false },
+            { id: "b", text: "Parcelamento", isCorrect: true },
+            { id: "c", text: "São iguais", isCorrect: false },
+            { id: "d", text: "Depende do banco", isCorrect: false }
+          ]
+        }
       },
       {
         id: 3,
-        title: "Construindo sua Reserva de Emergência",
-        content: `A reserva de emergência é sua proteção contra imprevistos financeiros.
-
-**Quanto guardar?**
-- Mínimo: 3 meses de gastos essenciais
-- Ideal: 6 meses de gastos essenciais
-- Conservador: 12 meses
-
-**Como calcular:**
-Some apenas os gastos que você NÃO pode cortar:
-- Aluguel/Financiamento
-- Alimentação básica
-- Transporte para trabalho
-- Remédios/Plano de saúde
-- Contas básicas (luz, água, telefone)
-
-**Onde guardar:**
-- Poupança tradicional (fácil acesso)
-- CDB com liquidez diária
-- Tesouro Selic
-- Conta corrente (só enquanto constrói)
-
-**Cronograma sugerido:**
-- Mês 1-3: R$ 1.000 iniciais
-- Mês 4-12: Complete 3 meses de gastos
-- Mês 13-24: Chegue aos 6 meses ideais
-
-**Importante:** Só use em emergências REAIS!`,
-        xpReward: 30
+        title: "Limite Consciente",
+        content: "O **limite do cartão** não é extensão da sua renda!\n\n**Regra de ouro:** Use no máximo 30% do limite\n\n**Por que 30%?**\n• Mantém score alto\n• Evita gastos excessivos\n• Sobra margem para emergências\n• Melhora relacionamento com banco\n\n**Exemplo:**\n• Limite: R$ 1.000\n• Use no máximo: R$ 300\n\nAssim você usa o cartão a seu favor, não contra você!",
+        xpReward: 60,
+        quiz: {
+          question: "Qual porcentagem máxima do limite devemos usar?",
+          options: [
+            { id: "a", text: "100%", isCorrect: false },
+            { id: "b", text: "50%", isCorrect: false },
+            { id: "c", text: "30%", isCorrect: true },
+            { id: "d", text: "10%", isCorrect: false }
+          ]
+        }
       },
       {
         id: 4,
-        title: "Onde Guardar seu Dinheiro",
-        content: `Saber onde colocar sua poupança é tão importante quanto poupar.
-
-**Opções para iniciantes:**
-
-**1. Poupança tradicional**
-- Prós: Segura, fácil acesso, isenta de IR
-- Contras: Rendimento baixo
-- Ideal para: Reserva de emergência inicial
-
-**2. CDB (Certificado de Depósito Bancário)**
-- Prós: Rendimento melhor que poupança
-- Contras: Pode ter carência
-- Ideal para: Parte da reserva de emergência
-
-**3. Tesouro Direto**
-- Prós: Garantido pelo governo, bom rendimento
-- Contras: Pode oscilar no curto prazo
-- Ideal para: Objetivos de médio/longo prazo
-
-**Dicas importantes:**
-- Diversifique: não coloque tudo em um lugar
-- Mantenha parte em alta liquidez (acesso imediato)
-- Pesquise taxas antes de investir
-- Comece simples e vá aprendendo
-
-**Regra de ouro:** Comece guardando, mesmo que seja na poupança. O importante é criar o hábito!`,
-        xpReward: 30
+        title: "Benefícios e Armadilhas",
+        content: "**Benefícios do cartão:**\n• Cashback\n• Milhas aéreas\n• Descontos em parceiros\n• Seguro viagem\n• Proteção de compras\n\n**Armadilhas comuns:**\n• Anuidade alta\n• Juros escondidos\n• Seguros desnecessários\n• Compras por impulso\n• Limite muito alto\n\n**Dica de ouro:** Escolha cartão sem anuidade ou que compense os benefícios!",
+        xpReward: 60,
+        quiz: {
+          question: "Qual é a melhor estratégia para escolher um cartão?",
+          options: [
+            { id: "a", text: "Sempre o de maior limite", isCorrect: false },
+            { id: "b", text: "O mais bonito", isCorrect: false },
+            { id: "c", text: "Sem anuidade ou com benefícios que compensem", isCorrect: true },
+            { id: "d", text: "O que o banco oferece", isCorrect: false }
+          ]
+        }
       }
     ]
   },
   {
     id: 3,
-    title: "Investimentos Básicos",
-    description: "Introdução ao mundo dos investimentos: ações, fundos e renda fixa",
+    title: "Quiz: Investimentos Básicos",
+    description: "Descubra o mundo dos investimentos e faça seu dinheiro trabalhar para você",
     progress: 0,
-    totalLessons: 6,
-    difficulty: "Intermediário",
+    totalLessons: 5,
+    difficulty: "Avançado",
     icon: "📈",
     isLocked: true,
     lessons: [
       {
         id: 1,
-        title: "Introdução aos Investimentos",
-        content: "Conteúdo bloqueado - Complete as lições anteriores primeiro!",
-        xpReward: 40
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: "Planejamento Financeiro",
-    description: "Aprenda a definir metas financeiras e criar um plano para alcançá-las",
-    progress: 0,
-    totalLessons: 5,
-    difficulty: "Intermediário",
-    icon: "🎯",
-    isLocked: true,
-    lessons: [
+        title: "Por que Investir?",
+        content: "**Investir** é fazer seu dinheiro trabalhar para você!\n\n**Inflação vs Poupança:**\n• Inflação: ~4% ao ano\n• Poupança: ~3% ao ano\n• Resultado: Você perde dinheiro!\n\n**Poder dos juros compostos:**\n• R$ 100 por mês\n• 12% ao ano\n• Em 10 anos: R$ 23.000!\n• Você investiu: R$ 12.000\n• Ganhou: R$ 11.000\n\nQuanto antes começar, melhor!",
+        xpReward: 70,
+        quiz: {
+          question: "Por que a poupança não é um bom investimento?",
+          options: [
+            { id: "a", text: "É muito arriscada", isCorrect: false },
+            { id: "b", text: "Rende menos que a inflação", isCorrect: true },
+            { id: "c", text: "Tem muita taxa", isCorrect: false },
+            { id: "d", text: "É difícil de sacar", isCorrect: false }
+          ]
+        }
+      },
       {
-        id: 1,
-        title: "Definindo Metas Financeiras",
-        content: "Conteúdo bloqueado - Complete as lições anteriores primeiro!",
-        xpReward: 40
+        id: 2,
+        title: "Renda Fixa vs Variável",
+        content: "**Renda Fixa:**\n• Tesouro Direto\n• CDB\n• LCI/LCA\n• Rentabilidade previsível\n• Menor risco\n\n**Renda Variável:**\n• Ações\n• Fundos Imobiliários\n• Criptomoedas\n• Rentabilidade imprevisível\n• Maior risco e potencial retorno\n\n**Estratégia:** Comece com renda fixa, depois diversifique para renda variável!",
+        xpReward: 70,
+        quiz: {
+          question: "Qual característica da renda fixa?",
+          options: [
+            { id: "a", text: "Alto risco", isCorrect: false },
+            { id: "b", text: "Rentabilidade imprevisível", isCorrect: false },
+            { id: "c", text: "Rentabilidade previsível", isCorrect: true },
+            { id: "d", text: "Só para ricos", isCorrect: false }
+          ]
+        }
+      },
+      {
+        id: 3,
+        title: "Tesouro Direto",
+        content: "O **Tesouro Direto** é o investimento mais seguro do Brasil!\n\n**Tipos:**\n• **Selic:** Segue a taxa básica\n• **Prefixado:** Taxa fixa conhecida\n• **IPCA+:** Protege da inflação\n\n**Vantagens:**\n• Garantido pelo governo\n• A partir de R$ 30\n• Liquidez diária\n• Baixas taxas\n\n**Ideal para:** Reserva de emergência e primeiros investimentos!",
+        xpReward: 70,
+        quiz: {
+          question: "Qual tipo de Tesouro protege contra a inflação?",
+          options: [
+            { id: "a", text: "Tesouro Selic", isCorrect: false },
+            { id: "b", text: "Tesouro Prefixado", isCorrect: false },
+            { id: "c", text: "Tesouro IPCA+", isCorrect: true },
+            { id: "d", text: "Todos protegem", isCorrect: false }
+          ]
+        }
+      },
+      {
+        id: 4,
+        title: "Diversificação",
+        content: "**Diversificação** é não colocar todos os ovos na mesma cesta!\n\n**Por que diversificar:**\n• Reduz riscos\n• Aproveita diferentes oportunidades\n• Protege contra crises setoriais\n\n**Como diversificar:**\n• Renda fixa + variável\n• Diferentes setores\n• Brasil + exterior\n• Curto + longo prazo\n\n**Regra:** Nunca mais de 10% em um único ativo!",
+        xpReward: 70,
+        quiz: {
+          question: "Qual o principal benefício da diversificação?",
+          options: [
+            { id: "a", text: "Aumentar os ganhos sempre", isCorrect: false },
+            { id: "b", text: "Reduzir riscos", isCorrect: true },
+            { id: "c", text: "Facilitar o controle", isCorrect: false },
+            { id: "d", text: "Pagar menos impostos", isCorrect: false }
+          ]
+        }
+      },
+      {
+        id: 5,
+        title: "Perfil de Investidor",
+        content: "Conheça seu **perfil de risco**:\n\n**Conservador:**\n• Prioriza segurança\n• Aceita rentabilidade menor\n• Renda fixa em sua maioria\n\n**Moderado:**\n• Equilíbrio risco/retorno\n• Mix renda fixa e variável\n• Perfil mais comum\n\n**Arrojado:**\n• Aceita riscos altos\n• Busca rentabilidade alta\n• Foco em renda variável\n\n**Importante:** Seu perfil pode mudar com o tempo e objetivos!",
+        xpReward: 70,
+        quiz: {
+          question: "Qual perfil busca equilíbrio entre risco e retorno?",
+          options: [
+            { id: "a", text: "Conservador", isCorrect: false },
+            { id: "b", text: "Moderado", isCorrect: true },
+            { id: "c", text: "Arrojado", isCorrect: false },
+            { id: "d", text: "Nenhum", isCorrect: false }
+          ]
+        }
       }
     ]
   }

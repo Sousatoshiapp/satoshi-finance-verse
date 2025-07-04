@@ -47,7 +47,7 @@ export default function Dashboard() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={newLogo} alt="Logo" className="w-10 h-10" />
+              <img src={newLogo} alt="Logo" className="w-16 h-12 object-contain" />
             </div>
             
             <div className="flex items-center gap-4">
@@ -118,9 +118,9 @@ export default function Dashboard() {
           </Button>
         </div>
 
-        {/* Lessons Section */}
+        {/* Quizzes Section */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Suas Lições</h3>
+          <h3 className="text-2xl font-bold text-foreground mb-6">Quizzes Financeiros</h3>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {lessons.map((lesson) => (
               <LessonCard
