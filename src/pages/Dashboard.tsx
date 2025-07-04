@@ -54,14 +54,29 @@ export default function Dashboard() {
   }, [navigate]);
 
   const loadUserData = async () => {
+    // Sempre carregar dados do localStorage primeiro
+    const userData = localStorage.getItem('satoshi_user');
+    if (userData) {
+      const user = JSON.parse(userData);
+      setUserStats({
+        level: user.level || 1,
+        currentXP: user.xp || 0,
+        nextLevelXP: (user.level || 1) * 100,
+        streak: user.streak || 0,
+        completedLessons: user.completedLessons || 0
+      });
+      setUserNickname(user.nickname || 'Estudante');
+    }
+    
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      // Tentar carregar do Supabase para sobrescrever se disponível
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
 
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('user_id', authUser.id)
         .single();
 
       if (profile) {
@@ -75,20 +90,8 @@ export default function Dashboard() {
         setUserNickname(profile.nickname || 'Estudante');
       }
     } catch (error) {
-      console.error('Error loading user data:', error);
-      // Fallback para localStorage se Supabase falhar
-      const userData = localStorage.getItem('satoshi_user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        setUserStats({
-          level: user.level || 1,
-          currentXP: user.xp || 0,
-          nextLevelXP: (user.level || 1) * 100,
-          streak: user.streak || 0,
-          completedLessons: user.completedLessons || 0
-        });
-        setUserNickname(user.nickname || 'Estudante');
-      }
+      console.error('Error loading user data from Supabase:', error);
+      // Dados do localStorage já foram carregados acima
     }
   };
 

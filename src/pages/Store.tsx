@@ -56,18 +56,39 @@ export default function Store() {
 
   const loadStoreData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      // Check localStorage first for user data
+      const userData = localStorage.getItem('satoshi_user');
+      if (!userData) {
         navigate('/welcome');
         return;
       }
 
-      // Load user profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Load user profile from Supabase or fallback to localStorage
+      let profile = null;
+      if (user) {
+        const { data: supabaseProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        profile = supabaseProfile;
+      }
+
+      // If no Supabase profile, use localStorage data
+      if (!profile) {
+        const localUser = JSON.parse(userData);
+        profile = {
+          id: 'local-user',
+          level: localUser.level || 1,
+          points: localUser.coins || 0,
+          nickname: localUser.nickname || 'Usuário',
+          xp: localUser.xp || 0,
+          streak: localUser.streak || 0,
+          completed_lessons: localUser.completedLessons || 0
+        };
+      }
 
       if (profile) {
         setUserProfile(profile);
