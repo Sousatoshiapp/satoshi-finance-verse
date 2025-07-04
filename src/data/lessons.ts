@@ -1,8 +1,18 @@
+export interface QuizOption {
+  id: string;
+  text: string;
+  isCorrect: boolean;
+}
+
 export interface LessonContent {
   id: number;
   title: string;
   content: string;
   xpReward: number;
+  quiz?: {
+    question: string;
+    options: QuizOption[];
+  };
 }
 
 export interface Lesson {
@@ -46,6 +56,15 @@ export const lessons: Lesson[] = [
 4. **Poupança**: Dinheiro guardado para o futuro
 
 Lembre-se: um bom orçamento é aquele que você consegue seguir!`,
+        quiz: {
+          question: "Qual é a principal função de um orçamento pessoal?",
+          options: [
+            { id: "a", text: "Apenas controlar gastos", isCorrect: false },
+            { id: "b", text: "Planejar e controlar suas finanças pessoais", isCorrect: true },
+            { id: "c", text: "Eliminar todos os gastos", isCorrect: false },
+            { id: "d", text: "Ganhar mais dinheiro", isCorrect: false }
+          ]
+        },
         xpReward: 25
       },
       {
@@ -65,6 +84,15 @@ Lembre-se: um bom orçamento é aquele que você consegue seguir!`,
 **Renda variável:** Se sua renda muda todo mês, use a média dos últimos 3-6 meses como base, mas seja conservador!
 
 **Exercício prático:** Anote todas suas fontes de renda do último mês. Essa será a base do seu orçamento.`,
+        quiz: {
+          question: "Qual valor de renda você deve usar no orçamento?",
+          options: [
+            { id: "a", text: "Valor bruto (antes dos descontos)", isCorrect: false },
+            { id: "b", text: "Valor líquido (o que realmente recebe)", isCorrect: true },
+            { id: "c", text: "Apenas o salário fixo", isCorrect: false },
+            { id: "d", text: "Uma estimativa aproximada", isCorrect: false }
+          ]
+        },
         xpReward: 25
       },
       {
@@ -89,6 +117,15 @@ Lembre-se: um bom orçamento é aquele que você consegue seguir!`,
 **Como rastrear:** Use um app ou caderno por 1 semana para anotar TUDO que você gasta, até o cafezinho!
 
 **Meta:** Seus gastos devem ser menor que sua renda. Se não for, precisamos ajustar!`,
+        quiz: {
+          question: "Qual a diferença entre gastos fixos e variáveis?",
+          options: [
+            { id: "a", text: "Fixos são mais caros que variáveis", isCorrect: false },
+            { id: "b", text: "Fixos não mudam de valor, variáveis podem mudar", isCorrect: true },
+            { id: "c", text: "Variáveis são sempre opcionais", isCorrect: false },
+            { id: "d", text: "Não há diferença real entre eles", isCorrect: false }
+          ]
+        },
         xpReward: 25
       },
       {

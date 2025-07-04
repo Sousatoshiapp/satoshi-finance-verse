@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { QuizCard } from "@/components/quiz-card";
 import { lessons } from "@/data/lessons";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +18,8 @@ export default function Lesson() {
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [course, setCourse] = useState(null);
   const [userProgress, setUserProgress] = useState({});
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
 
   useEffect(() => {
     const foundCourse = lessons.find(lesson => lesson.id === parseInt(courseId));
@@ -43,7 +46,27 @@ export default function Lesson() {
 
   const currentLesson = course?.lessons[currentLessonIndex];
   
+  const handleQuizAnswer = (isCorrect: boolean) => {
+    if (isCorrect) {
+      setQuizCompleted(true);
+      toast({
+        title: "Resposta Correta! 🎉",
+        description: "Agora você pode completar a lição!",
+      });
+    }
+  };
+
   const completeLesson = () => {
+    // Se tem quiz e não foi completado, não permite finalizar
+    if (currentLesson.quiz && !quizCompleted) {
+      toast({
+        title: "Complete o Quiz Primeiro! 📝",
+        description: "Responda a pergunta corretamente para finalizar a lição",
+      });
+      setShowQuiz(true);
+      return;
+    }
+
     const userData = JSON.parse(localStorage.getItem('satoshi_user') || '{}');
     const newXP = (userData.xp || 0) + currentLesson.xpReward;
     const newLevel = Math.floor(newXP / 100) + 1;
@@ -63,6 +86,10 @@ export default function Lesson() {
       description: `Você ganhou ${currentLesson.xpReward} XP!`,
     });
 
+    // Reset quiz state for next lesson
+    setShowQuiz(false);
+    setQuizCompleted(false);
+
     // Move to next lesson or back to course
     if (currentLessonIndex < course.lessons.length - 1) {
       setCurrentLessonIndex(currentLessonIndex + 1);
@@ -76,17 +103,22 @@ export default function Lesson() {
     }
   };
 
-  const goToPrevious = () => {
-    if (currentLessonIndex > 0) {
-      setCurrentLessonIndex(currentLessonIndex - 1);
-      navigate(`/lesson/${courseId}/${course.lessons[currentLessonIndex - 1].id}`);
-    }
-  };
 
   const goToNext = () => {
     if (currentLessonIndex < course.lessons.length - 1) {
       setCurrentLessonIndex(currentLessonIndex + 1);
+      setShowQuiz(false);
+      setQuizCompleted(false);
       navigate(`/lesson/${courseId}/${course.lessons[currentLessonIndex + 1].id}`);
+    }
+  };
+
+  const goToPrevious = () => {
+    if (currentLessonIndex > 0) {
+      setCurrentLessonIndex(currentLessonIndex - 1);
+      setShowQuiz(false);
+      setQuizCompleted(false);
+      navigate(`/lesson/${courseId}/${course.lessons[currentLessonIndex - 1].id}`);
     }
   };
 
@@ -144,30 +176,72 @@ export default function Lesson() {
         </div>
 
         {/* Lesson Content */}
-        <Card className="p-8 mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <CheckCircle className="w-6 h-6 text-primary" />
-            <h2 className="text-2xl font-bold text-foreground">
-              {currentLesson.title}
-            </h2>
-          </div>
-          
-          <div className="prose prose-neutral dark:prose-invert max-w-none">
-            <div 
-              className="text-foreground leading-relaxed whitespace-pre-line"
-              dangerouslySetInnerHTML={{ 
-                __html: currentLesson.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-              }}
+        {!showQuiz ? (
+          <Card className="p-8 mb-8">
+            <div className="flex items-center gap-3 mb-6">
+              <CheckCircle className="w-6 h-6 text-primary" />
+              <h2 className="text-2xl font-bold text-foreground">
+                {currentLesson.title}
+              </h2>
+            </div>
+            
+            <div className="prose prose-neutral dark:prose-invert max-w-none">
+              <div 
+                className="text-foreground leading-relaxed whitespace-pre-line"
+                dangerouslySetInnerHTML={{ 
+                  __html: currentLesson.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                }}
+              />
+            </div>
+            
+            <div className="mt-8 p-4 bg-primary/10 rounded-lg border">
+              <div className="flex items-center gap-2">
+                <span className="text-primary font-semibold">🪙 Recompensa:</span>
+                <span className="text-foreground">{currentLesson.xpReward} XP</span>
+              </div>
+            </div>
+
+            {/* Quiz Button */}
+            {currentLesson.quiz && !quizCompleted && (
+              <div className="mt-6 text-center">
+                <Button 
+                  onClick={() => setShowQuiz(true)}
+                  className="bg-secondary hover:bg-secondary/80"
+                >
+                  📝 Fazer Quiz da Lição
+                </Button>
+              </div>
+            )}
+          </Card>
+        ) : (
+          /* Quiz Mode */
+          <div className="mb-8">
+            <Card className="p-6 mb-6">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">📝</span>
+                <h3 className="text-xl font-bold text-foreground">Quiz da Lição</h3>
+              </div>
+              <p className="text-muted-foreground mb-4">
+                Responda a pergunta abaixo para completar a lição
+              </p>
+            </Card>
+            
+            <QuizCard
+              question={currentLesson.quiz.question}
+              options={currentLesson.quiz.options}
+              onAnswer={handleQuizAnswer}
             />
-          </div>
-          
-          <div className="mt-8 p-4 bg-primary/10 rounded-lg border">
-            <div className="flex items-center gap-2">
-              <span className="text-primary font-semibold">🪙 Recompensa:</span>
-              <span className="text-foreground">{currentLesson.xpReward} XP</span>
+            
+            <div className="mt-6 text-center">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowQuiz(false)}
+              >
+                📖 Voltar ao Conteúdo
+              </Button>
             </div>
           </div>
-        </Card>
+        )}
 
         {/* Navigation */}
         <div className="flex items-center justify-between">
@@ -190,7 +264,11 @@ export default function Lesson() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
             
-            <Button onClick={completeLesson} className="bg-primary">
+            <Button 
+              onClick={completeLesson} 
+              className="bg-primary"
+              disabled={currentLesson.quiz && !quizCompleted}
+            >
               {currentLessonIndex === course.lessons.length - 1 ? 'Finalizar Curso' : 'Completar Lição'}
               <CheckCircle className="w-4 h-4 ml-2" />
             </Button>
