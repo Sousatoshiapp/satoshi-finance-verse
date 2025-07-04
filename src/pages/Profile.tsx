@@ -8,7 +8,7 @@ import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
-import satoshiMascot from "@/assets/satoshi-mascot.png";
+import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 interface UserProfile {
   nickname: string;
@@ -77,7 +77,7 @@ export default function Profile() {
         <Card className="p-6 mb-8">
           <div className="flex items-center gap-6">
             <Avatar className="w-20 h-20">
-              <img src={satoshiMascot} alt={user.nickname} />
+              <img src={satoshiLogo} alt={user.nickname} />
             </Avatar>
             
             <div className="flex-1">

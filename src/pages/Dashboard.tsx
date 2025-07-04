@@ -5,7 +5,7 @@ import { StreakBadge } from "@/components/ui/streak-badge";
 import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
-import satoshiMascot from "@/assets/satoshi-mascot.png";
+import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 const lessons = [
   {
@@ -87,7 +87,7 @@ export default function Dashboard() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={satoshiMascot} alt="Satoshi" className="w-10 h-10" />
+              <img src={satoshiLogo} alt="Satoshi" className="w-10 h-10 bg-primary rounded-full p-1" />
               <h1 className="text-2xl font-bold text-gradient">Satoshi</h1>
             </div>
             
