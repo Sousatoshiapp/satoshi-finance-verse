@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
-import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
+import newLogo from "/lovable-uploads/874326e7-1122-419a-8916-5df0c112245d.png";
 
 export default function Dashboard() {
   const [userStats, setUserStats] = useState({
@@ -16,6 +16,7 @@ export default function Dashboard() {
     streak: 7,
     completedLessons: 3
   });
+  const [userNickname, setUserNickname] = useState('Estudante');
   
   const navigate = useNavigate();
 
@@ -36,6 +37,7 @@ export default function Dashboard() {
       streak: user.streak || 0,
       completedLessons: user.completedLessons || 0
     });
+    setUserNickname(user.nickname || 'Estudante');
   }, [navigate]);
 
   return (
@@ -45,8 +47,7 @@ export default function Dashboard() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src={satoshiLogo} alt="Satoshi" className="w-10 h-10 bg-primary rounded-full p-1" />
-              <h1 className="text-2xl font-bold text-gradient">Satoshi</h1>
+              <img src={newLogo} alt="Logo" className="w-10 h-10" />
             </div>
             
             <div className="flex items-center gap-4">
@@ -63,7 +64,7 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-foreground mb-2">
-            Olá, Estudante! 👋
+            Olá, {userNickname}! 👋
           </h2>
           <p className="text-muted-foreground text-lg">
             Continue sua jornada de educação financeira
