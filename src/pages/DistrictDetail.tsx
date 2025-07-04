@@ -5,8 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star } from "lucide-react";
+import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
+import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
+import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
+import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
+import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
+import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
+import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
 
 interface District {
   id: string;
@@ -31,12 +40,32 @@ interface UserDistrict {
   xp: number;
 }
 
+interface Resident {
+  id: string;
+  nickname: string;
+  level: number;
+  xp: number;
+  profile_image_url?: string;
+}
+
+const districtLogos = {
+  renda_variavel: xpLogo,
+  educacao_financeira: animaLogo,
+  criptomoedas: criptoLogo,
+  sistema_bancario: bankingLogo,
+  fundos_imobiliarios: realEstateLogo,
+  mercado_internacional: tradeLogo,
+  fintech: fintechLogo,
+};
+
 export default function DistrictDetail() {
   const { districtId } = useParams();
   const navigate = useNavigate();
   const [district, setDistrict] = useState<District | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
   const [userDistrict, setUserDistrict] = useState<UserDistrict | null>(null);
+  const [residents, setResidents] = useState<Resident[]>([]);
+  const [ranking, setRanking] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -65,6 +94,25 @@ export default function DistrictDetail() {
 
       if (teamsError) throw teamsError;
       setTeams(teamsData || []);
+
+      // Load residents and ranking - simplificado por ora
+      const { data: allProfiles } = await supabase
+        .from('profiles')
+        .select('id, nickname, profile_image_url')
+        .limit(10);
+
+      if (allProfiles) {
+        const mockResidents = allProfiles.map((profile, index) => ({
+          id: profile.id,
+          nickname: profile.nickname,
+          level: Math.floor(Math.random() * 10) + 1,
+          xp: Math.floor(Math.random() * 5000) + 100,
+          profile_image_url: profile.profile_image_url
+        }));
+        
+        setResidents(mockResidents);
+        setRanking(mockResidents.sort((a, b) => b.xp - a.xp).slice(0, 10));
+      }
 
       // Load user district progress
       const { data: { user } } = await supabase.auth.getUser();
@@ -150,6 +198,16 @@ export default function DistrictDetail() {
   const nextLevelXP = userDistrict ? userDistrict.level * 1000 : 1000;
   const currentLevelXP = userDistrict ? userDistrict.xp % 1000 : 0;
   const progressPercent = (currentLevelXP / 1000) * 100;
+  const districtLogo = districtLogos[district.theme as keyof typeof districtLogos];
+
+  const getRankIcon = (position: number) => {
+    switch (position) {
+      case 1: return <Crown className="h-5 w-5 text-yellow-400" />;
+      case 2: return <Medal className="h-5 w-5 text-gray-400" />;
+      case 3: return <Award className="h-5 w-5 text-amber-600" />;
+      default: return <Star className="h-5 w-5 text-gray-500" />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -172,168 +230,279 @@ export default function DistrictDetail() {
             Voltar para Satoshi City
           </Button>
 
-          <div className="text-center">
-            <h1 
-              className="text-5xl font-bold mb-4"
-              style={{ color: district.color_primary }}
-            >
-              {district.name}
-            </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              {district.description}
-            </p>
-            
-            {userDistrict && (
-              <div className="max-w-md mx-auto">
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Nível {userDistrict.level}</span>
-                  <span style={{ color: district.color_primary }}>
-                    {currentLevelXP} / 1000 XP
-                  </span>
-                </div>
-                <Progress 
-                  value={progressPercent} 
-                  className="h-2"
-                  style={{
-                    background: 'rgb(51, 65, 85)'
-                  }}
-                />
-              </div>
+          <div className="flex items-center justify-center mb-6">
+            {districtLogo && (
+              <img 
+                src={districtLogo} 
+                alt={district.name}
+                className="w-20 h-20 rounded-full object-cover mr-6 border-4"
+                style={{ borderColor: district.color_primary }}
+              />
             )}
+            <div className="text-center">
+              <h1 
+                className="text-5xl font-bold mb-4"
+                style={{ color: district.color_primary }}
+              >
+                {district.name}
+              </h1>
+              <p className="text-xl text-gray-300 mb-4 max-w-2xl">
+                {district.description}
+              </p>
+            </div>
           </div>
+          
+          {userDistrict && (
+            <div className="max-w-md mx-auto">
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-400">Nível {userDistrict.level}</span>
+                <span style={{ color: district.color_primary }}>
+                  {currentLevelXP} / 1000 XP
+                </span>
+              </div>
+              <Progress 
+                value={progressPercent} 
+                className="h-2"
+                style={{
+                  background: 'rgb(51, 65, 85)'
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Quiz Section */}
-          <div className="lg:col-span-2">
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
-              <CardHeader>
-                <CardTitle className="flex items-center text-white">
-                  <BookOpen className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
-                  Desafios do Distrito
-                </CardTitle>
-                <CardDescription className="text-gray-300">
-                  Teste seus conhecimentos em {district.theme.replace('_', ' ')} e ganhe XP
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <div>
-                      <h3 className="font-semibold text-white">Quiz Básico</h3>
-                      <p className="text-sm text-gray-400">Fundamentos essenciais</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
+      {/* Content Tabs */}
+      <div className="container mx-auto px-4 py-8">
+        <Tabs defaultValue="quizzes" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8 bg-slate-800/50">
+            <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700">
+              <BookOpen className="mr-2 h-4 w-4" />
+              Quizzes
+            </TabsTrigger>
+            <TabsTrigger value="residents" className="data-[state=active]:bg-slate-700">
+              <Users className="mr-2 h-4 w-4" />
+              Moradores
+            </TabsTrigger>
+            <TabsTrigger value="ranking" className="data-[state=active]:bg-slate-700">
+              <Trophy className="mr-2 h-4 w-4" />
+              Ranking
+            </TabsTrigger>
+            <TabsTrigger value="teams" className="data-[state=active]:bg-slate-700">
+              <Zap className="mr-2 h-4 w-4" />
+              Times
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Quizzes Tab */}
+          <TabsContent value="quizzes">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-white">
+                    <BookOpen className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
+                    Quiz Básico
+                  </CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Fundamentos essenciais de {district.theme.replace('_', ' ')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
                       <Badge variant="outline" style={{ borderColor: district.color_primary, color: district.color_primary }}>
                         +50 XP
                       </Badge>
-                      <Button 
-                        onClick={handleStartQuiz}
-                        style={{ backgroundColor: district.color_primary }}
-                        className="text-black font-bold"
-                      >
-                        Começar
-                      </Button>
+                      <p className="text-sm text-gray-400">10 perguntas • 5 min</p>
                     </div>
+                    <Button 
+                      onClick={handleStartQuiz}
+                      style={{ backgroundColor: district.color_primary }}
+                      className="text-black font-bold"
+                    >
+                      Começar
+                    </Button>
                   </div>
+                </CardContent>
+              </Card>
 
-                  <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
-                    <div>
-                      <h3 className="font-semibold text-white">Quiz Avançado</h3>
-                      <p className="text-sm text-gray-400">Para especialistas</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
+              <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
+                <CardHeader>
+                  <CardTitle className="flex items-center text-white">
+                    <Trophy className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
+                    Quiz Avançado
+                  </CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Para especialistas em {district.theme.replace('_', ' ')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
                       <Badge variant="outline" style={{ borderColor: district.color_primary, color: district.color_primary }}>
                         +100 XP
                       </Badge>
-                      <Button 
-                        variant="outline"
-                        disabled={!userDistrict || userDistrict.level < 3}
-                        style={{ borderColor: district.color_primary }}
-                        className="text-gray-400"
-                      >
-                        Nível 3 Necessário
-                      </Button>
+                      <p className="text-sm text-gray-400">20 perguntas • 10 min</p>
                     </div>
+                    <Button 
+                      variant="outline"
+                      disabled={!userDistrict || userDistrict.level < 3}
+                      style={{ borderColor: district.color_primary }}
+                      className="text-gray-400"
+                    >
+                      {!userDistrict || userDistrict.level < 3 ? 'Nível 3 Necessário' : 'Começar'}
+                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
-          {/* Teams Section */}
-          <div>
+          {/* Residents Tab */}
+          <TabsContent value="residents">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {residents.map((resident) => (
+                <Card key={resident.id} className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
+                  <CardContent className="p-4">
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarImage src={resident.profile_image_url} />
+                        <AvatarFallback className="bg-slate-700 text-white">
+                          {resident.nickname.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-white">{resident.nickname}</h3>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-400">Nível {resident.level}</span>
+                          <span style={{ color: district.color_primary }}>
+                            {resident.xp} XP
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              {residents.length === 0 && (
+                <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600 col-span-full">
+                  <CardContent className="p-8 text-center">
+                    <Users className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                    <p className="text-gray-400">Nenhum morador no distrito ainda</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Ranking Tab */}
+          <TabsContent value="ranking">
             <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
               <CardHeader>
                 <CardTitle className="flex items-center text-white">
-                  <Users className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
-                  Times do Distrito
+                  <Trophy className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
+                  Top 10 do Distrito
                 </CardTitle>
                 <CardDescription className="text-gray-300">
-                  Junte-se a um time e forme alianças
+                  Os melhores especialistas em {district.theme.replace('_', ' ')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {teams.length > 0 ? (
-                  <div className="space-y-3">
-                    {teams.map((team) => (
-                      <div key={team.id} className="p-3 bg-slate-700/50 rounded-lg">
-                        <h4 className="font-semibold text-white">{team.name}</h4>
-                        <p className="text-xs text-gray-400 mb-2">{team.description}</p>
-                        <div className="flex justify-between items-center">
-                          <span className="text-xs text-gray-500">
-                            Max: {team.max_members} membros
-                          </span>
-                          <Button 
-                            size="sm"
-                            onClick={() => handleJoinTeam(team.id)}
-                            style={{ backgroundColor: district.color_primary }}
-                            className="text-black font-bold text-xs"
-                          >
-                            Juntar-se
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-400 text-center py-4">
-                    Nenhum time disponível ainda
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Stats Card */}
-            <Card className="bg-slate-800/50 backdrop-blur-sm border-2 mt-6" style={{ borderColor: district.color_primary }}>
-              <CardHeader>
-                <CardTitle className="flex items-center text-white">
-                  <Trophy className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
-                  Estatísticas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Rank no Distrito</span>
-                    <span className="text-white">#{Math.floor(Math.random() * 100) + 1}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Quizzes Concluídos</span>
-                    <span className="text-white">{Math.floor(Math.random() * 50)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Precisão</span>
-                    <span className="text-white">{Math.floor(Math.random() * 40) + 60}%</span>
-                  </div>
+                  {ranking.map((user, index) => (
+                    <div 
+                      key={user.id}
+                      className={`flex items-center space-x-4 p-3 rounded-lg ${
+                        index < 3 ? 'bg-gradient-to-r from-slate-700/50 to-slate-600/50' : 'bg-slate-700/30'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        {getRankIcon(index + 1)}
+                        <span className="text-lg font-bold text-white">#{index + 1}</span>
+                      </div>
+                      
+                      <Avatar>
+                        <AvatarImage src={user.profile_image_url} />
+                        <AvatarFallback className="bg-slate-600 text-white">
+                          {user.nickname.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-white">{user.nickname}</h3>
+                        <p className="text-sm text-gray-400">Nível {user.level}</p>
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className="font-bold" style={{ color: district.color_primary }}>
+                          {user.xp.toLocaleString()} XP
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {Math.floor(user.xp / 100)} conquistas
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {ranking.length === 0 && (
+                    <div className="text-center py-8">
+                      <Trophy className="h-16 w-16 text-gray-500 mx-auto mb-4" />
+                      <p className="text-gray-400">Ranking será atualizado em breve</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
+          </TabsContent>
+
+          {/* Teams Tab */}
+          <TabsContent value="teams">
+            <div className="grid lg:grid-cols-2 gap-6">
+              {teams.length > 0 ? (
+                teams.map((team) => (
+                  <Card key={team.id} className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
+                    <CardHeader>
+                      <CardTitle className="text-white">{team.name}</CardTitle>
+                      <CardDescription className="text-gray-300">
+                        {team.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="text-sm text-gray-400">
+                            Máximo: {team.max_members} membros
+                          </p>
+                          <p className="text-sm text-gray-400">
+                            Nível mínimo: {team.level_required}
+                          </p>
+                        </div>
+                        <Button 
+                          onClick={() => handleJoinTeam(team.id)}
+                          style={{ backgroundColor: district.color_primary }}
+                          className="text-black font-bold"
+                        >
+                          Juntar-se
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600 col-span-full">
+                  <CardContent className="p-8 text-center">
+                    <Users className="h-16 w-16 text-gray-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-white mb-2">Times em Breve</h3>
+                    <p className="text-gray-400">
+                      Os times do distrito estarão disponíveis em breve. 
+                      Continue fazendo quizzes para aumentar seu nível!
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       <FloatingNavbar />
