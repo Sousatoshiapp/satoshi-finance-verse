@@ -437,7 +437,7 @@ export default function Quiz() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-green-900">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-green-900 pb-20">
       <div className="max-w-md mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

@@ -93,7 +93,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header with Profile */}
       <div className="px-4 pt-8 pb-4">
         <div className="max-w-md mx-auto">
@@ -206,7 +206,7 @@ export default function Dashboard() {
                 </div>
                 <Button 
                   className="w-full bg-gradient-to-r from-primary to-success text-white rounded-full font-semibold"
-                  onClick={() => navigate('/quiz')}
+                  onClick={() => navigate('/game-mode')}
                 >
                   Jogar
                 </Button>

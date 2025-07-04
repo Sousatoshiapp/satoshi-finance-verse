@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Dashboard from "./pages/Dashboard";
 import Quiz from "./pages/Quiz";
+import GameMode from "./pages/GameMode";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
 import Store from "./pages/Store";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Dashboard />} />
+          <Route path="/game-mode" element={<GameMode />} />
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/duels" element={<Duels />} />
           <Route path="/profile" element={<Profile />} />

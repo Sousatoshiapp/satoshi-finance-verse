@@ -72,7 +72,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <div className="px-4 py-4">
         <div className="max-w-4xl mx-auto">
