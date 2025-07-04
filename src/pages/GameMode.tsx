@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,19 +6,23 @@ import { ArrowLeft, Settings } from "lucide-react";
 
 export default function GameMode() {
   const navigate = useNavigate();
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
 
   const handleModeSelect = (mode: 'solo' | 'duelo' | 'torneio') => {
-    switch (mode) {
-      case 'solo':
-        navigate('/solo-quiz');
-        break;
-      case 'duelo':
-        navigate('/duel-quiz');
-        break;
-      case 'torneio':
-        navigate('/tournament-quiz');
-        break;
-    }
+    setSelectedMode(mode);
+    setTimeout(() => {
+      switch (mode) {
+        case 'solo':
+          navigate('/solo-quiz');
+          break;
+        case 'duelo':
+          navigate('/duel-quiz');
+          break;
+        case 'torneio':
+          navigate('/tournament-quiz');
+          break;
+      }
+    }, 300);
   };
 
   return (
@@ -74,7 +79,12 @@ export default function GameMode() {
               {/* Modo Solo */}
               <Button
                 onClick={() => handleModeSelect('solo')}
-                className="w-full bg-black hover:bg-black/80 text-white font-semibold py-4 text-lg rounded-full border-2 border-transparent hover:border-black/20"
+                variant="outline"
+                className={`w-full font-semibold py-4 text-lg rounded-full border-2 transition-all duration-300 ${
+                  selectedMode === 'solo' 
+                    ? 'bg-green-600 border-green-500 text-white' 
+                    : 'bg-transparent hover:bg-green-100 text-black border-black hover:border-green-500'
+                }`}
               >
                 Modo Solo
               </Button>
@@ -83,7 +93,11 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('duelo')}
                 variant="outline"
-                className="w-full bg-transparent hover:bg-black/10 text-black font-semibold py-4 text-lg rounded-full border-2 border-black"
+                className={`w-full font-semibold py-4 text-lg rounded-full border-2 transition-all duration-300 ${
+                  selectedMode === 'duelo' 
+                    ? 'bg-green-600 border-green-500 text-white' 
+                    : 'bg-transparent hover:bg-green-100 text-black border-black hover:border-green-500'
+                }`}
               >
                 Modo Duelo
               </Button>
@@ -92,7 +106,11 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('torneio')}
                 variant="outline"
-                className="w-full bg-transparent hover:bg-black/10 text-black font-semibold py-4 text-lg rounded-full border-2 border-black"
+                className={`w-full font-semibold py-4 text-lg rounded-full border-2 transition-all duration-300 ${
+                  selectedMode === 'torneio' 
+                    ? 'bg-green-600 border-green-500 text-white' 
+                    : 'bg-transparent hover:bg-green-100 text-black border-black hover:border-green-500'
+                }`}
               >
                 Torneio
               </Button>
