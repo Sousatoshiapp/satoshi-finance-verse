@@ -8,8 +8,8 @@ export function FloatingNavbar() {
   const navItems = [
     { path: '/dashboard', icon: '🏠', label: 'Início' },
     { path: '/quiz', icon: '🧠', label: 'Quiz' },
+    { path: '/duels', icon: '⚔️', label: 'Duelos' },
     { path: '/leaderboard', icon: '🏆', label: 'Ranking' },
-    { path: '/store', icon: '🛒', label: 'Loja' },
     { path: '/profile', icon: '👤', label: 'Perfil' }
   ];
 

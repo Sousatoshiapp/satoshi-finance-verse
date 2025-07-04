@@ -9,7 +9,183 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      duel_invites: {
+        Row: {
+          challenged_id: string
+          challenger_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          quiz_topic: string
+          status: string
+        }
+        Insert: {
+          challenged_id: string
+          challenger_id: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          quiz_topic: string
+          status?: string
+        }
+        Update: {
+          challenged_id?: string
+          challenger_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          quiz_topic?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duel_invites_challenged_id_fkey"
+            columns: ["challenged_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duel_invites_challenger_id_fkey"
+            columns: ["challenger_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      duels: {
+        Row: {
+          created_at: string
+          current_question: number | null
+          current_turn: string | null
+          finished_at: string | null
+          id: string
+          invite_id: string
+          player1_answers: Json | null
+          player1_id: string
+          player1_score: number | null
+          player2_answers: Json | null
+          player2_id: string
+          player2_score: number | null
+          questions: Json
+          quiz_topic: string
+          status: string
+          turn_started_at: string | null
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_question?: number | null
+          current_turn?: string | null
+          finished_at?: string | null
+          id?: string
+          invite_id: string
+          player1_answers?: Json | null
+          player1_id: string
+          player1_score?: number | null
+          player2_answers?: Json | null
+          player2_id: string
+          player2_score?: number | null
+          questions: Json
+          quiz_topic: string
+          status?: string
+          turn_started_at?: string | null
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_question?: number | null
+          current_turn?: string | null
+          finished_at?: string | null
+          id?: string
+          invite_id?: string
+          player1_answers?: Json | null
+          player1_id?: string
+          player1_score?: number | null
+          player2_answers?: Json | null
+          player2_id?: string
+          player2_score?: number | null
+          questions?: Json
+          quiz_topic?: string
+          status?: string
+          turn_started_at?: string | null
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duels_current_turn_fkey"
+            columns: ["current_turn"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "duel_invites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_player1_id_fkey"
+            columns: ["player1_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_player2_id_fkey"
+            columns: ["player2_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duels_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          completed_lessons: number | null
+          created_at: string
+          id: string
+          level: number | null
+          nickname: string
+          streak: number | null
+          updated_at: string
+          user_id: string
+          xp: number | null
+        }
+        Insert: {
+          completed_lessons?: number | null
+          created_at?: string
+          id?: string
+          level?: number | null
+          nickname: string
+          streak?: number | null
+          updated_at?: string
+          user_id: string
+          xp?: number | null
+        }
+        Update: {
+          completed_lessons?: number | null
+          created_at?: string
+          id?: string
+          level?: number | null
+          nickname?: string
+          streak?: number | null
+          updated_at?: string
+          user_id?: string
+          xp?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
