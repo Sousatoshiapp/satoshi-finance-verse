@@ -6,17 +6,17 @@ export function FloatingNavbar() {
   const location = useLocation();
 
   const navItems = [
-    { path: '/dashboard', icon: '🏠', label: 'Início' },
-    { path: '/quiz', icon: '🧠', label: 'Quiz' },
-    { path: '/duels', icon: '⚔️', label: 'Duelos' },
-    { path: '/leaderboard', icon: '🏆', label: 'Ranking' },
+    { path: '/dashboard', icon: '🏠', label: 'Home' },
+    { path: '/quiz', icon: '⭐', label: 'Níveis' },
+    { path: '/duels', icon: '🎮', label: 'Jogue' },
+    { path: '/leaderboard', icon: '👥', label: 'Social' },
     { path: '/profile', icon: '👤', label: 'Perfil' }
   ];
 
   return (
-    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-      <div className="bg-card/90 backdrop-blur-md border rounded-full px-6 py-3 shadow-lg">
-        <div className="flex items-center gap-6">
+    <div className="fixed bottom-0 left-0 right-0 z-50">
+      <div className="bg-card/95 backdrop-blur-md border-t border-border">
+        <div className="flex items-center justify-around py-2 px-4 max-w-md mx-auto">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path || 
                            (location.pathname === '/' && item.path === '/dashboard');
@@ -26,9 +26,9 @@ export function FloatingNavbar() {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={cn(
-                  "flex flex-col items-center gap-1 p-2 rounded-lg transition-all duration-200 min-w-[48px]",
+                  "flex flex-col items-center gap-1 p-3 rounded-xl transition-all duration-200 min-w-[60px]",
                   isActive 
-                    ? "bg-primary text-primary-foreground scale-110" 
+                    ? "bg-gradient-to-r from-primary to-success text-white shadow-glow scale-110" 
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >

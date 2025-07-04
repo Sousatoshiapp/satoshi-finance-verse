@@ -41,119 +41,150 @@ export default function Dashboard() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      {/* Header */}
-      <div className="px-4 py-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img src={newLogo} alt="Logo" className="w-16 h-12 object-contain" />
+    <div className="min-h-screen bg-background">
+      {/* Header with Profile */}
+      <div className="px-4 pt-8 pb-4">
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">☀️ BOM DIA</p>
+              <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
-            
             <div className="flex items-center gap-4">
-              <StreakBadge days={userStats.streak} />
-              <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
-                Perfil
+              <div className="w-12 h-12 bg-gradient-avatar rounded-full flex items-center justify-center text-white font-bold text-lg shadow-glow">
+                {userNickname.charAt(0).toUpperCase()}
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
+                ⚙️
               </Button>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-foreground mb-2">
-            Olá, {userNickname}! 👋
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            Continue sua jornada de educação financeira
-          </p>
-        </div>
+          {/* Streak Progress */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-foreground font-medium">Streaks : {userStats.streak}/7</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-3">
+              <div 
+                className="bg-gradient-to-r from-success to-primary h-3 rounded-full transition-all duration-500"
+                style={{ width: `${(userStats.streak / 7) * 100}%` }}
+              ></div>
+            </div>
+          </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <XPCard
-            level={userStats.level}
-            currentXP={userStats.currentXP}
-            nextLevelXP={userStats.nextLevelXP}
-          />
-          
-          <div className="bg-card rounded-xl p-6 shadow-card border">
-            <h3 className="font-bold text-foreground mb-4">Suas Conquistas</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Lições Completas</span>
-                <span className="font-semibold text-foreground">{userStats.completedLessons}</span>
+          {/* Avatar Section */}
+          <div className="text-center mb-8">
+            <div className="relative mb-4">
+              <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-end justify-center overflow-hidden shadow-elevated">
+                <div className="text-8xl mb-4">🤖</div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Sequência Atual</span>
-                <span className="font-semibold text-streak">{userStats.streak} dias</span>
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                <div className="bg-warning text-black px-2 py-1 rounded-full text-xs font-medium">
+                  🟡 Nível atual
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Nível Atual</span>
-                <span className="font-semibold text-experience">Nível {userStats.level}</span>
+            </div>
+            
+            <Button className="bg-gradient-to-r from-primary to-success text-white px-8 py-3 rounded-full text-lg font-semibold shadow-glow mb-4">
+              Evoluir Avatar
+            </Button>
+            
+            <p className="text-muted-foreground text-sm mb-2">
+              Jogue o próximo nível para evoluir seu avatar
+            </p>
+            
+            <div className="flex items-center justify-between text-sm mb-4">
+              <span className="text-foreground font-medium">Tartaruga Estrategista</span>
+              <span className="text-muted-foreground">Nível {userStats.level}</span>
+            </div>
+            
+            <div className="w-full bg-muted rounded-full h-2 mb-6">
+              <div 
+                className="bg-gradient-to-r from-success to-primary h-2 rounded-full"
+                style={{ width: `${(userStats.currentXP / userStats.nextLevelXP) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card">
+              <div className="text-2xl mb-1">⚡</div>
+              <div className="text-xs text-black/70 mb-1">XP</div>
+              <div className="text-2xl font-bold text-black">{userStats.currentXP}</div>
+            </div>
+            <div className="bg-gradient-level rounded-2xl p-4 text-center shadow-card">
+              <div className="text-2xl mb-1">🏅</div>
+              <div className="text-xs text-white/70 mb-1">Nível</div>
+              <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
+            </div>
+            <div className="bg-gradient-points rounded-2xl p-4 text-center shadow-card">
+              <div className="text-2xl mb-1">⭐</div>
+              <div className="text-xs text-black/70 mb-1">Pontos</div>
+              <div className="text-2xl font-bold text-black">{userStats.currentXP * 2}</div>
+            </div>
+          </div>
+
+          {/* Recent Tournaments */}
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-foreground mb-4">Torneios recentes</h3>
+            <div className="grid gap-3">
+              <div className="bg-card rounded-2xl p-4 border border-border shadow-card">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Quiz Financeiro</h4>
+                  <span className="text-xs text-muted-foreground">Tempo restante: 20 minutos</span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center text-xs mb-4">
+                  <div>
+                    <div className="text-muted-foreground">Ganhe</div>
+                    <div className="font-bold text-experience">50 XP</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Pontos</div>
+                    <div className="font-bold text-points">100</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Troféu</div>
+                    <div className="text-lg">🏆</div>
+                  </div>
+                </div>
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-success text-white rounded-full font-semibold"
+                  onClick={() => navigate('/quiz')}
+                >
+                  Jogar
+                </Button>
+              </div>
+              
+              <div className="bg-card rounded-2xl p-4 border border-border shadow-card">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Duelo Financeiro</h4>
+                  <span className="text-xs text-muted-foreground">Disponível agora</span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center text-xs mb-4">
+                  <div>
+                    <div className="text-muted-foreground">Ganhe</div>
+                    <div className="font-bold text-experience">75 XP</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Pontos</div>
+                    <div className="font-bold text-points">150</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Troféu</div>
+                    <div className="text-lg">⚔️</div>
+                  </div>
+                </div>
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-success text-white rounded-full font-semibold"
+                  onClick={() => navigate('/duels')}
+                >
+                  Duelar
+                </Button>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Quick Navigation */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Button variant="outline" onClick={() => navigate('/quiz')} className="flex flex-col gap-2 h-20">
-            <span className="text-2xl">🧠</span>
-            <span className="text-sm">Quiz</span>
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/leaderboard')} className="flex flex-col gap-2 h-20">
-            <span className="text-2xl">🏆</span>
-            <span className="text-sm">Ranking</span>
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/store')} className="flex flex-col gap-2 h-20">
-            <span className="text-2xl">🛒</span>
-            <span className="text-sm">Loja</span>
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/profile')} className="flex flex-col gap-2 h-20">
-            <span className="text-2xl">👤</span>
-            <span className="text-sm">Perfil</span>
-          </Button>
-        </div>
-
-        {/* Quizzes Section */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Quizzes Financeiros</h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {lessons.map((lesson) => (
-              <LessonCard
-                key={lesson.id}
-                title={lesson.title}
-                description={lesson.description}
-                progress={lesson.progress}
-                totalLessons={lesson.totalLessons}
-                difficulty={lesson.difficulty}
-                icon={lesson.icon}
-                isLocked={lesson.isLocked}
-                onClick={() => {
-                  if (!lesson.isLocked) {
-                    navigate(`/lesson/${lesson.id}/1`);
-                  }
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Daily Challenge */}
-        <div className="bg-gradient-card rounded-xl p-6 shadow-card border">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl">⭐</span>
-            <h3 className="text-xl font-bold text-foreground">Desafio Diário</h3>
-          </div>
-          <p className="text-muted-foreground mb-4">
-            Complete uma lição hoje para manter sua sequência!
-          </p>
-          <Button className="gradient-primary" onClick={() => window.location.href = '/quiz'}>
-            Começar Desafio
-          </Button>
         </div>
       </div>
       
