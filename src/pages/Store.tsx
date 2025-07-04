@@ -348,119 +348,128 @@ export default function Store() {
           </TabsContent>
 
           {/* Boosts Tab */}
-          <TabsContent value="boosts" className="space-y-4">
-            {products.filter(p => p.category === 'boost').map((product) => {
-              const isOwned = userProducts.includes(product.id);
-              const canAfford = userProfile ? userProfile.points >= product.price : false;
-              const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
-              
-              return (
-                <Card key={product.id} className="hover:shadow-elevated transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className="text-4xl">{getCategoryIcon(product.category)}</div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-bold text-foreground">{product.name}</h3>
-                          <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1`}>
-                            {getRarityIcon(product.rarity)}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{product.description}</p>
-                        
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-primary">{product.price}</span>
-                             <span className="text-sm text-muted-foreground">Pontos Beetz</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {product.duration_hours && (
-                              <Badge variant="outline" className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {product.duration_hours}h
-                              </Badge>
-                            )}
-                            <Badge variant="outline">Nível {product.level_required}+</Badge>
-                          </div>
-                        </div>
-                        
-                        {isOwned ? (
-                          <Button variant="secondary" className="w-full" disabled>
-                            ✅ Item adquirido
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => purchaseItem(product, 'product')}
-                            disabled={!canAfford || !meetsLevel || purchasing === product.id}
-                            className="w-full"
-                            variant={canAfford && meetsLevel ? "default" : "outline"}
-                          >
-                            {purchasing === product.id ? "Comprando..." :
-                             !meetsLevel ? `Nível ${product.level_required} necessário` :
-                             !canAfford ? "Pontos insuficientes" : "Comprar Item"
-                            }
-                          </Button>
-                        )}
+          <TabsContent value="boosts">
+            <div className="grid grid-cols-3 gap-3">
+              {products.filter(p => p.category === 'boost').map((product) => {
+                const isOwned = userProducts.includes(product.id);
+                const canAfford = userProfile ? userProfile.points >= product.price : false;
+                const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
+                
+                return (
+                  <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
+                    <div className="relative">
+                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-4">
+                        <div className="text-4xl">{getCategoryIcon(product.category)}</div>
+                      </div>
+                      <div className="absolute top-1 right-1">
+                        <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1 text-xs`}>
+                          {getRarityIcon(product.rarity)}
+                        </Badge>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    
+                    <CardContent className="p-2">
+                      <div className="mb-2">
+                        <h3 className="font-bold text-foreground text-sm truncate">{product.name}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-bold text-primary">{product.price}</span>
+                          <span className="text-xs text-muted-foreground">pts</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {product.duration_hours && (
+                            <Badge variant="outline" className="text-xs">
+                              {product.duration_hours}h
+                            </Badge>
+                          )}
+                          <Badge variant="outline" className="text-xs">Nv {product.level_required}</Badge>
+                        </div>
+                      </div>
+                      
+                      {isOwned ? (
+                        <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
+                          ✅ Possui
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => purchaseItem(product, 'product')}
+                          disabled={!canAfford || !meetsLevel || purchasing === product.id}
+                          className="w-full text-xs py-1 h-8"
+                          variant={canAfford && meetsLevel ? "default" : "outline"}
+                        >
+                          {purchasing === product.id ? "..." :
+                           !meetsLevel ? `Nv ${product.level_required}` :
+                           !canAfford ? "Sem pontos" : "Comprar"
+                          }
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
 
           {/* Accessories Tab */}
-          <TabsContent value="accessories" className="space-y-4">
-            {products.filter(p => p.category === 'accessory').map((product) => {
-              const isOwned = userProducts.includes(product.id);
-              const canAfford = userProfile ? userProfile.points >= product.price : false;
-              const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
-              
-              return (
-                <Card key={product.id} className="hover:shadow-elevated transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      <div className="text-4xl">{getCategoryIcon(product.category)}</div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <h3 className="font-bold text-foreground">{product.name}</h3>
-                          <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1`}>
-                            {getRarityIcon(product.rarity)}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-3">{product.description}</p>
-                        
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-primary">{product.price}</span>
-                            <span className="text-sm text-muted-foreground">Pontos Beetz</span>
-                          </div>
-                          <Badge variant="outline">Nível {product.level_required}+</Badge>
-                        </div>
-                        
-                        {isOwned ? (
-                          <Button variant="secondary" className="w-full" disabled>
-                            ✅ Item adquirido
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => purchaseItem(product, 'product')}
-                            disabled={!canAfford || !meetsLevel || purchasing === product.id}
-                            className="w-full"
-                            variant={canAfford && meetsLevel ? "default" : "outline"}
-                          >
-                            {purchasing === product.id ? "Comprando..." :
-                             !meetsLevel ? `Nível ${product.level_required} necessário` :
-                             !canAfford ? "Pontos insuficientes" : "Comprar Item"
-                            }
-                          </Button>
-                        )}
+          <TabsContent value="accessories">
+            <div className="grid grid-cols-3 gap-3">
+              {products.filter(p => p.category === 'accessory').map((product) => {
+                const isOwned = userProducts.includes(product.id);
+                const canAfford = userProfile ? userProfile.points >= product.price : false;
+                const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
+                
+                return (
+                  <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
+                    <div className="relative">
+                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-4">
+                        <div className="text-4xl">{getCategoryIcon(product.category)}</div>
+                      </div>
+                      <div className="absolute top-1 right-1">
+                        <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1 text-xs`}>
+                          {getRarityIcon(product.rarity)}
+                        </Badge>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    
+                    <CardContent className="p-2">
+                      <div className="mb-2">
+                        <h3 className="font-bold text-foreground text-sm truncate">{product.name}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-bold text-primary">{product.price}</span>
+                          <span className="text-xs text-muted-foreground">pts</span>
+                        </div>
+                        <Badge variant="outline" className="text-xs">Nv {product.level_required}</Badge>
+                      </div>
+                      
+                      {isOwned ? (
+                        <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
+                          ✅ Possui
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => purchaseItem(product, 'product')}
+                          disabled={!canAfford || !meetsLevel || purchasing === product.id}
+                          className="w-full text-xs py-1 h-8"
+                          variant={canAfford && meetsLevel ? "default" : "outline"}
+                        >
+                          {purchasing === product.id ? "..." :
+                           !meetsLevel ? `Nv ${product.level_required}` :
+                           !canAfford ? "Sem pontos" : "Comprar"
+                          }
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
