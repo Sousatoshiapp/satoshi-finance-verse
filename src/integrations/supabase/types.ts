@@ -290,6 +290,87 @@ export type Database = {
           },
         ]
       }
+      quiz_questions: {
+        Row: {
+          category: string
+          correct_answer: string
+          created_at: string
+          difficulty: string
+          explanation: string | null
+          id: string
+          options: Json
+          question: string
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          correct_answer: string
+          created_at?: string
+          difficulty: string
+          explanation?: string | null
+          id?: string
+          options: Json
+          question: string
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          correct_answer?: string
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          options?: Json
+          question?: string
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quiz_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          difficulty: string | null
+          id: string
+          questions_correct: number
+          questions_data: Json | null
+          questions_incorrect: number
+          questions_total: number
+          session_type: string
+          time_spent: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          difficulty?: string | null
+          id?: string
+          questions_correct?: number
+          questions_data?: Json | null
+          questions_incorrect?: number
+          questions_total?: number
+          session_type?: string
+          time_spent?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          difficulty?: string | null
+          id?: string
+          questions_correct?: number
+          questions_data?: Json | null
+          questions_incorrect?: number
+          questions_total?: number
+          session_type?: string
+          time_spent?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_avatars: {
         Row: {
           avatar_id: string
@@ -367,6 +448,62 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_question_progress: {
+        Row: {
+          created_at: string
+          easiness_factor: number
+          id: string
+          interval_days: number
+          last_reviewed: string | null
+          next_review_date: string
+          quality_responses: number[] | null
+          question_id: string
+          repetition_count: number
+          streak: number
+          total_reviews: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          easiness_factor?: number
+          id?: string
+          interval_days?: number
+          last_reviewed?: string | null
+          next_review_date?: string
+          quality_responses?: number[] | null
+          question_id: string
+          repetition_count?: number
+          streak?: number
+          total_reviews?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          easiness_factor?: number
+          id?: string
+          interval_days?: number
+          last_reviewed?: string | null
+          next_review_date?: string
+          quality_responses?: number[] | null
+          question_id?: string
+          repetition_count?: number
+          streak?: number
+          total_reviews?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_question_progress_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
             referencedColumns: ["id"]
           },
         ]
