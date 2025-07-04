@@ -16,6 +16,13 @@ import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
 import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
 import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
 import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
+import xpDistrict3D from "@/assets/districts/xp-district-3d.jpg";
+import animaDistrict3D from "@/assets/districts/anima-district-3d.jpg";
+import criptoDistrict3D from "@/assets/districts/cripto-district-3d.jpg";
+import bankingDistrict3D from "@/assets/districts/banking-district-3d.jpg";
+import realEstateDistrict3D from "@/assets/districts/real-estate-district-3d.jpg";
+import tradeDistrict3D from "@/assets/districts/trade-district-3d.jpg";
+import fintechDistrict3D from "@/assets/districts/fintech-district-3d.jpg";
 
 interface District {
   id: string;
@@ -56,6 +63,16 @@ const districtLogos = {
   fundos_imobiliarios: realEstateLogo,
   mercado_internacional: tradeLogo,
   fintech: fintechLogo,
+};
+
+const district3DImages = {
+  renda_variavel: xpDistrict3D,
+  educacao_financeira: animaDistrict3D,
+  criptomoedas: criptoDistrict3D,
+  sistema_bancario: bankingDistrict3D,
+  fundos_imobiliarios: realEstateDistrict3D,
+  mercado_internacional: tradeDistrict3D,
+  fintech: fintechDistrict3D,
 };
 
 export default function DistrictDetail() {
@@ -199,6 +216,7 @@ export default function DistrictDetail() {
   const currentLevelXP = userDistrict ? userDistrict.xp % 1000 : 0;
   const progressPercent = (currentLevelXP / 1000) * 100;
   const districtLogo = districtLogos[district.theme as keyof typeof districtLogos];
+  const district3DImage = district3DImages[district.theme as keyof typeof district3DImages];
 
   const getRankIcon = (position: number) => {
     switch (position) {
@@ -212,9 +230,20 @@ export default function DistrictDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden h-96">
+        {/* 3D District Background */}
         <div 
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `url(${district3DImage})`,
+            filter: 'brightness(0.3) contrast(1.2)'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+        </div>
+        
+        <div 
+          className="absolute inset-0 opacity-30"
           style={{
             background: `linear-gradient(135deg, ${district.color_primary}20, ${district.color_secondary}20)`
           }}
