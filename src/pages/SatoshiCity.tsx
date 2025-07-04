@@ -303,7 +303,7 @@ export default function SatoshiCity() {
       </div>
 
       {/* City Stats */}
-      <div className="relative z-10 container mx-auto px-4 py-8">
+      <div className="relative z-10 container mx-auto px-4 py-8 pb-32">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <Card className="bg-slate-800/50 backdrop-blur-sm border border-cyan-400/30">
             <CardContent className="p-6 text-center">

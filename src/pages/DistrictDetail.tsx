@@ -302,7 +302,7 @@ export default function DistrictDetail() {
       </div>
 
       {/* Content Tabs */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pb-32">
         <Tabs defaultValue="quizzes" className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8 bg-slate-800/50">
             <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700">

@@ -206,7 +206,7 @@ export default function DistrictQuiz() {
         </Button>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pb-32">
         {!quizStarted && !showResult && (
           <div className="max-w-2xl mx-auto text-center">
             <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
