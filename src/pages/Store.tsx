@@ -190,6 +190,7 @@ export default function Store() {
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case 'common': return 'bg-gray-500 text-white';
+      case 'uncommon': return 'bg-green-500 text-white';
       case 'rare': return 'bg-blue-500 text-white';
       case 'epic': return 'bg-purple-500 text-white';
       case 'legendary': return 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white';
@@ -200,8 +201,9 @@ export default function Store() {
   const getRarityIcon = (rarity: string) => {
     switch (rarity) {
       case 'common': return <Star className="h-4 w-4" />;
-      case 'rare': return <Gem className="h-4 w-4" />;
-      case 'epic': return <Zap className="h-4 w-4" />;
+      case 'uncommon': return <Gem className="h-4 w-4" />;
+      case 'rare': return <Zap className="h-4 w-4" />;
+      case 'epic': return <Crown className="h-4 w-4" />;
       case 'legendary': return <Crown className="h-4 w-4" />;
       default: return <Star className="h-4 w-4" />;
     }
@@ -210,6 +212,7 @@ export default function Store() {
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'boost': return '⚡';
+      case 'accessory': return '👟';
       case 'cosmetic': return '🎨';
       case 'utility': return '🛠️';
       default: return '📦';
@@ -259,7 +262,7 @@ export default function Store() {
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
             <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
-            <TabsTrigger value="others">🎨 Outros</TabsTrigger>
+            <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}
@@ -386,9 +389,9 @@ export default function Store() {
             })}
           </TabsContent>
 
-          {/* Others Tab */}
-          <TabsContent value="others" className="space-y-4">
-            {products.filter(p => p.category !== 'boost').map((product) => {
+          {/* Accessories Tab */}
+          <TabsContent value="accessories" className="space-y-4">
+            {products.filter(p => p.category === 'accessory').map((product) => {
               const isOwned = userProducts.includes(product.id);
               const canAfford = userProfile ? userProfile.points >= product.price : false;
               const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
