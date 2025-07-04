@@ -76,13 +76,23 @@ export default function Store() {
       }
 
       // Load avatars and products
+      console.log('Loading avatars and products...');
       const [avatarsData, productsData] = await Promise.all([
         supabase.from('avatars').select('*').eq('is_available', true).order('price'),
         supabase.from('products').select('*').eq('is_available', true).order('category').order('price')
       ]);
 
-      if (avatarsData.data) setAvatars(avatarsData.data);
-      if (productsData.data) setProducts(productsData.data);
+      console.log('Avatars data:', avatarsData);
+      console.log('Products data:', productsData);
+
+      if (avatarsData.data) {
+        console.log('Setting avatars:', avatarsData.data.length);
+        setAvatars(avatarsData.data);
+      }
+      if (productsData.data) {
+        console.log('Setting products:', productsData.data.length);
+        setProducts(productsData.data);
+      }
 
       // Load user's owned items
       if (profile) {
