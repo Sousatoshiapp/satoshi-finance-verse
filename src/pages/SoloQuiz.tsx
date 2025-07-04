@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Settings } from "lucide-react";
+import { ArrowLeft, Settings, X } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -306,14 +307,42 @@ export default function SoloQuiz() {
           })}
         </div>
 
-        {/* Submit Button */}
-        <Button
-          onClick={handleSubmit}
-          disabled={!selectedAnswer || showAnswer}
-          className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 text-lg"
-        >
-          {showAnswer ? "Próxima Pergunta..." : "Enviar"}
-        </Button>
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <Button
+            onClick={handleSubmit}
+            disabled={!selectedAnswer || showAnswer}
+            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 text-lg"
+          >
+            {showAnswer ? "Próxima Pergunta..." : "Enviar"}
+          </Button>
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="w-full py-4 text-lg"
+              >
+                <X className="h-4 w-4 mr-2" />
+                Encerrar Quiz
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Encerrar Quiz?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tem certeza que deseja encerrar o quiz? Seu progresso será perdido.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={() => navigate("/game-mode")}>
+                  Encerrar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
       
       <FloatingNavbar />

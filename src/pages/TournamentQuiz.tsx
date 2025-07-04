@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Settings, Trophy, Users, Crown } from "lucide-react";
+import { ArrowLeft, Settings, Trophy, Users, Crown, X } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -427,14 +428,42 @@ export default function TournamentQuiz() {
           })}
         </div>
 
-        {/* Submit Button */}
-        <Button
-          onClick={handleSubmit}
-          disabled={!selectedAnswer || showAnswer}
-          className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white font-semibold py-4 text-lg"
-        >
-          {showAnswer ? "Próxima Pergunta..." : "Enviar"}
-        </Button>
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <Button
+            onClick={handleSubmit}
+            disabled={!selectedAnswer || showAnswer}
+            className="w-full bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-600 hover:to-orange-700 text-white font-semibold py-4 text-lg"
+          >
+            {showAnswer ? "Próxima Pergunta..." : "Enviar"}
+          </Button>
+          
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="w-full py-4 text-lg"
+              >
+                <X className="h-4 w-4 mr-2" />
+                Encerrar Torneio
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Encerrar Torneio?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tem certeza que deseja sair do torneio? Seu progresso será perdido.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={() => navigate("/leaderboard")}>
+                  Encerrar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       </div>
       
       <FloatingNavbar />

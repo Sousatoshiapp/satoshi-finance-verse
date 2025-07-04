@@ -4,13 +4,16 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useSRSSystem } from "@/hooks/use-srs-system";
+import { X } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface SRSQuizCardProps {
   difficulty?: 'easy' | 'medium' | 'hard';
   onComplete?: (score: number, total: number) => void;
+  onExit?: () => void;
 }
 
-export function SRSQuizCard({ difficulty = 'easy', onComplete }: SRSQuizCardProps) {
+export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuizCardProps) {
   const { getDueQuestions, submitAnswer } = useSRSSystem();
   const [questions, setQuestions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -137,6 +140,36 @@ export function SRSQuizCard({ difficulty = 'easy', onComplete }: SRSQuizCardProp
           <p className="text-sm text-muted-foreground">
             {currentQuestion.explanation}
           </p>
+        </div>
+      )}
+
+      {onExit && (
+        <div className="mt-4">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="w-full"
+              >
+                <X className="h-4 w-4 mr-2" />
+                Encerrar Quiz
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Encerrar Quiz?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tem certeza que deseja encerrar o quiz? Seu progresso será perdido.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={onExit}>
+                  Encerrar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       )}
     </Card>

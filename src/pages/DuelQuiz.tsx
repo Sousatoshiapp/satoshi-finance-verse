@@ -8,7 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Settings, Zap, Clock, Crown, Star, Trophy } from "lucide-react";
+import { ArrowLeft, Settings, Zap, Clock, Crown, Star, Trophy, X } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -528,14 +529,42 @@ export default function DuelQuiz() {
             })}
           </div>
 
-          {/* Botão Enviar */}
-          <Button
-            onClick={handleSubmit}
-            disabled={!selectedAnswer || showAnswer}
-            className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg rounded-full"
-          >
-            Enviar
-          </Button>
+          {/* Action Buttons */}
+          <div className="space-y-3">
+            <Button
+              onClick={handleSubmit}
+              disabled={!selectedAnswer || showAnswer}
+              className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg rounded-full"
+            >
+              Enviar
+            </Button>
+            
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  className="w-full py-4 text-lg"
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Encerrar Duelo
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Encerrar Duelo?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Tem certeza que deseja sair do duelo? Seu oponente será declarado vencedor.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => navigate("/duels")}>
+                    Encerrar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </div>
     );
