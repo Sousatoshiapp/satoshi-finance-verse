@@ -413,12 +413,12 @@ export default function DuelQuiz() {
           <div 
             className={`w-80 h-80 rounded-full border-4 flex items-center justify-center transition-all duration-300 ${
               isReady && opponentReady 
-                ? 'border-green-400 bg-green-500/20 cursor-pointer hover:bg-green-500/30' 
-                : 'border-green-400/50 bg-green-500/10'
+                ? 'border-[#adff2f] bg-[#adff2f]/20 cursor-pointer hover:bg-[#adff2f]/30' 
+                : 'border-[#adff2f]/50 bg-[#adff2f]/10'
             }`}
             onClick={handleStartQuiz}
           >
-            <span className="text-white font-bold text-3xl">
+            <span className="text-[#adff2f] font-bold text-3xl">
               {isReady && opponentReady ? 'INICIAR' : 'PREPARAR'}
             </span>
           </div>
@@ -426,7 +426,7 @@ export default function DuelQuiz() {
           {!isReady && (
             <Button 
               onClick={() => setIsReady(true)}
-              className="mt-8 bg-green-500 hover:bg-green-600 text-black font-bold px-8 py-3"
+              className="mt-8 bg-[#adff2f] hover:bg-[#adff2f]/80 text-black font-bold px-8 py-3"
             >
               Estou Pronto!
             </Button>
