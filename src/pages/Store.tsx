@@ -285,65 +285,66 @@ export default function Store() {
           </TabsList>
 
           {/* Avatars Tab */}
-          <TabsContent value="avatars" className="space-y-4">
-            {avatars.map((avatar) => {
-              const isOwned = userAvatars.includes(avatar.id);
-              const canAfford = userProfile ? userProfile.points >= avatar.price : false;
-              const meetsLevel = userProfile ? userProfile.level >= avatar.level_required : false;
-              
-              return (
-                <Card key={avatar.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
-                  <div className="relative">
-                    <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-4">
-                      <img 
-                        src={avatar.image_url} 
-                        alt={avatar.name}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div className="absolute top-2 right-2">
-                      <Badge className={`${getRarityColor(avatar.rarity)} flex items-center gap-1`}>
-                        {getRarityIcon(avatar.rarity)}
-                        {avatar.rarity}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <CardContent className="p-4">
-                    <div className="mb-3">
-                      <h3 className="font-bold text-foreground">{avatar.name}</h3>
-                      <p className="text-sm text-muted-foreground">{avatar.description}</p>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-primary">{avatar.price}</span>
-                         <span className="text-sm text-muted-foreground">Pontos Beetz</span>
+          <TabsContent value="avatars">
+            <div className="grid grid-cols-3 gap-3">
+              {avatars.map((avatar) => {
+                const isOwned = userAvatars.includes(avatar.id);
+                const canAfford = userProfile ? userProfile.points >= avatar.price : false;
+                const meetsLevel = userProfile ? userProfile.level >= avatar.level_required : false;
+                
+                return (
+                  <Card key={avatar.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
+                    <div className="relative">
+                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
+                        <img 
+                          src={avatar.image_url} 
+                          alt={avatar.name}
+                          className="w-full h-full object-contain rounded-lg"
+                        />
                       </div>
-                      <Badge variant="outline">Nível {avatar.level_required}+</Badge>
+                      <div className="absolute top-1 right-1">
+                        <Badge className={`${getRarityColor(avatar.rarity)} flex items-center gap-1 text-xs`}>
+                          {getRarityIcon(avatar.rarity)}
+                        </Badge>
+                      </div>
                     </div>
                     
-                    {isOwned ? (
-                      <Button variant="secondary" className="w-full" disabled>
-                        ✅ Possui este avatar
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => purchaseItem(avatar, 'avatar')}
-                        disabled={!canAfford || !meetsLevel || purchasing === avatar.id}
-                        className="w-full"
-                        variant={canAfford && meetsLevel ? "default" : "outline"}
-                      >
-                        {purchasing === avatar.id ? "Comprando..." :
-                         !meetsLevel ? `Nível ${avatar.level_required} necessário` :
-                         !canAfford ? "Pontos insuficientes" : "Comprar Avatar"
-                        }
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
+                    <CardContent className="p-2">
+                      <div className="mb-2">
+                        <h3 className="font-bold text-foreground text-sm truncate">{avatar.name}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{avatar.description}</p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-bold text-primary">{avatar.price}</span>
+                          <span className="text-xs text-muted-foreground">pts</span>
+                        </div>
+                        <Badge variant="outline" className="text-xs">Nv {avatar.level_required}</Badge>
+                      </div>
+                      
+                      {isOwned ? (
+                        <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
+                          ✅ Possui
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => purchaseItem(avatar, 'avatar')}
+                          disabled={!canAfford || !meetsLevel || purchasing === avatar.id}
+                          className="w-full text-xs py-1 h-8"
+                          variant={canAfford && meetsLevel ? "default" : "outline"}
+                        >
+                          {purchasing === avatar.id ? "..." :
+                           !meetsLevel ? `Nv ${avatar.level_required}` :
+                           !canAfford ? "Sem pontos" : "Comprar"
+                          }
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </TabsContent>
 
           {/* Boosts Tab */}
