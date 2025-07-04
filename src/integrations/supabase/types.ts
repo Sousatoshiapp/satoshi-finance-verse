@@ -48,6 +48,48 @@ export type Database = {
         }
         Relationships: []
       }
+      districts: {
+        Row: {
+          color_primary: string
+          color_secondary: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          level_required: number
+          name: string
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          color_primary: string
+          color_secondary: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          level_required?: number
+          name: string
+          theme: string
+          updated_at?: string
+        }
+        Update: {
+          color_primary?: string
+          color_secondary?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          level_required?: number
+          name?: string
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       duel_invites: {
         Row: {
           challenged_id: string
@@ -296,6 +338,7 @@ export type Database = {
           correct_answer: string
           created_at: string
           difficulty: string
+          district_id: string | null
           explanation: string | null
           id: string
           options: Json
@@ -308,6 +351,7 @@ export type Database = {
           correct_answer: string
           created_at?: string
           difficulty: string
+          district_id?: string | null
           explanation?: string | null
           id?: string
           options: Json
@@ -320,6 +364,7 @@ export type Database = {
           correct_answer?: string
           created_at?: string
           difficulty?: string
+          district_id?: string | null
           explanation?: string | null
           id?: string
           options?: Json
@@ -327,7 +372,15 @@ export type Database = {
           tags?: string[] | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_sessions: {
         Row: {
@@ -371,6 +424,50 @@ export type Database = {
         }
         Relationships: []
       }
+      teams: {
+        Row: {
+          created_at: string
+          description: string | null
+          district_id: string
+          id: string
+          image_url: string | null
+          level_required: number
+          max_members: number
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          district_id: string
+          id?: string
+          image_url?: string | null
+          level_required?: number
+          max_members?: number
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          district_id?: string
+          id?: string
+          image_url?: string | null
+          level_required?: number
+          max_members?: number
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_avatars: {
         Row: {
           avatar_id: string
@@ -406,6 +503,41 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_districts: {
+        Row: {
+          district_id: string
+          id: string
+          joined_at: string
+          level: number
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          district_id: string
+          id?: string
+          joined_at?: string
+          level?: number
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          district_id?: string
+          id?: string
+          joined_at?: string
+          level?: number
+          user_id?: string
+          xp?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_districts_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
             referencedColumns: ["id"]
           },
         ]
@@ -504,6 +636,38 @@ export type Database = {
             columns: ["question_id"]
             isOneToOne: false
             referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_teams: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_teams_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
             referencedColumns: ["id"]
           },
         ]

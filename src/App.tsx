@@ -16,6 +16,9 @@ import Store from "./pages/Store";
 import Settings from "./pages/Settings";
 import Lesson from "./pages/Lesson";
 import Duels from "./pages/Duels";
+import SatoshiCity from "./pages/SatoshiCity";
+import DistrictDetail from "./pages/DistrictDetail";
+import DistrictQuiz from "./pages/DistrictQuiz";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +39,9 @@ const App = () => (
           <Route path="/duel-quiz" element={<DuelQuiz />} />
           <Route path="/tournament-quiz" element={<TournamentQuiz />} />
           <Route path="/duels" element={<Duels />} />
+          <Route path="/satoshi-city" element={<SatoshiCity />} />
+          <Route path="/satoshi-city/district/:districtId" element={<DistrictDetail />} />
+          <Route path="/satoshi-city/district/:districtId/quiz" element={<DistrictQuiz />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/store" element={<Store />} />

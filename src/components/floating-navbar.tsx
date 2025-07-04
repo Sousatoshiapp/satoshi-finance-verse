@@ -9,6 +9,7 @@ export function FloatingNavbar() {
     { path: '/dashboard', icon: '🏠', label: 'Home' },
     { path: '/quiz', icon: '⭐', label: 'Níveis' },
     { path: '/game-mode', icon: '🎮', label: 'Jogue' },
+    { path: '/satoshi-city', icon: '🌃', label: 'Cidade' },
     { path: '/store', icon: '🛒', label: 'Loja' },
     { path: '/profile', icon: '👤', label: 'Perfil' }
   ];
