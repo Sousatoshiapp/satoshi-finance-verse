@@ -142,7 +142,7 @@ export default function Dashboard() {
             </div>
             
             <Button 
-              className="bg-gradient-to-r from-primary to-success text-white px-8 py-3 rounded-full text-lg font-semibold shadow-glow mb-4"
+              className="bg-gradient-to-r from-primary to-success text-black px-8 py-3 rounded-full text-lg font-semibold shadow-glow mb-4"
               onClick={() => navigate('/store')}
             >
               Comprar Avatar
@@ -208,7 +208,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <Button 
-                  className="w-full bg-gradient-to-r from-primary to-success text-white rounded-full font-semibold"
+                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
                   onClick={() => navigate('/game-mode')}
                 >
                   Jogar
@@ -235,7 +235,7 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <Button 
-                  className="w-full bg-gradient-to-r from-primary to-success text-white rounded-full font-semibold"
+                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
                   onClick={() => navigate('/duels')}
                 >
                   Duelar
