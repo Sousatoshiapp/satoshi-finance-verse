@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield } from "lucide-react";
@@ -47,6 +48,7 @@ export default function Store() {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
+  const [showBeetzModal, setShowBeetzModal] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -133,6 +135,38 @@ export default function Store() {
     }
   };
 
+  const purchaseBeetz = async (amount: number, price: number, packageName: string) => {
+    if (!userProfile) return;
+    setPurchasing(`beetz-${amount}`);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          productId: `beetz-${amount}`,
+          productName: `${packageName} - ${amount} Beetz`,
+          amount: price * 100, // Convert to centavos
+          type: 'beetz'
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+    } catch (error) {
+      console.error('Error purchasing Beetz:', error);
+      toast({
+        title: "Erro na Compra",
+        description: "Não foi possível processar a compra de Beetz",
+        variant: "destructive"
+      });
+    } finally {
+      setPurchasing(null);
+    }
+  };
+
   const purchaseItem = async (item: Avatar | Product, type: 'avatar' | 'product') => {
     if (!userProfile) return;
     setPurchasing(item.id);
@@ -168,11 +202,7 @@ export default function Store() {
 
       // For avatars, use the existing points system
       if (userProfile.points < item.price) {
-        toast({
-          title: "Pontos Insuficientes",
-          description: `Você precisa de ${item.price} pontos`,
-          variant: "destructive"
-        });
+        setShowBeetzModal(true);
         return;
       }
 
@@ -269,9 +299,9 @@ export default function Store() {
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <div className="text-2xl">💎</div>
-                <div className="text-xl font-bold text-black">{userProfile.points}</div>
+                <div className="text-xl font-bold text-white">{userProfile.points}</div>
               </div>
-              <p className="text-sm text-black/70">Pontos Beetz • Nível {userProfile.level}</p>
+              <p className="text-sm text-white/70">Pontos Beetz • Nível {userProfile.level}</p>
             </CardContent>
           </Card>
         )}
@@ -475,6 +505,108 @@ export default function Store() {
       </div>
       
       <FloatingNavbar />
+      
+      {/* Beetz Purchase Modal */}
+      <Dialog open={showBeetzModal} onOpenChange={setShowBeetzModal}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>💎 Comprar Beetz</DialogTitle>
+            <DialogDescription>
+              Você não tem Beetz suficientes. Escolha um pacote para continuar:
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-3">
+            <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
+                  onClick={() => {
+                    purchaseBeetz(20, 2, "Pacote Básico");
+                    setShowBeetzModal(false);
+                  }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-lg">20 Beetz</div>
+                  <div className="text-sm text-muted-foreground">Pacote Básico</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-primary">R$ 2,00</div>
+                  <Button 
+                    size="sm" 
+                    disabled={purchasing === 'beetz-20'}
+                  >
+                    {purchasing === 'beetz-20' ? '...' : 'Comprar'}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
+                  onClick={() => {
+                    purchaseBeetz(50, 4, "Pacote Popular");
+                    setShowBeetzModal(false);
+                  }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-lg">50 Beetz</div>
+                  <div className="text-sm text-muted-foreground">Pacote Popular</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-primary">R$ 4,00</div>
+                  <Button 
+                    size="sm" 
+                    disabled={purchasing === 'beetz-50'}
+                  >
+                    {purchasing === 'beetz-50' ? '...' : 'Comprar'}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
+                  onClick={() => {
+                    purchaseBeetz(100, 7, "Pacote Premium");
+                    setShowBeetzModal(false);
+                  }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-lg">100 Beetz</div>
+                  <div className="text-sm text-muted-foreground">Pacote Premium</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-primary">R$ 7,00</div>
+                  <Button 
+                    size="sm" 
+                    disabled={purchasing === 'beetz-100'}
+                  >
+                    {purchasing === 'beetz-100' ? '...' : 'Comprar'}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
+                  onClick={() => {
+                    purchaseBeetz(500, 50, "Pacote Supremo");
+                    setShowBeetzModal(false);
+                  }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-bold text-lg">500 Beetz</div>
+                  <div className="text-sm text-muted-foreground">Pacote Supremo</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-primary">R$ 50,00</div>
+                  <Button 
+                    size="sm" 
+                    disabled={purchasing === 'beetz-500'}
+                  >
+                    {purchasing === 'beetz-500' ? '...' : 'Comprar'}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

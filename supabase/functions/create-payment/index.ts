@@ -21,7 +21,7 @@ serve(async (req) => {
 
   try {
     // Parse request body
-    const { productId, productName, amount } = await req.json();
+    const { productId, productName, amount, type } = await req.json();
 
     // Retrieve authenticated user
     const authHeader = req.headers.get("Authorization")!;
@@ -57,11 +57,12 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/store?payment=success&product=${productId}`,
+      success_url: `${req.headers.get("origin")}/store?payment=success&product=${productId}&type=${type || 'product'}`,
       cancel_url: `${req.headers.get("origin")}/store?payment=cancelled`,
       metadata: {
         productId: productId,
         userId: user.id,
+        type: type || 'product',
       },
     });
 
