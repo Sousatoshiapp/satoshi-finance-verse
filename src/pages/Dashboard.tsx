@@ -9,6 +9,18 @@ import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
 import newLogo from "/lovable-uploads/874326e7-1122-419a-8916-5df0c112245d.png";
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  
+  if (hour >= 5 && hour < 12) {
+    return { text: "BOM DIA", icon: "☀️" };
+  } else if (hour >= 12 && hour < 18) {
+    return { text: "BOA TARDE", icon: "🌤️" };
+  } else {
+    return { text: "BOA NOITE", icon: "🌙" };
+  }
+};
+
 export default function Dashboard() {
   const [userStats, setUserStats] = useState({
     level: 3,
@@ -18,6 +30,7 @@ export default function Dashboard() {
     completedLessons: 3
   });
   const [userNickname, setUserNickname] = useState('Estudante');
+  const [greeting, setGreeting] = useState(getGreeting());
   
   const navigate = useNavigate();
 
@@ -31,6 +44,13 @@ export default function Dashboard() {
     
     // Carregar dados do usuário do Supabase
     loadUserData();
+    
+    // Atualizar saudação a cada minuto
+    const interval = setInterval(() => {
+      setGreeting(getGreeting());
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, [navigate]);
 
   const loadUserData = async () => {
@@ -79,7 +99,7 @@ export default function Dashboard() {
         <div className="max-w-md mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">☀️ BOM DIA</p>
+              <p className="text-sm text-muted-foreground mb-1">{greeting.icon} {greeting.text}</p>
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-4">
