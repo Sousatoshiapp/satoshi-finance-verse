@@ -33,6 +33,13 @@ export function AvatarSelector({ userProfileId, currentAvatarId, onAvatarChanged
 
   const loadOwnedAvatars = async () => {
     try {
+      // Skip database calls for local users
+      if (userProfileId === 'local-user') {
+        setOwnedAvatars([]);
+        setLoading(false);
+        return;
+      }
+
       // First get user's owned avatars
       const { data: userAvatarsData, error: userAvatarsError } = await supabase
         .from('user_avatars')
