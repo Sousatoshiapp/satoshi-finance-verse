@@ -306,6 +306,53 @@ export default function Quiz() {
   if (showResults) {
     const percentage = (score / currentQuiz.questions.length) * 100;
     const isHighScore = percentage >= 80;
+    const isFailure = percentage < 40;
+
+    // Tela de falha para menos de 40% de acertos
+    if (isFailure) {
+      return (
+        <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center">
+          <div className="max-w-sm w-full mx-4 text-center z-10">
+            {/* Failure GIF */}
+            <div className="mb-8">
+              <div className="w-80 h-64 mx-auto rounded-2xl overflow-hidden bg-gradient-to-b from-slate-600 to-slate-800 p-1">
+                <img 
+                  src="https://i.imgur.com/lV8ARfR.gif" 
+                  alt="Falhou"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+            </div>
+
+            {/* Failure Text */}
+            <h1 className="text-4xl font-bold mb-4 text-red-500">
+              Falhou!
+            </h1>
+            <p className="text-slate-300 mb-8 text-lg leading-relaxed">
+              Ops! Você precisava de mais respostas<br/>
+              corretas para passar de nível.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              <Button
+                onClick={resetQuiz}
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 text-lg rounded-full"
+              >
+                <span className="mr-2">▶</span>
+                Recomeçar
+              </Button>
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-4 text-lg rounded-full"
+              >
+                Sair
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     // Tela de celebração para 80%+ de acertos
     if (isHighScore) {
