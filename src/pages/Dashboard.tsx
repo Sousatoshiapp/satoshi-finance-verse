@@ -147,7 +147,7 @@ export default function Dashboard() {
             <div className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card">
               <div className="text-2xl mb-1">⚡</div>
               <div className="text-xs text-black/70 mb-1">XP</div>
-              <div className="text-2xl font-bold text-black">{userStats.currentXP}</div>
+              <div className="text-2xl font-bold text-white">{userStats.currentXP}</div>
             </div>
             <div className="bg-gradient-level rounded-2xl p-4 text-center shadow-card">
               <div className="text-2xl mb-1">🏅</div>
@@ -157,7 +157,7 @@ export default function Dashboard() {
             <div className="bg-gradient-points rounded-2xl p-4 text-center shadow-card">
               <div className="text-2xl mb-1">💎</div>
               <div className="text-xs text-black/70 mb-1">Pontos</div>
-              <div className="text-2xl font-bold text-black">{userStats.currentXP * 2}</div>
+              <div className="text-2xl font-bold text-white">{userStats.currentXP * 2}</div>
             </div>
           </div>
 

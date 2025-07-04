@@ -210,13 +210,13 @@ export default function Store() {
 
         {/* User Points */}
         {userProfile && (
-          <Card className="mb-6 bg-gradient-points text-black">
+          <Card className="mb-6 bg-gradient-points">
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
                 <div className="text-2xl">💎</div>
-                <div className="text-xl font-bold">{userProfile.points}</div>
+                <div className="text-xl font-bold text-black">{userProfile.points}</div>
               </div>
-              <p className="text-sm opacity-80">Seus Pontos Disponíveis</p>
+              <p className="text-sm text-black/70">Seus Pontos Disponíveis</p>
             </CardContent>
           </Card>
         )}
