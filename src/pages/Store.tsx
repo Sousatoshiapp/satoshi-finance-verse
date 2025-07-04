@@ -51,18 +51,16 @@ export default function Store() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const userData = localStorage.getItem('satoshi_user');
-    if (!userData) {
-      navigate('/welcome');
-      return;
-    }
     loadStoreData();
   }, [navigate]);
 
   const loadStoreData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        navigate('/welcome');
+        return;
+      }
 
       // Load user profile
       const { data: profile } = await supabase
@@ -252,7 +250,7 @@ export default function Store() {
                 <div className="text-2xl">💎</div>
                 <div className="text-xl font-bold text-black">{userProfile.points}</div>
               </div>
-              <p className="text-sm text-black/70">Seus Pontos • Nível {userProfile.level}</p>
+              <p className="text-sm text-black/70">Pontos Beetz • Nível {userProfile.level}</p>
             </CardContent>
           </Card>
         )}
@@ -299,7 +297,7 @@ export default function Store() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="text-lg font-bold text-primary">{avatar.price}</span>
-                        <span className="text-sm text-muted-foreground">pontos</span>
+                         <span className="text-sm text-muted-foreground">Pontos Beetz</span>
                       </div>
                       <Badge variant="outline">Nível {avatar.level_required}+</Badge>
                     </div>
@@ -351,7 +349,7 @@ export default function Store() {
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <span className="text-lg font-bold text-primary">{product.price}</span>
-                            <span className="text-sm text-muted-foreground">pontos</span>
+                             <span className="text-sm text-muted-foreground">Pontos Beetz</span>
                           </div>
                           <div className="flex items-center gap-2">
                             {product.duration_hours && (
@@ -413,7 +411,7 @@ export default function Store() {
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <span className="text-lg font-bold text-primary">{product.price}</span>
-                            <span className="text-sm text-muted-foreground">pontos</span>
+                            <span className="text-sm text-muted-foreground">Pontos Beetz</span>
                           </div>
                           <Badge variant="outline">Nível {product.level_required}+</Badge>
                         </div>

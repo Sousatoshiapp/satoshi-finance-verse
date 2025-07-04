@@ -8,6 +8,7 @@ import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ProfileImageUpload } from "@/components/profile-image-upload";
+import { AvatarSelector } from "@/components/avatar-selector";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -73,6 +74,12 @@ export default function Profile() {
   const handleImageUpdated = (newImageUrl: string) => {
     if (user) {
       setUser({ ...user, profile_image_url: newImageUrl });
+    }
+  };
+
+  const handleAvatarChanged = (avatarId: string) => {
+    if (user) {
+      setUser({ ...user, avatar_id: avatarId });
     }
   };
 
@@ -184,6 +191,15 @@ export default function Profile() {
               <div className="text-xs text-muted-foreground">{stat.label}</div>
             </Card>
           ))}
+        </div>
+
+        {/* Avatar Selector */}
+        <div className="mb-8">
+          <AvatarSelector
+            userProfileId={user.id}
+            currentAvatarId={user.avatar_id}
+            onAvatarChanged={handleAvatarChanged}
+          />
         </div>
 
         {/* Achievements */}
