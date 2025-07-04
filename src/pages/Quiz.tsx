@@ -304,6 +304,95 @@ export default function Quiz() {
   };
 
   if (showResults) {
+    const percentage = (score / currentQuiz.questions.length) * 100;
+    const isHighScore = percentage >= 80;
+
+    // Tela de celebração para 80%+ de acertos
+    if (isHighScore) {
+      return (
+        <div className="min-h-screen bg-black relative overflow-hidden flex items-center justify-center">
+          {/* Confetti Effect */}
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute animate-bounce"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${2 + Math.random() * 2}s`
+                }}
+              >
+                <div className="w-3 h-3 bg-yellow-400 rotate-45 opacity-80"></div>
+              </div>
+            ))}
+          </div>
+
+          <div className="max-w-sm w-full mx-4 text-center z-10">
+            {/* Celebration GIF */}
+            <div className="mb-8">
+              <div className="w-80 h-48 mx-auto rounded-2xl overflow-hidden bg-gradient-to-b from-green-400 to-blue-500 p-1">
+                <img 
+                  src="https://i.imgur.com/tmX5F07.gif" 
+                  alt="Celebração"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+            </div>
+
+            {/* Success Text */}
+            <h1 className="text-4xl font-bold mb-2" style={{ color: '#adff2f' }}>
+              Parabéns
+            </h1>
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Nível Completo!
+            </h2>
+            <p className="text-slate-300 mb-8">
+              Você dominou este nível com<br/>
+              {score} de {currentQuiz.questions.length} corretas!
+            </p>
+
+            {/* Rewards Card */}
+            <div className="bg-slate-800/50 rounded-2xl p-6 mb-8 border border-slate-600">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-sm text-slate-400 mb-1">Ganhe</div>
+                  <div className="text-xl font-bold text-white">40 XP</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-slate-400 mb-1">Pontos</div>
+                  <div className="text-xl font-bold text-white">80</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm text-slate-400 mb-1">Troféu</div>
+                  <div className="text-3xl">🏆</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              <Button
+                onClick={() => window.location.reload()}
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 text-lg rounded-full"
+              >
+                <span className="mr-2">▶</span>
+                Próximo Nível
+              </Button>
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-4 text-lg rounded-full"
+              >
+                Sair
+              </Button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Tela padrão de resultados para menos de 80%
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-card rounded-xl p-8 shadow-card text-center">
