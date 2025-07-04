@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
 import Store from "./pages/Store";
 import Settings from "./pages/Settings";
+import Lesson from "./pages/Lesson";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/store" element={<Store />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/lesson/:courseId/:lessonId" element={<Lesson />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

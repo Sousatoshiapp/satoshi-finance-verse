@@ -5,50 +5,8 @@ import { StreakBadge } from "@/components/ui/streak-badge";
 import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
+import { lessons } from "@/data/lessons";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
-
-const lessons = [
-  {
-    id: 1,
-    title: "Orçamento Pessoal",
-    description: "Aprenda a controlar seus gastos e criar um orçamento que funciona para você",
-    progress: 3,
-    totalLessons: 5,
-    difficulty: "Básico" as const,
-    icon: "💰",
-    isLocked: false
-  },
-  {
-    id: 2,
-    title: "Poupança Inteligente",
-    description: "Descubra estratégias para economizar dinheiro e construir sua reserva de emergência",
-    progress: 0,
-    totalLessons: 4,
-    difficulty: "Básico" as const,
-    icon: "🏦",
-    isLocked: false
-  },
-  {
-    id: 3,
-    title: "Investimentos Básicos",
-    description: "Introdução ao mundo dos investimentos: ações, fundos e renda fixa",
-    progress: 0,
-    totalLessons: 6,
-    difficulty: "Intermediário" as const,
-    icon: "📈",
-    isLocked: true
-  },
-  {
-    id: 4,
-    title: "Planejamento Financeiro",
-    description: "Aprenda a definir metas financeiras e criar um plano para alcançá-las",
-    progress: 0,
-    totalLessons: 5,
-    difficulty: "Intermediário" as const,
-    icon: "🎯",
-    isLocked: true
-  }
-];
 
 export default function Dashboard() {
   const [userStats, setUserStats] = useState({
@@ -174,8 +132,9 @@ export default function Dashboard() {
                 icon={lesson.icon}
                 isLocked={lesson.isLocked}
                 onClick={() => {
-                  // Navegar para a lição
-                  console.log(`Navegando para lição: ${lesson.title}`);
+                  if (!lesson.isLocked) {
+                    navigate(`/lesson/${lesson.id}/1`);
+                  }
                 }}
               />
             ))}
