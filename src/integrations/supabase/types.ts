@@ -189,6 +189,54 @@ export type Database = {
           },
         ]
       }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          duration_hours: number | null
+          effects: Json | null
+          id: string
+          image_url: string | null
+          is_available: boolean
+          level_required: number
+          name: string
+          price: number
+          rarity: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          effects?: Json | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean
+          level_required?: number
+          name: string
+          price?: number
+          rarity?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          effects?: Json | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean
+          level_required?: number
+          name?: string
+          price?: number
+          rarity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_id: string | null
@@ -271,6 +319,48 @@ export type Database = {
           },
           {
             foreignKeyName: "user_avatars_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_products: {
+        Row: {
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          product_id: string
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          product_id: string
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          product_id?: string
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_products_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_products_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
