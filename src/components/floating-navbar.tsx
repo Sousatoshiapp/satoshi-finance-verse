@@ -9,7 +9,7 @@ export function FloatingNavbar() {
     { path: '/dashboard', icon: '🏠', label: 'Home' },
     { path: '/quiz', icon: '⭐', label: 'Níveis' },
     { path: '/duels', icon: '🎮', label: 'Jogue' },
-    { path: '/leaderboard', icon: '👥', label: 'Social' },
+    { path: '/store', icon: '🛒', label: 'Loja' },
     { path: '/profile', icon: '👤', label: 'Perfil' }
   ];
 

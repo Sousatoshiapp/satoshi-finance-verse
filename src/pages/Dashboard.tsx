@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
+import { supabase } from "@/integrations/supabase/client";
 import newLogo from "/lovable-uploads/874326e7-1122-419a-8916-5df0c112245d.png";
 
 export default function Dashboard() {
@@ -28,17 +29,48 @@ export default function Dashboard() {
       return;
     }
     
-    // Carregar dados do usuário
-    const user = JSON.parse(userData);
-    setUserStats({
-      level: user.level || 1,
-      currentXP: user.xp || 0,
-      nextLevelXP: (user.level || 1) * 100,
-      streak: user.streak || 0,
-      completedLessons: user.completedLessons || 0
-    });
-    setUserNickname(user.nickname || 'Estudante');
+    // Carregar dados do usuário do Supabase
+    loadUserData();
   }, [navigate]);
+
+  const loadUserData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile) {
+        setUserStats({
+          level: profile.level || 1,
+          currentXP: profile.xp || 0,
+          nextLevelXP: (profile.level || 1) * 100,
+          streak: profile.streak || 0,
+          completedLessons: profile.completed_lessons || 0
+        });
+        setUserNickname(profile.nickname || 'Estudante');
+      }
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      // Fallback para localStorage se Supabase falhar
+      const userData = localStorage.getItem('satoshi_user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        setUserStats({
+          level: user.level || 1,
+          currentXP: user.xp || 0,
+          nextLevelXP: (user.level || 1) * 100,
+          streak: user.streak || 0,
+          completedLessons: user.completedLessons || 0
+        });
+        setUserNickname(user.nickname || 'Estudante');
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,8 +118,11 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <Button className="bg-gradient-to-r from-primary to-success text-white px-8 py-3 rounded-full text-lg font-semibold shadow-glow mb-4">
-              Evoluir Avatar
+            <Button 
+              className="bg-gradient-to-r from-primary to-success text-white px-8 py-3 rounded-full text-lg font-semibold shadow-glow mb-4"
+              onClick={() => navigate('/store')}
+            >
+              Comprar Avatar
             </Button>
             
             <p className="text-muted-foreground text-sm mb-2">
@@ -120,7 +155,7 @@ export default function Dashboard() {
               <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
             </div>
             <div className="bg-gradient-points rounded-2xl p-4 text-center shadow-card">
-              <div className="text-2xl mb-1">⭐</div>
+              <div className="text-2xl mb-1">💎</div>
               <div className="text-xs text-black/70 mb-1">Pontos</div>
               <div className="text-2xl font-bold text-black">{userStats.currentXP * 2}</div>
             </div>

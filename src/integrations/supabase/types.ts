@@ -9,6 +9,45 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      avatars: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          is_available: boolean
+          level_required: number
+          name: string
+          price: number
+          rarity: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          is_available?: boolean
+          level_required?: number
+          name: string
+          price?: number
+          rarity?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          is_available?: boolean
+          level_required?: number
+          name?: string
+          price?: number
+          rarity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       duel_invites: {
         Row: {
           challenged_id: string
@@ -152,39 +191,92 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_id: string | null
           completed_lessons: number | null
           created_at: string
           id: string
           level: number | null
           nickname: string
+          points: number
           streak: number | null
           updated_at: string
           user_id: string
           xp: number | null
         }
         Insert: {
+          avatar_id?: string | null
           completed_lessons?: number | null
           created_at?: string
           id?: string
           level?: number | null
           nickname: string
+          points?: number
           streak?: number | null
           updated_at?: string
           user_id: string
           xp?: number | null
         }
         Update: {
+          avatar_id?: string | null
           completed_lessons?: number | null
           created_at?: string
           id?: string
           level?: number | null
           nickname?: string
+          points?: number
           streak?: number | null
           updated_at?: string
           user_id?: string
           xp?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_avatar_id_fkey"
+            columns: ["avatar_id"]
+            isOneToOne: false
+            referencedRelation: "avatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_avatars: {
+        Row: {
+          avatar_id: string
+          id: string
+          is_active: boolean
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_id: string
+          id?: string
+          is_active?: boolean
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_id?: string
+          id?: string
+          is_active?: boolean
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_avatars_avatar_id_fkey"
+            columns: ["avatar_id"]
+            isOneToOne: false
+            referencedRelation: "avatars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_avatars_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
