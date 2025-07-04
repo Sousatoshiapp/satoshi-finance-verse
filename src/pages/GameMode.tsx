@@ -9,13 +9,13 @@ export default function GameMode() {
   const handleModeSelect = (mode: 'solo' | 'duelo' | 'torneio') => {
     switch (mode) {
       case 'solo':
-        navigate('/quiz');
+        navigate('/solo-quiz');
         break;
       case 'duelo':
-        navigate('/duels');
+        navigate('/duel-quiz');
         break;
       case 'torneio':
-        navigate('/leaderboard');
+        navigate('/tournament-quiz');
         break;
     }
   };

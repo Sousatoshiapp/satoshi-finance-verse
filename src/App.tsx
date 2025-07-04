@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Welcome from "./pages/Welcome";
 import Dashboard from "./pages/Dashboard";
 import Quiz from "./pages/Quiz";
+import SoloQuiz from "./pages/SoloQuiz";
+import DuelQuiz from "./pages/DuelQuiz";
+import TournamentQuiz from "./pages/TournamentQuiz";
 import GameMode from "./pages/GameMode";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
@@ -28,7 +31,9 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="/game-mode" element={<GameMode />} />
-          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/solo-quiz" element={<SoloQuiz />} />
+          <Route path="/duel-quiz" element={<DuelQuiz />} />
+          <Route path="/tournament-quiz" element={<TournamentQuiz />} />
           <Route path="/duels" element={<Duels />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
