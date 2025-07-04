@@ -1,39 +1,80 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { ProfileImageUpload } from "@/components/profile-image-upload";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 interface UserProfile {
+  id: string;
   nickname: string;
-  email: string;
   level: number;
   xp: number;
   streak: number;
-  completedLessons: number;
-  achievements: string[];
-  coins: number;
-  financialGoal: string;
+  completed_lessons: number;
+  points: number;
+  profile_image_url?: string;
+  avatar_id?: string;
 }
 
 export default function Profile() {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    const userData = localStorage.getItem('satoshi_user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    } else {
-      navigate('/welcome');
-    }
+    loadUserProfile();
   }, [navigate]);
+
+  const loadUserProfile = async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      
+      if (!authUser) {
+        navigate('/welcome');
+        return;
+      }
+
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', authUser.id)
+        .single();
+
+      if (error) {
+        console.error('Error loading profile:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar o perfil",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (profile) {
+        setUser(profile);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageUpdated = (newImageUrl: string) => {
+    if (user) {
+      setUser({ ...user, profile_image_url: newImageUrl });
+    }
+  };
 
   const achievements = [
     { id: 'first_lesson', name: 'Primeira Lição', icon: '🎯', earned: true },
@@ -45,11 +86,22 @@ export default function Profile() {
   ];
 
   const stats = [
-    { label: 'Lições Completas', value: user?.completedLessons || 0, icon: '📚' },
+    { label: 'Lições Completas', value: user?.completed_lessons || 0, icon: '📚' },
     { label: 'Dias de Sequência', value: user?.streak || 0, icon: '🔥' },
-    { label: 'Moedas Satoshi', value: user?.coins || 0, icon: '🪙' },
+    { label: 'Pontos Beetz', value: user?.points || 0, icon: '🪙' },
     { label: 'Nível Atual', value: user?.level || 1, icon: '⭐' }
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Carregando perfil...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) return null;
 
@@ -73,19 +125,29 @@ export default function Profile() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Profile Image Upload */}
+        <div className="mb-8">
+          <ProfileImageUpload
+            currentImageUrl={user.profile_image_url}
+            onImageUpdated={handleImageUpdated}
+            userNickname={user.nickname}
+          />
+        </div>
+
         {/* Profile Header */}
         <Card className="p-6 mb-8">
           <div className="flex items-center gap-6">
             <Avatar className="w-20 h-20">
-              <img src={satoshiLogo} alt={user.nickname} />
+              <AvatarImage src={user.profile_image_url || satoshiLogo} alt={user.nickname} />
+              <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-foreground mb-1">{user.nickname}</h2>
-              <p className="text-muted-foreground mb-3">{user.email}</p>
+              <p className="text-muted-foreground mb-3">Nível {user.level} • {user.points} Pontos Beetz</p>
               <div className="flex items-center gap-3">
                 <StreakBadge days={user.streak} />
-                <Badge variant="outline">{user.financialGoal}</Badge>
+                <Badge variant="outline">Aprendiz de Finanças</Badge>
               </div>
             </div>
           </div>
@@ -102,13 +164,13 @@ export default function Profile() {
           <Card className="p-6">
             <h3 className="font-bold text-foreground mb-4">Progresso Geral</h3>
             <ProgressBar
-              value={user.completedLessons}
+              value={user.completed_lessons}
               max={20}
               showLabel
               className="mb-3"
             />
             <p className="text-sm text-muted-foreground">
-              {user.completedLessons} de 20 lições principais completadas
+              {user.completed_lessons} de 20 lições principais completadas
             </p>
           </Card>
         </div>
