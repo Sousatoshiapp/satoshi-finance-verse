@@ -8,6 +8,8 @@ import { ArrowLeft, Settings, X } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
+import { supabase } from "@/integrations/supabase/client";
+import { AvatarDisplay } from "@/components/avatar-display";
 
 const soloQuizTopics = [
   {
@@ -98,7 +100,28 @@ export default function SoloQuiz() {
   const [showResults, setShowResults] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select(`
+            *,
+            avatars (*)
+          `)
+          .eq('user_id', user.id)
+          .single();
+        
+        setUserProfile(profile);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   const handleOptionSelect = (optionId: string) => {
     if (selectedAnswer || showAnswer) return;
@@ -144,7 +167,25 @@ export default function SoloQuiz() {
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-card rounded-xl p-8 shadow-card text-center">
           <div className="mb-6">
-            <img src={satoshiMascot} alt="Satoshi" className="w-20 h-20 mx-auto mb-4" />
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-b from-green-400 to-green-600 rounded-full p-1">
+              <div className="w-full h-full bg-card rounded-full flex items-center justify-center overflow-hidden">
+                {userProfile?.avatars ? (
+                  <AvatarDisplay 
+                    avatar={userProfile.avatars} 
+                    size="lg" 
+                    showBadge={false}
+                  />
+                ) : userProfile?.profile_image_url ? (
+                  <img 
+                    src={userProfile.profile_image_url} 
+                    alt="Avatar" 
+                    className="w-16 h-16 rounded-full object-cover" 
+                  />
+                ) : (
+                  <img src={satoshiMascot} alt="Default" className="w-16 h-16" />
+                )}
+              </div>
+            </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Quiz Solo Finalizado!</h1>
             <div className="text-6xl mb-4">
               {percentage >= 80 ? "🏆" : percentage >= 60 ? "🥉" : "📚"}
@@ -214,8 +255,22 @@ export default function SoloQuiz() {
         <div className="text-center mb-8">
           <div className="relative mb-6">
             <div className="w-24 h-24 mx-auto bg-gradient-to-b from-green-400 to-green-600 rounded-full p-1">
-              <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center">
-                <img src={satoshiMascot} alt="Satoshi" className="w-16 h-16" />
+              <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                {userProfile?.avatars ? (
+                  <AvatarDisplay 
+                    avatar={userProfile.avatars} 
+                    size="lg" 
+                    showBadge={false}
+                  />
+                ) : userProfile?.profile_image_url ? (
+                  <img 
+                    src={userProfile.profile_image_url} 
+                    alt="Avatar" 
+                    className="w-16 h-16 rounded-full object-cover" 
+                  />
+                ) : (
+                  <img src={satoshiMascot} alt="Default" className="w-16 h-16" />
+                )}
               </div>
             </div>
           </div>
