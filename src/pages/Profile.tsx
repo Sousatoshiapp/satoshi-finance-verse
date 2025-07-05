@@ -101,7 +101,10 @@ export default function Profile() {
   
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
+    console.log('Avatar name:', avatarName);
     const key = avatarName.toLowerCase().replace(' ', '-') as keyof typeof avatarImages;
+    console.log('Mapped key:', key);
+    console.log('Found image:', avatarImages[key]);
     return avatarImages[key] || satoshiLogo;
   };
 
@@ -152,12 +155,14 @@ export default function Profile() {
         
         // Load user avatar if they have one
         if (profile.avatar_id) {
+          console.log('Loading avatar for ID:', profile.avatar_id);
           const { data: avatarData } = await supabase
             .from('avatars')
             .select('id, name, image_url')
             .eq('id', profile.avatar_id)
             .single();
           
+          console.log('Avatar data loaded:', avatarData);
           if (avatarData) {
             setUserAvatar(avatarData);
           }
