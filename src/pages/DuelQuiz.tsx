@@ -199,7 +199,7 @@ export default function DuelQuiz() {
   // Tela de Configuração do Duelo
   if (currentStep === 'config') {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-green-900">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-[#1a2e05]">
         <div className="max-w-md mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-8">
             <Button
@@ -232,7 +232,7 @@ export default function DuelQuiz() {
                       onClick={() => setDuelConfig({...duelConfig, opponentType: 'random'})}
                       className={`p-4 h-auto ${
                         duelConfig.opponentType === 'random' 
-                          ? 'bg-green-600 border-green-500 text-white' 
+                          ? 'bg-[#adff2f] border-[#adff2f] text-black' 
                           : 'bg-slate-700 border-slate-600 text-white hover:bg-slate-600'
                       }`}
                     >
@@ -240,10 +240,10 @@ export default function DuelQuiz() {
                     </Button>
                     <Button
                       variant="outline"
-                      onClick={() => setDuelConfig({...duelConfig, opponentType: 'friend'})}
+                      onClick={() => navigate('/find-opponent')}
                       className={`p-4 h-auto ${
                         duelConfig.opponentType === 'friend' 
-                          ? 'bg-green-600 border-green-500 text-white' 
+                          ? 'bg-[#adff2f] border-[#adff2f] text-black' 
                           : 'bg-slate-700 border-slate-600 text-white hover:bg-slate-600'
                       }`}
                     >
@@ -264,9 +264,9 @@ export default function DuelQuiz() {
                       <RadioGroupItem value="cripto" id="cripto" className="border-white" />
                       <Label htmlFor="cripto" className="text-white">Cripto</Label>
                     </div>
-                    <div className="flex items-center space-x-2 bg-green-600 p-3 rounded">
-                      <RadioGroupItem value="mercado-tradicional" id="tradicional" className="border-white" />
-                      <Label htmlFor="tradicional" className="text-white font-semibold">Mercado financeiro tradicional</Label>
+                    <div className="flex items-center space-x-2 bg-[#adff2f] p-3 rounded">
+                      <RadioGroupItem value="mercado-tradicional" id="tradicional" className="border-black" />
+                      <Label htmlFor="tradicional" className="text-black font-semibold">Mercado financeiro tradicional</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="ambos" id="ambos" className="border-white" />
@@ -310,7 +310,7 @@ export default function DuelQuiz() {
 
           <Button 
             onClick={handleConfigSubmit}
-            className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg rounded-full"
+            className="w-full bg-[#adff2f] hover:bg-[#adff2f]/80 text-black font-bold py-4 text-lg rounded-full"
           >
             Continue
           </Button>
@@ -322,7 +322,7 @@ export default function DuelQuiz() {
   // Tela de Oponente Encontrado
   if (currentStep === 'opponent') {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-green-900">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-[#1a2e05]">
         <div className="max-w-md mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-8">
             <Button
@@ -353,8 +353,8 @@ export default function DuelQuiz() {
 
             {/* VS */}
             <div className="flex items-center justify-center mb-6">
-              <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">VS</span>
+              <div className="w-24 h-24 bg-[#adff2f] rounded-full flex items-center justify-center">
+                <span className="text-black font-bold text-2xl">VS</span>
               </div>
             </div>
 
@@ -363,7 +363,7 @@ export default function DuelQuiz() {
               <img 
                 src={mockUser.avatar} 
                 alt={mockUser.nickname}
-                className="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-green-500"
+                className="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-[#adff2f]"
               />
               <h2 className="text-white text-xl font-bold">{mockUser.nickname}</h2>
               <p className="text-slate-400">Nível: {mockUser.level}</p>
@@ -396,7 +396,7 @@ export default function DuelQuiz() {
 
           <Button 
             onClick={handleOpponentAccept}
-            className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg rounded-full"
+            className="w-full bg-[#adff2f] hover:bg-[#adff2f]/80 text-black font-bold py-4 text-lg rounded-full"
           >
             Continue
           </Button>
@@ -445,7 +445,7 @@ export default function DuelQuiz() {
     const currentQ = duelQuestions[currentQuestion];
     
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-green-900">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-[#1a2e05]">
         <div className="max-w-md mx-auto px-4 py-6">
           {/* Header com perfis */}
           <div className="bg-slate-800/50 rounded-xl p-4 mb-6">
@@ -459,8 +459,8 @@ export default function DuelQuiz() {
               </div>
               
               <div className="text-center">
-                <div className="w-16 h-16 border-4 border-green-400 rounded-full flex items-center justify-center mb-2">
-                  <span className="text-green-400 font-bold text-lg">{timeLeft}</span>
+                <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full flex items-center justify-center mb-2">
+                  <span className="text-[#adff2f] font-bold text-lg">{timeLeft}</span>
                 </div>
                 <p className="text-xs text-slate-400">Seg</p>
               </div>
@@ -479,7 +479,7 @@ export default function DuelQuiz() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex-1 bg-slate-700 h-2 rounded-full mr-4">
               <div 
-                className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                className="bg-[#adff2f] h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentQuestion + 1) / duelQuestions.length) * 100}%` }}
               />
             </div>
@@ -504,11 +504,11 @@ export default function DuelQuiz() {
               
               if (showAnswer) {
                 if (isSelected && isCorrect) {
-                  optionClass = "bg-green-600 border-green-500 text-white";
+                  optionClass = "bg-[#adff2f] border-[#adff2f] text-black";
                 } else if (isSelected && !isCorrect) {
                   optionClass = "bg-red-600 border-red-500 text-white";
                 } else if (isCorrect) {
-                  optionClass = "bg-green-600 border-green-500 text-white";
+                  optionClass = "bg-[#adff2f] border-[#adff2f] text-black";
                 }
               } else if (isSelected) {
                 optionClass = "bg-slate-600 border-slate-500 text-white";
@@ -534,7 +534,7 @@ export default function DuelQuiz() {
             <Button
               onClick={handleSubmit}
               disabled={!selectedAnswer || showAnswer}
-              className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg rounded-full"
+              className="w-full bg-[#adff2f] hover:bg-[#adff2f]/80 text-black font-bold py-4 text-lg rounded-full"
             >
               Enviar
             </Button>
@@ -591,7 +591,7 @@ export default function DuelQuiz() {
           </div>
         )}
         
-        <Card className="max-w-md w-full bg-gradient-to-b from-green-600 to-green-700 border-none text-center">
+        <Card className="max-w-md w-full bg-gradient-to-b from-[#adff2f] to-[#8cc020] border-none text-center">
           <CardContent className="p-8">
             {/* Avatar com coroa se ganhou */}
             <div className="relative mb-6">
@@ -606,29 +606,29 @@ export default function DuelQuiz() {
             </div>
 
             <div className="mb-6">
-              <h1 className="text-white text-4xl font-bold mb-2">
+              <h1 className="text-black text-4xl font-bold mb-2">
                 {isDraw ? "Empate!" : playerWon ? "Parabéns!" : "Que pena!"}
               </h1>
-              <p className="text-white text-xl">
+              <p className="text-black text-xl">
                 {isDraw ? "Foi por pouco!" : playerWon ? "Você venceu!" : "Você perdeu!"}
               </p>
             </div>
 
             {/* Recompensas */}
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-green-500 rounded-xl p-4">
+              <div className="bg-[#8cc020] rounded-xl p-4">
                 <div className="text-yellow-400 text-2xl mb-1">💰</div>
-                <div className="text-white font-bold">XP</div>
-                <div className="text-white text-xl font-bold">40</div>
+                <div className="text-black font-bold">XP</div>
+                <div className="text-black text-xl font-bold">40</div>
               </div>
-              <div className="bg-green-500 rounded-xl p-4">
+              <div className="bg-[#8cc020] rounded-xl p-4">
                 <Star className="w-6 h-6 text-yellow-400 mx-auto mb-1" />
-                <div className="text-white font-bold">Pontos</div>
-                <div className="text-white text-xl font-bold">80</div>
+                <div className="text-black font-bold">Pontos</div>
+                <div className="text-black text-xl font-bold">80</div>
               </div>
-              <div className="bg-green-500 rounded-xl p-4">
+              <div className="bg-[#8cc020] rounded-xl p-4">
                 <Trophy className="w-6 h-6 text-orange-400 mx-auto mb-1" />
-                <div className="text-white font-bold">Troféu</div>
+                <div className="text-black font-bold">Troféu</div>
                 <div className="text-orange-400">🏆</div>
               </div>
             </div>
@@ -637,15 +637,15 @@ export default function DuelQuiz() {
             <div className="flex items-center justify-between mb-6">
               <div className="text-center">
                 <img src={mockUser.avatar} alt={mockUser.nickname} className="w-12 h-12 rounded-full mx-auto mb-2" />
-                <p className="text-white font-semibold">{mockUser.nickname}</p>
-                <p className="text-white text-sm">Você</p>
+                <p className="text-black font-semibold">{mockUser.nickname}</p>
+                <p className="text-black text-sm">Você</p>
               </div>
               
-              <div className="bg-green-500 rounded-full w-16 h-16 flex items-center justify-center">
-                <span className="text-white font-bold text-xl">{playerScore}</span>
+              <div className="bg-[#8cc020] rounded-full w-16 h-16 flex items-center justify-center">
+                <span className="text-black font-bold text-xl">{playerScore}</span>
               </div>
               
-              <div className="text-white font-bold text-2xl">-</div>
+              <div className="text-black font-bold text-2xl">-</div>
               
               <div className="bg-slate-600 rounded-full w-16 h-16 flex items-center justify-center">
                 <span className="text-white font-bold text-xl">{opponentScore}</span>
@@ -653,19 +653,19 @@ export default function DuelQuiz() {
               
               <div className="text-center">
                 <img src={mockOpponent.avatar} alt={mockOpponent.nickname} className="w-12 h-12 rounded-full mx-auto mb-2" />
-                <p className="text-white font-semibold">{mockOpponent.nickname}</p>
-                <p className="text-white text-sm">Oponente</p>
+                <p className="text-black font-semibold">{mockOpponent.nickname}</p>
+                <p className="text-black text-sm">Oponente</p>
               </div>
             </div>
 
             {/* Progresso de nível */}
             <div className="mb-6">
-              <div className="flex justify-between text-white text-sm mb-2">
+              <div className="flex justify-between text-black text-sm mb-2">
                 <span>Nível {mockUser.level}</span>
                 <span>Próximo Nível: Raposa Astuta</span>
               </div>
               <div className="w-full bg-slate-600 h-2 rounded-full">
-                <div className="bg-green-400 h-2 rounded-full w-3/4"></div>
+                <div className="bg-[#8cc020] h-2 rounded-full w-3/4"></div>
               </div>
             </div>
 
@@ -673,7 +673,7 @@ export default function DuelQuiz() {
             <div className="grid grid-cols-2 gap-4">
               <Button 
                 onClick={() => navigate('/game-mode')}
-                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-full"
+                className="bg-[#8cc020] hover:bg-[#8cc020]/80 text-black font-bold py-3 rounded-full"
               >
                 Próximo Nível ▶
               </Button>
