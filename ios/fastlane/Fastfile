@@ -6,7 +6,7 @@ platform :ios do
     build_app(
       project: "Satoshi_Finance_Game.xcodeproj",
       scheme: "Satoshi_Finance_Game",
-      xcargs: "CODE_SIGN_ENTITLEMENTS=Satoshi_Finance_Game.entitlements"
+      xcargs: "CODE_SIGN_ENTITLEMENTS=Satoshi_Finance_Game/Satoshi_Finance_Game.entitlements"
     )
     upload_to_testflight
   end
