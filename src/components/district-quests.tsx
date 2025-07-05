@@ -132,13 +132,21 @@ export function DistrictQuests({ districtId, districtTheme, districtColor }: Dis
         return {
           title: 'Trading Simulator',
           description: 'Pratique trading com dados reais do mercado',
-          features: ['Simulador de ações', 'Análise técnica', 'Portfólio virtual', 'Competições de trading']
+          features: ['Simulador de ações', 'Análise técnica', 'Portfólio virtual', 'Competições de trading'],
+          links: [
+            { text: 'Abra sua Conta', url: 'https://www.xpi.com.br/cadastro/', primary: true },
+            { text: 'Logar na XP Investimentos', url: 'https://www.xpi.com.br/login/', primary: false }
+          ]
         };
       case 'educacao_financeira':
         return {
           title: 'Academia Financeira',
           description: 'Cursos e workshops interativos',
-          features: ['Lessons gamificadas', 'Calculadoras financeiras', 'Planos de investimento', 'Mentoria IA']
+          features: ['Lessons gamificadas', 'Calculadoras financeiras', 'Planos de investimento', 'Mentoria IA'],
+          links: [
+            { text: 'Acessar o Portal Anima', url: 'https://portal.anima.edu.br/', primary: true },
+            { text: 'Matricule-se aqui', url: 'https://www.anima.edu.br/graduacao/', primary: false }
+          ]
         };
       case 'criptomoedas':
         return {
@@ -203,7 +211,7 @@ export function DistrictQuests({ districtId, districtTheme, districtColor }: Dis
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 mb-4">
             {specialFeatures.features.map((feature, index) => (
               <div 
                 key={index}
@@ -214,12 +222,32 @@ export function DistrictQuests({ districtId, districtTheme, districtColor }: Dis
               </div>
             ))}
           </div>
-          <Button 
-            className="w-full mt-4 font-bold text-black"
-            style={{ backgroundColor: districtColor }}
-          >
-            Acessar {specialFeatures.title}
-          </Button>
+          
+          {/* District-specific links or generic button */}
+          {specialFeatures.links ? (
+            <div className="space-y-3">
+              {specialFeatures.links.map((link, index) => (
+                <Button 
+                  key={index}
+                  className={`w-full font-bold ${link.primary ? 'text-black' : 'text-white border-2'}`}
+                  style={{ 
+                    backgroundColor: link.primary ? districtColor : 'transparent',
+                    borderColor: link.primary ? districtColor : districtColor
+                  }}
+                  onClick={() => window.open(link.url, '_blank')}
+                >
+                  {link.text}
+                </Button>
+              ))}
+            </div>
+          ) : (
+            <Button 
+              className="w-full mt-4 font-bold text-black"
+              style={{ backgroundColor: districtColor }}
+            >
+              Acessar {specialFeatures.title}
+            </Button>
+          )}
         </CardContent>
       </Card>
 
