@@ -17,6 +17,8 @@ export default function Auth() {
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -36,6 +38,12 @@ export default function Auth() {
             toast({
               title: "Erro de Login",
               description: "Email ou senha incorretos. Verifique suas credenciais.",
+              variant: "destructive",
+            });
+          } else if (error.message.includes("Email not confirmed")) {
+            toast({
+              title: "Email não confirmado",
+              description: "Verifique sua caixa de email e clique no link de confirmação antes de fazer login.",
               variant: "destructive",
             });
           } else {
@@ -86,10 +94,11 @@ export default function Auth() {
 
         toast({
           title: "Cadastro realizado!",
-          description: "Bem-vindo à Satoshi City! Você já pode começar a explorar.",
+          description: "Verifique sua caixa de email para confirmar sua conta antes de fazer login.",
         });
         
-        navigate("/satoshi-city");
+        // Switch to login mode after successful signup
+        setIsLogin(true);
       }
     } catch (error) {
       toast({
@@ -122,6 +131,89 @@ export default function Auth() {
       toast({
         title: "Erro inesperado",
         description: "Algo deu errado com o login social. Tente novamente.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!resetEmail) {
+      toast({
+        title: "Email obrigatório",
+        description: "Digite seu email para receber o link de redefinição.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth?reset=true`,
+      });
+
+      if (error) {
+        toast({
+          title: "Erro ao redefinir senha",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Email enviado!",
+          description: "Verifique sua caixa de email para redefinir sua senha.",
+        });
+        setShowForgotPassword(false);
+        setResetEmail("");
+      }
+    } catch (error) {
+      toast({
+        title: "Erro inesperado",
+        description: "Algo deu errado. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      toast({
+        title: "Email obrigatório",
+        description: "Digite seu email para reenviar a confirmação.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/satoshi-city`
+        }
+      });
+
+      if (error) {
+        toast({
+          title: "Erro ao reenviar email",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Email reenviado!",
+          description: "Verifique sua caixa de email para confirmar sua conta.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Erro inesperado",
+        description: "Algo deu errado. Tente novamente.",
         variant: "destructive",
       });
     }
@@ -168,6 +260,63 @@ export default function Auth() {
             </CardHeader>
 
             <CardContent>
+              {showForgotPassword ? (
+                // Forgot Password Form
+                <form onSubmit={handleForgotPassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="resetEmail" className="text-gray-300">
+                      Email para redefinição
+                    </Label>
+                    <Input
+                      id="resetEmail"
+                      type="email"
+                      placeholder="Digite seu email cadastrado"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      required
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-cyan-400"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold py-3 transition-all duration-300"
+                  >
+                    {loading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <span>Enviando...</span>
+                      </div>
+                    ) : (
+                      'Enviar Link de Redefinição'
+                    )}
+                  </Button>
+
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => {
+                        setShowForgotPassword(false);
+                        setResetEmail("");
+                      }}
+                      className="text-gray-400 hover:text-cyan-400"
+                    >
+                      ← Voltar ao login
+                    </Button>
+                  </div>
+
+                  <div className="mt-6 p-4 bg-slate-700/30 rounded-lg border border-cyan-400/20">
+                    <p className="text-sm text-gray-300 text-center leading-relaxed">
+                      Você receberá um email com instruções para redefinir sua senha.
+                      <br />
+                      <span className="text-cyan-400 font-semibold">Verifique também sua caixa de spam.</span>
+                    </p>
+                  </div>
+                </form>
+              ) : (
+                // Main Auth Form
               <form onSubmit={handleAuth} className="space-y-4">
                 {!isLogin && (
                   <div className="space-y-2">
@@ -250,6 +399,34 @@ export default function Auth() {
                     isLogin ? 'Entrar na Cidade' : 'Tornar-se Cidadão'
                   )}
                 </Button>
+
+                {/* Forgot Password Link */}
+                {isLogin && !showForgotPassword && (
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-sm text-gray-400 hover:text-cyan-400"
+                    >
+                      Esqueci minha senha
+                    </Button>
+                  </div>
+                )}
+
+                {/* Resend Confirmation Button */}
+                {isLogin && email && (
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={handleResendConfirmation}
+                      className="text-sm text-gray-400 hover:text-purple-400"
+                    >
+                      Reenviar email de confirmação
+                    </Button>
+                  </div>
+                )}
 
                 {/* Social Login Separator */}
                 <div className="relative">
@@ -347,6 +524,7 @@ export default function Auth() {
                   </p>
                 </div>
               </form>
+              )}
             </CardContent>
           </Card>
         </div>
