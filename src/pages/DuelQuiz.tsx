@@ -493,27 +493,74 @@ export default function DuelQuiz() {
           {/* Header com perfis */}
           <div className="bg-slate-800/50 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <img src={mockUser.avatar} alt={mockUser.nickname} className="w-12 h-12 rounded-full" />
-                <div>
-                  <p className="text-white font-semibold">{mockUser.nickname}</p>
-                  <p className="text-slate-400 text-sm">Pontos: {playerScore}</p>
-                </div>
-              </div>
-              
+              {/* Usuário */}
               <div className="text-center">
-                <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full flex items-center justify-center mb-2">
-                  <span className="text-[#adff2f] font-bold text-lg">{timeLeft}</span>
+                <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full p-1 mb-2">
+                  <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                    {userProfile?.avatars ? (
+                      <AvatarDisplay 
+                        avatar={userProfile.avatars} 
+                        size="sm" 
+                        showBadge={false}
+                      />
+                    ) : userProfile?.profile_image_url ? (
+                      <img 
+                        src={userProfile.profile_image_url} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover rounded-full" 
+                      />
+                    ) : (
+                      <img src={satoshiMascot} alt="Default" className="w-8 h-8" />
+                    )}
+                  </div>
                 </div>
-                <p className="text-xs text-slate-400">Seg</p>
+                <p className="text-white font-semibold text-sm">{userProfile?.nickname || mockUser.nickname}</p>
+                <p className="text-slate-400 text-xs">Pontos: {playerScore}</p>
               </div>
               
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-white font-semibold">{mockOpponent.nickname}</p>
-                  <p className="text-slate-400 text-sm">Pontos: {opponentScore}</p>
+              {/* Timer com círculo progressivo */}
+              <div className="text-center">
+                <div className="relative w-20 h-20 mb-2">
+                  {/* Círculo de fundo */}
+                  <div className="absolute inset-0 w-20 h-20 rounded-full border-4 border-slate-600"></div>
+                  {/* Círculo de progresso */}
+                  <svg className="absolute inset-0 w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="36"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                      className="text-[#adff2f]"
+                      strokeDasharray={`${2 * Math.PI * 36}`}
+                      strokeDashoffset={`${2 * Math.PI * 36 * (1 - timeLeft / 15)}`}
+                      style={{
+                        transition: 'stroke-dashoffset 1s linear'
+                      }}
+                    />
+                  </svg>
+                  {/* Número do tempo */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-[#adff2f] font-bold text-xl">{timeLeft}</span>
+                  </div>
                 </div>
-                <img src={mockOpponent.avatar} alt={mockOpponent.nickname} className="w-12 h-12 rounded-full" />
+                <p className="text-xs text-slate-400">Segundos</p>
+              </div>
+              
+              {/* Oponente */}
+              <div className="text-center">
+                <div className="w-16 h-16 border-4 border-blue-500 rounded-full p-1 mb-2">
+                  <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={mockOpponent.avatar} 
+                      alt={mockOpponent.nickname}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  </div>
+                </div>
+                <p className="text-white font-semibold text-sm">{mockOpponent.nickname}</p>
+                <p className="text-slate-400 text-xs">Pontos: {opponentScore}</p>
               </div>
             </div>
           </div>
@@ -679,9 +726,27 @@ export default function DuelQuiz() {
             {/* Placar */}
             <div className="flex items-center justify-between mb-6">
               <div className="text-center">
-                <img src={mockUser.avatar} alt={mockUser.nickname} className="w-12 h-12 rounded-full mx-auto mb-2" />
-                <p className="text-black font-semibold">{mockUser.nickname}</p>
-                <p className="text-black text-sm">Você</p>
+                <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full p-1 mb-2">
+                  <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                    {userProfile?.avatars ? (
+                      <AvatarDisplay 
+                        avatar={userProfile.avatars} 
+                        size="sm" 
+                        showBadge={false}
+                      />
+                    ) : userProfile?.profile_image_url ? (
+                      <img 
+                        src={userProfile.profile_image_url} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover rounded-full" 
+                      />
+                    ) : (
+                      <img src={satoshiMascot} alt="Default" className="w-8 h-8" />
+                    )}
+                  </div>
+                </div>
+                <p className="text-black font-semibold text-sm">{userProfile?.nickname || mockUser.nickname}</p>
+                <p className="text-black text-xs">Você</p>
               </div>
               
               <div className="bg-[#8cc020] rounded-full w-16 h-16 flex items-center justify-center">
@@ -695,9 +760,17 @@ export default function DuelQuiz() {
               </div>
               
               <div className="text-center">
-                <img src={mockOpponent.avatar} alt={mockOpponent.nickname} className="w-12 h-12 rounded-full mx-auto mb-2" />
-                <p className="text-black font-semibold">{mockOpponent.nickname}</p>
-                <p className="text-black text-sm">Oponente</p>
+                <div className="w-16 h-16 border-4 border-blue-500 rounded-full p-1 mb-2">
+                  <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                    <img 
+                      src={mockOpponent.avatar} 
+                      alt={mockOpponent.nickname}
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  </div>
+                </div>
+                <p className="text-black font-semibold text-sm">{mockOpponent.nickname}</p>
+                <p className="text-black text-xs">Oponente</p>
               </div>
             </div>
 
