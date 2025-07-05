@@ -10,6 +10,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
+import { 
+  validatePortfolioName, 
+  validatePortfolioDescription, 
+  validateAssetQuantity, 
+  validateAssetPrice,
+  validateInitialBalance,
+  sanitizeText,
+  globalRateLimiter
+} from "@/lib/validation";
+import { SecurityLogger } from "@/lib/security-logger";
 
 interface Portfolio {
   id?: string;
@@ -88,13 +98,29 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
     avg_price: 0
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
-  const addHolding = () => {
-    if (!newHolding.asset_symbol || !newHolding.quantity || !newHolding.avg_price) {
+  const addHolding = async () => {
+    // Rate limiting check
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && !globalRateLimiter.canPerformAction(user.id, 'add_holding', 20)) {
       toast({
-        title: "Dados incompletos",
-        description: "Preencha todos os campos do ativo",
+        title: "Muitas ações",
+        description: "Aguarde um momento antes de adicionar mais ativos",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validation
+    const quantityError = validateAssetQuantity(newHolding.quantity || 0);
+    const priceError = validateAssetPrice(newHolding.avg_price || 0);
+    
+    if (!newHolding.asset_symbol || quantityError || priceError) {
+      toast({
+        title: "Dados inválidos",
+        description: quantityError || priceError || "Selecione um ativo",
         variant: "destructive"
       });
       return;
@@ -151,10 +177,26 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
   };
 
   const savePortfolio = async () => {
-    if (!portfolio.name.trim()) {
+    // Input validation
+    const nameError = validatePortfolioName(portfolio.name);
+    const descError = validatePortfolioDescription(portfolio.description);
+    const balanceError = validateInitialBalance(portfolio.initial_balance);
+    
+    if (nameError || descError || balanceError) {
       toast({
-        title: "Nome obrigatório",
-        description: "Digite um nome para sua carteira",
+        title: "Dados inválidos",
+        description: nameError || descError || balanceError,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Rate limiting check
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user && !globalRateLimiter.canPerformAction(user.id, 'create_portfolio', 5)) {
+      toast({
+        title: "Limite atingido",
+        description: "Aguarde um momento antes de criar outra carteira",
         variant: "destructive"
       });
       return;
@@ -174,13 +216,17 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
 
       if (!profile) throw new Error('Perfil não encontrado');
 
-      // Save portfolio
+      // Save portfolio with sanitized data
+      const sanitizedPortfolio = {
+        ...portfolio,
+        name: sanitizeText(portfolio.name),
+        description: sanitizeText(portfolio.description),
+        user_id: profile.id
+      };
+
       const { data: savedPortfolio, error: portfolioError } = await supabase
         .from('portfolios')
-        .insert({
-          ...portfolio,
-          user_id: profile.id
-        })
+        .insert(sanitizedPortfolio)
         .select()
         .single();
 
@@ -200,7 +246,7 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
         if (holdingsError) throw holdingsError;
       }
 
-      // Create activity
+      // Create activity and security log
       await supabase
         .from('activity_feed')
         .insert({
@@ -208,10 +254,13 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
           activity_type: 'create_portfolio',
           activity_data: {
             portfolio_id: savedPortfolio.id,
-            portfolio_name: portfolio.name,
+            portfolio_name: sanitizedPortfolio.name,
             district_theme: districtTheme
           }
         });
+
+      // Security logging
+      await SecurityLogger.logPortfolioCreation(savedPortfolio.id, sanitizedPortfolio.name);
 
       toast({
         title: "Carteira criada!",
@@ -265,18 +314,34 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
               <Input
                 id="name"
                 value={portfolio.name}
-                onChange={(e) => setPortfolio({...portfolio, name: e.target.value})}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setPortfolio({...portfolio, name: value});
+                  const error = validatePortfolioName(value);
+                  setErrors({...errors, name: error || ''});
+                }}
                 placeholder="Minha Carteira Diversificada"
+                className={errors.name ? "border-red-500" : ""}
               />
+              {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
             </div>
             <div>
               <Label htmlFor="balance">Saldo Inicial (R$)</Label>
               <Input
                 id="balance"
                 type="number"
+                min="100"
+                max="10000000"
                 value={portfolio.initial_balance}
-                onChange={(e) => setPortfolio({...portfolio, initial_balance: Number(e.target.value)})}
+                onChange={(e) => {
+                  const value = Number(e.target.value);
+                  setPortfolio({...portfolio, initial_balance: value});
+                  const error = validateInitialBalance(value);
+                  setErrors({...errors, balance: error || ''});
+                }}
+                className={errors.balance ? "border-red-500" : ""}
               />
+              {errors.balance && <p className="text-sm text-red-500 mt-1">{errors.balance}</p>}
             </div>
           </div>
           
@@ -285,9 +350,22 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
             <Textarea
               id="description"
               value={portfolio.description}
-              onChange={(e) => setPortfolio({...portfolio, description: e.target.value})}
+              maxLength={500}
+              onChange={(e) => {
+                const value = e.target.value;
+                setPortfolio({...portfolio, description: value});
+                const error = validatePortfolioDescription(value);
+                setErrors({...errors, description: error || ''});
+              }}
               placeholder="Estratégia focada em dividendos e crescimento..."
+              className={errors.description ? "border-red-500" : ""}
             />
+            <div className="flex justify-between items-center">
+              {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+              <p className="text-sm text-muted-foreground ml-auto">
+                {portfolio.description.length}/500
+              </p>
+            </div>
           </div>
           
           <div className="flex items-center space-x-2">
@@ -382,6 +460,8 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
               <Input
                 type="number"
                 step="0.01"
+                min="0.000001"
+                max="1000000"
                 value={newHolding.quantity}
                 onChange={(e) => setNewHolding({...newHolding, quantity: Number(e.target.value)})}
               />
@@ -392,6 +472,8 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
               <Input
                 type="number"
                 step="0.01"
+                min="0.01"
+                max="1000000"
                 value={newHolding.avg_price}
                 onChange={(e) => setNewHolding({...newHolding, avg_price: Number(e.target.value)})}
               />

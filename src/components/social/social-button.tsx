@@ -4,6 +4,8 @@ import { Heart, UserPlus, UserMinus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { globalRateLimiter } from "@/lib/validation";
+import { SecurityLogger } from "@/lib/security-logger";
 
 interface SocialButtonProps {
   targetType: 'profile' | 'portfolio';
@@ -114,6 +116,27 @@ export function SocialButton({
         return;
       }
 
+      // Rate limiting
+      const rateLimitKey = `${actionType}_${targetType}`;
+      if (!globalRateLimiter.canPerformAction(user.id, rateLimitKey, 30)) {
+        toast({
+          title: "Muitas ações",
+          description: "Aguarde um momento antes de tentar novamente",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Validate target
+      if (!targetId || (actionType === 'follow' && !targetUserId)) {
+        toast({
+          title: "Erro",
+          description: "Dados de destino inválidos",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
@@ -184,6 +207,13 @@ export function SocialButton({
 
       setIsActive(!isActive);
       setCount(prev => isActive ? prev - 1 : prev + 1);
+
+      // Security logging
+      await SecurityLogger.logSocialAction(
+        isActive ? `un${actionType}` : actionType, 
+        targetId, 
+        targetType
+      );
 
       toast({
         title: isActive ? "Removido" : "Adicionado",
