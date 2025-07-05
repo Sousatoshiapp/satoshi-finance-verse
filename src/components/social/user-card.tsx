@@ -14,62 +14,84 @@ interface UserCardProps {
     xp?: number;
     follower_count?: number;
     following_count?: number;
+    avatar?: {
+      id: string;
+      name: string;
+      image_url: string;
+    };
   };
   showSocialStats?: boolean;
   compact?: boolean;
   onStartConversation?: (userId: string) => void;
+  onClick?: (userId: string) => void;
 }
 
-export function UserCard({ user, showSocialStats = true, compact = false, onStartConversation }: UserCardProps) {
+export function UserCard({ user, showSocialStats = true, compact = false, onStartConversation, onClick }: UserCardProps) {
   if (compact) {
     return (
-      <div className="flex items-center gap-3 p-2">
+      <div 
+        className="flex items-center gap-3 p-2 cursor-pointer hover:bg-muted/50 rounded-lg transition-colors"
+        onClick={() => onClick?.(user.id)}
+      >
         <Avatar className="h-8 w-8">
-          <AvatarImage src={user.profile_image_url} />
+          <AvatarImage src={user.avatar?.image_url} />
           <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{user.nickname}</p>
-          <p className="text-xs text-muted-foreground">Nível {user.level || 1}</p>
-        </div>
-        <div className="flex gap-1">
-          <SocialButton
-            targetType="profile"
-            targetId={user.id}
-            targetUserId={user.id}
-            actionType="follow"
-            size="sm"
-          />
-          {onStartConversation && (
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => onStartConversation(user.id)}
+          <div className="flex items-center gap-2">
+            <Badge 
+              variant="secondary" 
+              className="text-xs bg-orange-500 text-white"
             >
-              <MessageCircle className="h-4 w-4" />
-            </Button>
-          )}
+              Nível {user.level || 1}
+            </Badge>
+            {user.avatar && (
+              <span className="text-xs text-muted-foreground truncate">
+                {user.avatar.name}
+              </span>
+            )}
+          </div>
         </div>
+        <SocialButton
+          targetType="profile"
+          targetId={user.id}
+          targetUserId={user.id}
+          actionType="follow"
+          size="sm"
+        />
       </div>
     );
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card 
+      className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+      onClick={() => onClick?.(user.id)}
+    >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={user.profile_image_url} />
+            <AvatarImage src={user.avatar?.image_url} />
             <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold truncate">{user.nickname}</h3>
-              <Badge variant="secondary" className="text-xs">
+              <Badge 
+                variant="secondary" 
+                className="text-xs bg-orange-500 text-white"
+              >
                 Nível {user.level || 1}
               </Badge>
             </div>
+            
+            {user.avatar && (
+              <p className="text-xs text-muted-foreground mb-2">
+                {user.avatar.name}
+              </p>
+            )}
             
             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
               <div className="flex items-center gap-1">
@@ -85,7 +107,10 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
               )}
             </div>
             
-            <div className="flex gap-2">
+            <div 
+              className="flex gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               <SocialButton
                 targetType="profile"
                 targetId={user.id}

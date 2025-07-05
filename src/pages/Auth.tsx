@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { EmailVerificationNotice } from "@/components/auth/email-verification-notice";
 import authBackground from "@/assets/auth-background.jpg";
 
 export default function Auth() {
@@ -19,6 +20,8 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -64,7 +67,7 @@ export default function Auth() {
         navigate("/satoshi-city");
       } else {
         // Sign up
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -92,13 +95,22 @@ export default function Auth() {
           return;
         }
 
-        toast({
-          title: "Cadastro realizado!",
-          description: "Verifique sua caixa de email para confirmar sua conta antes de fazer login.",
-        });
-        
-        // Switch to login mode after successful signup
-        setIsLogin(true);
+        if (data.user && !data.session) {
+          // User needs to verify email
+          setRegisteredEmail(email);
+          setShowEmailVerification(true);
+          toast({
+            title: "Cadastro realizado!",
+            description: "Verifique seu email para ativar sua conta"
+          });
+        } else if (data.session) {
+          // User is already confirmed
+          toast({
+            title: "Bem-vindo!",
+            description: "Conta criada com sucesso"
+          });
+          navigate("/satoshi-city");
+        }
       }
     } catch (error) {
       toast({
@@ -218,6 +230,22 @@ export default function Auth() {
       });
     }
   };
+
+  if (showEmailVerification) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/5 p-4">
+        <EmailVerificationNotice 
+          email={registeredEmail}
+          onResend={() => {
+            toast({
+              title: "Email reenviado",
+              description: "Verifique sua caixa de entrada"
+            });
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">

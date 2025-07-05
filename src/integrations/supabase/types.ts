@@ -552,6 +552,83 @@ export type Database = {
           },
         ]
       }
+      notification_templates: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          message_template: string
+          name: string
+          title_template: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          message_template: string
+          name: string
+          title_template: string
+          type?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          message_template?: string
+          name?: string
+          title_template?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          data: Json | null
+          expires_at: string | null
+          id: string
+          is_read: boolean
+          message: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          message: string
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_notifications_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       portfolio_holdings: {
         Row: {
           asset_name: string
@@ -755,6 +832,50 @@ export type Database = {
             columns: ["avatar_id"]
             isOneToOne: false
             referencedRelation: "avatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_notification_settings: {
+        Row: {
+          auth_key: string | null
+          created_at: string
+          enabled: boolean
+          endpoint: string | null
+          id: string
+          p256dh_key: string | null
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth_key?: string | null
+          created_at?: string
+          enabled?: boolean
+          endpoint?: string | null
+          id?: string
+          p256dh_key?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth_key?: string | null
+          created_at?: string
+          enabled?: boolean
+          endpoint?: string | null
+          id?: string
+          p256dh_key?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_push_settings_user"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

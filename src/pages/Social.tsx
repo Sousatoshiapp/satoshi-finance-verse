@@ -21,6 +21,11 @@ interface User {
   xp?: number;
   follower_count?: number;
   following_count?: number;
+  avatar?: {
+    id: string;
+    name: string;
+    image_url: string;
+  };
 }
 
 export default function Social() {
@@ -42,7 +47,14 @@ export default function Social() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, nickname, profile_image_url, level, xp')
+        .select(`
+          id, 
+          nickname, 
+          profile_image_url, 
+          level, 
+          xp,
+          avatar:avatars(id, name, image_url)
+        `)
         .ilike('nickname', `%${query}%`)
         .limit(10);
 
@@ -85,7 +97,14 @@ export default function Social() {
         
         const { data: followingUsers, error: usersError } = await supabase
           .from('profiles')
-          .select('id, nickname, profile_image_url, level, xp')
+          .select(`
+            id, 
+            nickname, 
+            profile_image_url, 
+            level, 
+            xp,
+            avatar:avatars(id, name, image_url)
+          `)
           .in('id', followingIds);
 
         if (usersError) throw usersError;
@@ -123,7 +142,14 @@ export default function Social() {
         
         const { data: followerUsers, error: usersError } = await supabase
           .from('profiles')
-          .select('id, nickname, profile_image_url, level, xp')
+          .select(`
+            id, 
+            nickname, 
+            profile_image_url, 
+            level, 
+            xp,
+            avatar:avatars(id, name, image_url)
+          `)
           .in('id', followerIds);
 
         if (usersError) throw usersError;
@@ -207,6 +233,9 @@ export default function Social() {
                               description: "Funcionalidade de mensagens será implementada em breve"
                             });
                           }}
+                          onClick={(userId) => {
+                            window.location.href = `/user/${userId}`;
+                          }}
                         />
                       ))
                     ) : searchQuery ? (
@@ -231,6 +260,9 @@ export default function Social() {
                           key={user.id} 
                           user={user}
                           compact
+                          onClick={(userId) => {
+                            window.location.href = `/user/${userId}`;
+                          }}
                         />
                       ))
                     ) : (
@@ -251,6 +283,9 @@ export default function Social() {
                           key={user.id} 
                           user={user}
                           compact
+                          onClick={(userId) => {
+                            window.location.href = `/user/${userId}`;
+                          }}
                         />
                       ))
                     ) : (
