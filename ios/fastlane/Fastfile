@@ -1,12 +1,9 @@
-default_platform(:ios)
-
 platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
+    match(type: "appstore") # baixa certificado
     build_app(
-      project: "Satoshi_Finance_Game.xcodeproj",
-      scheme: "Satoshi_Finance_Game",
-      xcargs: "CODE_SIGN_ENTITLEMENTS=Satoshi_Finance_Game/Satoshi_Finance_Game.entitlements"
+      scheme: "Satoshi_Finance_Game"
     )
     upload_to_testflight
   end
