@@ -23,8 +23,10 @@ jobs:
         run: gem install fastlane
 
       - name: Install CocoaPods dependencies
-        run: pod install
-        if: exists('Podfile')
+        run: |
+          if [ -f Podfile ]; then
+            pod install
+          fi
 
       - name: Build and upload to TestFlight
         env:
