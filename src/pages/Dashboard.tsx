@@ -4,9 +4,12 @@ import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { AvatarSelection } from "@/components/avatar-selection";
+import { AvatarDisplay } from "@/components/avatar-display";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import newLogo from "/lovable-uploads/874326e7-1122-419a-8916-5df0c112245d.png";
 
 const getGreeting = () => {
@@ -31,8 +34,12 @@ export default function Dashboard() {
   });
   const [userNickname, setUserNickname] = useState('Estudante');
   const [greeting, setGreeting] = useState(getGreeting());
+  const [userAvatar, setUserAvatar] = useState<any>(null);
+  const [showAvatarSelection, setShowAvatarSelection] = useState(false);
+  const [hasAvatar, setHasAvatar] = useState(false);
   
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Verificar se usuário existe, se não redirecionar para welcome
@@ -75,7 +82,19 @@ export default function Dashboard() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          *,
+          avatars (
+            id,
+            name,
+            description,
+            image_url,
+            avatar_class,
+            district_theme,
+            rarity,
+            evolution_level
+          )
+        `)
         .eq('user_id', authUser.id)
         .single();
 
@@ -88,10 +107,34 @@ export default function Dashboard() {
           completedLessons: profile.completed_lessons || 0
         });
         setUserNickname(profile.nickname || 'Estudante');
+        
+        // Check if user has an avatar
+        if (profile.avatars) {
+          setUserAvatar(profile.avatars);
+          setHasAvatar(true);
+        } else {
+          // Check if user is new and should see avatar selection
+          setShowAvatarSelection(true);
+        }
       }
     } catch (error) {
       console.error('Error loading user data from Supabase:', error);
       // Dados do localStorage já foram carregados acima
+    }
+  };
+
+  const handleAvatarSelected = () => {
+    // Reload user data to get the new avatar
+    loadUserData();
+  };
+
+  const handleAvatarAction = () => {
+    if (hasAvatar) {
+      // Navigate to avatar evolution/upgrade section in store
+      navigate('/store?tab=avatars');
+    } else {
+      // Show avatar selection dialog
+      setShowAvatarSelection(true);
     }
   };
 
@@ -131,8 +174,19 @@ export default function Dashboard() {
           {/* Avatar Section */}
           <div className="text-center mb-8">
             <div className="relative mb-4">
-              <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-end justify-center overflow-hidden shadow-elevated">
-                <div className="text-8xl mb-4">🤖</div>
+              <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated relative">
+                {userAvatar ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <AvatarDisplay 
+                      avatar={userAvatar} 
+                      size="lg"
+                      showBadge={true}
+                      evolutionLevel={userAvatar.evolution_level || 1}
+                    />
+                  </div>
+                ) : (
+                  <div className="text-8xl mb-4">🤖</div>
+                )}
               </div>
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
                 <div className="bg-warning text-black px-2 py-1 rounded-full text-xs font-medium">
@@ -143,17 +197,22 @@ export default function Dashboard() {
             
             <Button 
               className="bg-gradient-to-r from-primary to-success text-black px-8 py-3 rounded-full text-lg font-semibold shadow-glow mb-4"
-              onClick={() => navigate('/store')}
+              onClick={handleAvatarAction}
             >
-              Comprar Avatar
+              {hasAvatar ? 'Evoluir Avatar' : 'Escolher Avatar'}
             </Button>
             
             <p className="text-muted-foreground text-sm mb-2">
-              Jogue o próximo nível para evoluir seu avatar
+              {hasAvatar 
+                ? 'Continue jogando para evoluir seu cidadão digital' 
+                : 'Selecione seu primeiro avatar para começar'
+              }
             </p>
             
             <div className="flex items-center justify-between text-sm mb-4">
-              <span className="text-foreground font-medium">Tartaruga Estrategista</span>
+              <span className="text-foreground font-medium">
+                {userAvatar ? userAvatar.name : 'Cidadão Anônimo'}
+              </span>
               <span className="text-muted-foreground">Nível {userStats.level}</span>
             </div>
             
@@ -247,6 +306,13 @@ export default function Dashboard() {
       </div>
       
       <FloatingNavbar />
+      
+      {/* Avatar Selection Dialog */}
+      <AvatarSelection 
+        open={showAvatarSelection}
+        onOpenChange={setShowAvatarSelection}
+        onAvatarSelected={handleAvatarSelected}
+      />
     </div>
   );
 }

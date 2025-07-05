@@ -10,6 +10,15 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield } from "lucide-react";
 
+// Import cyberpunk avatar images
+import neoTrader from "@/assets/avatars/neo-trader.jpg";
+import cryptoAnalyst from "@/assets/avatars/crypto-analyst.jpg";
+import financeHacker from "@/assets/avatars/finance-hacker.jpg";
+import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
+import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
+import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
+import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
+
 interface Avatar {
   id: string;
   name: string;
@@ -352,8 +361,9 @@ export default function Store() {
 
         {/* Tabs */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
+            <TabsTrigger value="citizens">🤖 Cidadãos</TabsTrigger>
             <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
             <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
           </TabsList>

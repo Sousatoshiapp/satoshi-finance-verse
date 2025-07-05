@@ -9,38 +9,100 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      avatar_evolutions: {
+        Row: {
+          bonus_changes: Json | null
+          created_at: string
+          evolution_level: number
+          id: string
+          unlocked_at: string | null
+          user_avatar_id: string
+          visual_changes: Json | null
+          xp_required: number
+        }
+        Insert: {
+          bonus_changes?: Json | null
+          created_at?: string
+          evolution_level?: number
+          id?: string
+          unlocked_at?: string | null
+          user_avatar_id: string
+          visual_changes?: Json | null
+          xp_required?: number
+        }
+        Update: {
+          bonus_changes?: Json | null
+          created_at?: string
+          evolution_level?: number
+          id?: string
+          unlocked_at?: string | null
+          user_avatar_id?: string
+          visual_changes?: Json | null
+          xp_required?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "avatar_evolutions_user_avatar_id_fkey"
+            columns: ["user_avatar_id"]
+            isOneToOne: false
+            referencedRelation: "user_avatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       avatars: {
         Row: {
+          avatar_class: string | null
+          backstory: string | null
+          bonus_effects: Json | null
           created_at: string
           description: string | null
+          district_theme: string | null
+          evolution_level: number | null
           id: string
           image_url: string
           is_available: boolean
+          is_starter: boolean | null
           level_required: number
+          model_url: string | null
           name: string
           price: number
           rarity: string
           updated_at: string
         }
         Insert: {
+          avatar_class?: string | null
+          backstory?: string | null
+          bonus_effects?: Json | null
           created_at?: string
           description?: string | null
+          district_theme?: string | null
+          evolution_level?: number | null
           id?: string
           image_url: string
           is_available?: boolean
+          is_starter?: boolean | null
           level_required?: number
+          model_url?: string | null
           name: string
           price?: number
           rarity?: string
           updated_at?: string
         }
         Update: {
+          avatar_class?: string | null
+          backstory?: string | null
+          bonus_effects?: Json | null
           created_at?: string
           description?: string | null
+          district_theme?: string | null
+          evolution_level?: number | null
           id?: string
           image_url?: string
           is_available?: boolean
+          is_starter?: boolean | null
           level_required?: number
+          model_url?: string | null
           name?: string
           price?: number
           rarity?: string
@@ -471,23 +533,29 @@ export type Database = {
       user_avatars: {
         Row: {
           avatar_id: string
+          evolution_level: number | null
           id: string
           is_active: boolean
           purchased_at: string
+          total_xp: number | null
           user_id: string
         }
         Insert: {
           avatar_id: string
+          evolution_level?: number | null
           id?: string
           is_active?: boolean
           purchased_at?: string
+          total_xp?: number | null
           user_id: string
         }
         Update: {
           avatar_id?: string
+          evolution_level?: number | null
           id?: string
           is_active?: boolean
           purchased_at?: string
+          total_xp?: number | null
           user_id?: string
         }
         Relationships: [
