@@ -1,85 +1,19 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { 
   validatePortfolioName, 
   validatePortfolioDescription, 
-  validateAssetQuantity, 
-  validateAssetPrice,
   validateInitialBalance,
   sanitizeText,
   globalRateLimiter
 } from "@/lib/validation";
 import { SecurityLogger } from "@/lib/security-logger";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
-
-interface Portfolio {
-  id?: string;
-  name: string;
-  description: string;
-  is_public: boolean;
-  district_theme?: string;
-  initial_balance: number;
-  current_balance: number;
-  performance_percentage: number;
-}
-
-interface Holding {
-  id?: string;
-  asset_symbol: string;
-  asset_name: string;
-  asset_type: string;
-  quantity: number;
-  avg_price: number;
-  current_price?: number;
-  total_value?: number;
-}
-
-const assetTypes = [
-  { value: 'stock', label: 'Ações' },
-  { value: 'crypto', label: 'Criptomoedas' },
-  { value: 'fund', label: 'Fundos' },
-  { value: 'bond', label: 'Renda Fixa' }
-];
-
-const mockAssets = {
-  stock: [
-    { symbol: 'PETR4', name: 'Petrobras PN', price: 32.45 },
-    { symbol: 'VALE3', name: 'Vale ON', price: 65.20 },
-    { symbol: 'ITUB4', name: 'Itaú Unibanco PN', price: 28.90 },
-    { symbol: 'BBDC4', name: 'Bradesco PN', price: 15.75 }
-  ],
-  crypto: [
-    { symbol: 'BTC', name: 'Bitcoin', price: 65000.00 },
-    { symbol: 'ETH', name: 'Ethereum', price: 3200.00 },
-    { symbol: 'ADA', name: 'Cardano', price: 0.45 },
-    { symbol: 'SOL', name: 'Solana', price: 145.00 }
-  ],
-  fund: [
-    { symbol: 'HGLG11', name: 'CSHG Logística FII', price: 145.50 },
-    { symbol: 'XPML11', name: 'XP Malls FII', price: 95.20 },
-    { symbol: 'KNRI11', name: 'Kinea Renda Imobiliária FII', price: 85.40 }
-  ],
-  bond: [
-    { symbol: 'SELIC', name: 'Tesouro Selic', price: 100.00 },
-    { symbol: 'IPCA+', name: 'Tesouro IPCA+', price: 95.50 },
-    { symbol: 'PRE', name: 'Tesouro Prefixado', price: 92.30 }
-  ]
-};
+import { Portfolio, Holding } from "./types";
+import { PortfolioForm } from "./portfolio-form";
+import { HoldingsManager } from "./holdings-manager";
+import { PortfolioCharts } from "./portfolio-charts";
 
 interface PortfolioBuilderProps {
   districtTheme?: string;
@@ -98,89 +32,9 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
   });
   
   const [holdings, setHoldings] = useState<Holding[]>([]);
-  const [newHolding, setNewHolding] = useState<Partial<Holding>>({
-    asset_type: 'stock',
-    quantity: 0,
-    avg_price: 0
-  });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
-
-  const addHolding = async () => {
-    // Rate limiting check
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user && !globalRateLimiter.canPerformAction(user.id, 'add_holding', 20)) {
-      toast({
-        title: "Muitas ações",
-        description: "Aguarde um momento antes de adicionar mais ativos",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Validation
-    const quantityError = validateAssetQuantity(newHolding.quantity || 0);
-    const priceError = validateAssetPrice(newHolding.avg_price || 0);
-    
-    if (!newHolding.asset_symbol || quantityError || priceError) {
-      toast({
-        title: "Dados inválidos",
-        description: quantityError || priceError || "Selecione um ativo",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const selectedAsset = mockAssets[newHolding.asset_type as keyof typeof mockAssets]
-      ?.find(asset => asset.symbol === newHolding.asset_symbol);
-
-    if (!selectedAsset) return;
-
-    const holding: Holding = {
-      asset_symbol: newHolding.asset_symbol,
-      asset_name: selectedAsset.name,
-      asset_type: newHolding.asset_type!,
-      quantity: newHolding.quantity!,
-      avg_price: newHolding.avg_price!,
-      current_price: selectedAsset.price,
-      total_value: newHolding.quantity! * selectedAsset.price
-    };
-
-    setHoldings([...holdings, holding]);
-    setNewHolding({
-      asset_type: 'stock',
-      quantity: 0,
-      avg_price: 0
-    });
-
-    // Update portfolio balance
-    const totalInvested = holdings.reduce((sum, h) => sum + (h.quantity * h.avg_price), 0) + 
-                         (holding.quantity * holding.avg_price);
-    const totalCurrent = holdings.reduce((sum, h) => sum + (h.total_value || 0), 0) + 
-                        (holding.total_value || 0);
-    
-    setPortfolio(prev => ({
-      ...prev,
-      current_balance: prev.initial_balance - totalInvested + totalCurrent,
-      performance_percentage: ((totalCurrent - totalInvested) / totalInvested) * 100 || 0
-    }));
-  };
-
-  const removeHolding = (index: number) => {
-    const updatedHoldings = holdings.filter((_, i) => i !== index);
-    setHoldings(updatedHoldings);
-    
-    // Recalculate portfolio
-    const totalInvested = updatedHoldings.reduce((sum, h) => sum + (h.quantity * h.avg_price), 0);
-    const totalCurrent = updatedHoldings.reduce((sum, h) => sum + (h.total_value || 0), 0);
-    
-    setPortfolio(prev => ({
-      ...prev,
-      current_balance: prev.initial_balance - totalInvested + totalCurrent,
-      performance_percentage: totalInvested > 0 ? ((totalCurrent - totalInvested) / totalInvested) * 100 : 0
-    }));
-  };
 
   const savePortfolio = async () => {
     // Input validation
@@ -299,343 +153,25 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
     }
   };
 
-  const getAvailableAssets = () => {
-    return mockAssets[newHolding.asset_type as keyof typeof mockAssets] || [];
-  };
-
-  // Prepare chart data
-  const getPieChartData = () => {
-    const totalValue = holdings.reduce((sum, h) => sum + (h.total_value || 0), 0);
-    return holdings.map(holding => ({
-      name: holding.asset_symbol,
-      value: holding.total_value || 0,
-      percentage: ((holding.total_value || 0) / totalValue * 100).toFixed(1)
-    }));
-  };
-
-  const getBarChartData = () => {
-    return holdings.map(holding => ({
-      name: holding.asset_symbol,
-      valor: holding.total_value || 0,
-      tipo: assetTypes.find(t => t.value === holding.asset_type)?.label || holding.asset_type
-    }));
-  };
-
-  const chartConfig = {
-    valor: {
-      label: "Valor (R$)",
-      color: "hsl(var(--primary))",
-    },
-  };
-
-  const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--destructive))', 'hsl(var(--muted))'];
-
   return (
     <div className="space-y-6">
-      {/* Portfolio Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Nova Carteira de Investimentos</CardTitle>
-          <CardDescription>
-            Crie uma carteira virtual para praticar suas estratégias de investimento
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="name">Nome da Carteira</Label>
-              <Input
-                id="name"
-                value={portfolio.name}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setPortfolio({...portfolio, name: value});
-                  const error = validatePortfolioName(value);
-                  setErrors({...errors, name: error || ''});
-                }}
-                placeholder="Minha Carteira Diversificada"
-                className={errors.name ? "border-red-500" : ""}
-              />
-              {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
-            </div>
-            <div>
-              <Label htmlFor="balance">Saldo Inicial (R$)</Label>
-              <Input
-                id="balance"
-                type="number"
-                min="100"
-                max="10000000"
-                value={portfolio.initial_balance}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  setPortfolio({...portfolio, initial_balance: value});
-                  const error = validateInitialBalance(value);
-                  setErrors({...errors, balance: error || ''});
-                }}
-                className={errors.balance ? "border-red-500" : ""}
-              />
-              {errors.balance && <p className="text-sm text-red-500 mt-1">{errors.balance}</p>}
-            </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="description">Descrição</Label>
-            <Textarea
-              id="description"
-              value={portfolio.description}
-              maxLength={500}
-              onChange={(e) => {
-                const value = e.target.value;
-                setPortfolio({...portfolio, description: value});
-                const error = validatePortfolioDescription(value);
-                setErrors({...errors, description: error || ''});
-              }}
-              placeholder="Estratégia focada em dividendos e crescimento..."
-              className={errors.description ? "border-red-500" : ""}
-            />
-            <div className="flex justify-between items-center">
-              {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
-              <p className="text-sm text-muted-foreground ml-auto">
-                {portfolio.description.length}/500
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="public"
-              checked={portfolio.is_public}
-              onCheckedChange={(checked) => setPortfolio({...portfolio, is_public: checked})}
-            />
-            <Label htmlFor="public">Carteira pública (outros usuários podem ver e seguir)</Label>
-          </div>
+      <PortfolioForm
+        portfolio={portfolio}
+        holdings={holdings}
+        errors={errors}
+        onPortfolioChange={setPortfolio}
+        onErrorsChange={setErrors}
+      />
 
-          {/* Portfolio Performance */}
-          {holdings.length > 0 && (
-            <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  Saldo: R$ {portfolio.current_balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                {portfolio.performance_percentage >= 0 ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <span className={`text-sm font-medium ${
-                  portfolio.performance_percentage >= 0 ? 'text-green-500' : 'text-red-500'
-                }`}>
-                  {portfolio.performance_percentage.toFixed(2)}%
-                </span>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      <HoldingsManager
+        holdings={holdings}
+        portfolio={portfolio}
+        onHoldingsChange={setHoldings}
+        onPortfolioChange={setPortfolio}
+      />
 
-      {/* Add Holdings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Adicionar Ativos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div>
-              <Label>Tipo de Ativo</Label>
-              <Select
-                value={newHolding.asset_type}
-                onValueChange={(value) => setNewHolding({...newHolding, asset_type: value, asset_symbol: ''})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {assetTypes.map(type => (
-                    <SelectItem key={type.value} value={type.value}>
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label>Ativo</Label>
-              <Select
-                value={newHolding.asset_symbol}
-                onValueChange={(value) => {
-                  const asset = getAvailableAssets().find(a => a.symbol === value);
-                  setNewHolding({
-                    ...newHolding,
-                    asset_symbol: value,
-                    avg_price: asset?.price || 0
-                  });
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {getAvailableAssets().map(asset => (
-                    <SelectItem key={asset.symbol} value={asset.symbol}>
-                      {asset.symbol} - {asset.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label>Quantidade</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0.000001"
-                max="1000000"
-                value={newHolding.quantity}
-                onChange={(e) => setNewHolding({...newHolding, quantity: Number(e.target.value)})}
-              />
-            </div>
-            
-            <div>
-              <Label>Preço Médio (R$)</Label>
-              <Input
-                type="number"
-                step="0.01"
-                min="0.01"
-                max="1000000"
-                value={newHolding.avg_price}
-                onChange={(e) => setNewHolding({...newHolding, avg_price: Number(e.target.value)})}
-              />
-            </div>
-          </div>
-          
-          <Button onClick={addHolding} className="w-full">
-            <Plus className="h-4 w-4 mr-2" />
-            Adicionar Ativo
-          </Button>
-        </CardContent>
-      </Card>
+      <PortfolioCharts holdings={holdings} />
 
-      {/* Holdings List */}
-      {holdings.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Ativos na Carteira</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {holdings.map((holding, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge variant="outline">
-                        {assetTypes.find(t => t.value === holding.asset_type)?.label}
-                      </Badge>
-                      <span className="font-medium">{holding.asset_symbol}</span>
-                      <span className="text-sm text-muted-foreground">{holding.asset_name}</span>
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {holding.quantity} x R$ {holding.current_price?.toFixed(2)} = 
-                      R$ {holding.total_value?.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeHolding(index)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Charts */}
-      {holdings.length > 0 && (
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Pie Chart - Asset Distribution */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribuição por Ativos</CardTitle>
-              <CardDescription>Percentual de cada ativo na carteira</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig}>
-                <PieChart>
-                  <Pie
-                    data={getPieChartData()}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ percentage }) => `${percentage}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {getPieChartData().map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip 
-                    content={<ChartTooltipContent />}
-                    formatter={(value: number, name: string) => [
-                      `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-                      name
-                    ]}
-                  />
-                </PieChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
-          {/* Bar Chart - Asset Composition */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Composição da Carteira</CardTitle>
-              <CardDescription>Valor total investido por ativo</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={chartConfig}>
-                <BarChart data={getBarChartData()}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fontSize: 12 }}
-                    angle={-45}
-                    textAnchor="end"
-                    height={60}
-                  />
-                  <YAxis 
-                    tick={{ fontSize: 12 }}
-                    tickFormatter={(value) => `R$ ${(value / 1000).toFixed(0)}k`}
-                  />
-                  <ChartTooltip 
-                    content={<ChartTooltipContent />}
-                    formatter={(value: number) => [
-                      `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-                      'Valor'
-                    ]}
-                  />
-                  <Bar 
-                    dataKey="valor" 
-                    fill="var(--color-valor)"
-                    radius={[4, 4, 0, 0]}
-                  />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Save Button */}
       <Button 
         onClick={savePortfolio} 
         disabled={loading || !portfolio.name.trim()}
