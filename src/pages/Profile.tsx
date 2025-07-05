@@ -12,6 +12,7 @@ import { AvatarSelector } from "@/components/avatar-selector";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getLevelInfo } from "@/data/levels";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 interface UserProfile {
@@ -26,8 +27,15 @@ interface UserProfile {
   avatar_id?: string;
 }
 
+interface UserAvatar {
+  id: string;
+  name: string;
+  image_url: string;
+}
+
 export default function Profile() {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [userAvatar, setUserAvatar] = useState<UserAvatar | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -76,6 +84,19 @@ export default function Profile() {
 
       if (profile) {
         setUser(profile);
+        
+        // Load user avatar if they have one
+        if (profile.avatar_id) {
+          const { data: avatarData } = await supabase
+            .from('avatars')
+            .select('id, name, image_url')
+            .eq('id', profile.avatar_id)
+            .single();
+          
+          if (avatarData) {
+            setUserAvatar(avatarData);
+          }
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -90,9 +111,24 @@ export default function Profile() {
     }
   };
 
-  const handleAvatarChanged = (avatarId: string) => {
+  const handleAvatarChanged = async (avatarId: string) => {
     if (user) {
       setUser({ ...user, avatar_id: avatarId });
+      
+      // Load the new avatar data
+      if (avatarId) {
+        const { data: avatarData } = await supabase
+          .from('avatars')
+          .select('id, name, image_url')
+          .eq('id', avatarId)
+          .single();
+        
+        if (avatarData) {
+          setUserAvatar(avatarData);
+        }
+      } else {
+        setUserAvatar(null);
+      }
     }
   };
 
@@ -158,7 +194,10 @@ export default function Profile() {
         <Card className="p-6 mb-8">
           <div className="flex items-center gap-6">
             <Avatar className="w-20 h-20">
-              <AvatarImage src={user.profile_image_url || satoshiLogo} alt={user.nickname} />
+              <AvatarImage 
+                src={userAvatar?.image_url || user.profile_image_url || satoshiLogo} 
+                alt={user.nickname} 
+              />
               <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             
@@ -167,7 +206,7 @@ export default function Profile() {
               <p className="text-muted-foreground mb-3">Nível {user.level} • {user.points} Pontos Beetz</p>
               <div className="flex items-center gap-3">
                 <StreakBadge days={user.streak} />
-                <Badge variant="outline">Aprendiz de Finanças</Badge>
+                <Badge variant="outline">{getLevelInfo(user.level).name}</Badge>
               </div>
             </div>
           </div>
