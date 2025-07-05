@@ -8,6 +8,7 @@ import { SocialButton } from "@/components/social/social-button";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Trophy, Medal, Star, TrendingUp, Users, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingNavbar } from "@/components/floating-navbar";
 
 interface UserProfileData {
   id: string;
@@ -199,6 +200,7 @@ export default function UserProfile() {
 
   return (
     <div className="min-h-screen bg-background p-4 pb-20">
+      <FloatingNavbar />
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-3">

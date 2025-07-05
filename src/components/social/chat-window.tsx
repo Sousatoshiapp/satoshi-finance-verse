@@ -10,6 +10,7 @@ import { ArrowLeft, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { FloatingNavbar } from "@/components/floating-navbar";
 
 interface Message {
   id: string;
@@ -176,9 +177,10 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background p-4 pb-20">
-        <div className="max-w-4xl mx-auto">
+  return (
+    <div className="min-h-screen bg-background p-4 pb-20">
+      <FloatingNavbar />
+      <div className="max-w-4xl mx-auto">
           <div className="text-center text-muted-foreground py-8">
             Carregando conversa...
           </div>
