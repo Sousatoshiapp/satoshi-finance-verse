@@ -4,7 +4,12 @@ platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
     build_app(
-      scheme: "Satoshi_Finance_Game"
+      scheme: "Satoshi_Finance_Game",
+      export_method: "app-store",
+      export_options: {
+        signingStyle: "automatic",
+        method: "app-store"
+      }
     )
     upload_to_testflight
   end
