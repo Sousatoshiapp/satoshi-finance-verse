@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
@@ -9,12 +9,24 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [hasRedirected, setHasRedirected] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/welcome");
+    // Only redirect once and avoid redirect loops
+    if (!loading && !user && !hasRedirected) {
+      console.log(`ProtectedRoute: Redirecting from ${location.pathname} to /welcome`);
+      setHasRedirected(true);
+      navigate("/welcome", { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, location.pathname, hasRedirected]);
+
+  // Reset redirect flag when user becomes available
+  useEffect(() => {
+    if (user && hasRedirected) {
+      setHasRedirected(false);
+    }
+  }, [user, hasRedirected]);
 
   if (loading) {
     return (

@@ -1,0 +1,6 @@
+# Netlify SPA redirect rules
+/*    /index.html   200
+
+# Handle specific routes that should not be redirected
+/api/*  /api/:splat  200
+/assets/*  /assets/:splat  200
