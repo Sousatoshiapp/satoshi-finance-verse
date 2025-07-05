@@ -189,6 +189,7 @@ export default function UserProfile() {
   if (!user) {
     return (
       <div className="min-h-screen bg-background p-4 pb-20">
+        <FloatingNavbar />
         <div className="max-w-4xl mx-auto">
           <div className="text-center text-muted-foreground py-8">
             Usuário não encontrado
