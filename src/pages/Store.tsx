@@ -426,10 +426,11 @@ export default function Store() {
 
         {/* Tabs */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
             <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
             <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
+            <TabsTrigger value="beetz">💎 Beetz</TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}
@@ -757,6 +758,81 @@ export default function Store() {
                   </Card>
                 );
               })}
+            </div>
+          </TabsContent>
+
+          {/* Beetz Tab */}
+          <TabsContent value="beetz">
+            <div className="space-y-4">
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-bold text-foreground mb-2">💎 Pacotes de Beetz</h2>
+                <p className="text-sm text-muted-foreground">Compre Beetz com dinheiro real via Stripe</p>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-4">
+                {products.filter(p => p.category === 'beetz').map((beetzPackage) => {
+                  const beetzAmount = beetzPackage.effects?.beetz_amount || 0;
+                  const priceInReais = beetzPackage.price / 100; // Convert from centavos to reais
+                  
+                  return (
+                    <Card key={beetzPackage.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
+                              <span className="text-2xl">💎</span>
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-foreground">{beetzPackage.name}</h3>
+                              <p className="text-sm text-muted-foreground">{beetzPackage.description}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge className={`${getRarityColor(beetzPackage.rarity)} text-xs`}>
+                                  {getRarityIcon(beetzPackage.rarity)}
+                                  {beetzPackage.rarity}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {beetzAmount} Beetz
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-primary mb-1">
+                              R$ {priceInReais.toFixed(2)}
+                            </div>
+                            <Button
+                              onClick={() => purchaseBeetz(
+                                beetzAmount, 
+                                priceInReais, 
+                                beetzPackage.name
+                              )}
+                              disabled={purchasing === `beetz-${beetzAmount}`}
+                              className="w-full"
+                              size="sm"
+                            >
+                              {purchasing === `beetz-${beetzAmount}` ? "..." : "Comprar"}
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+              
+              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+                <div className="text-center">
+                  <h3 className="font-bold text-foreground mb-2">🔒 Pagamento Seguro</h3>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Processado via Stripe com máxima segurança
+                  </p>
+                  <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                    <Shield className="h-3 w-3" />
+                    <span>SSL • Criptografia 256-bit • PCI DSS</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

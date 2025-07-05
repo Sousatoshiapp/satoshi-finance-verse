@@ -48,7 +48,7 @@ serve(async (req) => {
     const { productId, userId, type } = session.metadata!;
 
     if (type === 'beetz') {
-      // Validate and extract Beetz amount from productId (e.g., "beetz-20" -> 20)
+      // Validate and extract Beetz amount from productId (e.g., "beetz-100" -> 100)
       if (!productId || !productId.includes('-')) {
         throw new Error('Invalid productId format for beetz');
       }
