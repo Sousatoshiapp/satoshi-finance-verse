@@ -43,7 +43,7 @@ interface Avatar {
 
 interface AvatarDisplayProps {
   avatar: Avatar;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   showBadge?: boolean;
   evolutionLevel?: number;
 }
@@ -96,6 +96,7 @@ export function AvatarDisplay({ avatar, size = 'md', showBadge = true, evolution
     switch (size) {
       case 'sm': return 'w-12 h-12';
       case 'lg': return 'w-24 h-24';
+      case 'xl': return 'w-48 h-48';
       default: return 'w-16 h-16';
     }
   };

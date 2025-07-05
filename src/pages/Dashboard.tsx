@@ -174,20 +174,20 @@ export default function Dashboard() {
           {/* Avatar Section */}
           <div className="text-center mb-8">
             <div className="relative mb-4">
-              <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated relative">
-                {userAvatar ? (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <AvatarDisplay 
-                      avatar={userAvatar} 
-                      size="lg"
-                      showBadge={true}
-                      evolutionLevel={userAvatar.evolution_level || 1}
-                    />
-                  </div>
-                ) : (
+              {userAvatar ? (
+                <div className="flex justify-center">
+                  <AvatarDisplay 
+                    avatar={userAvatar} 
+                    size="xl"
+                    showBadge={true}
+                    evolutionLevel={userAvatar.evolution_level || 1}
+                  />
+                </div>
+              ) : (
+                <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
                   <div className="text-8xl mb-4">🤖</div>
-                )}
-              </div>
+                </div>
+              )}
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
                 <div className="bg-warning text-black px-2 py-1 rounded-full text-xs font-medium">
                   🟡 Nível atual
