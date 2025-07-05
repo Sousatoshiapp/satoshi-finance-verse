@@ -421,7 +421,7 @@ export default function Quiz() {
             {/* Action Buttons */}
             <div className="space-y-4">
               <Button
-                onClick={() => window.location.reload()}
+                onClick={() => navigate('/dashboard')}
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 text-lg rounded-full"
               >
                 <span className="mr-2">▶</span>
