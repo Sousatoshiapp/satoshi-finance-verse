@@ -24,6 +24,7 @@ import DistrictDetail from "./pages/DistrictDetail";
 import DistrictQuiz from "./pages/DistrictQuiz";
 import Playground from "./pages/Playground";
 import Auth from "./pages/Auth";
+import Social from "./pages/Social";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/" element={<Welcome />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/social" element={<ProtectedRoute><Social /></ProtectedRoute>} />
             <Route path="/quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
             <Route path="/game-mode" element={<ProtectedRoute><GameMode /></ProtectedRoute>} />
             <Route path="/solo-quiz" element={<ProtectedRoute><SoloQuiz /></ProtectedRoute>} />

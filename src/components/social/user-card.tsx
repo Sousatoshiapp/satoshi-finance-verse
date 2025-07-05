@@ -2,7 +2,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { SocialButton } from "./social-button";
-import { Users, TrendingUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Users, TrendingUp, MessageCircle } from "lucide-react";
 
 interface UserCardProps {
   user: {
@@ -16,9 +17,10 @@ interface UserCardProps {
   };
   showSocialStats?: boolean;
   compact?: boolean;
+  onStartConversation?: (userId: string) => void;
 }
 
-export function UserCard({ user, showSocialStats = true, compact = false }: UserCardProps) {
+export function UserCard({ user, showSocialStats = true, compact = false, onStartConversation }: UserCardProps) {
   if (compact) {
     return (
       <div className="flex items-center gap-3 p-2">
@@ -30,13 +32,24 @@ export function UserCard({ user, showSocialStats = true, compact = false }: User
           <p className="text-sm font-medium truncate">{user.nickname}</p>
           <p className="text-xs text-muted-foreground">Nível {user.level || 1}</p>
         </div>
-        <SocialButton
-          targetType="profile"
-          targetId={user.id}
-          targetUserId={user.id}
-          actionType="follow"
-          size="sm"
-        />
+        <div className="flex gap-1">
+          <SocialButton
+            targetType="profile"
+            targetId={user.id}
+            targetUserId={user.id}
+            actionType="follow"
+            size="sm"
+          />
+          {onStartConversation && (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => onStartConversation(user.id)}
+            >
+              <MessageCircle className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
     );
   }
@@ -90,6 +103,15 @@ export function UserCard({ user, showSocialStats = true, compact = false }: User
                 variant="ghost"
                 showCount
               />
+              {onStartConversation && (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => onStartConversation(user.id)}
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </Button>
+              )}
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ export function FloatingNavbar() {
 
   const navItems = [
     { path: '/dashboard', icon: '🏠', label: 'Home' },
-    { path: '/quiz', icon: '⭐', label: 'Níveis' },
+    { path: '/social', icon: '💬', label: 'Social' },
     { path: '/game-mode', icon: '🎮', label: 'Jogue' },
     { path: '/satoshi-city', icon: '🌃', label: 'Cidade' },
     { path: '/store', icon: '🛒', label: 'Loja' },
