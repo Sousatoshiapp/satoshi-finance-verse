@@ -43,6 +43,36 @@ import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
 import neuralHeadband from "@/assets/accessories/neural-headband.jpg";
 import quantumGloves from "@/assets/accessories/quantum-gloves.jpg";
 import holoSneakers from "@/assets/accessories/holo-sneakers.jpg";
+
+// New cyberpunk accessories
+import neuralVisor from "@/assets/accessories/neural-visor.jpg";
+import quantumChestArmor from "@/assets/accessories/quantum-chest-armor.jpg";
+import cyberWings from "@/assets/accessories/cyber-wings.jpg";
+import powerGauntlets from "@/assets/accessories/power-gauntlets.jpg";
+import exoBoots from "@/assets/accessories/exo-boots.jpg";
+import dataCrown from "@/assets/accessories/data-crown.jpg";
+import neonJacket from "@/assets/accessories/neon-jacket.jpg";
+import holoCape from "@/assets/accessories/holo-cape.jpg";
+import cyberMask from "@/assets/accessories/cyber-mask.jpg";
+import plasmaSword from "@/assets/accessories/plasma-sword.jpg";
+import energyShield from "@/assets/accessories/energy-shield.jpg";
+import stealthCloak from "@/assets/accessories/stealth-cloak.jpg";
+import bioScanner from "@/assets/accessories/bio-scanner.jpg";
+import neuralCollar from "@/assets/accessories/neural-collar.jpg";
+import gravityBoots from "@/assets/accessories/gravity-boots.jpg";
+import dataBracelet from "@/assets/accessories/data-bracelet.jpg";
+import cyberMohawk from "@/assets/accessories/cyber-mohawk.jpg";
+import techBackpack from "@/assets/accessories/tech-backpack.jpg";
+import holoEarrings from "@/assets/accessories/holo-earrings.jpg";
+import powerBelt from "@/assets/accessories/power-belt.jpg";
+import cyberTattoos from "@/assets/accessories/cyber-tattoos.jpg";
+import quantumRings from "@/assets/accessories/quantum-rings.jpg";
+import spinalImplant from "@/assets/accessories/spinal-implant.jpg";
+import holoPet from "@/assets/accessories/holo-pet.jpg";
+import timeWatch from "@/assets/accessories/time-watch.jpg";
+import cyberEye from "@/assets/accessories/cyber-eye.jpg";
+import digitalAura from "@/assets/accessories/digital-aura.jpg";
+
 import xpMultiplier from "@/assets/boosts/xp-multiplier.jpg";
 import cryptoBooster from "@/assets/boosts/crypto-booster.jpg";
 import timeWarp from "@/assets/boosts/time-warp.jpg";
@@ -634,6 +664,33 @@ export default function Store() {
                     'Neural Enhancement Headband': neuralHeadband,
                     'Quantum Gloves': quantumGloves,
                     'Holo Sneakers': holoSneakers,
+                    'Neural AR Visor': neuralVisor,
+                    'Quantum Chest Armor': quantumChestArmor,
+                    'Mechanical Cyber Wings': cyberWings,
+                    'Power Combat Gauntlets': powerGauntlets,
+                    'Exoskeleton Boots': exoBoots,
+                    'Data Processing Crown': dataCrown,
+                    'Neon Light Jacket': neonJacket,
+                    'Holographic Cape': holoCape,
+                    'Cyber Protection Mask': cyberMask,
+                    'Plasma Energy Sword': plasmaSword,
+                    'Energy Shield Generator': energyShield,
+                    'Stealth Cloaking Device': stealthCloak,
+                    'Bio Scanner Goggles': bioScanner,
+                    'Neural Interface Collar': neuralCollar,
+                    'Anti-Gravity Boots': gravityBoots,
+                    'Data Interface Bracelet': dataBracelet,
+                    'Cyber Mohawk Implant': cyberMohawk,
+                    'Tech Command Backpack': techBackpack,
+                    'Holographic Earrings': holoEarrings,
+                    'Power Core Utility Belt': powerBelt,
+                    'Glowing Circuit Tattoos': cyberTattoos,
+                    'Quantum Particle Rings': quantumRings,
+                    'Spinal Neural Implant': spinalImplant,
+                    'Holographic Companion Pet': holoPet,
+                    'Time Dilator Watch': timeWatch,
+                    'Cyber Optic Implant': cyberEye,
+                    'Digital Energy Aura': digitalAura,
                   };
                   return imageMap[product.name] || getCategoryIcon(product.category);
                 };
