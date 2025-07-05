@@ -551,15 +551,21 @@ export default function Store() {
                   <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
                     <div className="relative">
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
-                        {typeof getProductImage() === 'string' ? (
-                          <div className="text-4xl">{getProductImage()}</div>
-                        ) : (
-                          <img 
-                            src={getProductImage()} 
-                            alt={product.name}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        )}
+                        {(() => {
+                          const imageSource = getProductImage();
+                          // Check if it's an emoji/icon (short string) or image path (longer string with /)
+                          const isEmoji = typeof imageSource === 'string' && imageSource.length <= 2 && !imageSource.includes('/');
+                          
+                          return isEmoji ? (
+                            <div className="text-4xl">{imageSource}</div>
+                          ) : (
+                            <img 
+                              src={imageSource} 
+                              alt={product.name}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          );
+                        })()}
                       </div>
                       <div className="absolute top-1 right-1">
                         <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1 text-xs`}>
@@ -636,15 +642,21 @@ export default function Store() {
                   <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
                     <div className="relative">
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
-                        {typeof getAccessoryImage() === 'string' ? (
-                          <div className="text-4xl">{getAccessoryImage()}</div>
-                        ) : (
-                          <img 
-                            src={getAccessoryImage()} 
-                            alt={product.name}
-                            className="w-full h-full object-cover rounded-lg"
-                          />
-                        )}
+                        {(() => {
+                          const imageSource = getAccessoryImage();
+                          // Check if it's an emoji/icon (short string) or image path (longer string with /)
+                          const isEmoji = typeof imageSource === 'string' && imageSource.length <= 2 && !imageSource.includes('/');
+                          
+                          return isEmoji ? (
+                            <div className="text-4xl">{imageSource}</div>
+                          ) : (
+                            <img 
+                              src={imageSource} 
+                              alt={product.name}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                          );
+                        })()}
                       </div>
                       <div className="absolute top-1 right-1">
                         <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1 text-xs`}>
