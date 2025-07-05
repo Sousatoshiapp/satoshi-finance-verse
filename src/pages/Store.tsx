@@ -18,6 +18,34 @@ import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
 import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
 import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
 import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
+import neuralArchitect from "@/assets/avatars/neural-architect.jpg";
+import dataMiner from "@/assets/avatars/data-miner.jpg";
+import blockchainGuardian from "@/assets/avatars/blockchain-guardian.jpg";
+import quantumPhysician from "@/assets/avatars/quantum-physician.jpg";
+import virtualRealtor from "@/assets/avatars/virtual-realtor.jpg";
+import codeAssassin from "@/assets/avatars/code-assassin.jpg";
+import cryptoShaman from "@/assets/avatars/crypto-shaman.jpg";
+import marketProphet from "@/assets/avatars/market-prophet.jpg";
+import digitalNomad from "@/assets/avatars/digital-nomad.jpg";
+import neonDetective from "@/assets/avatars/neon-detective.jpg";
+import hologramDancer from "@/assets/avatars/hologram-dancer.jpg";
+import cyberMechanic from "@/assets/avatars/cyber-mechanic.jpg";
+import ghostTrader from "@/assets/avatars/ghost-trader.jpg";
+import binaryMonk from "@/assets/avatars/binary-monk.jpg";
+import pixelArtist from "@/assets/avatars/pixel-artist.jpg";
+import quantumThief from "@/assets/avatars/quantum-thief.jpg";
+import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
+import stormHacker from "@/assets/avatars/storm-hacker.jpg";
+import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
+import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+
+// Import accessories and boosts
+import neuralHeadband from "@/assets/accessories/neural-headband.jpg";
+import quantumGloves from "@/assets/accessories/quantum-gloves.jpg";
+import holoSneakers from "@/assets/accessories/holo-sneakers.jpg";
+import xpMultiplier from "@/assets/boosts/xp-multiplier.jpg";
+import cryptoBooster from "@/assets/boosts/crypto-booster.jpg";
+import timeWarp from "@/assets/boosts/time-warp.jpg";
 
 interface Avatar {
   id: string;
@@ -28,6 +56,8 @@ interface Avatar {
   rarity: string;
   level_required: number;
   is_available: boolean;
+  is_starter?: boolean;
+  backstory?: string;
 }
 
 interface Product {
@@ -361,29 +391,62 @@ export default function Store() {
 
         {/* Tabs */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
-            <TabsTrigger value="citizens">🤖 Cidadãos</TabsTrigger>
             <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
             <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}
           <TabsContent value="avatars">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {avatars.map((avatar) => {
                 const isOwned = userAvatars.includes(avatar.id);
                 const canAfford = userProfile ? userProfile.points >= avatar.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= avatar.level_required : false;
+                
+                // Get avatar image from imports
+                const getAvatarImage = () => {
+                  const imageMap: { [key: string]: any } = {
+                    'Neo Trader': neoTrader,
+                    'Crypto Analyst': cryptoAnalyst,
+                    'Finance Hacker': financeHacker,
+                    'Investment Scholar': investmentScholar,
+                    'Quantum Broker': quantumBroker,
+                    'DeFi Samurai': defiSamurai,
+                    'The Satoshi': theSatoshi,
+                    'Neural Architect': neuralArchitect,
+                    'Data Miner': dataMiner,
+                    'Blockchain Guardian': blockchainGuardian,
+                    'Quantum Physician': quantumPhysician,
+                    'Virtual Realtor': virtualRealtor,
+                    'Code Assassin': codeAssassin,
+                    'Crypto Shaman': cryptoShaman,
+                    'Market Prophet': marketProphet,
+                    'Digital Nomad': digitalNomad,
+                    'Neon Detective': neonDetective,
+                    'Hologram Dancer': hologramDancer,
+                    'Cyber Mechanic': cyberMechanic,
+                    'Ghost Trader': ghostTrader,
+                    'Binary Monk': binaryMonk,
+                    'Pixel Artist': pixelArtist,
+                    'Quantum Thief': quantumThief,
+                    'Memory Keeper': memoryKeeper,
+                    'Storm Hacker': stormHacker,
+                    'Dream Architect': dreamArchitect,
+                    'Chrome Gladiator': chromeGladiator,
+                  };
+                  return imageMap[avatar.name] || avatar.image_url;
+                };
                 
                 return (
                   <Card key={avatar.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
                     <div className="relative">
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
                         <img 
-                          src={avatar.image_url} 
+                          src={getAvatarImage()} 
                           alt={avatar.name}
-                          className="w-full h-full object-contain rounded-lg"
+                          className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
                       <div className="absolute top-1 right-1">
@@ -391,18 +454,35 @@ export default function Store() {
                           {getRarityIcon(avatar.rarity)}
                         </Badge>
                       </div>
+                      {avatar.is_starter && (
+                        <div className="absolute top-1 left-1">
+                          <Badge variant="secondary" className="text-xs">
+                            <Gift className="h-3 w-3 mr-1" />
+                            Grátis
+                          </Badge>
+                        </div>
+                      )}
                     </div>
                     
-                    <CardContent className="p-2">
+                    <CardContent className="p-3">
                       <div className="mb-2">
                         <h3 className="font-bold text-foreground text-sm truncate">{avatar.name}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{avatar.description}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-2 mb-1">{avatar.description}</p>
+                        {avatar.backstory && (
+                          <p className="text-xs text-muted-foreground/80 line-clamp-1 italic">"{avatar.backstory}"</p>
+                        )}
                       </div>
                       
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1">
-                          <span className="text-sm font-bold text-primary">{avatar.price}</span>
-                          <span className="text-xs text-muted-foreground">pts</span>
+                          {avatar.price === 0 ? (
+                            <span className="text-sm font-bold text-green-500">Grátis</span>
+                          ) : (
+                            <>
+                              <span className="text-sm font-bold text-primary">{avatar.price}</span>
+                              <span className="text-xs text-muted-foreground">pts</span>
+                            </>
+                          )}
                         </div>
                         <Badge variant="outline" className="text-xs">Nv {avatar.level_required}</Badge>
                       </div>
@@ -420,7 +500,8 @@ export default function Store() {
                         >
                           {purchasing === avatar.id ? "..." :
                            !meetsLevel ? `Nv ${avatar.level_required}` :
-                           !canAfford ? "Sem pontos" : "Comprar"
+                           !canAfford ? (avatar.price === 0 ? "Selecionar" : "Sem pontos") : 
+                           avatar.price === 0 ? "Selecionar" : "Comprar"
                           }
                         </Button>
                       )}
@@ -433,17 +514,35 @@ export default function Store() {
 
           {/* Boosts Tab */}
           <TabsContent value="boosts">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {products.filter(p => p.category === 'boost').map((product) => {
                 const isOwned = userProducts.includes(product.id);
                 const canAfford = userProfile ? userProfile.points >= product.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
                 
+                // Get product image from imports
+                const getProductImage = () => {
+                  const imageMap: { [key: string]: any } = {
+                    'XP Multiplier Chip': xpMultiplier,
+                    'Crypto Mining Booster': cryptoBooster,
+                    'Time Warp Device': timeWarp,
+                  };
+                  return imageMap[product.name] || getCategoryIcon(product.category);
+                };
+                
                 return (
                   <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
                     <div className="relative">
-                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-4">
-                        <div className="text-4xl">{getCategoryIcon(product.category)}</div>
+                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
+                        {typeof getProductImage() === 'string' ? (
+                          <div className="text-4xl">{getProductImage()}</div>
+                        ) : (
+                          <img 
+                            src={getProductImage()} 
+                            alt={product.name}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        )}
                       </div>
                       <div className="absolute top-1 right-1">
                         <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1 text-xs`}>
@@ -452,7 +551,7 @@ export default function Store() {
                       </div>
                     </div>
                     
-                    <CardContent className="p-2">
+                    <CardContent className="p-3">
                       <div className="mb-2">
                         <h3 className="font-bold text-foreground text-sm truncate">{product.name}</h3>
                         <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
@@ -466,6 +565,7 @@ export default function Store() {
                         <div className="flex items-center gap-1">
                           {product.duration_hours && (
                             <Badge variant="outline" className="text-xs">
+                              <Clock className="h-3 w-3 mr-1" />
                               {product.duration_hours}h
                             </Badge>
                           )}
@@ -499,17 +599,35 @@ export default function Store() {
 
           {/* Accessories Tab */}
           <TabsContent value="accessories">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {products.filter(p => p.category === 'accessory').map((product) => {
                 const isOwned = userProducts.includes(product.id);
                 const canAfford = userProfile ? userProfile.points >= product.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
                 
+                // Get accessory image from imports
+                const getAccessoryImage = () => {
+                  const imageMap: { [key: string]: any } = {
+                    'Neural Enhancement Headband': neuralHeadband,
+                    'Quantum Gloves': quantumGloves,
+                    'Holo Sneakers': holoSneakers,
+                  };
+                  return imageMap[product.name] || getCategoryIcon(product.category);
+                };
+                
                 return (
                   <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
                     <div className="relative">
-                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-4">
-                        <div className="text-4xl">{getCategoryIcon(product.category)}</div>
+                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
+                        {typeof getAccessoryImage() === 'string' ? (
+                          <div className="text-4xl">{getAccessoryImage()}</div>
+                        ) : (
+                          <img 
+                            src={getAccessoryImage()} 
+                            alt={product.name}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        )}
                       </div>
                       <div className="absolute top-1 right-1">
                         <Badge className={`${getRarityColor(product.rarity)} flex items-center gap-1 text-xs`}>
@@ -518,7 +636,7 @@ export default function Store() {
                       </div>
                     </div>
                     
-                    <CardContent className="p-2">
+                    <CardContent className="p-3">
                       <div className="mb-2">
                         <h3 className="font-bold text-foreground text-sm truncate">{product.name}</h3>
                         <p className="text-xs text-muted-foreground line-clamp-2">{product.description}</p>
