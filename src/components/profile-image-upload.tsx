@@ -4,6 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSecurity } from "@/hooks/use-security";
 import { Camera, Upload, X } from "lucide-react";
 
 interface ProfileImageUploadProps {
@@ -22,36 +23,72 @@ export function ProfileImageUpload({
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const { toast } = useToast();
+  const { logSecurityEvent, checkRateLimit } = useSecurity();
 
   const uploadImage = async (file: File) => {
     try {
       setUploading(true);
 
-      // Validate file
-      if (!file.type.startsWith('image/')) {
-        throw new Error('Por favor, selecione apenas arquivos de imagem');
+      // Rate limiting check
+      if (!checkRateLimit('profile_image_upload', 5)) {
+        toast({
+          title: "Muitos uploads",
+          description: "Aguarde antes de fazer outro upload",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Enhanced file validation
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        logSecurityEvent({
+          event_type: 'malicious_file_upload',
+          details: { fileName: file.name, fileType: file.type, fileSize: file.size },
+          severity: 'high'
+        });
+        throw new Error('Tipo de arquivo não permitido. Use apenas JPEG, PNG, GIF ou WebP');
       }
 
       if (file.size > 5 * 1024 * 1024) {
         throw new Error('A imagem deve ter menos de 5MB');
       }
 
+      // Check for suspicious file names
+      const suspiciousPatterns = ['.php', '.js', '.html', '.exe', '..', 'script'];
+      if (suspiciousPatterns.some(pattern => file.name.toLowerCase().includes(pattern))) {
+        logSecurityEvent({
+          event_type: 'suspicious_filename',
+          details: { fileName: file.name },
+          severity: 'high'
+        });
+        throw new Error('Nome do arquivo não permitido');
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      // Create file path
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/profile.${fileExt}`;
+      // Create secure file path
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const timestamp = Date.now();
+      const fileName = `${user.id}/profile_${timestamp}.${fileExt}`;
 
-      // Upload file
+      // Upload file with content type validation
       const { error: uploadError } = await supabase.storage
         .from('profile-images')
         .upload(fileName, file, { 
           upsert: true,
-          contentType: file.type 
+          contentType: file.type
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        logSecurityEvent({
+          event_type: 'file_upload_failed',
+          details: { error: uploadError.message, fileName },
+          severity: 'medium'
+        });
+        throw uploadError;
+      }
 
       // Get public URL
       const { data } = supabase.storage
@@ -67,6 +104,12 @@ export function ProfileImageUpload({
         .eq('user_id', user.id);
 
       if (updateError) throw updateError;
+
+      logSecurityEvent({
+        event_type: 'profile_image_updated',
+        details: { fileName, fileSize: file.size },
+        severity: 'low'
+      });
 
       onImageUpdated(imageUrl);
       

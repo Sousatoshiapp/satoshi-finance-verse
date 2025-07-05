@@ -110,6 +110,54 @@ export class RateLimiter {
     
     return true;
   }
+
+  // Enhanced security logging
+  logSecurityEvent(event: string, userId: string, details?: any) {
+    console.warn(`SECURITY EVENT: ${event}`, {
+      userId,
+      timestamp: new Date().toISOString(),
+      details,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown'
+    });
+  }
 }
 
 export const globalRateLimiter = new RateLimiter();
+
+// Enhanced validation with length limits
+export const validateMessageContent = (content: string): string | null => {
+  const clean = sanitizeText(content);
+  
+  if (!clean) return 'Mensagem não pode estar vazia';
+  if (clean.length > 1000) return 'Mensagem muito longa (máximo 1000 caracteres)';
+  if (clean.length < 1) return 'Mensagem muito curta';
+  
+  return null;
+};
+
+export const validateNickname = (nickname: string): string | null => {
+  const clean = sanitizeText(nickname);
+  
+  if (!clean) return 'Nome é obrigatório';
+  if (clean.length < 2) return 'Nome deve ter pelo menos 2 caracteres';
+  if (clean.length > 50) return 'Nome deve ter no máximo 50 caracteres';
+  if (!/^[a-zA-Z0-9\s\-_.áéíóúàèìòùâêîôûãõç]+$/i.test(clean)) 
+    return 'Nome contém caracteres inválidos';
+  
+  return null;
+};
+
+// Content security validation
+export const detectSuspiciousContent = (content: string): boolean => {
+  const suspiciousPatterns = [
+    /<script/i,
+    /javascript:/i,
+    /vbscript:/i,
+    /on\w+\s*=/i,
+    /data:text\/html/i,
+    /eval\(/i,
+    /expression\(/i
+  ];
+  
+  return suspiciousPatterns.some(pattern => pattern.test(content));
+};

@@ -11,6 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { sanitizeText, validateMessageContent, globalRateLimiter, detectSuspiciousContent } from "@/lib/validation";
 
 interface Message {
   id: string;
@@ -152,6 +153,41 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
     e.preventDefault();
     if (!newMessage.trim() || sending || !currentUserId) return;
 
+    // Enhanced security validation
+    const messageValidation = validateMessageContent(newMessage);
+    if (messageValidation) {
+      toast({
+        title: "Erro de Validação",
+        description: messageValidation,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check for suspicious content
+    if (detectSuspiciousContent(newMessage)) {
+      globalRateLimiter.logSecurityEvent('suspicious_message_content', currentUserId, {
+        content: newMessage.substring(0, 100) + '...',
+        conversationId
+      });
+      toast({
+        title: "Conteúdo Bloqueado",
+        description: "Mensagem contém conteúdo suspeito",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Rate limiting
+    if (!globalRateLimiter.canPerformAction(currentUserId, 'send_message', 30)) {
+      toast({
+        title: "Muitas Mensagens",
+        description: "Aguarde um momento antes de enviar outra mensagem",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setSending(true);
     try {
       const { error } = await supabase
@@ -159,13 +195,17 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
         .insert({
           conversation_id: conversationId,
           sender_id: currentUserId,
-          content: newMessage.trim()
+          content: sanitizeText(newMessage.trim())
         });
 
       if (error) throw error;
       setNewMessage("");
     } catch (error) {
       console.error('Error sending message:', error);
+      globalRateLimiter.logSecurityEvent('message_send_failed', currentUserId, {
+        error: error.message,
+        conversationId
+      });
       toast({
         title: "Erro",
         description: "Não foi possível enviar a mensagem",
@@ -233,7 +273,7 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
                             : "bg-muted"
                         )}
                       >
-                        <p>{message.content}</p>
+                        <p>{sanitizeText(message.content)}</p>
                         <p className={cn(
                           "text-xs mt-1 opacity-70",
                           isOwn ? "text-primary-foreground/70" : "text-muted-foreground"
@@ -257,6 +297,7 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
                 placeholder="Digite sua mensagem..."
                 disabled={sending}
                 className="flex-1"
+                maxLength={1000}
               />
               <Button type="submit" disabled={sending || !newMessage.trim()}>
                 <Send className="h-4 w-4" />

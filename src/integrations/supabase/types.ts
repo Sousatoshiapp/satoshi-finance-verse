@@ -1352,7 +1352,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_security_event: {
+        Args: { event_type: string; user_id: string; event_data?: Json }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

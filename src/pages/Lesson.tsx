@@ -9,12 +9,14 @@ import { QuizCard } from "@/components/quiz-card";
 import { lessons } from "@/data/lessons";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useSecurity } from "@/hooks/use-security";
 import DOMPurify from "dompurify";
 
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { logSecurityEvent, detectAnomalousActivity } = useSecurity();
   
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [course, setCourse] = useState(null);
@@ -71,6 +73,25 @@ export default function Lesson() {
     const userData = JSON.parse(localStorage.getItem('satoshi_user') || '{}');
     const newXP = (userData.xp || 0) + currentLesson.xpReward;
     const newLevel = Math.floor(newXP / 100) + 1;
+    
+    // Detect suspicious XP changes
+    if (detectAnomalousActivity('lesson_completion', {
+      oldXP: userData.xp || 0,
+      newXP,
+      xpGain: currentLesson.xpReward,
+      lessonId: currentLesson.id,
+      courseId
+    })) {
+      logSecurityEvent({
+        event_type: 'suspicious_lesson_completion',
+        details: {
+          lessonId: currentLesson.id,
+          courseId,
+          xpChange: newXP - (userData.xp || 0)
+        },
+        severity: 'medium'
+      });
+    }
     
     const updatedUser = {
       ...userData,
@@ -190,7 +211,13 @@ export default function Lesson() {
               <div 
                 className="text-foreground leading-relaxed whitespace-pre-line"
                 dangerouslySetInnerHTML={{ 
-                  __html: DOMPurify.sanitize(currentLesson.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'))
+                  __html: DOMPurify.sanitize(
+                    DOMPurify.sanitize(currentLesson.content).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'),
+                    {
+                      ALLOWED_TAGS: ['strong', 'em', 'b', 'i', 'p', 'br'],
+                      ALLOWED_ATTR: []
+                    }
+                  )
                 }}
               />
             </div>
