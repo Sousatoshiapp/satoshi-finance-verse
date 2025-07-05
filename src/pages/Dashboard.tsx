@@ -184,8 +184,8 @@ export default function Dashboard() {
                       evolutionLevel={userAvatar.evolution_level || 1}
                     />
                     {/* Level Badge - Centered at bottom of avatar */}
-                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-gradient-to-r from-primary to-success text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white">
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg border border-orange-400">
                         NÍVEL {userStats.level}
                       </div>
                     </div>
@@ -197,18 +197,13 @@ export default function Dashboard() {
                     <div className="text-8xl mb-4">🤖</div>
                   </div>
                   {/* Level Badge for placeholder avatar */}
-                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-primary to-success text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white">
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg border border-orange-400">
                       NÍVEL {userStats.level}
                     </div>
                   </div>
                 </div>
               )}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
-                <div className="bg-warning text-black px-2 py-1 rounded-full text-xs font-medium">
-                  🟡 Nível atual
-                </div>
-              </div>
             </div>
             
             <Button 
@@ -244,17 +239,17 @@ export default function Dashboard() {
           <div className="grid grid-cols-3 gap-4 mb-8">
             <div className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card">
               <div className="text-2xl mb-1">⚡</div>
-              <div className="text-xs text-black/70 mb-1">XP</div>
+              <div className="text-xs text-white mb-1">XP</div>
               <div className="text-2xl font-bold text-white">{userStats.currentXP}</div>
             </div>
             <div className="bg-gradient-level rounded-2xl p-4 text-center shadow-card">
               <div className="text-2xl mb-1">🏅</div>
-              <div className="text-xs text-white/70 mb-1">Nível</div>
+              <div className="text-xs text-white mb-1">Nível</div>
               <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
             </div>
             <div className="bg-gradient-points rounded-2xl p-4 text-center shadow-card">
               <div className="text-2xl mb-1">💎</div>
-              <div className="text-xs text-black/70 mb-1">Pontos</div>
+              <div className="text-xs text-white mb-1">Pontos</div>
               <div className="text-2xl font-bold text-white">{userStats.currentXP * 2}</div>
             </div>
           </div>
