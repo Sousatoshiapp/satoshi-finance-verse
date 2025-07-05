@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      activity_feed: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          created_at: string
+          id: string
+          target_user_id: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          created_at?: string
+          id?: string
+          target_user_id?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          created_at?: string
+          id?: string
+          target_user_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_activity_feed_target_user"
+            columns: ["target_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_activity_feed_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       avatar_evolutions: {
         Row: {
           bonus_changes: Json | null
@@ -384,6 +426,154 @@ export type Database = {
           },
         ]
       }
+      market_events: {
+        Row: {
+          activated_at: string | null
+          affected_assets: string[] | null
+          created_at: string
+          description: string | null
+          duration_hours: number | null
+          event_type: string
+          expires_at: string | null
+          id: string
+          impact_percentage: number
+          is_active: boolean
+          name: string
+        }
+        Insert: {
+          activated_at?: string | null
+          affected_assets?: string[] | null
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          event_type: string
+          expires_at?: string | null
+          id?: string
+          impact_percentage: number
+          is_active?: boolean
+          name: string
+        }
+        Update: {
+          activated_at?: string | null
+          affected_assets?: string[] | null
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          event_type?: string
+          expires_at?: string | null
+          id?: string
+          impact_percentage?: number
+          is_active?: boolean
+          name?: string
+        }
+        Relationships: []
+      }
+      portfolio_holdings: {
+        Row: {
+          asset_name: string
+          asset_symbol: string
+          asset_type: string
+          avg_price: number
+          created_at: string
+          current_price: number | null
+          id: string
+          portfolio_id: string
+          quantity: number
+          total_value: number | null
+          updated_at: string
+        }
+        Insert: {
+          asset_name: string
+          asset_symbol: string
+          asset_type: string
+          avg_price: number
+          created_at?: string
+          current_price?: number | null
+          id?: string
+          portfolio_id: string
+          quantity: number
+          total_value?: number | null
+          updated_at?: string
+        }
+        Update: {
+          asset_name?: string
+          asset_symbol?: string
+          asset_type?: string
+          avg_price?: number
+          created_at?: string
+          current_price?: number | null
+          id?: string
+          portfolio_id?: string
+          quantity?: number
+          total_value?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_portfolio_holdings_portfolio"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portfolios: {
+        Row: {
+          created_at: string
+          current_balance: number
+          description: string | null
+          district_theme: string | null
+          followers_count: number | null
+          id: string
+          initial_balance: number
+          is_public: boolean
+          likes_count: number | null
+          name: string
+          performance_percentage: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_balance?: number
+          description?: string | null
+          district_theme?: string | null
+          followers_count?: number | null
+          id?: string
+          initial_balance?: number
+          is_public?: boolean
+          likes_count?: number | null
+          name: string
+          performance_percentage?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_balance?: number
+          description?: string | null
+          district_theme?: string | null
+          followers_count?: number | null
+          id?: string
+          initial_balance?: number
+          is_public?: boolean
+          likes_count?: number | null
+          name?: string
+          performance_percentage?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_portfolios_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category: string
@@ -712,6 +902,74 @@ export type Database = {
             columns: ["district_id"]
             isOneToOne: false
             referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_follows_follower"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_user_follows_following"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_likes: {
+        Row: {
+          created_at: string
+          id: string
+          target_id: string
+          target_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          target_id: string
+          target_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          target_id?: string
+          target_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_likes_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

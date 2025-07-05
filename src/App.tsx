@@ -22,6 +22,7 @@ import Tournaments from "./pages/Tournaments";
 import SatoshiCity from "./pages/SatoshiCity";
 import DistrictDetail from "./pages/DistrictDetail";
 import DistrictQuiz from "./pages/DistrictQuiz";
+import Playground from "./pages/Playground";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/satoshi-city" element={<ProtectedRoute><SatoshiCity /></ProtectedRoute>} />
             <Route path="/satoshi-city/district/:districtId" element={<ProtectedRoute><DistrictDetail /></ProtectedRoute>} />
             <Route path="/satoshi-city/district/:districtId/quiz" element={<ProtectedRoute><DistrictQuiz /></ProtectedRoute>} />
+            <Route path="/playground" element={<ProtectedRoute><Playground /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />

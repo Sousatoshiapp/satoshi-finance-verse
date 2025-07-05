@@ -311,6 +311,33 @@ export default function Dashboard() {
                   Duelar
                 </Button>
               </div>
+              
+              <div className="bg-card rounded-2xl p-4 border border-border shadow-card">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-foreground">Playground Investimentos</h4>
+                  <span className="text-xs text-muted-foreground">Novo!</span>
+                </div>
+                <div className="grid grid-cols-3 gap-4 text-center text-xs mb-4">
+                  <div>
+                    <div className="text-muted-foreground">Pratique</div>
+                    <div className="font-bold text-primary">Carteiras</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Siga</div>
+                    <div className="font-bold text-secondary">Outros</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Aprenda</div>
+                    <div className="text-lg">📈</div>
+                  </div>
+                </div>
+                <Button 
+                  className="w-full bg-gradient-to-r from-secondary to-primary text-black rounded-full font-semibold"
+                  onClick={() => navigate('/playground')}
+                >
+                  Explorar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
