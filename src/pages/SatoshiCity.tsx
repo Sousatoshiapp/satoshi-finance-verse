@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from "lucide-react";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
-import satoshiCityDay from "@/assets/satoshi-city-day-panoramic.jpg";
-import satoshiCitySunset from "@/assets/satoshi-city-sunset-panoramic.jpg";
-import satoshiCityNight from "@/assets/satoshi-city-night-panoramic.jpg";
+import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
+import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
+import satoshiCityNight from "@/assets/satoshi-city-night-illuminated.jpg";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -196,10 +196,10 @@ export default function SatoshiCity() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
         style={{ 
           backgroundImage: `url(${currentCityImage})`,
-          filter: 'brightness(0.4) contrast(1.2)'
+          filter: 'brightness(0.6) contrast(1.3)'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-slate-900/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-slate-900/50"></div>
       </div>
 
       {/* Header */}
