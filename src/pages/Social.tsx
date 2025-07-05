@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { ChatWindow } from "@/components/social/chat-window";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Search, MessageCircle } from "lucide-react";
+import { FloatingNavbar } from "@/components/floating-navbar";
 
 interface User {
   id: string;
@@ -29,6 +31,7 @@ interface User {
 }
 
 export default function Social() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [following, setFollowing] = useState<User[]>([]);
@@ -186,6 +189,7 @@ export default function Social() {
 
   return (
     <div className="min-h-screen bg-background p-4 pb-20">
+      <FloatingNavbar />
       <div className="max-w-4xl mx-auto">
         <Card>
           <CardHeader>
@@ -234,7 +238,7 @@ export default function Social() {
                             });
                           }}
                           onClick={(userId) => {
-                            window.location.href = `/user/${userId}`;
+                            navigate(`/user/${userId}`);
                           }}
                         />
                       ))
@@ -261,7 +265,7 @@ export default function Social() {
                           user={user}
                           compact
                           onClick={(userId) => {
-                            window.location.href = `/user/${userId}`;
+                            navigate(`/user/${userId}`);
                           }}
                         />
                       ))
@@ -284,7 +288,7 @@ export default function Social() {
                           user={user}
                           compact
                           onClick={(userId) => {
-                            window.location.href = `/user/${userId}`;
+                            navigate(`/user/${userId}`);
                           }}
                         />
                       ))

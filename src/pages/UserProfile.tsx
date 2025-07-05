@@ -216,7 +216,7 @@ export default function UserProfile() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center md:items-start">
                 <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={user.avatar?.image_url} />
+                  <AvatarImage src={user.avatar?.image_url || user.profile_image_url} />
                   <AvatarFallback className="text-2xl">
                     {user.nickname.charAt(0).toUpperCase()}
                   </AvatarFallback>

@@ -34,7 +34,7 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
         onClick={() => onClick?.(user.id)}
       >
         <Avatar className="h-8 w-8">
-          <AvatarImage src={user.avatar?.image_url} />
+          <AvatarImage src={user.avatar?.image_url || user.profile_image_url} />
           <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
@@ -72,7 +72,7 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
           <Avatar className="h-12 w-12">
-            <AvatarImage src={user.avatar?.image_url} />
+            <AvatarImage src={user.avatar?.image_url || user.profile_image_url} />
             <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
           
