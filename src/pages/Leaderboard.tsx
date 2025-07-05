@@ -110,7 +110,10 @@ export default function Leaderboard() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Your Position */}
         {currentUser && (
-          <Card className="p-6 mb-8 border-primary">
+          <Card 
+            className="p-6 mb-8 border-primary cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => currentUser.id && navigate(`/user/${currentUser.id}`)}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="text-2xl font-bold text-primary">#{userRank}</div>
@@ -135,11 +138,21 @@ export default function Leaderboard() {
         {/* Top 3 Podium */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {sortedUsers.slice(0, 3).map((user, index) => (
-            <Card key={user.id} className={`p-6 text-center ${
-              index === 0 ? 'border-yellow-500 bg-yellow-500/5' :
-              index === 1 ? 'border-gray-400 bg-gray-400/5' :
-              'border-orange-500 bg-orange-500/5'
-            }`}>
+            <Card 
+              key={user.id} 
+              className={`p-6 text-center cursor-pointer hover:shadow-lg transition-shadow ${
+                index === 0 ? 'border-yellow-500 bg-yellow-500/5' :
+                index === 1 ? 'border-gray-400 bg-gray-400/5' :
+                'border-orange-500 bg-orange-500/5'
+              }`}
+              onClick={() => {
+                if (user.id === 'user' && currentUser?.id) {
+                  navigate(`/user/${currentUser.id}`);
+                } else if (user.id !== 'user') {
+                  navigate(`/user/${user.id}`);
+                }
+              }}
+            >
               <div className="text-4xl mb-2">{getRankIcon(index + 1)}</div>
               <Avatar className="w-16 h-16 mx-auto mb-3">
                 <AvatarImage src={user.avatar} alt={user.nickname} />
@@ -164,11 +177,18 @@ export default function Leaderboard() {
             {sortedUsers.map((user, index) => (
               <div
                 key={user.id}
-                className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
+                className={`flex items-center gap-4 p-4 rounded-lg transition-all cursor-pointer ${
                   user.id === 'user' 
-                    ? 'bg-primary/10 border border-primary' 
+                    ? 'bg-primary/10 border border-primary hover:bg-primary/20' 
                     : 'bg-muted/20 hover:bg-muted/40'
                 }`}
+                onClick={() => {
+                  if (user.id === 'user' && currentUser?.id) {
+                    navigate(`/user/${currentUser.id}`);
+                  } else if (user.id !== 'user') {
+                    navigate(`/user/${user.id}`);
+                  }
+                }}
               >
                 <div className="w-8 text-center font-bold text-foreground">
                   {getRankIcon(index + 1)}
