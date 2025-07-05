@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ArrowLeft, Sword } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
@@ -49,7 +50,10 @@ export function UsersList({ onBack }: UsersListProps) {
 
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          *,
+          avatar:avatars(id, name, image_url)
+        `)
         .neq('user_id', user.id)
         .order('xp', { ascending: false });
 
@@ -198,28 +202,31 @@ export function UsersList({ onBack }: UsersListProps) {
             users.map((user) => (
               <Card key={user.id} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white font-bold text-lg">
-                        {user.nickname.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-foreground">
-                          {user.nickname}
-                        </h3>
-                        <div className="flex items-center gap-4 mt-1">
-                          <Badge variant="outline">
-                            Nível {user.level}
-                          </Badge>
-                          <span className="text-sm text-muted-foreground">
-                            {user.xp} XP
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            🔥 {user.streak} dias
-                          </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={user.avatar?.image_url} alt={user.nickname} />
+                          <AvatarFallback className="text-lg font-bold">
+                            {user.nickname.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <h3 className="font-semibold text-foreground">
+                            {user.nickname}
+                          </h3>
+                          <div className="flex items-center gap-4 mt-1">
+                            <Badge variant="outline">
+                              Nível {user.level}
+                            </Badge>
+                            <span className="text-sm text-muted-foreground">
+                              {user.xp} XP
+                            </span>
+                            <span className="text-sm text-muted-foreground">
+                              🔥 {user.streak} dias
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
                     
                     <Button
                       onClick={() => sendDuelInvite(user.id)}

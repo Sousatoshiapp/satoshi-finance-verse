@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Avatar } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
 interface LeaderboardUser {
@@ -21,21 +22,50 @@ export default function Leaderboard() {
   const [timeFilter, setTimeFilter] = useState<'week' | 'month' | 'all'>('week');
   const navigate = useNavigate();
 
-  // Mock leaderboard data
+  // Mock leaderboard data with avatar images
   const mockUsers: LeaderboardUser[] = [
-    { id: '1', nickname: 'FinanceGuru', level: 12, xp: 2450, streak: 45, avatar: '👑' },
-    { id: '2', nickname: 'CoinMaster', level: 10, xp: 2100, streak: 32, avatar: '💰' },
-    { id: '3', nickname: 'InvestorPro', level: 9, xp: 1890, streak: 28, avatar: '📈' },
-    { id: '4', nickname: 'SavingHero', level: 8, xp: 1650, streak: 25, avatar: '🏦' },
-    { id: '5', nickname: 'BudgetBoss', level: 7, xp: 1420, streak: 22, avatar: '📊' },
-    { id: 'user', nickname: 'Você', level: 3, xp: 245, streak: 7, avatar: '🎯' }
+    { id: '1', nickname: 'FinanceGuru', level: 12, xp: 2450, streak: 45, avatar: '/src/assets/avatars/finance-hacker.jpg' },
+    { id: '2', nickname: 'CoinMaster', level: 10, xp: 2100, streak: 32, avatar: '/src/assets/avatars/crypto-analyst.jpg' },
+    { id: '3', nickname: 'InvestorPro', level: 9, xp: 1890, streak: 28, avatar: '/src/assets/avatars/investment-scholar.jpg' },
+    { id: '4', nickname: 'SavingHero', level: 8, xp: 1650, streak: 25, avatar: '/src/assets/avatars/quantum-broker.jpg' },
+    { id: '5', nickname: 'BudgetBoss', level: 7, xp: 1420, streak: 22, avatar: '/src/assets/avatars/neo-trader.jpg' },
+    { id: 'user', nickname: currentUser?.nickname || 'Você', level: currentUser?.level || 3, xp: currentUser?.xp || 245, streak: currentUser?.streak || 7, avatar: currentUser?.avatar?.image_url || '/src/assets/avatars/digital-nomad.jpg' }
   ];
 
   useEffect(() => {
-    const userData = localStorage.getItem('satoshi_user');
-    if (userData) {
-      setCurrentUser(JSON.parse(userData));
-    }
+    const loadUserData = async () => {
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        
+        if (authUser) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select(`
+              *,
+              avatar:avatars(id, name, image_url)
+            `)
+            .eq('user_id', authUser.id)
+            .single();
+          
+          if (profile) {
+            setCurrentUser(profile);
+          }
+        } else {
+          const userData = localStorage.getItem('satoshi_user');
+          if (userData) {
+            setCurrentUser(JSON.parse(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        const userData = localStorage.getItem('satoshi_user');
+        if (userData) {
+          setCurrentUser(JSON.parse(userData));
+        }
+      }
+    };
+    
+    loadUserData();
   }, []);
 
   const sortedUsers = mockUsers.sort((a, b) => b.xp - a.xp);
@@ -85,7 +115,8 @@ export default function Leaderboard() {
               <div className="flex items-center gap-4">
                 <div className="text-2xl font-bold text-primary">#{userRank}</div>
                 <Avatar className="w-12 h-12">
-                  <img src={satoshiMascot} alt="Você" />
+                  <AvatarImage src={currentUser.avatar?.image_url || satoshiMascot} alt="Você" />
+                  <AvatarFallback>{currentUser.nickname?.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div>
                   <h3 className="font-bold text-foreground">{currentUser.nickname} (Você)</h3>
@@ -111,7 +142,8 @@ export default function Leaderboard() {
             }`}>
               <div className="text-4xl mb-2">{getRankIcon(index + 1)}</div>
               <Avatar className="w-16 h-16 mx-auto mb-3">
-                <div className="text-2xl">{user.avatar}</div>
+                <AvatarImage src={user.avatar} alt={user.nickname} />
+                <AvatarFallback className="text-2xl">{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               <h3 className="font-bold text-foreground mb-1">{user.nickname}</h3>
               <p className="text-sm text-muted-foreground mb-2">
@@ -143,11 +175,11 @@ export default function Leaderboard() {
                 </div>
                 
                 <Avatar className="w-10 h-10">
-                  {user.id === 'user' ? (
-                    <img src={satoshiMascot} alt={user.nickname} />
-                  ) : (
-                    <div className="text-lg">{user.avatar}</div>
-                  )}
+                  <AvatarImage 
+                    src={user.id === 'user' ? (currentUser?.avatar?.image_url || satoshiMascot) : user.avatar}
+                    alt={user.nickname} 
+                  />
+                  <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 
                 <div className="flex-1">
