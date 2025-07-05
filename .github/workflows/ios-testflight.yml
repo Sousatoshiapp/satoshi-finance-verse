@@ -34,4 +34,5 @@ jobs:
            Y7rO05FJ3hXHK9WSkDjwk0KzjqBy6Jrd19GVhPvOgaD5ZMrp6WJn7cpY6sqvkxkD
            iKR0X2Ft
            -----END PRIVATE KEY-----
-        run: fastlane beta
+        run: fastlane ios beta
+
