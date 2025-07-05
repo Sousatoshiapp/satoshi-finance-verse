@@ -3,7 +3,10 @@ default_platform(:ios)
 platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
-    build_app(scheme: "Satoshi_Finance_Game") # Troque pelo nome do seu scheme no Xcode
+    build_app(
+      workspace: "Satoshi_Finance_Game.xcworkspace", # ajuste para o nome exato do seu arquivo
+      scheme: "Satoshi_Finance_Game"
+    )
     upload_to_testflight
   end
 end
