@@ -8,12 +8,14 @@ import { Camera, Upload, X } from "lucide-react";
 
 interface ProfileImageUploadProps {
   currentImageUrl?: string;
+  userAvatarUrl?: string;
   onImageUpdated: (newImageUrl: string) => void;
   userNickname: string;
 }
 
 export function ProfileImageUpload({ 
   currentImageUrl, 
+  userAvatarUrl,
   onImageUpdated, 
   userNickname 
 }: ProfileImageUploadProps) {
@@ -141,7 +143,10 @@ export function ProfileImageUpload({
       <div className="text-center">
         <div className="relative inline-block mb-4">
           <Avatar className="w-24 h-24 mx-auto">
-            <AvatarImage src={currentImageUrl} alt={userNickname} />
+            <AvatarImage 
+              src={userAvatarUrl || currentImageUrl} 
+              alt={userNickname} 
+            />
             <AvatarFallback className="text-2xl">
               {userNickname.charAt(0).toUpperCase()}
             </AvatarFallback>

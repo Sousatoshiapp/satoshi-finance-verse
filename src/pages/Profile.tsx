@@ -185,6 +185,7 @@ export default function Profile() {
         <div className="mb-8">
           <ProfileImageUpload
             currentImageUrl={user.profile_image_url}
+            userAvatarUrl={userAvatar?.image_url}
             onImageUpdated={handleImageUpdated}
             userNickname={user.nickname}
           />
