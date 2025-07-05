@@ -176,16 +176,32 @@ export default function Dashboard() {
             <div className="relative mb-4">
               {userAvatar ? (
                 <div className="flex justify-center">
-                  <AvatarDisplay 
-                    avatar={userAvatar} 
-                    size="xl"
-                    showBadge={true}
-                    evolutionLevel={userAvatar.evolution_level || 1}
-                  />
+                  <div className="relative">
+                    <AvatarDisplay 
+                      avatar={userAvatar} 
+                      size="xl"
+                      showBadge={true}
+                      evolutionLevel={userAvatar.evolution_level || 1}
+                    />
+                    {/* Level Badge - Centered at bottom of avatar */}
+                    <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-gradient-to-r from-primary to-success text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white">
+                        NÍVEL {userStats.level}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
-                  <div className="text-8xl mb-4">🤖</div>
+                <div className="relative">
+                  <div className="w-48 h-48 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
+                    <div className="text-8xl mb-4">🤖</div>
+                  </div>
+                  {/* Level Badge for placeholder avatar */}
+                  <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-primary to-success text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg border-2 border-white">
+                      NÍVEL {userStats.level}
+                    </div>
+                  </div>
                 </div>
               )}
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
