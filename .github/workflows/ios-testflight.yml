@@ -23,6 +23,7 @@ jobs:
         run: gem install fastlane
 
       - name: Build and upload to TestFlight
+        working-directory: ios  # 👈 ESSENCIAL para o caminho funcionar
         env:
           APP_STORE_CONNECT_API_KEY_ID: G8X5FP6F57
           APP_STORE_CONNECT_API_ISSUER_ID: 174886be-b08c-4e53-8de2-a6ba45aaad86 
