@@ -9,8 +9,10 @@ platform :ios do
       export_options: {
         signingStyle: "automatic",
         method: "app-store"
-      }
+      },
+      destination: "generic/platform=iOS"
     )
+    
     upload_to_testflight
   end
 end
