@@ -18,6 +18,7 @@ import Store from "./pages/Store";
 import Settings from "./pages/Settings";
 import Lesson from "./pages/Lesson";
 import Duels from "./pages/Duels";
+import Tournaments from "./pages/Tournaments";
 import SatoshiCity from "./pages/SatoshiCity";
 import DistrictDetail from "./pages/DistrictDetail";
 import DistrictQuiz from "./pages/DistrictQuiz";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/duel-quiz" element={<ProtectedRoute><DuelQuiz /></ProtectedRoute>} />
             <Route path="/tournament-quiz" element={<ProtectedRoute><TournamentQuiz /></ProtectedRoute>} />
             <Route path="/duels" element={<ProtectedRoute><Duels /></ProtectedRoute>} />
+            <Route path="/tournaments" element={<ProtectedRoute><Tournaments /></ProtectedRoute>} />
             <Route path="/satoshi-city" element={<ProtectedRoute><SatoshiCity /></ProtectedRoute>} />
             <Route path="/satoshi-city/district/:districtId" element={<ProtectedRoute><DistrictDetail /></ProtectedRoute>} />
             <Route path="/satoshi-city/district/:districtId/quiz" element={<ProtectedRoute><DistrictQuiz /></ProtectedRoute>} />

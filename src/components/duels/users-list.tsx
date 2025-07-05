@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sword } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 interface UsersListProps {
@@ -12,6 +13,8 @@ interface UsersListProps {
 
 export function UsersList({ onBack }: UsersListProps) {
   const [users, setUsers] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [currentProfile, setCurrentProfile] = useState<any>(null);
   const { toast } = useToast();
@@ -19,6 +22,7 @@ export function UsersList({ onBack }: UsersListProps) {
   useEffect(() => {
     loadUsers();
     loadCurrentProfile();
+    loadDistricts();
   }, []);
 
   const loadCurrentProfile = async () => {
@@ -62,23 +66,48 @@ export function UsersList({ onBack }: UsersListProps) {
     }
   };
 
+  const loadDistricts = async () => {
+    try {
+      const { data: districts } = await supabase
+        .from('districts')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      
+      setDistricts(districts || []);
+    } catch (error) {
+      console.error('Error loading districts:', error);
+    }
+  };
+
   const sendDuelInvite = async (challengedId: string) => {
     try {
       if (!currentProfile) return;
+      
+      if (!selectedDistrict) {
+        toast({
+          title: "Distrito obrigatório",
+          description: "Selecione um distrito para o duelo",
+          variant: "destructive"
+        });
+        return;
+      }
 
+      const district = districts.find(d => d.id === selectedDistrict);
+      
       const { error } = await supabase
         .from('duel_invites')
         .insert({
           challenger_id: currentProfile.id,
           challenged_id: challengedId,
-          quiz_topic: 'Finanças Pessoais'
+          quiz_topic: district?.name || 'Finanças Gerais'
         });
 
       if (error) throw error;
 
       toast({
         title: "Convite Enviado!",
-        description: "Aguarde a resposta do seu oponente",
+        description: `Duelo sobre ${district?.name} enviado!`,
       });
 
       onBack();
@@ -122,6 +151,38 @@ export function UsersList({ onBack }: UsersListProps) {
             </p>
           </div>
         </div>
+
+        {/* District Selector */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Escolha o Distrito do Duelo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione um distrito..." />
+              </SelectTrigger>
+              <SelectContent>
+                {districts.map((district) => (
+                  <SelectItem key={district.id} value={district.id}>
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: district.color_primary }}
+                      />
+                      {district.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedDistrict && (
+              <div className="mt-2 text-sm text-muted-foreground">
+                {districts.find(d => d.id === selectedDistrict)?.description}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Users List */}
         <div className="grid gap-4">
