@@ -4,7 +4,7 @@ platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
     build_app(
-      workspace: "Satoshi_Finance_Game.xcworkspace", # ajuste para o nome exato do seu arquivo
+      project: "Satoshi_Finance_Game.xcodeproj",
       scheme: "Satoshi_Finance_Game"
     )
     upload_to_testflight
