@@ -14,6 +14,7 @@ import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 import { supabase } from "@/integrations/supabase/client";
 import { AvatarDisplay } from "@/components/avatar-display";
+import defeatAnimation from "@/assets/defeat-animation.jpg";
 
 const duelQuestions = [
   {
@@ -681,57 +682,18 @@ export default function DuelQuiz() {
           </div>
         )}
         
-        <Card className="max-w-md w-full bg-gradient-to-b from-[#adff2f] to-[#8cc020] border-none text-center">
-          <CardContent className="p-8">
-            {/* Avatar com coroa se ganhou */}
-            <div className="relative mb-6">
-              <img 
-                src={mockUser.avatar} 
-                alt={mockUser.nickname}
-                className="w-24 h-24 rounded-full mx-auto border-4 border-white"
-              />
-              {playerWon && (
-                <Crown className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 text-yellow-400" />
-              )}
-            </div>
-
-            <div className="mb-6">
-              <h1 className="text-black text-4xl font-bold mb-2">
-                {isDraw ? "Empate!" : playerWon ? "Parabéns!" : "Que pena!"}
-              </h1>
-              <p className="text-black text-xl">
-                {isDraw ? "Foi por pouco!" : playerWon ? "Você venceu!" : "Você perdeu!"}
-              </p>
-            </div>
-
-            {/* Recompensas */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="bg-[#8cc020] rounded-xl p-4">
-                <div className="text-yellow-400 text-2xl mb-1">💰</div>
-                <div className="text-black font-bold">XP</div>
-                <div className="text-black text-xl font-bold">40</div>
-              </div>
-              <div className="bg-[#8cc020] rounded-xl p-4">
-                <Star className="w-6 h-6 text-yellow-400 mx-auto mb-1" />
-                <div className="text-black font-bold">Pontos</div>
-                <div className="text-black text-xl font-bold">80</div>
-              </div>
-              <div className="bg-[#8cc020] rounded-xl p-4">
-                <Trophy className="w-6 h-6 text-orange-400 mx-auto mb-1" />
-                <div className="text-black font-bold">Troféu</div>
-                <div className="text-orange-400">🏆</div>
-              </div>
-            </div>
-
-            {/* Placar */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="text-center">
-                <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full p-1 mb-2">
+        {/* Card de Vitória */}
+        {(playerWon || isDraw) && (
+          <Card className="max-w-md w-full bg-gradient-to-b from-[#adff2f] to-[#8cc020] border-none text-center">
+            <CardContent className="p-8">
+              {/* Avatar com coroa se ganhou */}
+              <div className="relative mb-6">
+                <div className="w-24 h-24 border-4 border-white rounded-full p-1 mx-auto">
                   <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
                     {userProfile?.avatars ? (
                       <AvatarDisplay 
                         avatar={userProfile.avatars} 
-                        size="sm" 
+                        size="lg" 
                         showBadge={false}
                       />
                     ) : userProfile?.profile_image_url ? (
@@ -741,68 +703,243 @@ export default function DuelQuiz() {
                         className="w-full h-full object-cover rounded-full" 
                       />
                     ) : (
-                      <img src={satoshiMascot} alt="Default" className="w-8 h-8" />
+                      <img src={satoshiMascot} alt="Default" className="w-16 h-16" />
                     )}
                   </div>
                 </div>
-                <p className="text-black font-semibold text-sm">{userProfile?.nickname || mockUser.nickname}</p>
-                <p className="text-black text-xs">Você</p>
+                {playerWon && (
+                  <Crown className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 text-yellow-400" />
+                )}
               </div>
-              
-              <div className="bg-[#8cc020] rounded-full w-16 h-16 flex items-center justify-center">
-                <span className="text-black font-bold text-xl">{playerScore}</span>
+
+              <div className="mb-6">
+                <h1 className="text-black text-4xl font-bold mb-2">
+                  {isDraw ? "Empate!" : "Parabéns!"}
+                </h1>
+                <p className="text-black text-xl">
+                  {isDraw ? "Foi por pouco!" : "Você venceu!"}
+                </p>
               </div>
-              
-              <div className="text-black font-bold text-2xl">-</div>
-              
-              <div className="bg-slate-600 rounded-full w-16 h-16 flex items-center justify-center">
-                <span className="text-white font-bold text-xl">{opponentScore}</span>
+
+              {/* Recompensas */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-[#8cc020] rounded-xl p-4">
+                  <div className="text-yellow-400 text-2xl mb-1">💰</div>
+                  <div className="text-black font-bold">XP</div>
+                  <div className="text-black text-xl font-bold">40</div>
+                </div>
+                <div className="bg-[#8cc020] rounded-xl p-4">
+                  <Star className="w-6 h-6 text-yellow-400 mx-auto mb-1" />
+                  <div className="text-black font-bold">Pontos</div>
+                  <div className="text-black text-xl font-bold">80</div>
+                </div>
+                <div className="bg-[#8cc020] rounded-xl p-4">
+                  <Trophy className="w-6 h-6 text-orange-400 mx-auto mb-1" />
+                  <div className="text-black font-bold">Troféu</div>
+                  <div className="text-orange-400">🏆</div>
+                </div>
               </div>
-              
-              <div className="text-center">
-                <div className="w-16 h-16 border-4 border-blue-500 rounded-full p-1 mb-2">
+
+              {/* Placar - Vitória */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full p-1 mb-2">
+                    <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                      {userProfile?.avatars ? (
+                        <AvatarDisplay 
+                          avatar={userProfile.avatars} 
+                          size="sm" 
+                          showBadge={false}
+                        />
+                      ) : userProfile?.profile_image_url ? (
+                        <img 
+                          src={userProfile.profile_image_url} 
+                          alt="Avatar" 
+                          className="w-full h-full object-cover rounded-full" 
+                        />
+                      ) : (
+                        <img src={satoshiMascot} alt="Default" className="w-8 h-8" />
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-black font-semibold text-sm">{userProfile?.nickname || mockUser.nickname}</p>
+                  <p className="text-black text-xs">Você</p>
+                </div>
+                
+                <div className="bg-[#8cc020] rounded-full w-16 h-16 flex items-center justify-center">
+                  <span className="text-black font-bold text-xl">{playerScore}</span>
+                </div>
+                
+                <div className="text-black font-bold text-2xl">-</div>
+                
+                <div className="bg-slate-600 rounded-full w-16 h-16 flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">{opponentScore}</span>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 border-4 border-blue-500 rounded-full p-1 mb-2">
+                    <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                      <img 
+                        src={mockOpponent.avatar} 
+                        alt={mockOpponent.nickname}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-black font-semibold text-sm">{mockOpponent.nickname}</p>
+                  <p className="text-black text-xs">Oponente</p>
+                </div>
+              </div>
+
+              {/* Progresso de nível */}
+              <div className="mb-6">
+                <div className="flex justify-between text-black text-sm mb-2">
+                  <span>Nível {userProfile?.level || mockUser.level}</span>
+                  <span>Próximo Nível: Raposa Astuta</span>
+                </div>
+                <div className="w-full bg-slate-600 h-2 rounded-full">
+                  <div className="bg-[#8cc020] h-2 rounded-full w-3/4"></div>
+                </div>
+              </div>
+
+              {/* Botões */}
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  onClick={() => navigate('/game-mode')}
+                  className="bg-[#8cc020] hover:bg-[#8cc020]/80 text-black font-bold py-3 rounded-full"
+                >
+                  Próximo Nível ▶
+                </Button>
+                <Button 
+                  onClick={() => navigate('/dashboard')}
+                  variant="destructive"
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full"
+                >
+                  Sair
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Card de Derrota */}
+        {!playerWon && !isDraw && (
+          <Card className="max-w-md w-full bg-black border-2 border-red-500 text-center">
+            <CardContent className="p-8">
+              {/* GIF de Derrota */}
+              <div className="mb-6">
+                <img 
+                  src={defeatAnimation}
+                  alt="Defeat Animation"
+                  className="w-32 h-32 mx-auto mb-4 rounded-lg object-cover"
+                />
+              </div>
+
+              {/* Avatar do usuário no círculo */}
+              <div className="mb-6">
+                <div className="w-24 h-24 border-4 border-red-500 rounded-full p-1 mx-auto">
                   <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
-                    <img 
-                      src={mockOpponent.avatar} 
-                      alt={mockOpponent.nickname}
-                      className="w-full h-full object-cover rounded-full"
-                    />
+                    {userProfile?.avatars ? (
+                      <AvatarDisplay 
+                        avatar={userProfile.avatars} 
+                        size="lg" 
+                        showBadge={false}
+                      />
+                    ) : userProfile?.profile_image_url ? (
+                      <img 
+                        src={userProfile.profile_image_url} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover rounded-full" 
+                      />
+                    ) : (
+                      <img src={satoshiMascot} alt="Default" className="w-16 h-16" />
+                    )}
                   </div>
                 </div>
-                <p className="text-black font-semibold text-sm">{mockOpponent.nickname}</p>
-                <p className="text-black text-xs">Oponente</p>
               </div>
-            </div>
 
-            {/* Progresso de nível */}
-            <div className="mb-6">
-              <div className="flex justify-between text-black text-sm mb-2">
-                <span>Nível {mockUser.level}</span>
-                <span>Próximo Nível: Raposa Astuta</span>
+              <div className="mb-6">
+                <h1 className="text-red-400 text-4xl font-bold mb-2">
+                  Que pena!
+                </h1>
+                <p className="text-white text-xl mb-2">
+                  Você perdeu!
+                </p>
+                <p className="text-gray-400 text-sm">
+                  Não desista, continue treinando!
+                </p>
               </div>
-              <div className="w-full bg-slate-600 h-2 rounded-full">
-                <div className="bg-[#8cc020] h-2 rounded-full w-3/4"></div>
-              </div>
-            </div>
 
-            {/* Botões */}
-            <div className="grid grid-cols-2 gap-4">
-              <Button 
-                onClick={() => navigate('/game-mode')}
-                className="bg-[#8cc020] hover:bg-[#8cc020]/80 text-black font-bold py-3 rounded-full"
-              >
-                Próximo Nível ▶
-              </Button>
-              <Button 
-                onClick={() => navigate('/dashboard')}
-                variant="destructive"
-                className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full"
-              >
-                Sair
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              {/* Placar de Derrota */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="text-center">
+                  <div className="w-16 h-16 border-4 border-red-500 rounded-full p-1 mb-2">
+                    <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                      {userProfile?.avatars ? (
+                        <AvatarDisplay 
+                          avatar={userProfile.avatars} 
+                          size="sm" 
+                          showBadge={false}
+                        />
+                      ) : userProfile?.profile_image_url ? (
+                        <img 
+                          src={userProfile.profile_image_url} 
+                          alt="Avatar" 
+                          className="w-full h-full object-cover rounded-full" 
+                        />
+                      ) : (
+                        <img src={satoshiMascot} alt="Default" className="w-8 h-8" />
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-white font-semibold text-sm">{userProfile?.nickname || mockUser.nickname}</p>
+                  <p className="text-gray-400 text-xs">Você</p>
+                </div>
+                
+                <div className="bg-red-500 rounded-full w-16 h-16 flex items-center justify-center">
+                  <span className="text-white font-bold text-xl">{playerScore}</span>
+                </div>
+                
+                <div className="text-white font-bold text-2xl">-</div>
+                
+                <div className="bg-[#adff2f] rounded-full w-16 h-16 flex items-center justify-center">
+                  <span className="text-black font-bold text-xl">{opponentScore}</span>
+                </div>
+                
+                <div className="text-center">
+                  <div className="w-16 h-16 border-4 border-[#adff2f] rounded-full p-1 mb-2">
+                    <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                      <img 
+                        src={mockOpponent.avatar} 
+                        alt={mockOpponent.nickname}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    </div>
+                  </div>
+                  <p className="text-white font-semibold text-sm">{mockOpponent.nickname}</p>
+                  <p className="text-gray-400 text-xs">Vencedor</p>
+                </div>
+              </div>
+
+              {/* Botões de Derrota */}
+              <div className="grid grid-cols-2 gap-4">
+                <Button 
+                  onClick={() => navigate('/game-mode')}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-full"
+                >
+                  Tentar Novamente
+                </Button>
+                <Button 
+                  onClick={() => navigate('/dashboard')}
+                  variant="outline"
+                  className="border-white text-white hover:bg-white hover:text-black font-bold py-3 rounded-full"
+                >
+                  Voltar ao Menu
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     );
   }
