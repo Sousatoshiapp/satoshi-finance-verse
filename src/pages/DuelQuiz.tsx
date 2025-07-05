@@ -12,6 +12,8 @@ import { ArrowLeft, Settings, Zap, Clock, Crown, Star, Trophy, X } from "lucide-
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
+import { supabase } from "@/integrations/supabase/client";
+import { AvatarDisplay } from "@/components/avatar-display";
 
 const duelQuestions = [
   {
@@ -107,6 +109,7 @@ const fireVictoryConfetti = () => {
 };
 
 export default function DuelQuiz() {
+  const [userProfile, setUserProfile] = useState<any>(null);
   const navigate = useNavigate();
   
   // Estados para controlar o fluxo
@@ -127,6 +130,26 @@ export default function DuelQuiz() {
   const [timeLeft, setTimeLeft] = useState(15);
   const [isReady, setIsReady] = useState(false);
   const [opponentReady, setOpponentReady] = useState(false);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select(`
+            *,
+            avatars (*)
+          `)
+          .eq('user_id', user.id)
+          .maybeSingle();
+        
+        setUserProfile(profile);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   // Timer effect para o quiz
   useEffect(() => {
@@ -342,11 +365,15 @@ export default function DuelQuiz() {
           <div className="text-center mb-8">
             {/* Oponente */}
             <div className="mb-6">
-              <img 
-                src={mockOpponent.avatar} 
-                alt={mockOpponent.nickname}
-                className="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-blue-500"
-              />
+              <div className="w-20 h-20 mx-auto mb-4 border-4 border-blue-500 rounded-full p-1">
+                <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                  <img 
+                    src={mockOpponent.avatar} 
+                    alt={mockOpponent.nickname}
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+              </div>
               <h2 className="text-white text-xl font-bold">{mockOpponent.nickname}</h2>
               <p className="text-slate-400">Nível: {mockOpponent.level}</p>
             </div>
@@ -360,13 +387,29 @@ export default function DuelQuiz() {
 
             {/* Usuário */}
             <div className="mb-8">
-              <img 
-                src={mockUser.avatar} 
-                alt={mockUser.nickname}
-                className="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-[#adff2f]"
-              />
-              <h2 className="text-white text-xl font-bold">{mockUser.nickname}</h2>
-              <p className="text-slate-400">Nível: {mockUser.level}</p>
+              <div className="w-20 h-20 mx-auto mb-4 border-4 border-[#adff2f] rounded-full p-1">
+                <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
+                  {userProfile?.avatars ? (
+                    <AvatarDisplay 
+                      avatar={userProfile.avatars} 
+                      size="lg" 
+                      showBadge={false}
+                    />
+                  ) : userProfile?.profile_image_url ? (
+                    <img 
+                      src={userProfile.profile_image_url} 
+                      alt="Avatar" 
+                      className="w-full h-full object-cover rounded-full" 
+                    />
+                  ) : (
+                    <img src={satoshiMascot} alt="Default" className="w-12 h-12" />
+                  )}
+                </div>
+              </div>
+              <h2 className="text-white text-xl font-bold">
+                {userProfile?.nickname || mockUser.nickname}
+              </h2>
+              <p className="text-slate-400">Nível: {userProfile?.level || mockUser.level}</p>
             </div>
           </div>
 
