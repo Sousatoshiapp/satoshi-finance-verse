@@ -22,20 +22,7 @@ jobs:
       - name: Install Fastlane
         run: gem install fastlane
 
-      - name: Set up Xcode project directory
-        run: cd ios
-
-      # Se você NÃO usa CocoaPods, pode remover este passo.
-      # Se for usar CocoaPods no futuro, descomente e ajuste o caminho.
-      # - name: Install CocoaPods dependencies
-      #   run: |
-      #     cd ios
-      #     if [ -f Podfile ]; then
-      #       pod install
-      #     fi
-
       - name: Build and upload to TestFlight
-        working-directory: ios
         env:
           APP_STORE_CONNECT_API_KEY_ID: G8X5FP6F57
           APP_STORE_CONNECT_API_ISSUER_ID: 174886be-b08c-4e53-8de2-a6ba45aaad86 
