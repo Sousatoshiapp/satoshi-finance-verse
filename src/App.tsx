@@ -13,6 +13,7 @@ import DuelQuiz from "./pages/DuelQuiz";
 import TournamentQuiz from "./pages/TournamentQuiz";
 import GameMode from "./pages/GameMode";
 import Profile from "./pages/Profile";
+import Levels from "./pages/Levels";
 import Leaderboard from "./pages/Leaderboard";
 import Store from "./pages/Store";
 import Settings from "./pages/Settings";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/satoshi-city/district/:districtId/quiz" element={<ProtectedRoute><DistrictQuiz /></ProtectedRoute>} />
             <Route path="/playground" element={<ProtectedRoute><Playground /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/levels" element={<ProtectedRoute><Levels /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

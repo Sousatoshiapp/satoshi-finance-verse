@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ProgressBar } from "./progress-bar";
+import { getLevelInfo } from "@/data/levels";
 
 interface XPCardProps {
   currentXP: number;
@@ -9,6 +10,9 @@ interface XPCardProps {
 }
 
 export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps) {
+  const currentLevelInfo = getLevelInfo(level);
+  const nextLevelInfo = getLevelInfo(level + 1);
+  
   return (
     <div className={cn(
       "bg-card rounded-xl p-4 shadow-card border",
@@ -19,7 +23,10 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
           <div className="w-8 h-8 rounded-full bg-experience text-white flex items-center justify-center text-sm font-bold">
             {level}
           </div>
-          <span className="text-sm font-semibold text-foreground">Nível {level}</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-foreground">{currentLevelInfo.name}</span>
+            <span className="text-xs text-muted-foreground">Nível {level}</span>
+          </div>
         </div>
         <span className="text-xs text-muted-foreground">{currentXP} XP</span>
       </div>
@@ -31,9 +38,14 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
         showLabel={false}
       />
       
-      <p className="text-xs text-muted-foreground mt-2 text-center">
-        {nextLevelXP - currentXP} XP para próximo nível
-      </p>
+      <div className="flex justify-between items-center mt-2">
+        <p className="text-xs text-muted-foreground">
+          Próximo: {nextLevelInfo.name}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {nextLevelXP - currentXP} XP
+        </p>
+      </div>
     </div>
   );
 }

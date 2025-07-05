@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getLevelInfo } from "@/data/levels";
 import newLogo from "/lovable-uploads/874326e7-1122-419a-8916-5df0c112245d.png";
 
 const getGreeting = () => {
@@ -224,14 +225,29 @@ export default function Dashboard() {
               <span className="text-foreground font-medium">
                 {userAvatar ? userAvatar.name : 'Cidadão Anônimo'}
               </span>
-              <span className="text-muted-foreground">Nível {userStats.level}</span>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate('/levels')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {getLevelInfo(userStats.level).name} →
+              </Button>
             </div>
             
-            <div className="w-full bg-muted rounded-full h-2 mb-6">
+            <div 
+              className="w-full bg-muted rounded-full h-2 mb-6 cursor-pointer hover:bg-muted/80 transition-colors"
+              onClick={() => navigate('/levels')}
+            >
               <div 
                 className="bg-gradient-to-r from-success to-primary h-2 rounded-full"
                 style={{ width: `${(userStats.currentXP / userStats.nextLevelXP) * 100}%` }}
               ></div>
+            </div>
+            
+            <div className="flex justify-between items-center text-xs text-muted-foreground mb-2">
+              <span>XP: {userStats.currentXP}</span>
+              <span>Próximo: {getLevelInfo(userStats.level + 1).name}</span>
             </div>
           </div>
 
