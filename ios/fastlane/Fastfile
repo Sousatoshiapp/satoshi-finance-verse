@@ -1,7 +1,8 @@
+default_platform(:ios)
+
 platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
-    match(type: "appstore") # baixa certificado
     build_app(
       scheme: "Satoshi_Finance_Game"
     )
