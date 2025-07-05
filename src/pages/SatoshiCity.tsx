@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from "lucide-react";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
+import satoshiCityDay from "@/assets/satoshi-city-day-panoramic.jpg";
+import satoshiCitySunset from "@/assets/satoshi-city-sunset-panoramic.jpg";
+import satoshiCityNight from "@/assets/satoshi-city-night-panoramic.jpg";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -67,11 +70,35 @@ export default function SatoshiCity() {
   const [districts, setDistricts] = useState<District[]>([]);
   const [userDistricts, setUserDistricts] = useState<UserDistrict[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentCityImage, setCurrentCityImage] = useState(satoshiCityNight);
   const navigate = useNavigate();
 
+  // Function to get the appropriate city image based on time
+  const getCityImageByTime = () => {
+    const hour = new Date().getHours();
+    
+    if (hour >= 6 && hour < 18) {
+      return satoshiCityDay; // Day: 6AM to 6PM
+    } else if (hour >= 18 && hour < 20) {
+      return satoshiCitySunset; // Sunset: 6PM to 8PM
+    } else {
+      return satoshiCityNight; // Night: 8PM to 6AM
+    }
+  };
+
   useEffect(() => {
+    // Set initial image based on current time
+    setCurrentCityImage(getCityImageByTime());
+    
+    // Update image every minute
+    const interval = setInterval(() => {
+      setCurrentCityImage(getCityImageByTime());
+    }, 60000);
+
     loadDistricts();
     loadUserDistricts();
+
+    return () => clearInterval(interval);
   }, []);
 
   const loadDistricts = async () => {
@@ -164,11 +191,11 @@ export default function SatoshiCity() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-      {/* Cyberpunk City Background */}
+      {/* Dynamic Cyberpunk City Background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
         style={{ 
-          backgroundImage: `url(${satoshiCityMap})`,
+          backgroundImage: `url(${currentCityImage})`,
           filter: 'brightness(0.4) contrast(1.2)'
         }}
       >
