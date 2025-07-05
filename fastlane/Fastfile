@@ -4,7 +4,7 @@ platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
     build_app(
-      project: "Satoshi_Finance_Game.xcodeproj",
+      project: "ios/Satoshi_Finance_Game.xcodeproj", # <-- Caminho correto
       scheme: "Satoshi_Finance_Game"
     )
     upload_to_testflight
