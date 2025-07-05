@@ -46,6 +46,11 @@ import holoSneakers from "@/assets/accessories/holo-sneakers.jpg";
 import xpMultiplier from "@/assets/boosts/xp-multiplier.jpg";
 import cryptoBooster from "@/assets/boosts/crypto-booster.jpg";
 import timeWarp from "@/assets/boosts/time-warp.jpg";
+import neuralXpBooster from "@/assets/boosts/neural-xp-booster.jpg";
+import quantumEnergyDrink from "@/assets/boosts/quantum-energy-drink.jpg";
+import megaPointsAmplifier from "@/assets/boosts/mega-points-amplifier.jpg";
+import streakShield from "@/assets/boosts/streak-shield.jpg";
+import wisdomElixir from "@/assets/boosts/wisdom-elixir.jpg";
 
 interface Avatar {
   id: string;
@@ -526,6 +531,18 @@ export default function Store() {
                     'XP Multiplier Chip': xpMultiplier,
                     'Crypto Mining Booster': cryptoBooster,
                     'Time Warp Device': timeWarp,
+                    'Mega XP': neuralXpBooster,
+                    'Energia Infinita': quantumEnergyDrink,
+                    'Chuva de Pontos': megaPointsAmplifier,
+                    'Escudo Anti-Streak': streakShield,
+                    'Poção de Sabedoria': wisdomElixir,
+                    'Protetor de Sequência': streakShield,
+                    'XP em Dobro': neuralXpBooster,
+                    'Neural Focus Enhancer': neuralXpBooster,
+                    'Quantum Memory Bank': megaPointsAmplifier,
+                    'Cyber Streak Protector': streakShield,
+                    'Digital Wisdom Serum': wisdomElixir,
+                    'Energy Core Reactor': quantumEnergyDrink,
                   };
                   return imageMap[product.name] || getCategoryIcon(product.category);
                 };
