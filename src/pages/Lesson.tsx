@@ -9,6 +9,7 @@ import { QuizCard } from "@/components/quiz-card";
 import { lessons } from "@/data/lessons";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import DOMPurify from "dompurify";
 
 export default function Lesson() {
   const { courseId, lessonId } = useParams();
@@ -189,7 +190,7 @@ export default function Lesson() {
               <div 
                 className="text-foreground leading-relaxed whitespace-pre-line"
                 dangerouslySetInnerHTML={{ 
-                  __html: currentLesson.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                  __html: DOMPurify.sanitize(currentLesson.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'))
                 }}
               />
             </div>

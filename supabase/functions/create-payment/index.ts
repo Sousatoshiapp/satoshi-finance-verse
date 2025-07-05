@@ -3,8 +3,9 @@ import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://uabdmohhzsertxfishoh.supabase.co, https://d2e8a781-1b9b-4d86-a980-5a42d9bce352.lovableproject.com",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -21,7 +22,24 @@ serve(async (req) => {
 
   try {
     // Parse request body
-    const { productId, productName, amount, type } = await req.json();
+    const body = await req.json();
+    const { productId, productName, amount, type } = body;
+
+    // Input validation
+    if (!productId || typeof productId !== 'string') {
+      throw new Error('Invalid or missing productId');
+    }
+    if (!productName || typeof productName !== 'string') {
+      throw new Error('Invalid or missing productName');
+    }
+    if (!amount || typeof amount !== 'number' || amount <= 0) {
+      throw new Error('Invalid or missing amount');
+    }
+
+    // Sanitize inputs
+    const sanitizedProductId = productId.trim().slice(0, 100);
+    const sanitizedProductName = productName.trim().slice(0, 200);
+    const sanitizedType = type?.trim() || 'product';
 
     // Retrieve authenticated user
     const authHeader = req.headers.get("Authorization")!;
@@ -50,19 +68,19 @@ serve(async (req) => {
         {
           price_data: {
             currency: "brl",
-            product_data: { name: productName },
+            product_data: { name: sanitizedProductName },
             unit_amount: amount, // Amount in centavos
           },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/store?payment=success&product=${productId}&type=${type || 'product'}&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${req.headers.get("origin")}/store?payment=success&product=${encodeURIComponent(sanitizedProductId)}&type=${encodeURIComponent(sanitizedType)}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/store?payment=cancelled`,
       metadata: {
-        productId: productId,
+        productId: sanitizedProductId,
         userId: user.id,
-        type: type || 'product',
+        type: sanitizedType,
       },
     });
 

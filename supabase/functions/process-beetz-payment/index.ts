@@ -3,8 +3,9 @@ import Stripe from "https://esm.sh/stripe@14.21.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://uabdmohhzsertxfishoh.supabase.co, https://d2e8a781-1b9b-4d86-a980-5a42d9bce352.lovableproject.com",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -19,14 +20,23 @@ serve(async (req) => {
   );
 
   try {
-    const { sessionId } = await req.json();
+    const body = await req.json();
+    const { sessionId } = body;
+
+    // Input validation
+    if (!sessionId || typeof sessionId !== 'string') {
+      throw new Error('Invalid or missing sessionId');
+    }
+
+    // Sanitize sessionId
+    const sanitizedSessionId = sessionId.trim();
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2023-10-16",
     });
 
     // Retrieve the session from Stripe
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const session = await stripe.checkout.sessions.retrieve(sanitizedSessionId);
 
     if (session.payment_status !== 'paid') {
       return new Response(JSON.stringify({ error: 'Payment not completed' }), {
@@ -38,8 +48,14 @@ serve(async (req) => {
     const { productId, userId, type } = session.metadata!;
 
     if (type === 'beetz') {
-      // Extract Beetz amount from productId (e.g., "beetz-20" -> 20)
+      // Validate and extract Beetz amount from productId (e.g., "beetz-20" -> 20)
+      if (!productId || !productId.includes('-')) {
+        throw new Error('Invalid productId format for beetz');
+      }
       const beetzAmount = parseInt(productId.split('-')[1]);
+      if (isNaN(beetzAmount) || beetzAmount <= 0 || beetzAmount > 10000) {
+        throw new Error('Invalid beetz amount');
+      }
 
       // Get user profile
       const { data: profile, error: profileError } = await supabaseClient
