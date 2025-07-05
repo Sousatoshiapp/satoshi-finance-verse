@@ -110,6 +110,97 @@ export type Database = {
         }
         Relationships: []
       }
+      district_activities: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          completed_at: string
+          created_at: string
+          district_id: string
+          id: string
+          points_earned: number | null
+          user_id: string
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          completed_at?: string
+          created_at?: string
+          district_id: string
+          id?: string
+          points_earned?: number | null
+          user_id: string
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          completed_at?: string
+          created_at?: string
+          district_id?: string
+          id?: string
+          points_earned?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_activities_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      district_daily_quests: {
+        Row: {
+          created_at: string
+          district_id: string
+          id: string
+          is_active: boolean
+          points_reward: number
+          quest_description: string
+          quest_name: string
+          quest_type: string
+          reset_frequency: string
+          target_value: number
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string
+          district_id: string
+          id?: string
+          is_active?: boolean
+          points_reward?: number
+          quest_description: string
+          quest_name: string
+          quest_type: string
+          reset_frequency?: string
+          target_value: number
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string
+          district_id?: string
+          id?: string
+          is_active?: boolean
+          points_reward?: number
+          quest_description?: string
+          quest_name?: string
+          quest_type?: string
+          reset_frequency?: string
+          target_value?: number
+          xp_reward?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_daily_quests_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       districts: {
         Row: {
           color_primary: string
@@ -577,26 +668,41 @@ export type Database = {
       }
       user_districts: {
         Row: {
+          daily_streak: number | null
+          district_benefits: Json | null
           district_id: string
           id: string
+          is_residence: boolean
           joined_at: string
+          last_activity_date: string | null
           level: number
+          residence_started_at: string | null
           user_id: string
           xp: number
         }
         Insert: {
+          daily_streak?: number | null
+          district_benefits?: Json | null
           district_id: string
           id?: string
+          is_residence?: boolean
           joined_at?: string
+          last_activity_date?: string | null
           level?: number
+          residence_started_at?: string | null
           user_id: string
           xp?: number
         }
         Update: {
+          daily_streak?: number | null
+          district_benefits?: Json | null
           district_id?: string
           id?: string
+          is_residence?: boolean
           joined_at?: string
+          last_activity_date?: string | null
           level?: number
+          residence_started_at?: string | null
           user_id?: string
           xp?: number
         }
@@ -648,6 +754,44 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_quest_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          current_progress: number
+          id: string
+          last_updated: string
+          quest_id: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          current_progress?: number
+          id?: string
+          last_updated?: string
+          quest_id: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          current_progress?: number
+          id?: string
+          last_updated?: string
+          quest_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quest_progress_quest_id_fkey"
+            columns: ["quest_id"]
+            isOneToOne: false
+            referencedRelation: "district_daily_quests"
             referencedColumns: ["id"]
           },
         ]

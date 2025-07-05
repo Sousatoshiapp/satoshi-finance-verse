@@ -33,6 +33,10 @@ interface UserDistrict {
   district_id: string;
   level: number;
   xp: number;
+  is_residence: boolean;
+  residence_started_at: string | null;
+  daily_streak: number;
+  last_activity_date: string;
 }
 
 const districtIcons = {
@@ -147,7 +151,11 @@ export default function SatoshiCity() {
     return userDistricts.find(ud => ud.district_id === districtId);
   };
 
-  const handleJoinDistrict = async (districtId: string) => {
+  const getCurrentResidence = () => {
+    return userDistricts.find(ud => ud.is_residence);
+  };
+
+  const handleChangeResidence = async (districtId: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -163,18 +171,56 @@ export default function SatoshiCity() {
 
       if (!profile) return;
 
-      const { error } = await supabase
-        .from('user_districts')
-        .insert({
-          user_id: profile.id,
-          district_id: districtId
-        });
+      // Verificar se já mora neste distrito
+      const currentResidence = getCurrentResidence();
+      if (currentResidence?.district_id === districtId) {
+        return; // Já mora aqui
+      }
 
-      if (error) throw error;
+      // Remover residência atual se existir
+      if (currentResidence) {
+        await supabase
+          .from('user_districts')
+          .update({ 
+            is_residence: false, 
+            residence_started_at: null 
+          })
+          .eq('user_id', profile.id)
+          .eq('is_residence', true);
+      }
+
+      // Verificar se já explorou este distrito
+      const existingDistrict = userDistricts.find(ud => ud.district_id === districtId);
+      
+      if (existingDistrict) {
+        // Atualizar distrito existente para residência
+        await supabase
+          .from('user_districts')
+          .update({ 
+            is_residence: true, 
+            residence_started_at: new Date().toISOString(),
+            daily_streak: 0,
+            last_activity_date: new Date().toISOString().split('T')[0]
+          })
+          .eq('user_id', profile.id)
+          .eq('district_id', districtId);
+      } else {
+        // Criar nova entrada para o distrito
+        await supabase
+          .from('user_districts')
+          .insert({
+            user_id: profile.id,
+            district_id: districtId,
+            is_residence: true,
+            residence_started_at: new Date().toISOString(),
+            daily_streak: 0,
+            last_activity_date: new Date().toISOString().split('T')[0]
+          });
+      }
       
       loadUserDistricts();
     } catch (error) {
-      console.error('Error joining district:', error);
+      console.error('Error changing residence:', error);
     }
   };
 
@@ -255,7 +301,9 @@ export default function SatoshiCity() {
                 
                 {/* District Point */}
                 <div 
-                  className="relative w-16 h-16 rounded-full border-4 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+                  className={`relative w-16 h-16 rounded-full border-4 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm ${
+                    userInfo?.is_residence ? 'ring-4 ring-yellow-400 ring-opacity-60 animate-pulse' : ''
+                  }`}
                   style={{
                     borderColor: district.color_primary,
                     backgroundColor: `${district.color_primary}20`,
@@ -274,23 +322,42 @@ export default function SatoshiCity() {
                       style={{ color: district.color_primary }}
                     />
                   )}
+                  
+                  {/* Residence Crown */}
+                  {userInfo?.is_residence && (
+                    <div className="absolute -top-1 -right-1 text-yellow-400">
+                      <Home className="w-4 h-4" />
+                    </div>
+                  )}
                 </div>
 
                 {/* District Info Tooltip */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 top-20 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+                <div className="absolute left-1/2 transform -translate-x-1/2 top-20 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
                   <Card 
-                    className="w-64 border-2 bg-slate-800/90 backdrop-blur-sm"
+                    className="w-72 border-2 bg-slate-800/95 backdrop-blur-sm"
                     style={{ borderColor: district.color_primary }}
                   >
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm text-white">{district.name}</CardTitle>
-                      <CardDescription className="text-xs text-gray-300">
-                        {district.description}
-                      </CardDescription>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-sm text-white">{district.name}</CardTitle>
+                          <CardDescription className="text-xs text-gray-300">
+                            {district.description}
+                          </CardDescription>
+                        </div>
+                        {userInfo?.is_residence && (
+                          <Badge 
+                            variant="outline" 
+                            className="text-xs border-yellow-400 text-yellow-400"
+                          >
+                            Residência
+                          </Badge>
+                        )}
+                      </div>
                     </CardHeader>
-                    <CardContent className="pt-0">
+                    <CardContent className="pt-0 space-y-3">
                       {userInfo ? (
-                        <div className="space-y-1">
+                        <div className="space-y-2">
                           <div className="flex justify-between text-xs">
                             <span className="text-gray-400">Nível {userInfo.level}</span>
                             <span style={{ color: district.color_primary }}>
@@ -306,10 +373,40 @@ export default function SatoshiCity() {
                               }}
                             ></div>
                           </div>
+                          {userInfo.is_residence && (
+                            <div className="text-xs text-yellow-400">
+                              🏠 Streak: {userInfo.daily_streak} dias
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <p className="text-xs text-gray-400">Clique para explorar</p>
                       )}
+                      
+                      {/* Residence Action Button */}
+                      <div 
+                        className="pointer-events-auto"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {userInfo?.is_residence ? (
+                          <div className="text-xs text-center text-yellow-400 font-medium">
+                            Esta é sua residência atual
+                          </div>
+                        ) : (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="w-full text-xs"
+                            style={{ 
+                              borderColor: district.color_primary,
+                              color: district.color_primary 
+                            }}
+                            onClick={() => handleChangeResidence(district.id)}
+                          >
+                            {userInfo ? 'Mudar Residência' : 'Morar Aqui'}
+                          </Button>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
@@ -331,6 +428,27 @@ export default function SatoshiCity() {
 
       {/* City Stats */}
       <div className="relative z-10 container mx-auto px-4 py-8 pb-32">
+        {/* Current Residence Info */}
+        {getCurrentResidence() && (
+          <div className="mb-6">
+            <Card className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 border border-yellow-400/50 backdrop-blur-sm max-w-md mx-auto">
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-3">
+                  <Home className="w-6 h-6 text-yellow-400 mr-2" />
+                  <h3 className="text-lg font-bold text-yellow-400">Residência Atual</h3>
+                </div>
+                <p className="text-white font-medium mb-2">
+                  {districts.find(d => d.id === getCurrentResidence()?.district_id)?.name}
+                </p>
+                <div className="flex justify-between text-sm text-gray-300">
+                  <span>Streak: {getCurrentResidence()?.daily_streak} dias</span>
+                  <span>Nível: {getCurrentResidence()?.level}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           <Card className="bg-slate-800/50 backdrop-blur-sm border border-cyan-400/30">
             <CardContent className="p-6 text-center">
@@ -353,9 +471,9 @@ export default function SatoshiCity() {
           <Card className="bg-slate-800/50 backdrop-blur-sm border border-pink-400/30">
             <CardContent className="p-6 text-center">
               <div className="text-3xl font-bold text-pink-400 mb-2">
-                {Math.floor(userDistricts.reduce((sum, ud) => sum + ud.xp, 0) / 1000) + userDistricts.length}
+                {getCurrentResidence()?.daily_streak || 0}
               </div>
-              <p className="text-gray-300">Nível Médio</p>
+              <p className="text-gray-300">Dias de Streak</p>
             </CardContent>
           </Card>
         </div>

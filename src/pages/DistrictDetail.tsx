@@ -8,7 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home } from "lucide-react";
+import { DistrictQuests } from "@/components/district-quests";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -303,8 +304,12 @@ export default function DistrictDetail() {
 
       {/* Content Tabs */}
       <div className="container mx-auto px-4 py-8 pb-32">
-        <Tabs defaultValue="quizzes" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-slate-800/50">
+        <Tabs defaultValue="activities" className="w-full">
+          <TabsList className="grid w-full grid-cols-5 mb-8 bg-slate-800/50">
+            <TabsTrigger value="activities" className="data-[state=active]:bg-slate-700">
+              <Zap className="mr-2 h-4 w-4" />
+              Atividades
+            </TabsTrigger>
             <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700">
               <BookOpen className="mr-2 h-4 w-4" />
               Quizzes
@@ -318,10 +323,19 @@ export default function DistrictDetail() {
               Ranking
             </TabsTrigger>
             <TabsTrigger value="teams" className="data-[state=active]:bg-slate-700">
-              <Zap className="mr-2 h-4 w-4" />
+              <Home className="mr-2 h-4 w-4" />
               Times
             </TabsTrigger>
           </TabsList>
+
+          {/* Activities Tab */}
+          <TabsContent value="activities">
+            <DistrictQuests 
+              districtId={district.id}
+              districtTheme={district.theme}
+              districtColor={district.color_primary}
+            />
+          </TabsContent>
 
           {/* Quizzes Tab */}
           <TabsContent value="quizzes">
