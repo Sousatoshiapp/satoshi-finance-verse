@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
@@ -5,41 +6,79 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
+  const [authCheckComplete, setAuthCheckComplete] = useState(false);
 
-  console.log('🛡️ ProtectedRoute check:', { 
-    hasUser: !!user, 
-    loading, 
-    path: window.location.pathname 
-  });
+  useEffect(() => {
+    // Delay auth check to avoid race conditions
+    const checkAuth = async () => {
+      // Wait a bit for auth to settle
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const currentPath = window.location.pathname;
+      const hasSupabaseUser = !!user;
+      const hasSupabaseSession = !!session;
+      const localUser = localStorage.getItem('satoshi_user');
+      const hasLocalUser = !!localUser;
 
-  // Show loading while auth is initializing
-  if (loading) {
+      console.log('🛡️ DETAILED PROTECTION CHECK:', {
+        path: currentPath,
+        loading,
+        hasSupabaseUser,
+        hasSupabaseSession,
+        hasLocalUser,
+        userId: user?.id,
+        sessionExpiry: session?.expires_at,
+        timestamp: new Date().toISOString()
+      });
+
+      if (loading) {
+        console.log('⏳ Auth still loading, waiting...');
+        return;
+      }
+
+      // If authenticated via Supabase
+      if (hasSupabaseUser && hasSupabaseSession) {
+        console.log('✅ SUPABASE AUTH VALID - allowing access');
+        setAuthCheckComplete(true);
+        return;
+      }
+
+      // If no Supabase auth but has localStorage
+      if (!hasSupabaseUser && hasLocalUser) {
+        console.log(`📱 FALLBACK TO LOCALSTORAGE - allowing access`);
+        setAuthCheckComplete(true);
+        return;
+      }
+
+      // No valid authentication found
+      console.log(`🚫 NO VALID AUTH FOUND - redirecting from ${currentPath}`);
+      console.log('Attempting redirect to /welcome...');
+      
+      // Use window.location.replace to avoid history issues
+      window.location.replace('/welcome');
+    };
+
+    if (!authCheckComplete) {
+      checkAuth();
+    }
+  }, [user, session, loading, authCheckComplete]);
+
+  // Show loading while auth is being checked
+  if (loading || !authCheckComplete) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-          <p className="text-gray-300">Carregando Satoshi City...</p>
+          <p className="text-gray-300">Verificando autenticação...</p>
+          <p className="text-xs text-gray-500 mt-2">
+            Loading: {loading.toString()}, Complete: {authCheckComplete.toString()}
+          </p>
         </div>
       </div>
     );
   }
 
-  // If user is authenticated, allow access
-  if (user) {
-    console.log('✅ User authenticated, allowing access');
-    return <>{children}</>;
-  }
-
-  // If no user, check localStorage as fallback
-  const localUser = localStorage.getItem('satoshi_user');
-  if (localUser) {
-    console.log('🏠 Using localStorage fallback, allowing access');
-    return <>{children}</>;
-  }
-
-  // No user found, redirect to welcome
-  console.log('🚫 No authentication found, redirecting to welcome');
-  window.location.href = '/welcome';
-  return null;
+  console.log('✅ RENDERING PROTECTED CONTENT');
+  return <>{children}</>;
 }

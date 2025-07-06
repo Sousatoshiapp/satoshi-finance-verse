@@ -14,16 +14,24 @@ export const debugNavigation = {
       hasUser: !!user,
       hasSession: !!session,
       loading,
-      userId: user?.id || 'none'
+      userId: user?.id || 'none',
+      sessionValid: session ? !!(session.expires_at && new Date(session.expires_at * 1000) > new Date()) : false,
+      expiresAt: session?.expires_at ? new Date(session.expires_at * 1000).toISOString() : 'none'
     });
   },
   
   logProtectedRoute: (path: string, userState: any) => {
     console.log(`🛡️ ProtectedRoute [${path}]:`, {
       hasUser: !!userState.user,
+      hasSession: !!userState.session,
       loading: userState.loading,
-      hasLocalData: !!localStorage.getItem('satoshi_user')
+      hasLocalData: !!localStorage.getItem('satoshi_user'),
+      sessionExpiry: userState.session?.expires_at
     });
+  },
+
+  logCriticalError: (error: string, context: any) => {
+    console.error(`❌ CRITICAL ERROR: ${error}`, context);
   }
 };
 

@@ -40,6 +40,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setSession(session);
           setUser(session?.user ?? null);
           debugNavigation.logAuthState(session?.user, session, false);
+          
+          // Critical debug info
+          console.log('🔄 AUTH INITIALIZATION COMPLETE:', {
+            hasUser: !!session?.user,
+            hasSession: !!session,
+            sessionExpiry: session?.expires_at,
+            timestamp: new Date().toISOString()
+          });
         }
       } catch (error) {
         console.error('❌ Failed to initialize auth:', error);
@@ -63,10 +71,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           debugNavigation.logAuthState(session?.user, session, false);
           
+          // Detailed event logging
+          console.log('🔄 AUTH STATE CHANGE:', {
+            event,
+            hasUser: !!session?.user,
+            hasSession: !!session,
+            userId: session?.user?.id,
+            sessionExpiry: session?.expires_at,
+            timestamp: new Date().toISOString()
+          });
+          
           // Handle specific auth events
           if (event === 'SIGNED_OUT') {
             debugNavigation.log('User signed out, clearing cache');
             localStorage.removeItem('supabase.auth.token');
+            localStorage.removeItem('satoshi_user');
           } else if (event === 'TOKEN_REFRESHED') {
             debugNavigation.log('Token refreshed successfully');
           } else if (event === 'SIGNED_IN') {
