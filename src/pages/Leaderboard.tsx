@@ -3,9 +3,12 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Trophy, TrendingUp, Flame, Crown, Medal, Award } from "lucide-react";
+import { cn } from "@/lib/utils";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
 interface LeaderboardUser {
@@ -14,62 +17,143 @@ interface LeaderboardUser {
   level: number;
   xp: number;
   streak: number;
-  avatar: string;
+  points: number;
+  profile_image_url?: string;
+  avatar?: {
+    name: string;
+    image_url: string;
+  };
+  rank: number;
 }
+
+interface LeaderboardData {
+  xp: LeaderboardUser[];
+  streak: LeaderboardUser[];
+  level: LeaderboardUser[];
+  points: LeaderboardUser[];
+}
+
+const leaderboardTypes = [
+  { key: 'xp', title: 'XP', icon: TrendingUp, color: 'text-orange-500' },
+  { key: 'streak', title: 'Streak', icon: Flame, color: 'text-red-500' },
+  { key: 'level', title: 'Nível', icon: Trophy, color: 'text-purple-500' },
+  { key: 'points', title: 'Beetz', icon: Crown, color: 'text-yellow-500' }
+];
 
 export default function Leaderboard() {
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [timeFilter, setTimeFilter] = useState<'week' | 'month' | 'all'>('week');
+  const [leaderboards, setLeaderboards] = useState<LeaderboardData>({
+    xp: [], streak: [], level: [], points: []
+  });
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'xp' | 'streak' | 'level' | 'points'>('xp');
+  const [timeFilter, setTimeFilter] = useState<'week' | 'month' | 'all'>('all');
   const navigate = useNavigate();
 
-  // Mock leaderboard data with avatar images
-  const mockUsers: LeaderboardUser[] = [
-    { id: '1', nickname: 'FinanceGuru', level: 12, xp: 2450, streak: 45, avatar: '/src/assets/avatars/finance-hacker.jpg' },
-    { id: '2', nickname: 'CoinMaster', level: 10, xp: 2100, streak: 32, avatar: '/src/assets/avatars/crypto-analyst.jpg' },
-    { id: '3', nickname: 'InvestorPro', level: 9, xp: 1890, streak: 28, avatar: '/src/assets/avatars/investment-scholar.jpg' },
-    { id: '4', nickname: 'SavingHero', level: 8, xp: 1650, streak: 25, avatar: '/src/assets/avatars/quantum-broker.jpg' },
-    { id: '5', nickname: 'BudgetBoss', level: 7, xp: 1420, streak: 22, avatar: '/src/assets/avatars/neo-trader.jpg' },
-    { id: 'user', nickname: currentUser?.nickname || 'Você', level: currentUser?.level || 3, xp: currentUser?.xp || 245, streak: currentUser?.streak || 7, avatar: currentUser?.avatar?.image_url || '/src/assets/avatars/digital-nomad.jpg' }
-  ];
-
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
+    loadData();
+  }, [timeFilter]);
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      await Promise.all([loadUserData(), loadLeaderboards()]);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadUserData = async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      
+      if (authUser) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select(`
+            *,
+            avatar:avatars(id, name, image_url)
+          `)
+          .eq('user_id', authUser.id)
+          .single();
         
-        if (authUser) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select(`
-              *,
-              avatar:avatars(id, name, image_url)
-            `)
-            .eq('user_id', authUser.id)
-            .single();
-          
-          if (profile) {
-            setCurrentUser(profile);
-          }
-        } else {
-          const userData = localStorage.getItem('satoshi_user');
-          if (userData) {
-            setCurrentUser(JSON.parse(userData));
-          }
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-        const userData = localStorage.getItem('satoshi_user');
-        if (userData) {
-          setCurrentUser(JSON.parse(userData));
+        if (profile) {
+          setCurrentUser(profile);
         }
       }
-    };
-    
-    loadUserData();
-  }, []);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
 
-  const sortedUsers = mockUsers.sort((a, b) => b.xp - a.xp);
-  const userRank = sortedUsers.findIndex(user => user.id === 'user') + 1;
+  const loadLeaderboards = async () => {
+    try {
+      // XP Leaderboard
+      const { data: xpData } = await supabase
+        .from('profiles')
+        .select(`
+          id, nickname, level, xp, streak, points, profile_image_url,
+          avatar:avatars(name, image_url)
+        `)
+        .order('xp', { ascending: false })
+        .limit(50);
+
+      // Streak Leaderboard  
+      const { data: streakData } = await supabase
+        .from('profiles')
+        .select(`
+          id, nickname, level, xp, streak, points, profile_image_url,
+          avatar:avatars(name, image_url)
+        `)
+        .order('streak', { ascending: false })
+        .limit(50);
+
+      // Level Leaderboard
+      const { data: levelData } = await supabase
+        .from('profiles')
+        .select(`
+          id, nickname, level, xp, streak, points, profile_image_url,
+          avatar:avatars(name, image_url)
+        `)
+        .order('level', { ascending: false })
+        .limit(50);
+
+      // Points Leaderboard
+      const { data: pointsData } = await supabase
+        .from('profiles')
+        .select(`
+          id, nickname, level, xp, streak, points, profile_image_url,
+          avatar:avatars(name, image_url)
+        `)
+        .order('points', { ascending: false })
+        .limit(50);
+
+      setLeaderboards({
+        xp: (xpData || []).map((user, index) => ({ ...user, rank: index + 1 })),
+        streak: (streakData || []).map((user, index) => ({ ...user, rank: index + 1 })),
+        level: (levelData || []).map((user, index) => ({ ...user, rank: index + 1 })),
+        points: (pointsData || []).map((user, index) => ({ ...user, rank: index + 1 }))
+      });
+    } catch (error) {
+      console.error('Error loading leaderboards:', error);
+    }
+  };
+
+  const getCurrentUserRank = () => {
+    if (!currentUser || !leaderboards[activeTab]) return 0;
+    const userEntry = leaderboards[activeTab].find(user => user.id === currentUser.id);
+    return userEntry ? userEntry.rank : 0;
+  };
+
+  const getTopUsers = () => {
+    return leaderboards[activeTab]?.slice(0, 3) || [];
+  };
+
+  const getAllUsers = () => {
+    return leaderboards[activeTab] || [];
+  };
 
   const getRankIcon = (position: number) => {
     if (position === 1) return '🥇';
@@ -108,119 +192,170 @@ export default function Leaderboard() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Your Position */}
-        {currentUser && (
-          <Card 
-            className="p-6 mb-8 border-primary cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => currentUser.id && navigate(`/user/${currentUser.id}`)}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="text-2xl font-bold text-primary">#{userRank}</div>
-                <Avatar className="w-12 h-12">
-                  <AvatarImage src={currentUser.avatar?.image_url || satoshiMascot} alt="Você" />
-                  <AvatarFallback>{currentUser.nickname?.charAt(0).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="font-bold text-foreground">{currentUser.nickname} (Você)</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Nível {currentUser.level} • {currentUser.xp} XP
-                  </p>
-                </div>
-              </div>
-              <div className="text-right">
-                <Badge>🔥 {currentUser.streak} dias</Badge>
-              </div>
-            </div>
-          </Card>
-        )}
+        {/* Tab Navigation */}
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="mb-8">
+          <TabsList className="grid w-full grid-cols-4">
+            {leaderboardTypes.map(type => {
+              const IconComponent = type.icon;
+              return (
+                <TabsTrigger 
+                  key={type.key} 
+                  value={type.key}
+                  className="flex items-center gap-2"
+                >
+                  <IconComponent className={cn("h-4 w-4", type.color)} />
+                  {type.title}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
 
-        {/* Top 3 Podium */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {sortedUsers.slice(0, 3).map((user, index) => (
-            <Card 
-              key={user.id} 
-              className={`p-6 text-center cursor-pointer hover:shadow-lg transition-shadow ${
-                index === 0 ? 'border-yellow-500 bg-yellow-500/5' :
-                index === 1 ? 'border-gray-400 bg-gray-400/5' :
-                'border-orange-500 bg-orange-500/5'
-              }`}
-              onClick={() => {
-                if (user.id === 'user' && currentUser?.id) {
-                  navigate(`/user/${currentUser.id}`);
-                } else if (user.id !== 'user') {
-                  navigate(`/user/${user.id}`);
-                }
-              }}
-            >
-              <div className="text-4xl mb-2">{getRankIcon(index + 1)}</div>
-              <Avatar className="w-16 h-16 mx-auto mb-3">
-                <AvatarImage src={user.avatar} alt={user.nickname} />
-                <AvatarFallback className="text-2xl">{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <h3 className="font-bold text-foreground mb-1">{user.nickname}</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                Nível {user.level}
-              </p>
-              <div className="text-lg font-bold text-primary">{user.xp} XP</div>
-              <Badge variant="outline" className="mt-2">
-                🔥 {user.streak}
-              </Badge>
-            </Card>
+          {leaderboardTypes.map(type => (
+            <TabsContent key={type.key} value={type.key} className="mt-6">
+              {loading ? (
+                <div className="space-y-4">
+                  {[1, 2, 3].map(i => (
+                    <Card key={i} className="p-6 animate-pulse">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 bg-muted rounded-full" />
+                        <div className="flex-1">
+                          <div className="h-4 bg-muted rounded w-32 mb-2" />
+                          <div className="h-3 bg-muted rounded w-24" />
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {/* Your Position */}
+                  {currentUser && getCurrentUserRank() > 0 && (
+                    <Card 
+                      className="p-6 mb-8 border-primary cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => navigate(`/user/${currentUser.id}`)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="text-2xl font-bold text-primary">#{getCurrentUserRank()}</div>
+                          <Avatar className="w-12 h-12">
+                            <AvatarImage src={currentUser.avatar?.image_url || satoshiMascot} alt="Você" />
+                            <AvatarFallback>{currentUser.nickname?.charAt(0).toUpperCase()}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h3 className="font-bold text-foreground">{currentUser.nickname} (Você)</h3>
+                            <p className="text-sm text-muted-foreground">
+                              Nível {currentUser.level} • {currentUser.xp} XP
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={cn("text-2xl font-bold", type.color)}>
+                            {activeTab === 'xp' && currentUser.xp}
+                            {activeTab === 'streak' && currentUser.streak}
+                            {activeTab === 'level' && currentUser.level}
+                            {activeTab === 'points' && currentUser.points}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {type.title}
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  )}
+
+                  {/* Top 3 Podium */}
+                  <div className="grid grid-cols-3 gap-4 mb-8">
+                    {getTopUsers().map((user, index) => (
+                      <Card 
+                        key={user.id} 
+                        className={`p-6 text-center cursor-pointer hover:shadow-lg transition-shadow ${
+                          index === 0 ? 'border-yellow-500 bg-yellow-500/5' :
+                          index === 1 ? 'border-gray-400 bg-gray-400/5' :
+                          'border-orange-500 bg-orange-500/5'
+                        }`}
+                        onClick={() => navigate(`/user/${user.id}`)}
+                      >
+                        <div className="text-4xl mb-2">{getRankIcon(index + 1)}</div>
+                        <Avatar className="w-16 h-16 mx-auto mb-3">
+                          <AvatarImage 
+                            src={user.avatar?.image_url || user.profile_image_url || satoshiMascot} 
+                            alt={user.nickname} 
+                          />
+                          <AvatarFallback className="text-2xl">{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <h3 className="font-bold text-foreground mb-1">{user.nickname}</h3>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Nível {user.level}
+                        </p>
+                        <div className={cn("text-lg font-bold", type.color)}>
+                          {activeTab === 'xp' && `${user.xp} XP`}
+                          {activeTab === 'streak' && `${user.streak} dias`}
+                          {activeTab === 'level' && `Nível ${user.level}`}
+                          {activeTab === 'points' && `${user.points} Beetz`}
+                        </div>
+                        <Badge variant="outline" className="mt-2">
+                          🔥 {user.streak}
+                        </Badge>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Full Leaderboard */}
+                  <Card className="p-6">
+                    <h3 className="font-bold text-foreground mb-6">Ranking Completo - {type.title}</h3>
+                    <div className="space-y-4">
+                      {getAllUsers().map((user) => (
+                        <div
+                          key={user.id}
+                          className={`flex items-center gap-4 p-4 rounded-lg transition-all cursor-pointer ${
+                            user.id === currentUser?.id 
+                              ? 'bg-primary/10 border border-primary hover:bg-primary/20' 
+                              : 'bg-muted/20 hover:bg-muted/40'
+                          }`}
+                          onClick={() => navigate(`/user/${user.id}`)}
+                        >
+                          <div className="w-8 text-center font-bold text-foreground">
+                            {getRankIcon(user.rank)}
+                          </div>
+                          
+                          <Avatar className="w-10 h-10">
+                            <AvatarImage 
+                              src={user.avatar?.image_url || user.profile_image_url || satoshiMascot}
+                              alt={user.nickname} 
+                            />
+                            <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-foreground">
+                              {user.nickname}
+                              {user.id === currentUser?.id && <span className="text-primary ml-2">(Você)</span>}
+                            </h4>
+                            <p className="text-sm text-muted-foreground">
+                              Nível {user.level} • {user.xp} XP
+                            </p>
+                          </div>
+                          
+                          <div className="text-right">
+                            <div className={cn("font-bold text-lg", type.color)}>
+                              {activeTab === 'xp' && user.xp}
+                              {activeTab === 'streak' && user.streak}
+                              {activeTab === 'level' && user.level}
+                              {activeTab === 'points' && user.points}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {type.title}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </>
+              )}
+            </TabsContent>
           ))}
-        </div>
-
-        {/* Full Leaderboard */}
-        <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Ranking Completo</h3>
-          <div className="space-y-4">
-            {sortedUsers.map((user, index) => (
-              <div
-                key={user.id}
-                className={`flex items-center gap-4 p-4 rounded-lg transition-all cursor-pointer ${
-                  user.id === 'user' 
-                    ? 'bg-primary/10 border border-primary hover:bg-primary/20' 
-                    : 'bg-muted/20 hover:bg-muted/40'
-                }`}
-                onClick={() => {
-                  if (user.id === 'user' && currentUser?.id) {
-                    navigate(`/user/${currentUser.id}`);
-                  } else if (user.id !== 'user') {
-                    navigate(`/user/${user.id}`);
-                  }
-                }}
-              >
-                <div className="w-8 text-center font-bold text-foreground">
-                  {getRankIcon(index + 1)}
-                </div>
-                
-                <Avatar className="w-10 h-10">
-                  <AvatarImage 
-                    src={user.id === 'user' ? (currentUser?.avatar?.image_url || satoshiMascot) : user.avatar}
-                    alt={user.nickname} 
-                  />
-                  <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1">
-                  <h4 className="font-semibold text-foreground">
-                    {user.nickname}
-                    {user.id === 'user' && <span className="text-primary ml-2">(Você)</span>}
-                  </h4>
-                  <p className="text-sm text-muted-foreground">
-                    Nível {user.level} • {user.xp} XP
-                  </p>
-                </div>
-                
-                <div className="text-right">
-                  <Badge variant="outline">
-                    🔥 {user.streak}
-                  </Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+        </Tabs>
       </div>
       
       <FloatingNavbar />
