@@ -26,9 +26,13 @@ export default function Welcome() {
         <div className="container mx-auto max-w-md">
           {/* App Logo/Title */}
           <div className="text-center mb-12">
-            <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-              SATOSHI CITY
-            </h1>
+            <div className="flex justify-center mb-4">
+              <img 
+                src="/lovable-uploads/85640d9f-9c11-41ee-a94b-960e0cf9a946.png" 
+                alt="Satoshi City Logo" 
+                className="h-32 w-auto animate-pulse"
+              />
+            </div>
             <p className="text-xl text-gray-300 mb-6 leading-relaxed">
               O futuro das finanças chegou
             </p>

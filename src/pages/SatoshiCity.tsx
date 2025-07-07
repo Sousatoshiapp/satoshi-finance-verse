@@ -254,7 +254,7 @@ export default function SatoshiCity() {
           <img 
             src="/lovable-uploads/da61d87e-9d37-454b-bdeb-b54db4abfa9e.png" 
             alt="Satoshi City Logo" 
-            className="h-24 w-auto"
+            className="h-72 w-auto"
           />
         </div>
         <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
