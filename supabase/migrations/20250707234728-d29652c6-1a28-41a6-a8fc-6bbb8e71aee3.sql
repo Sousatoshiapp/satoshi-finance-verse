@@ -1,0 +1,12 @@
+-- Perguntas para trading
+INSERT INTO public.quiz_questions (question, options, correct_answer, explanation, difficulty, category) VALUES
+('O que e Day Trading?', '["Negociar apenas de dia", "Comprar e vender no mesmo dia", "Trading a longo prazo", "Investir em acoes"]', 'Comprar e vender no mesmo dia', 'Day Trading envolve compra e venda no mesmo dia.', 'easy', 'trading'),
+('O que e Stop Loss?', '["Ganho maximo", "Ordem de protecao contra perdas", "Taxa de corretagem", "Dividendo"]', 'Ordem de protecao contra perdas', 'Stop Loss limita perdas automaticamente.', 'medium', 'trading'),
+('O que significa Bull Market?', '["Mercado em baixa", "Mercado em alta", "Mercado lateral", "Mercado volatil"]', 'Mercado em alta', 'Bull Market e periodo de crescimento continuo.', 'easy', 'trading'),
+('O que e Analise Tecnica?', '["Analise de fundamentos", "Estudo de graficos e precos", "Analise de balancos", "Estudo macroeconomico"]', 'Estudo de graficos e precos', 'Analise Tecnica usa historico de precos.', 'medium', 'trading'),
+('O que e Leverage?', '["Alavancagem financeira", "Taxa de juros", "Tipo de acao", "Estrategia conservadora"]', 'Alavancagem financeira', 'Leverage permite negociar com mais capital.', 'hard', 'trading'),
+('O que e Swing Trading?', '["Trading intraday", "Posicoes por dias/semanas", "Trading alta frequencia", "Investimento passivo"]', 'Posicoes por dias/semanas', 'Swing Trading mantem posicoes por dias ou semanas.', 'medium', 'trading'),
+('O que e Spread?', '["Diferenca entre compra e venda", "Taxa de corretagem", "Dividendo", "Valor patrimonial"]', 'Diferenca entre compra e venda', 'Spread e diferenca entre bid e ask.', 'easy', 'trading'),
+('O que e Volume?', '["Preco do ativo", "Quantidade negociada", "Taxa de juros", "Volatilidade"]', 'Quantidade negociada', 'Volume representa quantidade negociada.', 'easy', 'trading'),
+('O que e Volatilidade?', '["Estabilidade de precos", "Variacao dos precos", "Tendencia de alta", "Dividendos"]', 'Variacao dos precos', 'Volatilidade mede variacao de precos.', 'medium', 'trading'),
+('O que e Scalping?', '["Trading longo prazo", "Trading curtissimo prazo", "Analise fundamentalista", "Investimento passivo"]', 'Trading curtissimo prazo', 'Scalping busca lucros rapidos em minutos.', 'hard', 'trading');
