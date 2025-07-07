@@ -470,6 +470,36 @@ export type Database = {
           },
         ]
       }
+      level_tiers: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: number
+          level: number
+          name: string
+          rewards: Json | null
+          xp_required: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          level: number
+          name: string
+          rewards?: Json | null
+          xp_required: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: number
+          level?: number
+          name?: string
+          rewards?: Json | null
+          xp_required?: number
+        }
+        Relationships: []
+      }
       market_events: {
         Row: {
           activated_at: string | null
@@ -1713,9 +1743,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_xp: {
+        Args: { profile_id: string; xp_amount: number; activity_type?: string }
+        Returns: {
+          new_xp: number
+          new_level: number
+          level_up: boolean
+          rewards: Json
+        }[]
+      }
+      calculate_user_level: {
+        Args: { user_xp: number }
+        Returns: number
+      }
+      get_next_level_xp: {
+        Args: { current_level: number }
+        Returns: number
+      }
       log_security_event: {
         Args: { event_type: string; user_id: string; event_data?: Json }
         Returns: undefined
+      }
+      update_user_streak: {
+        Args: { profile_id: string; activity_date?: string }
+        Returns: number
       }
     }
     Enums: {

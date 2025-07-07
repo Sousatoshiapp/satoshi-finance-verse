@@ -223,7 +223,10 @@ export default function DuelQuiz() {
   // Tela de Configuração do Duelo
   if (currentStep === 'config') {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-[#1a2e05]">
+      <div className="min-h-screen bg-background"
+           style={{
+             background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
+           }}>
         <div className="max-w-md mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-8">
             <Button

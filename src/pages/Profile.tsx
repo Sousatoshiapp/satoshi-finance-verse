@@ -9,6 +9,7 @@ import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ProfileImageUpload } from "@/components/profile-image-upload";
 import { AvatarSelector } from "@/components/avatar-selector";
+import { UserInventory } from "@/components/profile/user-inventory";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -319,6 +320,11 @@ export default function Profile() {
             currentAvatarId={user.avatar_id}
             onAvatarChanged={handleAvatarChanged}
           />
+        </div>
+
+        {/* User Inventory */}
+        <div className="mb-8">
+          <UserInventory />
         </div>
 
         {/* Achievements */}

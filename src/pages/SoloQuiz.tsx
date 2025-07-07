@@ -10,6 +10,8 @@ import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 import { supabase } from "@/integrations/supabase/client";
 import { AvatarDisplay } from "@/components/avatar-display";
+import { QuizFeedback } from "@/components/quiz/quiz-feedback";
+import { useProgressionSystem } from "@/hooks/use-progression-system";
 
 const soloQuizTopics = [
   {
@@ -19,6 +21,7 @@ const soloQuizTopics = [
       {
         id: "1",
         question: "Quem criou o Bitcoin?",
+        explanation: "Satoshi Nakamoto é o pseudônimo usado pelo criador anônimo do Bitcoin. Sua identidade real permanece um mistério até hoje.",
         options: [
           { id: "a", text: "Vitalik Buterin", isCorrect: false },
           { id: "b", text: "Satoshi Nakamoto", isCorrect: true },
@@ -29,6 +32,7 @@ const soloQuizTopics = [
       {
         id: "2", 
         question: "O que significa HODL?",
+        explanation: "HODL surgiu de um erro de digitação de 'hold' em um fórum, mas depois foi interpretado como 'Hold On for Dear Life', representando a estratégia de manter criptomoedas a longo prazo.",
         options: [
           { id: "a", text: "Hold On for Dear Life", isCorrect: true },
           { id: "b", text: "High Order Digital Ledger", isCorrect: false },
@@ -39,6 +43,7 @@ const soloQuizTopics = [
       {
         id: "3",
         question: "Qual é o máximo de Bitcoins que podem existir?",
+        explanation: "O protocolo Bitcoin limita a oferta total a 21 milhões de moedas. Essa escassez programada é uma das características que dão valor ao Bitcoin.",
         options: [
           { id: "a", text: "18 milhões", isCorrect: false },
           { id: "b", text: "21 milhões", isCorrect: true },
@@ -102,6 +107,7 @@ export default function SoloQuiz() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const navigate = useNavigate();
+  const { awardXP, updateStreak } = useProgressionSystem();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -128,7 +134,7 @@ export default function SoloQuiz() {
     setSelectedAnswer(optionId);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedAnswer) return;
     
     setShowAnswer(true);
@@ -137,8 +143,15 @@ export default function SoloQuiz() {
     
     if (isCorrect) {
       setScore(score + 1);
+      // Award XP for correct answer
+      await awardXP(10, 'quiz_correct');
       // Dispara confetti quando acerta
       setTimeout(() => fireConfetti(), 500);
+    }
+
+    // Update streak on quiz participation
+    if (currentQuestion === 0) {
+      await updateStreak();
     }
 
     setTimeout(() => {
@@ -147,6 +160,9 @@ export default function SoloQuiz() {
         setSelectedAnswer(null);
         setShowAnswer(false);
       } else {
+        // Award completion bonus
+        const completionBonus = Math.round((score / currentQuiz.questions.length) * 50);
+        awardXP(completionBonus, 'quiz_completion');
         setShowResults(true);
       }
     }, 3000);
@@ -229,7 +245,10 @@ export default function SoloQuiz() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-green-900 pb-20">
+    <div className="min-h-screen pb-20 bg-background"
+         style={{
+           background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
+         }}>
       <div className="max-w-md mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -326,12 +345,12 @@ export default function SoloQuiz() {
         </div>
 
         {/* Options */}
-        <div className="space-y-3 mb-8">
+        <div className="space-y-3 mb-4">
           {currentQuiz.questions[currentQuestion].options.map((option) => {
             const isSelected = selectedAnswer === option.id;
             const isCorrect = option.isCorrect;
             
-            let optionClass = "bg-slate-800/80 border-slate-600 text-white hover:bg-slate-700";
+            let optionClass = "bg-card border-border text-foreground hover:bg-muted";
             
             if (showAnswer) {
               if (isSelected && isCorrect) {
@@ -341,10 +360,10 @@ export default function SoloQuiz() {
               } else if (isCorrect) {
                 optionClass = "bg-green-600 border-green-500 text-white";
               } else {
-                optionClass = "bg-slate-800/50 border-slate-600 text-slate-400";
+                optionClass = "bg-muted/50 border-border text-muted-foreground";
               }
             } else if (isSelected) {
-              optionClass = "bg-slate-600 border-slate-500 text-white";
+              optionClass = "bg-primary/10 border-primary text-foreground";
             }
             
             return (
@@ -361,6 +380,15 @@ export default function SoloQuiz() {
             );
           })}
         </div>
+
+        {/* Feedback */}
+        {showAnswer && (
+          <QuizFeedback
+            isCorrect={currentQuiz.questions[currentQuestion].options.find(opt => opt.id === selectedAnswer)?.isCorrect || false}
+            explanation={currentQuiz.questions[currentQuestion].explanation}
+            show={showAnswer}
+          />
+        )}
 
         {/* Action Buttons */}
         <div className="space-y-3">

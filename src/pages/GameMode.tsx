@@ -34,7 +34,10 @@ export default function GameMode() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden pb-20 bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900">
+    <div className="min-h-screen relative overflow-hidden pb-20 bg-background"
+         style={{
+           background: 'linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%)'
+         }}>
       {/* Cyberpunk Grid Background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
