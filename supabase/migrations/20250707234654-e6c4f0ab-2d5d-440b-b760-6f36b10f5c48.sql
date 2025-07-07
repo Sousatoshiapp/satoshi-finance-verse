@@ -1,0 +1,12 @@
+-- Perguntas para technology
+INSERT INTO public.quiz_questions (question, options, correct_answer, explanation, difficulty, category) VALUES
+('O que e Machine Learning?', '["Programacao manual", "Algoritmos que aprendem", "Linguagem de programacao", "Sistema operacional"]', 'Algoritmos que aprendem', 'Machine Learning permite sistemas aprenderem automaticamente.', 'medium', 'technology'),
+('O que e Deep Learning?', '["Aprender mergulho", "ML com redes profundas", "Programacao baixo nivel", "Analise superficial"]', 'ML com redes profundas', 'Deep Learning usa redes neurais com multiplas camadas.', 'hard', 'technology'),
+('O que e Blockchain?', '["Moeda digital", "Livro-razao distribuido", "Aplicativo movel", "Sistema bancario"]', 'Livro-razao distribuido', 'Blockchain e uma tecnologia de livro-razao distribuido.', 'medium', 'technology'),
+('O que e IoT?', '["Internet das Coisas", "Sistema operacional", "Linguagem de programacao", "Protocolo de rede"]', 'Internet das Coisas', 'IoT conecta dispositivos fisicos a internet.', 'easy', 'technology'),
+('O que e Cloud Computing?', '["Previsao do tempo", "Computacao em nuvem", "Armazenamento local", "Software desktop"]', 'Computacao em nuvem', 'Cloud Computing fornece recursos via internet.', 'easy', 'technology'),
+('O que e API?', '["Interface de Programacao", "Algoritmo avancado", "Protocolo de seguranca", "Banco de dados"]', 'Interface de Programacao', 'API permite comunicacao entre softwares.', 'medium', 'technology'),
+('O que e Cybersecurity?', '["Jogo de computador", "Seguranca cibernetica", "Sistema operacional", "Rede social"]', 'Seguranca cibernetica', 'Cybersecurity protege sistemas de ataques digitais.', 'easy', 'technology'),
+('O que e Big Data?', '["Armazenar fotos", "Analisar grandes volumes", "Jogar games", "Editar videos"]', 'Analisar grandes volumes', 'Big Data refere-se a conjuntos de dados muito grandes.', 'easy', 'technology'),
+('O que sao Redes Neurais?', '["Cabos de internet", "Modelos inspirados no cerebro", "Protocolos de comunicacao", "Bancos de dados"]', 'Modelos inspirados no cerebro', 'Redes neurais sao modelos computacionais inspirados no cerebro.', 'medium', 'technology'),
+('Qual diferenca entre AI e ML?', '["Sao a mesma coisa", "AI e mais amplo que ML", "ML e mais amplo que AI", "Nao ha relacao"]', 'AI e mais amplo que ML', 'Inteligencia Artificial e o campo geral, ML e subcategoria.', 'easy', 'technology');
