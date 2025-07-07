@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { EnhancedQuizCard } from "./quiz/enhanced-quiz-card";
 
 interface QuizOption {
   id: string;
@@ -14,9 +15,30 @@ interface QuizCardProps {
   options: QuizOption[];
   onAnswer: (isCorrect: boolean) => void;
   className?: string;
+  enhanced?: boolean;
 }
 
-export function QuizCard({ question, options, onAnswer, className }: QuizCardProps) {
+// Legacy component - use EnhancedQuizCard for new implementations
+export function QuizCard({ question, options, onAnswer, className, enhanced = false }: QuizCardProps) {
+  // If enhanced mode is requested, use the new component
+  if (enhanced) {
+    const enhancedQuestions = [{
+      id: '1',
+      question,
+      options: options.map(opt => opt.text),
+      correct_answer: options.find(opt => opt.isCorrect)?.text || '',
+      category: 'General',
+      difficulty: 'medium'
+    }];
+    
+    return (
+      <EnhancedQuizCard 
+        questions={enhancedQuestions}
+        onComplete={(results) => onAnswer(results.score > 0)}
+        className={className}
+      />
+    );
+  }
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
 

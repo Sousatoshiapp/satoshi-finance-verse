@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          badge_icon: string | null
+          created_at: string
+          description: string
+          id: string
+          name: string
+          rarity: string
+          requirement_data: Json
+          reward_data: Json | null
+          type: string
+        }
+        Insert: {
+          badge_icon?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          name: string
+          rarity?: string
+          requirement_data: Json
+          reward_data?: Json | null
+          type: string
+        }
+        Update: {
+          badge_icon?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          rarity?: string
+          requirement_data?: Json
+          reward_data?: Json | null
+          type?: string
+        }
+        Relationships: []
+      }
       activity_feed: {
         Row: {
           activity_data: Json | null
@@ -500,6 +536,42 @@ export type Database = {
         }
         Relationships: []
       }
+      loot_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          effect_data: Json | null
+          id: string
+          image_url: string | null
+          lore_text: string | null
+          name: string
+          rarity: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          effect_data?: Json | null
+          id?: string
+          image_url?: string | null
+          lore_text?: string | null
+          name: string
+          rarity?: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          effect_data?: Json | null
+          id?: string
+          image_url?: string | null
+          lore_text?: string | null
+          name?: string
+          rarity?: string
+          type?: string
+        }
+        Relationships: []
+      }
       market_events: {
         Row: {
           activated_at: string | null
@@ -848,6 +920,45 @@ export type Database = {
           },
         ]
       }
+      power_ups: {
+        Row: {
+          created_at: string
+          description: string | null
+          effect_value: number
+          id: string
+          image_url: string | null
+          is_available: boolean
+          name: string
+          price: number
+          rarity: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          effect_value?: number
+          id?: string
+          image_url?: string | null
+          is_available?: boolean
+          name: string
+          price?: number
+          rarity?: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          effect_value?: number
+          id?: string
+          image_url?: string | null
+          is_available?: boolean
+          name?: string
+          price?: number
+          rarity?: string
+          type?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -1045,10 +1156,15 @@ export type Database = {
       }
       quiz_sessions: {
         Row: {
+          combo_count: number | null
           completed_at: string | null
           created_at: string
           difficulty: string | null
           id: string
+          loot_earned: Json | null
+          max_combo: number | null
+          performance_score: number | null
+          power_ups_used: Json | null
           questions_correct: number
           questions_data: Json | null
           questions_incorrect: number
@@ -1058,10 +1174,15 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          combo_count?: number | null
           completed_at?: string | null
           created_at?: string
           difficulty?: string | null
           id?: string
+          loot_earned?: Json | null
+          max_combo?: number | null
+          performance_score?: number | null
+          power_ups_used?: Json | null
           questions_correct?: number
           questions_data?: Json | null
           questions_incorrect?: number
@@ -1071,10 +1192,15 @@ export type Database = {
           user_id: string
         }
         Update: {
+          combo_count?: number | null
           completed_at?: string | null
           created_at?: string
           difficulty?: string | null
           id?: string
+          loot_earned?: Json | null
+          max_combo?: number | null
+          performance_score?: number | null
+          power_ups_used?: Json | null
           questions_correct?: number
           questions_data?: Json | null
           questions_incorrect?: number
@@ -1247,6 +1373,38 @@ export type Database = {
             columns: ["district_id"]
             isOneToOne: false
             referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string
+          id: string
+          progress_data: Json | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string
+          id?: string
+          progress_data?: Json | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string
+          id?: string
+          progress_data?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
             referencedColumns: ["id"]
           },
         ]
@@ -1497,6 +1655,70 @@ export type Database = {
           },
         ]
       }
+      user_loot: {
+        Row: {
+          acquired_at: string
+          id: string
+          loot_item_id: string
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          loot_item_id: string
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          loot_item_id?: string
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_loot_loot_item_id_fkey"
+            columns: ["loot_item_id"]
+            isOneToOne: false
+            referencedRelation: "loot_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_power_ups: {
+        Row: {
+          acquired_at: string
+          id: string
+          power_up_id: string
+          quantity: number
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          power_up_id: string
+          quantity?: number
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          power_up_id?: string
+          quantity?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_power_ups_power_up_id_fkey"
+            columns: ["power_up_id"]
+            isOneToOne: false
+            referencedRelation: "power_ups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_presence: {
         Row: {
           id: string
@@ -1667,6 +1889,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_specializations: {
+        Row: {
+          id: string
+          level: number
+          specialization_type: string
+          unlocked_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          id?: string
+          level?: number
+          specialization_type: string
+          unlocked_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          id?: string
+          level?: number
+          specialization_type?: string
+          unlocked_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
       }
       user_stories: {
         Row: {

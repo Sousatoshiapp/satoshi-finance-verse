@@ -29,6 +29,7 @@ import Social from "./pages/Social";
 import UserProfile from "./pages/UserProfile";
 import FindOpponent from "./pages/FindOpponent";
 import BeetzInfo from "./pages/BeetzInfo";
+import EnhancedQuiz from "./pages/EnhancedQuiz";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/solo-quiz" element={<ProtectedRoute><SoloQuiz /></ProtectedRoute>} />
             <Route path="/duel-quiz" element={<ProtectedRoute><DuelQuiz /></ProtectedRoute>} />
             <Route path="/tournament-quiz" element={<ProtectedRoute><TournamentQuiz /></ProtectedRoute>} />
+            <Route path="/enhanced-quiz" element={<ProtectedRoute><EnhancedQuiz /></ProtectedRoute>} />
             <Route path="/duels" element={<ProtectedRoute><Duels /></ProtectedRoute>} />
             <Route path="/find-opponent" element={<ProtectedRoute><FindOpponent /></ProtectedRoute>} />
             <Route path="/tournaments" element={<ProtectedRoute><Tournaments /></ProtectedRoute>} />
