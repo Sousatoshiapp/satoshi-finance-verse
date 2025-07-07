@@ -258,7 +258,7 @@ export default function SatoshiCity() {
           />
         </div>
         <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Bem-vindo à cidade cyberpunk do futuro financeiro. 
+          Bem-vindo à cidade do futuro financeiro. 
           Clique nos distritos para explorar conhecimento.
         </p>
         <div className="flex justify-center space-x-4">
