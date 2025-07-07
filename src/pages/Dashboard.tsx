@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { AvatarSelection } from "@/components/avatar-selection";
 import { AvatarDisplay } from "@/components/avatar-display";
-import { StreakCounter } from "@/components/streak-counter";
-import { BadgeShowcase } from "@/components/badge-showcase";
-import { DailyRewards } from "@/components/daily-rewards";
+import { CompactStreakCounter } from "@/components/compact-streak-counter";
+import { CompactBadgeShowcase } from "@/components/compact-badge-showcase";
+import { CompactDailyRewards } from "@/components/compact-daily-rewards";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
@@ -155,15 +155,34 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Engagement Components */}
-          <div className="grid gap-4 mb-8">
-            <StreakCounter 
-              currentStreak={userStats.streak} 
-              showActions={true}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <DailyRewards />
-              <BadgeShowcase limit={4} />
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card">
+              <div className="text-2xl mb-1">⚡</div>
+              <div className="text-xs text-white mb-1">XP</div>
+              <div className="text-2xl font-bold text-white">{userStats.currentXP}</div>
+            </div>
+            <div className="bg-gradient-level rounded-2xl p-4 text-center shadow-card">
+              <div className="text-2xl mb-1">🏅</div>
+              <div className="text-xs text-white mb-1">Nível</div>
+              <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
+            </div>
+            <div 
+              className="bg-gradient-beetz rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => navigate('/beetz-info')}
+            >
+              <div className="text-2xl mb-1">🥕</div>
+              <div className="text-xs text-white mb-1">Beetz</div>
+              <div className="text-2xl font-bold text-white">{userStats.currentXP * 2}</div>
+            </div>
+          </div>
+
+          {/* Compact Engagement Components */}
+          <div className="grid gap-3 mb-8">
+            <CompactStreakCounter currentStreak={userStats.streak} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <CompactDailyRewards />
+              <CompactBadgeShowcase />
             </div>
           </div>
 
@@ -246,24 +265,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card">
-              <div className="text-2xl mb-1">⚡</div>
-              <div className="text-xs text-white mb-1">XP</div>
-              <div className="text-2xl font-bold text-white">{userStats.currentXP}</div>
-            </div>
-            <div className="bg-gradient-level rounded-2xl p-4 text-center shadow-card">
-              <div className="text-2xl mb-1">🏅</div>
-              <div className="text-xs text-white mb-1">Nível</div>
-              <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
-            </div>
-            <div className="bg-gradient-points rounded-2xl p-4 text-center shadow-card">
-              <div className="text-2xl mb-1">💎</div>
-              <div className="text-xs text-white mb-1">Pontos</div>
-              <div className="text-2xl font-bold text-white">{userStats.currentXP * 2}</div>
-            </div>
-          </div>
 
           {/* Recent Tournaments */}
           <div className="mb-8">
@@ -280,8 +281,8 @@ export default function Dashboard() {
                     <div className="font-bold text-experience">50 XP</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Pontos</div>
-                    <div className="font-bold text-points">100</div>
+                    <div className="text-muted-foreground">Beetz</div>
+                    <div className="font-bold text-beetz">100</div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Troféu</div>
@@ -307,8 +308,8 @@ export default function Dashboard() {
                     <div className="font-bold text-experience">75 XP</div>
                   </div>
                   <div>
-                    <div className="text-muted-foreground">Pontos</div>
-                    <div className="font-bold text-points">150</div>
+                    <div className="text-muted-foreground">Beetz</div>
+                    <div className="font-bold text-beetz">150</div>
                   </div>
                   <div>
                     <div className="text-muted-foreground">Troféu</div>

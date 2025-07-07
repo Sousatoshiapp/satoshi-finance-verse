@@ -28,6 +28,7 @@ import Auth from "./pages/Auth";
 import Social from "./pages/Social";
 import UserProfile from "./pages/UserProfile";
 import FindOpponent from "./pages/FindOpponent";
+import BeetzInfo from "./pages/BeetzInfo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/levels" element={<ProtectedRoute><Levels /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
+            <Route path="/beetz-info" element={<ProtectedRoute><BeetzInfo /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/lesson/:courseId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

@@ -41,7 +41,7 @@ All colors MUST be HSL.
     --warning: 38 92% 50%;
     --info: 221 83% 53%;
     --level: 280 100% 70%;
-    --points: 45 93% 47%;
+    --beetz: 15 80% 45%;
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(81 100% 59%), hsl(81 100% 69%));
@@ -49,7 +49,7 @@ All colors MUST be HSL.
     --gradient-experience: linear-gradient(135deg, hsl(60 100% 50%), hsl(45 93% 47%));
     --gradient-streak: linear-gradient(135deg, hsl(25 95% 53%), hsl(38 92% 50%));
     --gradient-level: linear-gradient(135deg, hsl(280 100% 70%), hsl(260 100% 80%));
-    --gradient-points: linear-gradient(135deg, hsl(45 93% 47%), hsl(60 100% 50%));
+    --gradient-beetz: linear-gradient(135deg, hsl(15 80% 45%), hsl(25 85% 55%));
     --gradient-avatar: linear-gradient(135deg, hsl(81 100% 59%), hsl(81 100% 69%));
     
     /* Shadows */
@@ -130,8 +130,8 @@ All colors MUST be HSL.
     background: var(--gradient-level);
   }
   
-  .gradient-points {
-    background: var(--gradient-points);
+  .gradient-beetz {
+    background: var(--gradient-beetz);
   }
   
   .gradient-avatar {
@@ -170,8 +170,8 @@ All colors MUST be HSL.
     color: hsl(var(--level));
   }
   
-  .text-points {
-    color: hsl(var(--points));
+  .text-beetz {
+    color: hsl(var(--beetz));
   }
   
   .hover-lift {

@@ -76,6 +76,7 @@ export default {
 				},
 				experience: 'hsl(var(--experience))',
 				streak: 'hsl(var(--streak))',
+				beetz: 'hsl(var(--beetz))',
 				achievement: 'hsl(var(--achievement))'
 			},
 			borderRadius: {
