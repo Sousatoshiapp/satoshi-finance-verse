@@ -409,13 +409,13 @@ export default function Store() {
 
         {/* User Points */}
         {userProfile && (
-          <Card className="mb-6 bg-gradient-points">
+          <Card className="mb-6 bg-gradient-beetz">
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="text-2xl">💎</div>
+                <div className="text-2xl">🥕</div>
                 <div className="text-xl font-bold text-white">{userProfile.points}</div>
               </div>
-              <p className="text-sm text-white/70">Pontos Beetz • Nível {userProfile.level}</p>
+              <p className="text-sm text-white/70">Beetz • Nível {userProfile.level}</p>
             </CardContent>
           </Card>
         )}
@@ -512,7 +512,7 @@ export default function Store() {
                           ) : (
                             <>
                               <span className="text-sm font-bold text-primary">{avatar.price}</span>
-                              <span className="text-xs text-muted-foreground">pts</span>
+                              <span className="text-xs text-muted-foreground">Beetz</span>
                             </>
                           )}
                         </div>
@@ -532,7 +532,7 @@ export default function Store() {
                         >
                           {purchasing === avatar.id ? "..." :
                            !meetsLevel ? `Nv ${avatar.level_required}` :
-                           !canAfford ? (avatar.price === 0 ? "Selecionar" : "Sem pontos") : 
+                           !canAfford ? (avatar.price === 0 ? "Selecionar" : "Sem Beetz") : 
                            avatar.price === 0 ? "Selecionar" : "Comprar"
                           }
                         </Button>
@@ -610,7 +610,7 @@ export default function Store() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1">
                           <span className="text-sm font-bold text-primary">{product.price}</span>
-                          <span className="text-xs text-muted-foreground">pts</span>
+                          <span className="text-xs text-muted-foreground">Beetz</span>
                         </div>
                         <div className="flex items-center gap-1">
                           {product.duration_hours && (
@@ -636,7 +636,7 @@ export default function Store() {
                         >
                           {purchasing === product.id ? "..." :
                            !meetsLevel ? `Nv ${product.level_required}` :
-                           !canAfford ? "Sem pontos" : "Comprar"
+                           !canAfford ? "Sem Beetz" : "Comprar"
                           }
                         </Button>
                       )}
@@ -728,7 +728,7 @@ export default function Store() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-1">
                           <span className="text-sm font-bold text-primary">{product.price}</span>
-                          <span className="text-xs text-muted-foreground">pts</span>
+                          <span className="text-xs text-muted-foreground">Beetz</span>
                         </div>
                         <Badge variant="outline" className="text-xs">Nv {product.level_required}</Badge>
                       </div>
@@ -746,7 +746,7 @@ export default function Store() {
                         >
                           {purchasing === product.id ? "..." :
                            !meetsLevel ? `Nv ${product.level_required}` :
-                           !canAfford ? "Sem pontos" : "Comprar"
+                           !canAfford ? "Sem Beetz" : "Comprar"
                           }
                         </Button>
                       )}
