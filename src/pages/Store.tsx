@@ -141,13 +141,6 @@ export default function Store() {
 
   const loadStoreData = async () => {
     try {
-      // Check localStorage first for user data
-      const userData = localStorage.getItem('satoshi_user');
-      if (!userData) {
-        navigate('/welcome');
-        return;
-      }
-
       const { data: { user } } = await supabase.auth.getUser();
 
       // Load user profile from Supabase or fallback to localStorage
@@ -163,16 +156,19 @@ export default function Store() {
 
       // If no Supabase profile, use localStorage data
       if (!profile) {
-        const localUser = JSON.parse(userData);
-        profile = {
-          id: 'local-user',
-          level: localUser.level || 1,
-          points: localUser.coins || 0,
-          nickname: localUser.nickname || 'Usuário',
-          xp: localUser.xp || 0,
-          streak: localUser.streak || 0,
-          completed_lessons: localUser.completedLessons || 0
-        };
+        const userData = localStorage.getItem('satoshi_user');
+        if (userData) {
+          const localUser = JSON.parse(userData);
+          profile = {
+            id: 'local-user',
+            level: localUser.level || 1,
+            points: localUser.coins || 0,
+            nickname: localUser.nickname || 'Usuário',
+            xp: localUser.xp || 0,
+            streak: localUser.streak || 0,
+            completed_lessons: localUser.completedLessons || 0
+          };
+        }
       }
 
       if (profile) {

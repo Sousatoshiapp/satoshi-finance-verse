@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Settings() {
   const [settings, setSettings] = useState({
@@ -66,9 +67,15 @@ export default function Settings() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('satoshi_user');
-    navigate('/welcome');
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      localStorage.removeItem('satoshi_user');
+      navigate('/welcome');
+    } catch (error) {
+      console.error('Error logging out:', error);
+      navigate('/welcome');
+    }
   };
 
   return (

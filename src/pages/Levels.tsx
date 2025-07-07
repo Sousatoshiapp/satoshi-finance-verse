@@ -24,13 +24,6 @@ export default function Levels() {
 
   const loadUserProfile = async () => {
     try {
-      // Check localStorage first for user data
-      const userData = localStorage.getItem('satoshi_user');
-      if (!userData) {
-        navigate('/welcome');
-        return;
-      }
-
       const { data: { user: authUser } } = await supabase.auth.getUser();
 
       // Load user profile from Supabase or fallback to localStorage
@@ -46,11 +39,14 @@ export default function Levels() {
 
       // If no Supabase profile, use localStorage data
       if (!profile) {
-        const localUser = JSON.parse(userData);
-        profile = {
-          level: localUser.level || 1,
-          xp: localUser.xp || 0,
-        };
+        const userData = localStorage.getItem('satoshi_user');
+        if (userData) {
+          const localUser = JSON.parse(userData);
+          profile = {
+            level: localUser.level || 1,
+            xp: localUser.xp || 0,
+          };
+        }
       }
 
       if (profile) {

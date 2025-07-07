@@ -19,13 +19,6 @@ export default function Duels() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is logged in
-    const userData = localStorage.getItem('satoshi_user');
-    if (!userData) {
-      navigate('/welcome');
-      return;
-    }
-
     // Load user profile and check for active duels
     loadUserData();
     checkForActiveDuel();

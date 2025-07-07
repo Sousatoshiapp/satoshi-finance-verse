@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { EmailVerificationNotice } from "@/components/auth/email-verification-no
 import authBackground from "@/assets/auth-background.jpg";
 
 export default function Auth() {
+  const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,6 +25,15 @@ export default function Auth() {
   const [registeredEmail, setRegisteredEmail] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    if (mode === 'signup') {
+      setIsLogin(false);
+    } else if (mode === 'login') {
+      setIsLogin(true);
+    }
+  }, [searchParams]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +74,7 @@ export default function Auth() {
           description: "Bem-vindo de volta à Satoshi City.",
         });
         
-        navigate("/satoshi-city");
+        navigate("/dashboard");
       } else {
         // Sign up
         const { data, error } = await supabase.auth.signUp({
@@ -109,7 +119,7 @@ export default function Auth() {
             title: "Bem-vindo!",
             description: "Conta criada com sucesso"
           });
-          navigate("/satoshi-city");
+          navigate("/dashboard");
         }
       }
     } catch (error) {
@@ -128,7 +138,7 @@ export default function Auth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/satoshi-city`
+          redirectTo: `${window.location.origin}/dashboard`
         }
       });
 
@@ -206,7 +216,7 @@ export default function Auth() {
         type: 'signup',
         email: email,
         options: {
-          emailRedirectTo: `${window.location.origin}/satoshi-city`
+          emailRedirectTo: `${window.location.origin}/dashboard`
         }
       });
 

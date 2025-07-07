@@ -43,13 +43,6 @@ export default function Dashboard() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Verificar se usuário existe, se não redirecionar para welcome
-    const userData = localStorage.getItem('satoshi_user');
-    if (!userData) {
-      navigate('/welcome');
-      return;
-    }
-    
     // Carregar dados do usuário do Supabase
     loadUserData();
     

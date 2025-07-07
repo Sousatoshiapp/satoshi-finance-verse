@@ -250,9 +250,13 @@ export default function SatoshiCity() {
 
       {/* Header */}
       <div className="relative z-10 container mx-auto px-4 py-8 text-center">
-        <h1 className="text-6xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-          SATOSHI CITY
-        </h1>
+        <div className="flex justify-center mb-4">
+          <img 
+            src="/lovable-uploads/da61d87e-9d37-454b-bdeb-b54db4abfa9e.png" 
+            alt="Satoshi City Logo" 
+            className="h-24 w-auto"
+          />
+        </div>
         <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
           Bem-vindo à cidade cyberpunk do futuro financeiro. 
           Clique nos distritos para explorar conhecimento.
