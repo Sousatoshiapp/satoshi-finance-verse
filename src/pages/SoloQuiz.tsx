@@ -90,6 +90,7 @@ export default function SoloQuiz() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [currentTopicIndex, setCurrentTopicIndex] = useState(0);
   const navigate = useNavigate();
   const { awardXP, updateStreak } = useProgressionSystem();
 
@@ -113,7 +114,13 @@ export default function SoloQuiz() {
     fetchUserProfile();
   }, []);
 
-  const fetchQuestions = async (topic: QuizTopic) => {
+  const getNextTopic = () => {
+    const nextIndex = (currentTopicIndex + 1) % quizTopics.length;
+    setCurrentTopicIndex(nextIndex);
+    return quizTopics[nextIndex];
+  };
+
+  const fetchQuestions = async (topic: QuizTopic, updateIndex = true) => {
     setLoading(true);
     try {
       const { data: questionsData, error } = await supabase
@@ -141,6 +148,14 @@ export default function SoloQuiz() {
         setSelectedAnswer(null);
         setShowAnswer(false);
         setShowResults(false);
+        
+        // Update the current topic index if this is a new topic selection
+        if (updateIndex) {
+          const topicIndex = quizTopics.findIndex(t => t.id === topic.id);
+          if (topicIndex !== -1) {
+            setCurrentTopicIndex(topicIndex);
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching questions:', error);
@@ -313,10 +328,8 @@ export default function SoloQuiz() {
             <Button 
               onClick={() => {
                 resetQuiz();
-                // Auto-select first topic for next quiz
-                if (quizTopics.length > 0) {
-                  fetchQuestions(quizTopics[0]);
-                }
+                const nextTopic = getNextTopic();
+                fetchQuestions(nextTopic, false);
               }}
               className="w-full text-black font-semibold"
               style={{ backgroundColor: '#adff2f' }}
@@ -324,7 +337,12 @@ export default function SoloQuiz() {
               Próximo Quiz
             </Button>
             <Button 
-              onClick={resetQuiz} 
+              onClick={() => {
+                resetQuiz();
+                if (selectedTopic) {
+                  fetchQuestions(selectedTopic, false);
+                }
+              }} 
               className="w-full bg-orange-500 hover:bg-orange-600 text-white"
             >
               Tentar Novamente
