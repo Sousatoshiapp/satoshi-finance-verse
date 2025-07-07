@@ -9,6 +9,8 @@ import { AvatarDisplay } from "@/components/avatar-display";
 import { CompactStreakCounter } from "@/components/compact-streak-counter";
 import { CompactBadgeShowcase } from "@/components/compact-badge-showcase";
 import { CompactDailyRewards } from "@/components/compact-daily-rewards";
+import { SubscriptionIndicator } from "@/components/subscription-indicator";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,6 +46,7 @@ export default function Dashboard() {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { subscription, canCreateDuel } = useSubscription();
 
   useEffect(() => {
     // Carregar dados do usuário do Supabase
@@ -146,12 +149,27 @@ export default function Dashboard() {
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-avatar rounded-full flex items-center justify-center text-white font-bold text-lg shadow-glow">
-                {userNickname.charAt(0).toUpperCase()}
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-avatar rounded-full flex items-center justify-center text-white font-bold text-lg shadow-glow">
+                  {userNickname.charAt(0).toUpperCase()}
+                </div>
+                <div className="absolute -top-1 -right-1">
+                  <SubscriptionIndicator tier={subscription.tier} size="sm" />
+                </div>
               </div>
               <Button variant="ghost" size="sm" onClick={() => navigate('/settings')}>
                 ⚙️
               </Button>
+              {subscription.tier === 'free' && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => navigate('/subscription-plans')}
+                  className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0 hover:from-yellow-600 hover:to-orange-600"
+                >
+                  ⭐ Upgrade
+                </Button>
+              )}
             </div>
           </div>
 
@@ -263,13 +281,78 @@ export default function Dashboard() {
           </div>
 
           {/* Compact Engagement Components */}
-          <div className="grid gap-3 mb-8">
-            <CompactStreakCounter currentStreak={userStats.streak} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <CompactDailyRewards />
-              <CompactBadgeShowcase />
+            <div className="grid gap-3 mb-8">
+              <CompactStreakCounter currentStreak={userStats.streak} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <CompactDailyRewards />
+                <CompactBadgeShowcase />
+              </div>
+              
+              {/* Subscription Benefits Card */}
+              {subscription.tier !== 'free' && (
+                <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <SubscriptionIndicator tier={subscription.tier} size="md" showText />
+                      <span className="text-sm font-medium">Benefícios Ativos</span>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => navigate('/subscription-plans')}
+                      className="text-purple-400 hover:text-purple-300"
+                    >
+                      Gerenciar
+                    </Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4 mt-3 text-xs">
+                    <div className="text-center">
+                      <div className="text-purple-400 font-bold">∞</div>
+                      <div className="text-muted-foreground">Duelos</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-purple-400 font-bold">{subscription.xpMultiplier}x</div>
+                      <div className="text-muted-foreground">XP Boost</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-purple-400 font-bold">{subscription.monthlyBeetz}</div>
+                      <div className="text-muted-foreground">Beetz/mês</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Duel Limit Card for Free Users */}
+              {subscription.tier === 'free' && (
+                <div className="bg-muted/30 border border-border rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">Duelos Diários</span>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => navigate('/subscription-plans')}
+                      className="text-yellow-500 hover:text-yellow-400 text-xs"
+                    >
+                      Upgrade ⭐
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span>{subscription.dailyDuelsUsed}/{subscription.dailyDuelsLimit} usados hoje</span>
+                      <span className="text-muted-foreground">Reset em 24h</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-green-500 to-yellow-500 h-2 rounded-full transition-all"
+                        style={{ width: `${(subscription.dailyDuelsUsed / subscription.dailyDuelsLimit) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
 
           {/* Recent Tournaments */}
           <div className="mb-8">

@@ -1012,12 +1012,18 @@ export type Database = {
           avatar_id: string | null
           completed_lessons: number | null
           created_at: string
+          daily_duels_reset_date: string | null
+          daily_duels_used: number | null
           id: string
           level: number | null
           nickname: string
           points: number
           profile_image_url: string | null
           streak: number | null
+          subscription_expires_at: string | null
+          subscription_tier:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
           updated_at: string
           user_id: string
           xp: number | null
@@ -1026,12 +1032,18 @@ export type Database = {
           avatar_id?: string | null
           completed_lessons?: number | null
           created_at?: string
+          daily_duels_reset_date?: string | null
+          daily_duels_used?: number | null
           id?: string
           level?: number | null
           nickname: string
           points?: number
           profile_image_url?: string | null
           streak?: number | null
+          subscription_expires_at?: string | null
+          subscription_tier?:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
           updated_at?: string
           user_id: string
           xp?: number | null
@@ -1040,12 +1052,18 @@ export type Database = {
           avatar_id?: string | null
           completed_lessons?: number | null
           created_at?: string
+          daily_duels_reset_date?: string | null
+          daily_duels_used?: number | null
           id?: string
           level?: number | null
           nickname?: string
           points?: number
           profile_image_url?: string | null
           streak?: number | null
+          subscription_expires_at?: string | null
+          subscription_tier?:
+            | Database["public"]["Enums"]["subscription_tier"]
+            | null
           updated_at?: string
           user_id?: string
           xp?: number | null
@@ -1362,6 +1380,89 @@ export type Database = {
             columns: ["story_id"]
             isOneToOne: false
             referencedRelation: "user_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price_monthly: number
+          price_yearly: number | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price_monthly?: number
+          price_yearly?: number | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price_monthly?: number
+          price_yearly?: number | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2038,9 +2139,21 @@ export type Database = {
         Args: { user_xp: number }
         Returns: number
       }
+      check_duel_limit: {
+        Args: { profile_id: string }
+        Returns: boolean
+      }
       get_next_level_xp: {
         Args: { current_level: number }
         Returns: number
+      }
+      get_xp_multiplier: {
+        Args: { profile_id: string }
+        Returns: number
+      }
+      increment_duel_count: {
+        Args: { profile_id: string }
+        Returns: undefined
       }
       log_security_event: {
         Args: { event_type: string; user_id: string; event_data?: Json }
@@ -2052,7 +2165,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      subscription_tier: "free" | "pro" | "elite"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2179,6 +2292,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_tier: ["free", "pro", "elite"],
+    },
   },
 } as const

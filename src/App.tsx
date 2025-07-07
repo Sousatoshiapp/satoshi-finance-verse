@@ -30,6 +30,7 @@ import UserProfile from "./pages/UserProfile";
 import FindOpponent from "./pages/FindOpponent";
 import BeetzInfo from "./pages/BeetzInfo";
 import EnhancedQuiz from "./pages/EnhancedQuiz";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
             <Route path="/beetz-info" element={<ProtectedRoute><BeetzInfo /></ProtectedRoute>} />
+            <Route path="/subscription-plans" element={<ProtectedRoute><SubscriptionPlans /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/lesson/:courseId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
