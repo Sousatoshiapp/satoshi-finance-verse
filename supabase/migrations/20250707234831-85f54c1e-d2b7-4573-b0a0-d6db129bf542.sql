@@ -1,0 +1,12 @@
+-- Perguntas para portfolio
+INSERT INTO public.quiz_questions (question, options, correct_answer, explanation, difficulty, category) VALUES
+('O que e diversificacao?', '["Concentrar em um ativo", "Distribuir investimentos", "Vender tudo", "Comprar apenas acoes"]', 'Distribuir investimentos', 'Diversificacao reduz risco distribuindo investimentos.', 'easy', 'portfolio'),
+('O que e Asset Allocation?', '["Venda de ativos", "Alocacao de ativos", "Compra de acoes", "Analise tecnica"]', 'Alocacao de ativos', 'Asset Allocation divide investimentos entre categorias.', 'medium', 'portfolio'),
+('O que e Rebalanceamento?', '["Vender tudo", "Ajustar proporcoes do portfolio", "Comprar mais acoes", "Calcular juros"]', 'Ajustar proporcoes do portfolio', 'Rebalanceamento restaura proporcoes originais.', 'medium', 'portfolio'),
+('O que e Correlacao?', '["Preco de ativos", "Relacao entre movimentos", "Taxa de retorno", "Dividendos"]', 'Relacao entre movimentos', 'Correlacao mede como ativos se movem juntos.', 'hard', 'portfolio'),
+('O que e Sharpe Ratio?', '["Taxa de juros", "Medida retorno ajustada risco", "Preco de acoes", "Volume negociacao"]', 'Medida retorno ajustada risco', 'Sharpe Ratio mede retorno por unidade de risco.', 'hard', 'portfolio'),
+('O que e Beta?', '["Tipo de acao", "Medida volatilidade relativa", "Taxa de dividendos", "Valor patrimonial"]', 'Medida volatilidade relativa', 'Beta mede volatilidade em relacao ao mercado.', 'medium', 'portfolio'),
+('O que e Duration?', '["Prazo do investimento", "Sensibilidade a juros", "Taxa de retorno", "Valor presente"]', 'Sensibilidade a juros', 'Duration mede sensibilidade a mudancas de juros.', 'hard', 'portfolio'),
+('O que e Value at Risk?', '["Valor do portfolio", "Perda maxima esperada", "Ganho minimo", "Taxa de juros"]', 'Perda maxima esperada', 'VaR estima perda maxima em periodo especifico.', 'hard', 'portfolio'),
+('O que e Alpha?', '["Primeira acao", "Retorno em excesso", "Taxa de juros", "Dividendo"]', 'Retorno em excesso', 'Alpha mede retorno acima do esperado pelo risco.', 'hard', 'portfolio'),
+('O que e Modern Portfolio Theory?', '["Teoria antiga", "Otimizacao risco-retorno", "Analise tecnica", "Teoria de jogos"]', 'Otimizacao risco-retorno', 'MPT maximiza retorno para dado nivel de risco.', 'hard', 'portfolio');
