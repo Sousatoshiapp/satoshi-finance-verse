@@ -1511,6 +1511,149 @@ export type Database = {
           },
         ]
       }
+      tournament_participants: {
+        Row: {
+          completed_at: string | null
+          id: string
+          joined_at: string | null
+          prize_won: number | null
+          rank: number | null
+          score: number | null
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          id?: string
+          joined_at?: string | null
+          prize_won?: number | null
+          rank?: number | null
+          score?: number | null
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          id?: string
+          joined_at?: string | null
+          prize_won?: number | null
+          rank?: number | null
+          score?: number | null
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_participants_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_rewards: {
+        Row: {
+          created_at: string | null
+          id: string
+          rank_position: number
+          reward_image_url: string | null
+          reward_type: string
+          reward_value: string
+          tournament_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          rank_position: number
+          reward_image_url?: string | null
+          reward_type: string
+          reward_value: string
+          tournament_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rank_position?: number
+          reward_image_url?: string | null
+          reward_type?: string
+          reward_value?: string
+          tournament_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_rewards_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          difficulty: string | null
+          end_date: string
+          entry_fee: number | null
+          id: string
+          max_participants: number | null
+          name: string
+          prize_pool: number | null
+          start_date: string
+          status: string
+          theme: string
+          trophy_image_url: string | null
+          trophy_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          end_date: string
+          entry_fee?: number | null
+          id?: string
+          max_participants?: number | null
+          name: string
+          prize_pool?: number | null
+          start_date: string
+          status?: string
+          theme: string
+          trophy_image_url?: string | null
+          trophy_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          difficulty?: string | null
+          end_date?: string
+          entry_fee?: number | null
+          id?: string
+          max_participants?: number | null
+          name?: string
+          prize_pool?: number | null
+          start_date?: string
+          status?: string
+          theme?: string
+          trophy_image_url?: string | null
+          trophy_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string

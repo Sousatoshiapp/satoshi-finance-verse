@@ -9,6 +9,8 @@ import { AvatarDisplay } from "@/components/avatar-display";
 import { CompactStreakCounter } from "@/components/compact-streak-counter";
 import { CompactBadgeShowcase } from "@/components/compact-badge-showcase";
 import { CompactDailyRewards } from "@/components/compact-daily-rewards";
+import { TournamentCarousel } from "@/components/tournaments/tournament-carousel";
+import { DuelPlaygroundGrid } from "@/components/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/subscription-indicator";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useNavigate } from "react-router-dom";
@@ -332,42 +334,7 @@ export default function Dashboard() {
                 <CompactBadgeShowcase />
               </div>
               
-              {/* Subscription Benefits Card */}
-              {subscription.tier !== 'free' && (
-                <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <SubscriptionIndicator tier={subscription.tier} size="md" showText />
-                      <span className="text-sm font-medium">Benefícios Ativos</span>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => navigate('/subscription-plans')}
-                      className="text-purple-400 hover:text-purple-300"
-                    >
-                      Gerenciar
-                    </Button>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-4 mt-3 text-xs">
-                    <div className="text-center">
-                      <div className="text-purple-400 font-bold">∞</div>
-                      <div className="text-muted-foreground">Duelos</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-purple-400 font-bold">{subscription.xpMultiplier}x</div>
-                      <div className="text-muted-foreground">XP Boost</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-purple-400 font-bold">{subscription.monthlyBeetz}</div>
-                      <div className="text-muted-foreground">Beetz/mês</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Duel Limit Card for Free Users */}
+              {/* Duel Limit Card for Free Users only */}
               {subscription.tier === 'free' && (
                 <div className="bg-muted/30 border border-border rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
@@ -398,92 +365,11 @@ export default function Dashboard() {
               )}
             </div>
 
-          {/* Recent Tournaments */}
-          <div className="mb-8">
-            <h3 className="text-xl font-bold text-foreground mb-4">Torneios recentes</h3>
-            <div className="grid gap-3">
-              <div className="bg-card rounded-2xl p-4 border border-border shadow-card">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-foreground">Quiz Financeiro</h4>
-                  <span className="text-xs text-muted-foreground">Tempo restante: 20 minutos</span>
-                </div>
-                <div className="grid grid-cols-3 gap-4 text-center text-xs mb-4">
-                  <div>
-                    <div className="text-muted-foreground">Ganhe</div>
-                    <div className="font-bold text-experience">50 XP</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Beetz</div>
-                    <div className="font-bold text-beetz">100</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Troféu</div>
-                    <div className="text-lg">🏆</div>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
-                  onClick={() => navigate('/game-mode')}
-                >
-                  Jogar
-                </Button>
-              </div>
-              
-              <div className="bg-card rounded-2xl p-4 border border-border shadow-card">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-foreground">Duelo Financeiro</h4>
-                  <span className="text-xs text-muted-foreground">Disponível agora</span>
-                </div>
-                <div className="grid grid-cols-3 gap-4 text-center text-xs mb-4">
-                  <div>
-                    <div className="text-muted-foreground">Ganhe</div>
-                    <div className="font-bold text-experience">75 XP</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Beetz</div>
-                    <div className="font-bold text-beetz">150</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Troféu</div>
-                    <div className="text-lg">⚔️</div>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
-                  onClick={() => navigate('/duels')}
-                >
-                  Duelar
-                </Button>
-              </div>
-              
-              <div className="bg-card rounded-2xl p-4 border border-border shadow-card">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-semibold text-foreground">Playground Investimentos</h4>
-                  <span className="text-xs text-muted-foreground">Novo!</span>
-                </div>
-                <div className="grid grid-cols-3 gap-4 text-center text-xs mb-4">
-                  <div>
-                    <div className="text-muted-foreground">Pratique</div>
-                    <div className="font-bold text-primary">Carteiras</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Siga</div>
-                    <div className="font-bold text-secondary">Outros</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Aprenda</div>
-                    <div className="text-lg">📈</div>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full bg-gradient-to-r from-secondary to-primary text-black rounded-full font-semibold"
-                  onClick={() => navigate('/playground')}
-                >
-                  Explorar
-                </Button>
-              </div>
-            </div>
-          </div>
+          {/* Tournament Carousel */}
+          <TournamentCarousel />
+
+          {/* Duel and Playground Grid */}
+          <DuelPlaygroundGrid />
         </div>
       </div>
       
