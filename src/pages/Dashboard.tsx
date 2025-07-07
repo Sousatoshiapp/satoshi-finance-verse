@@ -155,39 +155,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card">
-              <div className="text-2xl mb-1">⚡</div>
-              <div className="text-xs text-white mb-1">XP</div>
-              <div className="text-2xl font-bold text-white">{userStats.currentXP}</div>
-            </div>
-            <div className="bg-gradient-level rounded-2xl p-4 text-center shadow-card">
-              <div className="text-2xl mb-1">🏅</div>
-              <div className="text-xs text-white mb-1">Nível</div>
-              <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
-            </div>
-            <div 
-              className="bg-gradient-beetz rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-transform"
-              onClick={() => navigate('/beetz-info')}
-            >
-              <div className="text-2xl mb-1">🥕</div>
-              <div className="text-xs text-white mb-1">Beetz</div>
-              <div className="text-2xl font-bold text-white">{userStats.currentXP * 2}</div>
-            </div>
-          </div>
-
-          {/* Compact Engagement Components */}
-          <div className="grid gap-3 mb-8">
-            <CompactStreakCounter currentStreak={userStats.streak} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <CompactDailyRewards />
-              <CompactBadgeShowcase />
-            </div>
-          </div>
-
           {/* Avatar Section */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className="relative mb-4">
               {userAvatar ? (
                 <div className="flex justify-center">
@@ -265,6 +234,42 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Stats Cards */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div 
+              className="bg-gradient-experience rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => navigate('/levels')}
+            >
+              <div className="text-2xl mb-1">⚡</div>
+              <div className="text-xs text-white mb-1">XP</div>
+              <div className="text-2xl font-bold text-white">{userStats.currentXP}</div>
+            </div>
+            <div 
+              className="bg-gradient-level rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => navigate('/levels')}
+            >
+              <div className="text-2xl mb-1">🏅</div>
+              <div className="text-xs text-white mb-1">Nível</div>
+              <div className="text-2xl font-bold text-white">{String(userStats.level).padStart(2, '0')}</div>
+            </div>
+            <div 
+              className="bg-gradient-beetz rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-transform"
+              onClick={() => navigate('/beetz-info')}
+            >
+              <div className="text-2xl mb-1">🥕</div>
+              <div className="text-xs text-white mb-1">Beetz</div>
+              <div className="text-2xl font-bold text-white">{userStats.currentXP * 2}</div>
+            </div>
+          </div>
+
+          {/* Compact Engagement Components */}
+          <div className="grid gap-3 mb-8">
+            <CompactStreakCounter currentStreak={userStats.streak} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <CompactDailyRewards />
+              <CompactBadgeShowcase />
+            </div>
+          </div>
 
           {/* Recent Tournaments */}
           <div className="mb-8">
