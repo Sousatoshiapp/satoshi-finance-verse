@@ -39,6 +39,27 @@ import stormHacker from "@/assets/avatars/storm-hacker.jpg";
 import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
 import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
 
+// Import cyberpunk skins
+import neonMatrixOverlay from "@/assets/skins/neon-matrix-overlay.jpg";
+import chromeNeuralInterface from "@/assets/skins/chrome-neural-interface.jpg";
+import quantumFluxField from "@/assets/skins/quantum-flux-field.jpg";
+import digitalGhostMode from "@/assets/skins/digital-ghost-mode.jpg";
+import plasmaEnergyCoating from "@/assets/skins/plasma-energy-coating.jpg";
+import voidDarkMatter from "@/assets/skins/void-dark-matter.jpg";
+import holographicRainbow from "@/assets/skins/holographic-rainbow.jpg";
+import crystalNanoArmor from "@/assets/skins/crystal-nano-armor.jpg";
+import binaryCodeStream from "@/assets/skins/binary-code-stream.jpg";
+import electricStormAura from "@/assets/skins/electric-storm-aura.jpg";
+import cyberPhoenixFlames from "@/assets/skins/cyber-phoenix-flames.jpg";
+import neuralNetworkWeb from "@/assets/skins/neural-network-web.jpg";
+import quantumEntanglement from "@/assets/skins/quantum-entanglement.jpg";
+import viralCodeInfection from "@/assets/skins/viral-code-infection.jpg";
+import diamondDataCore from "@/assets/skins/diamond-data-core.jpg";
+import timeDistortionField from "@/assets/skins/time-distortion-field.jpg";
+import shadowStealthMode from "@/assets/skins/shadow-stealth-mode.jpg";
+import cosmicNebulaDrift from "@/assets/skins/cosmic-nebula-drift.jpg";
+import corruptedRealityGlitch from "@/assets/skins/corrupted-reality-glitch.jpg";
+
 // Import accessories and boosts
 import neuralHeadband from "@/assets/accessories/neural-headband.jpg";
 import quantumGloves from "@/assets/accessories/quantum-gloves.jpg";
@@ -117,6 +138,7 @@ interface UserProfile {
 export default function Store() {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [skins, setSkins] = useState<Product[]>([]);
   const [userAvatars, setUserAvatars] = useState<string[]>([]);
   const [userProducts, setUserProducts] = useState<string[]>([]);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -187,6 +209,202 @@ export default function Store() {
       if (productsData.data) {
         setProducts(productsData.data);
       }
+
+      // Load mock cyberpunk skins data
+      const mockSkins: Product[] = [
+        {
+          id: 'skin-1',
+          name: 'Neon Matrix Overlay',
+          description: 'Sobreposição holográfica de código verde Matrix pulsante',
+          price: 2500,
+          category: 'skin',
+          rarity: 'rare',
+          level_required: 10,
+          effects: { type: 'visual', glow: true }
+        },
+        {
+          id: 'skin-2',
+          name: 'Chrome Neural Interface',
+          description: 'Interface neural cromada com circuitos luminosos azuis',
+          price: 3200,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 15,
+          effects: { type: 'visual', metallic: true }
+        },
+        {
+          id: 'skin-3',
+          name: 'Quantum Flux Field',
+          description: 'Campo de energia quântica com partículas roxas e azuis',
+          price: 4500,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 20,
+          effects: { type: 'visual', particles: true }
+        },
+        {
+          id: 'skin-4',
+          name: 'Digital Ghost Mode',
+          description: 'Aparência fantasmagórica translúcida com efeitos glitch',
+          price: 3800,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 18,
+          effects: { type: 'visual', transparency: true }
+        },
+        {
+          id: 'skin-5',
+          name: 'Plasma Energy Coating',
+          description: 'Revestimento de energia plasma laranja e vermelha',
+          price: 2800,
+          category: 'skin',
+          rarity: 'rare',
+          level_required: 12,
+          effects: { type: 'visual', energy: true }
+        },
+        {
+          id: 'skin-6',
+          name: 'Void Dark Matter',
+          description: 'Matéria escura do vazio com redemoinhos de energia roxa',
+          price: 5000,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 25,
+          effects: { type: 'visual', void: true }
+        },
+        {
+          id: 'skin-7',
+          name: 'Holographic Rainbow',
+          description: 'Padrão holográfico iridescente com fluxos de dados',
+          price: 3500,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 16,
+          effects: { type: 'visual', rainbow: true }
+        },
+        {
+          id: 'skin-8',
+          name: 'Crystal Nano Armor',
+          description: 'Estrutura cristalina transparente com padrões nanotecnológicos',
+          price: 4200,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 19,
+          effects: { type: 'visual', crystal: true }
+        },
+        {
+          id: 'skin-9',
+          name: 'Binary Code Stream',
+          description: 'Fluxos de código binário verde e azul',
+          price: 2700,
+          category: 'skin',
+          rarity: 'rare',
+          level_required: 11,
+          effects: { type: 'visual', code: true }
+        },
+        {
+          id: 'skin-10',
+          name: 'Electric Storm Aura',
+          description: 'Aura de tempestade elétrica com raios azuis',
+          price: 3900,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 17,
+          effects: { type: 'visual', lightning: true }
+        },
+        {
+          id: 'skin-11',
+          name: 'Cyber Phoenix Flames',
+          description: 'Chamas digitais laranja e vermelhas de fênix cibernética',
+          price: 4800,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 22,
+          effects: { type: 'visual', flames: true }
+        },
+        {
+          id: 'skin-12',
+          name: 'Neural Network Web',
+          description: 'Rede neural interconectada com fluxo de dados',
+          price: 3600,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 16,
+          effects: { type: 'visual', network: true }
+        },
+        {
+          id: 'skin-13',
+          name: 'Quantum Entanglement',
+          description: 'Partículas quânticas conectadas por fios de energia',
+          price: 5200,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 26,
+          effects: { type: 'visual', quantum: true }
+        },
+        {
+          id: 'skin-14',
+          name: 'Viral Code Infection',
+          description: 'Padrões de vírus digital verde se espalhando',
+          price: 2900,
+          category: 'skin',
+          rarity: 'rare',
+          level_required: 13,
+          effects: { type: 'visual', virus: true }
+        },
+        {
+          id: 'skin-15',
+          name: 'Diamond Data Core',
+          description: 'Núcleo de dados cristalino com nós de processamento',
+          price: 4600,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 21,
+          effects: { type: 'visual', diamond: true }
+        },
+        {
+          id: 'skin-16',
+          name: 'Time Distortion Field',
+          description: 'Campo de distorção temporal com elementos de relógio',
+          price: 5500,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 28,
+          effects: { type: 'visual', time: true }
+        },
+        {
+          id: 'skin-17',
+          name: 'Shadow Stealth Mode',
+          description: 'Modo furtivo sombrio com padrões de tecnologia stealth',
+          price: 4100,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 18,
+          effects: { type: 'visual', stealth: true }
+        },
+        {
+          id: 'skin-18',
+          name: 'Cosmic Nebula Drift',
+          description: 'Padrões de galáxia com poeira cósmica e estrelas',
+          price: 5800,
+          category: 'skin',
+          rarity: 'legendary',
+          level_required: 30,
+          effects: { type: 'visual', cosmic: true }
+        },
+        {
+          id: 'skin-19',
+          name: 'Corrupted Reality Glitch',
+          description: 'Efeitos de glitch digital com padrões de pixels corrompidos',
+          price: 3300,
+          category: 'skin',
+          rarity: 'epic',
+          level_required: 15,
+          effects: { type: 'visual', glitch: true }
+        }
+      ];
+
+      setSkins(mockSkins);
 
       // Load user's owned items
       if (profile) {
@@ -281,7 +499,7 @@ export default function Store() {
     }
   };
 
-  const purchaseItem = async (item: Avatar | Product, type: 'avatar' | 'product') => {
+  const purchaseItem = async (item: Avatar | Product, type: 'avatar' | 'product' | 'skin') => {
     if (!userProfile) return;
     setPurchasing(item.id);
 
@@ -295,38 +513,29 @@ export default function Store() {
         return;
       }
 
-      // For products, use Stripe payment
-      if (type === 'product') {
-        const { data, error } = await supabase.functions.invoke('create-payment', {
-          body: {
-            productId: item.id,
-            productName: item.name,
-            amount: item.price * 100, // Convert to centavos
-          }
-        });
-
-        if (error) {
-          throw new Error(error.message);
-        }
-
-        // Open Stripe checkout in a new tab
-        window.open(data.url, '_blank');
-        return;
-      }
-
-      // For avatars, use the existing points system
+      // Check if user has enough Beetz for any item
       if (userProfile.points < item.price) {
         setShowBeetzModal(true);
         return;
       }
 
-      await supabase.from('user_avatars').insert({
-        user_id: userProfile.id,
-        avatar_id: item.id
-      });
-      setUserAvatars(prev => [...prev, item.id]);
+      // For items with Beetz balance, proceed with direct purchase
+      if (type === 'avatar') {
+        await supabase.from('user_avatars').insert({
+          user_id: userProfile.id,
+          avatar_id: item.id
+        });
+        setUserAvatars(prev => [...prev, item.id]);
+      } else {
+        // For products and skins
+        await supabase.from('user_products').insert({
+          user_id: userProfile.id,
+          product_id: item.id
+        });
+        setUserProducts(prev => [...prev, item.id]);
+      }
 
-      // Deduct points
+      // Deduct Beetz
       await supabase.from('profiles').update({
         points: userProfile.points - item.price
       }).eq('id', userProfile.id);
@@ -334,7 +543,7 @@ export default function Store() {
       setUserProfile(prev => prev ? { ...prev, points: prev.points - item.price } : null);
 
       toast({
-        title: "🎉 Avatar Comprado!",
+        title: `🎉 ${type === 'avatar' ? 'Avatar' : type === 'skin' ? 'Skin' : 'Produto'} Comprado!`,
         description: `${item.name} foi adicionado à sua coleção`,
       });
 
@@ -422,11 +631,12 @@ export default function Store() {
 
         {/* Tabs */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
-            <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
-            <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
-            <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
-            <TabsTrigger value="beetz">💎 Beetz</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsTrigger value="avatars">👤</TabsTrigger>
+            <TabsTrigger value="skins">🎨</TabsTrigger>
+            <TabsTrigger value="boosts">⚡</TabsTrigger>
+            <TabsTrigger value="accessories">👟</TabsTrigger>
+            <TabsTrigger value="beetz">🥕</TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}
@@ -534,6 +744,100 @@ export default function Store() {
                            !meetsLevel ? `Nv ${avatar.level_required}` :
                            !canAfford ? (avatar.price === 0 ? "Selecionar" : "Sem Beetz") : 
                            avatar.price === 0 ? "Selecionar" : "Comprar"
+                          }
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          {/* Skins Tab */}
+          <TabsContent value="skins">
+            <div className="grid grid-cols-2 gap-3">
+              {skins.map((skin) => {
+                const isOwned = userProducts.includes(skin.id);
+                const canAfford = userProfile ? userProfile.points >= skin.price : false;
+                const meetsLevel = userProfile ? userProfile.level >= skin.level_required : false;
+                
+                // Get skin image from imports
+                const getSkinImage = () => {
+                  const imageMap: { [key: string]: any } = {
+                    'Neon Matrix Overlay': neonMatrixOverlay,
+                    'Chrome Neural Interface': chromeNeuralInterface,
+                    'Quantum Flux Field': quantumFluxField,
+                    'Digital Ghost Mode': digitalGhostMode,
+                    'Plasma Energy Coating': plasmaEnergyCoating,
+                    'Void Dark Matter': voidDarkMatter,
+                    'Holographic Rainbow': holographicRainbow,
+                    'Crystal Nano Armor': crystalNanoArmor,
+                    'Binary Code Stream': binaryCodeStream,
+                    'Electric Storm Aura': electricStormAura,
+                    'Cyber Phoenix Flames': cyberPhoenixFlames,
+                    'Neural Network Web': neuralNetworkWeb,
+                    'Quantum Entanglement': quantumEntanglement,
+                    'Viral Code Infection': viralCodeInfection,
+                    'Diamond Data Core': diamondDataCore,
+                    'Time Distortion Field': timeDistortionField,
+                    'Shadow Stealth Mode': shadowStealthMode,
+                    'Cosmic Nebula Drift': cosmicNebulaDrift,
+                    'Corrupted Reality Glitch': corruptedRealityGlitch,
+                  };
+                  return imageMap[skin.name] || '🎨';
+                };
+                
+                return (
+                  <Card key={skin.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
+                    <div className="relative">
+                      <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
+                        <img 
+                          src={getSkinImage()} 
+                          alt={skin.name}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <div className="absolute top-1 right-1">
+                        <Badge className={`${getRarityColor(skin.rarity)} flex items-center gap-1 text-xs`}>
+                          {getRarityIcon(skin.rarity)}
+                        </Badge>
+                      </div>
+                      <div className="absolute top-1 left-1">
+                        <Badge variant="secondary" className="text-xs bg-purple-500 text-white">
+                          Skin
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    <CardContent className="p-3">
+                      <div className="mb-2">
+                        <h3 className="font-bold text-foreground text-sm truncate">{skin.name}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{skin.description}</p>
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-bold text-primary">{skin.price}</span>
+                          <span className="text-xs text-muted-foreground">Beetz</span>
+                        </div>
+                        <Badge variant="outline" className="text-xs">Nv {skin.level_required}</Badge>
+                      </div>
+                      
+                      {isOwned ? (
+                        <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
+                          ✅ Possui
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => purchaseItem(skin, 'skin')}
+                          disabled={!canAfford || !meetsLevel || purchasing === skin.id}
+                          className="w-full text-xs py-1 h-8"
+                          variant={canAfford && meetsLevel ? "default" : "outline"}
+                        >
+                          {purchasing === skin.id ? "..." :
+                           !meetsLevel ? `Nv ${skin.level_required}` :
+                           !canAfford ? "Sem Beetz" : "Comprar"
                           }
                         </Button>
                       )}
@@ -761,7 +1065,7 @@ export default function Store() {
           <TabsContent value="beetz">
             <div className="space-y-4">
               <div className="text-center mb-6">
-                <h2 className="text-lg font-bold text-foreground mb-2">💎 Pacotes de Beetz</h2>
+                <h2 className="text-lg font-bold text-foreground mb-2">🥕 Pacotes de Beetz</h2>
                 <p className="text-sm text-muted-foreground">Compre Beetz com dinheiro real via Stripe</p>
               </div>
               
@@ -776,7 +1080,7 @@ export default function Store() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-                              <span className="text-2xl">💎</span>
+                              <span className="text-2xl">🥕</span>
                             </div>
                             <div>
                               <h3 className="font-bold text-foreground">{beetzPackage.name}</h3>
