@@ -10,6 +10,7 @@ import { TradeExecutor } from "./trade-executor";
 import { VirtualBalance } from "./virtual-balance";
 import { PositionsPanel } from "./positions-panel";
 import { TradeHistory } from "./trade-history";
+import { MobileTradingHeader } from "./mobile-trading-header";
 
 export interface Asset {
   symbol: string;
@@ -17,7 +18,7 @@ export interface Asset {
   price: number;
   change: number;
   changePercent: number;
-  type: 'crypto' | 'stock' | 'forex' | 'commodity';
+  type: 'crypto' | 'br-stock' | 'us-stock' | 'forex' | 'commodity';
 }
 
 export interface Position {
@@ -155,9 +156,18 @@ export function TradingInterface() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-      {/* Left Panel - Chart and Asset Selection */}
-      <div className="lg:col-span-2 space-y-6">
+    <div className="space-y-6">
+      {/* Mobile Header - Balance and Asset */}
+      <MobileTradingHeader
+        selectedAsset={selectedAsset}
+        balance={balance}
+        totalPnL={getTotalPnL()}
+        isMarketOpen={isMarketOpen}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Panel - Chart and Asset Selection */}
+        <div className="lg:col-span-2 space-y-6">
         <Card>
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
@@ -216,15 +226,17 @@ export function TradingInterface() {
         </Tabs>
       </div>
 
-      {/* Right Panel - Trading Controls */}
-      <div className="space-y-6">
-        {/* Virtual Balance */}
-        <VirtualBalance
-          balance={balance}
-          totalPnL={getTotalPnL()}
-          winRate={getWinRate()}
-          totalTrades={trades.length}
-        />
+        {/* Right Panel - Trading Controls */}
+        <div className="space-y-6">
+          {/* Virtual Balance - Desktop Only */}
+          <div className="hidden lg:block">
+            <VirtualBalance
+              balance={balance}
+              totalPnL={getTotalPnL()}
+              winRate={getWinRate()}
+              totalTrades={trades.length}
+            />
+          </div>
 
         {/* Trading Controls */}
         <Card>
@@ -282,6 +294,7 @@ export function TradingInterface() {
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );

@@ -102,21 +102,25 @@ export function TradeExecutor({ asset, balance, onExecuteTrade, isMarketOpen }: 
   return (
     <div className="space-y-6">
       {/* Trade Type Selection */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3 mb-6">
         <Button
           variant={tradeType === 'BUY' ? "default" : "outline"}
           onClick={() => setTradeType('BUY')}
-          className="flex items-center gap-2"
+          className={`h-12 flex items-center justify-center gap-2 font-bold text-lg ${
+            tradeType === 'BUY' ? 'bg-success hover:bg-success/90 text-white' : 'border-success text-success hover:bg-success/10'
+          }`}
         >
-          <TrendingUp className="h-4 w-4" />
+          <TrendingUp className="h-5 w-5" />
           COMPRAR
         </Button>
         <Button
-          variant={tradeType === 'SELL' ? "destructive" : "outline"}
+          variant={tradeType === 'SELL' ? "default" : "outline"}
           onClick={() => setTradeType('SELL')}
-          className="flex items-center gap-2"
+          className={`h-12 flex items-center justify-center gap-2 font-bold text-lg ${
+            tradeType === 'SELL' ? 'bg-destructive hover:bg-destructive/90 text-white' : 'border-destructive text-destructive hover:bg-destructive/10'
+          }`}
         >
-          <TrendingDown className="h-4 w-4" />
+          <TrendingDown className="h-5 w-5" />
           VENDER
         </Button>
       </div>
