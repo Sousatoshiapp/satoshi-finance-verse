@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { TradingInterface } from "@/components/trading/trading-interface";
 import { PortfolioBuilder } from "@/components/portfolio/portfolio-builder";
 import { UserCard } from "@/components/social/user-card";
 import { SocialButton } from "@/components/social/social-button";
@@ -18,7 +19,10 @@ import {
   Zap,
   Eye,
   Copy,
-  Share2
+  Share2,
+  Activity,
+  Target,
+  BarChart3
 } from "lucide-react";
 
 interface Portfolio {
@@ -56,7 +60,7 @@ export default function Playground() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [marketEvents, setMarketEvents] = useState<MarketEvent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'builder');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'trading');
 
   useEffect(() => {
     loadData();
@@ -152,9 +156,9 @@ export default function Playground() {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Playground de Investimentos</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Demo Trading Platform</h1>
             <p className="text-muted-foreground">
-              Pratique suas estratégias, aprenda com outros investidores e participe de simulações de mercado
+              Pratique trading em tempo real com saldo virtual, aprenda com outros traders e compete em rankings
             </p>
           </div>
 
@@ -190,14 +194,28 @@ export default function Playground() {
 
           {/* Main Content */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="builder">Criar Carteira</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-5 mb-6">
+              <TabsTrigger value="trading" className="flex items-center gap-2">
+                <Activity className="h-4 w-4" />
+                Trading
+              </TabsTrigger>
+              <TabsTrigger value="portfolio" className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Portfolio
+              </TabsTrigger>
               <TabsTrigger value="explore">Explorar</TabsTrigger>
-              <TabsTrigger value="rankings">Rankings</TabsTrigger>
+              <TabsTrigger value="rankings" className="flex items-center gap-2">
+                <Trophy className="h-4 w-4" />
+                Rankings
+              </TabsTrigger>
               <TabsTrigger value="social">Social</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="builder">
+            <TabsContent value="trading">
+              <TradingInterface />
+            </TabsContent>
+
+            <TabsContent value="portfolio">
               <PortfolioBuilder 
                 onSave={(portfolio) => {
                   loadData(); // Refresh data
