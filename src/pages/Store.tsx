@@ -632,11 +632,11 @@ export default function Store() {
         {/* Tabs */}
         <Tabs defaultValue="avatars" className="mb-20">
           <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="avatars">👤</TabsTrigger>
-            <TabsTrigger value="skins">🎨</TabsTrigger>
-            <TabsTrigger value="boosts">⚡</TabsTrigger>
-            <TabsTrigger value="accessories">👟</TabsTrigger>
-            <TabsTrigger value="beetz">🥕</TabsTrigger>
+            <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
+            <TabsTrigger value="skins">🎨 Skins</TabsTrigger>
+            <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
+            <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
+            <TabsTrigger value="beetz">🥕 Beetz</TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}
