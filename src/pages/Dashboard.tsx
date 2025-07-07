@@ -46,10 +46,19 @@ export default function Dashboard() {
   
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { subscription, canCreateDuel } = useSubscription();
+  const { subscription, canCreateDuel, refreshSubscription } = useSubscription();
 
   useEffect(() => {
-    // Carregar dados do usuário do Supabase
+    // Verificar se há parâmetros de sucesso do Stripe na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    const tier = urlParams.get('tier');
+    
+    if (sessionId && tier) {
+      handlePaymentSuccess(sessionId, tier);
+    }
+    
+    // Carregar dados do usuário
     loadUserData();
     
     // Atualizar saudação a cada minuto
@@ -59,6 +68,41 @@ export default function Dashboard() {
     
     return () => clearInterval(interval);
   }, [navigate]);
+
+  const handlePaymentSuccess = async (sessionId: string, tier: string) => {
+    try {
+      toast({
+        title: "Processando pagamento...",
+        description: "Aguarde enquanto ativamos sua assinatura.",
+      });
+
+      const { data, error } = await supabase.functions.invoke('process-subscription-success', {
+        body: { session_id: sessionId }
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        // Limpar parâmetros da URL
+        window.history.replaceState({}, document.title, "/dashboard");
+        
+        // Atualizar dados da assinatura
+        refreshSubscription();
+        
+        toast({
+          title: "🎉 Assinatura ativada!",
+          description: `Seu plano ${tier.toUpperCase()} está ativo! ${data.beetz_awarded > 0 ? `Você ganhou ${data.beetz_awarded} Beetz!` : ''}`,
+        });
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      toast({
+        title: "Erro ao processar pagamento",
+        description: "Houve um problema ao ativar sua assinatura. Entre em contato com o suporte.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const loadUserData = async () => {
     // Sempre carregar dados do localStorage primeiro

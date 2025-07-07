@@ -113,7 +113,7 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${origin}/dashboard?subscription=success&tier=${tier}`,
+      success_url: `${origin}/dashboard?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
       cancel_url: `${origin}/subscription-plans?canceled=true`,
       metadata: {
         user_id: user.id,
