@@ -34,6 +34,7 @@ import BeetzInfo from "./pages/BeetzInfo";
 import EnhancedQuiz from "./pages/EnhancedQuiz";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import NotFound from "./pages/NotFound";
+import AvatarDetail from "./pages/AvatarDetail";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/levels" element={<ProtectedRoute><Levels /></ProtectedRoute>} />
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
+            <Route path="/avatar/:id" element={<ProtectedRoute><AvatarDetail /></ProtectedRoute>} />
             <Route path="/beetz-info" element={<ProtectedRoute><BeetzInfo /></ProtectedRoute>} />
             <Route path="/subscription-plans" element={<ProtectedRoute><SubscriptionPlans /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
