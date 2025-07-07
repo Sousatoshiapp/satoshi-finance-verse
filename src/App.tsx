@@ -11,6 +11,7 @@ import Quiz from "./pages/Quiz";
 import SoloQuiz from "./pages/SoloQuiz";
 import DuelQuiz from "./pages/DuelQuiz";
 import TournamentQuiz from "./pages/TournamentQuiz";
+import TournamentQuizSpecific from "./pages/TournamentQuizSpecific";
 import GameMode from "./pages/GameMode";
 import Profile from "./pages/Profile";
 import Levels from "./pages/Levels";
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/solo-quiz" element={<ProtectedRoute><SoloQuiz /></ProtectedRoute>} />
             <Route path="/duel-quiz" element={<ProtectedRoute><DuelQuiz /></ProtectedRoute>} />
             <Route path="/tournament-quiz" element={<ProtectedRoute><TournamentQuiz /></ProtectedRoute>} />
+            <Route path="/tournament-quiz/:tournamentId" element={<ProtectedRoute><TournamentQuizSpecific /></ProtectedRoute>} />
             <Route path="/enhanced-quiz" element={<ProtectedRoute><EnhancedQuiz /></ProtectedRoute>} />
             <Route path="/duels" element={<ProtectedRoute><Duels /></ProtectedRoute>} />
             <Route path="/find-opponent" element={<ProtectedRoute><FindOpponent /></ProtectedRoute>} />

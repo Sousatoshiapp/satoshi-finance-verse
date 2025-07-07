@@ -250,9 +250,9 @@ export function TournamentCarousel() {
 
             <Button 
               className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
-              onClick={() => navigate(`/tournaments/${currentTournament.id}`)}
+              onClick={() => navigate(`/tournament-quiz/${currentTournament.id}`)}
             >
-              {currentTournament.status === 'active' ? 'Participar Agora' : 'Ver Detalhes'}
+              {currentTournament.status === 'active' ? 'Começar Torneio' : 'Ver Detalhes'}
             </Button>
           </div>
         </Card>
