@@ -185,7 +185,7 @@ export default function SoloQuiz() {
         awardXP(completionBonus, 'quiz_completion');
         setShowResults(true);
       }
-    }, 3000);
+    }, 6000);
   };
 
   const resetQuiz = () => {

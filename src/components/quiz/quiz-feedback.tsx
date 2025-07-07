@@ -17,7 +17,7 @@ export function QuizFeedback({
   userAnswer, 
   show 
 }: QuizFeedbackProps) {
-  if (!show) return null;
+  if (!show || isCorrect) return null;
 
   return (
     <Card className={cn(
