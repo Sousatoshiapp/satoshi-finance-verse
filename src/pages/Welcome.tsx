@@ -55,7 +55,8 @@ export default function Welcome() {
               <CardContent className="p-6">
                 <Button 
                   onClick={() => navigate('/auth?mode=login')}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 text-lg transition-all duration-300"
+                  className="w-full font-bold py-4 text-lg transition-all duration-300"
+                  style={{ backgroundColor: '#adff2f', color: '#000000' }}
                 >
                   <Shield className="mr-2 h-5 w-5" />
                   Entrar na Cidade
@@ -69,7 +70,8 @@ export default function Welcome() {
                 <Button 
                   onClick={() => navigate('/auth?mode=signup')}
                   variant="outline"
-                  className="w-full border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black font-bold py-4 text-lg transition-all duration-300"
+                  className="w-full font-bold py-4 text-lg transition-all duration-300"
+                  style={{ borderColor: '#adff2f', color: '#adff2f' }}
                 >
                   <Users className="mr-2 h-5 w-5" />
                   Tornar-se Cidadão
