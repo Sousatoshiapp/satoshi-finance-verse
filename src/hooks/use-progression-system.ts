@@ -82,9 +82,10 @@ export function useProgressionSystem() {
           });
         }
       } else {
+        const activityDisplayName = activityType === 'quiz_correct' ? 'resposta correta' : activityType;
         toast({
           title: `+${amount} XP`,
-          description: `Atividade: ${activityType}`,
+          description: `Atividade: ${activityDisplayName}`,
           duration: 2000,
         });
       }
