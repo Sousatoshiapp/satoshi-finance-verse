@@ -616,6 +616,44 @@ export default function Store() {
           </div>
         </div>
 
+        {/* Premium Plans Promotion Card */}
+        <Card className="p-4 mb-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <Crown className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-foreground mb-1">Planos Premium</h3>
+                <p className="text-xs text-muted-foreground">Acelere seu progresso</p>
+              </div>
+            </div>
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/subscription-plans')}
+              className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
+            >
+              Ver Planos
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+            <div className="text-center">
+              <div className="text-purple-400 font-bold">∞</div>
+              <div className="text-muted-foreground text-xs">Duelos</div>
+            </div>
+            <div className="text-center">
+              <div className="text-purple-400 font-bold">3x</div>
+              <div className="text-muted-foreground text-xs">XP Boost</div>
+            </div>
+            <div className="text-center">
+              <div className="text-purple-400 font-bold">100</div>
+              <div className="text-muted-foreground text-xs">Beetz/mês</div>
+            </div>
+          </div>
+        </Card>
+
         {/* User Points */}
         {userProfile && (
           <Card className="mb-6 bg-gradient-beetz">

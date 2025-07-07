@@ -10,10 +10,13 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { ProfileImageUpload } from "@/components/profile-image-upload";
 import { AvatarSelector } from "@/components/avatar-selector";
 import { UserInventory } from "@/components/profile/user-inventory";
+import { SubscriptionIndicator } from "@/components/subscription-indicator";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSubscription } from "@/hooks/use-subscription";
 import { getLevelInfo } from "@/data/levels";
+import { Crown, Star, Shield } from "lucide-react";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 // Import avatar images
@@ -85,6 +88,7 @@ interface UserProfile {
   points: number;
   profile_image_url?: string;
   avatar_id?: string;
+  subscription_tier?: 'free' | 'pro' | 'elite';
 }
 
 interface UserAvatar {
@@ -99,6 +103,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { subscription } = useSubscription();
   
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
@@ -199,6 +204,22 @@ export default function Profile() {
     }
   };
 
+  const getPlanIcon = (tier: string) => {
+    switch (tier) {
+      case 'pro': return <Star className="w-5 h-5 text-yellow-500" />;
+      case 'elite': return <Crown className="w-5 h-5 text-purple-500" />;
+      default: return <Shield className="w-5 h-5 text-blue-500" />;
+    }
+  };
+
+  const getPlanName = (tier: string) => {
+    switch (tier) {
+      case 'pro': return 'Satoshi Pro';
+      case 'elite': return 'Satoshi Elite';
+      default: return 'Plano Gratuito';
+    }
+  };
+
   const achievements = [
     { id: 'first_lesson', name: 'Primeira Lição', icon: '🎯', earned: true },
     { id: 'streak_7', name: '7 Dias Seguidos', icon: '🔥', earned: user?.streak >= 7 },
@@ -275,9 +296,58 @@ export default function Profile() {
               <div className="flex items-center gap-3">
                 <StreakBadge days={user.streak} />
                 <Badge variant="outline">{getLevelInfo(user.level).name}</Badge>
+                <div className="flex items-center gap-2">
+                  <SubscriptionIndicator tier={subscription.tier} size="sm" />
+                  <span className="text-sm text-muted-foreground">{getPlanName(subscription.tier)}</span>
+                </div>
               </div>
             </div>
           </div>
+        </Card>
+
+        {/* Subscription Plan Card */}
+        <Card className="p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {getPlanIcon(subscription.tier)}
+              <div>
+                <h3 className="text-lg font-bold text-foreground mb-1">{getPlanName(subscription.tier)}</h3>
+                <p className="text-sm text-muted-foreground">
+                  {subscription.tier === 'free' 
+                    ? 'Faça upgrade para desbloquear benefícios exclusivos'
+                    : `XP ${subscription.xpMultiplier}x • Duelos Ilimitados • ${subscription.monthlyBeetz} Beetz/mês`
+                  }
+                </p>
+              </div>
+            </div>
+            <Button 
+              variant={subscription.tier === 'free' ? 'default' : 'outline'}
+              onClick={() => navigate('/subscription-plans')}
+              className={subscription.tier === 'free' 
+                ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0' 
+                : ''
+              }
+            >
+              {subscription.tier === 'free' ? '⭐ Fazer Upgrade' : 'Gerenciar Plano'}
+            </Button>
+          </div>
+          
+          {subscription.tier !== 'free' && (
+            <div className="grid grid-cols-3 gap-4 mt-4 text-xs">
+              <div className="text-center">
+                <div className="text-purple-400 font-bold">∞</div>
+                <div className="text-muted-foreground">Duelos</div>
+              </div>
+              <div className="text-center">
+                <div className="text-purple-400 font-bold">{subscription.xpMultiplier}x</div>
+                <div className="text-muted-foreground">XP Boost</div>
+              </div>
+              <div className="text-center">
+                <div className="text-purple-400 font-bold">{subscription.monthlyBeetz}</div>
+                <div className="text-muted-foreground">Beetz/mês</div>
+              </div>
+            </div>
+          )}
         </Card>
 
         {/* XP and Level */}
