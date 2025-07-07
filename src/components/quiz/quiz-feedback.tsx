@@ -24,7 +24,7 @@ export function QuizFeedback({
       "mt-4 border-2 animate-fade-in",
       isCorrect 
         ? "border-green-500 bg-green-50 dark:bg-green-950" 
-        : "border-red-500 bg-red-50 dark:bg-red-950"
+        : "border-red-500 bg-black text-white"
     )}>
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
@@ -39,13 +39,13 @@ export function QuizFeedback({
           <div className="flex-1">
             <div className={cn(
               "font-semibold text-sm mb-2",
-              isCorrect ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"
+              isCorrect ? "text-green-800 dark:text-green-200" : "text-white"
             )}>
               {isCorrect ? "✅ Correto!" : "❌ Incorreto"}
             </div>
             
             {!isCorrect && correctAnswer && (
-              <div className="text-sm text-muted-foreground mb-2">
+              <div className="text-sm text-white mb-2">
                 <span className="font-medium">Resposta correta:</span> {correctAnswer}
               </div>
             )}
@@ -53,7 +53,8 @@ export function QuizFeedback({
             {explanation && (
               <div className="flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-foreground leading-relaxed">
+                <p className="text-sm leading-relaxed"
+                   style={{ color: isCorrect ? 'inherit' : 'white' }}>
                   {explanation}
                 </p>
               </div>
