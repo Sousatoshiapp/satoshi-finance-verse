@@ -477,7 +477,8 @@ export default function SoloQuiz() {
           <Button
             onClick={handleSubmit}
             disabled={!selectedAnswer || showAnswer}
-            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 text-lg"
+            className="w-full py-4 text-lg font-semibold text-black"
+            style={{ backgroundColor: '#adff2f' }}
           >
             {showAnswer ? "Próxima Pergunta..." : "Enviar"}
           </Button>
