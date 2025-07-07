@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { AvatarSelection } from "@/components/avatar-selection";
 import { AvatarDisplay } from "@/components/avatar-display";
+import { StreakCounter } from "@/components/streak-counter";
+import { BadgeShowcase } from "@/components/badge-showcase";
+import { DailyRewards } from "@/components/daily-rewards";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
@@ -152,16 +155,15 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Streak Progress */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-foreground font-medium">Streaks : {userStats.streak}/7</span>
-            </div>
-            <div className="w-full bg-muted rounded-full h-3">
-              <div 
-                className="bg-gradient-to-r from-success to-primary h-3 rounded-full transition-all duration-500"
-                style={{ width: `${(userStats.streak / 7) * 100}%` }}
-              ></div>
+          {/* Engagement Components */}
+          <div className="grid gap-4 mb-8">
+            <StreakCounter 
+              currentStreak={userStats.streak} 
+              showActions={true}
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <DailyRewards />
+              <BadgeShowcase limit={4} />
             </div>
           </div>
 

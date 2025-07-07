@@ -13,46 +13,28 @@ import { AvatarDisplay } from "@/components/avatar-display";
 import { QuizFeedback } from "@/components/quiz/quiz-feedback";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
 
-const soloQuizTopics = [
-  {
-    id: "crypto-basics",
-    title: "Criptomoedas Básicas",
-    questions: [
-      {
-        id: "1",
-        question: "Quem criou o Bitcoin?",
-        explanation: "Satoshi Nakamoto é o pseudônimo usado pelo criador anônimo do Bitcoin. Sua identidade real permanece um mistério até hoje.",
-        options: [
-          { id: "a", text: "Vitalik Buterin", isCorrect: false },
-          { id: "b", text: "Satoshi Nakamoto", isCorrect: true },
-          { id: "c", text: "Charlie Lee", isCorrect: false },
-          { id: "d", text: "Roger Ver", isCorrect: false }
-        ]
-      },
-      {
-        id: "2", 
-        question: "O que significa HODL?",
-        explanation: "HODL surgiu de um erro de digitação de 'hold' em um fórum, mas depois foi interpretado como 'Hold On for Dear Life', representando a estratégia de manter criptomoedas a longo prazo.",
-        options: [
-          { id: "a", text: "Hold On for Dear Life", isCorrect: true },
-          { id: "b", text: "High Order Digital Ledger", isCorrect: false },
-          { id: "c", text: "Hash Original Data List", isCorrect: false },
-          { id: "d", text: "Hold Original Digital License", isCorrect: false }
-        ]
-      },
-      {
-        id: "3",
-        question: "Qual é o máximo de Bitcoins que podem existir?",
-        explanation: "O protocolo Bitcoin limita a oferta total a 21 milhões de moedas. Essa escassez programada é uma das características que dão valor ao Bitcoin.",
-        options: [
-          { id: "a", text: "18 milhões", isCorrect: false },
-          { id: "b", text: "21 milhões", isCorrect: true },
-          { id: "c", text: "25 milhões", isCorrect: false },
-          { id: "d", text: "Ilimitado", isCorrect: false }
-        ]
-      }
-    ]
-  }
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correct_answer: string;
+  explanation?: string;
+  category: string;
+  difficulty: string;
+}
+
+interface QuizTopic {
+  id: string;
+  title: string;
+  category: string;
+  difficulty: string;
+}
+
+const quizTopics: QuizTopic[] = [
+  { id: "easy-basics", title: "Educação Financeira Básica", category: "Educação Financeira", difficulty: "easy" },
+  { id: "easy-investments", title: "Investimentos para Iniciantes", category: "Investimentos Básicos", difficulty: "easy" },
+  { id: "medium-analysis", title: "Análise de Investimentos", category: "Análise de Investimentos", difficulty: "medium" },
+  { id: "hard-advanced", title: "Estratégias Avançadas", category: "Trading Quantitativo", difficulty: "hard" }
 ];
 
 const fireConfetti = () => {
@@ -99,13 +81,15 @@ const fireConfetti = () => {
 };
 
 export default function SoloQuiz() {
-  const [currentQuiz] = useState(() => soloQuizTopics[0]);
+  const [selectedTopic, setSelectedTopic] = useState<QuizTopic | null>(null);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { awardXP, updateStreak } = useProgressionSystem();
 
@@ -129,22 +113,58 @@ export default function SoloQuiz() {
     fetchUserProfile();
   }, []);
 
-  const handleOptionSelect = (optionId: string) => {
+  const fetchQuestions = async (topic: QuizTopic) => {
+    setLoading(true);
+    try {
+      const { data: questionsData, error } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .eq('category', topic.category)
+        .eq('difficulty', topic.difficulty)
+        .limit(5);
+
+      if (error) throw error;
+
+      if (questionsData && questionsData.length > 0) {
+        // Shuffle questions and take random 5, convert options from JSON to string array
+        const shuffled = questionsData
+          .map(q => ({
+            ...q,
+            options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
+          }))
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 5);
+        setQuestions(shuffled);
+        setSelectedTopic(topic);
+        setCurrentQuestion(0);
+        setScore(0);
+        setSelectedAnswer(null);
+        setShowAnswer(false);
+        setShowResults(false);
+      }
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOptionSelect = (option: string) => {
     if (selectedAnswer || showAnswer) return;
-    setSelectedAnswer(optionId);
+    setSelectedAnswer(option);
   };
 
   const handleSubmit = async () => {
-    if (!selectedAnswer) return;
+    if (!selectedAnswer || !questions[currentQuestion]) return;
     
     setShowAnswer(true);
-    const selectedOption = currentQuiz.questions[currentQuestion].options.find(opt => opt.id === selectedAnswer);
-    const isCorrect = selectedOption?.isCorrect || false;
+    const currentQ = questions[currentQuestion];
+    const isCorrect = selectedAnswer === currentQ.correct_answer;
     
     if (isCorrect) {
       setScore(score + 1);
       // Award XP for correct answer
-      await awardXP(10, 'quiz_correct');
+      await awardXP(15, 'quiz_correct');
       // Dispara confetti quando acerta
       setTimeout(() => fireConfetti(), 500);
     }
@@ -155,13 +175,13 @@ export default function SoloQuiz() {
     }
 
     setTimeout(() => {
-      if (currentQuestion < currentQuiz.questions.length - 1) {
+      if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setSelectedAnswer(null);
         setShowAnswer(false);
       } else {
         // Award completion bonus
-        const completionBonus = Math.round((score / currentQuiz.questions.length) * 50);
+        const completionBonus = Math.round((score / questions.length) * 60);
         awardXP(completionBonus, 'quiz_completion');
         setShowResults(true);
       }
@@ -169,6 +189,8 @@ export default function SoloQuiz() {
   };
 
   const resetQuiz = () => {
+    setSelectedTopic(null);
+    setQuestions([]);
     setCurrentQuestion(0);
     setScore(0);
     setShowResults(false);
@@ -176,8 +198,61 @@ export default function SoloQuiz() {
     setShowAnswer(false);
   };
 
+  // Topic Selection Screen
+  if (!selectedTopic || questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background pb-20">
+        <div className="max-w-md mx-auto px-4 py-6">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/game-mode")}
+              className="text-foreground hover:bg-muted"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-xl font-bold text-foreground">Escolha o Tópico</h1>
+            <div className="w-8" />
+          </div>
+
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="text-lg">Carregando questões...</div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {quizTopics.map((topic) => (
+                <Card key={topic.id} className="p-4 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => fetchQuestions(topic)}>
+                  <CardContent className="p-0">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-bold text-foreground">{topic.title}</h3>
+                        <p className="text-sm text-muted-foreground">{topic.category}</p>
+                      </div>
+                      <div className={`px-2 py-1 rounded text-xs font-medium ${
+                        topic.difficulty === 'easy' ? 'bg-green-100 text-green-800' :
+                        topic.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {topic.difficulty === 'easy' ? 'Fácil' : 
+                         topic.difficulty === 'medium' ? 'Médio' : 'Difícil'}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+        <FloatingNavbar />
+      </div>
+    );
+  }
+
   if (showResults) {
-    const percentage = (score / currentQuiz.questions.length) * 100;
+    const percentage = (score / questions.length) * 100;
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
@@ -210,10 +285,10 @@ export default function SoloQuiz() {
 
           <div className="mb-6">
             <div className="text-4xl font-bold text-primary mb-2">
-              {score}/{currentQuiz.questions.length}
+              {score}/{questions.length}
             </div>
             <p className="text-muted-foreground mb-4">
-              {percentage >= 80 ? "Excelente! Você domina crypto! 🎉" : 
+              {percentage >= 80 ? "Excelente! Você domina o tema! 🎉" : 
                percentage >= 60 ? "Muito bom! Continue estudando! 👏" : 
                "Continue praticando! 💪"}
             </p>
@@ -222,11 +297,14 @@ export default function SoloQuiz() {
               <p className="text-sm text-muted-foreground mb-2">Seu desempenho:</p>
               <ProgressBar 
                 value={score} 
-                max={currentQuiz.questions.length} 
+                max={questions.length} 
                 className="mb-2"
               />
               <p className="text-sm font-semibold">
                 {Math.round(percentage)}% de acerto
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Tópico: {selectedTopic?.title}
               </p>
             </div>
           </div>
@@ -295,10 +373,11 @@ export default function SoloQuiz() {
           </div>
           
           <h1 className="text-2xl font-bold text-white mb-2">
-            {currentQuiz.title}
+            {selectedTopic?.title}
           </h1>
           <p className="text-slate-300 text-sm mb-6">
-            Modo Solo - Teste seus conhecimentos!
+            {selectedTopic?.category} - {selectedTopic?.difficulty === 'easy' ? 'Fácil' : 
+             selectedTopic?.difficulty === 'medium' ? 'Médio' : 'Difícil'}
           </p>
 
           {/* Rewards Card */}
@@ -326,11 +405,11 @@ export default function SoloQuiz() {
         <div className="mb-6">
           <ProgressBar 
             value={currentQuestion + 1} 
-            max={currentQuiz.questions.length}
+            max={questions.length}
             className="mb-2 bg-slate-700"
           />
           <p className="text-sm text-slate-400 text-right">
-            {String(currentQuestion + 1).padStart(2, '0')} / {currentQuiz.questions.length}
+            {String(currentQuestion + 1).padStart(2, '0')} / {questions.length}
           </p>
         </div>
 
@@ -340,15 +419,16 @@ export default function SoloQuiz() {
             Pergunta: {String(currentQuestion + 1).padStart(2, '0')}
           </p>
           <h2 className="text-xl font-bold text-white leading-relaxed">
-            {currentQuiz.questions[currentQuestion].question}
+            {questions[currentQuestion]?.question}
           </h2>
         </div>
 
         {/* Options */}
         <div className="space-y-3 mb-4">
-          {currentQuiz.questions[currentQuestion].options.map((option) => {
-            const isSelected = selectedAnswer === option.id;
-            const isCorrect = option.isCorrect;
+          {questions[currentQuestion]?.options?.map((option, index) => {
+            const optionId = String.fromCharCode(97 + index); // a, b, c, d
+            const isSelected = selectedAnswer === option;
+            const isCorrect = option === questions[currentQuestion]?.correct_answer;
             
             let optionClass = "bg-card border-border text-foreground hover:bg-muted";
             
@@ -368,14 +448,14 @@ export default function SoloQuiz() {
             
             return (
               <Button
-                key={option.id}
+                key={index}
                 variant="outline"
                 className={`w-full text-left justify-start min-h-[56px] text-wrap whitespace-normal p-4 ${optionClass}`}
-                onClick={() => handleOptionSelect(option.id)}
+                onClick={() => handleOptionSelect(option)}
                 disabled={showAnswer}
               >
-                <span className="font-medium mr-3">{option.id.toUpperCase()}.</span>
-                {option.text}
+                <span className="font-medium mr-3">{optionId.toUpperCase()}.</span>
+                {option}
               </Button>
             );
           })}
@@ -384,8 +464,10 @@ export default function SoloQuiz() {
         {/* Feedback */}
         {showAnswer && (
           <QuizFeedback
-            isCorrect={currentQuiz.questions[currentQuestion].options.find(opt => opt.id === selectedAnswer)?.isCorrect || false}
-            explanation={currentQuiz.questions[currentQuestion].explanation}
+            isCorrect={selectedAnswer === questions[currentQuestion]?.correct_answer}
+            explanation={questions[currentQuestion]?.explanation}
+            correctAnswer={questions[currentQuestion]?.correct_answer}
+            userAnswer={selectedAnswer}
             show={showAnswer}
           />
         )}
