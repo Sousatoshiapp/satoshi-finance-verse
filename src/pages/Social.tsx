@@ -14,6 +14,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Search, MessageCircle } from "lucide-react";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { SocialFeed } from "@/components/social/social-feed";
+import { SocialChallenges } from "@/components/social/social-challenges";
+import { SocialLeaderboard } from "@/components/social/social-leaderboard";
 
 interface User {
   id: string;
@@ -199,13 +202,27 @@ export default function Social() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="discover" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+            <Tabs defaultValue="feed" className="w-full">
+              <TabsList className="grid w-full grid-cols-6">
+                <TabsTrigger value="feed">Feed</TabsTrigger>
                 <TabsTrigger value="discover">Descobrir</TabsTrigger>
+                <TabsTrigger value="challenges">Desafios</TabsTrigger>
+                <TabsTrigger value="rankings">Rankings</TabsTrigger>
                 <TabsTrigger value="following">Seguindo</TabsTrigger>
-                <TabsTrigger value="followers">Seguidores</TabsTrigger>
                 <TabsTrigger value="messages">Conversas</TabsTrigger>
               </TabsList>
+
+               <TabsContent value="feed" className="space-y-4">
+                <SocialFeed />
+              </TabsContent>
+
+              <TabsContent value="challenges" className="space-y-4">
+                <SocialChallenges />
+              </TabsContent>
+
+              <TabsContent value="rankings" className="space-y-4">
+                <SocialLeaderboard />
+              </TabsContent>
 
               <TabsContent value="discover" className="space-y-4">
                 <div className="relative">
