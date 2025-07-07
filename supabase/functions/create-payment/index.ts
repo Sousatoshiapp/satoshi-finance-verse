@@ -25,15 +25,18 @@ serve(async (req) => {
     const body = await req.json();
     const { productId, productName, amount, type } = body;
 
-    // Input validation
-    if (!productId || typeof productId !== 'string') {
+    // Enhanced input validation with security constraints
+    if (!productId || typeof productId !== 'string' || productId.length > 100) {
       throw new Error('Invalid or missing productId');
     }
-    if (!productName || typeof productName !== 'string') {
+    if (!productName || typeof productName !== 'string' || productName.length > 200) {
       throw new Error('Invalid or missing productName');
     }
-    if (!amount || typeof amount !== 'number' || amount <= 0) {
-      throw new Error('Invalid or missing amount');
+    if (!amount || typeof amount !== 'number' || amount <= 0 || amount > 1000000 || !Number.isInteger(amount)) {
+      throw new Error('Invalid amount - must be positive integer under 1,000,000 cents');
+    }
+    if (type && (typeof type !== 'string' || type.length > 50)) {
+      throw new Error('Invalid type parameter');
     }
 
     // Sanitize inputs

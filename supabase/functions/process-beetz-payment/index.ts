@@ -53,8 +53,13 @@ serve(async (req) => {
         throw new Error('Invalid productId format for beetz');
       }
       const beetzAmount = parseInt(productId.split('-')[1]);
-      if (isNaN(beetzAmount) || beetzAmount <= 0 || beetzAmount > 10000) {
-        throw new Error('Invalid beetz amount');
+      if (isNaN(beetzAmount) || beetzAmount <= 0 || beetzAmount > 10000 || !Number.isInteger(beetzAmount)) {
+        throw new Error('Invalid beetz amount - must be positive integer between 1-10000');
+      }
+
+      // Additional validation against overflow
+      if (beetzAmount * 100 > Number.MAX_SAFE_INTEGER) {
+        throw new Error('Amount too large to process safely');
       }
 
       // Get user profile

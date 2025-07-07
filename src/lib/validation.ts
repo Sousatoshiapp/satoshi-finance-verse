@@ -124,13 +124,18 @@ export class RateLimiter {
 
 export const globalRateLimiter = new RateLimiter();
 
-// Enhanced validation with length limits
+// Enhanced validation with length limits and security checks
 export const validateMessageContent = (content: string): string | null => {
   const clean = sanitizeText(content);
   
   if (!clean) return 'Mensagem não pode estar vazia';
   if (clean.length > 1000) return 'Mensagem muito longa (máximo 1000 caracteres)';
   if (clean.length < 1) return 'Mensagem muito curta';
+  
+  // Additional security checks
+  if (detectSuspiciousContent(clean)) {
+    return 'Conteúdo suspeito detectado';
+  }
   
   return null;
 };

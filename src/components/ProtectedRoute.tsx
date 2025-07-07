@@ -44,11 +44,23 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         return;
       }
 
-      // If no Supabase auth but has localStorage
+      // Enhanced localStorage validation - only allow if valid structure
       if (!hasSupabaseUser && hasLocalUser) {
-        console.log(`📱 FALLBACK TO LOCALSTORAGE - allowing access`);
-        setAuthCheckComplete(true);
-        return;
+        try {
+          const userData = JSON.parse(localUser);
+          // Validate localStorage structure and require essential fields
+          if (userData && userData.id && userData.email && typeof userData.id === 'string') {
+            console.log(`📱 FALLBACK TO LOCALSTORAGE - allowing access with validation`);
+            setAuthCheckComplete(true);
+            return;
+          } else {
+            console.log(`🚫 INVALID LOCALSTORAGE DATA - removing and redirecting`);
+            localStorage.removeItem('satoshi_user');
+          }
+        } catch (error) {
+          console.log(`🚫 CORRUPTED LOCALSTORAGE DATA - removing and redirecting`);
+          localStorage.removeItem('satoshi_user');
+        }
       }
 
       // No valid authentication found
