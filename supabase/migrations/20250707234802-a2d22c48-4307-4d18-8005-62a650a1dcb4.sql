@@ -1,0 +1,12 @@
+-- Perguntas para cryptocurrency
+INSERT INTO public.quiz_questions (question, options, correct_answer, explanation, difficulty, category) VALUES
+('Quem criou o Bitcoin?', '["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"]', 'Satoshi Nakamoto', 'Satoshi Nakamoto e o pseudonimo do criador do Bitcoin.', 'easy', 'cryptocurrency'),
+('O que e uma Wallet?', '["Carteira fisica", "Carteira digital para criptos", "Conta bancaria", "Aplicativo de pagamento"]', 'Carteira digital para criptos', 'Wallet armazena chaves privadas para criptomoedas.', 'easy', 'cryptocurrency'),
+('O que e Mining?', '["Comprar criptomoedas", "Validar transacoes na blockchain", "Vender criptomoedas", "Criar exchanges"]', 'Validar transacoes na blockchain', 'Mining valida transacoes e adiciona blocos.', 'medium', 'cryptocurrency'),
+('O que e uma Exchange?', '["Banco tradicional", "Plataforma para negociar cripto", "Carteira digital", "Protocolo blockchain"]', 'Plataforma para negociar cripto', 'Exchange permite comprar e vender criptomoedas.', 'easy', 'cryptocurrency'),
+('O que e DeFi?', '["Bitcoin", "Financas Descentralizadas", "Tipo de carteira", "Exchange centralizada"]', 'Financas Descentralizadas', 'DeFi sao aplicacoes financeiras descentralizadas.', 'medium', 'cryptocurrency'),
+('O que e Smart Contract?', '["Contrato fisico", "Contrato auto-executavel", "Acordo bancario", "Aplicativo movel"]', 'Contrato auto-executavel', 'Smart Contracts executam automaticamente.', 'hard', 'cryptocurrency'),
+('O que e Staking?', '["Minerar Bitcoin", "Participar na validacao", "Vender criptomoedas", "Criar tokens"]', 'Participar na validacao', 'Staking participa da validacao de transacoes.', 'medium', 'cryptocurrency'),
+('O que e NFT?', '["Moeda digital", "Token Nao-Fungivel", "Protocolo blockchain", "Tipo de mineracao"]', 'Token Nao-Fungivel', 'NFT representa propriedade de itens unicos.', 'easy', 'cryptocurrency'),
+('O que e Ethereum?', '["Fork do Bitcoin", "Plataforma para smart contracts", "Exchange", "Carteira digital"]', 'Plataforma para smart contracts', 'Ethereum permite criacao de smart contracts.', 'medium', 'cryptocurrency'),
+('O que e HODL?', '["Tipo de trading", "Estrategia de longo prazo", "Exchange", "Protocolo"]', 'Estrategia de longo prazo', 'HODL e estrategia de manter criptos longo prazo.', 'easy', 'cryptocurrency');
