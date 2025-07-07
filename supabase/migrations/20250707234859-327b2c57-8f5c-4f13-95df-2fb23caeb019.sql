@@ -1,0 +1,12 @@
+-- Perguntas para comprehensive
+INSERT INTO public.quiz_questions (question, options, correct_answer, explanation, difficulty, category) VALUES
+('O que e Taxa Selic?', '["Taxa de cambio", "Taxa basica de juros", "Taxa de inflacao", "Taxa de desemprego"]', 'Taxa basica de juros', 'Selic e a taxa basica de juros do Brasil.', 'easy', 'comprehensive'),
+('O que e Inflacao?', '["Aumento de precos", "Queda de precos", "Estabilidade", "Taxa de juros"]', 'Aumento de precos', 'Inflacao e aumento generalizado de precos.', 'easy', 'comprehensive'),
+('O que e PIB?', '["Produto Interno Bruto", "Plano de Investimento", "Politica Monetaria", "Preco de Acoes"]', 'Produto Interno Bruto', 'PIB mede valor total produzido no pais.', 'easy', 'comprehensive'),
+('O que e CDI?', '["Certificado de Deposito", "Conta Digital", "Cartao de Credito", "Cambio Dollar"]', 'Certificado de Deposito', 'CDI e taxa media de emprestimos entre bancos.', 'medium', 'comprehensive'),
+('O que e Tesouro Direto?', '["Banco privado", "Programa de titulos publicos", "Fundo de investimento", "Corretora"]', 'Programa de titulos publicos', 'Tesouro Direto permite comprar titulos do governo.', 'easy', 'comprehensive'),
+('O que e Imposto de Renda?', '["Taxa sobre ganhos", "Taxa sobre vendas", "Taxa sobre importacao", "Taxa sobre servicos"]', 'Taxa sobre ganhos', 'IR e tributo sobre renda e ganhos de capital.', 'easy', 'comprehensive'),
+('O que e Liquidez?', '["Rentabilidade", "Facilidade conversao dinheiro", "Risco de investimento", "Taxa de juros"]', 'Facilidade conversao dinheiro', 'Liquidez e facilidade de converter ativo em dinheiro.', 'medium', 'comprehensive'),
+('O que e Rentabilidade?', '["Risco do investimento", "Retorno do investimento", "Taxa de juros", "Inflacao"]', 'Retorno do investimento', 'Rentabilidade e ganho obtido no investimento.', 'easy', 'comprehensive'),
+('O que e Benchmark?', '["Tipo de investimento", "Parametro de comparacao", "Taxa de corretagem", "Imposto"]', 'Parametro de comparacao', 'Benchmark e referencia para comparar performance.', 'medium', 'comprehensive'),
+('O que e Compliance?', '["Estrategia investimento", "Conformidade regulatoria", "Analise de mercado", "Gestao de risco"]', 'Conformidade regulatoria', 'Compliance assegura atendimento a regulamentos.', 'hard', 'comprehensive');
