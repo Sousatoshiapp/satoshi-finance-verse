@@ -310,11 +310,31 @@ export default function SoloQuiz() {
           </div>
 
           <div className="space-y-3">
-            <Button onClick={resetQuiz} className="w-full">
+            <Button 
+              onClick={() => {
+                resetQuiz();
+                // Auto-select first topic for next quiz
+                if (quizTopics.length > 0) {
+                  fetchQuestions(quizTopics[0]);
+                }
+              }}
+              className="w-full text-black font-semibold"
+              style={{ backgroundColor: '#adff2f' }}
+            >
+              Próximo Quiz
+            </Button>
+            <Button 
+              onClick={resetQuiz} 
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+            >
               Tentar Novamente
             </Button>
-            <Button variant="outline" onClick={() => navigate("/game-mode")} className="w-full">
-              Voltar aos Modos
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/game-mode")} 
+              className="w-full"
+            >
+              Voltar
             </Button>
           </div>
         </div>
