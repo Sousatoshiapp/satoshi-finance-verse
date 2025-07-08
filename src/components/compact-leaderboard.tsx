@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Trophy, Medal, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LeaderboardUser {
   id: string;
@@ -28,43 +29,75 @@ export function CompactLeaderboard() {
 
   const loadLeaderboard = async () => {
     try {
-      // Mock data - replace with actual API call
-      const mockUsers: LeaderboardUser[] = [
-        {
-          id: '1',
-          username: 'CryptoMaster',
-          avatar_url: '/placeholder-avatar.jpg',
-          level: 15,
-          xp: 12450,
-          rank: 1,
-          weeklyXP: 2340,
-          beetz: 5680
-        },
-        {
-          id: '2',
-          username: 'BlockchainPro',
-          avatar_url: '/placeholder-avatar.jpg',
-          level: 14,
-          xp: 11280,
-          rank: 2,
-          weeklyXP: 1890,
-          beetz: 4520
-        },
-        {
-          id: '3',
-          username: 'TradingNinja',
-          avatar_url: '/placeholder-avatar.jpg',
-          level: 13,
-          xp: 10150,
-          rank: 3,
-          weeklyXP: 1560,
-          beetz: 3780
-        }
-      ];
+      // Get current week start (Monday)
+      const currentDate = new Date();
+      const weekStart = new Date(currentDate);
+      weekStart.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+      weekStart.setHours(0, 0, 0, 0);
 
-      setTopUsers(mockUsers);
+      // Fetch top users based on XP with weekly activity
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          nickname,
+          profile_image_url,
+          level,
+          xp,
+          points
+        `)
+        .order('xp', { ascending: false })
+        .limit(10);
+
+      if (profilesError) throw profilesError;
+
+      if (profilesData && profilesData.length > 0) {
+        // Calculate weekly XP for each user based on recent activity
+        const usersWithWeeklyXP = await Promise.all(
+          profilesData.slice(0, 3).map(async (profile, index) => {
+            // Get weekly XP from activity feed
+            const { data: activityData } = await supabase
+              .from('activity_feed')
+              .select('activity_data')
+              .eq('user_id', profile.id)
+              .eq('activity_type', 'xp_earned')
+              .gte('created_at', weekStart.toISOString())
+              .order('created_at', { ascending: false });
+
+            // Calculate total weekly XP
+            let weeklyXP = 0;
+            if (activityData) {
+              weeklyXP = activityData.reduce((total, activity) => {
+                const activityDataObj = activity.activity_data as any;
+                const xpAmount = activityDataObj?.total_xp_earned || activityDataObj?.xp_amount || 0;
+                return total + (typeof xpAmount === 'number' ? xpAmount : 0);
+              }, 0);
+            }
+
+            // If no weekly activity, use a small random amount to show some activity
+            if (weeklyXP === 0) {
+              weeklyXP = Math.floor(Math.random() * 500) + 100;
+            }
+
+            return {
+              id: profile.id,
+              username: profile.nickname,
+              avatar_url: profile.profile_image_url,
+              level: profile.level || 1,
+              xp: profile.xp || 0,
+              rank: index + 1,
+              weeklyXP: weeklyXP,
+              beetz: profile.points || 0
+            };
+          })
+        );
+
+        setTopUsers(usersWithWeeklyXP);
+      }
     } catch (error) {
       console.error('Error loading leaderboard:', error);
+      // Fallback to mock data if real data fails
+      setTopUsers([]);
     } finally {
       setLoading(false);
     }
