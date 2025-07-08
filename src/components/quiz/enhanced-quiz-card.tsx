@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useEnhancedQuiz } from "@/hooks/use-enhanced-quiz";
+import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { Clock, Zap, Target, Star, Gift } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -36,6 +37,8 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
     finishQuiz
   } = useEnhancedQuiz(questions);
 
+  const { completeQuizMission } = useDailyMissions();
+
   const currentQuestion = questions[quizState.currentQuestion];
 
   useEffect(() => {
@@ -63,6 +66,9 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
     setShowResult(true);
     
     const result = await submitAnswer(answer);
+    
+    // Update daily missions progress
+    completeQuizMission(result?.isCorrect || false);
     
     if (result?.isCorrect && result.newCombo > 1) {
       // Show combo effect

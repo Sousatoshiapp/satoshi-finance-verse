@@ -144,6 +144,31 @@ export function useDailyMissions() {
     }
   };
 
+  // Function to complete quiz missions
+  const completeQuizMission = (correct: boolean) => {
+    if (correct) {
+      updateMissionProgress('correct_answers', 1);
+    }
+    updateMissionProgress('quiz_completion', 1);
+  };
+
+  // Function to mark daily login
+  const markDailyLogin = () => {
+    updateMissionProgress('daily_login', 1);
+  };
+
+  // Function to complete duel missions
+  const completeDuelMission = (won: boolean) => {
+    if (won) {
+      updateMissionProgress('duel_wins', 1);
+    }
+  };
+
+  // Function to complete social missions
+  const completeSocialMission = (type: 'chat_messages' | 'social_interaction') => {
+    updateMissionProgress(type, 1);
+  };
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'easy': return 'text-green-500';
@@ -191,6 +216,10 @@ export function useDailyMissions() {
     updateMissionProgress,
     refreshMissions: loadDailyMissions,
     getDifficultyColor,
-    getCategoryIcon
+    getCategoryIcon,
+    completeQuizMission,
+    markDailyLogin,
+    completeDuelMission,
+    completeSocialMission
   };
 }

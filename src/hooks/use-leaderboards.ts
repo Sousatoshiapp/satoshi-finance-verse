@@ -96,7 +96,7 @@ export function useLeaderboards() {
         .select(`
           *,
           leagues (*),
-          profiles!weekly_leaderboards_user_id_fkey (
+          profiles (
             nickname,
             avatar_id,
             avatars (

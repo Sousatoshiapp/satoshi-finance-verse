@@ -53,6 +53,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { subscription, canCreateDuel, refreshSubscription } = useSubscription();
+  const { markDailyLogin } = useDailyMissions();
 
   useEffect(() => {
     // Verificar se há parâmetros de sucesso do Stripe na URL
@@ -66,6 +67,9 @@ export default function Dashboard() {
     
     // Carregar dados do usuário
     loadUserData();
+    
+    // Marcar login diário para missões
+    markDailyLogin();
     
     // Atualizar saudação a cada minuto
     const interval = setInterval(() => {
