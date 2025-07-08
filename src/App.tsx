@@ -38,6 +38,15 @@ import AvatarDetail from "./pages/AvatarDetail";
 import SkinDetail from "./pages/SkinDetail";
 import BoostDetail from "./pages/BoostDetail";
 import AccessoryDetail from "./pages/AccessoryDetail";
+import Missions from "./pages/Missions";
+import LootBoxes from "./pages/LootBoxes";
+import SocialChallenges from "./pages/SocialChallenges";
+import StreakRewards from "./pages/StreakRewards";
+import Guilds from "./pages/Guilds";
+import AIAssistant from "./pages/AIAssistant";
+import SocialTrading from "./pages/SocialTrading";
+import AdvancedAnalytics from "./pages/AdvancedAnalytics";
+import VIPMentorship from "./pages/VIPMentorship";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +91,15 @@ const App = () => (
             <Route path="/subscription-plans" element={<ProtectedRoute><SubscriptionPlans /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="/lesson/:courseId/:lessonId" element={<ProtectedRoute><Lesson /></ProtectedRoute>} />
+            <Route path="/missions" element={<ProtectedRoute><Missions /></ProtectedRoute>} />
+            <Route path="/loot-boxes" element={<ProtectedRoute><LootBoxes /></ProtectedRoute>} />
+            <Route path="/social-challenges" element={<ProtectedRoute><SocialChallenges /></ProtectedRoute>} />
+            <Route path="/streak-rewards" element={<ProtectedRoute><StreakRewards /></ProtectedRoute>} />
+            <Route path="/guilds" element={<ProtectedRoute><Guilds /></ProtectedRoute>} />
+            <Route path="/ai-assistant" element={<ProtectedRoute><AIAssistant /></ProtectedRoute>} />
+            <Route path="/social-trading" element={<ProtectedRoute><SocialTrading /></ProtectedRoute>} />
+            <Route path="/advanced-analytics" element={<ProtectedRoute><AdvancedAnalytics /></ProtectedRoute>} />
+            <Route path="/vip-mentorship" element={<ProtectedRoute><VIPMentorship /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
