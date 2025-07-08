@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
@@ -338,7 +339,7 @@ export default function Profile() {
     { 
       label: 'Beetz', 
       value: user?.points || 0, 
-      icon: '🥕',
+      icon: '💰', // Using emoji instead of component here
       route: '/beetz-info'
     }
   ];

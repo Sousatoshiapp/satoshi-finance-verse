@@ -659,7 +659,7 @@ export default function Store() {
           <Card className="mb-6 bg-gradient-beetz">
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="text-2xl">🥕</div>
+                <BeetzIcon size="lg" />
                 <div className="text-xl font-bold text-white">{userProfile.points}</div>
               </div>
               <p className="text-sm text-white/70">Beetz • Nível {userProfile.level}</p>
@@ -674,7 +674,7 @@ export default function Store() {
             <TabsTrigger value="skins">🎨 Skins</TabsTrigger>
             <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
             <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
-            <TabsTrigger value="beetz">🥕 Beetz</TabsTrigger>
+            <TabsTrigger value="beetz"><BeetzIcon size="sm" className="mr-1" /> Beetz</TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}
@@ -1147,7 +1147,9 @@ export default function Store() {
           <TabsContent value="beetz">
             <div className="space-y-4">
               <div className="text-center mb-6">
-                <h2 className="text-lg font-bold text-foreground mb-2">🥕 Pacotes de Beetz</h2>
+                <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+                  <BeetzIcon size="lg" /> Pacotes de Beetz
+                </h2>
                 <p className="text-sm text-muted-foreground">Compre Beetz com dinheiro real via Stripe</p>
               </div>
               
@@ -1162,7 +1164,7 @@ export default function Store() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-                              <span className="text-2xl">🥕</span>
+                              <BeetzIcon size="lg" />
                             </div>
                             <div>
                               <h3 className="font-bold text-foreground">{beetzPackage.name}</h3>
