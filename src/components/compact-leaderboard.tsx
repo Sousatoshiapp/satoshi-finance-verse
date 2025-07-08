@@ -48,7 +48,11 @@ export function CompactLeaderboard() {
             profile_image_url,
             level,
             xp,
-            points
+            points,
+            avatars:avatar_id (
+              name,
+              image_url
+            )
           )
         `)
         .eq('week_start_date', weekStart.toISOString().split('T')[0])
@@ -66,7 +70,11 @@ export function CompactLeaderboard() {
             profile_image_url,
             level,
             xp,
-            points
+            points,
+            avatars:avatar_id (
+              name,
+              image_url
+            )
           `)
           .order('xp', { ascending: false })
           .limit(3);
@@ -77,7 +85,7 @@ export function CompactLeaderboard() {
           const fallbackUsers = profilesData.map((profile, index) => ({
             id: profile.id,
             username: profile.nickname,
-            avatar_url: profile.profile_image_url,
+            avatar_url: (profile as any).avatars?.image_url || profile.profile_image_url,
             level: profile.level || 1,
             xp: profile.xp || 0,
             rank: index + 1,
@@ -95,7 +103,7 @@ export function CompactLeaderboard() {
           return {
             id: profile.id,
             username: profile.nickname,
-            avatar_url: profile.profile_image_url,
+            avatar_url: profile.avatars?.image_url || profile.profile_image_url,
             level: profile.level || 1,
             xp: profile.xp || 0,
             rank: index + 1,
@@ -115,7 +123,11 @@ export function CompactLeaderboard() {
             profile_image_url,
             level,
             xp,
-            points
+            points,
+            avatars:avatar_id (
+              name,
+              image_url
+            )
           `)
           .order('xp', { ascending: false })
           .limit(3);
@@ -131,7 +143,7 @@ export function CompactLeaderboard() {
           const initialUsers = topProfilesData.map((profile, index) => ({
             id: profile.id,
             username: profile.nickname,
-            avatar_url: profile.profile_image_url,
+            avatar_url: (profile as any).avatars?.image_url || profile.profile_image_url,
             level: profile.level || 1,
             xp: profile.xp || 0,
             rank: index + 1,
