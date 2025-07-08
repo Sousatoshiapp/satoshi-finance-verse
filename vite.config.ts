@@ -50,29 +50,23 @@ export default defineConfig(({ mode }) => ({
           // Feature-based chunks
           'chunk-auth': [
             'src/pages/Auth.tsx',
-            'src/contexts/AuthContext.tsx',
-            'src/components/auth'
+            'src/contexts/AuthContext.tsx'
           ],
           'chunk-quiz': [
             'src/pages/Quiz.tsx',
             'src/pages/SoloQuiz.tsx',
-            'src/pages/EnhancedQuiz.tsx',
-            'src/components/quiz'
+            'src/pages/EnhancedQuiz.tsx'
           ],
           'chunk-social': [
             'src/pages/Social.tsx',
-            'src/pages/SocialChallenges.tsx',
-            'src/components/social'
+            'src/pages/SocialChallenges.tsx'
           ],
           'chunk-trading': [
-            'src/pages/SocialTrading.tsx',
-            'src/components/trading',
-            'src/components/portfolio'
+            'src/pages/SocialTrading.tsx'
           ],
           'chunk-admin': [
             'src/pages/AdminDashboard.tsx',
-            'src/pages/AdminUsers.tsx',
-            'src/components/admin'
+            'src/pages/AdminUsers.tsx'
           ],
           'chunk-leaderboard': [
             'src/pages/Leaderboard.tsx',
