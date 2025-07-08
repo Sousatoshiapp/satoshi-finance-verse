@@ -163,7 +163,7 @@ export default function Dashboard() {
         `)
         .eq('user_id', profile?.id)
         .eq('is_residence', true)
-        .single();
+        .maybeSingle();
 
       const { data: userTeamData } = await supabase
         .from('team_members')
@@ -176,7 +176,7 @@ export default function Dashboard() {
         `)
         .eq('user_id', profile?.id)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
       if (profile) {
         setUserStats({

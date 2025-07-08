@@ -370,156 +370,58 @@ export default function SatoshiCity() {
                   <div className="text-xs text-center text-gray-400 mt-1">{powerLevel}%</div>
                 </div>
 
-                {/* Enhanced District Tooltip */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 top-24 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
+                {/* Compact District Hover Card */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 top-20 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
                   <Card 
-                    className="w-80 border-2 bg-slate-800/95 backdrop-blur-sm shadow-2xl"
+                    className="w-64 border-2 bg-slate-800/95 backdrop-blur-sm shadow-2xl"
                     style={{ borderColor: district.color_primary }}
                   >
                     <CardHeader className="pb-3">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex items-center space-x-2">
-                          <div 
-                            className="w-6 h-6 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: district.color_primary }}
-                          >
-                            <IconComponent className="w-4 h-4 text-white" />
-                          </div>
-                          <CardTitle className="text-sm text-white">{district.name}</CardTitle>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div 
+                          className="w-6 h-6 rounded-full flex items-center justify-center"
+                          style={{ backgroundColor: district.color_primary }}
+                        >
+                          <IconComponent className="w-4 h-4 text-white" />
                         </div>
+                        <CardTitle className="text-sm text-white">{district.name}</CardTitle>
                         {userInfo?.is_residence && (
-                          <Badge variant="outline" className="text-xs border-yellow-400 text-yellow-400">
+                          <Badge variant="outline" className="text-xs border-yellow-400 text-yellow-400 ml-auto">
                             <Crown className="w-3 h-3 mr-1" />
-                            Residência
+                            Casa
                           </Badge>
                         )}
                       </div>
-                      
-                      {district.sponsor_company && (
-                        <div className="flex items-center text-xs text-gray-300 mb-2">
-                          <Star className="w-3 h-3 mr-1 text-yellow-400" />
-                          Patrocinado por {district.sponsor_company}
-                        </div>
-                      )}
                       
                       <CardDescription className="text-xs text-gray-300">
                         {district.description}
                       </CardDescription>
                     </CardHeader>
                     
-                    <CardContent className="pt-0 space-y-4">
-                      {/* District Power Stats */}
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center text-xs">
-                            <Shield className="w-3 h-3 mr-1" style={{ color: district.color_primary }} />
-                            <span className="text-gray-400">Poder</span>
+                    <CardContent className="pt-0">
+                      {/* Simple Action Button */}
+                      <div 
+                        className="pointer-events-auto"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {userInfo?.is_residence ? (
+                          <div className="text-xs text-center text-yellow-400 font-medium p-2 bg-yellow-400/10 rounded">
+                            ✨ Esta é sua residência atual
                           </div>
-                          <span className="text-xs font-bold" style={{ color: district.color_primary }}>
-                            {powerLevel}/100
-                          </span>
-                        </div>
-                        <Progress value={powerLevel} className="h-2" />
-                        
-                        {district.special_power && (
-                          <div className="text-xs text-purple-300 italic">
-                            ⚡ {district.special_power}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Battle Stats */}
-                      <div className="grid grid-cols-2 gap-3 text-xs">
-                        <div className="bg-slate-700/50 rounded p-2 text-center">
-                          <div className="flex items-center justify-center mb-1">
-                            <Swords className="w-3 h-3 text-green-400 mr-1" />
-                            <span className="text-green-400 font-bold">{district.battles_won}</span>
-                          </div>
-                          <span className="text-gray-400">Vitórias</span>
-                        </div>
-                        <div className="bg-slate-700/50 rounded p-2 text-center">
-                          <div className="flex items-center justify-center mb-1">
-                            <Target className="w-3 h-3 text-red-400 mr-1" />
-                            <span className="text-red-400 font-bold">{district.battles_lost}</span>
-                          </div>
-                          <span className="text-gray-400">Derrotas</span>
-                        </div>
-                      </div>
-
-                      {/* User Progress */}
-                      {userInfo ? (
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-xs">
-                            <span className="text-gray-400">Seu Nível {userInfo.level}</span>
-                            <span style={{ color: district.color_primary }}>
-                              {userInfo.xp} XP
-                            </span>
-                          </div>
-                          <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full rounded-full transition-all"
-                              style={{ 
-                                backgroundColor: district.color_primary,
-                                width: `${Math.min(100, (userInfo.xp % 1000) / 10)}%`
-                              }}
-                            ></div>
-                          </div>
-                          {userInfo.is_residence && (
-                            <div className="text-xs text-yellow-400 flex items-center">
-                              <Flame className="w-3 h-3 mr-1" />
-                              Streak: {userInfo.daily_streak} dias
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <p className="text-xs text-gray-400 text-center">Clique para explorar este distrito</p>
-                      )}
-                      
-                      {/* Actions */}
-                      <div className="space-y-2">
-                        {district.referral_link && (
+                        ) : (
                           <Button
                             size="sm"
-                            variant="outline"
-                            className="w-full text-xs"
+                            className="w-full text-xs font-medium"
                             style={{ 
-                              borderColor: district.color_primary,
-                              color: district.color_primary 
+                              backgroundColor: district.color_primary,
+                              color: 'white'
                             }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.open(district.referral_link, '_blank');
-                            }}
+                            onClick={() => handleChangeResidence(district.id)}
                           >
-                            <Star className="w-3 h-3 mr-1" />
-                            Oferta Especial
+                            <Home className="w-3 h-3 mr-1" />
+                            Morar Aqui
                           </Button>
                         )}
-                        
-                        <div 
-                          className="pointer-events-auto"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          {userInfo?.is_residence ? (
-                            <div className="text-xs text-center text-yellow-400 font-medium">
-                              Esta é sua residência atual
-                            </div>
-                          ) : (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="w-full text-xs"
-                              style={{ 
-                                borderColor: district.color_primary,
-                                color: district.color_primary 
-                              }}
-                              onClick={() => handleChangeResidence(district.id)}
-                            >
-                              <Home className="w-3 h-3 mr-1" />
-                              {userInfo ? 'Mudar Residência' : 'Morar Aqui'}
-                            </Button>
-                          )}
-                        </div>
                       </div>
                     </CardContent>
                   </Card>
