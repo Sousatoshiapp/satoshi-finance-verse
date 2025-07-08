@@ -169,15 +169,18 @@ export type Database = {
           description: string | null
           district_theme: string | null
           evolution_level: number | null
+          exclusive_district_id: string | null
           id: string
           image_url: string
           is_available: boolean
+          is_district_exclusive: boolean | null
           is_starter: boolean | null
           level_required: number
           model_url: string | null
           name: string
           price: number
           rarity: string
+          unlock_requirements: Json | null
           updated_at: string
         }
         Insert: {
@@ -188,15 +191,18 @@ export type Database = {
           description?: string | null
           district_theme?: string | null
           evolution_level?: number | null
+          exclusive_district_id?: string | null
           id?: string
           image_url: string
           is_available?: boolean
+          is_district_exclusive?: boolean | null
           is_starter?: boolean | null
           level_required?: number
           model_url?: string | null
           name: string
           price?: number
           rarity?: string
+          unlock_requirements?: Json | null
           updated_at?: string
         }
         Update: {
@@ -207,18 +213,29 @@ export type Database = {
           description?: string | null
           district_theme?: string | null
           evolution_level?: number | null
+          exclusive_district_id?: string | null
           id?: string
           image_url?: string
           is_available?: boolean
+          is_district_exclusive?: boolean | null
           is_starter?: boolean | null
           level_required?: number
           model_url?: string | null
           name?: string
           price?: number
           rarity?: string
+          unlock_requirements?: Json | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "avatars_exclusive_district_id_fkey"
+            columns: ["exclusive_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bot_activity_log: {
         Row: {
@@ -487,6 +504,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "district_daily_quests_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      district_store_items: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          district_id: string
+          effects: Json | null
+          id: string
+          image_url: string | null
+          is_available: boolean | null
+          item_type: string
+          name: string
+          price_beetz: number | null
+          price_real_money: number | null
+          rarity: string | null
+          sponsor_branded: boolean | null
+          unlock_requirements: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          district_id: string
+          effects?: Json | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          item_type: string
+          name: string
+          price_beetz?: number | null
+          price_real_money?: number | null
+          rarity?: string | null
+          sponsor_branded?: boolean | null
+          unlock_requirements?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          district_id?: string
+          effects?: Json | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          item_type?: string
+          name?: string
+          price_beetz?: number | null
+          price_real_money?: number | null
+          rarity?: string | null
+          sponsor_branded?: boolean | null
+          unlock_requirements?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_store_items_district_id_fkey"
             columns: ["district_id"]
             isOneToOne: false
             referencedRelation: "districts"
@@ -1296,13 +1375,17 @@ export type Database = {
           description: string | null
           duration_hours: number | null
           effects: Json | null
+          exclusive_district_id: string | null
           id: string
           image_url: string | null
           is_available: boolean
+          is_district_exclusive: boolean | null
           level_required: number
           name: string
           price: number
           rarity: string
+          sponsor_branded: boolean | null
+          unlock_requirements: Json | null
           updated_at: string
         }
         Insert: {
@@ -1311,13 +1394,17 @@ export type Database = {
           description?: string | null
           duration_hours?: number | null
           effects?: Json | null
+          exclusive_district_id?: string | null
           id?: string
           image_url?: string | null
           is_available?: boolean
+          is_district_exclusive?: boolean | null
           level_required?: number
           name: string
           price?: number
           rarity?: string
+          sponsor_branded?: boolean | null
+          unlock_requirements?: Json | null
           updated_at?: string
         }
         Update: {
@@ -1326,16 +1413,28 @@ export type Database = {
           description?: string | null
           duration_hours?: number | null
           effects?: Json | null
+          exclusive_district_id?: string | null
           id?: string
           image_url?: string | null
           is_available?: boolean
+          is_district_exclusive?: boolean | null
           level_required?: number
           name?: string
           price?: number
           rarity?: string
+          sponsor_branded?: boolean | null
+          unlock_requirements?: Json | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_exclusive_district_id_fkey"
+            columns: ["exclusive_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -2714,6 +2813,58 @@ export type Database = {
           xp?: number
         }
         Relationships: []
+      }
+      user_store_purchases: {
+        Row: {
+          amount_paid: number | null
+          district_id: string
+          id: string
+          item_id: string
+          purchase_type: string
+          purchased_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          district_id: string
+          id?: string
+          item_id: string
+          purchase_type: string
+          purchased_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          district_id?: string
+          id?: string
+          item_id?: string
+          purchase_type?: string
+          purchased_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_store_purchases_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_store_purchases_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "district_store_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_store_purchases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_stories: {
         Row: {

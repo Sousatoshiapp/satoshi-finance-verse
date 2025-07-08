@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle, ShoppingBag, Lock, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictQuests } from "@/components/district-quests";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
@@ -109,6 +109,9 @@ export default function DistrictDetail() {
   const [activeBattles, setActiveBattles] = useState<any[]>([]);
   const [targetDistrictId, setTargetDistrictId] = useState('');
   const [isInitiatingBattle, setIsInitiatingBattle] = useState(false);
+  const [storeItems, setStoreItems] = useState<any[]>([]);
+  const [userPurchases, setUserPurchases] = useState<any[]>([]);
+  const [isPurchasing, setIsPurchasing] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -201,6 +204,27 @@ export default function DistrictDetail() {
         .order('created_at', { ascending: false });
       
       setActiveBattles(battlesData || []);
+
+      // Load district store items
+      const { data: storeData } = await supabase
+        .from('district_store_items')
+        .select('*')
+        .eq('district_id', districtId)
+        .eq('is_available', true)
+        .order('rarity', { ascending: false });
+      
+      setStoreItems(storeData || []);
+
+      // Load user purchases if logged in
+      if (currentProfile) {
+        const { data: purchasesData } = await supabase
+          .from('user_store_purchases')
+          .select('*')
+          .eq('user_id', currentProfile.id)
+          .eq('district_id', districtId);
+        
+        setUserPurchases(purchasesData || []);
+      }
     } catch (error) {
       console.error('Error loading district data:', error);
     } finally {
@@ -347,6 +371,67 @@ export default function DistrictDetail() {
     } finally {
       setIsInitiatingBattle(false);
     }
+  };
+
+  const handlePurchaseItem = async (item: any) => {
+    if (!currentProfile) {
+      toast({
+        title: "Login Necessário",
+        description: "Faça login para comprar itens",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsPurchasing(true);
+    try {
+      const { error } = await supabase
+        .from('user_store_purchases')
+        .insert({
+          user_id: currentProfile.id,
+          item_id: item.id,
+          district_id: districtId,
+          purchase_type: 'beetz',
+          amount_paid: item.price_beetz
+        });
+
+      if (error) throw error;
+
+      // Deduct beetz from user profile
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({ points: currentProfile.points - item.price_beetz })
+        .eq('id', currentProfile.id);
+
+      if (profileError) throw profileError;
+
+      toast({
+        title: "Compra Realizada!",
+        description: `${item.name} foi adicionado ao seu inventário!`
+      });
+
+      loadDistrictData();
+    } catch (error) {
+      console.error('Error purchasing item:', error);
+      toast({
+        title: "Erro na Compra",
+        description: "Erro ao comprar item. Verifique seus Beetz.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
+
+  const canPurchaseItem = (item: any) => {
+    const alreadyPurchased = userPurchases.some(p => p.item_id === item.id);
+    if (alreadyPurchased) return false;
+
+    const requirements = item.unlock_requirements || {};
+    if (requirements.residence_required && !userDistrict) return false;
+    if (requirements.min_level && (!userDistrict || userDistrict.level < requirements.min_level)) return false;
+    
+    return true;
   };
 
   if (loading) {
@@ -597,7 +682,7 @@ export default function DistrictDetail() {
       {/* Content Tabs */}
       <div className="container mx-auto px-4 py-8 pb-32">
         <Tabs defaultValue="activities" className="w-full">
-          <TabsList className="grid w-full grid-cols-6 mb-8 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-7 mb-8 bg-slate-800/50">
             <TabsTrigger value="activities" className="data-[state=active]:bg-slate-700">
               <Zap className="mr-2 h-4 w-4" />
               Atividades
@@ -605,6 +690,10 @@ export default function DistrictDetail() {
             <TabsTrigger value="battles" className="data-[state=active]:bg-slate-700">
               <Swords className="mr-2 h-4 w-4" />
               Batalhas
+            </TabsTrigger>
+            <TabsTrigger value="store" className="data-[state=active]:bg-slate-700">
+              <ShoppingBag className="mr-2 h-4 w-4" />
+              Loja
             </TabsTrigger>
             <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700">
               <BookOpen className="mr-2 h-4 w-4" />
