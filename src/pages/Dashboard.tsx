@@ -212,9 +212,9 @@ export default function Dashboard() {
                       showBadge={true}
                       evolutionLevel={userAvatar.evolution_level || 1}
                     />
-                    {/* Smaller Level Badge */}
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg">
+                    {/* Much Smaller Level Badge */}
+                    <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md">
                         Nível {userStats.level}
                       </div>
                     </div>
@@ -225,8 +225,8 @@ export default function Dashboard() {
                   <div className="w-32 h-32 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
                     <div className="text-5xl">🤖</div>
                   </div>
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg">
+                  <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md">
                       Nível {userStats.level}
                     </div>
                   </div>
@@ -259,26 +259,26 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          {/* XP and Beetz Cards */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          {/* XP and Beetz Cards - Compact with Black Background */}
+          <div className="grid grid-cols-2 gap-2 mb-6">
             {/* XP Card */}
             <div 
-              className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-all duration-200"
+              className="bg-black/50 backdrop-blur-sm rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-white/10"
               onClick={() => navigate('/levels')}
             >
-              <div className="text-2xl mb-1">⚡</div>
-              <div className="text-xs text-white/80 mb-1">XP Total</div>
-              <div className="text-xl font-bold text-white">{userStats.currentXP}</div>
+              <div className="text-lg mb-1">⚡</div>
+              <div className="text-xs text-white/70 mb-1">XP</div>
+              <div className="text-sm font-bold text-white">{userStats.currentXP}</div>
             </div>
 
             {/* Beetz Card */}
             <div 
-              className="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-all duration-200"
+              className="bg-black/50 backdrop-blur-sm rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-white/10"
               onClick={() => navigate('/beetz-info')}
             >
-              <div className="text-2xl mb-1">🥕</div>
-              <div className="text-xs text-white/80 mb-1">Beetz</div>
-              <div className="text-xl font-bold text-white">{userStats.currentXP * 2}</div>
+              <div className="text-lg mb-1">🥕</div>
+              <div className="text-xs text-white/70 mb-1">Beetz</div>
+              <div className="text-sm font-bold text-white">{userStats.currentXP * 2}</div>
             </div>
           </div>
 
