@@ -14,6 +14,7 @@ interface LeaderboardUser {
   xp: number;
   rank: number;
   weeklyXP: number;
+  beetz: number;
 }
 
 export function CompactLeaderboard() {
@@ -36,7 +37,8 @@ export function CompactLeaderboard() {
           level: 15,
           xp: 12450,
           rank: 1,
-          weeklyXP: 2340
+          weeklyXP: 2340,
+          beetz: 5680
         },
         {
           id: '2',
@@ -45,7 +47,8 @@ export function CompactLeaderboard() {
           level: 14,
           xp: 11280,
           rank: 2,
-          weeklyXP: 1890
+          weeklyXP: 1890,
+          beetz: 4520
         },
         {
           id: '3',
@@ -54,7 +57,8 @@ export function CompactLeaderboard() {
           level: 13,
           xp: 10150,
           rank: 3,
-          weeklyXP: 1560
+          weeklyXP: 1560,
+          beetz: 3780
         }
       ];
 
@@ -68,10 +72,19 @@ export function CompactLeaderboard() {
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return <Crown className="h-4 w-4 text-yellow-500" />;
-      case 2: return <Trophy className="h-4 w-4 text-gray-400" />;
-      case 3: return <Medal className="h-4 w-4 text-orange-600" />;
+      case 1: return <Crown className="h-5 w-5 text-yellow-500" />;
+      case 2: return <Trophy className="h-5 w-5 text-gray-400" />;
+      case 3: return <Medal className="h-5 w-5 text-orange-600" />;
       default: return <span className="text-sm font-bold text-muted-foreground">#{rank}</span>;
+    }
+  };
+
+  const getRankBadge = (rank: number) => {
+    switch (rank) {
+      case 1: return "🥇";
+      case 2: return "🥈";
+      case 3: return "🥉";
+      default: return `#${rank}`;
     }
   };
 
@@ -138,32 +151,57 @@ export function CompactLeaderboard() {
       </CardHeader>
       
       <CardContent className="pt-0 relative z-10">
-        <div className="space-y-2">
+        {/* Top 3 Podium Layout */}
+        <div className="grid grid-cols-3 gap-2">
           {topUsers.map((user) => (
             <div 
               key={user.id}
-              className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-500/10 transition-colors cursor-pointer backdrop-blur-sm bg-background/30"
+              className={`text-center p-3 rounded-lg transition-all cursor-pointer backdrop-blur-sm ${
+                user.rank === 1 
+                  ? 'bg-gradient-to-b from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30 scale-105' 
+                  : user.rank === 2
+                  ? 'bg-gradient-to-b from-gray-400/20 to-gray-500/10 border border-gray-400/30'
+                  : 'bg-gradient-to-b from-orange-500/20 to-orange-600/10 border border-orange-500/30'
+              }`}
               onClick={() => navigate(`/user/${user.id}`)}
             >
-              <div className="flex items-center justify-center w-6">
-                {getRankIcon(user.rank)}
-              </div>
-              
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={user.avatar_url} />
-                <AvatarFallback className="text-xs">{user.username.charAt(0)}</AvatarFallback>
-              </Avatar>
-              
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium truncate">{user.username}</div>
-                <div className="text-xs text-muted-foreground">Nível {user.level}</div>
-              </div>
-              
-              <div className="text-right">
-                <div className="text-xs font-bold text-amber-500">
-                  +{user.weeklyXP}
+              {/* Medal Badge */}
+              <div className="flex justify-center mb-2">
+                <div className={`text-2xl ${user.rank === 1 ? 'animate-pulse' : ''}`}>
+                  {getRankBadge(user.rank)}
                 </div>
-                <div className="text-xs text-muted-foreground">XP</div>
+              </div>
+              
+              {/* Avatar */}
+              <div className="flex justify-center mb-2">
+                <Avatar className={`${user.rank === 1 ? 'h-12 w-12' : 'h-10 w-10'} border-2 ${
+                  user.rank === 1 ? 'border-yellow-500' : 
+                  user.rank === 2 ? 'border-gray-400' : 'border-orange-500'
+                }`}>
+                  <AvatarImage src={user.avatar_url} />
+                  <AvatarFallback className="text-xs font-bold">{user.username.charAt(0)}</AvatarFallback>
+                </Avatar>
+              </div>
+              
+              {/* Username */}
+              <div className={`font-bold truncate ${user.rank === 1 ? 'text-sm' : 'text-xs'} mb-1`}>
+                {user.username}
+              </div>
+              
+              {/* Stats */}
+              <div className="space-y-1">
+                <div className="text-xs text-muted-foreground">
+                  Nível {user.level}
+                </div>
+                <div className={`font-bold ${
+                  user.rank === 1 ? 'text-yellow-500' : 
+                  user.rank === 2 ? 'text-gray-400' : 'text-orange-500'
+                }`}>
+                  <div className="text-xs">+{user.weeklyXP} XP</div>
+                </div>
+                <div className="text-xs text-green-500">
+                  {user.beetz} 🥕
+                </div>
               </div>
             </div>
           ))}
