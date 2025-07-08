@@ -129,13 +129,13 @@ export function CompactLeaderboard() {
       />
       <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/5" />
       
-      <CardHeader className="pb-2 relative z-10">
+      <CardHeader className="pb-1 pt-3 relative z-10">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-amber-500" />
+          <CardTitle className="text-xs flex items-center gap-1">
+            <TrendingUp className="h-3 w-3 text-amber-500" />
             Ranking Semanal
-            <Badge variant="outline" className="text-xs bg-amber-500/10 border-amber-500/30">
-              🏆 Top 3
+            <Badge variant="outline" className="text-xs bg-amber-500/10 border-amber-500/30 px-1 py-0">
+              🏆
             </Badge>
           </CardTitle>
           
@@ -143,22 +143,22 @@ export function CompactLeaderboard() {
             variant="outline" 
             size="sm"
             onClick={() => navigate('/leaderboard')}
-            className="text-xs h-6 px-2 text-amber-500 border-amber-500/30 hover:bg-amber-500/10"
+            className="text-xs h-5 px-1 text-amber-500 border-amber-500/30 hover:bg-amber-500/10"
           >
-            Ver Tudo
+            Ver
           </Button>
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0 relative z-10">
-        {/* Top 3 Podium Layout */}
-        <div className="grid grid-cols-3 gap-2">
+      <CardContent className="pt-0 pb-3 relative z-10">
+        {/* Top 3 Horizontal Layout */}
+        <div className="grid grid-cols-3 gap-1">
           {topUsers.map((user) => (
             <div 
               key={user.id}
-              className={`text-center p-3 rounded-lg transition-all cursor-pointer backdrop-blur-sm ${
+              className={`text-center p-1.5 rounded-md transition-all cursor-pointer backdrop-blur-sm ${
                 user.rank === 1 
-                  ? 'bg-gradient-to-b from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30 scale-105' 
+                  ? 'bg-gradient-to-b from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30' 
                   : user.rank === 2
                   ? 'bg-gradient-to-b from-gray-400/20 to-gray-500/10 border border-gray-400/30'
                   : 'bg-gradient-to-b from-orange-500/20 to-orange-600/10 border border-orange-500/30'
@@ -166,15 +166,15 @@ export function CompactLeaderboard() {
               onClick={() => navigate(`/user/${user.id}`)}
             >
               {/* Medal Badge */}
-              <div className="flex justify-center mb-2">
-                <div className={`text-2xl ${user.rank === 1 ? 'animate-pulse' : ''}`}>
+              <div className="flex justify-center mb-1">
+                <div className="text-sm">
                   {getRankBadge(user.rank)}
                 </div>
               </div>
               
               {/* Avatar */}
-              <div className="flex justify-center mb-2">
-                <Avatar className={`${user.rank === 1 ? 'h-12 w-12' : 'h-10 w-10'} border-2 ${
+              <div className="flex justify-center mb-1">
+                <Avatar className={`h-6 w-6 border ${
                   user.rank === 1 ? 'border-yellow-500' : 
                   user.rank === 2 ? 'border-gray-400' : 'border-orange-500'
                 }`}>
@@ -184,23 +184,23 @@ export function CompactLeaderboard() {
               </div>
               
               {/* Username */}
-              <div className={`font-bold truncate ${user.rank === 1 ? 'text-sm' : 'text-xs'} mb-1`}>
+              <div className="font-bold truncate text-xs mb-1">
                 {user.username}
               </div>
               
-              {/* Stats */}
-              <div className="space-y-1">
+              {/* Stats - Compact */}
+              <div className="space-y-0.5">
                 <div className="text-xs text-muted-foreground">
-                  Nível {user.level}
+                  Nv.{user.level}
                 </div>
-                <div className={`font-bold ${
+                <div className={`font-bold text-xs ${
                   user.rank === 1 ? 'text-yellow-500' : 
                   user.rank === 2 ? 'text-gray-400' : 'text-orange-500'
                 }`}>
-                  <div className="text-xs">+{user.weeklyXP} XP</div>
+                  +{user.weeklyXP}
                 </div>
                 <div className="text-xs text-green-500">
-                  {user.beetz} 🥕
+                  {user.beetz}🥕
                 </div>
               </div>
             </div>
