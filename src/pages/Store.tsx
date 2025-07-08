@@ -847,12 +847,15 @@ export default function Store() {
                 
                 return (
                   <Card key={skin.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
-                    <div className="relative">
+                    <div 
+                      className="relative cursor-pointer"
+                      onClick={() => navigate(`/skin/${skin.id}`)}
+                    >
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
                         <img 
                           src={getSkinImage()} 
                           alt={skin.name}
-                          className="w-full h-full object-cover rounded-lg"
+                          className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform"
                         />
                       </div>
                       <div className="absolute top-1 right-1">
@@ -868,8 +871,11 @@ export default function Store() {
                     </div>
                     
                     <CardContent className="p-3">
-                      <div className="mb-2">
-                        <h3 className="font-bold text-foreground text-sm truncate">{skin.name}</h3>
+                      <div 
+                        className="mb-2 cursor-pointer"
+                        onClick={() => navigate(`/skin/${skin.id}`)}
+                      >
+                        <h3 className="font-bold text-foreground text-sm truncate hover:text-primary transition-colors">{skin.name}</h3>
                         <p className="text-xs text-muted-foreground line-clamp-2">{skin.description}</p>
                       </div>
                       
@@ -886,17 +892,30 @@ export default function Store() {
                           ✅ Possui
                         </Button>
                       ) : (
-                        <Button
-                          onClick={() => purchaseItem(skin, 'skin')}
-                          disabled={!canAfford || !meetsLevel || purchasing === skin.id}
-                          className="w-full text-xs py-1 h-8"
-                          variant={canAfford && meetsLevel ? "default" : "outline"}
-                        >
-                          {purchasing === skin.id ? "..." :
-                           !meetsLevel ? `Nv ${skin.level_required}` :
-                           !canAfford ? "Sem Beetz" : "Comprar"
-                          }
-                        </Button>
+                        <div className="space-y-1">
+                          <Button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              purchaseItem(skin, 'skin');
+                            }}
+                            disabled={!canAfford || !meetsLevel || purchasing === skin.id}
+                            className="w-full text-xs py-1 h-8"
+                            variant={canAfford && meetsLevel ? "default" : "outline"}
+                          >
+                            {purchasing === skin.id ? "..." :
+                             !meetsLevel ? `Nv ${skin.level_required}` :
+                             !canAfford ? "Sem Beetz" : "Comprar"
+                            }
+                          </Button>
+                          <Button
+                            onClick={() => navigate(`/skin/${skin.id}`)}
+                            variant="ghost"
+                            size="sm"
+                            className="w-full text-xs py-1 h-6 text-muted-foreground hover:text-primary"
+                          >
+                            Ver Detalhes
+                          </Button>
+                        </div>
                       )}
                     </CardContent>
                   </Card>

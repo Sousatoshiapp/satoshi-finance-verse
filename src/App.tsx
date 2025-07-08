@@ -35,6 +35,9 @@ import EnhancedQuiz from "./pages/EnhancedQuiz";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import NotFound from "./pages/NotFound";
 import AvatarDetail from "./pages/AvatarDetail";
+import SkinDetail from "./pages/SkinDetail";
+import BoostDetail from "./pages/BoostDetail";
+import AccessoryDetail from "./pages/AccessoryDetail";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +75,9 @@ const App = () => (
             <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><Store /></ProtectedRoute>} />
             <Route path="/avatar/:id" element={<ProtectedRoute><AvatarDetail /></ProtectedRoute>} />
+            <Route path="/skin/:id" element={<ProtectedRoute><SkinDetail /></ProtectedRoute>} />
+            <Route path="/boost/:id" element={<ProtectedRoute><BoostDetail /></ProtectedRoute>} />
+            <Route path="/accessory/:id" element={<ProtectedRoute><AccessoryDetail /></ProtectedRoute>} />
             <Route path="/beetz-info" element={<ProtectedRoute><BeetzInfo /></ProtectedRoute>} />
             <Route path="/subscription-plans" element={<ProtectedRoute><SubscriptionPlans /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
