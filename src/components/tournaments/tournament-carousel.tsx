@@ -166,11 +166,11 @@ export function TournamentCarousel() {
 
       {/* Horizontal Scrollable Container */}
       <div className="relative">
-        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+        <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-4">
           {tournaments.map((tournament, index) => (
             <Card 
               key={tournament.id}
-              className="min-w-[320px] flex-shrink-0 p-6 border border-border shadow-card overflow-hidden cursor-pointer hover:shadow-lg transition-all"
+              className="min-w-[280px] max-w-[280px] flex-shrink-0 p-4 border border-border shadow-card overflow-hidden cursor-pointer hover:shadow-lg transition-all"
               onClick={() => navigate(`/tournament-quiz/${tournament.id}`)}
             >
               {/* Background Effect */}
@@ -183,8 +183,8 @@ export function TournamentCarousel() {
               />
               
               <div className="relative z-10">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <Badge 
                         variant="outline" 
@@ -208,46 +208,46 @@ export function TournamentCarousel() {
                          tournament.status === 'upcoming' ? 'EM BREVE' : 'FINALIZADO'}
                       </Badge>
                     </div>
-                    <h4 className="text-lg font-bold text-foreground mb-2">
+                    <h4 className="text-base font-bold text-foreground mb-2 truncate">
                       {tournament.name}
                     </h4>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                    <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
                       {tournament.description}
                     </p>
                   </div>
                   
-                  <div className="ml-4 flex-shrink-0">
+                  <div className="ml-3 flex-shrink-0">
                     <img 
                       src={getTrophyImage(tournament.theme)}
                       alt={tournament.trophy_name || 'Trophy'}
-                      className="w-16 h-16 object-cover rounded-lg shadow-glow"
+                      className="w-12 h-12 object-cover rounded-lg shadow-glow"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-primary">
-                      <Trophy className="w-4 h-4" />
-                      <span className="text-sm font-bold">
+                <div className="grid grid-cols-3 gap-2 mb-3 text-center">
+                  <div>
+                    <div className="flex items-center justify-center gap-1 text-primary mb-1">
+                      <Trophy className="w-3 h-3" />
+                      <span className="text-xs font-bold">
                         {(tournament.prize_pool || 0).toLocaleString()}
                       </span>
                     </div>
                     <div className="text-xs text-muted-foreground">Prêmio</div>
                   </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-info">
-                      <Users className="w-4 h-4" />
-                      <span className="text-sm font-bold">
+                  <div>
+                    <div className="flex items-center justify-center gap-1 text-info mb-1">
+                      <Users className="w-3 h-3" />
+                      <span className="text-xs font-bold">
                         {tournament.participants_count || 0}/{tournament.max_participants || 100}
                       </span>
                     </div>
                     <div className="text-xs text-muted-foreground">Jogadores</div>
                   </div>
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-1 text-warning">
-                      <Clock className="w-4 h-4" />
-                      <span className="text-sm font-bold">
+                  <div>
+                    <div className="flex items-center justify-center gap-1 text-warning mb-1">
+                      <Clock className="w-3 h-3" />
+                      <span className="text-xs font-bold">
                         {formatTimeRemaining(tournament.end_date)}
                       </span>
                     </div>
@@ -255,8 +255,8 @@ export function TournamentCarousel() {
                   </div>
                 </div>
 
-                <Button 
-                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
+                <Button
+                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold text-sm py-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate(`/tournament-quiz/${tournament.id}`);
