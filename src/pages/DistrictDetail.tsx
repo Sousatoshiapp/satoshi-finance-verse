@@ -7,8 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { DistrictQuests } from "@/components/district-quests";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
@@ -96,6 +100,11 @@ export default function DistrictDetail() {
   const [residents, setResidents] = useState<Resident[]>([]);
   const [ranking, setRanking] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentProfile, setCurrentProfile] = useState<any>(null);
+  const [newTeamName, setNewTeamName] = useState('');
+  const [newTeamDescription, setNewTeamDescription] = useState('');
+  const [isCreatingTeam, setIsCreatingTeam] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (districtId) {
@@ -188,18 +197,87 @@ export default function DistrictDetail() {
       if (!profile) return;
 
       const { error } = await supabase
-        .from('user_teams')
+        .from('team_members')
         .insert({
           user_id: profile.id,
-          team_id: teamId
+          team_id: teamId,
+          role: 'member'
         });
 
       if (error) throw error;
       
-      // Reload data
+      toast({
+        title: "Sucesso!",
+        description: "Você entrou no time com sucesso!"
+      });
+      
       loadDistrictData();
     } catch (error) {
       console.error('Error joining team:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao entrar no time. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleCreateTeam = async () => {
+    if (!newTeamName.trim()) return;
+    
+    setIsCreatingTeam(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) return;
+
+      const { data: team, error } = await supabase
+        .from('district_teams')
+        .insert({
+          district_id: districtId,
+          name: newTeamName,
+          description: newTeamDescription,
+          captain_id: profile.id,
+          team_color: district.color_primary
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Add creator as captain
+      await supabase
+        .from('team_members')
+        .insert({
+          team_id: team.id,
+          user_id: profile.id,
+          role: 'captain'
+        });
+
+      toast({
+        title: "Time Criado!",
+        description: `Time ${newTeamName} foi criado com sucesso!`
+      });
+
+      setNewTeamName('');
+      setNewTeamDescription('');
+      loadDistrictData();
+    } catch (error) {
+      console.error('Error creating team:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao criar time. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreatingTeam(false);
     }
   };
 
@@ -646,33 +724,141 @@ export default function DistrictDetail() {
 
           {/* Teams Tab */}
           <TabsContent value="teams">
+            <div className="mb-6 flex justify-between items-center">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">Times do Distrito</h3>
+                <p className="text-gray-400">Junte-se ou crie um time para batalhar por {district.name}</p>
+              </div>
+              
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button 
+                    style={{ backgroundColor: district.color_primary }}
+                    className="text-black font-bold"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Criar Time
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-slate-800 border-slate-600">
+                  <DialogHeader>
+                    <DialogTitle className="text-white">Criar Novo Time</DialogTitle>
+                    <DialogDescription className="text-gray-300">
+                      Crie um time para representar {district.name} nas batalhas entre distritos
+                    </DialogDescription>
+                  </DialogHeader>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-300 mb-2 block">
+                        Nome do Time
+                      </label>
+                      <Input
+                        placeholder="Ex: Guerreiros do Fintech"
+                        value={newTeamName}
+                        onChange={(e) => setNewTeamName(e.target.value)}
+                        className="bg-slate-700 border-slate-600 text-white"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-gray-300 mb-2 block">
+                        Descrição (Opcional)
+                      </label>
+                      <Textarea
+                        placeholder="Descreva os objetivos e valores do seu time..."
+                        value={newTeamDescription}
+                        onChange={(e) => setNewTeamDescription(e.target.value)}
+                        className="bg-slate-700 border-slate-600 text-white"
+                        rows={3}
+                      />
+                    </div>
+                    
+                    <div className="flex space-x-3">
+                      <Button
+                        onClick={handleCreateTeam}
+                        disabled={!newTeamName.trim() || isCreatingTeam}
+                        style={{ backgroundColor: district.color_primary }}
+                        className="text-black font-bold flex-1"
+                      >
+                        {isCreatingTeam ? "Criando..." : "Criar Time"}
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            
             <div className="grid lg:grid-cols-2 gap-6">
               {teams.length > 0 ? (
                 teams.map((team) => (
                   <Card key={team.id} className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
                     <CardHeader>
-                      <CardTitle className="text-white">{team.name}</CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-white flex items-center">
+                          <div 
+                            className="w-4 h-4 rounded-full mr-2"
+                            style={{ backgroundColor: team.team_color }}
+                          ></div>
+                          {team.name}
+                        </CardTitle>
+                        {team.achievements && team.achievements.length > 0 && (
+                          <Badge variant="outline" className="text-yellow-400 border-yellow-400">
+                            <Trophy className="w-3 h-3 mr-1" />
+                            {team.achievements.length}
+                          </Badge>
+                        )}
+                      </div>
                       <CardDescription className="text-gray-300">
-                        {team.description}
+                        {team.description || "Um time dedicado à excelência em " + district.theme.replace('_', ' ')}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="text-sm text-gray-400">
-                            Máximo: {team.max_members} membros
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            Poder: {team.team_power}
-                          </p>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Membros</span>
+                          <span className="text-white">
+                            {team.members_count || 0}/{team.max_members}
+                          </span>
                         </div>
-                        <Button 
-                          onClick={() => handleJoinTeam(team.id)}
-                          style={{ backgroundColor: district.color_primary }}
-                          className="text-black font-bold"
-                        >
-                          Juntar-se
-                        </Button>
+                        
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Poder do Time</span>
+                          <span style={{ color: district.color_primary }}>
+                            {team.team_power || 0}
+                          </span>
+                        </div>
+                        
+                        <div className="w-full bg-slate-700 rounded-full h-2">
+                          <div 
+                            className="h-full rounded-full transition-all"
+                            style={{ 
+                              backgroundColor: team.team_color,
+                              width: `${Math.min(100, (team.members_count || 0) / team.max_members * 100)}%`
+                            }}
+                          ></div>
+                        </div>
+                        
+                        <div className="flex justify-between items-center pt-2">
+                          <Button 
+                            variant="outline"
+                            size="sm"
+                            style={{ borderColor: district.color_primary, color: district.color_primary }}
+                          >
+                            <Users className="w-4 h-4 mr-1" />
+                            Ver Membros
+                          </Button>
+                          
+                          <Button 
+                            size="sm"
+                            onClick={() => handleJoinTeam(team.id)}
+                            style={{ backgroundColor: district.color_primary }}
+                            className="text-black font-bold"
+                          >
+                            <UserPlus className="w-4 h-4 mr-1" />
+                            Entrar
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -681,10 +867,10 @@ export default function DistrictDetail() {
                 <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600 col-span-full">
                   <CardContent className="p-8 text-center">
                     <Users className="h-16 w-16 text-gray-500 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-white mb-2">Times em Breve</h3>
-                    <p className="text-gray-400">
-                      Os times do distrito estarão disponíveis em breve. 
-                      Continue fazendo quizzes para aumentar seu nível!
+                    <h3 className="text-xl font-semibold text-white mb-2">Seja o Primeiro!</h3>
+                    <p className="text-gray-400 mb-4">
+                      Nenhum time foi criado ainda neste distrito. 
+                      Que tal criar o primeiro e liderar a batalha?
                     </p>
                   </CardContent>
                 </Card>
