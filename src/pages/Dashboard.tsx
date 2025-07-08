@@ -212,10 +212,10 @@ export default function Dashboard() {
                       showBadge={true}
                       evolutionLevel={userAvatar.evolution_level || 1}
                     />
-                    {/* Single Level Badge */}
+                    {/* Smaller Level Badge */}
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                        LV {userStats.level}
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg">
+                        Nível {userStats.level}
                       </div>
                     </div>
                   </div>
@@ -226,8 +226,8 @@ export default function Dashboard() {
                     <div className="text-5xl">🤖</div>
                   </div>
                   <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                      LV {userStats.level}
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg">
+                      Nível {userStats.level}
                     </div>
                   </div>
                 </div>
@@ -259,7 +259,30 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          {/* Daily Summary - Compact */}
+          {/* XP and Beetz Cards */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            {/* XP Card */}
+            <div 
+              className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-all duration-200"
+              onClick={() => navigate('/levels')}
+            >
+              <div className="text-2xl mb-1">⚡</div>
+              <div className="text-xs text-white/80 mb-1">XP Total</div>
+              <div className="text-xl font-bold text-white">{userStats.currentXP}</div>
+            </div>
+
+            {/* Beetz Card */}
+            <div 
+              className="bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl p-4 text-center shadow-card cursor-pointer hover:scale-105 transition-all duration-200"
+              onClick={() => navigate('/beetz-info')}
+            >
+              <div className="text-2xl mb-1">🥕</div>
+              <div className="text-xs text-white/80 mb-1">Beetz</div>
+              <div className="text-xl font-bold text-white">{userStats.currentXP * 2}</div>
+            </div>
+          </div>
+
+          {/* Enhanced Daily Summary */}
           <DashboardSummary userStats={userStats} subscription={subscription} />
 
           {/* Core Actions */}
