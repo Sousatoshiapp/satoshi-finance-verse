@@ -49,6 +49,7 @@ import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import VIPMentorship from "./pages/VIPMentorship";
 import WeeklyTournaments from "./pages/WeeklyTournaments";
 import ChallengeDetail from "./pages/ChallengeDetail";
+import BotAdmin from "./pages/BotAdmin";
 
 const queryClient = new QueryClient();
 
@@ -104,6 +105,7 @@ const App = () => (
             <Route path="/vip-mentorship" element={<ProtectedRoute><VIPMentorship /></ProtectedRoute>} />
             <Route path="/weekly-tournaments" element={<ProtectedRoute><WeeklyTournaments /></ProtectedRoute>} />
             <Route path="/challenge/:challengeId" element={<ProtectedRoute><ChallengeDetail /></ProtectedRoute>} />
+            <Route path="/admin/bots" element={<ProtectedRoute><BotAdmin /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

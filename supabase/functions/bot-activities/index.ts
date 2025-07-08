@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { activityType = 'all' } = await req.json();
+    const { activityType = 'all', batchOffset = 0 } = await req.json();
     
     console.log(`Running bot activities: ${activityType}`);
 
@@ -27,7 +27,8 @@ Deno.serve(async (req) => {
       .select('id, nickname, level, xp, points, streak')
       .eq('is_bot', true)
       .order('created_at', { ascending: false })
-      .limit(100); // Process 100 bots at a time
+      .range(batchOffset, batchOffset + 599) // Process 600 bots at a time with offset
+      .limit(600);
 
     if (botsError) {
       throw botsError;
