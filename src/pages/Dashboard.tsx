@@ -259,13 +259,13 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          {/* XP and Beetz Cards - Transparent with Green Border */}
+          {/* XP and Beetz Cards - Transparent with Ultra Thin Green Border */}
           <div className="grid grid-cols-2 gap-2 mb-6">
             {/* XP Card */}
             <div 
               className="bg-transparent rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-[#adff2f]"
               onClick={() => navigate('/levels')}
-              style={{ borderWidth: '1px' }}
+              style={{ borderWidth: '0.5px' }}
             >
               <div className="text-lg mb-1">⚡</div>
               <div className="text-xs text-muted-foreground mb-1">XP</div>
@@ -276,7 +276,7 @@ export default function Dashboard() {
             <div 
               className="bg-transparent rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-[#adff2f]"
               onClick={() => navigate('/beetz-info')}
-              style={{ borderWidth: '1px' }}
+              style={{ borderWidth: '0.5px' }}
             >
               <div className="text-lg mb-1">🥕</div>
               <div className="text-xs text-muted-foreground mb-1">Beetz</div>
