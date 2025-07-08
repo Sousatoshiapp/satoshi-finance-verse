@@ -1,3 +1,4 @@
+import { memo, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,48 +7,60 @@ import { TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "@/hooks/use-leaderboard-data";
 
-export function CompactLeaderboard() {
+const CompactLeaderboard = memo(function CompactLeaderboard() {
   const navigate = useNavigate();
   const { data: topUsers = [], isLoading } = useLeaderboardData();
 
 
-  const getRankBadge = (rank: number) => {
+  // Memoize callback functions
+  const handleViewAll = useCallback(() => {
+    navigate('/leaderboard');
+  }, [navigate]);
+
+  const handleUserClick = useCallback((userId: string) => {
+    navigate(`/user/${userId}`);
+  }, [navigate]);
+
+  // Memoize rank badge calculation
+  const getRankBadge = useCallback((rank: number) => {
     switch (rank) {
       case 1: return "🥇";
       case 2: return "🥈";
       case 3: return "🥉";
       default: return `#${rank}`;
     }
-  };
+  }, []);
+
+  // Memoize loading skeleton
+  const loadingSkeleton = useMemo(() => (
+    <Card className="border-amber-500/20 bg-gradient-to-br from-background to-amber-500/5 relative overflow-hidden">
+      <div 
+        className="absolute inset-0 opacity-10 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop')"
+        }}
+      />
+      
+      <CardHeader className="pb-2 relative z-10">
+        <CardTitle className="text-sm flex items-center gap-2">
+          <TrendingUp className="h-4 w-4 text-amber-500" />
+          Ranking Semanal
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0 relative z-10">
+        <div className="space-y-2">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="bg-muted/30 rounded p-2 animate-pulse">
+              <div className="h-3 bg-muted rounded w-3/4"></div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  ), []);
 
   if (isLoading) {
-    return (
-      <Card className="border-amber-500/20 bg-gradient-to-br from-background to-amber-500/5 relative overflow-hidden">
-        {/* Cyberpunk Background */}
-        <div 
-          className="absolute inset-0 opacity-10 bg-cover bg-center"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop')"
-          }}
-        />
-        
-        <CardHeader className="pb-2 relative z-10">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-amber-500" />
-            Ranking Semanal
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0 relative z-10">
-          <div className="space-y-2">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-muted/30 rounded p-2 animate-pulse">
-                <div className="h-3 bg-muted rounded w-3/4"></div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return loadingSkeleton;
   }
 
   return (
@@ -71,7 +84,7 @@ export function CompactLeaderboard() {
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate('/leaderboard')}
+            onClick={handleViewAll}
             className="text-xs h-5 px-2 text-amber-500 hover:bg-amber-500/10"
           >
             Ver Tudo
@@ -92,7 +105,7 @@ export function CompactLeaderboard() {
                   ? 'bg-gradient-to-b from-gray-400/15 to-gray-500/5 border border-gray-400/20'
                   : 'bg-gradient-to-b from-orange-500/15 to-orange-600/5 border border-orange-500/20'
               }`}
-              onClick={() => navigate(`/user/${user.id}`)}
+              onClick={() => handleUserClick(user.id)}
             >
               <div className="flex items-center justify-center gap-1">
                 {/* Medal Badge */}
@@ -123,4 +136,6 @@ export function CompactLeaderboard() {
       </CardContent>
     </Card>
   );
-}
+});
+
+export { CompactLeaderboard };

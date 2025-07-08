@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
+import { memo, useMemo } from "react";
 
 // Import avatar images
 import neoTrader from "@/assets/avatars/neo-trader.jpg";
@@ -86,38 +87,40 @@ const rarityColors = {
   legendary: 'bg-gradient-to-r from-yellow-400 to-orange-500',
 };
 
-export function AvatarDisplay({ avatar, size = 'md', showBadge = true, evolutionLevel = 1 }: AvatarDisplayProps) {
-  const getAvatarImage = () => {
+const AvatarDisplay = memo(function AvatarDisplay({ avatar, size = 'md', showBadge = true, evolutionLevel = 1 }: AvatarDisplayProps) {
+  // Memoize expensive calculations
+  const avatarImage = useMemo(() => {
     const key = avatar.name.toLowerCase().replace(' ', '-') as keyof typeof avatarImages;
     return avatarImages[key] || avatar.image_url;
-  };
+  }, [avatar.name, avatar.image_url]);
 
-  const getSizeClasses = () => {
+  const sizeClasses = useMemo(() => {
     switch (size) {
       case 'sm': return 'w-12 h-12';
       case 'lg': return 'w-24 h-24';
       case 'xl': return 'w-48 h-48';
       default: return 'w-16 h-16';
     }
-  };
+  }, [size]);
 
-  const getRarityColor = () => {
+  const rarityColor = useMemo(() => {
     return rarityColors[avatar.rarity as keyof typeof rarityColors] || rarityColors.common;
-  };
+  }, [avatar.rarity]);
 
   return (
     <div className="relative">
-      <div className={`${getSizeClasses()} rounded-full overflow-hidden border-2 border-primary/50 shadow-lg`}>
+      <div className={`${sizeClasses} rounded-full overflow-hidden border-2 border-primary/50 shadow-lg`}>
         <img 
-          src={getAvatarImage()}
+          src={avatarImage}
           alt={avatar.name}
           className="w-full h-full object-cover animate-pulse-subtle"
+          loading="lazy"
         />
       </div>
       
       {showBadge && (
         <div className="absolute -top-1 -right-1">
-          <Badge className={`${getRarityColor()} text-white flex items-center gap-1 text-xs px-1`}>
+          <Badge className={`${rarityColor} text-white flex items-center gap-1 text-xs px-1`}>
             <Sparkles className="h-3 w-3" />
             {evolutionLevel}
           </Badge>
@@ -133,4 +136,6 @@ export function AvatarDisplay({ avatar, size = 'md', showBadge = true, evolution
       />
     </div>
   );
-}
+});
+
+export { AvatarDisplay };

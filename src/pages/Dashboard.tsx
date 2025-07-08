@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { FloatingNavbar } from "@/components/floating-navbar";
@@ -14,8 +14,8 @@ import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DashboardSummary } from "@/components/dashboard-summary";
-import { QuickActions } from "@/components/quick-actions";
+import { DashboardSummary } from "@/components/dashboard-summary-optimized";
+import { QuickActions } from "@/components/quick-actions-optimized";
 import { UserAffiliation } from "@/components/user-affiliation";
 import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -41,6 +41,13 @@ export default function Dashboard() {
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
+
+  // Memoize navigation handlers
+  const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
+  const handleNavigateToBeetzInfo = useCallback(() => navigate('/beetz-info'), [navigate]);
+  const handleNavigateToProfile = useCallback(() => navigate('/profile'), [navigate]);
+  const handleNavigateToStore = useCallback(() => navigate('/store'), [navigate]);
+  const handleNavigateToSubscription = useCallback(() => navigate('/subscription-plans'), [navigate]);
 
   useEffect(() => {
     // Check for payment success parameters
@@ -70,7 +77,8 @@ export default function Dashboard() {
     }
   }, [dashboardData]);
 
-  const handlePaymentSuccess = async (sessionId: string, tier: string) => {
+  // Memoize payment success handler
+  const handlePaymentSuccess = useCallback(async (sessionId: string, tier: string) => {
     try {
       toast({
         title: "Processando pagamento...",
@@ -100,49 +108,59 @@ export default function Dashboard() {
         variant: "destructive"
       });
     }
-  };
+  }, [toast, refreshSubscription]);
 
-  const handleAvatarSelected = () => {
-    // Refetch dashboard data to get the new avatar
+  // Memoize avatar selection handler
+  const handleAvatarSelected = useCallback(() => {
     window.location.reload();
-  };
+  }, []);
+
+  // Memoize loading state
+  const loadingComponent = useMemo(() => (
+    <div className="min-h-screen bg-background">
+      <LoadingSpinner />
+    </div>
+  ), []);
+
+  // Memoize user stats calculation
+  const userStats = useMemo(() => {
+    if (!dashboardData) {
+      return {
+        level: 1,
+        currentXP: 0,
+        nextLevelXP: 100,
+        streak: 0,
+        completedLessons: 0,
+        points: 0
+      };
+    }
+    
+    return {
+      level: dashboardData.profile?.level || 1,
+      currentXP: dashboardData.profile?.xp || 0,
+      nextLevelXP: dashboardData.nextLevelXP || 100,
+      streak: dashboardData.profile?.streak || 0,
+      completedLessons: dashboardData.profile?.completed_lessons || 0,
+      points: dashboardData.profile?.points || 0
+    };
+  }, [dashboardData]);
+
+  // Memoize user data extraction
+  const userNickname = useMemo(() => dashboardData?.profile?.nickname || 'Estudante', [dashboardData?.profile?.nickname]);
+  const userAvatar = useMemo(() => dashboardData?.avatar, [dashboardData?.avatar]);
+  const hasAvatar = useMemo(() => !!userAvatar, [userAvatar]);
+  const userDistrict = useMemo(() => dashboardData?.district, [dashboardData?.district]);
+  const userTeam = useMemo(() => dashboardData?.team, [dashboardData?.team]);
 
   // Loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <LoadingSpinner />
-      </div>
-    );
+    return loadingComponent;
   }
 
   // Error state  
   if (error) {
     console.error('Dashboard data error:', error);
   }
-
-  // Extract data with fallbacks
-  const userStats = dashboardData ? {
-    level: dashboardData.profile?.level || 1,
-    currentXP: dashboardData.profile?.xp || 0,
-    nextLevelXP: dashboardData.nextLevelXP || 100,
-    streak: dashboardData.profile?.streak || 0,
-    completedLessons: dashboardData.profile?.completed_lessons || 0,
-    points: dashboardData.profile?.points || 0
-  } : {
-    level: 1,
-    currentXP: 0,
-    nextLevelXP: 100,
-    streak: 0,
-    completedLessons: 0,
-    points: 0
-  };
-
-  const userNickname = dashboardData?.profile?.nickname || 'Estudante';
-  const userAvatar = dashboardData?.avatar;
-  const hasAvatar = !!userAvatar;
-  const userDistrict = dashboardData?.district;
-  const userTeam = dashboardData?.team;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -161,7 +179,7 @@ export default function Dashboard() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => navigate('/subscription-plans')}
+                  onClick={handleNavigateToSubscription}
                   className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0"
                 >
                   ⭐ Pro
@@ -210,7 +228,7 @@ export default function Dashboard() {
             <div className="w-full max-w-sm mx-auto px-2 sm:px-0">
               <div 
                 className="w-full bg-muted rounded-full h-2 mb-3 cursor-pointer hover:bg-muted/80 transition-colors"
-                onClick={() => navigate('/levels')}
+                onClick={handleNavigateToLevels}
               >
                 <div 
                   className="bg-gradient-to-r from-success to-primary h-2 rounded-full transition-all duration-300"
@@ -231,7 +249,7 @@ export default function Dashboard() {
               {/* XP Badge - Left Side */}
               <div 
                 className="border border-[#adff2f] rounded-full px-3 sm:px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-full sm:w-[120px] max-w-[120px]"
-                onClick={() => navigate('/levels')}
+                onClick={handleNavigateToLevels}
                 style={{ borderWidth: '0.5px' }}
               >
                 <span className="text-sm">⚡</span>
@@ -244,7 +262,7 @@ export default function Dashboard() {
               {/* Profile Button */}
               <Button 
                 className="bg-gradient-to-r from-primary to-success text-black px-3 sm:px-6 py-2 rounded-full font-semibold shadow-glow w-full sm:w-[120px] max-w-[120px] text-xs sm:text-sm"
-                onClick={() => navigate(hasAvatar ? '/profile' : '/store')}
+                onClick={hasAvatar ? handleNavigateToProfile : handleNavigateToStore}
               >
                 {hasAvatar ? 'Meu Perfil' : 'Escolher Avatar'}
               </Button>
@@ -252,7 +270,7 @@ export default function Dashboard() {
               {/* Beetz Badge - Right Side */}
               <div 
                 className="border border-[#adff2f] rounded-full px-3 sm:px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-full sm:w-[120px] max-w-[120px]"
-                onClick={() => navigate('/beetz-info')}
+                onClick={handleNavigateToBeetzInfo}
                 style={{ borderWidth: '0.5px' }}
               >
                 <BeetzIcon size="md" />
