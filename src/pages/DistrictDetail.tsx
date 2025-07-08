@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink } from "lucide-react";
 import { DistrictQuests } from "@/components/district-quests";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
@@ -33,6 +33,13 @@ interface District {
   color_primary: string;
   color_secondary: string;
   level_required: number;
+  power_level: number;
+  battles_won: number;
+  battles_lost: number;
+  sponsor_company: string;
+  sponsor_logo_url: string;
+  referral_link: string;
+  special_power: string;
 }
 
 interface Team {
@@ -40,7 +47,11 @@ interface Team {
   name: string;
   description: string;
   max_members: number;
-  level_required: number;
+  members_count: number;
+  team_power: number;
+  team_color: string;
+  captain_id: string;
+  achievements: any;
 }
 
 interface UserDistrict {
@@ -106,7 +117,7 @@ export default function DistrictDetail() {
 
       // Load teams
       const { data: teamsData, error: teamsError } = await supabase
-        .from('teams')
+        .from('district_teams')
         .select('*')
         .eq('district_id', districtId);
 
@@ -300,6 +311,141 @@ export default function DistrictDetail() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* District Power & Stats Section */}
+      <div className="container mx-auto px-4 -mt-16 relative z-10 mb-8">
+        {/* District Power Card */}
+        <Card 
+          className="bg-slate-800/90 backdrop-blur-sm border-2 mb-6"
+          style={{ borderColor: district.color_primary }}
+        >
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div 
+                  className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: district.color_primary }}
+                >
+                  <Shield className="w-6 h-6 text-black" />
+                </div>
+                <div>
+                  <CardTitle className="text-white flex items-center">
+                    Poder do Distrito
+                    <span 
+                      className="ml-2 text-2xl font-bold"
+                      style={{ color: district.color_primary }}
+                    >
+                      {district.power_level || 100}/100
+                    </span>
+                  </CardTitle>
+                  {district.special_power && (
+                    <CardDescription className="text-purple-300 flex items-center mt-1">
+                      <Zap className="w-4 h-4 mr-1" />
+                      {district.special_power}
+                    </CardDescription>
+                  )}
+                </div>
+              </div>
+              
+              {/* Sponsor Info */}
+              {district.sponsor_company && (
+                <div className="text-right">
+                  <div className="flex items-center justify-end mb-2">
+                    <Star className="w-4 h-4 text-yellow-400 mr-1" />
+                    <span className="text-sm text-gray-300">Patrocinado por</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {district.sponsor_logo_url && (
+                      <img 
+                        src={district.sponsor_logo_url} 
+                        alt={district.sponsor_company}
+                        className="w-8 h-8 rounded object-cover"
+                      />
+                    )}
+                    <span className="text-white font-medium">{district.sponsor_company}</span>
+                    {district.referral_link && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.open(district.referral_link, '_blank')}
+                        className="text-xs"
+                        style={{ 
+                          borderColor: district.color_primary,
+                          color: district.color_primary 
+                        }}
+                      >
+                        <ExternalLink className="w-3 h-3 mr-1" />
+                        Oferta
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardHeader>
+          
+          <CardContent>
+            {/* Power Level Bar */}
+            <div className="mb-6">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-400">Nível de Poder</span>
+                <span style={{ color: district.color_primary }}>
+                  {district.power_level || 100}%
+                </span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                <div 
+                  className="h-full rounded-full transition-all duration-500 relative"
+                  style={{ 
+                    backgroundColor: district.color_primary,
+                    width: `${district.power_level || 100}%`,
+                    boxShadow: `0 0 10px ${district.color_primary}60`
+                  }}
+                >
+                  <div 
+                    className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20 animate-pulse"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Battle Stats */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Swords className="w-5 h-5 text-green-400 mr-2" />
+                  <span className="text-2xl font-bold text-green-400">
+                    {district.battles_won || 0}
+                  </span>
+                </div>
+                <span className="text-gray-400 text-sm">Batalhas Vencidas</span>
+              </div>
+              
+              <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+                <div className="flex items-center justify-center mb-2">
+                  <Target className="w-5 h-5 text-red-400 mr-2" />
+                  <span className="text-2xl font-bold text-red-400">
+                    {district.battles_lost || 0}
+                  </span>
+                </div>
+                <span className="text-gray-400 text-sm">Batalhas Perdidas</span>
+              </div>
+            </div>
+            
+            {/* Win Rate */}
+            {(district.battles_won + district.battles_lost > 0) && (
+              <div className="mt-4 text-center">
+                <div className="text-lg font-bold mb-1">
+                  <span style={{ color: district.color_primary }}>
+                    {Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)}%
+                  </span>
+                  <span className="text-gray-400 text-sm ml-2">Taxa de Vitória</span>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Content Tabs */}
@@ -517,7 +663,7 @@ export default function DistrictDetail() {
                             Máximo: {team.max_members} membros
                           </p>
                           <p className="text-sm text-gray-400">
-                            Nível mínimo: {team.level_required}
+                            Poder: {team.team_power}
                           </p>
                         </div>
                         <Button 
