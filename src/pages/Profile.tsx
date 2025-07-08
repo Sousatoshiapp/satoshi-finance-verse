@@ -7,7 +7,7 @@ import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ProfileImageUpload } from "@/components/profile-image-upload";
+
 import { AvatarSelector } from "@/components/avatar-selector";
 import { UserInventory } from "@/components/profile/user-inventory";
 import { SubscriptionIndicator } from "@/components/subscription-indicator";
@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { getLevelInfo } from "@/data/levels";
-import { Crown, Star, Shield } from "lucide-react";
+import { Crown, Star, Shield, Camera } from "lucide-react";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 // Import avatar images
@@ -101,6 +101,7 @@ export default function Profile() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [userAvatar, setUserAvatar] = useState<UserAvatar | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { subscription } = useSubscription();
@@ -204,6 +205,92 @@ export default function Profile() {
     }
   };
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      // File validation
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Erro",
+          description: "Tipo de arquivo não permitido. Use apenas JPEG, PNG, GIF ou WebP",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Erro",
+          description: "A imagem deve ter menos de 5MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) {
+        toast({
+          title: "Erro",
+          description: "Usuário não autenticado",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Create secure file path
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const timestamp = Date.now();
+      const fileName = `${authUser.id}/profile_${timestamp}.${fileExt}`;
+
+      // Upload file
+      const { error: uploadError } = await supabase.storage
+        .from('profile-images')
+        .upload(fileName, file, { 
+          upsert: true,
+          contentType: file.type
+        });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('profile-images')
+        .getPublicUrl(fileName);
+
+      const imageUrl = data.publicUrl;
+
+      // Update profile
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ profile_image_url: imageUrl })
+        .eq('user_id', authUser.id);
+
+      if (updateError) throw updateError;
+
+      handleImageUpdated(imageUrl);
+      
+      toast({
+        title: "✅ Imagem atualizada!",
+        description: "Sua foto de perfil foi atualizada com sucesso"
+      });
+
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Erro no upload",
+        description: error.message || "Não foi possível fazer o upload da imagem",
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const getPlanIcon = (tier: string) => {
     switch (tier) {
       case 'pro': return <Star className="w-5 h-5 text-yellow-500" />;
@@ -269,26 +356,34 @@ export default function Profile() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Profile Image Upload */}
-        <div className="mb-8">
-          <ProfileImageUpload
-            currentImageUrl={user.profile_image_url}
-            userAvatarUrl={getAvatarImage(userAvatar?.name)}
-            onImageUpdated={handleImageUpdated}
-            userNickname={user.nickname}
-          />
-        </div>
-
         {/* Profile Header */}
         <Card className="p-6 mb-8">
           <div className="flex items-center gap-6">
-            <Avatar className="w-20 h-20">
-              <AvatarImage 
-                src={getAvatarImage(userAvatar?.name) || user.profile_image_url || satoshiLogo} 
-                alt={user.nickname} 
+            <div className="relative">
+              <Avatar className="w-20 h-20">
+                <AvatarImage 
+                  src={getAvatarImage(userAvatar?.name) || user.profile_image_url || satoshiLogo} 
+                  alt={user.nickname} 
+                />
+                <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+              
+              {/* Small upload icon */}
+              <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">
+                <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <Camera className="w-3.5 h-3.5 text-primary-foreground" />
+                </div>
+              </label>
+              
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+                disabled={uploading}
               />
-              <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
+            </div>
             
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-foreground mb-1">{user.nickname}</h2>
