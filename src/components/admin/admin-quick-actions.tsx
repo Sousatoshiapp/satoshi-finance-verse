@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { BotNicknameManager } from "./bot-nickname-manager";
 import { 
   Users, Bot, Zap, Gift, MessageSquare, 
   Shield, RefreshCw, AlertTriangle 
@@ -117,6 +118,9 @@ export function AdminQuickActions({ onStatsUpdate }: AdminQuickActionsProps) {
 
   return (
     <div className="space-y-6">
+      {/* Bot Nickname Manager */}
+      <BotNicknameManager />
+      
       {/* Quick Actions */}
       <Card>
         <CardHeader>

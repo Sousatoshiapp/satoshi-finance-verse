@@ -3,19 +3,27 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Lock, LogOut, Mail, Shield, Settings } from "lucide-react";
 
 interface AdminPasswordProtectionProps {
   children: React.ReactNode;
 }
 
-const ADMIN_PASSWORD = "131326";
 const STORAGE_KEY = "admin_access_granted";
+const PASSWORD_KEY = "admin_password";
+
+// Recuperar senha atual do localStorage ou usar padrão
+const getCurrentPassword = (): string => {
+  return localStorage.getItem(PASSWORD_KEY) || "131326";
+};
 
 export function AdminPasswordProtection({ children }: AdminPasswordProtectionProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showPasswordManager, setShowPasswordManager] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -30,7 +38,7 @@ export function AdminPasswordProtection({ children }: AdminPasswordProtectionPro
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (password === ADMIN_PASSWORD) {
+    if (password === getCurrentPassword()) {
       setIsAuthenticated(true);
       localStorage.setItem(STORAGE_KEY, "true");
       toast({
@@ -44,6 +52,36 @@ export function AdminPasswordProtection({ children }: AdminPasswordProtectionPro
         variant: "destructive",
       });
       setPassword("");
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    setResetLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-password-reset', {
+        body: { 
+          email: 'fasdurian@gmail.com',
+          action: 'request_reset'
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Email enviado!",
+        description: "Verifique sua caixa de entrada em fasdurian@gmail.com",
+      });
+      
+      setShowPasswordManager(false);
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      toast({
+        title: "Erro ao enviar email",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -96,7 +134,60 @@ export function AdminPasswordProtection({ children }: AdminPasswordProtectionPro
               <Button type="submit" className="w-full">
                 Entrar
               </Button>
+              
+              <div className="pt-4 border-t border-border">
+                <Button 
+                  type="button"
+                  variant="ghost" 
+                  size="sm"
+                  className="w-full text-muted-foreground hover:text-foreground"
+                  onClick={() => setShowPasswordManager(true)}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Esqueceu a senha?
+                </Button>
+              </div>
             </form>
+            
+            {showPasswordManager && (
+              <div className="mt-6 p-4 border border-warning/20 bg-warning/5 rounded-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="h-5 w-5 text-warning" />
+                  <h3 className="font-semibold text-warning">Reset de Senha</h3>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Um link de reset será enviado para <strong>fasdurian@gmail.com</strong>
+                </p>
+                <div className="flex gap-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => setShowPasswordManager(false)}
+                    disabled={resetLoading}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button 
+                    size="sm"
+                    onClick={handlePasswordReset}
+                    disabled={resetLoading}
+                    className="bg-warning hover:bg-warning/90"
+                  >
+                    {resetLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="h-4 w-4 mr-2" />
+                        Enviar Reset
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

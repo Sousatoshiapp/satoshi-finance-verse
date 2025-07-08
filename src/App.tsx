@@ -53,6 +53,7 @@ import BotAdmin from "./pages/BotAdmin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminQuestions from "./pages/AdminQuestions";
+import AdminPasswordReset from "./pages/AdminPasswordReset";
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,7 @@ const App = () => (
             <Route path="/weekly-tournaments" element={<ProtectedRoute><WeeklyTournaments /></ProtectedRoute>} />
             <Route path="/challenge/:challengeId" element={<ProtectedRoute><ChallengeDetail /></ProtectedRoute>} />
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/reset-password" element={<AdminPasswordReset />} />
             <Route path="/admin/bots" element={<ProtectedRoute><BotAdmin /></ProtectedRoute>} />
             <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
             <Route path="/admin/quiz/questions" element={<ProtectedRoute><AdminQuestions /></ProtectedRoute>} />
