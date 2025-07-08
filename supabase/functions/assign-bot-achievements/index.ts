@@ -19,15 +19,10 @@ serve(async (req) => {
 
     let achievementCount = 0
     
-    // Get all bots with their stats
+    // Get all bots first
     const { data: bots, error: botsError } = await supabase
       .from('profiles')
-      .select(`
-        id,
-        level,
-        streak,
-        quiz_sessions:quiz_sessions(max_combo)
-      `)
+      .select('id, level, streak')
       .eq('is_bot', true)
 
     if (botsError) {
@@ -50,8 +45,14 @@ serve(async (req) => {
 
     // Process each bot
     for (const bot of bots) {
-      const quizCount = bot.quiz_sessions?.length || 0
-      const maxCombo = Math.max(...(bot.quiz_sessions?.map((qs: any) => qs.max_combo) || [0]))
+      // Get quiz statistics for this bot
+      const { data: quizData } = await supabase
+        .from('quiz_sessions')
+        .select('max_combo')
+        .eq('user_id', bot.id)
+      
+      const quizCount = quizData?.length || 0
+      const maxCombo = Math.max(...(quizData?.map(qs => qs.max_combo) || [0]))
 
       const achievementsToAdd = []
 
