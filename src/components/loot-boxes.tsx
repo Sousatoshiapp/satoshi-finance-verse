@@ -77,12 +77,12 @@ export function LootBoxes() {
         
         <CardContent>
           {unopenedBoxes.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
               {unopenedBoxes.map((userBox) => (
                 <div
                   key={userBox.id}
                   className={cn(
-                    "relative border-2 rounded-xl p-4 text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg",
+                    "relative border-2 rounded-lg p-2 text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg",
                     getRarityColor(userBox.loot_boxes.rarity)
                   )}
                   onClick={() => {
@@ -98,11 +98,12 @@ export function LootBoxes() {
                   
                   <div className="relative">
                     {/* Box Icon */}
-                    <div className="text-4xl mb-2">
-                      {userBox.loot_boxes.rarity === 'legendary' && '🎁'}
-                      {userBox.loot_boxes.rarity === 'epic' && '📦'}
-                      {userBox.loot_boxes.rarity === 'rare' && '🎁'}
-                      {userBox.loot_boxes.rarity === 'common' && '📦'}
+                    <div className="text-2xl mb-1">
+                      <img 
+                        src="/src/assets/cyberpunk-loot-box.jpg" 
+                        alt="Cyberpunk Loot Box" 
+                        className="w-8 h-8 mx-auto object-cover rounded"
+                      />
                     </div>
                     
                     {/* Sparkle Effect for Rare+ */}
@@ -110,7 +111,7 @@ export function LootBoxes() {
                       <Sparkles className="absolute top-0 right-0 h-4 w-4 text-yellow-400 animate-pulse" />
                     )}
                     
-                    <h3 className="font-medium text-sm mb-1">
+                    <h3 className="font-medium text-xs mb-1">
                       {userBox.loot_boxes.name}
                     </h3>
                     
@@ -122,7 +123,7 @@ export function LootBoxes() {
                     </Badge>
                     
                     {/* Source */}
-                    <div className="text-xs text-muted-foreground mt-2">
+                    <div className="text-xs text-muted-foreground mt-1">
                       {userBox.source === 'daily_reward' && '📅 Recompensa Diária'}
                       {userBox.source === 'daily_combo' && '🔥 Combo Diário'}
                       {userBox.source === 'mission_reward' && '⚡ Missão'}
@@ -168,11 +169,12 @@ export function LootBoxes() {
                 )}></div>
                 
                 <div className="relative">
-                  <div className="text-6xl mb-4">
-                    {selectedBox.loot_boxes.rarity === 'legendary' && '🎁'}
-                    {selectedBox.loot_boxes.rarity === 'epic' && '📦'}
-                    {selectedBox.loot_boxes.rarity === 'rare' && '🎁'}
-                    {selectedBox.loot_boxes.rarity === 'common' && '📦'}
+                  <div className="mb-4">
+                    <img 
+                      src="/src/assets/cyberpunk-loot-box.jpg" 
+                      alt="Cyberpunk Loot Box" 
+                      className="w-24 h-24 mx-auto object-cover rounded-lg"
+                    />
                   </div>
                   
                   <h3 className="font-bold text-lg mb-2">

@@ -42,7 +42,10 @@ export function useDailyMissions() {
   const loadDailyMissions = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('No user found for daily missions');
+        return;
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -50,10 +53,18 @@ export function useDailyMissions() {
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return;
+      if (!profile) {
+        console.log('No profile found for daily missions');
+        return;
+      }
 
+      console.log('Generating daily missions for profile:', profile.id);
       // Generate missions if needed
-      await supabase.rpc('generate_daily_missions');
+      const { error: generateError } = await supabase.rpc('generate_daily_missions');
+      if (generateError) {
+        console.error('Error generating daily missions:', generateError);
+        throw generateError;
+      }
 
       // Get missions with user progress
       const { data: missionsData, error: missionsError } = await supabase
