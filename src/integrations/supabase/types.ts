@@ -397,6 +397,44 @@ export type Database = {
           },
         ]
       }
+      district_analytics: {
+        Row: {
+          created_at: string | null
+          district_id: string
+          id: string
+          metric_data: Json | null
+          metric_type: string
+          metric_value: number
+          recorded_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          district_id: string
+          id?: string
+          metric_data?: Json | null
+          metric_type: string
+          metric_value: number
+          recorded_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          district_id?: string
+          id?: string
+          metric_data?: Json | null
+          metric_type?: string
+          metric_value?: number
+          recorded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_analytics_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       district_battles: {
         Row: {
           attacking_district_id: string
@@ -1892,6 +1930,136 @@ export type Database = {
           },
         ]
       }
+      sponsor_admin_access: {
+        Row: {
+          access_level: string | null
+          district_id: string
+          expires_at: string | null
+          granted_at: string | null
+          granted_by: string | null
+          id: string
+          is_active: boolean | null
+          permissions: Json | null
+          user_id: string
+        }
+        Insert: {
+          access_level?: string | null
+          district_id: string
+          expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          permissions?: Json | null
+          user_id: string
+        }
+        Update: {
+          access_level?: string | null
+          district_id?: string
+          expires_at?: string | null
+          granted_at?: string | null
+          granted_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          permissions?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_admin_access_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsor_admin_access_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsor_admin_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sponsor_events: {
+        Row: {
+          banner_image_url: string | null
+          created_at: string | null
+          created_by: string
+          current_participants: number | null
+          description: string | null
+          district_id: string
+          end_date: string
+          event_type: string | null
+          id: string
+          is_active: boolean | null
+          max_participants: number | null
+          requirements: Json | null
+          rewards: Json | null
+          start_date: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          banner_image_url?: string | null
+          created_at?: string | null
+          created_by: string
+          current_participants?: number | null
+          description?: string | null
+          district_id: string
+          end_date: string
+          event_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          requirements?: Json | null
+          rewards?: Json | null
+          start_date: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          banner_image_url?: string | null
+          created_at?: string | null
+          created_by?: string
+          current_participants?: number | null
+          description?: string | null
+          district_id?: string
+          end_date?: string
+          event_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          requirements?: Json | null
+          rewards?: Json | null
+          start_date?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsor_events_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sponsor_referrals: {
         Row: {
           commission_amount: number | null
@@ -3209,6 +3377,15 @@ export type Database = {
         Returns: {
           items: Json
         }[]
+      }
+      track_district_metric: {
+        Args: {
+          p_district_id: string
+          p_metric_type: string
+          p_metric_value: number
+          p_metric_data?: Json
+        }
+        Returns: undefined
       }
       update_bot_nicknames: {
         Args: Record<PropertyKey, never>
