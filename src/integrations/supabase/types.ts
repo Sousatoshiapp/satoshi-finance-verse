@@ -734,7 +734,9 @@ export type Database = {
           max_members: number | null
           members_count: number | null
           name: string
+          sponsor_themed: boolean | null
           team_color: string | null
+          team_motto: string | null
           team_power: number | null
           updated_at: string | null
         }
@@ -748,7 +750,9 @@ export type Database = {
           max_members?: number | null
           members_count?: number | null
           name: string
+          sponsor_themed?: boolean | null
           team_color?: string | null
+          team_motto?: string | null
           team_power?: number | null
           updated_at?: string | null
         }
@@ -762,7 +766,9 @@ export type Database = {
           max_members?: number | null
           members_count?: number | null
           name?: string
+          sponsor_themed?: boolean | null
           team_color?: string | null
+          team_motto?: string | null
           team_power?: number | null
           updated_at?: string | null
         }
@@ -2234,6 +2240,7 @@ export type Database = {
         Row: {
           contribution_points: number | null
           id: string
+          is_active: boolean | null
           joined_at: string | null
           role: string | null
           team_id: string
@@ -2242,6 +2249,7 @@ export type Database = {
         Insert: {
           contribution_points?: number | null
           id?: string
+          is_active?: boolean | null
           joined_at?: string | null
           role?: string | null
           team_id: string
@@ -2250,6 +2258,7 @@ export type Database = {
         Update: {
           contribution_points?: number | null
           id?: string
+          is_active?: boolean | null
           joined_at?: string | null
           role?: string | null
           team_id?: string
@@ -3314,6 +3323,10 @@ export type Database = {
       }
       check_duel_limit: {
         Args: { profile_id: string }
+        Returns: boolean
+      }
+      check_user_team_membership: {
+        Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
       }
       enhance_bot_realism: {

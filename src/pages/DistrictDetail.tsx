@@ -57,6 +57,20 @@ interface Team {
   team_color: string;
   captain_id: string;
   achievements: any;
+  team_motto: string;
+  sponsor_themed: boolean;
+}
+
+interface TeamMember {
+  id: string;
+  user_id: string;
+  role: string;
+  joined_at: string;
+  profiles: {
+    nickname: string;
+    level: number;
+    profile_image_url?: string;
+  };
 }
 
 interface UserDistrict {
@@ -112,6 +126,10 @@ export default function DistrictDetail() {
   const [storeItems, setStoreItems] = useState<any[]>([]);
   const [userPurchases, setUserPurchases] = useState<any[]>([]);
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [isLoadingMembers, setIsLoadingMembers] = useState(false);
+  const [userTeamMembership, setUserTeamMembership] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -136,7 +154,8 @@ export default function DistrictDetail() {
       const { data: teamsData, error: teamsError } = await supabase
         .from('district_teams')
         .select('*')
-        .eq('district_id', districtId);
+        .eq('district_id', districtId)
+        .order('created_at', { ascending: false });
 
       if (teamsError) throw teamsError;
       setTeams(teamsData || []);
@@ -180,6 +199,18 @@ export default function DistrictDetail() {
             .single();
 
           setUserDistrict(userDistrictData);
+
+          // Check if user is member of any team in this district
+          const { data: membershipData } = await supabase
+            .from('team_members')
+            .select('team_id')
+            .eq('user_id', profile.id)
+            .eq('is_active', true)
+            .single();
+
+          if (membershipData) {
+            setUserTeamMembership(membershipData.team_id);
+          }
         }
       }
 
@@ -239,7 +270,14 @@ export default function DistrictDetail() {
   const handleJoinTeam = async (teamId: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: "Login Necessário",
+          description: "Faça login para entrar no time",
+          variant: "destructive"
+        });
+        return;
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -248,6 +286,16 @@ export default function DistrictDetail() {
         .single();
 
       if (!profile) return;
+
+      // Check if already member of a team in this district
+      if (userTeamMembership) {
+        toast({
+          title: "Já é Membro",
+          description: "Você já faz parte de um time neste distrito",
+          variant: "destructive"
+        });
+        return;
+      }
 
       const { error } = await supabase
         .from('team_members')
@@ -264,6 +312,7 @@ export default function DistrictDetail() {
         description: "Você entrou no time com sucesso!"
       });
       
+      setUserTeamMembership(teamId);
       loadDistrictData();
     } catch (error) {
       console.error('Error joining team:', error);
@@ -272,6 +321,42 @@ export default function DistrictDetail() {
         description: "Erro ao entrar no time. Tente novamente.",
         variant: "destructive"
       });
+    }
+  };
+
+  const handleViewTeamMembers = async (team: Team) => {
+    setSelectedTeam(team);
+    setIsLoadingMembers(true);
+    
+    try {
+      const { data: membersData, error } = await supabase
+        .from('team_members')
+        .select(`
+          id,
+          user_id,
+          role,
+          joined_at,
+          profiles:user_id (
+            nickname,
+            level,
+            profile_image_url
+          )
+        `)
+        .eq('team_id', team.id)
+        .eq('is_active', true)
+        .order('joined_at', { ascending: true });
+
+      if (error) throw error;
+      setTeamMembers(membersData || []);
+    } catch (error) {
+      console.error('Error loading team members:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao carregar membros do time",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoadingMembers(false);
     }
   };
 
@@ -711,6 +796,10 @@ export default function DistrictDetail() {
               <Home className="mr-2 h-4 w-4" />
               Times
             </TabsTrigger>
+            <TabsTrigger value="store" className="data-[state=active]:bg-slate-700">
+              <ShoppingBag className="mr-2 h-4 w-4" />
+              Loja Exclusiva
+            </TabsTrigger>
           </TabsList>
 
           {/* Battles Tab */}
@@ -1063,9 +1152,16 @@ export default function DistrictDetail() {
                           </Badge>
                         )}
                       </div>
-                      <CardDescription className="text-gray-300">
-                        {team.description || "Um time dedicado à excelência em " + district.theme.replace('_', ' ')}
-                      </CardDescription>
+                       <CardDescription className="text-gray-300">
+                         {team.description || "Um time dedicado à excelência em " + district.theme.replace('_', ' ')}
+                       </CardDescription>
+                       {team.team_motto && (
+                         <div className="mt-2">
+                           <Badge variant="outline" className="text-xs" style={{ borderColor: district.color_primary + '40', color: district.color_primary }}>
+                             "{team.team_motto}"
+                           </Badge>
+                         </div>
+                       )}
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
@@ -1093,26 +1189,97 @@ export default function DistrictDetail() {
                           ></div>
                         </div>
                         
-                        <div className="flex justify-between items-center pt-2">
-                          <Button 
-                            variant="outline"
-                            size="sm"
-                            style={{ borderColor: district.color_primary, color: district.color_primary }}
-                          >
-                            <Users className="w-4 h-4 mr-1" />
-                            Ver Membros
-                          </Button>
-                          
-                          <Button 
-                            size="sm"
-                            onClick={() => handleJoinTeam(team.id)}
-                            style={{ backgroundColor: district.color_primary }}
-                            className="text-black font-bold"
-                          >
-                            <UserPlus className="w-4 h-4 mr-1" />
-                            Entrar
-                          </Button>
-                        </div>
+                         <div className="flex justify-between items-center pt-2">
+                           <Dialog>
+                             <DialogTrigger asChild>
+                               <Button 
+                                 variant="outline"
+                                 size="sm"
+                                 onClick={() => handleViewTeamMembers(team)}
+                                 style={{ borderColor: district.color_primary, color: district.color_primary }}
+                               >
+                                 <Users className="w-4 h-4 mr-1" />
+                                 Ver Membros
+                               </Button>
+                             </DialogTrigger>
+                             <DialogContent className="bg-slate-800 border-slate-600 max-w-md">
+                               <DialogHeader>
+                                 <DialogTitle className="text-white flex items-center">
+                                   <div 
+                                     className="w-4 h-4 rounded-full mr-2"
+                                     style={{ backgroundColor: team.team_color }}
+                                   ></div>
+                                   {team.name}
+                                 </DialogTitle>
+                                 <DialogDescription className="text-gray-300">
+                                   Membros do time • {team.members_count}/{team.max_members}
+                                 </DialogDescription>
+                               </DialogHeader>
+                               
+                               <div className="space-y-3 max-h-60 overflow-y-auto">
+                                 {isLoadingMembers ? (
+                                   <div className="text-center py-4">
+                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                                   </div>
+                                 ) : (
+                                   teamMembers.map((member) => (
+                                     <div key={member.id} className="flex items-center space-x-3 p-2 rounded bg-slate-700/50">
+                                       <Avatar className="h-8 w-8">
+                                         <AvatarImage src={member.profiles?.profile_image_url} />
+                                         <AvatarFallback className="bg-slate-600 text-white text-xs">
+                                           {member.profiles?.nickname?.slice(0, 2).toUpperCase()}
+                                         </AvatarFallback>
+                                       </Avatar>
+                                       <div className="flex-1">
+                                         <p className="text-white text-sm font-medium">
+                                           {member.profiles?.nickname}
+                                         </p>
+                                         <div className="flex items-center space-x-2">
+                                           <Badge 
+                                             variant="outline" 
+                                             className="text-xs"
+                                             style={{ 
+                                               borderColor: member.role === 'captain' ? '#fbbf24' : district.color_primary,
+                                               color: member.role === 'captain' ? '#fbbf24' : district.color_primary
+                                             }}
+                                           >
+                                             {member.role === 'captain' ? '👑 Capitão' : 'Membro'}
+                                           </Badge>
+                                           <span className="text-xs text-gray-400">
+                                             Nível {member.profiles?.level || 1}
+                                           </span>
+                                         </div>
+                                       </div>
+                                     </div>
+                                   ))
+                                 )}
+                               </div>
+                             </DialogContent>
+                           </Dialog>
+                           
+                           <Button 
+                             size="sm"
+                             onClick={() => handleJoinTeam(team.id)}
+                             disabled={userTeamMembership === team.id || !!userTeamMembership}
+                             style={{ 
+                               backgroundColor: userTeamMembership === team.id ? '#10b981' : district.color_primary,
+                               opacity: !!userTeamMembership && userTeamMembership !== team.id ? 0.5 : 1
+                             }}
+                             className="text-black font-bold"
+                           >
+                             {userTeamMembership === team.id ? (
+                               <>
+                                 <CheckCircle className="w-4 h-4 mr-1" />
+                                 Membro
+                               </>
+                             ) : (
+                               <>
+                                 <UserPlus className="w-4 h-4 mr-1" />
+                                 Entrar
+                               </>
+                             )}
+                           </Button>
+                         </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -1129,6 +1296,105 @@ export default function DistrictDetail() {
                   </CardContent>
                 </Card>
               )}
+            </div>
+          </TabsContent>
+
+          {/* Store Tab */}
+          <TabsContent value="store">
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Loja Exclusiva {district.sponsor_company ? `- ${district.sponsor_company}` : ''}
+                </h3>
+                <p className="text-gray-400">
+                  Produtos cyberpunk exclusivos para residentes de {district.name}
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {storeItems.length > 0 ? (
+                  storeItems.map((item) => (
+                    <Card key={item.id} className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-white text-lg">{item.name}</CardTitle>
+                          <div className="flex space-x-1">
+                            {item.sponsor_branded && (
+                              <Badge className="text-xs bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                Sponsor
+                              </Badge>
+                            )}
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs ${
+                                item.rarity === 'legendary' ? 'border-yellow-400 text-yellow-400' :
+                                item.rarity === 'epic' ? 'border-purple-400 text-purple-400' :
+                                item.rarity === 'rare' ? 'border-blue-400 text-blue-400' :
+                                'border-gray-400 text-gray-400'
+                              }`}
+                            >
+                              {item.rarity}
+                            </Badge>
+                          </div>
+                        </div>
+                        <CardDescription className="text-gray-300 text-sm">
+                          {item.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="text-white font-bold text-lg">
+                              ₿{item.price_beetz?.toLocaleString()}
+                            </span>
+                            <Badge variant="outline" style={{ borderColor: district.color_primary, color: district.color_primary }}>
+                              {item.item_type}
+                            </Badge>
+                          </div>
+
+                          {item.unlock_requirements && Object.keys(item.unlock_requirements).length > 0 && (
+                            <div className="text-xs text-gray-400 space-y-1">
+                              <div className="flex items-center">
+                                <Lock className="w-3 h-3 mr-1" />
+                                Requisitos:
+                              </div>
+                              {item.unlock_requirements.residence_required && (
+                                <div>• Residir no distrito</div>
+                              )}
+                              {item.unlock_requirements.min_level && (
+                                <div>• Nível {item.unlock_requirements.min_level}+</div>
+                              )}
+                              {item.unlock_requirements.min_days && (
+                                <div>• {item.unlock_requirements.min_days} dias de residência</div>
+                              )}
+                            </div>
+                          )}
+
+                          <Button
+                            onClick={() => handlePurchaseItem(item)}
+                            disabled={!canPurchaseItem(item) || isPurchasing}
+                            style={{ backgroundColor: district.color_primary }}
+                            className="w-full text-black font-bold"
+                          >
+                            {userPurchases.some(p => p.item_id === item.id) ? 'Já Possui' : 'Comprar'}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600 col-span-full">
+                    <CardContent className="p-8 text-center">
+                      <ShoppingBag className="h-16 w-16 text-gray-500 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-white mb-2">Loja em Desenvolvimento</h3>
+                      <p className="text-gray-400">
+                        Produtos exclusivos estarão disponíveis em breve!
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </div>
           </TabsContent>
         </Tabs>
