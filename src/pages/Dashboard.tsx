@@ -17,6 +17,7 @@ import { getLevelInfo } from "@/data/levels";
 import { DashboardSummary } from "@/components/dashboard-summary";
 import { QuickActions } from "@/components/quick-actions";
 import { UserAffiliation } from "@/components/user-affiliation";
+import { CompactLeaderboard } from "@/components/compact-leaderboard";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -370,6 +371,11 @@ export default function Dashboard() {
 
           {/* User Affiliation - District & Team */}
           <UserAffiliation district={userDistrict} team={userTeam} />
+
+          {/* Ranking Semanal de Beetz */}
+          <div className="mb-4">
+            <CompactLeaderboard />
+          </div>
 
           {/* Enhanced Daily Summary */}
           <DashboardSummary userStats={userStats} subscription={subscription} />
