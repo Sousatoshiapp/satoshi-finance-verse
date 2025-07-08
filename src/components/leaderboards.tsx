@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLeaderboards } from "@/hooks/use-leaderboards";
 import { Trophy, Medal, Crown, TrendingUp, Clock, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function Leaderboards() {
   const { 
@@ -19,6 +20,7 @@ export function Leaderboards() {
     getRankColor
   } = useLeaderboards();
   const [activeTab, setActiveTab] = useState<'global' | 'league'>('global');
+  const { t } = useI18n();
 
   if (loading) {
     return (
@@ -55,7 +57,7 @@ export function Leaderboards() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            Rankings Semanais
+            {t('leaderboard.weeklyRankings')}
           </CardTitle>
           <div className="text-right">
             <div className="text-xs text-muted-foreground">Reset em</div>

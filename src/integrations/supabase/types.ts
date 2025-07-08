@@ -2641,6 +2641,10 @@ export type Database = {
           error_message: string
         }[]
       }
+      fill_missing_bot_posts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       generate_bot_profile: {
         Args: { bot_count?: number }
         Returns: {
