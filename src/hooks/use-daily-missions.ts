@@ -34,8 +34,8 @@ export function useDailyMissions() {
 
   useEffect(() => {
     loadDailyMissions();
-    // Check for new missions every minute
-    const interval = setInterval(loadDailyMissions, 60000);
+    // Check for new missions every 5 minutes instead of every minute to reduce DB load
+    const interval = setInterval(loadDailyMissions, 300000);
     return () => clearInterval(interval);
   }, []);
 
