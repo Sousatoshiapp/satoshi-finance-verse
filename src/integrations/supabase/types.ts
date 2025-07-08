@@ -380,6 +380,70 @@ export type Database = {
           },
         ]
       }
+      district_battles: {
+        Row: {
+          attacking_district_id: string
+          battle_data: Json | null
+          battle_type: string | null
+          completed_at: string | null
+          created_at: string | null
+          defending_district_id: string
+          id: string
+          rewards: Json | null
+          started_at: string | null
+          status: string | null
+          winner_district_id: string | null
+        }
+        Insert: {
+          attacking_district_id: string
+          battle_data?: Json | null
+          battle_type?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          defending_district_id: string
+          id?: string
+          rewards?: Json | null
+          started_at?: string | null
+          status?: string | null
+          winner_district_id?: string | null
+        }
+        Update: {
+          attacking_district_id?: string
+          battle_data?: Json | null
+          battle_type?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          defending_district_id?: string
+          id?: string
+          rewards?: Json | null
+          started_at?: string | null
+          status?: string | null
+          winner_district_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_battles_attacking_district_id_fkey"
+            columns: ["attacking_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_battles_defending_district_id_fkey"
+            columns: ["defending_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_battles_winner_district_id_fkey"
+            columns: ["winner_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       district_daily_quests: {
         Row: {
           created_at: string
@@ -430,8 +494,70 @@ export type Database = {
           },
         ]
       }
+      district_teams: {
+        Row: {
+          achievements: Json | null
+          captain_id: string | null
+          created_at: string | null
+          description: string | null
+          district_id: string
+          id: string
+          max_members: number | null
+          members_count: number | null
+          name: string
+          team_color: string | null
+          team_power: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          achievements?: Json | null
+          captain_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          district_id: string
+          id?: string
+          max_members?: number | null
+          members_count?: number | null
+          name: string
+          team_color?: string | null
+          team_power?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          achievements?: Json | null
+          captain_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          district_id?: string
+          id?: string
+          max_members?: number | null
+          members_count?: number | null
+          name?: string
+          team_color?: string | null
+          team_power?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_teams_captain_id_fkey"
+            columns: ["captain_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_teams_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       districts: {
         Row: {
+          battles_lost: number | null
+          battles_won: number | null
           color_primary: string
           color_secondary: string
           created_at: string
@@ -441,10 +567,17 @@ export type Database = {
           is_active: boolean
           level_required: number
           name: string
+          power_level: number | null
+          referral_link: string | null
+          special_power: string | null
+          sponsor_company: string | null
+          sponsor_logo_url: string | null
           theme: string
           updated_at: string
         }
         Insert: {
+          battles_lost?: number | null
+          battles_won?: number | null
           color_primary: string
           color_secondary: string
           created_at?: string
@@ -454,10 +587,17 @@ export type Database = {
           is_active?: boolean
           level_required?: number
           name: string
+          power_level?: number | null
+          referral_link?: string | null
+          special_power?: string | null
+          sponsor_company?: string | null
+          sponsor_logo_url?: string | null
           theme: string
           updated_at?: string
         }
         Update: {
+          battles_lost?: number | null
+          battles_won?: number | null
           color_primary?: string
           color_secondary?: string
           created_at?: string
@@ -467,6 +607,11 @@ export type Database = {
           is_active?: boolean
           level_required?: number
           name?: string
+          power_level?: number | null
+          referral_link?: string | null
+          special_power?: string | null
+          sponsor_company?: string | null
+          sponsor_logo_url?: string | null
           theme?: string
           updated_at?: string
         }
@@ -1536,6 +1681,57 @@ export type Database = {
           },
         ]
       }
+      sponsor_referrals: {
+        Row: {
+          commission_amount: number | null
+          created_at: string | null
+          district_id: string
+          id: string
+          processed_at: string | null
+          referral_data: Json | null
+          referral_type: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          commission_amount?: number | null
+          created_at?: string | null
+          district_id: string
+          id?: string
+          processed_at?: string | null
+          referral_data?: Json | null
+          referral_type: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          commission_amount?: number | null
+          created_at?: string | null
+          district_id?: string
+          id?: string
+          processed_at?: string | null
+          referral_data?: Json | null
+          referral_type?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_referrals_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sponsor_referrals_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       story_views: {
         Row: {
           id: string
@@ -1648,6 +1844,48 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          contribution_points: number | null
+          id: string
+          joined_at: string | null
+          role: string | null
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          contribution_points?: number | null
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          contribution_points?: number | null
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "district_teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_members_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -2012,7 +2250,10 @@ export type Database = {
           joined_at: string
           last_activity_date: string | null
           level: number
+          monthly_battles_participated: number | null
+          power_contribution: number | null
           residence_started_at: string | null
+          team_id: string | null
           user_id: string
           xp: number
         }
@@ -2025,7 +2266,10 @@ export type Database = {
           joined_at?: string
           last_activity_date?: string | null
           level?: number
+          monthly_battles_participated?: number | null
+          power_contribution?: number | null
           residence_started_at?: string | null
+          team_id?: string | null
           user_id: string
           xp?: number
         }
@@ -2038,7 +2282,10 @@ export type Database = {
           joined_at?: string
           last_activity_date?: string | null
           level?: number
+          monthly_battles_participated?: number | null
+          power_contribution?: number | null
           residence_started_at?: string | null
+          team_id?: string | null
           user_id?: string
           xp?: number
         }
@@ -2048,6 +2295,13 @@ export type Database = {
             columns: ["district_id"]
             isOneToOne: false
             referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_districts_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "district_teams"
             referencedColumns: ["id"]
           },
         ]
