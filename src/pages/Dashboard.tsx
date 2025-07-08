@@ -14,8 +14,8 @@ import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DashboardSummary } from "@/components/dashboard-summary-optimized";
-import { QuickActions } from "@/components/quick-actions-optimized";
+import { DashboardSummaryOptimized } from "@/components/dashboard-summary-optimized";
+import { QuickActionsOptimized } from "@/components/quick-actions-optimized";
 import { UserAffiliation } from "@/components/user-affiliation";
 import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -305,7 +305,7 @@ export default function Dashboard() {
           </div>
 
           {/* Enhanced Daily Summary */}
-          <DashboardSummary userStats={userStats} subscription={subscription} />
+          <DashboardSummaryOptimized userStats={userStats} subscription={subscription} />
 
           {/* Core Actions */}
           <div className="mb-6">
@@ -321,7 +321,7 @@ export default function Dashboard() {
           </div>
 
           {/* Quick Actions */}
-          <QuickActions />
+          <QuickActionsOptimized />
 
         </div>
       </div>

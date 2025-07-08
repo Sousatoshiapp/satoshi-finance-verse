@@ -1,0 +1,36 @@
+import { lazy, Suspense } from 'react';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
+
+// Lazy load heavy components to improve initial bundle size
+export const LazyQuizCard = lazy(() => import('@/components/quiz-card').then(module => ({ default: module.QuizCard })));
+export const LazyEnhancedQuizCard = lazy(() => import('@/components/quiz/enhanced-quiz-card').then(module => ({ default: module.EnhancedQuizCard })));
+export const LazyTradingInterface = lazy(() => import('@/components/trading/trading-interface').then(module => ({ default: module.TradingInterface })));
+export const LazyPortfolioCharts = lazy(() => import('@/components/portfolio/portfolio-charts').then(module => ({ default: module.PortfolioCharts })));
+export const LazyAdvancedAnalytics = lazy(() => import('@/components/advanced-analytics-dashboard').then(module => ({ default: module.AdvancedAnalyticsDashboard })));
+export const LazyAITradingAssistant = lazy(() => import('@/components/ai-trading-assistant').then(module => ({ default: module.AITradingAssistant })));
+export const LazySocialFeed = lazy(() => import('@/components/social/social-feed').then(module => ({ default: module.SocialFeed })));
+export const LazyLeaderboards = lazy(() => import('@/components/leaderboards').then(module => ({ default: module.Leaderboards })));
+
+// Wrapper component for lazy loaded components
+interface LazyWrapperProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}
+
+export const LazyWrapper = ({ children, fallback }: LazyWrapperProps) => (
+  <Suspense fallback={fallback || <LoadingSpinner />}>
+    {children}
+  </Suspense>
+);
+
+// Higher-order component for lazy loading with error boundary
+export const withLazyLoading = <P extends object>(
+  Component: React.ComponentType<P>,
+  fallback?: React.ReactNode
+) => {
+  return (props: P) => (
+    <LazyWrapper fallback={fallback}>
+      <Component {...props} />
+    </LazyWrapper>
+  );
+};

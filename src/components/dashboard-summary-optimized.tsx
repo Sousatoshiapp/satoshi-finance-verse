@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Sparkles, Trophy, Target } from "@/components/icons/optimized-icons";
+import { useRenderPerformance } from "@/hooks/use-performance-monitor";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface UserStats {
   level: number;
@@ -24,7 +26,8 @@ interface DashboardSummaryProps {
   subscription: Subscription;
 }
 
-const DashboardSummary = memo(function DashboardSummary({ userStats, subscription }: DashboardSummaryProps) {
+const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ userStats, subscription }: DashboardSummaryProps) {
+  useRenderPerformance('DashboardSummaryOptimized');
   // Memoize XP progress calculation
   const xpProgress = useMemo(() => {
     const progress = (userStats.currentXP / userStats.nextLevelXP) * 100;
@@ -106,4 +109,4 @@ const DashboardSummary = memo(function DashboardSummary({ userStats, subscriptio
   );
 });
 
-export { DashboardSummary };
+export { DashboardSummaryOptimized };

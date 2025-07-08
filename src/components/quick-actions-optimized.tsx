@@ -11,6 +11,7 @@ import {
   Target 
 } from "@/components/icons/optimized-icons";
 import { useNavigate } from "react-router-dom";
+import { useRenderPerformance } from "@/hooks/use-performance-monitor";
 
 interface QuickAction {
   id: string;
@@ -22,7 +23,8 @@ interface QuickAction {
   bgGradient: string;
 }
 
-const QuickActions = memo(function QuickActions() {
+const QuickActionsOptimized = memo(function QuickActionsOptimized() {
+  useRenderPerformance('QuickActionsOptimized');
   const navigate = useNavigate();
 
   // Memoize actions configuration
@@ -131,4 +133,4 @@ const QuickActions = memo(function QuickActions() {
   );
 });
 
-export { QuickActions };
+export { QuickActionsOptimized };

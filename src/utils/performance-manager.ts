@@ -129,6 +129,71 @@ export const performanceMonitor = {
   }
 };
 
+// Component performance tracking
+export const trackComponentPerformance = (componentName: string, renderTime: number) => {
+  // Store performance metrics
+  const performanceKey = `perf_${componentName}`;
+  const metrics = cacheManager.get(performanceKey) || [];
+  
+  metrics.push({
+    timestamp: Date.now(),
+    renderTime,
+    memory: (performance as any).memory?.usedJSHeapSize || 0
+  });
+  
+  // Keep only last 10 measurements
+  if (metrics.length > 10) {
+    metrics.splice(0, metrics.length - 10);
+  }
+  
+  cacheManager.set(performanceKey, metrics, 10 * 60 * 1000); // 10 minutes
+  
+  // Log slow renders
+  if (renderTime > 50) {
+    console.warn(`Slow render detected in ${componentName}: ${renderTime}ms`);
+  }
+};
+
+// Frontend optimization utilities
+export const frontendOptimizations = {
+  // Preload critical resources
+  preloadImages: (urls: string[]) => {
+    urls.forEach(url => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = url;
+      document.head.appendChild(link);
+    });
+  },
+
+  // Optimize scroll performance
+  optimizeScrollHandlers: () => {
+    let ticking = false;
+    
+    return (callback: () => void) => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          callback();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+  },
+
+  // Memory cleanup for React components
+  cleanupComponentMemory: () => {
+    // Clear expired cache entries
+    const now = Date.now();
+    for (const [key, value] of cache.entries()) {
+      if (now - value.timestamp > value.ttl) {
+        cache.delete(key);
+      }
+    }
+  }
+};
+
 // Initialize background tasks
 export const initializePerformanceOptimizations = () => {
   // Cache warming task - every 10 minutes
@@ -160,11 +225,36 @@ export const initializePerformanceOptimizations = () => {
       cacheManager.clear();
     }
     
+    // Frontend specific cleanup
+    frontendOptimizations.cleanupComponentMemory();
+    
     // Force garbage collection if available
     if ('gc' in window) {
       (window as any).gc();
     }
   }, 15 * 60 * 1000);
+
+  // Frontend performance monitoring - every 5 minutes
+  backgroundScheduler.addTask('frontend-performance', async () => {
+    // Monitor memory usage
+    if ('memory' in performance) {
+      const memory = (performance as any).memory;
+      const memoryUsage = memory.usedJSHeapSize / 1048576; // MB
+      
+      if (memoryUsage > 150) { // Over 150MB
+        console.warn('High memory usage detected:', memoryUsage, 'MB');
+        frontendOptimizations.cleanupComponentMemory();
+      }
+    }
+    
+    // Check for slow components
+    const performanceEntries = performance.getEntriesByType('measure');
+    const slowMeasures = performanceEntries.filter(entry => entry.duration > 100);
+    
+    if (slowMeasures.length > 0) {
+      console.warn('Slow performance measures detected:', slowMeasures);
+    }
+  }, 5 * 60 * 1000);
 
   backgroundScheduler.start();
   console.log('Performance optimization tasks initialized');
