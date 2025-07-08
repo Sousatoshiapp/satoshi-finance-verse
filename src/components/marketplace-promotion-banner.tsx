@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { X, ShoppingBag, Sparkles, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
@@ -126,11 +127,11 @@ export function MarketplacePromotionBanner() {
               </p>
               
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg font-bold text-green-500">
-                  {currentPromotion.salePrice} 🥕
+                <span className="text-lg font-bold text-green-500 flex items-center gap-1">
+                  {currentPromotion.salePrice} <BeetzIcon size="sm" />
                 </span>
-                <span className="text-sm text-muted-foreground line-through">
-                  {currentPromotion.originalPrice} 🥕
+                <span className="text-sm text-muted-foreground line-through flex items-center gap-1">
+                  {currentPromotion.originalPrice} <BeetzIcon size="xs" />
                 </span>
               </div>
               

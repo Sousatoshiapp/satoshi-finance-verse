@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { Crown, Trophy, Medal, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -291,8 +292,9 @@ export function CompactLeaderboard() {
                 }`}>
                   +{user.weeklyXP}
                 </div>
-                <div className="text-xs text-green-500">
-                  {user.beetz}🥕
+                <div className="text-xs text-green-500 flex items-center gap-1">
+                  {user.beetz}
+                  <BeetzIcon size="xs" />
                 </div>
               </div>
             </div>

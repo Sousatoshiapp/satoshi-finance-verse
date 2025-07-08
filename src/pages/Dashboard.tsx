@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { AvatarSelection } from "@/components/avatar-selection";
 import { AvatarDisplay } from "@/components/avatar-display";
@@ -358,7 +359,7 @@ export default function Dashboard() {
                 onClick={() => navigate('/beetz-info')}
                 style={{ borderWidth: '0.5px' }}
               >
-                <span className="text-sm">🥕</span>
+                <BeetzIcon size="sm" />
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground leading-none">Beetz</div>
                   <div className="text-xs font-bold text-foreground leading-none">{userStats.points}</div>

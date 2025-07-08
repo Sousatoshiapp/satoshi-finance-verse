@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Coins, Gift, ShoppingCart, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +24,7 @@ export default function BeetzInfo() {
             </Button>
             <div className="flex-1">
               <h1 className="text-2xl font-bold flex items-center gap-2">
-                <span className="text-3xl">🥕</span>
+                <BeetzIcon size="lg" />
                 Beetz - Moeda do Satoshi Finance Game
               </h1>
               <p className="text-muted-foreground">Sua moeda virtual para evoluir no jogo</p>
@@ -36,7 +37,9 @@ export default function BeetzInfo() {
         {/* Main Info Card */}
         <Card className="p-6 mb-6 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border-orange-500/20">
           <div className="text-center mb-6">
-            <div className="text-6xl mb-4">🥕</div>
+            <div className="mb-4 flex justify-center">
+              <BeetzIcon size="2xl" />
+            </div>
             <h2 className="text-2xl font-bold text-foreground mb-2">O que são Beetz?</h2>
             <p className="text-muted-foreground">
               Beetz são a moeda virtual do Satoshi Finance Game. Use para comprar avatares, 

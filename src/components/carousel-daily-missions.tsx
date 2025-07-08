@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { Check, Clock, Trophy, Zap, ChevronRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -228,7 +229,7 @@ export function CarouselDailyMissions() {
                               +{mission.xp_reward} XP
                             </div>
                             <div className="flex items-center gap-1 text-orange-500">
-                              🥕 +{mission.beetz_reward} Beetz
+                               <BeetzIcon size="xs" /> +{mission.beetz_reward} Beetz
                             </div>
                           </div>
                         </div>

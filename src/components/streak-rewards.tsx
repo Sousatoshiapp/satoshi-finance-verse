@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { 
   Zap, 
   Flame, 
@@ -21,7 +22,7 @@ interface StreakReward {
   reward_type: 'xp' | 'beetz' | 'loot_box' | 'power_up' | 'badge';
   reward_value: number;
   reward_name: string;
-  icon: string;
+  icon: string | React.ReactElement;
   claimed: boolean;
   special: boolean;
 }
@@ -42,15 +43,15 @@ export function StreakRewards() {
       // Mock streak rewards data - in real app would come from database
       const mockRewards: StreakReward[] = [
         { day: 1, reward_type: 'xp', reward_value: 50, reward_name: '50 XP', icon: '⚡', claimed: true, special: false },
-        { day: 2, reward_type: 'beetz', reward_value: 100, reward_name: '100 Beetz', icon: '🥕', claimed: true, special: false },
+        { day: 2, reward_type: 'beetz', reward_value: 100, reward_name: '100 Beetz', icon: <BeetzIcon size="sm" />, claimed: true, special: false },
         { day: 3, reward_type: 'xp', reward_value: 75, reward_name: '75 XP', icon: '⚡', claimed: true, special: true },
         { day: 4, reward_type: 'power_up', reward_value: 1, reward_name: 'Time Boost', icon: '⏰', claimed: true, special: false },
-        { day: 5, reward_type: 'beetz', reward_value: 200, reward_name: '200 Beetz', icon: '🥕', claimed: true, special: true },
+        { day: 5, reward_type: 'beetz', reward_value: 200, reward_name: '200 Beetz', icon: <BeetzIcon size="sm" />, claimed: true, special: true },
         { day: 6, reward_type: 'loot_box', reward_value: 1, reward_name: 'Rare Loot Box', icon: '📦', claimed: true, special: false },
         { day: 7, reward_type: 'badge', reward_value: 1, reward_name: 'Week Warrior', icon: '🏆', claimed: true, special: true },
         { day: 8, reward_type: 'xp', reward_value: 150, reward_name: '150 XP', icon: '⚡', claimed: false, special: false },
         { day: 9, reward_type: 'power_up', reward_value: 2, reward_name: '2x Hint Power-up', icon: '💡', claimed: false, special: false },
-        { day: 10, reward_type: 'beetz', reward_value: 500, reward_name: '500 Beetz', icon: '🥕', claimed: false, special: true },
+        { day: 10, reward_type: 'beetz', reward_value: 500, reward_name: '500 Beetz', icon: <BeetzIcon size="sm" />, claimed: false, special: true },
         { day: 14, reward_type: 'loot_box', reward_value: 1, reward_name: 'Epic Loot Box', icon: '🎁', claimed: false, special: true },
         { day: 21, reward_type: 'badge', reward_value: 1, reward_name: 'Streak Master', icon: '👑', claimed: false, special: true },
         { day: 30, reward_type: 'badge', reward_value: 1, reward_name: 'Dedication Legend', icon: '🌟', claimed: false, special: true }

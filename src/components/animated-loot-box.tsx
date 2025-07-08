@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { Gift, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -87,7 +88,7 @@ export function AnimatedLootBox({ isAvailable }: AnimatedLootBoxProps) {
   const getPrizeIcon = (type: string) => {
     switch (type) {
       case 'xp': return '⚡';
-      case 'beetz': return '🥕';
+      case 'beetz': return <BeetzIcon size="md" />;
       case 'avatar': return '🤖';
       case 'boost': return '🚀';
       case 'badge': return '🏆';

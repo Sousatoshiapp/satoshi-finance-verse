@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { 
   ShoppingCart, 
   TrendingUp, 
@@ -211,8 +212,8 @@ export function MarketplaceOverview() {
                 <Package className="h-4 w-4 text-orange-500" />
                 <span className="text-sm font-medium">Seus Itens no Mercado</span>
               </div>
-              <div className="text-sm font-bold text-orange-500">
-                {totalValue.toLocaleString()} 🥕
+              <div className="text-sm font-bold text-orange-500 flex items-center gap-1">
+                {totalValue.toLocaleString()} <BeetzIcon size="xs" />
               </div>
             </div>
           </div>
@@ -251,8 +252,8 @@ export function MarketplaceOverview() {
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <div className="font-bold text-sm">
-                          {item.current_price.toLocaleString()} 🥕
+                        <div className="font-bold text-sm flex items-center gap-1">
+                          {item.current_price.toLocaleString()} <BeetzIcon size="xs" />
                         </div>
                         <div className={cn("flex items-center gap-1 text-xs", 
                           item.price_change_24h > 0 ? "text-green-500" : "text-red-500"
