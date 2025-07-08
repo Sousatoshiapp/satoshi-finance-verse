@@ -34,7 +34,16 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         message: `${data} bots tiveram seus nicknames atualizados com sucesso`,
-        updated_count: data
+        updated_count: data,
+        progress: {
+          processed: data,
+          total: data,
+          percentage: 100
+        },
+        updated: data,
+        failed: 0,
+        remaining: 0,
+        sample_updates: []
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 

@@ -21,11 +21,20 @@ serve(async (req) => {
     console.log('Starting bot realism enhancement...');
 
     // Execute the enhance_bot_realism function
-    const { error } = await supabaseClient.rpc('enhance_bot_realism');
+    const { data, error } = await supabaseClient.rpc('enhance_bot_realism');
 
     if (error) {
       console.error('Error enhancing bot realism:', error);
-      throw error;
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: error.message 
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
+          status: 500 
+        }
+      );
     }
 
     console.log('Bot realism enhancement completed successfully');

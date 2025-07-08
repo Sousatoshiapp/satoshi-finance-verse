@@ -58,19 +58,19 @@ export function BotNicknameManager() {
       if (error) throw error;
 
       const newProgress = {
-        processed: data.progress.processed,
-        total: data.progress.total,
-        percentage: data.progress.percentage,
-        updated: progress.updated + data.updated,
-        failed: progress.failed + data.failed,
-        remaining: data.remaining,
-        isRunning: data.remaining > 0 && !isPaused,
+        processed: data.progress?.processed || data.updated_count || 0,
+        total: data.progress?.total || data.updated_count || 0,
+        percentage: data.progress?.percentage || 100,
+        updated: progress.updated + (data.updated || data.updated_count || 0),
+        failed: progress.failed + (data.failed || 0),
+        remaining: data.remaining || 0,
+        isRunning: (data.remaining || 0) > 0 && !isPaused,
         sample_updates: data.sample_updates || []
       };
 
       setProgress(newProgress);
       
-      addLog(`Lote processado: ${data.updated} atualizados, ${data.failed} falharam`);
+      addLog(`Lote processado: ${data.updated_count || 0} atualizados, ${data.failed || 0} falharam`);
       
       if (data.sample_updates?.length > 0) {
         data.sample_updates.forEach((update: any) => {
@@ -78,10 +78,10 @@ export function BotNicknameManager() {
         });
       }
 
-      if (data.remaining > 0 && !isPaused) {
+      if ((data.remaining || 0) > 0 && !isPaused) {
         // Continuar com próximo lote após pequeno delay
         setTimeout(() => {
-          updateBotNicknames(data.progress.processed);
+          updateBotNicknames(data.progress?.processed || 0);
         }, 1000);
       } else {
         setProgress(prev => ({ ...prev, isRunning: false }));
