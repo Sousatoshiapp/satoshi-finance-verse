@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
-import { Check, Clock, Trophy, Zap } from "lucide-react";
+import { Check, Clock, Trophy, Zap, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 export function DailyMissions() {
+  const navigate = useNavigate();
   const { 
     missions, 
     loading, 
@@ -17,6 +19,35 @@ export function DailyMissions() {
     getDifficultyColor,
     getCategoryIcon
   } = useDailyMissions();
+
+  const handleMissionClick = (mission: any) => {
+    if (mission.completed) return;
+    
+    // Redirect based on mission category
+    switch (mission.category) {
+      case 'quiz':
+        navigate('/quiz');
+        break;
+      case 'social':
+        if (mission.mission_type === 'duel_wins') {
+          navigate('/duels');
+        } else {
+          navigate('/social');
+        }
+        break;
+      case 'streak':
+        // Already handled by daily login
+        break;
+      case 'shop':
+        navigate('/store');
+        break;
+      case 'exploration':
+        navigate('/satoshi-city');
+        break;
+      default:
+        navigate('/quiz');
+    }
+  };
 
   if (loading) {
     return (
@@ -85,13 +116,14 @@ export function DailyMissions() {
         {missions.map((mission) => (
           <div
             key={mission.id}
+            onClick={() => handleMissionClick(mission)}
             className={cn(
-              "border rounded-lg p-4 transition-all duration-200 hover:shadow-md",
+              "border rounded-lg p-4 transition-all duration-200 hover:shadow-md cursor-pointer hover:scale-[1.02]",
               mission.completed 
-                ? "bg-green-500/10 border-green-500/30" 
+                ? "bg-green-500/10 border-green-500/30 cursor-default" 
                 : mission.is_weekend_special
-                ? "bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30"
-                : "bg-card border-border hover:border-primary/30"
+                ? "bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 hover:border-purple-500/50"
+                : "bg-card border-border hover:border-primary/50"
             )}
           >
             <div className="flex items-start justify-between">
@@ -154,14 +186,17 @@ export function DailyMissions() {
                 </div>
               </div>
               
-              {/* Status Icon */}
-              <div className="ml-2">
+              {/* Status Icon and Arrow */}
+              <div className="ml-2 flex items-center gap-2">
                 {mission.completed ? (
                   <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
                     <Check className="h-3 w-3 text-white" />
                   </div>
                 ) : (
-                  <div className="w-6 h-6 rounded-full border-2 border-muted"></div>
+                  <>
+                    <div className="w-6 h-6 rounded-full border-2 border-muted"></div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </>
                 )}
               </div>
             </div>

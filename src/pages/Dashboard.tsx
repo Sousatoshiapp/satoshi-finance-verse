@@ -15,6 +15,9 @@ import { SubscriptionIndicator } from "@/components/subscription-indicator";
 import { DailyMissions } from "@/components/daily-missions";
 import { LootBoxes } from "@/components/loot-boxes";
 import { Leaderboards } from "@/components/leaderboards";
+import { AchievementsShowcase } from "@/components/achievements-showcase";
+import { SocialChallenges } from "@/components/social-challenges";
+import { PlayerStats } from "@/components/player-stats";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useNavigate } from "react-router-dom";
@@ -386,6 +389,22 @@ export default function Dashboard() {
           {/* Leaderboards */}
           <div className="mb-6">
             <Leaderboards />
+          </div>
+
+          {/* Fase 2 - Componentes Avançados */}
+          {/* Player Stats */}
+          <div className="mb-6">
+            <PlayerStats />
+          </div>
+
+          {/* Achievements Showcase */}
+          <div className="mb-6">
+            <AchievementsShowcase />
+          </div>
+
+          {/* Social Challenges */}
+          <div className="mb-6">
+            <SocialChallenges />
           </div>
 
           {/* Tournament Carousel */}
