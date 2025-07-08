@@ -48,11 +48,12 @@ export default function Leaderboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'xp' | 'streak' | 'level' | 'points'>('xp');
   const [timeFilter, setTimeFilter] = useState<'week' | 'month' | 'all'>('all');
+  const [displayLimit, setDisplayLimit] = useState(50);
   const navigate = useNavigate();
 
   useEffect(() => {
     loadData();
-  }, [timeFilter]);
+  }, [timeFilter, displayLimit]);
 
   const loadData = async () => {
     setLoading(true);
@@ -98,7 +99,7 @@ export default function Leaderboard() {
           avatar:avatars(name, image_url)
         `)
         .order('xp', { ascending: false })
-        .limit(50);
+        .limit(displayLimit);
 
       // Streak Leaderboard  
       const { data: streakData } = await supabase
@@ -108,7 +109,7 @@ export default function Leaderboard() {
           avatar:avatars(name, image_url)
         `)
         .order('streak', { ascending: false })
-        .limit(50);
+        .limit(displayLimit);
 
       // Level Leaderboard
       const { data: levelData } = await supabase
@@ -118,7 +119,7 @@ export default function Leaderboard() {
           avatar:avatars(name, image_url)
         `)
         .order('level', { ascending: false })
-        .limit(50);
+        .limit(displayLimit);
 
       // Points Leaderboard
       const { data: pointsData } = await supabase
@@ -128,7 +129,7 @@ export default function Leaderboard() {
           avatar:avatars(name, image_url)
         `)
         .order('points', { ascending: false })
-        .limit(50);
+        .limit(displayLimit);
 
       setLeaderboards({
         xp: (xpData || []).map((user, index) => ({ ...user, rank: index + 1 })),
@@ -349,7 +350,20 @@ export default function Leaderboard() {
                           </div>
                         </div>
                       ))}
-                    </div>
+                     </div>
+                     
+                     {/* Load More Button */}
+                     {getAllUsers().length === displayLimit && (
+                       <div className="mt-6 text-center">
+                         <Button 
+                           variant="outline" 
+                           onClick={() => setDisplayLimit(prev => prev + 50)}
+                           className="px-8"
+                         >
+                           Carregar mais 50 usuários
+                         </Button>
+                       </div>
+                     )}
                   </Card>
                 </>
               )}
