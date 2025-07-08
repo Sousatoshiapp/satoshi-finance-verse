@@ -193,6 +193,38 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_activity_log: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          bot_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          bot_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          bot_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_activity_log_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
           created_at: string
@@ -1141,6 +1173,7 @@ export type Database = {
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
           id: string
+          is_bot: boolean | null
           level: number | null
           nickname: string
           points: number
@@ -1161,6 +1194,7 @@ export type Database = {
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
           id?: string
+          is_bot?: boolean | null
           level?: number | null
           nickname: string
           points?: number
@@ -1181,6 +1215,7 @@ export type Database = {
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
           id?: string
+          is_bot?: boolean | null
           level?: number | null
           nickname?: string
           points?: number
@@ -2564,6 +2599,16 @@ export type Database = {
       check_duel_limit: {
         Args: { profile_id: string }
         Returns: boolean
+      }
+      generate_bot_profile: {
+        Args: { bot_count?: number }
+        Returns: {
+          bot_id: string
+          nickname: string
+          level: number
+          xp: number
+          points: number
+        }[]
       }
       generate_daily_missions: {
         Args: Record<PropertyKey, never>
