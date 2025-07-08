@@ -18,6 +18,10 @@ import { Leaderboards } from "@/components/leaderboards";
 import { AchievementsShowcase } from "@/components/achievements-showcase";
 import { SocialChallenges } from "@/components/social-challenges";
 import { PlayerStats } from "@/components/player-stats";
+import { WeeklyTournaments } from "@/components/weekly-tournaments";
+import { GuildSystem } from "@/components/guild-system";
+import { MarketplaceOverview } from "@/components/marketplace-overview";
+import { StreakRewards } from "@/components/streak-rewards";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useNavigate } from "react-router-dom";
@@ -405,6 +409,27 @@ export default function Dashboard() {
           {/* Social Challenges */}
           <div className="mb-6">
             <SocialChallenges />
+          </div>
+
+          {/* Fase 3 - Componentes Avançados de Elite */}
+          {/* Weekly Tournaments */}
+          <div className="mb-6">
+            <WeeklyTournaments />
+          </div>
+
+          {/* Guild System */}
+          <div className="mb-6">
+            <GuildSystem />
+          </div>
+
+          {/* Marketplace Overview */}
+          <div className="mb-6">
+            <MarketplaceOverview />
+          </div>
+
+          {/* Streak Rewards */}
+          <div className="mb-6">
+            <StreakRewards />
           </div>
 
           {/* Tournament Carousel */}
