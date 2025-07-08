@@ -9,6 +9,7 @@ import { AdminPasswordProtection } from "@/components/admin-password-protection"
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { LanguageSelector } from "@/components/admin/language-selector";
 import { BotAchievementManager } from "@/components/admin/bot-achievement-manager";
+import { SponsorAccessManager } from "@/components/admin/sponsor-access-manager";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Settings, Save, RefreshCw, Database, Shield, 
@@ -215,6 +216,19 @@ export default function AdminSettings() {
 
               {/* Bot Achievement Manager */}
               <BotAchievementManager />
+
+              {/* Sponsor Access Manager */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-orange-500" />
+                    Gerenciamento de Acesso de Sponsors
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <SponsorAccessManager />
+                </CardContent>
+              </Card>
 
               {/* Settings Sections */}
               <div className="space-y-6">

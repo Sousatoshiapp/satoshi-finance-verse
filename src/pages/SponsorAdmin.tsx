@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AdminPasswordProtection } from "@/components/admin-password-protection";
 import { 
   Building2, BarChart3, Calendar, Store, Users, TrendingUp,
-  DollarSign, Target, Crown, Zap
+  DollarSign, Target, Crown, Zap, Settings
 } from "lucide-react";
 
 interface SponsorAccess {
@@ -150,13 +150,26 @@ export default function SponsorAdmin() {
     return (
       <AdminPasswordProtection>
         <div className="flex items-center justify-center min-h-screen">
-          <Card className="max-w-md w-full">
+          <Card className="max-w-2xl w-full">
             <CardContent className="p-8 text-center">
               <Building2 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
               <h2 className="text-xl font-bold mb-2">Acesso Negado</h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground mb-6">
                 Você não possui acesso administrativo a nenhum distrito patrocinado.
               </p>
+              <div className="text-sm text-muted-foreground mb-4">
+                Para configurar acessos de sponsor admin, acesse:
+              </div>
+              <Button 
+                onClick={() => window.location.href = '/admin/settings'}
+                className="mb-4"
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                Configurações do Sistema
+              </Button>
+              <div className="text-xs text-muted-foreground">
+                Procure pela seção "Gerenciamento de Acesso de Sponsors"
+              </div>
             </CardContent>
           </Card>
         </div>
