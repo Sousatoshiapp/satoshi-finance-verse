@@ -12,7 +12,11 @@ import { CompactDailyRewards } from "@/components/compact-daily-rewards";
 import { TournamentCarousel } from "@/components/tournaments/tournament-carousel";
 import { DuelPlaygroundGrid } from "@/components/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/subscription-indicator";
+import { DailyMissions } from "@/components/daily-missions";
+import { LootBoxes } from "@/components/loot-boxes";
+import { Leaderboards } from "@/components/leaderboards";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useNavigate } from "react-router-dom";
 import { lessons } from "@/data/lessons";
 import { supabase } from "@/integrations/supabase/client";
@@ -364,6 +368,21 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
+
+          {/* Daily Missions */}
+          <div className="mb-6">
+            <DailyMissions />
+          </div>
+
+          {/* Loot Boxes */}
+          <div className="mb-6">
+            <LootBoxes />
+          </div>
+
+          {/* Leaderboards */}
+          <div className="mb-6">
+            <Leaderboards />
+          </div>
 
           {/* Tournament Carousel */}
           <TournamentCarousel />

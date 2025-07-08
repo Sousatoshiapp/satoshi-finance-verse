@@ -2530,6 +2530,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_daily_loot_box: {
+        Args: { profile_id: string }
+        Returns: string
+      }
       award_xp: {
         Args: { profile_id: string; xp_amount: number; activity_type?: string }
         Returns: {
@@ -2567,9 +2571,35 @@ export type Database = {
         Args: { event_type: string; user_id: string; event_data?: Json }
         Returns: undefined
       }
+      open_loot_box: {
+        Args: { profile_id: string; user_loot_box_id: string }
+        Returns: {
+          items: Json
+        }[]
+      }
+      update_mission_progress: {
+        Args: {
+          profile_id: string
+          mission_type_param: string
+          progress_amount?: number
+        }
+        Returns: {
+          mission_completed: boolean
+          rewards_earned: Json
+        }[]
+      }
       update_user_streak: {
         Args: { profile_id: string; activity_date?: string }
         Returns: number
+      }
+      update_weekly_leaderboard: {
+        Args: {
+          profile_id: string
+          xp_gained?: number
+          quiz_points?: number
+          duel_win?: boolean
+        }
+        Returns: undefined
       }
     }
     Enums: {
