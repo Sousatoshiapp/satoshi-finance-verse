@@ -339,7 +339,7 @@ export default function Profile() {
     { 
       label: 'Beetz', 
       value: user?.points || 0, 
-      icon: <BeetzIcon size="sm" />,
+      icon: <BeetzIcon size="lg" />,
       route: '/beetz-info'
     }
   ];

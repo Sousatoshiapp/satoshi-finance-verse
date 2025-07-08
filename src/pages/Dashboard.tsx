@@ -359,7 +359,7 @@ export default function Dashboard() {
                 onClick={() => navigate('/beetz-info')}
                 style={{ borderWidth: '0.5px' }}
               >
-                <BeetzIcon size="sm" />
+                <BeetzIcon size="md" />
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground leading-none">Beetz</div>
                   <div className="text-xs font-bold text-foreground leading-none">{userStats.points}</div>
