@@ -212,10 +212,11 @@ export default function Dashboard() {
                       showBadge={true}
                       evolutionLevel={userAvatar.evolution_level || 1}
                     />
-                    {/* Much Smaller Level Badge */}
-                    <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2">
-                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md">
-                        Nível {userStats.level}
+                    {/* Level Badge - Positioned Right Side */}
+                    <div className="absolute -bottom-0.5 right-2">
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
+                        <span>Nível</span>
+                        <span className="font-bold">{userStats.level}</span>
                       </div>
                     </div>
                   </div>
@@ -225,9 +226,10 @@ export default function Dashboard() {
                   <div className="w-32 h-32 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
                     <div className="text-5xl">🤖</div>
                   </div>
-                  <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md">
-                      Nível {userStats.level}
+                  <div className="absolute -bottom-0.5 right-2">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
+                      <span>Nível</span>
+                      <span className="font-bold">{userStats.level}</span>
                     </div>
                   </div>
                 </div>
