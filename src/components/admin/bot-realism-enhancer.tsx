@@ -8,33 +8,80 @@ import { useToast } from "@/hooks/use-toast";
 
 export function BotRealismEnhancer() {
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState({ processed: 0, total: 0, percentage: 0 });
   const [result, setResult] = useState<string | null>(null);
+  const [logs, setLogs] = useState<string[]>([]);
   const { toast } = useToast();
+
+  const addLog = (message: string) => {
+    const timestamp = new Date().toLocaleTimeString('pt-BR');
+    setLogs(prev => [`[${timestamp}] ${message}`, ...prev.slice(0, 9)]); // Keep only 10 logs
+  };
 
   const enhanceBotRealism = async () => {
     setLoading(true);
     setResult(null);
+    setProgress({ processed: 0, total: 0, percentage: 0 });
+    setLogs([]);
 
     try {
-      const { data, error } = await supabase.functions.invoke('enhance-bot-realism');
+      let offset = 0;
+      const batchSize = 50;
+      let hasMore = true;
+      let totalProcessed = 0;
 
-      if (error) {
-        throw error;
+      addLog('Iniciando aprimoramento do realismo dos bots...');
+
+      while (hasMore) {
+        addLog(`Processando lote ${Math.floor(offset / batchSize) + 1}...`);
+
+        const { data, error } = await supabase.functions.invoke('enhance-bot-realism-batch', {
+          body: { batchSize, offset }
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data.success) {
+          throw new Error(data.error || 'Erro desconhecido no processamento');
+        }
+
+        totalProcessed += data.processed;
+        hasMore = data.hasMore;
+        offset = data.nextOffset;
+
+        setProgress({
+          processed: data.progress.processed,
+          total: data.progress.total,
+          percentage: data.progress.percentage
+        });
+
+        addLog(`Lote concluído: ${data.processed} bots processados`);
+
+        // Small delay between batches to prevent overload
+        if (hasMore) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
 
-      setResult('Realismo dos bots aprimorado com sucesso!');
+      setResult(`Realismo aprimorado com sucesso! ${totalProcessed} bots processados.`);
+      addLog(`✅ Processo concluído! Total: ${totalProcessed} bots processados`);
+      
       toast({
         title: "Sucesso",
-        description: "Dados realistas foram adicionados aos bots",
+        description: `${totalProcessed} bots tiveram seu realismo aprimorado`,
         variant: "default"
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error enhancing bot realism:', error);
       setResult('Erro ao aprimorar realismo dos bots');
+      addLog(`❌ Erro: ${error.message}`);
+      
       toast({
         title: "Erro",
-        description: "Falha ao aprimorar realismo dos bots",
+        description: error.message || "Falha ao aprimorar realismo dos bots",
         variant: "destructive"
       });
     } finally {
@@ -101,6 +148,42 @@ export function BotRealismEnhancer() {
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {loading ? 'Aprimorando Bots...' : 'Aprimorar Realismo dos Bots'}
         </Button>
+
+        {/* Progress Bar */}
+        {progress.total > 0 && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Progresso: {progress.processed}/{progress.total} bots</span>
+              <span>{progress.percentage}%</span>
+            </div>
+            <div className="w-full bg-muted rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress.percentage}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Logs */}
+        {logs.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="font-medium text-sm">Logs do Sistema:</h4>
+            <div className="bg-muted/30 p-3 rounded-lg border max-h-32 overflow-auto">
+              <div className="space-y-1 font-mono text-xs">
+                {logs.map((log, index) => (
+                  <div key={index} className={`${
+                    log.includes('❌') ? 'text-destructive' :
+                    log.includes('✅') ? 'text-success' :
+                    'text-muted-foreground'
+                  }`}>
+                    {log}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {result && (
           <Alert>

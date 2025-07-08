@@ -2631,6 +2631,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      enhance_bot_realism_batch: {
+        Args: { batch_size?: number; offset_value?: number }
+        Returns: {
+          processed: number
+          total_bots: number
+          has_more: boolean
+          success: boolean
+          error_message: string
+        }[]
+      }
       generate_bot_profile: {
         Args: { bot_count?: number }
         Returns: {

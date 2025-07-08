@@ -18,13 +18,19 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    console.log('Starting bot nickname update...');
+    // Get request parameters
+    const { batchSize = 50, offset = 0 } = await req.json().catch(() => ({}));
 
-    // Execute the update_bot_nicknames function
-    const { data, error } = await supabaseClient.rpc('update_bot_nicknames');
+    console.log(`Processing bot realism batch: size=${batchSize}, offset=${offset}`);
+
+    // Execute the batch processing function
+    const { data, error } = await supabaseClient.rpc('enhance_bot_realism_batch', {
+      batch_size: batchSize,
+      offset_value: offset
+    });
 
     if (error) {
-      console.error('Error updating bot nicknames:', error);
+      console.error('Error enhancing bot realism batch:', error);
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -37,27 +43,23 @@ serve(async (req) => {
       );
     }
 
-    const updatedCount = data || 0;
-    const message = updatedCount === 0 
-      ? 'Todos os bots já possuem nomes realistas. Nenhuma atualização necessária.'
-      : `${updatedCount} bots tiveram seus nicknames atualizados com sucesso`;
+    const result = data[0]; // Function returns a single row with results
 
-    console.log(`Bot nickname update completed. Updated: ${updatedCount}`);
+    console.log(`Batch completed: processed=${result.processed}, total=${result.total_bots}, has_more=${result.has_more}`);
 
     return new Response(
       JSON.stringify({ 
-        success: true, 
-        message: message,
-        updated_count: updatedCount,
+        success: result.success,
+        processed: result.processed,
+        total: result.total_bots,
+        hasMore: result.has_more,
+        nextOffset: offset + batchSize,
+        error: result.error_message || null,
         progress: {
-          processed: updatedCount,
-          total: updatedCount,
-          percentage: 100
-        },
-        updated: updatedCount,
-        failed: 0,
-        remaining: 0,
-        sample_updates: []
+          processed: offset + result.processed,
+          total: result.total_bots,
+          percentage: Math.round(((offset + result.processed) / result.total_bots) * 100)
+        }
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }, 
@@ -66,7 +68,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error in update-bot-nicknames function:', error);
+    console.error('Error in enhance-bot-realism-batch function:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
