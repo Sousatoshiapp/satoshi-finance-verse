@@ -259,26 +259,28 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          {/* XP and Beetz Cards - Compact with Black Background */}
+          {/* XP and Beetz Cards - Transparent with Green Border */}
           <div className="grid grid-cols-2 gap-2 mb-6">
             {/* XP Card */}
             <div 
-              className="bg-black/50 backdrop-blur-sm rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-white/10"
+              className="bg-transparent rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-[#adff2f]"
               onClick={() => navigate('/levels')}
+              style={{ borderWidth: '1px' }}
             >
               <div className="text-lg mb-1">⚡</div>
-              <div className="text-xs text-white/70 mb-1">XP</div>
-              <div className="text-sm font-bold text-white">{userStats.currentXP}</div>
+              <div className="text-xs text-muted-foreground mb-1">XP</div>
+              <div className="text-sm font-bold text-foreground">{userStats.currentXP}</div>
             </div>
 
             {/* Beetz Card */}
             <div 
-              className="bg-black/50 backdrop-blur-sm rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-white/10"
+              className="bg-transparent rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-[#adff2f]"
               onClick={() => navigate('/beetz-info')}
+              style={{ borderWidth: '1px' }}
             >
               <div className="text-lg mb-1">🥕</div>
-              <div className="text-xs text-white/70 mb-1">Beetz</div>
-              <div className="text-sm font-bold text-white">{userStats.currentXP * 2}</div>
+              <div className="text-xs text-muted-foreground mb-1">Beetz</div>
+              <div className="text-sm font-bold text-foreground">{userStats.currentXP * 2}</div>
             </div>
           </div>
 
