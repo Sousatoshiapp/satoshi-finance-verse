@@ -12,20 +12,18 @@ import { CompactDailyRewards } from "@/components/compact-daily-rewards";
 import { TournamentCarousel } from "@/components/tournaments/tournament-carousel";
 import { DuelPlaygroundGrid } from "@/components/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/subscription-indicator";
-import { DailyMissions } from "@/components/daily-missions";
-import { LootBoxes } from "@/components/loot-boxes";
-import { Leaderboards } from "@/components/leaderboards";
-import { AchievementsShowcase } from "@/components/achievements-showcase";
-import { SocialChallenges } from "@/components/social-challenges";
-import { PlayerStats } from "@/components/player-stats";
-import { WeeklyTournaments } from "@/components/weekly-tournaments";
+import { CarouselDailyMissions } from "@/components/carousel-daily-missions";
+import { AnimatedLootBox } from "@/components/animated-loot-box";
+import { CompactLeaderboard } from "@/components/compact-leaderboard";
+import { CarouselSocialChallenges } from "@/components/carousel-social-challenges";
+import { CarouselWeeklyTournaments } from "@/components/carousel-weekly-tournaments";
 import { GuildSystem } from "@/components/guild-system";
-import { MarketplaceOverview } from "@/components/marketplace-overview";
-import { StreakRewards } from "@/components/streak-rewards";
-import { AITradingAssistant } from "@/components/ai-trading-assistant";
-import { SocialTradingNetwork } from "@/components/social-trading-network";
-import { AdvancedAnalyticsDashboard } from "@/components/advanced-analytics-dashboard";
-import { VIPMentorshipProgram } from "@/components/vip-mentorship-program";
+import { MarketplacePromotionBanner } from "@/components/marketplace-promotion-banner";
+import { CompactStreakRewards } from "@/components/compact-streak-rewards";
+import { BannerAIAssistant } from "@/components/banner-ai-assistant";
+import { BannerSocialTrading } from "@/components/banner-social-trading";
+import { BannerAnalytics } from "@/components/banner-analytics";
+import { BannerVIPMentorship } from "@/components/banner-vip-mentorship";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useNavigate } from "react-router-dom";
@@ -384,41 +382,33 @@ export default function Dashboard() {
               )}
             </div>
 
-          {/* Daily Missions */}
+          {/* Daily Missions Carousel */}
           <div className="mb-6">
-            <DailyMissions />
+            <CarouselDailyMissions />
           </div>
 
-          {/* Loot Boxes */}
+          {/* Torneios Épicos, Duelo Financeiro, Playground */}
           <div className="mb-6">
-            <LootBoxes />
+            <TournamentCarousel />
+          </div>
+          
+          <div className="mb-6">
+            <DuelPlaygroundGrid />
           </div>
 
-          {/* Leaderboards */}
+          {/* Weekly Ranking - Compact */}
           <div className="mb-6">
-            <Leaderboards />
+            <CompactLeaderboard />
           </div>
 
-          {/* Fase 2 - Componentes Avançados */}
-          {/* Player Stats */}
+          {/* Social Challenges Carousel */}
           <div className="mb-6">
-            <PlayerStats />
+            <CarouselSocialChallenges />
           </div>
 
-          {/* Achievements Showcase */}
+          {/* Weekly Tournaments Carousel */}
           <div className="mb-6">
-            <AchievementsShowcase />
-          </div>
-
-          {/* Social Challenges */}
-          <div className="mb-6">
-            <SocialChallenges />
-          </div>
-
-          {/* Fase 3 - Componentes Avançados de Elite */}
-          {/* Weekly Tournaments */}
-          <div className="mb-6">
-            <WeeklyTournaments />
+            <CarouselWeeklyTournaments />
           </div>
 
           {/* Guild System */}
@@ -426,36 +416,33 @@ export default function Dashboard() {
             <GuildSystem />
           </div>
 
-          {/* Marketplace Overview */}
+          {/* Streak Rewards - Compact */}
           <div className="mb-6">
-            <MarketplaceOverview />
+            <CompactStreakRewards />
           </div>
 
-          {/* Streak Rewards */}
-          <div className="mb-6">
-            <StreakRewards />
+          {/* AI Components as Banners */}
+          <div className="mb-4">
+            <BannerAIAssistant />
           </div>
 
-          {/* Fase 4 - Componentes de Elite Suprema */}
-          {/* AI Trading Assistant */}
-          <div className="mb-6">
-            <AITradingAssistant />
+          <div className="mb-4">
+            <BannerSocialTrading />
           </div>
 
-          {/* Social Trading Network */}
-          <div className="mb-6">
-            <SocialTradingNetwork />
+          <div className="mb-4">
+            <BannerAnalytics />
           </div>
 
-          {/* Advanced Analytics Dashboard */}
           <div className="mb-6">
-            <AdvancedAnalyticsDashboard />
+            <BannerVIPMentorship />
           </div>
 
-          {/* VIP Mentorship Program */}
-          <div className="mb-6">
-            <VIPMentorshipProgram />
-          </div>
+          {/* Marketplace Promotion Banner (appears on login) */}
+          <MarketplacePromotionBanner />
+          
+          {/* Animated Loot Box (when available) */}
+          <AnimatedLootBox isAvailable={true} />
 
           {/* Tournament Carousel */}
           <TournamentCarousel />
