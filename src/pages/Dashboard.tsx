@@ -391,10 +391,6 @@ export default function Dashboard() {
           <div className="mb-6">
             <TournamentCarousel />
           </div>
-          
-          <div className="mb-6">
-            <DuelPlaygroundGrid />
-          </div>
 
           {/* Weekly Ranking - Compact */}
           <div className="mb-6">
