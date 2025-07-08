@@ -30,11 +30,12 @@ const getGreeting = () => {
 
 export default function Dashboard() {
   const [userStats, setUserStats] = useState({
-    level: 3,
-    currentXP: 245,
-    nextLevelXP: 400,
-    streak: 7,
-    completedLessons: 3
+    level: 1,
+    currentXP: 0,
+    nextLevelXP: 100,
+    streak: 0,
+    completedLessons: 0,
+    points: 0
   });
   const [userNickname, setUserNickname] = useState('Estudante');
   const [greeting, setGreeting] = useState(getGreeting());
@@ -116,7 +117,8 @@ export default function Dashboard() {
         currentXP: user.xp || 0,
         nextLevelXP: (user.level || 1) * 100,
         streak: user.streak || 0,
-        completedLessons: user.completedLessons || 0
+        completedLessons: user.completedLessons || 0,
+        points: user.points || 0
       });
       setUserNickname(user.nickname || 'Estudante');
     }
@@ -150,7 +152,8 @@ export default function Dashboard() {
           currentXP: profile.xp || 0,
           nextLevelXP: (profile.level || 1) * 100,
           streak: profile.streak || 0,
-          completedLessons: profile.completed_lessons || 0
+          completedLessons: profile.completed_lessons || 0,
+          points: profile.points || 0
         });
         setUserNickname(profile.nickname || 'Estudante');
         
@@ -284,7 +287,7 @@ export default function Dashboard() {
                 <span className="text-sm">🥕</span>
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground leading-none">Beetz</div>
-                  <div className="text-xs font-bold text-foreground leading-none">{userStats.currentXP * 2}</div>
+                  <div className="text-xs font-bold text-foreground leading-none">{userStats.points}</div>
                 </div>
               </div>
             </div>

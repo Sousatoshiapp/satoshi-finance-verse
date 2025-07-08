@@ -7,6 +7,8 @@ interface DashboardSummaryProps {
     streak: number;
     currentXP: number;
     level: number;
+    points: number;
+    completedLessons: number;
   };
   subscription: any;
 }
@@ -50,7 +52,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
           >
             <div className="text-3xl mb-2">🎁</div>
             <div className="text-xs text-muted-foreground mb-1">Recompensas</div>
-            <div className="text-lg font-bold text-foreground">3/5</div>
+            <div className="text-lg font-bold text-foreground">{userStats.completedLessons}/5</div>
             <div className="text-xs text-green-600 font-medium">missões</div>
           </div>
 
@@ -61,7 +63,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
           >
             <div className="text-3xl mb-2">🏆</div>
             <div className="text-xs text-muted-foreground mb-1">Conquistas</div>
-            <div className="text-lg font-bold text-foreground">12</div>
+            <div className="text-lg font-bold text-foreground">{Math.min(userStats.level * 2, 12)}</div>
             <div className="text-xs text-purple-600 font-medium">badges</div>
           </div>
         </div>

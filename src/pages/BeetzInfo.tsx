@@ -1,199 +1,152 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Coins, ShoppingCart, Gamepad2, Users, Zap, Trophy, TrendingUp } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { FloatingNavbar } from "@/components/floating-navbar";
+import { ArrowLeft, Coins, Gift, ShoppingCart, Trophy } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function BeetzInfo() {
   const navigate = useNavigate();
 
-  const useCases = [
-    {
-      icon: ShoppingCart,
-      title: "Loja Digital",
-      description: "Compre avatares, skins, acessórios e temas exclusivos",
-      color: "text-blue-500"
-    },
-    {
-      icon: Zap,
-      title: "Boosts & Power-ups",
-      description: "Multiplicadores de XP, proteção de streak e vantagens",
-      color: "text-yellow-500"
-    },
-    {
-      icon: Gamepad2,
-      title: "Playground Trading",
-      description: "Funcionalidades premium de investimento virtual",
-      color: "text-green-500"
-    },
-    {
-      icon: Users,
-      title: "Competições",
-      description: "Taxa de inscrição em torneios e duelos premium",
-      color: "text-purple-500"
-    },
-    {
-      icon: Trophy,
-      title: "Assinaturas",
-      description: "Planos mensais com benefícios exclusivos",
-      color: "text-orange-500"
-    },
-    {
-      icon: TrendingUp,
-      title: "Staking & Rewards",
-      description: "Ganhe recompensas passivas apostando seus Beetz",
-      color: "text-cyan-500"
-    }
-  ];
-
-  const howToEarn = [
-    "🎯 Complete quizzes e lições",
-    "🔥 Mantenha seu streak de estudos",
-    "🏆 Participe de competições",
-    "🎁 Colete recompensas diárias",
-    "👥 Interaja socialmente",
-    "📈 Use o playground de investimentos"
-  ];
-
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(-1)}
-            className="text-foreground hover:bg-muted"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-beetz rounded-full flex items-center justify-center">
-              <span className="text-2xl">🥕</span>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Beetz</h1>
-              <p className="text-sm text-muted-foreground">A moeda do ecossistema Satoshi</p>
+      {/* Header */}
+      <div className="px-4 py-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/dashboard')}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold flex items-center gap-2">
+                <span className="text-3xl">🥕</span>
+                Beetz - Moeda do Satoshi Finance Game
+              </h1>
+              <p className="text-muted-foreground">Sua moeda virtual para evoluir no jogo</p>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Main Info */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Coins className="h-5 w-5 text-beetz" />
-              O que são os Beetz?
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground leading-relaxed">
-              Os <strong className="text-beetz">Beetz</strong> são a criptomoeda oficial da Satoshi Finance Game. 
-              Inspirados na beterraba, símbolo de crescimento e sustentabilidade, os Beetz representam 
-              o valor que você cria através do aprendizado e engajamento na nossa plataforma.
+      <div className="max-w-4xl mx-auto px-4">
+        {/* Main Info Card */}
+        <Card className="p-6 mb-6 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border-orange-500/20">
+          <div className="text-center mb-6">
+            <div className="text-6xl mb-4">🥕</div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">O que são Beetz?</h2>
+            <p className="text-muted-foreground">
+              Beetz são a moeda virtual do Satoshi Finance Game. Use para comprar avatares, 
+              power-ups, participar de torneios especiais e muito mais!
             </p>
-            
-            <div className="bg-muted/50 rounded-lg p-4">
-              <p className="text-sm text-foreground font-medium mb-2">💡 Por que "Beetz"?</p>
-              <p className="text-sm text-muted-foreground">
-                As beterrabas crescem underground, assim como o conhecimento financeiro cresce 
-                discretamente mas com fundações sólidas. Elas também são nutritivas e sustentáveis - 
-                exatamente como queremos que seja sua educação financeira!
-              </p>
-            </div>
-          </CardContent>
+          </div>
         </Card>
 
-        {/* Use Cases */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Como usar seus Beetz</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              {useCases.map((useCase, index) => {
-                const IconComponent = useCase.icon;
-                return (
-                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                    <IconComponent className={`h-5 w-5 ${useCase.color} mt-0.5`} />
-                    <div>
-                      <h4 className="font-medium text-foreground">{useCase.title}</h4>
-                      <p className="text-sm text-muted-foreground">{useCase.description}</p>
-                    </div>
-                  </div>
-                );
-              })}
+        {/* How to earn */}
+        <Card className="p-6 mb-6">
+          <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <Coins className="h-5 w-5 text-yellow-500" />
+            Como Ganhar Beetz
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <div className="text-2xl mb-2">🎯</div>
+              <h4 className="font-semibold mb-1">Completar Quizzes</h4>
+              <p className="text-sm text-muted-foreground">Ganhe Beetz respondendo perguntas corretamente</p>
             </div>
-          </CardContent>
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <div className="text-2xl mb-2">🔥</div>
+              <h4 className="font-semibold mb-1">Manter Sequência</h4>
+              <p className="text-sm text-muted-foreground">Bônus diários por manter sua sequência ativa</p>
+            </div>
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <div className="text-2xl mb-2">🏆</div>
+              <h4 className="font-semibold mb-1">Vencer Duelos</h4>
+              <p className="text-sm text-muted-foreground">Ganha Beetz vencendo outros jogadores</p>
+            </div>
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <div className="text-2xl mb-2">📅</div>
+              <h4 className="font-semibold mb-1">Missões Diárias</h4>
+              <p className="text-sm text-muted-foreground">Complete missões para ganhar Beetz extras</p>
+            </div>
+          </div>
         </Card>
 
-        {/* How to Earn */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Como ganhar Beetz</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-2">
-              {howToEarn.map((method, index) => (
-                <div key={index} className="flex items-center gap-2 p-2">
-                  <span className="text-sm">{method}</span>
-                </div>
-              ))}
+        {/* How to use */}
+        <Card className="p-6 mb-6">
+          <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <ShoppingCart className="h-5 w-5 text-blue-500" />
+            Como Usar Beetz
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-primary/10 rounded-lg">
+              <div className="text-3xl mb-2">🤖</div>
+              <h4 className="font-semibold mb-1">Avatares</h4>
+              <p className="text-sm text-muted-foreground">Compre novos avatares únicos</p>
             </div>
-            
-            <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
-              <p className="text-sm text-foreground font-medium mb-1">🎁 Dica:</p>
-              <p className="text-sm text-muted-foreground">
-                Mantenha seu streak diário ativo para ganhar multiplicadores de Beetz em todas as atividades!
-              </p>
+            <div className="text-center p-4 bg-secondary/10 rounded-lg">
+              <div className="text-3xl mb-2">⚡</div>
+              <h4 className="font-semibold mb-1">Power-ups</h4>
+              <p className="text-sm text-muted-foreground">Turbine seu progresso no jogo</p>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Economy */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Economia Sustentável</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                <p className="text-2xl font-bold text-beetz">♻️</p>
-                <p className="text-xs text-muted-foreground mt-1">Economia Circular</p>
-              </div>
-              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                <p className="text-2xl font-bold text-beetz">📊</p>
-                <p className="text-xs text-muted-foreground mt-1">Valor Real</p>
-              </div>
+            <div className="text-center p-4 bg-accent/10 rounded-lg">
+              <div className="text-3xl mb-2">🎁</div>
+              <h4 className="font-semibold mb-1">Loot Boxes</h4>
+              <p className="text-sm text-muted-foreground">Abra caixas com itens especiais</p>
             </div>
-            
-            <p className="text-sm text-muted-foreground">
-              Os Beetz têm valor real dentro do ecossistema e são distribuídos de forma justa 
-              baseada no mérito e engajamento. Quanto mais você aprende e participa, mais Beetz você ganha!
-            </p>
-          </CardContent>
+          </div>
         </Card>
 
         {/* Action Buttons */}
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <Button 
+            className="bg-gradient-to-r from-primary to-success text-black font-semibold py-6"
             onClick={() => navigate('/store')}
-            className="w-full"
           >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Explorar Loja
+            <ShoppingCart className="h-5 w-5 mr-2" />
+            Ir para a Loja
           </Button>
-          
           <Button 
             variant="outline"
-            onClick={() => navigate('/dashboard')}
-            className="w-full"
+            className="py-6"
+            onClick={() => navigate('/missions')}
           >
-            Voltar ao Dashboard
+            <Gift className="h-5 w-5 mr-2" />
+            Ver Missões Diárias
           </Button>
         </div>
+
+        {/* Tips */}
+        <Card className="p-6 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border-blue-500/20">
+          <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-blue-500" />
+            Dicas para Maximizar seus Beetz
+          </h3>
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-start gap-3">
+              <span className="text-green-500 mt-1">✓</span>
+              <span>Faça login todos os dias para manter sua sequência e ganhar bônus</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-green-500 mt-1">✓</span>
+              <span>Complete todas as missões diárias para maximizar seus ganhos</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-green-500 mt-1">✓</span>
+              <span>Participe de duelos - mesmo perdendo você ainda ganha alguns Beetz</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="text-green-500 mt-1">✓</span>
+              <span>Assinantes Pro e Elite ganham Beetz mensais automáticos</span>
+            </li>
+          </ul>
+        </Card>
       </div>
+      
+      <FloatingNavbar />
     </div>
   );
 }

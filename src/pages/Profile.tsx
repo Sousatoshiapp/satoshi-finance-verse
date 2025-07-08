@@ -317,10 +317,30 @@ export default function Profile() {
   ];
 
   const stats = [
-    { label: 'Lições Completas', value: user?.completed_lessons || 0, icon: '📚' },
-    { label: 'Dias de Sequência', value: user?.streak || 0, icon: '🔥' },
-    { label: 'Pontos Beetz', value: user?.points || 0, icon: '🪙' },
-    { label: 'Nível Atual', value: user?.level || 1, icon: '⭐' }
+    { 
+      label: 'Lições Completas', 
+      value: user?.completed_lessons || 0, 
+      icon: '📚',
+      route: '/levels'
+    },
+    { 
+      label: 'Dias de Sequência', 
+      value: user?.streak || 0, 
+      icon: '🔥',
+      route: '/profile'
+    },
+    { 
+      label: 'Beetz', 
+      value: user?.points || 0, 
+      icon: '🥕',
+      route: '/beetz-info'
+    },
+    { 
+      label: 'Nível Atual', 
+      value: user?.level || 1, 
+      icon: '⭐',
+      route: '/levels'
+    }
   ];
 
   if (loading) {
@@ -470,7 +490,11 @@ export default function Profile() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat) => (
-            <Card key={stat.label} className="p-4 text-center">
+            <Card 
+              key={stat.label} 
+              className="p-4 text-center cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-lg"
+              onClick={() => navigate(stat.route)}
+            >
               <div className="text-2xl mb-2">{stat.icon}</div>
               <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
               <div className="text-xs text-muted-foreground">{stat.label}</div>
