@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BotNicknameManager } from "./bot-nickname-manager";
 import { SingleBotNicknameUpdater } from "./single-bot-updater";
 import { BotRealismEnhancer } from "./bot-realism-enhancer";
+import { BotNicknameUpdater } from "./bot-nickname-updater";
 import { 
   Users, Bot, Zap, Gift, MessageSquare, 
   Shield, RefreshCw, AlertTriangle 
@@ -128,6 +129,9 @@ export function AdminQuickActions({ onStatsUpdate }: AdminQuickActionsProps) {
       
       {/* Bot Realism Enhancer */}
       <BotRealismEnhancer />
+      
+      {/* Bot Nickname Updater */}
+      <BotNicknameUpdater />
       
       {/* Quick Actions */}
       <Card>

@@ -2671,6 +2671,10 @@ export type Database = {
           items: Json
         }[]
       }
+      update_bot_nicknames: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       update_mission_progress: {
         Args: {
           profile_id: string
