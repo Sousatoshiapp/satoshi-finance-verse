@@ -1,12 +1,14 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { Suspense, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { FloatingNavbar } from "@/components/floating-navbar";
+import { LazyRoutes } from "@/utils/advanced-lazy-loading";
+import { webWorkerManager } from "@/utils/web-workers";
+
+// Streaming Dashboard para carregamento otimizado
+import { StreamingDashboard } from "@/components/streaming-dashboard";
 
 // Critical routes - loaded immediately
 import Welcome from "./pages/Welcome";

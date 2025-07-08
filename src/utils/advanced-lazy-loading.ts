@@ -17,7 +17,7 @@ interface LazyLoadConfig {
 export function createLazyComponent<T = {}>(
   importFn: () => Promise<{ default: ComponentType<T> }>,
   config: LazyLoadConfig = {}
-): React.LazyExoticComponent<ComponentType<T>> {
+) {
   const {
     preload = false,
     priority = 'medium',

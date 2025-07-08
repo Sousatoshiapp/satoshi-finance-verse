@@ -43,11 +43,10 @@ if (import.meta.env.PROD) {
   
   // Monitorar Core Web Vitals
   import('web-vitals').then((vitals) => {
-    vitals.onCLS(console.log);
-    vitals.onFID(console.log);
-    vitals.onFCP(console.log);
-    vitals.onLCP(console.log);
-    vitals.onTTFB(console.log);
+    vitals.onCLS?.(console.log);
+    vitals.onFCP?.(console.log);
+    vitals.onLCP?.(console.log);
+    vitals.onTTFB?.(console.log);
   }).catch(() => {
     // Ignore se web-vitals não estiver disponível
   });
