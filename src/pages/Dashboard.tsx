@@ -256,7 +256,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-center gap-3 mb-4">
               {/* XP Badge - Left Side */}
               <div 
-                className="border border-[#adff2f] rounded-full px-3 py-1.5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center gap-1.5"
+                className="border border-[#adff2f] rounded-full px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-[120px]"
                 onClick={() => navigate('/levels')}
                 style={{ borderWidth: '0.5px' }}
               >
@@ -269,7 +269,7 @@ export default function Dashboard() {
 
               {/* Profile Button */}
               <Button 
-                className="bg-gradient-to-r from-primary to-success text-black px-6 py-2 rounded-full font-semibold shadow-glow"
+                className="bg-gradient-to-r from-primary to-success text-black px-6 py-2 rounded-full font-semibold shadow-glow w-[120px]"
                 onClick={() => navigate(hasAvatar ? '/profile' : '/store')}
               >
                 {hasAvatar ? 'Meu Perfil' : 'Escolher Avatar'}
@@ -277,7 +277,7 @@ export default function Dashboard() {
 
               {/* Beetz Badge - Right Side */}
               <div 
-                className="border border-[#adff2f] rounded-full px-3 py-1.5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center gap-1.5"
+                className="border border-[#adff2f] rounded-full px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-[120px]"
                 onClick={() => navigate('/beetz-info')}
                 style={{ borderWidth: '0.5px' }}
               >
