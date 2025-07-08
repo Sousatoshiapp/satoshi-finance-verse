@@ -50,11 +50,19 @@ export default function Dashboard() {
   const handleNavigateToSubscription = useCallback(() => navigate('/subscription-plans'), [navigate]);
 
   useEffect(() => {
-    // Preload critical resources
-    import('@/utils/bundle-optimizer').then(({ preloadCriticalResources, optimizeMemoryUsage }) => {
-      preloadCriticalResources();
-      optimizeMemoryUsage();
-    });
+    // Preload critical resources in background
+    const loadOptimizations = async () => {
+      try {
+        const { preloadCriticalResources, optimizeMemoryUsage } = await import('@/utils/bundle-optimizer');
+        preloadCriticalResources();
+        optimizeMemoryUsage();
+      } catch (error) {
+        // Silent fail for non-critical optimization
+        console.debug('Bundle optimization failed:', error);
+      }
+    };
+    
+    loadOptimizations();
 
     // Check for payment success parameters
     const urlParams = new URLSearchParams(window.location.search);
