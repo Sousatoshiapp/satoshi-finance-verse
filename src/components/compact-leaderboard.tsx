@@ -1,176 +1,15 @@
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
-import { Crown, Trophy, Medal, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-
-interface LeaderboardUser {
-  id: string;
-  username: string;
-  avatar_url?: string;
-  level: number;
-  xp: number;
-  rank: number;
-  weeklyXP: number;
-  beetz: number;
-}
+import { useLeaderboardData } from "@/hooks/use-leaderboard-data";
 
 export function CompactLeaderboard() {
   const navigate = useNavigate();
-  const [topUsers, setTopUsers] = useState<LeaderboardUser[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: topUsers = [], isLoading } = useLeaderboardData();
 
-  useEffect(() => {
-    loadLeaderboard();
-  }, []);
-
-  const loadLeaderboard = async () => {
-    try {
-      // Get current week start (Monday)
-      const currentDate = new Date();
-      const weekStart = new Date(currentDate);
-      weekStart.setDate(currentDate.getDate() - currentDate.getDay() + 1);
-      weekStart.setHours(0, 0, 0, 0);
-
-      // Fetch top 3 users from weekly leaderboard with profile data
-      const { data: leaderboardData, error: leaderboardError } = await supabase
-        .from('weekly_leaderboards')
-        .select(`
-          user_id,
-          xp_earned,
-          total_score,
-          profiles!weekly_leaderboards_user_id_fkey (
-            id,
-            nickname,
-            profile_image_url,
-            level,
-            xp,
-            points,
-            avatars:avatar_id (
-              name,
-              image_url
-            )
-          )
-        `)
-        .eq('week_start_date', weekStart.toISOString().split('T')[0])
-        .order('total_score', { ascending: false })
-        .limit(3);
-
-      if (leaderboardError) {
-        console.error('Leaderboard error:', leaderboardError);
-        // Fallback to regular profiles if weekly leaderboard is empty
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select(`
-            id,
-            nickname,
-            profile_image_url,
-            level,
-            xp,
-            points,
-            avatars:avatar_id (
-              name,
-              image_url
-            )
-          `)
-          .order('xp', { ascending: false })
-          .limit(3);
-
-        if (profilesError) throw profilesError;
-
-        if (profilesData && profilesData.length > 0) {
-          const fallbackUsers = profilesData.map((profile, index) => ({
-            id: profile.id,
-            username: profile.nickname,
-            avatar_url: (profile as any).avatars?.image_url || profile.profile_image_url,
-            level: profile.level || 1,
-            xp: profile.xp || 0,
-            rank: index + 1,
-            weeklyXP: Math.floor(Math.random() * 500) + 100, // Random weekly XP for demo
-            beetz: profile.points || 0
-          }));
-          setTopUsers(fallbackUsers);
-        }
-        return;
-      }
-
-      if (leaderboardData && leaderboardData.length > 0) {
-        const usersWithRanks = leaderboardData.map((entry, index) => {
-          const profile = entry.profiles as any;
-          return {
-            id: profile.id,
-            username: profile.nickname,
-            avatar_url: profile.avatars?.image_url || profile.profile_image_url,
-            level: profile.level || 1,
-            xp: profile.xp || 0,
-            rank: index + 1,
-            weeklyXP: entry.xp_earned || 0,
-            beetz: profile.points || 0
-          };
-        });
-
-        setTopUsers(usersWithRanks);
-      } else {
-        // If no weekly data exists, create entries for top users
-        const { data: topProfilesData, error: topProfilesError } = await supabase
-          .from('profiles')
-          .select(`
-            id,
-            nickname,
-            profile_image_url,
-            level,
-            xp,
-            points,
-            avatars:avatar_id (
-              name,
-              image_url
-            )
-          `)
-          .order('xp', { ascending: false })
-          .limit(3);
-
-        if (topProfilesError) throw topProfilesError;
-
-        if (topProfilesData && topProfilesData.length > 0) {
-          // Create weekly entries for these users
-          for (const profile of topProfilesData) {
-            await supabase.rpc('get_or_create_weekly_entry', { profile_id: profile.id });
-          }
-
-          const initialUsers = topProfilesData.map((profile, index) => ({
-            id: profile.id,
-            username: profile.nickname,
-            avatar_url: (profile as any).avatars?.image_url || profile.profile_image_url,
-            level: profile.level || 1,
-            xp: profile.xp || 0,
-            rank: index + 1,
-            weeklyXP: Math.floor(Math.random() * 300) + 50, // Initial weekly XP
-            beetz: profile.points || 0
-          }));
-
-          setTopUsers(initialUsers);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading leaderboard:', error);
-      setTopUsers([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getRankIcon = (rank: number) => {
-    switch (rank) {
-      case 1: return <Crown className="h-5 w-5 text-yellow-500" />;
-      case 2: return <Trophy className="h-5 w-5 text-gray-400" />;
-      case 3: return <Medal className="h-5 w-5 text-orange-600" />;
-      default: return <span className="text-sm font-bold text-muted-foreground">#{rank}</span>;
-    }
-  };
 
   const getRankBadge = (rank: number) => {
     switch (rank) {
@@ -181,7 +20,7 @@ export function CompactLeaderboard() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card className="border-amber-500/20 bg-gradient-to-br from-background to-amber-500/5 relative overflow-hidden">
         {/* Cyberpunk Background */}

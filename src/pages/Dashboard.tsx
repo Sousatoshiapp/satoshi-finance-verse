@@ -10,14 +10,15 @@ import { SubscriptionIndicator } from "@/components/subscription-indicator";
 import { CarouselDailyMissions } from "@/components/carousel-daily-missions";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
+import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { getLevelInfo } from "@/data/levels";
 import { DashboardSummary } from "@/components/dashboard-summary";
 import { QuickActions } from "@/components/quick-actions";
 import { UserAffiliation } from "@/components/user-affiliation";
 import { CompactLeaderboard } from "@/components/compact-leaderboard";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -32,29 +33,17 @@ const getGreeting = () => {
 };
 
 export default function Dashboard() {
-  const [userStats, setUserStats] = useState({
-    level: 1,
-    currentXP: 0,
-    nextLevelXP: 100,
-    streak: 0,
-    completedLessons: 0,
-    points: 0
-  });
-  const [userNickname, setUserNickname] = useState('Estudante');
   const [greeting, setGreeting] = useState(getGreeting());
-  const [userAvatar, setUserAvatar] = useState<any>(null);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
-  const [hasAvatar, setHasAvatar] = useState(false);
-  const [userDistrict, setUserDistrict] = useState<any>(null);
-  const [userTeam, setUserTeam] = useState<any>(null);
   
   const navigate = useNavigate();
   const { toast } = useToast();
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
+  const { data: dashboardData, isLoading, error } = useDashboardData();
 
   useEffect(() => {
-    // Verificar se há parâmetros de sucesso do Stripe na URL
+    // Check for payment success parameters
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     const tier = urlParams.get('tier');
@@ -63,19 +52,23 @@ export default function Dashboard() {
       handlePaymentSuccess(sessionId, tier);
     }
     
-    // Carregar dados do usuário
-    loadUserData();
-    
-    // Marcar login diário para missões
+    // Mark daily login for missions
     markDailyLogin();
     
-    // Atualizar saudação a cada minuto
+    // Update greeting every minute
     const interval = setInterval(() => {
       setGreeting(getGreeting());
     }, 60000);
     
     return () => clearInterval(interval);
-  }, [navigate, markDailyLogin]);
+  }, [markDailyLogin]);
+
+  // Show avatar selection for new users without avatar
+  useEffect(() => {
+    if (dashboardData && !dashboardData.avatar) {
+      setShowAvatarSelection(true);
+    }
+  }, [dashboardData]);
 
   const handlePaymentSuccess = async (sessionId: string, tier: string) => {
     try {
@@ -91,10 +84,7 @@ export default function Dashboard() {
       if (error) throw error;
 
       if (data?.success) {
-        // Limpar parâmetros da URL
         window.history.replaceState({}, document.title, "/dashboard");
-        
-        // Atualizar dados da assinatura
         refreshSubscription();
         
         toast({
@@ -112,142 +102,47 @@ export default function Dashboard() {
     }
   };
 
-  const getNextLevelXP = async (currentLevel: number) => {
-    try {
-      const { data, error } = await supabase.rpc('get_next_level_xp', {
-        current_level: currentLevel
-      });
-      if (error) throw error;
-      return data || (currentLevel + 1) * 100;
-    } catch (error) {
-      console.error('Error getting next level XP:', error);
-      return (currentLevel + 1) * 100;
-    }
-  };
-
-  const loadUserData = async () => {
-    // Sempre carregar dados do localStorage primeiro
-    const userData = localStorage.getItem('satoshi_user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      const nextLevelXP = await getNextLevelXP(user.level || 1);
-      setUserStats({
-        level: user.level || 1,
-        currentXP: user.xp || 0,
-        nextLevelXP,
-        streak: user.streak || 0,
-        completedLessons: user.completedLessons || 0,
-        points: user.points || 0
-      });
-      setUserNickname(user.nickname || 'Estudante');
-    }
-    
-    try {
-      // Tentar carregar do Supabase para sobrescrever se disponível
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select(`
-          *,
-          avatars (
-            id,
-            name,
-            description,
-            image_url,
-            avatar_class,
-            district_theme,
-            rarity,
-            evolution_level
-          )
-        `)
-        .eq('user_id', authUser.id)
-        .single();
-
-      // Load user district and team information
-      const { data: userDistrictData } = await supabase
-        .from('user_districts')
-        .select(`
-          districts (
-            id,
-            name,
-            color_primary,
-            color_secondary,
-            theme
-          )
-        `)
-        .eq('user_id', profile?.id)
-        .eq('is_residence', true)
-        .maybeSingle();
-
-      const { data: userTeamData } = await supabase
-        .from('team_members')
-        .select(`
-          district_teams (
-            id,
-            name,
-            team_color
-          )
-        `)
-        .eq('user_id', profile?.id)
-        .eq('is_active', true)
-        .maybeSingle();
-
-      if (profile) {
-        // Calculate correct level based on XP
-        const { data: calculatedLevel } = await supabase.rpc('calculate_user_level', {
-          user_xp: profile.xp || 0
-        });
-        
-        const actualLevel = calculatedLevel || profile.level || 1;
-        const nextLevelXP = await getNextLevelXP(actualLevel);
-        
-        // Update level in database if it's different
-        if (actualLevel !== profile.level) {
-          await supabase
-            .from('profiles')
-            .update({ level: actualLevel })
-            .eq('id', profile.id);
-        }
-        
-        setUserStats({
-          level: actualLevel,
-          currentXP: profile.xp || 0,
-          nextLevelXP,
-          streak: profile.streak || 0,
-          completedLessons: profile.completed_lessons || 0,
-          points: profile.points || 0
-        });
-        setUserNickname(profile.nickname || 'Estudante');
-        
-        // Check if user has an avatar
-        if (profile.avatars) {
-          setUserAvatar(profile.avatars);
-          setHasAvatar(true);
-        } else {
-          // Check if user is new and should see avatar selection
-          setShowAvatarSelection(true);
-        }
-
-        // Set district and team data
-        if (userDistrictData?.districts) {
-          setUserDistrict(userDistrictData.districts);
-        }
-        if (userTeamData?.district_teams) {
-          setUserTeam(userTeamData.district_teams);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading user data from Supabase:', error);
-      // Dados do localStorage já foram carregados acima
-    }
-  };
-
   const handleAvatarSelected = () => {
-    // Reload user data to get the new avatar
-    loadUserData();
+    // Refetch dashboard data to get the new avatar
+    window.location.reload();
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // Error state  
+  if (error) {
+    console.error('Dashboard data error:', error);
+  }
+
+  // Extract data with fallbacks
+  const userStats = dashboardData ? {
+    level: dashboardData.profile?.level || 1,
+    currentXP: dashboardData.profile?.xp || 0,
+    nextLevelXP: dashboardData.nextLevelXP || 100,
+    streak: dashboardData.profile?.streak || 0,
+    completedLessons: dashboardData.profile?.completed_lessons || 0,
+    points: dashboardData.profile?.points || 0
+  } : {
+    level: 1,
+    currentXP: 0,
+    nextLevelXP: 100,
+    streak: 0,
+    completedLessons: 0,
+    points: 0
+  };
+
+  const userNickname = dashboardData?.profile?.nickname || 'Estudante';
+  const userAvatar = dashboardData?.avatar;
+  const hasAvatar = !!userAvatar;
+  const userDistrict = dashboardData?.district;
+  const userTeam = dashboardData?.team;
 
   return (
     <div className="min-h-screen bg-background pb-20">
