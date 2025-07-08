@@ -36,6 +36,11 @@ if (import.meta.env.DEV) {
   });
 }
 
+// Initialize performance optimizations
+import('@/utils/performance-manager').then(({ initializePerformanceOptimizations }) => {
+  initializePerformanceOptimizations();
+});
+
 const container = document.getElementById("root");
 if (!container) throw new Error("Root element not found");
 

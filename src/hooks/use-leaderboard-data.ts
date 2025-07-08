@@ -12,13 +12,12 @@ export interface LeaderboardUser {
   beetz: number;
 }
 
-const fetchLeaderboardData = async (): Promise<LeaderboardUser[]> => {
+const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
   // Get current week start (Monday)
   const currentDate = new Date();
   const weekStart = new Date(currentDate);
   weekStart.setDate(currentDate.getDate() - currentDate.getDay() + 1);
   weekStart.setHours(0, 0, 0, 0);
-
   try {
     // Single optimized query for weekly leaderboard
     const { data: leaderboardData } = await supabase
@@ -105,10 +104,11 @@ const fetchLeaderboardData = async (): Promise<LeaderboardUser[]> => {
 export const useLeaderboardData = () => {
   return useQuery({
     queryKey: ['leaderboard-data'],
-    queryFn: fetchLeaderboardData,
-    staleTime: 3 * 60 * 1000, // 3 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    queryFn: fetchLeaderboardDataOptimized,
+    staleTime: 5 * 60 * 1000, // 5 minutes (increased)
+    gcTime: 15 * 60 * 1000, // 15 minutes (increased)
     refetchOnWindowFocus: false,
-    retry: 2
+    retry: 2,
+    retryDelay: 1000
   });
 };

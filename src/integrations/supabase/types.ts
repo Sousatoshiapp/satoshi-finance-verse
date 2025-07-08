@@ -3361,6 +3361,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_dashboard_data_optimized: {
+        Args: { target_user_id: string }
+        Returns: Json
+      }
       get_next_level_xp: {
         Args: { current_level: number }
         Returns: number

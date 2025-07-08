@@ -95,7 +95,7 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
       <CardContent className="pt-1 pb-2 px-3 relative z-10">
         {/* Top 3 Horizontal Layout - Compact */}
         <div className="grid grid-cols-3 gap-2">
-          {topUsers.map((user) => (
+          {(topUsers || []).map((user) => (
             <div 
               key={user.id}
               className={`text-center p-1 rounded-full transition-all cursor-pointer backdrop-blur-sm ${
