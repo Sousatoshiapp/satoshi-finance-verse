@@ -50,6 +50,9 @@ import VIPMentorship from "./pages/VIPMentorship";
 import WeeklyTournaments from "./pages/WeeklyTournaments";
 import ChallengeDetail from "./pages/ChallengeDetail";
 import BotAdmin from "./pages/BotAdmin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminQuestions from "./pages/AdminQuestions";
 
 const queryClient = new QueryClient();
 
@@ -105,7 +108,10 @@ const App = () => (
             <Route path="/vip-mentorship" element={<ProtectedRoute><VIPMentorship /></ProtectedRoute>} />
             <Route path="/weekly-tournaments" element={<ProtectedRoute><WeeklyTournaments /></ProtectedRoute>} />
             <Route path="/challenge/:challengeId" element={<ProtectedRoute><ChallengeDetail /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/bots" element={<ProtectedRoute><BotAdmin /></ProtectedRoute>} />
+            <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+            <Route path="/admin/quiz/questions" element={<ProtectedRoute><AdminQuestions /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
