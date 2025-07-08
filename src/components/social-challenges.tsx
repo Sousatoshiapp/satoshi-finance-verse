@@ -136,7 +136,7 @@ export function SocialChallenges() {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => navigate('/social')}
+            onClick={() => navigate('/social-challenges')}
             className="text-blue-500 border-blue-500/30 hover:bg-blue-500/10"
           >
             Ver Todos

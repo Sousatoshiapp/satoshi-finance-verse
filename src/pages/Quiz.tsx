@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Settings } from "lucide-react";
-import satoshiMascot from "@/assets/satoshi-mascot.png";
+import cyberpunkQuiz from "@/assets/cyberpunk-quiz-3d.jpg";
 
 const quizTopics = [
   {
@@ -444,7 +444,7 @@ export default function Quiz() {
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-card rounded-xl p-8 shadow-card text-center">
           <div className="mb-6">
-            <img src={satoshiMascot} alt="Satoshi" className="w-20 h-20 mx-auto mb-4" />
+            <img src={cyberpunkQuiz} alt="Quiz Cyberpunk" className="w-32 h-24 mx-auto mb-4 rounded-lg object-cover" />
             <h1 className="text-3xl font-bold text-foreground mb-2">Quiz Finalizado!</h1>
             <div className="text-6xl mb-4">{getScoreEmoji()}</div>
           </div>
@@ -510,7 +510,7 @@ export default function Quiz() {
           <div className="relative mb-6">
             <div className="w-24 h-24 mx-auto bg-gradient-to-b from-green-400 to-green-600 rounded-full p-1">
               <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center">
-                <img src={satoshiMascot} alt="Satoshi" className="w-16 h-16" />
+                <img src={cyberpunkQuiz} alt="Quiz Cyberpunk" className="w-16 h-16 rounded-full object-cover" />
               </div>
             </div>
           </div>

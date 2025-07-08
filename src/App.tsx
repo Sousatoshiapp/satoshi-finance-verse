@@ -47,6 +47,8 @@ import AIAssistant from "./pages/AIAssistant";
 import SocialTrading from "./pages/SocialTrading";
 import AdvancedAnalytics from "./pages/AdvancedAnalytics";
 import VIPMentorship from "./pages/VIPMentorship";
+import WeeklyTournaments from "./pages/WeeklyTournaments";
+import ChallengeDetail from "./pages/ChallengeDetail";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +102,8 @@ const App = () => (
             <Route path="/social-trading" element={<ProtectedRoute><SocialTrading /></ProtectedRoute>} />
             <Route path="/advanced-analytics" element={<ProtectedRoute><AdvancedAnalytics /></ProtectedRoute>} />
             <Route path="/vip-mentorship" element={<ProtectedRoute><VIPMentorship /></ProtectedRoute>} />
+            <Route path="/weekly-tournaments" element={<ProtectedRoute><WeeklyTournaments /></ProtectedRoute>} />
+            <Route path="/challenge/:challengeId" element={<ProtectedRoute><ChallengeDetail /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -164,132 +164,120 @@ export function TournamentCarousel() {
         </Button>
       </div>
 
+      {/* Horizontal Scrollable Container */}
       <div className="relative">
-        <Card className="p-6 border border-border shadow-card overflow-hidden">
-          {/* Background Effect */}
-          <div 
-            className="absolute inset-0 opacity-10 bg-gradient-to-br from-primary/20 via-transparent to-accent/20"
-            style={{ 
-              filter: 'blur(100px)',
-              background: `linear-gradient(135deg, ${getDifficultyColor(currentTournament.difficulty || 'medium')}20, transparent, ${getStatusColor(currentTournament.status)}20)`
-            }}
-          />
-          
-          <div className="relative z-10">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge 
-                    variant="outline" 
-                    className="text-xs border-2"
-                    style={{ 
-                      borderColor: getDifficultyColor(currentTournament.difficulty || 'medium'),
-                      color: getDifficultyColor(currentTournament.difficulty || 'medium')
-                    }}
-                  >
-                    {(currentTournament.difficulty || 'medium').toUpperCase()}
-                  </Badge>
-                  <Badge 
-                    variant="outline" 
-                    className="text-xs border-2"
-                    style={{ 
-                      borderColor: getStatusColor(currentTournament.status),
-                      color: getStatusColor(currentTournament.status)
-                    }}
-                  >
-                    {currentTournament.status === 'active' ? 'ATIVO' : 
-                     currentTournament.status === 'upcoming' ? 'EM BREVE' : 'FINALIZADO'}
-                  </Badge>
-                </div>
-                <h4 className="text-lg font-bold text-foreground mb-2">
-                  {currentTournament.name}
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {currentTournament.description}
-                </p>
-              </div>
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+          {tournaments.map((tournament, index) => (
+            <Card 
+              key={tournament.id}
+              className="min-w-[320px] flex-shrink-0 p-6 border border-border shadow-card overflow-hidden cursor-pointer hover:shadow-lg transition-all"
+              onClick={() => navigate(`/tournament-quiz/${tournament.id}`)}
+            >
+              {/* Background Effect */}
+              <div 
+                className="absolute inset-0 opacity-10 bg-gradient-to-br from-primary/20 via-transparent to-accent/20"
+                style={{ 
+                  filter: 'blur(100px)',
+                  background: `linear-gradient(135deg, ${getDifficultyColor(tournament.difficulty || 'medium')}20, transparent, ${getStatusColor(tournament.status)}20)`
+                }}
+              />
               
-              <div className="ml-4 flex-shrink-0">
-                <img 
-                  src={getTrophyImage(currentTournament.theme)}
-                  alt={currentTournament.trophy_name || 'Trophy'}
-                  className="w-16 h-16 object-cover rounded-lg shadow-glow"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-1 text-primary">
-                  <Trophy className="w-4 h-4" />
-                  <span className="text-sm font-bold">
-                    {(currentTournament.prize_pool || 0).toLocaleString()}
-                  </span>
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge 
+                        variant="outline" 
+                        className="text-xs border-2"
+                        style={{ 
+                          borderColor: getDifficultyColor(tournament.difficulty || 'medium'),
+                          color: getDifficultyColor(tournament.difficulty || 'medium')
+                        }}
+                      >
+                        {(tournament.difficulty || 'medium').toUpperCase()}
+                      </Badge>
+                      <Badge 
+                        variant="outline" 
+                        className="text-xs border-2"
+                        style={{ 
+                          borderColor: getStatusColor(tournament.status),
+                          color: getStatusColor(tournament.status)
+                        }}
+                      >
+                        {tournament.status === 'active' ? 'ATIVO' : 
+                         tournament.status === 'upcoming' ? 'EM BREVE' : 'FINALIZADO'}
+                      </Badge>
+                    </div>
+                    <h4 className="text-lg font-bold text-foreground mb-2">
+                      {tournament.name}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {tournament.description}
+                    </p>
+                  </div>
+                  
+                  <div className="ml-4 flex-shrink-0">
+                    <img 
+                      src={getTrophyImage(tournament.theme)}
+                      alt={tournament.trophy_name || 'Trophy'}
+                      className="w-16 h-16 object-cover rounded-lg shadow-glow"
+                    />
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground">Prêmio</div>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-1 text-info">
-                  <Users className="w-4 h-4" />
-                  <span className="text-sm font-bold">
-                    {currentTournament.participants_count || 0}/{currentTournament.max_participants || 100}
-                  </span>
-                </div>
-                <div className="text-xs text-muted-foreground">Jogadores</div>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-1 text-warning">
-                  <Clock className="w-4 h-4" />
-                  <span className="text-sm font-bold">
-                    {formatTimeRemaining(currentTournament.end_date)}
-                  </span>
-                </div>
-                <div className="text-xs text-muted-foreground">Restante</div>
-              </div>
-            </div>
 
-            <Button 
-              className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
-              onClick={() => navigate(`/tournament-quiz/${currentTournament.id}`)}
-            >
-              {currentTournament.status === 'active' ? 'Começar Torneio' : 'Ver Detalhes'}
-            </Button>
-          </div>
-        </Card>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 text-primary">
+                      <Trophy className="w-4 h-4" />
+                      <span className="text-sm font-bold">
+                        {(tournament.prize_pool || 0).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Prêmio</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 text-info">
+                      <Users className="w-4 h-4" />
+                      <span className="text-sm font-bold">
+                        {tournament.participants_count || 0}/{tournament.max_participants || 100}
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Jogadores</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-1 text-warning">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-sm font-bold">
+                        {formatTimeRemaining(tournament.end_date)}
+                      </span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">Restante</div>
+                  </div>
+                </div>
 
-        {/* Navigation Controls */}
-        {tournaments.length > 1 && (
-          <div className="flex items-center justify-between mt-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={prevSlide}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            
-            <div className="flex gap-1">
-              {tournaments.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex ? 'bg-primary' : 'bg-muted'
-                  }`}
-                />
-              ))}
-            </div>
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={nextSlide}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/tournament-quiz/${tournament.id}`);
+                  }}
+                >
+                  {tournament.status === 'active' ? 'Começar Torneio' : 'Ver Detalhes'}
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+        
+        {/* Scroll indicators */}
+        <div className="flex justify-center mt-4 gap-1">
+          {tournaments.map((_, index) => (
+            <div
+              key={index}
+              className="w-2 h-2 rounded-full bg-muted opacity-50"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
