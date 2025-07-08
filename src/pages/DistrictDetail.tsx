@@ -10,8 +10,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictQuests } from "@/components/district-quests";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
@@ -104,6 +105,10 @@ export default function DistrictDetail() {
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamDescription, setNewTeamDescription] = useState('');
   const [isCreatingTeam, setIsCreatingTeam] = useState(false);
+  const [allDistricts, setAllDistricts] = useState<District[]>([]);
+  const [activeBattles, setActiveBattles] = useState<any[]>([]);
+  const [targetDistrictId, setTargetDistrictId] = useState('');
+  const [isInitiatingBattle, setIsInitiatingBattle] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -162,6 +167,8 @@ export default function DistrictDetail() {
           .single();
 
         if (profile) {
+          setCurrentProfile(profile);
+          
           const { data: userDistrictData } = await supabase
             .from('user_districts')
             .select('level, xp')
@@ -172,6 +179,28 @@ export default function DistrictDetail() {
           setUserDistrict(userDistrictData);
         }
       }
+
+      // Load all districts for battle selection
+      const { data: allDistrictsData } = await supabase
+        .from('districts')
+        .select('*')
+        .neq('id', districtId)
+        .eq('is_active', true);
+      
+      setAllDistricts(allDistrictsData || []);
+
+      // Load active battles
+      const { data: battlesData } = await supabase
+        .from('district_battles')
+        .select(`
+          *,
+          attacking_district:districts!district_battles_attacking_district_id_fkey(name, color_primary),
+          defending_district:districts!district_battles_defending_district_id_fkey(name, color_primary)
+        `)
+        .or(`attacking_district_id.eq.${districtId},defending_district_id.eq.${districtId}`)
+        .order('created_at', { ascending: false });
+      
+      setActiveBattles(battlesData || []);
     } catch (error) {
       console.error('Error loading district data:', error);
     } finally {
@@ -278,6 +307,45 @@ export default function DistrictDetail() {
       });
     } finally {
       setIsCreatingTeam(false);
+    }
+  };
+
+  const handleInitiateBattle = async () => {
+    if (!targetDistrictId || !currentProfile) return;
+    
+    setIsInitiatingBattle(true);
+    try {
+      const { error } = await supabase
+        .from('district_battles')
+        .insert({
+          attacking_district_id: districtId,
+          defending_district_id: targetDistrictId,
+          battle_type: 'power_clash',
+          status: 'pending',
+          battle_data: {
+            initiator_id: currentProfile.id,
+            battle_rules: 'standard_power_clash'
+          }
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Batalha Iniciada!",
+        description: "A batalha foi iniciada! Aguarde outros distritos aceitarem o desafio."
+      });
+
+      setTargetDistrictId('');
+      loadDistrictData();
+    } catch (error) {
+      console.error('Error initiating battle:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao iniciar batalha. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsInitiatingBattle(false);
     }
   };
 
@@ -529,10 +597,14 @@ export default function DistrictDetail() {
       {/* Content Tabs */}
       <div className="container mx-auto px-4 py-8 pb-32">
         <Tabs defaultValue="activities" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-6 mb-8 bg-slate-800/50">
             <TabsTrigger value="activities" className="data-[state=active]:bg-slate-700">
               <Zap className="mr-2 h-4 w-4" />
               Atividades
+            </TabsTrigger>
+            <TabsTrigger value="battles" className="data-[state=active]:bg-slate-700">
+              <Swords className="mr-2 h-4 w-4" />
+              Batalhas
             </TabsTrigger>
             <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700">
               <BookOpen className="mr-2 h-4 w-4" />
@@ -552,7 +624,100 @@ export default function DistrictDetail() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Activities Tab */}
+          {/* Battles Tab */}
+          <TabsContent value="battles">
+            <div className="space-y-6">
+              {/* Battle Initiation */}
+              <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center">
+                    <Swords className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
+                    Iniciar Batalha
+                  </CardTitle>
+                  <CardDescription className="text-gray-300">
+                    Desafie outros distritos para uma batalha de poder
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex space-x-4">
+                    <Select value={targetDistrictId} onValueChange={setTargetDistrictId}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                        <SelectValue placeholder="Escolha um distrito rival" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        {allDistricts.map((d) => (
+                          <SelectItem key={d.id} value={d.id} className="text-white">
+                            {d.name} (Poder: {d.power_level || 100})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      onClick={handleInitiateBattle}
+                      disabled={!targetDistrictId || isInitiatingBattle}
+                      style={{ backgroundColor: district.color_primary }}
+                      className="text-black font-bold"
+                    >
+                      {isInitiatingBattle ? "Iniciando..." : "Iniciar Batalha"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Active Battles */}
+              <div className="grid gap-4">
+                <h3 className="text-xl font-bold text-white">Batalhas Ativas</h3>
+                {activeBattles.length > 0 ? (
+                  activeBattles.map((battle) => (
+                    <Card key={battle.id} className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-white font-medium">
+                                {battle.attacking_district?.name}
+                              </span>
+                              <Swords className="w-4 h-4 text-red-400" />
+                              <span className="text-white font-medium">
+                                {battle.defending_district?.name}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            {battle.status === 'pending' && (
+                              <Badge variant="outline" className="text-yellow-400 border-yellow-400">
+                                <Clock className="w-3 h-3 mr-1" />
+                                Pendente
+                              </Badge>
+                            )}
+                            {battle.status === 'active' && (
+                              <Badge variant="outline" className="text-orange-400 border-orange-400">
+                                <AlertTriangle className="w-3 h-3 mr-1" />
+                                Em Batalha
+                              </Badge>
+                            )}
+                            {battle.status === 'completed' && (
+                              <Badge variant="outline" className="text-green-400 border-green-400">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Finalizada
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                ) : (
+                  <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
+                    <CardContent className="p-8 text-center">
+                      <Swords className="h-12 w-12 text-gray-500 mx-auto mb-4" />
+                      <p className="text-gray-400">Nenhuma batalha ativa no momento</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+          </TabsContent>
           <TabsContent value="activities">
             <DistrictQuests 
               districtId={district.id}
