@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { AdminPasswordProtection } from "@/components/admin-password-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { LanguageSelector } from "@/components/admin/language-selector";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Settings, Save, RefreshCw, Database, Shield, 
@@ -207,6 +208,9 @@ export default function AdminSettings() {
                   {loading ? 'Salvando...' : 'Salvar Tudo'}
                 </Button>
               </div>
+
+              {/* Language Selector */}
+              <LanguageSelector />
 
               {/* Settings Sections */}
               <div className="space-y-6">

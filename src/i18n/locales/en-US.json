@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "level": "Level",
+    "points": "Points",
+    "xp": "XP",
+    "beetz": "Beetz"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "quiz": "Quiz",
+    "social": "Social",
+    "profile": "Profile",
+    "leaderboard": "Leaderboard",
+    "store": "Store",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcome": "Welcome to Satoshi Finance Game!",
+    "weeklyRanking": "Weekly Ranking",
+    "dailyMissions": "Daily Missions",
+    "streak": "Streak",
+    "level": "Level {{level}}"
+  },
+  "leaderboard": {
+    "weeklyRankings": "Weekly Rankings",
+    "global": "Global",
+    "league": "League",
+    "yourPosition": "Your Position",
+    "totalScore": "Total Score",
+    "resetIn": "Reset in",
+    "noRank": "No rank"
+  },
+  "profile": {
+    "userProfile": "User Profile",
+    "achievements": "Achievements",
+    "statistics": "Statistics",
+    "followersCount": "Followers",
+    "followingCount": "Following",
+    "completedLessons": "Completed Lessons",
+    "currentStreak": "Current Streak",
+    "publicPortfolios": "Public Portfolios",
+    "memberSince": "Member since",
+    "activeAvatar": "Active Avatar",
+    "message": "Message"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "language": "Language",
+    "changeLanguage": "Change Language",
+    "botManagement": "Bot Management",
+    "enhanceBotRealism": "Enhance Bot Realism",
+    "updateBotNicknames": "Update Bot Nicknames"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Voltar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "level": "Nível",
+    "points": "Pontos",
+    "xp": "XP",
+    "beetz": "Beetz"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "quiz": "Quiz",
+    "social": "Social",
+    "profile": "Perfil",
+    "leaderboard": "Ranking",
+    "store": "Loja",
+    "settings": "Configurações"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo ao Satoshi Finance Game!",
+    "weeklyRanking": "Ranking Semanal",
+    "dailyMissions": "Missões Diárias",
+    "streak": "Sequência",
+    "level": "Nível {{level}}"
+  },
+  "leaderboard": {
+    "weeklyRankings": "Rankings Semanais",
+    "global": "Global",
+    "league": "Liga",
+    "yourPosition": "Sua Posição",
+    "totalScore": "Pontuação Total",
+    "resetIn": "Reset em",
+    "noRank": "Sem rank"
+  },
+  "profile": {
+    "userProfile": "Perfil do Usuário",
+    "achievements": "Conquistas",
+    "statistics": "Estatísticas",
+    "followersCount": "Seguidores",
+    "followingCount": "Seguindo",
+    "completedLessons": "Lições Completadas",
+    "currentStreak": "Sequência Atual",
+    "publicPortfolios": "Carteiras Públicas",
+    "memberSince": "Membro desde",
+    "activeAvatar": "Avatar Ativo",
+    "message": "Mensagem"
+  },
+  "admin": {
+    "dashboard": "Painel Administrativo",
+    "language": "Idioma",
+    "changeLanguage": "Alterar Idioma",
+    "botManagement": "Gerenciamento de Bots",
+    "enhanceBotRealism": "Aprimorar Realismo dos Bots",
+    "updateBotNicknames": "Atualizar Nomes dos Bots"
+  }
+}
