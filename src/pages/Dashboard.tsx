@@ -110,15 +110,29 @@ export default function Dashboard() {
     }
   };
 
+  const getNextLevelXP = async (currentLevel: number) => {
+    try {
+      const { data, error } = await supabase.rpc('get_next_level_xp', {
+        current_level: currentLevel
+      });
+      if (error) throw error;
+      return data || (currentLevel + 1) * 100;
+    } catch (error) {
+      console.error('Error getting next level XP:', error);
+      return (currentLevel + 1) * 100;
+    }
+  };
+
   const loadUserData = async () => {
     // Sempre carregar dados do localStorage primeiro
     const userData = localStorage.getItem('satoshi_user');
     if (userData) {
       const user = JSON.parse(userData);
+      const nextLevelXP = await getNextLevelXP(user.level || 1);
       setUserStats({
         level: user.level || 1,
         currentXP: user.xp || 0,
-        nextLevelXP: (user.level || 1) * 100,
+        nextLevelXP,
         streak: user.streak || 0,
         completedLessons: user.completedLessons || 0,
         points: user.points || 0
@@ -179,10 +193,26 @@ export default function Dashboard() {
         .maybeSingle();
 
       if (profile) {
+        // Calculate correct level based on XP
+        const { data: calculatedLevel } = await supabase.rpc('calculate_user_level', {
+          user_xp: profile.xp || 0
+        });
+        
+        const actualLevel = calculatedLevel || profile.level || 1;
+        const nextLevelXP = await getNextLevelXP(actualLevel);
+        
+        // Update level in database if it's different
+        if (actualLevel !== profile.level) {
+          await supabase
+            .from('profiles')
+            .update({ level: actualLevel })
+            .eq('id', profile.id);
+        }
+        
         setUserStats({
-          level: profile.level || 1,
+          level: actualLevel,
           currentXP: profile.xp || 0,
-          nextLevelXP: (profile.level || 1) * 100,
+          nextLevelXP,
           streak: profile.streak || 0,
           completedLessons: profile.completed_lessons || 0,
           points: profile.points || 0
@@ -279,27 +309,31 @@ export default function Dashboard() {
               )}
             </div>
             
-            {/* Simplified Progress Bar */}
-            <div 
-              className="w-full bg-muted rounded-full h-2 mb-3 cursor-pointer hover:bg-muted/80 transition-colors"
-              onClick={() => navigate('/levels')}
-            >
+            {/* Responsive Progress Bar */}
+            <div className="w-full max-w-sm mx-auto px-2 sm:px-0">
               <div 
-                className="bg-gradient-to-r from-success to-primary h-2 rounded-full"
-                style={{ width: `${(userStats.currentXP / userStats.nextLevelXP) * 100}%` }}
-              ></div>
-            </div>
-            
-            <div className="flex justify-between items-center text-xs text-muted-foreground mb-4">
-              <span>XP: {userStats.currentXP}</span>
-              <span>Meta: {userStats.nextLevelXP}</span>
+                className="w-full bg-muted rounded-full h-2 mb-3 cursor-pointer hover:bg-muted/80 transition-colors"
+                onClick={() => navigate('/levels')}
+              >
+                <div 
+                  className="bg-gradient-to-r from-success to-primary h-2 rounded-full transition-all duration-300"
+                  style={{ 
+                    width: `${Math.min((userStats.currentXP / userStats.nextLevelXP) * 100, 100)}%` 
+                  }}
+                ></div>
+              </div>
+              
+              <div className="flex justify-between items-center text-xs text-muted-foreground mb-4 px-1">
+                <span>XP: {userStats.currentXP}</span>
+                <span>Meta: {userStats.nextLevelXP}</span>
+              </div>
             </div>
 
-            {/* Profile Button with Side Badges */}
-            <div className="flex items-center justify-center gap-3 mb-4">
+            {/* Profile Button with Side Badges - Responsive */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4">
               {/* XP Badge - Left Side */}
               <div 
-                className="border border-[#adff2f] rounded-full px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-[120px]"
+                className="border border-[#adff2f] rounded-full px-3 sm:px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-full sm:w-[120px] max-w-[120px]"
                 onClick={() => navigate('/levels')}
                 style={{ borderWidth: '0.5px' }}
               >
@@ -312,7 +346,7 @@ export default function Dashboard() {
 
               {/* Profile Button */}
               <Button 
-                className="bg-gradient-to-r from-primary to-success text-black px-6 py-2 rounded-full font-semibold shadow-glow w-[120px]"
+                className="bg-gradient-to-r from-primary to-success text-black px-3 sm:px-6 py-2 rounded-full font-semibold shadow-glow w-full sm:w-[120px] max-w-[120px] text-xs sm:text-sm"
                 onClick={() => navigate(hasAvatar ? '/profile' : '/store')}
               >
                 {hasAvatar ? 'Meu Perfil' : 'Escolher Avatar'}
@@ -320,7 +354,7 @@ export default function Dashboard() {
 
               {/* Beetz Badge - Right Side */}
               <div 
-                className="border border-[#adff2f] rounded-full px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-[120px]"
+                className="border border-[#adff2f] rounded-full px-3 sm:px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-full sm:w-[120px] max-w-[120px]"
                 onClick={() => navigate('/beetz-info')}
                 style={{ borderWidth: '0.5px' }}
               >
