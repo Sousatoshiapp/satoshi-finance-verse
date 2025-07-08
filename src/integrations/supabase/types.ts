@@ -232,6 +232,54 @@ export type Database = {
           },
         ]
       }
+      daily_missions: {
+        Row: {
+          beetz_reward: number
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          is_weekend_special: boolean
+          mission_type: string
+          target_value: number
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          beetz_reward?: number
+          category: string
+          created_at?: string
+          description: string
+          difficulty?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          is_weekend_special?: boolean
+          mission_type: string
+          target_value?: number
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          beetz_reward?: number
+          category?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          is_weekend_special?: boolean
+          mission_type?: string
+          target_value?: number
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       district_activities: {
         Row: {
           activity_data: Json | null
@@ -506,6 +554,45 @@ export type Database = {
           },
         ]
       }
+      leagues: {
+        Row: {
+          color_primary: string
+          color_secondary: string
+          created_at: string
+          icon: string | null
+          id: string
+          max_points: number | null
+          min_points: number
+          name: string
+          rewards: Json | null
+          tier: number
+        }
+        Insert: {
+          color_primary: string
+          color_secondary: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          max_points?: number | null
+          min_points: number
+          name: string
+          rewards?: Json | null
+          tier: number
+        }
+        Update: {
+          color_primary?: string
+          color_secondary?: string
+          created_at?: string
+          icon?: string | null
+          id?: string
+          max_points?: number | null
+          min_points?: number
+          name?: string
+          rewards?: Json | null
+          tier?: number
+        }
+        Relationships: []
+      }
       level_tiers: {
         Row: {
           created_at: string | null
@@ -533,6 +620,45 @@ export type Database = {
           name?: string
           rewards?: Json | null
           xp_required?: number
+        }
+        Relationships: []
+      }
+      loot_boxes: {
+        Row: {
+          animation_url: string | null
+          contents: Json
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          max_items: number
+          min_items: number
+          name: string
+          rarity: string
+        }
+        Insert: {
+          animation_url?: string | null
+          contents?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          max_items?: number
+          min_items?: number
+          name: string
+          rarity?: string
+        }
+        Update: {
+          animation_url?: string | null
+          contents?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          max_items?: number
+          min_items?: number
+          name?: string
+          rarity?: string
         }
         Relationships: []
       }
@@ -1964,6 +2090,85 @@ export type Database = {
           },
         ]
       }
+      user_loot_boxes: {
+        Row: {
+          created_at: string
+          id: string
+          items_received: Json | null
+          loot_box_id: string
+          opened: boolean
+          opened_at: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          items_received?: Json | null
+          loot_box_id: string
+          opened?: boolean
+          opened_at?: string | null
+          source?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          items_received?: Json | null
+          loot_box_id?: string
+          opened?: boolean
+          opened_at?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_loot_boxes_loot_box_id_fkey"
+            columns: ["loot_box_id"]
+            isOneToOne: false
+            referencedRelation: "loot_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_mission_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          mission_id: string
+          progress: number
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mission_id: string
+          progress?: number
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          mission_id?: string
+          progress?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mission_progress_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "daily_missions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_power_ups: {
         Row: {
           acquired_at: string
@@ -2264,6 +2469,62 @@ export type Database = {
           },
         ]
       }
+      weekly_leaderboards: {
+        Row: {
+          created_at: string
+          duels_won: number
+          id: string
+          league_id: string | null
+          quiz_score: number
+          rank_position: number | null
+          rewards_claimed: boolean
+          streak_days: number
+          total_score: number
+          updated_at: string
+          user_id: string
+          week_start_date: string
+          xp_earned: number
+        }
+        Insert: {
+          created_at?: string
+          duels_won?: number
+          id?: string
+          league_id?: string | null
+          quiz_score?: number
+          rank_position?: number | null
+          rewards_claimed?: boolean
+          streak_days?: number
+          total_score?: number
+          updated_at?: string
+          user_id: string
+          week_start_date: string
+          xp_earned?: number
+        }
+        Update: {
+          created_at?: string
+          duels_won?: number
+          id?: string
+          league_id?: string | null
+          quiz_score?: number
+          rank_position?: number | null
+          rewards_claimed?: boolean
+          streak_days?: number
+          total_score?: number
+          updated_at?: string
+          user_id?: string
+          week_start_date?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "weekly_leaderboards_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -2285,6 +2546,10 @@ export type Database = {
       check_duel_limit: {
         Args: { profile_id: string }
         Returns: boolean
+      }
+      generate_daily_missions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       get_next_level_xp: {
         Args: { current_level: number }
