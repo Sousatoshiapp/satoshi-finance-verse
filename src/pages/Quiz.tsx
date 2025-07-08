@@ -491,7 +491,7 @@ export default function Quiz() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/game-mode")}
             className="text-white hover:bg-white/10"
           >
             <ArrowLeft className="h-4 w-4" />
