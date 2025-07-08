@@ -124,7 +124,7 @@ BEGIN
     
     -- Create some achievements for higher level bots
     IF bot_record.level >= 20 THEN
-      -- Get achievement IDs
+      -- Award random achievements to higher level bots
       INSERT INTO public.user_achievements (
         user_id,
         achievement_id,
@@ -135,8 +135,7 @@ BEGIN
         a.id,
         jsonb_build_object('level', bot_record.level, 'earned_for', a.name)
       FROM public.achievements a
-      WHERE a.requirement_data->>'min_level' IS NOT NULL 
-      AND (a.requirement_data->>'min_level')::integer <= bot_record.level
+      ORDER BY RANDOM()
       LIMIT 2
       ON CONFLICT (user_id, achievement_id) DO NOTHING;
     END IF;
