@@ -339,7 +339,7 @@ export default function Profile() {
     { 
       label: 'Beetz', 
       value: user?.points || 0, 
-      icon: '💰', // Using emoji instead of component here
+      icon: <BeetzIcon size="sm" />,
       route: '/beetz-info'
     }
   ];
