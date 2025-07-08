@@ -252,37 +252,41 @@ export default function Dashboard() {
               <span>Meta: {userStats.nextLevelXP}</span>
             </div>
 
-            {/* Single Action Button */}
-            <Button 
-              className="bg-gradient-to-r from-primary to-success text-black px-6 py-2 rounded-full font-semibold shadow-glow"
-              onClick={() => navigate(hasAvatar ? '/profile' : '/store')}
-            >
-              {hasAvatar ? 'Meu Perfil' : 'Escolher Avatar'}
-            </Button>
-          </div>
+            {/* Profile Button with Side Badges */}
+            <div className="flex items-center justify-center gap-3 mb-4">
+              {/* XP Badge - Left Side */}
+              <div 
+                className="border border-[#adff2f] rounded-full px-3 py-1.5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center gap-1.5"
+                onClick={() => navigate('/levels')}
+                style={{ borderWidth: '0.5px' }}
+              >
+                <span className="text-sm">⚡</span>
+                <div className="text-center">
+                  <div className="text-xs text-muted-foreground leading-none">XP</div>
+                  <div className="text-xs font-bold text-foreground leading-none">{userStats.currentXP}</div>
+                </div>
+              </div>
 
-          {/* XP and Beetz Cards - Transparent with Ultra Thin Green Border */}
-          <div className="grid grid-cols-2 gap-2 mb-6">
-            {/* XP Card */}
-            <div 
-              className="bg-transparent rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-[#adff2f]"
-              onClick={() => navigate('/levels')}
-              style={{ borderWidth: '0.5px' }}
-            >
-              <div className="text-lg mb-1">⚡</div>
-              <div className="text-xs text-muted-foreground mb-1">XP</div>
-              <div className="text-sm font-bold text-foreground">{userStats.currentXP}</div>
-            </div>
+              {/* Profile Button */}
+              <Button 
+                className="bg-gradient-to-r from-primary to-success text-black px-6 py-2 rounded-full font-semibold shadow-glow"
+                onClick={() => navigate(hasAvatar ? '/profile' : '/store')}
+              >
+                {hasAvatar ? 'Meu Perfil' : 'Escolher Avatar'}
+              </Button>
 
-            {/* Beetz Card */}
-            <div 
-              className="bg-transparent rounded-xl p-3 text-center cursor-pointer hover:scale-105 transition-all duration-200 border border-[#adff2f]"
-              onClick={() => navigate('/beetz-info')}
-              style={{ borderWidth: '0.5px' }}
-            >
-              <div className="text-lg mb-1">🥕</div>
-              <div className="text-xs text-muted-foreground mb-1">Beetz</div>
-              <div className="text-sm font-bold text-foreground">{userStats.currentXP * 2}</div>
+              {/* Beetz Badge - Right Side */}
+              <div 
+                className="border border-[#adff2f] rounded-full px-3 py-1.5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center gap-1.5"
+                onClick={() => navigate('/beetz-info')}
+                style={{ borderWidth: '0.5px' }}
+              >
+                <span className="text-sm">🥕</span>
+                <div className="text-center">
+                  <div className="text-xs text-muted-foreground leading-none">Beetz</div>
+                  <div className="text-xs font-bold text-foreground leading-none">{userStats.currentXP * 2}</div>
+                </div>
+              </div>
             </div>
           </div>
 
