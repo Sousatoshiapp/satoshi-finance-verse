@@ -50,26 +50,57 @@ export default function SponsorAdmin() {
 
   const loadSponsorAccess = async () => {
     try {
-      const { data, error } = await supabase
-        .from('sponsor_admin_access')
-        .select(`
-          id,
-          access_level,
-          permissions,
-          district:districts(
+      // Verificar se o usuário tem acesso admin (já passou pela senha administrativa)
+      const hasAdminAccess = localStorage.getItem("admin_access_granted") === "true";
+      
+      if (hasAdminAccess) {
+        // Admin tem acesso a todos os distritos como owner
+        const { data: allDistricts, error: districtsError } = await supabase
+          .from('districts')
+          .select('id, name, color_primary, sponsor_company')
+          .eq('is_active', true);
+
+        if (districtsError) throw districtsError;
+
+        // Criar acesso virtual para todos os distritos
+        const adminAccess = allDistricts?.map(district => ({
+          id: `admin-${district.id}`,
+          district: district,
+          access_level: 'owner' as const,
+          permissions: {
+            view_analytics: true,
+            manage_store: true,
+            manage_events: true
+          }
+        })) || [];
+
+        setSponsorAccess(adminAccess);
+        if (adminAccess.length > 0) {
+          setSelectedDistrict(adminAccess[0].district.id);
+        }
+      } else {
+        // Usuário comum - verificar acesso específico
+        const { data, error } = await supabase
+          .from('sponsor_admin_access')
+          .select(`
             id,
-            name,
-            color_primary,
-            sponsor_company
-          )
-        `)
-        .eq('is_active', true);
+            access_level,
+            permissions,
+            district:districts(
+              id,
+              name,
+              color_primary,
+              sponsor_company
+            )
+          `)
+          .eq('is_active', true);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setSponsorAccess(data || []);
-      if (data && data.length > 0) {
-        setSelectedDistrict(data[0].district.id);
+        setSponsorAccess(data || []);
+        if (data && data.length > 0) {
+          setSelectedDistrict(data[0].district.id);
+        }
       }
     } catch (error: any) {
       console.error('Error loading sponsor access:', error);
@@ -185,12 +216,24 @@ export default function SponsorAdmin() {
         <div className="max-w-7xl mx-auto p-6">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
-              Painel de Patrocinadores
-            </h1>
-            <p className="text-muted-foreground">
-              Gerencie seus distritos patrocinados e analise o desempenho
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
+                  Painel de Patrocinadores
+                </h1>
+                <p className="text-muted-foreground">
+                  Gerencie seus distritos patrocinados e analise o desempenho
+                </p>
+              </div>
+              
+              {/* Admin Access Indicator */}
+              {localStorage.getItem("admin_access_granted") === "true" && (
+                <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Acesso Admin Completo
+                </Badge>
+              )}
+            </div>
           </div>
 
           {/* District Selector */}
