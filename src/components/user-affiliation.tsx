@@ -18,14 +18,13 @@ interface UserAffiliationProps {
 export function UserAffiliation({ district, team }: UserAffiliationProps) {
   const navigate = useNavigate();
 
-  if (!district && !team) return null;
-
+  // Always show the container, but handle individual cards
   return (
-    <div className="flex items-center justify-center gap-3 mb-4">
+    <div className="grid grid-cols-2 gap-3 mb-4">
       {/* District Card */}
-      {district && (
+      {district ? (
         <div 
-          className="flex-1 bg-gradient-to-r from-card/80 to-muted/40 border border-border/50 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
+          className="bg-gradient-to-r from-card/80 to-muted/40 border border-border/50 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
           onClick={() => navigate('/satoshi-city')}
           style={{
             borderColor: `${district.color_primary}30`,
@@ -40,12 +39,25 @@ export function UserAffiliation({ district, team }: UserAffiliationProps) {
             </div>
           </div>
         </div>
+      ) : (
+        <div 
+          className="bg-gradient-to-r from-primary/10 to-secondary/5 border border-primary/20 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
+          onClick={() => navigate('/satoshi-city')}
+        >
+          <div className="flex items-center gap-2">
+            <div className="text-lg">🌟</div>
+            <div className="flex-1">
+              <div className="text-xs text-muted-foreground">Explorar</div>
+              <div className="text-sm font-semibold text-foreground">Escolher Distrito</div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Team Card */}
-      {team && (
+      {team ? (
         <div 
-          className="flex-1 bg-gradient-to-r from-card/80 to-muted/40 border border-border/50 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
+          className="bg-gradient-to-r from-card/80 to-muted/40 border border-border/50 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
           onClick={() => navigate('/guilds')}
           style={{
             borderColor: `${team.team_color}30`,
@@ -60,19 +72,16 @@ export function UserAffiliation({ district, team }: UserAffiliationProps) {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Join Suggestion if no affiliations */}
-      {!district && !team && (
+      ) : (
         <div 
-          className="flex-1 bg-gradient-to-r from-primary/10 to-secondary/5 border border-primary/20 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
-          onClick={() => navigate('/satoshi-city')}
+          className="bg-gradient-to-r from-accent/10 to-muted/5 border border-accent/20 rounded-2xl p-3 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
+          onClick={() => navigate('/guilds')}
         >
           <div className="flex items-center gap-2">
-            <div className="text-lg">🌟</div>
+            <div className="text-lg">⚔️</div>
             <div className="flex-1">
-              <div className="text-xs text-muted-foreground">Explore</div>
-              <div className="text-sm font-semibold text-foreground">Juntar-se a Distrito</div>
+              <div className="text-xs text-muted-foreground">Times</div>
+              <div className="text-sm font-semibold text-foreground">Criar/Juntar Time</div>
             </div>
           </div>
         </div>

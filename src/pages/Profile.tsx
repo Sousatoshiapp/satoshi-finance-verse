@@ -318,6 +318,12 @@ export default function Profile() {
 
   const stats = [
     { 
+      label: 'XP Atual', 
+      value: user?.xp || 0, 
+      icon: '⚡',
+      route: '/levels'
+    },
+    { 
       label: 'Lições Completas', 
       value: user?.completed_lessons || 0, 
       icon: '📚',
@@ -334,12 +340,6 @@ export default function Profile() {
       value: user?.points || 0, 
       icon: '🥕',
       route: '/beetz-info'
-    },
-    { 
-      label: 'Nível Atual', 
-      value: user?.level || 1, 
-      icon: '⭐',
-      route: '/levels'
     }
   ];
 
