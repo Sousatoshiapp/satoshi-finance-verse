@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, DollarSign, Trophy, MessageSquare, 
   Settings, HelpCircle, Bot, Gamepad2, BarChart3, Database,
   Gift, Calendar, Shield, FileText, Zap, Star, Crown,
-  ChevronDown, ChevronRight, LogOut
+  ChevronDown, ChevronRight, LogOut, Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -74,6 +74,11 @@ const navigation: NavItem[] = [
     title: "Sistema de Bots",
     href: "/admin/bots",
     icon: Bot,
+  },
+  {
+    title: "Painel de Patrocinadores",
+    href: "/admin/sponsors",
+    icon: Building2,
   },
   {
     title: "Social & Comunicação",

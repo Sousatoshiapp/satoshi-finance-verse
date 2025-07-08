@@ -55,6 +55,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminQuestions from "./pages/AdminQuestions";
 import AdminPasswordReset from "./pages/AdminPasswordReset";
 import AdminSettings from "./pages/AdminSettings";
+import SponsorAdmin from "./pages/SponsorAdmin";
 
 const queryClient = new QueryClient();
 
@@ -116,6 +117,7 @@ const App = () => (
             <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
             <Route path="/admin/quiz/questions" element={<ProtectedRoute><AdminQuestions /></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+            <Route path="/admin/sponsors" element={<ProtectedRoute><SponsorAdmin /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
