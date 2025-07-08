@@ -391,6 +391,10 @@ export default function Dashboard() {
           <div className="mb-6">
             <TournamentCarousel />
           </div>
+          
+          <div className="mb-6">
+            <DuelPlaygroundGrid />
+          </div>
 
           {/* Weekly Ranking - Compact */}
           <div className="mb-6">
@@ -440,11 +444,6 @@ export default function Dashboard() {
           {/* Animated Loot Box (when available) */}
           <AnimatedLootBox isAvailable={true} />
 
-          {/* Tournament Carousel */}
-          <TournamentCarousel />
-
-          {/* Duel and Playground Grid */}
-          <DuelPlaygroundGrid />
         </div>
       </div>
       

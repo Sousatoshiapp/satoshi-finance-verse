@@ -77,14 +77,22 @@ export function CompactLeaderboard() {
 
   if (loading) {
     return (
-      <Card className="h-32">
-        <CardHeader className="pb-2">
+      <Card className="border-amber-500/20 bg-gradient-to-br from-background to-amber-500/5 relative overflow-hidden">
+        {/* Cyberpunk Background */}
+        <div 
+          className="absolute inset-0 opacity-10 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop')"
+          }}
+        />
+        
+        <CardHeader className="pb-2 relative z-10">
           <CardTitle className="text-sm flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
+            <TrendingUp className="h-4 w-4 text-amber-500" />
             Ranking Semanal
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0 relative z-10">
           <div className="space-y-2">
             {[1, 2, 3].map(i => (
               <div key={i} className="bg-muted/30 rounded p-2 animate-pulse">
@@ -98,12 +106,24 @@ export function CompactLeaderboard() {
   }
 
   return (
-    <Card className="h-32 border-amber-500/20 bg-gradient-to-br from-background to-amber-500/5">
-      <CardHeader className="pb-2">
+    <Card className="border-amber-500/20 bg-gradient-to-br from-background to-amber-500/5 relative overflow-hidden">
+      {/* Cyberpunk 3D Background */}
+      <div 
+        className="absolute inset-0 opacity-15 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop')"
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-orange-500/5" />
+      
+      <CardHeader className="pb-2 relative z-10">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-amber-500" />
             Ranking Semanal
+            <Badge variant="outline" className="text-xs bg-amber-500/10 border-amber-500/30">
+              🏆 Top 3
+            </Badge>
           </CardTitle>
           
           <Button 
@@ -117,33 +137,40 @@ export function CompactLeaderboard() {
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0">
-        <div className="space-y-1">
-          {topUsers.slice(0, 3).map((user) => (
+      <CardContent className="pt-0 relative z-10">
+        <div className="space-y-2">
+          {topUsers.map((user) => (
             <div 
               key={user.id}
-              className="flex items-center gap-2 p-1 rounded hover:bg-muted/30 transition-colors cursor-pointer"
+              className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-500/10 transition-colors cursor-pointer backdrop-blur-sm bg-background/30"
               onClick={() => navigate(`/user/${user.id}`)}
             >
-              <div className="flex items-center justify-center w-5">
+              <div className="flex items-center justify-center w-6">
                 {getRankIcon(user.rank)}
               </div>
               
-              <Avatar className="h-5 w-5">
+              <Avatar className="h-6 w-6">
                 <AvatarImage src={user.avatar_url} />
                 <AvatarFallback className="text-xs">{user.username.charAt(0)}</AvatarFallback>
               </Avatar>
               
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-medium truncate">{user.username}</div>
+                <div className="text-xs text-muted-foreground">Nível {user.level}</div>
               </div>
               
-              <div className="text-xs text-muted-foreground">
-                +{user.weeklyXP}
+              <div className="text-right">
+                <div className="text-xs font-bold text-amber-500">
+                  +{user.weeklyXP}
+                </div>
+                <div className="text-xs text-muted-foreground">XP</div>
               </div>
             </div>
           ))}
         </div>
+        
+        {/* Cyberpunk glow effect */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
       </CardContent>
     </Card>
   );
