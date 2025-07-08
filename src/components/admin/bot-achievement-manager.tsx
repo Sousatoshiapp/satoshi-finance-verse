@@ -66,13 +66,17 @@ export function BotAchievementManager() {
     try {
       addLog('Atribuindo conquistas automáticas aos bots...');
 
-      const { data, error } = await supabase.rpc('assign_bot_achievements');
+      const { data, error } = await supabase.functions.invoke('assign-bot-achievements');
 
       if (error) {
         throw error;
       }
 
-      const achievementCount = data || 0;
+      if (!data.success) {
+        throw new Error(data.error || 'Erro desconhecido no processamento');
+      }
+
+      const achievementCount = data.achievementCount || 0;
       setResult(`${achievementCount} conquistas atribuídas aos bots com sucesso!`);
       addLog(`✅ ${achievementCount} conquistas criadas automaticamente`);
       
@@ -116,11 +120,15 @@ export function BotAchievementManager() {
 
       // Step 2: Assign achievements
       addLog('Etapa 2: Atribuindo conquistas...');
-      const { data: achievementData, error: achievementError } = await supabase.rpc('assign_bot_achievements');
+      const { data: achievementData, error: achievementError } = await supabase.functions.invoke('assign-bot-achievements');
       
       if (achievementError) throw achievementError;
       
-      const achievementCount = achievementData || 0;
+      if (!achievementData.success) {
+        throw new Error(achievementData.error || 'Erro ao atribuir conquistas');
+      }
+      
+      const achievementCount = achievementData.achievementCount || 0;
       addLog(`✅ ${achievementCount} conquistas atribuídas`);
 
       setResult(`Processo completo! ${improvedCount} bots melhorados e ${achievementCount} conquistas atribuídas.`);
