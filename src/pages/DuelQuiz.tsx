@@ -429,7 +429,7 @@ export default function DuelQuiz() {
                 </div>
                 <div>
                   <div className="text-blue-400 text-2xl mb-1">⭐</div>
-                  <div className="text-white font-bold">Pontos</div>
+                  <div className="text-white font-bold">Beetz</div>
                   <div className="text-white text-xl font-bold">80</div>
                 </div>
                 <div>
@@ -519,7 +519,7 @@ export default function DuelQuiz() {
                   </div>
                 </div>
                 <p className="text-white font-semibold text-sm">{userProfile?.nickname || mockUser.nickname}</p>
-                <p className="text-slate-400 text-xs">Pontos: {playerScore}</p>
+                <p className="text-slate-400 text-xs">Beetz: {playerScore}</p>
               </div>
               
               {/* Timer com círculo progressivo */}
@@ -564,7 +564,7 @@ export default function DuelQuiz() {
                   </div>
                 </div>
                 <p className="text-white font-semibold text-sm">{mockOpponent.nickname}</p>
-                <p className="text-slate-400 text-xs">Pontos: {opponentScore}</p>
+                <p className="text-slate-400 text-xs">Beetz: {opponentScore}</p>
               </div>
             </div>
           </div>
@@ -733,7 +733,7 @@ export default function DuelQuiz() {
                 </div>
                 <div className="bg-[#8cc020] rounded-xl p-4">
                   <Star className="w-6 h-6 text-yellow-400 mx-auto mb-1" />
-                  <div className="text-black font-bold">Pontos</div>
+                  <div className="text-black font-bold">Beetz</div>
                   <div className="text-black text-xl font-bold">80</div>
                 </div>
                 <div className="bg-[#8cc020] rounded-xl p-4">

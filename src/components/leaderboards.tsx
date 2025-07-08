@@ -223,7 +223,7 @@ export function Leaderboards() {
                 <div className="font-bold text-primary">
                   {entry.total_score.toLocaleString()}
                 </div>
-                <div className="text-xs text-muted-foreground">pontos</div>
+                <div className="text-xs text-muted-foreground">Beetz</div>
               </div>
             </div>
           ))}

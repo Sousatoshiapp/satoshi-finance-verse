@@ -427,7 +427,7 @@ export default function SoloQuiz() {
                   <div className="text-lg font-bold text-white">30 XP</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm text-slate-400 mb-1">Pontos</div>
+                  <div className="text-sm text-slate-400 mb-1">Beetz</div>
                   <div className="text-lg font-bold text-white">60</div>
                 </div>
                 <div className="text-center">

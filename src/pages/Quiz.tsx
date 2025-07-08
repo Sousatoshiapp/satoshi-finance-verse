@@ -408,7 +408,7 @@ export default function Quiz() {
                   <div className="text-xl font-bold text-white">40 XP</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm text-slate-400 mb-1">Pontos</div>
+                  <div className="text-sm text-slate-400 mb-1">Beetz</div>
                   <div className="text-xl font-bold text-white">80</div>
                 </div>
                 <div className="text-center">
@@ -519,7 +519,7 @@ export default function Quiz() {
             {currentQuiz.title}
           </h1>
           <p className="text-slate-300 text-sm mb-6">
-            Responda & Ganhe XP, Pontos & Troféus!
+            Responda & Ganhe XP, Beetz & Troféus!
           </p>
 
           {/* Rewards Card */}
@@ -531,7 +531,7 @@ export default function Quiz() {
                   <div className="text-lg font-bold text-white">50 XP</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-sm text-slate-400 mb-1">Pontos</div>
+                  <div className="text-sm text-slate-400 mb-1">Beetz</div>
                   <div className="text-lg font-bold text-white">100</div>
                 </div>
                 <div className="text-center">

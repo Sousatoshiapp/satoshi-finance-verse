@@ -246,7 +246,7 @@ export default function Duels() {
                 <div>
                   <p className="font-medium">Ganhe XP</p>
                   <p className="text-sm text-muted-foreground">
-                    Vença para ganhar pontos de experiência extras
+                    Vença para ganhar XP e Beetz extras
                   </p>
                 </div>
               </div>

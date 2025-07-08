@@ -199,7 +199,7 @@ export function SocialChallenges() {
                   <div className="flex items-center gap-2 text-xs">
                     <div className="flex items-center gap-1 text-orange-500">
                       <Trophy className="h-3 w-3" />
-                      +{challenge.reward_points} Pontos
+                      +{challenge.reward_points} Beetz
                     </div>
                   </div>
                 </div>

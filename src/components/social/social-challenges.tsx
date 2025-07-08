@@ -361,7 +361,7 @@ export function SocialChallenges() {
                               </div>
                               <div className="flex items-center gap-1">
                                 <Trophy className="h-3 w-3" />
-                                {challenge.reward_points} pontos
+                                {challenge.reward_points} Beetz
                               </div>
                             </div>
                             

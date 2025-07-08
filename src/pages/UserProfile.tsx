@@ -245,7 +245,7 @@ export default function UserProfile() {
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-primary">{user.points}</div>
-                    <div className="text-sm text-muted-foreground">Pontos</div>
+                    <div className="text-sm text-muted-foreground">Beetz</div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-primary">{user.follower_count}</div>

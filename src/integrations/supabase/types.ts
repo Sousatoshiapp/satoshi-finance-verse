@@ -2627,6 +2627,10 @@ export type Database = {
         Args: { profile_id: string }
         Returns: boolean
       }
+      enhance_bot_realism: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_bot_profile: {
         Args: { bot_count?: number }
         Returns: {

@@ -292,7 +292,7 @@ export default function Profile() {
             
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-foreground mb-1">{user.nickname}</h2>
-              <p className="text-muted-foreground mb-3">Nível {user.level} • {user.points} Pontos Beetz</p>
+              <p className="text-muted-foreground mb-3">Nível {user.level} • {user.points} Beetz</p>
               <div className="flex items-center gap-3">
                 <StreakBadge days={user.streak} />
                 <Badge variant="outline">{getLevelInfo(user.level).name}</Badge>

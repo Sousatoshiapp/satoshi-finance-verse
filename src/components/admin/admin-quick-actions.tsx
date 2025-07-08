@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { BotNicknameManager } from "./bot-nickname-manager";
 import { SingleBotNicknameUpdater } from "./single-bot-updater";
+import { BotRealismEnhancer } from "./bot-realism-enhancer";
 import { 
   Users, Bot, Zap, Gift, MessageSquare, 
   Shield, RefreshCw, AlertTriangle 
@@ -124,6 +125,9 @@ export function AdminQuickActions({ onStatsUpdate }: AdminQuickActionsProps) {
       
       {/* Bot Nickname Manager */}
       <BotNicknameManager />
+      
+      {/* Bot Realism Enhancer */}
+      <BotRealismEnhancer />
       
       {/* Quick Actions */}
       <Card>

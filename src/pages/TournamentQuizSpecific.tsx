@@ -385,7 +385,7 @@ export default function TournamentQuizSpecific() {
               </div>
               <div>
                 <Star className="h-6 w-6 text-warning mx-auto mb-1" />
-                <div className="text-sm text-foreground">Pontos</div>
+                <div className="text-sm text-foreground">Beetz</div>
                 <div className="text-xl font-bold text-warning">{score}</div>
               </div>
             </div>

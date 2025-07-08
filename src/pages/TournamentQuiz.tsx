@@ -280,7 +280,7 @@ export default function TournamentQuiz() {
                       <div className="text-xl font-bold">200</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-sm opacity-90">Pontos</div>
+                      <div className="text-sm opacity-90">Beetz</div>
                       <div className="text-xl font-bold">500</div>
                     </div>
                     <div className="text-center">
@@ -345,7 +345,7 @@ export default function TournamentQuiz() {
               </div>
               <div>
                 <Crown className="h-6 w-6 text-yellow-400 mx-auto mb-1" />
-                <div className="text-sm text-white">Pontos</div>
+                <div className="text-sm text-white">Beetz</div>
                 <div className="text-xl font-bold text-white">{score}</div>
               </div>
             </div>
