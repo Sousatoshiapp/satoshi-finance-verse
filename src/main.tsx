@@ -1,6 +1,79 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import './i18n'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toaster";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
+import "./index.css";
+import "./i18n";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Importar otimizações críticas
+import { criticalPathOptimizer } from "@/utils/critical-path-optimizer";
+import { bundleSplitter } from "@/utils/bundle-splitter";
+import { initializePerformanceOptimizations } from "@/utils/performance-manager";
+
+// Configuração otimizada do QueryClient
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutos
+      gcTime: 10 * 60 * 1000, // 10 minutos
+      refetchOnWindowFocus: false,
+      retry: (failureCount, error: any) => {
+        if (error?.status >= 400 && error?.status < 500) return false;
+        return failureCount < 2;
+      },
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
+
+// Inicializar otimizações críticas imediatamente
+criticalPathOptimizer.init();
+bundleSplitter.init();
+
+// Performance monitoring em produção
+if (import.meta.env.PROD) {
+  // Inicializar otimizações de performance
+  initializePerformanceOptimizations();
+  
+  // Monitorar Core Web Vitals
+  import('web-vitals').then((vitals) => {
+    vitals.onCLS(console.log);
+    vitals.onFID(console.log);
+    vitals.onFCP(console.log);
+    vitals.onLCP(console.log);
+    vitals.onTTFB(console.log);
+  }).catch(() => {
+    // Ignore se web-vitals não estiver disponível
+  });
+}
+
+const container = document.getElementById("root");
+if (!container) throw new Error("Root element not found");
+
+const root = createRoot(container);
+
+// Render otimizado com StrictMode apenas em desenvolvimento
+const AppWrapper = import.meta.env.DEV ? StrictMode : 'div';
+
+root.render(
+  <AppWrapper>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <App />
+        <Toaster />
+      </QueryClientProvider>
+    </BrowserRouter>
+  </AppWrapper>
+);
+
+// Cleanup no unload
+window.addEventListener('beforeunload', () => {
+  // Cleanup automático via performance manager
+  queryClient.clear();
+});

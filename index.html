@@ -6,9 +6,36 @@
     <title>Satoshi - Aprenda Finanças Jogando</title>
     <meta name="description" content="O Duolingo das finanças - Aprenda educação financeira de forma gamificada e divertida" />
     <meta name="author" content="Satoshi App" />
+    
+    <!-- Critical Path Optimization -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//uabdmohgzsertxfishoh.supabase.co">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://uabdmohgzsertxfishoh.supabase.co" crossorigin>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/nunito/v26/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshdTk3j6zbXWjgevT5.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/src/main.tsx" as="script">
+    <link rel="preload" href="/src/index.css" as="style">
+    
+    <!-- Critical inline CSS -->
+    <style>
+      html, body { margin: 0; padding: 0; font-family: Nunito, system-ui, sans-serif; }
+      #root { min-height: 100vh; background: hsl(210 40% 98%); }
+      .loading-skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+      @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+      .critical-loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    </style>
+    
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Resource hints for next pages -->
+    <link rel="prefetch" href="/quiz">
+    <link rel="prefetch" href="/duels">
+    <link rel="prefetch" href="/leaderboard">
 
     <meta property="og:title" content="Satoshi - Aprenda Finanças Jogando" />
     <meta property="og:description" content="O Duolingo das finanças - Aprenda educação financeira de forma gamificada e divertida" />
@@ -21,7 +48,23 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Critical loading fallback -->
+      <div class="critical-loading">
+        <div class="loading-skeleton" style="width: 60px; height: 60px; border-radius: 50%; background: hsl(210 40% 90%);"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => console.log('[SW] Registered:', registration))
+            .catch(error => console.log('[SW] Registration failed:', error));
+        });
+      }
+    </script>
   </body>
 </html>
