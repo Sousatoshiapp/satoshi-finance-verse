@@ -22,6 +22,10 @@ import { WeeklyTournaments } from "@/components/weekly-tournaments";
 import { GuildSystem } from "@/components/guild-system";
 import { MarketplaceOverview } from "@/components/marketplace-overview";
 import { StreakRewards } from "@/components/streak-rewards";
+import { AITradingAssistant } from "@/components/ai-trading-assistant";
+import { SocialTradingNetwork } from "@/components/social-trading-network";
+import { AdvancedAnalyticsDashboard } from "@/components/advanced-analytics-dashboard";
+import { VIPMentorshipProgram } from "@/components/vip-mentorship-program";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useNavigate } from "react-router-dom";
@@ -430,6 +434,27 @@ export default function Dashboard() {
           {/* Streak Rewards */}
           <div className="mb-6">
             <StreakRewards />
+          </div>
+
+          {/* Fase 4 - Componentes de Elite Suprema */}
+          {/* AI Trading Assistant */}
+          <div className="mb-6">
+            <AITradingAssistant />
+          </div>
+
+          {/* Social Trading Network */}
+          <div className="mb-6">
+            <SocialTradingNetwork />
+          </div>
+
+          {/* Advanced Analytics Dashboard */}
+          <div className="mb-6">
+            <AdvancedAnalyticsDashboard />
+          </div>
+
+          {/* VIP Mentorship Program */}
+          <div className="mb-6">
+            <VIPMentorshipProgram />
           </div>
 
           {/* Tournament Carousel */}
