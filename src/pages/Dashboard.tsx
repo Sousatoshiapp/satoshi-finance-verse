@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getLevelInfo } from "@/data/levels";
 import { DashboardSummary } from "@/components/dashboard-summary";
 import { QuickActions } from "@/components/quick-actions";
+import { UserAffiliation } from "@/components/user-affiliation";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -42,6 +43,8 @@ export default function Dashboard() {
   const [userAvatar, setUserAvatar] = useState<any>(null);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   const [hasAvatar, setHasAvatar] = useState(false);
+  const [userDistrict, setUserDistrict] = useState<any>(null);
+  const [userTeam, setUserTeam] = useState<any>(null);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -146,6 +149,35 @@ export default function Dashboard() {
         .eq('user_id', authUser.id)
         .single();
 
+      // Load user district and team information
+      const { data: userDistrictData } = await supabase
+        .from('user_districts')
+        .select(`
+          districts (
+            id,
+            name,
+            color_primary,
+            color_secondary,
+            theme
+          )
+        `)
+        .eq('user_id', profile?.id)
+        .eq('is_residence', true)
+        .single();
+
+      const { data: userTeamData } = await supabase
+        .from('team_members')
+        .select(`
+          district_teams (
+            id,
+            name,
+            team_color
+          )
+        `)
+        .eq('user_id', profile?.id)
+        .eq('is_active', true)
+        .single();
+
       if (profile) {
         setUserStats({
           level: profile.level || 1,
@@ -164,6 +196,14 @@ export default function Dashboard() {
         } else {
           // Check if user is new and should see avatar selection
           setShowAvatarSelection(true);
+        }
+
+        // Set district and team data
+        if (userDistrictData?.districts) {
+          setUserDistrict(userDistrictData.districts);
+        }
+        if (userTeamData?.district_teams) {
+          setUserTeam(userTeamData.district_teams);
         }
       }
     } catch (error) {
@@ -292,6 +332,9 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+
+          {/* User Affiliation - District & Team */}
+          <UserAffiliation district={userDistrict} team={userTeam} />
 
           {/* Enhanced Daily Summary */}
           <DashboardSummary userStats={userStats} subscription={subscription} />
