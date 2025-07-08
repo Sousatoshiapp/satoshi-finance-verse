@@ -1184,7 +1184,7 @@ export type Database = {
             | Database["public"]["Enums"]["subscription_tier"]
             | null
           updated_at: string
-          user_id: string
+          user_id: string | null
           xp: number | null
         }
         Insert: {
@@ -1205,7 +1205,7 @@ export type Database = {
             | Database["public"]["Enums"]["subscription_tier"]
             | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
           xp?: number | null
         }
         Update: {
@@ -1226,7 +1226,7 @@ export type Database = {
             | Database["public"]["Enums"]["subscription_tier"]
             | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
           xp?: number | null
         }
         Relationships: [
