@@ -124,27 +124,21 @@ BEGIN
     
     -- Create some achievements for higher level bots
     IF bot_record.level >= 20 THEN
+      -- Get achievement IDs
       INSERT INTO public.user_achievements (
         user_id,
-        achievement_type,
-        achievement_name,
-        description,
-        metadata
-      ) VALUES 
-      (
+        achievement_id,
+        progress_data
+      ) 
+      SELECT 
         bot_record.id,
-        'level_milestone',
-        'level_20',
-        'Alcançou nível 20',
-        jsonb_build_object('level', 20)
-      ),
-      (
-        bot_record.id,
-        'quiz_master', 
-        'quiz_streak_10',
-        'Completou 10 quizzes seguidos',
-        jsonb_build_object('streak', 10)
-      ) ON CONFLICT DO NOTHING;
+        a.id,
+        jsonb_build_object('level', bot_record.level, 'earned_for', a.name)
+      FROM public.achievements a
+      WHERE a.requirement_data->>'min_level' IS NOT NULL 
+      AND (a.requirement_data->>'min_level')::integer <= bot_record.level
+      LIMIT 2
+      ON CONFLICT (user_id, achievement_id) DO NOTHING;
     END IF;
     
     -- Create portfolios for some bots
