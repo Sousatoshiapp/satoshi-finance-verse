@@ -100,7 +100,7 @@ export function BotRealismEnhancer() {
       <CardContent className="space-y-4">
         <div className="text-sm text-muted-foreground">
           <p className="mb-4">
-            Esta função adiciona dados realistas aos bots, incluindo:
+            Esta função adiciona dados realistas aos bots, incluindo conquistas automáticas:
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
             <div className="flex items-center gap-2">
@@ -136,6 +136,14 @@ export function BotRealismEnhancer() {
             <div className="flex items-center gap-2">
               <span>📊</span>
               <span>Estatísticas consistentes</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>🏆</span>
+              <span>Conquistas automáticas</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span>⚡</span>
+              <span>Combos e streaks realistas</span>
             </div>
           </div>
         </div>
@@ -195,7 +203,12 @@ export function BotRealismEnhancer() {
           <strong>Nota:</strong> Esta operação pode levar alguns minutos para ser concluída. 
           Ela adiciona dados históricos realistas a todos os bots do sistema, incluindo:
           sessões de quiz baseadas no nível, posts sociais, participações em leaderboards 
-          semanais, conquistas apropriadas e portfolios de investimento.
+          semanais, <strong>conquistas automáticas apropriadas</strong> e portfolios de investimento.
+          
+          <br /><br />
+          <strong>Conquistas incluídas:</strong> A função agora atribui automaticamente conquistas
+          baseadas no nível, número de quizzes, combos máximos e streaks dos bots, garantindo
+          que todos tenham conquistas condizentes com seu progresso.
         </div>
       </CardContent>
     </Card>

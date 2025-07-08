@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AdminPasswordProtection } from "@/components/admin-password-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { LanguageSelector } from "@/components/admin/language-selector";
+import { BotAchievementManager } from "@/components/admin/bot-achievement-manager";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Settings, Save, RefreshCw, Database, Shield, 
@@ -211,6 +212,9 @@ export default function AdminSettings() {
 
               {/* Language Selector */}
               <LanguageSelector />
+
+              {/* Bot Achievement Manager */}
+              <BotAchievementManager />
 
               {/* Settings Sections */}
               <div className="space-y-6">

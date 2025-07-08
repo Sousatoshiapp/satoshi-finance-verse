@@ -2606,6 +2606,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_bot_achievements: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       award_daily_loot_box: {
         Args: { profile_id: string }
         Returns: string
@@ -2669,6 +2673,10 @@ export type Database = {
       }
       get_xp_multiplier: {
         Args: { profile_id: string }
+        Returns: number
+      }
+      improve_bot_data: {
+        Args: Record<PropertyKey, never>
         Returns: number
       }
       increment_duel_count: {
