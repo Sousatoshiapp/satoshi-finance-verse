@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import beetzIcon from "@/assets/beetz-icon.svg";
 
 interface BeetzIconProps {
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
@@ -19,7 +18,7 @@ const sizeClasses = {
 export function BeetzIcon({ size = "md", className }: BeetzIconProps) {
   return (
     <img 
-      src={beetzIcon} 
+      src="/lovable-uploads/073c0879-ad65-4bee-b80a-a29090231192.png" 
       alt="Beetz" 
       className={cn(sizeClasses[size], "inline-block", className)}
     />
