@@ -2517,6 +2517,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_weekly_leaderboards_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "weekly_leaderboards_league_id_fkey"
             columns: ["league_id"]
             isOneToOne: false
@@ -2565,6 +2572,10 @@ export type Database = {
       get_next_level_xp: {
         Args: { current_level: number }
         Returns: number
+      }
+      get_or_create_weekly_entry: {
+        Args: { profile_id: string }
+        Returns: string
       }
       get_xp_multiplier: {
         Args: { profile_id: string }
