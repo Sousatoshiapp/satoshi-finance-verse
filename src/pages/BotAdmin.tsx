@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Users, Activity, Zap, Trophy, MessageSquare, RefreshCw } from "lucide-react";
+import { AdminPasswordProtection } from "@/components/admin-password-protection";
 
 export default function BotAdmin() {
   const [loading, setLoading] = useState(false);
@@ -173,199 +174,201 @@ export default function BotAdmin() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Administração de Bots</h1>
-          <p className="text-muted-foreground">Gerencie os usuários robôs do sistema</p>
-        </div>
-        <Button onClick={loadStats} variant="outline" size="sm">
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Atualizar
-        </Button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Bot className="h-5 w-5 text-blue-500" />
-              <span className="font-medium">Total de Bots</span>
-            </div>
-            <div className="text-3xl font-bold">{stats.totalBots}</div>
-            <div className="text-xs text-muted-foreground">Meta: 3,000</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Users className="h-5 w-5 text-green-500" />
-              <span className="font-medium">Total Perfis</span>
-            </div>
-            <div className="text-3xl font-bold">{stats.totalProfiles}</div>
-            <div className="text-xs text-muted-foreground">Bots + Usuários reais</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Trophy className="h-5 w-5 text-yellow-500" />
-              <span className="font-medium">No Ranking</span>
-            </div>
-            <div className="text-3xl font-bold">{stats.weeklyEntries}</div>
-            <div className="text-xs text-muted-foreground">Entradas semanais</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Activity className="h-5 w-5 text-purple-500" />
-              <span className="font-medium">Última Atividade</span>
-            </div>
-            <div className="text-sm font-bold">
-              {stats.lastActivity 
-                ? new Date(stats.lastActivity).toLocaleString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })
-                : 'Nenhuma'
-              }
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Generate Bots */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bot className="h-5 w-5" />
-              Gerar 3000 Bots
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <Input
-                  type="number"
-                  placeholder="Tamanho do lote"
-                  value={batchSize}
-                  onChange={(e) => setBatchSize(Number(e.target.value))}
-                  min={100}
-                  max={1000}
-                />
-              </div>
-              <Badge variant="outline">
-                {Math.ceil(3000 / batchSize)} lotes
-              </Badge>
-            </div>
-
-            <Button 
-              onClick={generateAllBots}
-              disabled={generatingBots || stats.totalBots >= 3000}
-              className="w-full bg-primary hover:bg-primary/90"
-              size="lg"
-            >
-              {generatingBots ? "Gerando Bots..." : "🚀 Gerar 3000 Bots"}
-            </Button>
-
-            <p className="text-sm text-muted-foreground">
-              Cria 3000 bots com perfis únicos, níveis variados (1-50) e atividade inicial no ranking semanal.
-            </p>
-
-            {stats.totalBots >= 3000 && (
-              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
-                <p className="text-sm font-medium text-green-600">
-                  ✅ Meta de 3000 bots atingida!
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Bot Activities */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Atividades dos Bots
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-2">
-              <Button 
-                variant="outline"
-                onClick={() => runBotActivities('quiz')}
-                disabled={loading}
-                className="flex items-center gap-2"
-              >
-                <Trophy className="h-4 w-4" />
-                Quizzes
-              </Button>
-              
-              <Button 
-                variant="outline"
-                onClick={() => runBotActivities('duel')}
-                disabled={loading}
-                className="flex items-center gap-2"
-              >
-                <Zap className="h-4 w-4" />
-                Duelos
-              </Button>
-              
-              <Button 
-                variant="outline"
-                onClick={() => runBotActivities('social')}
-                disabled={loading}
-                className="flex items-center gap-2"
-              >
-                <MessageSquare className="h-4 w-4" />
-                Social
-              </Button>
-
-              <Button 
-                onClick={() => runBotActivities('all')}
-                disabled={loading}
-                className="flex items-center gap-2"
-              >
-                <Activity className="h-4 w-4" />
-                Todas
-              </Button>
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              Simula atividades realistas para manter o engajamento e competição ativa.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Danger Zone */}
-      <Card className="border-red-500/20">
-        <CardHeader>
-          <CardTitle className="text-red-600">Zona de Perigo</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button 
-            variant="destructive"
-            onClick={clearAllBots}
-            disabled={loading || stats.totalBots === 0}
-          >
-            🗑️ Excluir Todos os Bots
+    <AdminPasswordProtection>
+      <div className="container mx-auto p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Administração de Bots</h1>
+            <p className="text-muted-foreground">Gerencie os usuários robôs do sistema</p>
+          </div>
+          <Button onClick={loadStats} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Atualizar
           </Button>
-          <p className="text-sm text-muted-foreground mt-2">
-            Remove permanentemente todos os bots do sistema.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Bot className="h-5 w-5 text-blue-500" />
+                <span className="font-medium">Total de Bots</span>
+              </div>
+              <div className="text-3xl font-bold">{stats.totalBots}</div>
+              <div className="text-xs text-muted-foreground">Meta: 3,000</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="h-5 w-5 text-green-500" />
+                <span className="font-medium">Total Perfis</span>
+              </div>
+              <div className="text-3xl font-bold">{stats.totalProfiles}</div>
+              <div className="text-xs text-muted-foreground">Bots + Usuários reais</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Trophy className="h-5 w-5 text-yellow-500" />
+                <span className="font-medium">No Ranking</span>
+              </div>
+              <div className="text-3xl font-bold">{stats.weeklyEntries}</div>
+              <div className="text-xs text-muted-foreground">Entradas semanais</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="h-5 w-5 text-purple-500" />
+                <span className="font-medium">Última Atividade</span>
+              </div>
+              <div className="text-sm font-bold">
+                {stats.lastActivity 
+                  ? new Date(stats.lastActivity).toLocaleString('pt-BR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+                  : 'Nenhuma'
+                }
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Generate Bots */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                Gerar 3000 Bots
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <Input
+                    type="number"
+                    placeholder="Tamanho do lote"
+                    value={batchSize}
+                    onChange={(e) => setBatchSize(Number(e.target.value))}
+                    min={100}
+                    max={1000}
+                  />
+                </div>
+                <Badge variant="outline">
+                  {Math.ceil(3000 / batchSize)} lotes
+                </Badge>
+              </div>
+
+              <Button 
+                onClick={generateAllBots}
+                disabled={generatingBots || stats.totalBots >= 3000}
+                className="w-full bg-primary hover:bg-primary/90"
+                size="lg"
+              >
+                {generatingBots ? "Gerando Bots..." : "🚀 Gerar 3000 Bots"}
+              </Button>
+
+              <p className="text-sm text-muted-foreground">
+                Cria 3000 bots com perfis únicos, níveis variados (1-50) e atividade inicial no ranking semanal.
+              </p>
+
+              {stats.totalBots >= 3000 && (
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+                  <p className="text-sm font-medium text-green-600">
+                    ✅ Meta de 3000 bots atingida!
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Bot Activities */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Atividades dos Bots
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => runBotActivities('quiz')}
+                  disabled={loading}
+                  className="flex items-center gap-2"
+                >
+                  <Trophy className="h-4 w-4" />
+                  Quizzes
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => runBotActivities('duel')}
+                  disabled={loading}
+                  className="flex items-center gap-2"
+                >
+                  <Zap className="h-4 w-4" />
+                  Duelos
+                </Button>
+                
+                <Button 
+                  variant="outline"
+                  onClick={() => runBotActivities('social')}
+                  disabled={loading}
+                  className="flex items-center gap-2"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Social
+                </Button>
+
+                <Button 
+                  onClick={() => runBotActivities('all')}
+                  disabled={loading}
+                  className="flex items-center gap-2"
+                >
+                  <Activity className="h-4 w-4" />
+                  Todas
+                </Button>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                Simula atividades realistas para manter o engajamento e competição ativa.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Danger Zone */}
+        <Card className="border-red-500/20">
+          <CardHeader>
+            <CardTitle className="text-red-600">Zona de Perigo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              variant="destructive"
+              onClick={clearAllBots}
+              disabled={loading || stats.totalBots === 0}
+            >
+              🗑️ Excluir Todos os Bots
+            </Button>
+            <p className="text-sm text-muted-foreground mt-2">
+              Remove permanentemente todos os bots do sistema.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </AdminPasswordProtection>
   );
 }
