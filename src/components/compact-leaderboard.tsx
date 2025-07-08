@@ -243,7 +243,7 @@ export function CompactLeaderboard() {
                   ? 'bg-gradient-to-b from-gray-400/20 to-gray-500/10 border border-gray-400/30'
                   : 'bg-gradient-to-b from-orange-500/20 to-orange-600/10 border border-orange-500/30'
               }`}
-              onClick={() => navigate(`/user/${user.id}`)}
+              onClick={() => navigate(`/profile?user=${user.id}`)}
             >
               {/* Medal Badge */}
               <div className="flex justify-center mb-1">
