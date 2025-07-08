@@ -2,7 +2,14 @@ import { memo, useMemo, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Gamepad2, Users, Trophy, Zap, BookOpen, Target } from "lucide-react";
+import { 
+  Gamepad2, 
+  Users, 
+  Trophy, 
+  Zap, 
+  BookOpen, 
+  Target 
+} from "@/components/icons/optimized-icons";
 import { useNavigate } from "react-router-dom";
 
 interface QuickAction {

@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp } from "@/components/icons/optimized-icons";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "@/hooks/use-leaderboard-data";
 
