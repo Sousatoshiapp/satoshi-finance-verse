@@ -956,7 +956,10 @@ export default function Store() {
                 
                 return (
                   <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
-                    <div className="relative">
+                    <div 
+                      className="relative cursor-pointer"
+                      onClick={() => navigate(`/boost/${product.id}`)}
+                    >
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
                         {(() => {
                           const imageSource = getProductImage();
@@ -1074,7 +1077,10 @@ export default function Store() {
                 
                 return (
                   <Card key={product.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
-                    <div className="relative">
+                    <div 
+                      className="relative cursor-pointer"
+                      onClick={() => navigate(`/accessory/${product.id}`)}
+                    >
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
                         {(() => {
                           const imageSource = getAccessoryImage();
