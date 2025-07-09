@@ -32,7 +32,7 @@ function App() {
             
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <StreamingDashboard />
+                <LazyRoutes.Dashboard />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
