@@ -212,8 +212,15 @@ export default function Social() {
                 <TabsTrigger value="messages" className="text-xs">Chat</TabsTrigger>
               </TabsList>
 
-               <TabsContent value="feed" className="space-y-4">
-                <SocialFeed />
+              <TabsContent value="feed" className="space-y-4">
+                {/* Mobile: Show tabs first, then create post card */}
+                <div className="block sm:hidden">
+                  <SocialFeed />
+                </div>
+                {/* Desktop: Normal layout */}
+                <div className="hidden sm:block">
+                  <SocialFeed />
+                </div>
               </TabsContent>
 
               <TabsContent value="challenges" className="space-y-4">
