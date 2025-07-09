@@ -208,6 +208,66 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/admin/settings" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminSettings />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/users" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminUsersAll />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/users/premium" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminUsersPremium />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/users/moderation" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminUsersModeration />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/finance/revenue" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminFinanceRevenue />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/finance/beetz" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminFinanceBeetz />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/finance/subscriptions" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminFinanceSubscriptions />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/finance/reports" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminFinanceReports />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/quiz/questions" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminQuizQuestions />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/quiz/categories" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminQuizCategories />
+              </ProtectedRoute>
+            } />
+            
             {/* New Routes - Missing Pages */}
             <Route path="/levels" element={
               <ProtectedRoute>

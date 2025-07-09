@@ -127,6 +127,56 @@ export const LazyRoutes = {
     { priority: 'low' }
   ),
   
+  AdminSettings: createLazyComponent(
+    () => import('@/pages/AdminSettings'),
+    { priority: 'low' }
+  ),
+  
+  AdminUsersAll: createLazyComponent(
+    () => import('@/pages/AdminUsersAll'),
+    { priority: 'low' }
+  ),
+  
+  AdminUsersPremium: createLazyComponent(
+    () => import('@/pages/AdminUsersPremium'),
+    { priority: 'low' }
+  ),
+  
+  AdminUsersModeration: createLazyComponent(
+    () => import('@/pages/AdminUsersModeration'),
+    { priority: 'low' }
+  ),
+  
+  AdminFinanceRevenue: createLazyComponent(
+    () => import('@/pages/AdminFinanceRevenue'),
+    { priority: 'low' }
+  ),
+  
+  AdminFinanceBeetz: createLazyComponent(
+    () => import('@/pages/AdminFinanceBeetz'),
+    { priority: 'low' }
+  ),
+  
+  AdminFinanceSubscriptions: createLazyComponent(
+    () => import('@/pages/AdminFinanceSubscriptions'),
+    { priority: 'low' }
+  ),
+  
+  AdminFinanceReports: createLazyComponent(
+    () => import('@/pages/AdminFinanceReports'),
+    { priority: 'low' }
+  ),
+  
+  AdminQuizQuestions: createLazyComponent(
+    () => import('@/pages/AdminQuizQuestions'),
+    { priority: 'low' }
+  ),
+  
+  AdminQuizCategories: createLazyComponent(
+    () => import('@/pages/AdminQuizCategories'),
+    { priority: 'low' }
+  ),
+  
   SatoshiCity: createLazyComponent(
     () => import('@/pages/SatoshiCity'),
     { priority: 'low' }
