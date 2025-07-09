@@ -152,7 +152,7 @@ function DistrictPaths({ districts }: { districts: District[] }) {
   );
 }
 
-// Hook para controles de movimento
+// Hook avançado para controles de movimento com detecção de proximidade (Fase 4)
 function useMovementControls() {
   const [keys, setKeys] = useState({
     w: false,
@@ -167,6 +167,8 @@ function useMovementControls() {
   
   const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 0, 15]);
   const [playerRotation, setPlayerRotation] = useState(0);
+  const [nearbyDistrict, setNearbyDistrict] = useState<string | null>(null);
+  const [movementSpeed, setMovementSpeed] = useState(0.3);
   
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -196,22 +198,24 @@ function useMovementControls() {
   
   useEffect(() => {
     const interval = setInterval(() => {
-      const speed = 0.3;
+      // Velocidade adaptativa baseada na proximidade de distritos
+      const currentSpeed = nearbyDistrict ? movementSpeed * 0.6 : movementSpeed;
+      
       let newX = playerPosition[0];
       let newZ = playerPosition[2];
       let newRotation = playerRotation;
       
-      // Movimento frente/trás
+      // Movimento frente/trás com aceleração suave
       if (keys.w || keys.ArrowUp) {
-        newX += Math.sin(playerRotation) * speed;
-        newZ += Math.cos(playerRotation) * speed;
+        newX += Math.sin(playerRotation) * currentSpeed;
+        newZ += Math.cos(playerRotation) * currentSpeed;
       }
       if (keys.s || keys.ArrowDown) {
-        newX -= Math.sin(playerRotation) * speed;
-        newZ -= Math.cos(playerRotation) * speed;
+        newX -= Math.sin(playerRotation) * currentSpeed;
+        newZ -= Math.cos(playerRotation) * currentSpeed;
       }
       
-      // Rotação esquerda/direita
+      // Rotação esquerda/direita com curva suave
       if (keys.a || keys.ArrowLeft) {
         newRotation -= 0.05;
       }
@@ -223,14 +227,29 @@ function useMovementControls() {
       newX = Math.max(-40, Math.min(40, newX));
       newZ = Math.max(-40, Math.min(40, newZ));
       
+      // Detecção de proximidade com distritos
+      let closestDistrict = null;
+      let minDistance = Infinity;
+      
+      Object.entries(district3DPositions).forEach(([theme, pos]) => {
+        const distance = Math.sqrt(
+          Math.pow(newX - pos.x, 2) + Math.pow(newZ - pos.z, 2)
+        );
+        if (distance < 8 && distance < minDistance) {
+          minDistance = distance;
+          closestDistrict = theme;
+        }
+      });
+      
+      setNearbyDistrict(closestDistrict);
       setPlayerPosition([newX, 0, newZ]);
       setPlayerRotation(newRotation);
     }, 16); // ~60fps
     
     return () => clearInterval(interval);
-  }, [keys, playerPosition, playerRotation]);
+  }, [keys, playerPosition, playerRotation, nearbyDistrict, movementSpeed]);
   
-  return { playerPosition, playerRotation };
+  return { playerPosition, playerRotation, nearbyDistrict };
 }
 
 // Componente de câmera que segue o jogador
@@ -265,16 +284,28 @@ const district3DPositions = {
   fintech: { x: 10, y: 0, z: 20 },
 };
 
-// Sistema de partículas atmosféricas
+// Sistema avançado de partículas atmosféricas (Fase 4)
 function AtmosphericParticles() {
   const particlesRef = useRef<THREE.Points>(null);
-  const particleCount = 1000;
+  const rainRef = useRef<THREE.Points>(null);
+  const particleCount = 1500;
+  const rainCount = 800;
   
   const particles = useMemo(() => {
     const temp = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
+      temp[i * 3] = (Math.random() - 0.5) * 120;
+      temp[i * 3 + 1] = Math.random() * 60;
+      temp[i * 3 + 2] = (Math.random() - 0.5) * 120;
+    }
+    return temp;
+  }, []);
+
+  const rainParticles = useMemo(() => {
+    const temp = new Float32Array(rainCount * 3);
+    for (let i = 0; i < rainCount; i++) {
       temp[i * 3] = (Math.random() - 0.5) * 100;
-      temp[i * 3 + 1] = Math.random() * 50;
+      temp[i * 3 + 1] = Math.random() * 80 + 20;
       temp[i * 3 + 2] = (Math.random() - 0.5) * 100;
     }
     return temp;
@@ -282,35 +313,70 @@ function AtmosphericParticles() {
 
   useFrame((state) => {
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.03;
       
-      // Movimento vertical das partículas
+      // Movimento complexo das partículas
       const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 1; i < positions.length; i += 3) {
-        positions[i] += Math.sin(state.clock.elapsedTime + i) * 0.001;
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 1] += Math.sin(state.clock.elapsedTime * 2 + i) * 0.002;
+        positions[i] += Math.cos(state.clock.elapsedTime + i) * 0.001;
       }
       particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+
+    // Chuva cyberpunk
+    if (rainRef.current) {
+      const positions = rainRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 1] -= 0.5; // Velocidade da chuva
+        if (positions[i + 1] < -2) {
+          positions[i + 1] = 80; // Reset no topo
+        }
+      }
+      rainRef.current.geometry.attributes.position.needsUpdate = true;
     }
   });
 
   return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={particleCount}
-          array={particles}
-          itemSize={3}
+    <group>
+      {/* Partículas atmosféricas */}
+      <points ref={particlesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={particleCount}
+            array={particles}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.08}
+          color="#4fc3f7"
+          transparent
+          opacity={0.4}
+          sizeAttenuation
         />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.1}
-        color="#ffffff"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-      />
-    </points>
+      </points>
+
+      {/* Chuva cyberpunk */}
+      <points ref={rainRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={rainCount}
+            array={rainParticles}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.05}
+          color="#00ffff"
+          transparent
+          opacity={0.3}
+          sizeAttenuation
+        />
+      </points>
+    </group>
   );
 }
 
@@ -809,14 +875,73 @@ function CameraControls({ followPlayer = false, playerPosition }: {
   return <OrbitControls enablePan enableZoom enableRotate />;
 }
 
+// Sistema de notificações de proximidade (Fase 4)
+function ProximityNotifications({ nearbyDistrict, districts }: { 
+  nearbyDistrict: string | null; 
+  districts: District[] 
+}) {
+  const [showNotification, setShowNotification] = useState(false);
+  const [currentDistrict, setCurrentDistrict] = useState<District | null>(null);
+
+  useEffect(() => {
+    if (nearbyDistrict) {
+      const district = districts.find(d => d.theme === nearbyDistrict);
+      if (district) {
+        setCurrentDistrict(district);
+        setShowNotification(true);
+        const timer = setTimeout(() => setShowNotification(false), 3000);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      setShowNotification(false);
+    }
+  }, [nearbyDistrict, districts]);
+
+  if (!showNotification || !currentDistrict) return null;
+
+  return (
+    <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-30">
+      <Card className="bg-slate-800/95 backdrop-blur-sm border-2 border-cyan-400 shadow-2xl animate-fade-in">
+        <CardContent className="p-4">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-2 mb-2">
+              <div 
+                className="w-4 h-4 rounded-full animate-pulse"
+                style={{ backgroundColor: currentDistrict.color_primary }}
+              />
+              <span className="text-white font-medium">{currentDistrict.name}</span>
+            </div>
+            <p className="text-xs text-cyan-400">Pressione ENTER para explorar</p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 // Componente principal
 export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
   const [districts, setDistricts] = useState<District[]>([]);
   const [userDistricts, setUserDistricts] = useState<UserDistrict[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'overview' | 'exploration'>('overview');
-  const { playerPosition, playerRotation } = useMovementControls();
+  const { playerPosition, playerRotation, nearbyDistrict } = useMovementControls();
   const navigate = useNavigate();
+
+  // Sistema de interação por proximidade (Fase 4)
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && nearbyDistrict && viewMode === 'exploration') {
+        const district = districts.find(d => d.theme === nearbyDistrict);
+        if (district) {
+          navigate(`/satoshi-city/district/${district.id}`);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [nearbyDistrict, districts, navigate, viewMode]);
 
   useEffect(() => {
     loadDistricts();
@@ -1002,6 +1127,11 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
         </Canvas>
       </div>
 
+      {/* Sistema de notificações de proximidade (Fase 4) */}
+      {viewMode === 'exploration' && (
+        <ProximityNotifications nearbyDistrict={nearbyDistrict} districts={districts} />
+      )}
+
       {/* Instruções de controle */}
       <div className="absolute bottom-4 left-4 z-20">
         <Card className="bg-slate-800/90 backdrop-blur-sm border-slate-700">
@@ -1022,11 +1152,11 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
                 <>
                   <div className="flex items-center space-x-2">
                     <Map className="w-3 h-3" />
-                    <span>WASD ou Setas para mover | Clique nos distritos</span>
+                    <span>WASD ou Setas para mover | ENTER para explorar</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Crown className="w-3 h-3 text-yellow-400" />
-                    <span>Avatar cyberpunk: W/S = frente/trás | A/D = girar</span>
+                    <span>Aproxime-se dos distritos para interagir</span>
                   </div>
                 </>
               )}
@@ -1034,6 +1164,30 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
           </CardContent>
         </Card>
       </div>
+
+      {/* HUD de status no modo exploração (Fase 4) */}
+      {viewMode === 'exploration' && (
+        <div className="absolute bottom-4 right-4 z-20">
+          <Card className="bg-slate-800/90 backdrop-blur-sm border-slate-700">
+            <CardContent className="p-3">
+              <div className="text-xs text-slate-300 space-y-2">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                  <span>Avatar Online</span>
+                </div>
+                <div className="text-cyan-400">
+                  Posição: ({Math.round(playerPosition[0])}, {Math.round(playerPosition[2])})
+                </div>
+                {nearbyDistrict && (
+                  <div className="text-yellow-400 animate-pulse">
+                    🏛️ Próximo ao distrito
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
