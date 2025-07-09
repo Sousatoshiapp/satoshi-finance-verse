@@ -285,14 +285,14 @@ export default function SatoshiCity() {
           </Badge>
         </div>
         
-        {/* Botão para modo 3D */}
+        {/* Botão para modo 3D - Temporariamente desabilitado */}
         <div className="flex justify-center">
           <Button
-            onClick={() => setIs3DMode(true)}
-            className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-medium px-6 py-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+            disabled
+            className="bg-gray-500 text-gray-300 font-medium px-6 py-3 rounded-full shadow-lg cursor-not-allowed opacity-60"
           >
             <Box className="w-5 h-5 mr-2" />
-            Explorar em 3D
+            3D em Desenvolvimento
           </Button>
         </div>
       </div>
