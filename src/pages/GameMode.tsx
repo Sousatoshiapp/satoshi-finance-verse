@@ -24,10 +24,10 @@ export default function GameMode() {
           navigate('/solo-quiz');
           break;
         case 'duelo':
-          navigate('/duel-quiz');
+          navigate('/duels');
           break;
         case 'torneio':
-          navigate('/tournament-quiz');
+          navigate('/tournaments');
           break;
       }
     }, 300);

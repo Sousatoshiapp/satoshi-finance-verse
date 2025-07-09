@@ -4,15 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, Zap, ArrowRight } from "lucide-react";
+import { Trophy, Zap, ArrowRight, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 import { CircularTimer } from "./circular-timer";
+import { EnhancedDuelInterface } from "./enhanced-duel-interface";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface EnhancedSimultaneousDuelProps {
   duel: any;
-  onDuelEnd: (result: { winner: boolean, score: number, opponentScore: number }) => void;
+  onDuelEnd: (result: { 
+    winner: boolean, 
+    score: number, 
+    opponentScore: number,
+    playerAnswers?: any[],
+    questions?: any[]
+  }) => void;
 }
 
 export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneousDuelProps) {
@@ -29,6 +36,9 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   const [opponentProgress, setOpponentProgress] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [gamePhase, setGamePhase] = useState<'playing' | 'finished'>('playing');
+  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
+  const [playerAnswers, setPlayerAnswers] = useState<any[]>([]);
   const subscriptionRef = useRef<any>(null);
   const { toast } = useToast();
 
@@ -97,7 +107,9 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
       onDuelEnd({
         winner: isWinner,
         score: finalMyScore || 0,
-        opponentScore: finalOpponentScore || 0
+        opponentScore: finalOpponentScore || 0,
+        playerAnswers,
+        questions: duel.questions
       });
     }, 3000);
   };
@@ -151,50 +163,73 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     }
   };
 
-  const processAnswer = async (answerId: string | null, isTimeout: boolean = false) => {
-    if (!currentProfile || answeredQuestions.has(currentQuestion) || isFinished) return;
-
+  const handleAnswer = async (optionId: string) => {
+    if (answeredQuestions.has(currentQuestion) || gamePhase !== 'playing') return;
+    
+    setSelectedAnswer(optionId);
+    setIsWaitingForOpponent(true);
+    setIsTimerActive(false);
+    
+    const newAnswer = {
+      question: currentQuestion,
+      selected: optionId,
+      timestamp: new Date().toISOString(),
+      correct: duel.questions[currentQuestion - 1]?.options.find((opt: any) => opt.id === optionId)?.isCorrect || false
+    };
+    
+    const updatedAnswers = [...playerAnswers, newAnswer];
+    setPlayerAnswers(updatedAnswers);
+    
+    // Store result for visual feedback
+    setAnswerResults(prev => new Map(prev.set(currentQuestion, {
+      answerId: optionId,
+      isCorrect: newAnswer.correct
+    })));
+    
+    setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
+    
+    // Update score immediately for correct answers
+    if (newAnswer.correct) {
+      setMyScore(prev => prev + 10); // 10 points per correct answer
+    }
+    
     try {
-      setIsTimerActive(false);
+      const isPlayer1 = currentProfile?.id === duel.player1_id;
+      const playerColumn = isPlayer1 ? 'player1_answers' : 'player2_answers';
+      const questionColumn = isPlayer1 ? 'player1_current_question' : 'player2_current_question';
+      const scoreColumn = isPlayer1 ? 'player1_score' : 'player2_score';
       
-      const { data, error } = await supabase.rpc('process_duel_answer', {
-        p_duel_id: duel.id,
-        p_player_id: currentProfile.id,
-        p_question_number: currentQuestion,
-        p_answer_id: answerId,
-        p_is_timeout: isTimeout
-      });
-
-      if (error) throw error;
-
-      const result = data as any;
-      if (result.success) {
-        // Store result for visual feedback
-        if (answerId) {
-          setAnswerResults(prev => new Map(prev.set(currentQuestion, {
-            answerId,
-            isCorrect: result.isCorrect
-          })));
+      await supabase
+        .from('duels')
+        .update({
+          [playerColumn]: updatedAnswers,
+          [questionColumn]: Math.min(currentQuestion + 1, duel.questions.length),
+          [scoreColumn]: newAnswer.correct ? myScore + 10 : myScore
+        })
+        .eq('id', duel.id);
+      
+      // Auto advance to next question after showing result
+      setTimeout(() => {
+        setIsWaitingForOpponent(false);
+        if (currentQuestion < duel.questions.length) {
+          setCurrentQuestion(prev => prev + 1);
+          setSelectedAnswer(null);
+          setIsTimerActive(true);
+        } else {
+          setGamePhase('finished');
+          setIsFinished(true);
+          setShowResult(true);
         }
-        
-        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-        setMyScore(result.newScore);
-        
-        // Auto advance to next question after 2 seconds
-        setTimeout(() => {
-          if (currentQuestion < duel.questions.length) {
-            setCurrentQuestion(prev => prev + 1);
-            setSelectedAnswer(null);
-          }
-        }, 2000);
-      }
+      }, 2500);
+      
     } catch (error) {
-      console.error('Error processing answer:', error);
+      console.error('Error submitting answer:', error);
       toast({
-        title: "❌ Erro",
-        description: "Não foi possível processar a resposta",
+        title: "❌ Erro ao enviar resposta",
+        description: "Tente novamente",
         variant: "destructive"
       });
+      setIsWaitingForOpponent(false);
     }
   };
 
@@ -205,19 +240,60 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
 
   const handleAnswerSubmit = () => {
     if (!selectedAnswer || answeredQuestions.has(currentQuestion)) return;
-    processAnswer(selectedAnswer);
+    handleAnswer(selectedAnswer);
   };
 
-  const handleTimeout = () => {
+  const handleTimeUp = () => {
     if (answeredQuestions.has(currentQuestion)) return;
-    processAnswer(null, true);
+    
+    const newAnswer = {
+      question: currentQuestion,
+      selected: null,
+      timestamp: new Date().toISOString(),
+      timeout: true,
+      correct: false
+    };
+    
+    setPlayerAnswers(prev => [...prev, newAnswer]);
+    setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
     
     toast({
       title: "⏰ Tempo esgotado!",
       description: "Pergunta marcada como incorreta",
       variant: "destructive"
     });
+    
+    // Auto advance after timeout
+    setTimeout(() => {
+      if (currentQuestion < duel.questions.length) {
+        setCurrentQuestion(prev => prev + 1);
+        setIsTimerActive(true);
+      } else {
+        setGamePhase('finished');
+        setIsFinished(true);
+        setShowResult(true);
+      }
+    }, 1500);
   };
+
+  // Show enhanced interface during gameplay
+  if (gamePhase === 'playing' && duel.questions && currentProfile) {
+    return (
+      <EnhancedDuelInterface
+        questions={duel.questions}
+        currentQuestion={currentQuestion}
+        onAnswer={handleAnswer}
+        playerAvatar={currentProfile?.avatars}
+        opponentAvatar={(currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.avatars}
+        playerScore={myScore}
+        opponentScore={opponentScore}
+        playerNickname={currentProfile?.nickname || 'Você'}
+        opponentNickname={(currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.nickname || 'Oponente'}
+        timeLeft={30}
+        isWaitingForOpponent={isWaitingForOpponent}
+      />
+    );
+  }
 
   if (!duel.questions || !currentProfile) {
     return (
@@ -385,7 +461,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
           <CircularTimer
             duration={30}
             isActive={isTimerActive}
-            onTimeUp={handleTimeout}
+            onTimeUp={handleTimeUp}
             size={120}
             className="shadow-lg"
           />

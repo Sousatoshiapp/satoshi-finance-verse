@@ -328,7 +328,6 @@ async function generateDuelQuestions(topic: string, count: number = 10) {
       }
     ],
     investimentos: [
-      // Similar structure with 12+ questions about investments
       {
         id: '1',
         question: 'O que caracteriza um investimento de longo prazo?',
@@ -339,10 +338,98 @@ async function generateDuelQuestions(topic: string, count: number = 10) {
           { id: 'd', text: 'Prazo de 3 meses', isCorrect: false }
         ]
       },
-      // Add more investment questions...
+      {
+        id: '2',
+        question: 'Qual é o principal objetivo da diversificação?',
+        options: [
+          { id: 'a', text: 'Reduzir riscos', isCorrect: true },
+          { id: 'b', text: 'Aumentar lucros', isCorrect: false },
+          { id: 'c', text: 'Facilitar gestão', isCorrect: false },
+          { id: 'd', text: 'Reduzir custos', isCorrect: false }
+        ]
+      },
+      {
+        id: '3',
+        question: 'O que é uma carteira de investimentos?',
+        options: [
+          { id: 'a', text: 'Uma conta bancária', isCorrect: false },
+          { id: 'b', text: 'Conjunto de ativos financeiros', isCorrect: true },
+          { id: 'c', text: 'Um tipo de seguro', isCorrect: false },
+          { id: 'd', text: 'Uma forma de pagamento', isCorrect: false }
+        ]
+      },
+      {
+        id: '4',
+        question: 'Qual a diferença entre renda fixa e variável?',
+        options: [
+          { id: 'a', text: 'Previsibilidade de retornos', isCorrect: true },
+          { id: 'b', text: 'Valor mínimo de investimento', isCorrect: false },
+          { id: 'c', text: 'Prazo de investimento', isCorrect: false },
+          { id: 'd', text: 'Forma de pagamento', isCorrect: false }
+        ]
+      },
+      {
+        id: '5',
+        question: 'O que é rentabilidade real?',
+        options: [
+          { id: 'a', text: 'Rentabilidade total', isCorrect: false },
+          { id: 'b', text: 'Rentabilidade descontada a inflação', isCorrect: true },
+          { id: 'c', text: 'Rentabilidade mínima', isCorrect: false },
+          { id: 'd', text: 'Rentabilidade máxima', isCorrect: false }
+        ]
+      },
+      {
+        id: '6',
+        question: 'Qual a função de um fundo de investimento?',
+        options: [
+          { id: 'a', text: 'Reunir recursos para investir', isCorrect: true },
+          { id: 'b', text: 'Guardar dinheiro', isCorrect: false },
+          { id: 'c', text: 'Emprestar dinheiro', isCorrect: false },
+          { id: 'd', text: 'Seguro de vida', isCorrect: false }
+        ]
+      },
+      {
+        id: '7',
+        question: 'O que são dividendos?',
+        options: [
+          { id: 'a', text: 'Taxas de administração', isCorrect: false },
+          { id: 'b', text: 'Distribuição de lucros aos acionistas', isCorrect: true },
+          { id: 'c', text: 'Impostos sobre investimentos', isCorrect: false },
+          { id: 'd', text: 'Comissões de corretagem', isCorrect: false }
+        ]
+      },
+      {
+        id: '8',
+        question: 'Qual é o risco de liquidez?',
+        options: [
+          { id: 'a', text: 'Perda de capital', isCorrect: false },
+          { id: 'b', text: 'Dificuldade para vender o ativo', isCorrect: true },
+          { id: 'c', text: 'Variação de preços', isCorrect: false },
+          { id: 'd', text: 'Falência da empresa', isCorrect: false }
+        ]
+      },
+      {
+        id: '9',
+        question: 'O que é uma LCI?',
+        options: [
+          { id: 'a', text: 'Letra de Crédito Imobiliário', isCorrect: true },
+          { id: 'b', text: 'Linha de Crédito Internacional', isCorrect: false },
+          { id: 'c', text: 'Liquidação de Conta Investimento', isCorrect: false },
+          { id: 'd', text: 'Lista de Cotações Internacionais', isCorrect: false }
+        ]
+      },
+      {
+        id: '10',
+        question: 'Qual o prazo de carência comum em investimentos?',
+        options: [
+          { id: 'a', text: '30 a 90 dias', isCorrect: true },
+          { id: 'b', text: '1 a 2 anos', isCorrect: false },
+          { id: 'c', text: '5 a 10 anos', isCorrect: false },
+          { id: 'd', text: 'Não existe carência', isCorrect: false }
+        ]
+      }
     ],
     criptomoedas: [
-      // Similar structure with 12+ questions about crypto
       {
         id: '1',
         question: 'O que é Bitcoin?',
@@ -353,10 +440,98 @@ async function generateDuelQuestions(topic: string, count: number = 10) {
           { id: 'd', text: 'Uma rede social', isCorrect: false }
         ]
       },
-      // Add more crypto questions...
+      {
+        id: '2',
+        question: 'O que é blockchain?',
+        options: [
+          { id: 'a', text: 'Um tipo de criptomoeda', isCorrect: false },
+          { id: 'b', text: 'Tecnologia de registro distribuído', isCorrect: true },
+          { id: 'c', text: 'Uma exchange', isCorrect: false },
+          { id: 'd', text: 'Um wallet digital', isCorrect: false }
+        ]
+      },
+      {
+        id: '3',
+        question: 'O que é Ethereum?',
+        options: [
+          { id: 'a', text: 'Uma cópia do Bitcoin', isCorrect: false },
+          { id: 'b', text: 'Plataforma para contratos inteligentes', isCorrect: true },
+          { id: 'c', text: 'Um banco tradicional', isCorrect: false },
+          { id: 'd', text: 'Uma moeda física', isCorrect: false }
+        ]
+      },
+      {
+        id: '4',
+        question: 'O que são altcoins?',
+        options: [
+          { id: 'a', text: 'Criptomoedas alternativas ao Bitcoin', isCorrect: true },
+          { id: 'b', text: 'Moedas físicas antigas', isCorrect: false },
+          { id: 'c', text: 'Moedas de outros países', isCorrect: false },
+          { id: 'd', text: 'Moedas falsas', isCorrect: false }
+        ]
+      },
+      {
+        id: '5',
+        question: 'O que é DeFi?',
+        options: [
+          { id: 'a', text: 'Definição Financeira', isCorrect: false },
+          { id: 'b', text: 'Finanças Descentralizadas', isCorrect: true },
+          { id: 'c', text: 'Déficit Financeiro', isCorrect: false },
+          { id: 'd', text: 'Depósito Fixo', isCorrect: false }
+        ]
+      },
+      {
+        id: '6',
+        question: 'O que é uma wallet de criptomoedas?',
+        options: [
+          { id: 'a', text: 'Carteira física para moedas', isCorrect: false },
+          { id: 'b', text: 'Software para armazenar chaves privadas', isCorrect: true },
+          { id: 'c', text: 'Conta bancária tradicional', isCorrect: false },
+          { id: 'd', text: 'Cartão de crédito especial', isCorrect: false }
+        ]
+      },
+      {
+        id: '7',
+        question: 'O que é mineração de criptomoedas?',
+        options: [
+          { id: 'a', text: 'Extração física de ouro digital', isCorrect: false },
+          { id: 'b', text: 'Processo de validação de transações', isCorrect: true },
+          { id: 'c', text: 'Compra de criptomoedas', isCorrect: false },
+          { id: 'd', text: 'Venda de criptomoedas', isCorrect: false }
+        ]
+      },
+      {
+        id: '8',
+        question: 'O que é HODL?',
+        options: [
+          { id: 'a', text: 'Vender rapidamente', isCorrect: false },
+          { id: 'b', text: 'Manter por longo prazo', isCorrect: true },
+          { id: 'c', text: 'Trocar constantemente', isCorrect: false },
+          { id: 'd', text: 'Emprestar moedas', isCorrect: false }
+        ]
+      },
+      {
+        id: '9',
+        question: 'O que são smart contracts?',
+        options: [
+          { id: 'a', text: 'Contratos em papel inteligente', isCorrect: false },
+          { id: 'b', text: 'Contratos autoexecutáveis em blockchain', isCorrect: true },
+          { id: 'c', text: 'Contratos com advogados', isCorrect: false },
+          { id: 'd', text: 'Contratos de trabalho', isCorrect: false }
+        ]
+      },
+      {
+        id: '10',
+        question: 'O que é uma ICO?',
+        options: [
+          { id: 'a', text: 'Oferta Inicial de Moedas', isCorrect: true },
+          { id: 'b', text: 'Investimento Controlado Online', isCorrect: false },
+          { id: 'c', text: 'Índice de Cotação Online', isCorrect: false },
+          { id: 'd', text: 'Internet das Coisas', isCorrect: false }
+        ]
+      }
     ],
     economia: [
-      // Similar structure with 12+ questions about economy
       {
         id: '1',
         question: 'O que é PIB?',
@@ -367,7 +542,96 @@ async function generateDuelQuestions(topic: string, count: number = 10) {
           { id: 'd', text: 'Política de Interesse Básico', isCorrect: false }
         ]
       },
-      // Add more economy questions...
+      {
+        id: '2',
+        question: 'O que causa inflação?',
+        options: [
+          { id: 'a', text: 'Aumento da oferta de dinheiro', isCorrect: true },
+          { id: 'b', text: 'Diminuição dos preços', isCorrect: false },
+          { id: 'c', text: 'Redução da demanda', isCorrect: false },
+          { id: 'd', text: 'Baixo desemprego apenas', isCorrect: false }
+        ]
+      },
+      {
+        id: '3',
+        question: 'O que é taxa de desemprego?',
+        options: [
+          { id: 'a', text: 'Percentual de pessoas sem trabalho', isCorrect: true },
+          { id: 'b', text: 'Número total de desempregados', isCorrect: false },
+          { id: 'c', text: 'Taxa de crescimento de empregos', isCorrect: false },
+          { id: 'd', text: 'Salário médio dos trabalhadores', isCorrect: false }
+        ]
+      },
+      {
+        id: '4',
+        question: 'O que é déficit público?',
+        options: [
+          { id: 'a', text: 'Gastos maiores que receitas', isCorrect: true },
+          { id: 'b', text: 'Superávit orçamentário', isCorrect: false },
+          { id: 'c', text: 'Receitas equilibradas', isCorrect: false },
+          { id: 'd', text: 'Crescimento econômico', isCorrect: false }
+        ]
+      },
+      {
+        id: '5',
+        question: 'O que é balança comercial?',
+        options: [
+          { id: 'a', text: 'Diferença entre exportações e importações', isCorrect: true },
+          { id: 'b', text: 'Total de vendas no comércio', isCorrect: false },
+          { id: 'c', text: 'Impostos sobre comércio', isCorrect: false },
+          { id: 'd', text: 'Número de empresas comerciais', isCorrect: false }
+        ]
+      },
+      {
+        id: '6',
+        question: 'O que é recessão econômica?',
+        options: [
+          { id: 'a', text: 'Duas quedas consecutivas do PIB', isCorrect: true },
+          { id: 'b', text: 'Aumento da inflação', isCorrect: false },
+          { id: 'c', text: 'Crescimento do emprego', isCorrect: false },
+          { id: 'd', text: 'Valorização da moeda', isCorrect: false }
+        ]
+      },
+      {
+        id: '7',
+        question: 'O que é política monetária?',
+        options: [
+          { id: 'a', text: 'Controle da oferta de moeda e juros', isCorrect: true },
+          { id: 'b', text: 'Gastos do governo', isCorrect: false },
+          { id: 'c', text: 'Impostos e tributos', isCorrect: false },
+          { id: 'd', text: 'Comércio exterior', isCorrect: false }
+        ]
+      },
+      {
+        id: '8',
+        question: 'O que é câmbio?',
+        options: [
+          { id: 'a', text: 'Troca entre moedas diferentes', isCorrect: true },
+          { id: 'b', text: 'Compra de ações', isCorrect: false },
+          { id: 'c', text: 'Empréstimo bancário', isCorrect: false },
+          { id: 'd', text: 'Investimento imobiliário', isCorrect: false }
+        ]
+      },
+      {
+        id: '9',
+        question: 'O que é mercado de capitais?',
+        options: [
+          { id: 'a', text: 'Local de negociação de valores mobiliários', isCorrect: true },
+          { id: 'b', text: 'Mercado de produtos agrícolas', isCorrect: false },
+          { id: 'c', text: 'Loja de capitais físicos', isCorrect: false },
+          { id: 'd', text: 'Mercado de trabalho', isCorrect: false }
+        ]
+      },
+      {
+        id: '10',
+        question: 'O que é spread bancário?',
+        options: [
+          { id: 'a', text: 'Diferença entre juros pagos e cobrados', isCorrect: true },
+          { id: 'b', text: 'Taxa de administração', isCorrect: false },
+          { id: 'c', text: 'Imposto sobre operações', isCorrect: false },
+          { id: 'd', text: 'Seguro de depósitos', isCorrect: false }
+        ]
+      }
     ]
   };
 

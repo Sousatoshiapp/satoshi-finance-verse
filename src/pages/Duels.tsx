@@ -117,11 +117,13 @@ export default function Duels() {
         setActiveDuel(null);
         setCurrentView('main');
         
-        // Force reload of pending invites and check for new duels
+        // Force complete refresh of data
         setTimeout(() => {
           loadPendingInvites();
           checkForActiveDuel();
-        }, 500);
+          // Clear any cached data
+          window.location.reload();
+        }, 1000);
       }} 
     />;
   }

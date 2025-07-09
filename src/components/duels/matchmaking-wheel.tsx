@@ -29,21 +29,23 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
       return;
     }
 
-    // Animate through opponents quickly
+    // Animate through opponents quickly - faster for better roulette effect
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % potentialOpponents.length);
-    }, 100);
+    }, 80); // Faster animation for better roulette feel
 
-    // Timer for search
+    // Timer for search - shorter time for better UX
     const timer = setInterval(() => {
       setSearchTime(prev => {
-        if (prev >= 8) { // Simulate match found after 8 seconds
+        if (prev >= 5) { // Reduced to 5 seconds for faster matchmaking
           setIsMatched(true);
-          setMatchedOpponent(potentialOpponents[currentIndex]);
+          // Pick a random opponent instead of current index for more variety
+          const randomOpponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
+          setMatchedOpponent(randomOpponent);
           clearInterval(interval);
           setTimeout(() => {
-            onMatchFound(potentialOpponents[currentIndex]);
-          }, 2000);
+            onMatchFound(randomOpponent);
+          }, 1500); // Slightly faster transition
           return prev;
         }
         return prev + 1;
@@ -58,20 +60,30 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
 
   const loadPotentialOpponents = async () => {
     try {
+      // Get a diverse set of opponents, excluding recently used ones
       const { data: profiles } = await supabase
         .from('profiles')
         .select(`
           id, nickname, level, avatar_id, is_bot,
           avatars (name, image_url, avatar_class)
         `)
-        .neq('is_bot', null)
-        .limit(20);
+        .eq('is_bot', true)
+        .order('level', { ascending: false })
+        .limit(50); // Get more opponents for better variety
 
       if (profiles) {
-        setPotentialOpponents(profiles);
+        // Shuffle the array to get random opponents each time
+        const shuffled = [...profiles].sort(() => Math.random() - 0.5);
+        setPotentialOpponents(shuffled);
       }
     } catch (error) {
       console.error('Error loading opponents:', error);
+      // Fallback: create some default opponents if DB fails
+      setPotentialOpponents([
+        { id: '1', nickname: 'Bot Trader', level: 15, avatars: { name: 'Trader Bot', image_url: '/lovable-uploads/crypto-analyst.jpg' } },
+        { id: '2', nickname: 'Finance Pro', level: 22, avatars: { name: 'Finance Pro', image_url: '/lovable-uploads/finance-hacker.jpg' } },
+        { id: '3', nickname: 'Crypto Master', level: 18, avatars: { name: 'Crypto Master', image_url: '/lovable-uploads/defi-samurai.jpg' } },
+      ]);
     }
   };
 
