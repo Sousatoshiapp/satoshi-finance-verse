@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export class BotAI {
-  static async handleBotTurn(duelId: string, botProfileId: string) {
+  static async handleBotResponse(duelId: string, botProfileId: string) {
     try {
       // Buscar o duelo atual
       const { data: duel } = await supabase
@@ -10,7 +10,7 @@ export class BotAI {
         .eq('id', duelId)
         .single();
 
-      if (!duel || duel.current_turn !== botProfileId) return;
+      if (!duel || duel.status === 'finished') return;
 
       // Buscar configuração do bot
       const { data: botConfig } = await supabase
@@ -20,90 +20,51 @@ export class BotAI {
         .single();
 
       const accuracy = botConfig?.accuracy_percentage || 0.7;
-      const responseTime = Math.random() * (botConfig?.response_time_max || 8000 - botConfig?.response_time_min || 2000) + (botConfig?.response_time_min || 2000);
+      const responseTime = Math.random() * 
+        ((botConfig?.response_time_max || 8000) - (botConfig?.response_time_min || 2000)) + 
+        (botConfig?.response_time_min || 2000);
 
       // Simular tempo de resposta do bot
       await new Promise(resolve => setTimeout(resolve, responseTime));
 
-      const currentQuestion = duel.questions[duel.current_question - 1];
+      // Obter pergunta atual do bot
       const isPlayer1 = botProfileId === duel.player1_id;
+      const botCurrentQuestion = isPlayer1 ? duel.player1_current_question : duel.player2_current_question;
+      
+      // Verificar se bot ainda precisa responder esta pergunta
+      const questionsArray = Array.isArray(duel.questions) ? duel.questions : [];
+      if (botCurrentQuestion > questionsArray.length) return;
+
+      const currentQuestion = questionsArray[botCurrentQuestion - 1] as any;
       
       // Determinar resposta baseada na precisão do bot
       let selectedOption;
-      if (Math.random() < accuracy) {
+      if (Math.random() < accuracy && currentQuestion?.options) {
         // Bot acerta - escolhe a resposta correta
         selectedOption = currentQuestion.options.find((opt: any) => opt.isCorrect);
-      } else {
+      } else if (currentQuestion?.options) {
         // Bot erra - escolhe uma resposta aleatória incorreta
         const incorrectOptions = currentQuestion.options.filter((opt: any) => !opt.isCorrect);
-        selectedOption = incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)];
+        selectedOption = incorrectOptions[Math.floor(Math.random() * incorrectOptions.length)] || 
+                        currentQuestion.options[Math.floor(Math.random() * currentQuestion.options.length)];
       }
 
-      const isCorrect = selectedOption?.isCorrect || false;
-
-      // Atualizar respostas e pontuação do bot
-      const currentAnswers = (isPlayer1 ? duel.player1_answers : duel.player2_answers) as any[] || [];
-      const currentScore = (isPlayer1 ? duel.player1_score : duel.player2_score) as number || 0;
-
-      const newAnswers = [...currentAnswers, {
-        questionId: currentQuestion.id,
-        answerId: selectedOption?.id,
-        isCorrect,
-        timeSpent: Math.floor(responseTime / 1000)
-      }];
-
-      const newScore = currentScore + (isCorrect ? 1 : 0);
-
-      // Determinar próximo turno
-      const nextTurn = isPlayer1 ? duel.player2_id : duel.player1_id;
-      const nextQuestion = duel.current_question + 1;
-
-      // Verificar se o duelo terminou
-      const questionsLength = Array.isArray(duel.questions) ? duel.questions.length : 0;
-      const isFinished = nextQuestion > questionsLength;
-
-      const updateData: any = {
-        current_turn: isFinished ? null : nextTurn,
-        current_question: isFinished ? duel.current_question : nextQuestion,
-        turn_started_at: isFinished ? null : new Date().toISOString()
-      };
-
-      if (isPlayer1) {
-        updateData.player1_answers = newAnswers;
-        updateData.player1_score = newScore;
-      } else {
-        updateData.player2_answers = newAnswers;
-        updateData.player2_score = newScore;
-      }
-
-      if (isFinished) {
-        updateData.status = 'finished';
-        updateData.finished_at = new Date().toISOString();
-
-        // Determinar vencedor
-        const finalPlayer1Score = isPlayer1 ? newScore : (duel.player1_score as number || 0);
-        const finalPlayer2Score = isPlayer1 ? (duel.player2_score as number || 0) : newScore;
-
-        if (finalPlayer1Score > finalPlayer2Score) {
-          updateData.winner_id = duel.player1_id;
-        } else if (finalPlayer2Score > finalPlayer1Score) {
-          updateData.winner_id = duel.player2_id;
-        }
-      }
-
-      // Atualizar duelo
-      await supabase
-        .from('duels')
-        .update(updateData)
-        .eq('id', duelId);
+      // Processar resposta usando a nova função RPC
+      await supabase.rpc('process_duel_answer', {
+        p_duel_id: duelId,
+        p_player_id: botProfileId,
+        p_question_number: botCurrentQuestion,
+        p_answer_id: selectedOption?.id,
+        p_is_timeout: false
+      });
 
     } catch (error) {
-      console.error('Error handling bot turn:', error);
+      console.error('Error handling bot response:', error);
     }
   }
 
   static startBotAI(duelId: string) {
-    // Configurar listener para turnos do bot
+    // Configurar listener para resposta automática do bot
     const channel = supabase
       .channel(`bot-ai-${duelId}`)
       .on(
@@ -117,18 +78,43 @@ export class BotAI {
         async (payload) => {
           const duel = payload.new;
           
-          // Verificar se é o turno do bot
-          if (duel.current_turn && duel.status === 'active') {
-            const { data: botProfile } = await supabase
+          // Verificar se há bots que precisam responder
+          if (duel.status === 'active') {
+            // Verificar se player1 é bot e precisa responder
+            const { data: player1Profile } = await supabase
               .from('profiles')
-              .select('id')
-              .eq('id', duel.current_turn)
-              .eq('is_bot', true)
+              .select('id, is_bot')
+              .eq('id', duel.player1_id)
               .single();
 
-            if (botProfile) {
-              // É o turno de um bot - processar automaticamente
-              await this.handleBotTurn(duelId, botProfile.id);
+            const questionsArray = Array.isArray(duel.questions) ? duel.questions : [];
+            const player1Answers = Array.isArray(duel.player1_answers) ? duel.player1_answers : [];
+            
+            if (player1Profile?.is_bot && 
+                duel.player1_current_question <= questionsArray.length &&
+                player1Answers.length < duel.player1_current_question) {
+              // Player1 bot precisa responder
+              setTimeout(() => {
+                this.handleBotResponse(duelId, player1Profile.id);
+              }, Math.random() * 3000 + 1000); // 1-4 segundos de delay
+            }
+
+            // Verificar se player2 é bot e precisa responder
+            const { data: player2Profile } = await supabase
+              .from('profiles')
+              .select('id, is_bot')
+              .eq('id', duel.player2_id)
+              .single();
+
+            const player2Answers = Array.isArray(duel.player2_answers) ? duel.player2_answers : [];
+            
+            if (player2Profile?.is_bot && 
+                duel.player2_current_question <= questionsArray.length &&
+                player2Answers.length < duel.player2_current_question) {
+              // Player2 bot precisa responder
+              setTimeout(() => {
+                this.handleBotResponse(duelId, player2Profile.id);
+              }, Math.random() * 3000 + 1000); // 1-4 segundos de delay
             }
           }
         }

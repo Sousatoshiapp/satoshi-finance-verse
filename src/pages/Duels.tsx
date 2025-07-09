@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { UsersList } from "@/components/duels/users-list";
 import { DuelInvites } from "@/components/duels/duel-invites";
-import { ActiveDuel } from "@/components/duels/active-duel";
+import { SimultaneousDuel } from "@/components/duels/simultaneous-duel";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Duels() {
@@ -101,10 +101,19 @@ export default function Duels() {
   };
 
   if (currentView === 'active' && activeDuel) {
-    return <ActiveDuel duel={activeDuel} onDuelEnd={() => {
-      setActiveDuel(null);
-      setCurrentView('main');
-    }} />;
+    return <SimultaneousDuel 
+      duel={activeDuel} 
+      onDuelEnd={(result) => {
+        toast({
+          title: result.winner ? "🎉 Vitória!" : "😔 Derrota",
+          description: result.winner ? 
+            `Parabéns! Você venceu por ${result.score} x ${result.opponentScore}!` : 
+            `Não foi desta vez. Placar: ${result.score} x ${result.opponentScore}`,
+        });
+        setActiveDuel(null);
+        setCurrentView('main');
+      }} 
+    />;
   }
 
   if (currentView === 'users') {

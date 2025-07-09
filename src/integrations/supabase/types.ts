@@ -1012,68 +1012,79 @@ export type Database = {
         Row: {
           created_at: string
           current_question: number | null
-          current_turn: string | null
           finished_at: string | null
           id: string
           invite_id: string
           player1_answers: Json | null
+          player1_current_question: number | null
+          player1_finished_at: string | null
           player1_id: string
           player1_score: number | null
+          player1_status: string | null
+          player1_timeout_count: number | null
           player2_answers: Json | null
+          player2_current_question: number | null
+          player2_finished_at: string | null
           player2_id: string
           player2_score: number | null
+          player2_status: string | null
+          player2_timeout_count: number | null
           questions: Json
           quiz_topic: string
           status: string
-          turn_started_at: string | null
           winner_id: string | null
         }
         Insert: {
           created_at?: string
           current_question?: number | null
-          current_turn?: string | null
           finished_at?: string | null
           id?: string
           invite_id: string
           player1_answers?: Json | null
+          player1_current_question?: number | null
+          player1_finished_at?: string | null
           player1_id: string
           player1_score?: number | null
+          player1_status?: string | null
+          player1_timeout_count?: number | null
           player2_answers?: Json | null
+          player2_current_question?: number | null
+          player2_finished_at?: string | null
           player2_id: string
           player2_score?: number | null
+          player2_status?: string | null
+          player2_timeout_count?: number | null
           questions: Json
           quiz_topic: string
           status?: string
-          turn_started_at?: string | null
           winner_id?: string | null
         }
         Update: {
           created_at?: string
           current_question?: number | null
-          current_turn?: string | null
           finished_at?: string | null
           id?: string
           invite_id?: string
           player1_answers?: Json | null
+          player1_current_question?: number | null
+          player1_finished_at?: string | null
           player1_id?: string
           player1_score?: number | null
+          player1_status?: string | null
+          player1_timeout_count?: number | null
           player2_answers?: Json | null
+          player2_current_question?: number | null
+          player2_finished_at?: string | null
           player2_id?: string
           player2_score?: number | null
+          player2_status?: string | null
+          player2_timeout_count?: number | null
           questions?: Json
           quiz_topic?: string
           status?: string
-          turn_started_at?: string | null
           winner_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "duels_current_turn_fkey"
-            columns: ["current_turn"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "duels_invite_id_fkey"
             columns: ["invite_id"]
@@ -3823,6 +3834,10 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: Json
       }
+      get_duel_status: {
+        Args: { p_duel_id: string }
+        Returns: Json
+      }
       get_next_level_xp: {
         Args: { current_level: number }
         Returns: number
@@ -3852,6 +3867,16 @@ export type Database = {
         Returns: {
           items: Json
         }[]
+      }
+      process_duel_answer: {
+        Args: {
+          p_duel_id: string
+          p_player_id: string
+          p_question_number: number
+          p_answer_id: string
+          p_is_timeout?: boolean
+        }
+        Returns: Json
       }
       track_district_metric: {
         Args: {
