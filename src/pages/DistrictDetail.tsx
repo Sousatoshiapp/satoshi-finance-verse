@@ -15,6 +15,7 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle, ShoppingBag, Lock, Sparkles, Search, Filter, SortAsc, SortDesc } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictQuests } from "@/components/district-quests";
+import { SponsorActivationBanner } from "@/components/sponsor-activation-banner";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -637,6 +638,9 @@ export default function DistrictDetail() {
         </div>
       </div>
 
+      {/* Sponsor Activation Banner - Positioned for maximum visibility */}
+      <SponsorActivationBanner district={district} />
+
       {/* District Power & Stats Section - Moved below banner */}
       <div className="container mx-auto px-4 py-6">
         {/* District Power Card */}
@@ -672,37 +676,22 @@ export default function DistrictDetail() {
                 </div>
               </div>
               
-              {/* Sponsor Info */}
+              {/* Sponsor Info - Simplified since main banner is above */}
               {district.sponsor_company && (
                 <div className="text-left lg:text-right">
-                  <div className="flex items-center lg:justify-end mb-2">
-                    <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 mr-1" />
-                    <span className="text-xs sm:text-sm text-gray-300">Patrocinado por</span>
+                  <div className="flex items-center lg:justify-end mb-1">
+                    <Star className="w-3 h-3 text-yellow-400 mr-1" />
+                    <span className="text-xs text-gray-400">Patrocinado por</span>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center lg:justify-end space-x-2">
                     {district.sponsor_logo_url && (
                       <img 
                         src={district.sponsor_logo_url} 
                         alt={district.sponsor_company}
-                        className="w-6 h-6 sm:w-8 sm:h-8 rounded object-cover"
+                        className="w-5 h-5 rounded object-cover"
                       />
                     )}
-                    <span className="text-white font-medium text-sm sm:text-base truncate">{district.sponsor_company}</span>
-                    {district.referral_link && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => window.open(district.referral_link, '_blank')}
-                        className="text-xs flex-shrink-0"
-                        style={{ 
-                          borderColor: district.color_primary,
-                          color: district.color_primary 
-                        }}
-                      >
-                        <ExternalLink className="w-3 h-3 mr-1" />
-                        <span className="hidden sm:inline">Oferta</span>
-                      </Button>
-                    )}
+                    <span className="text-white font-medium text-sm">{district.sponsor_company}</span>
                   </div>
                 </div>
               )}
