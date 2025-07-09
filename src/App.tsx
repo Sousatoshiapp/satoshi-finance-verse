@@ -4,7 +4,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
 // Direct imports for critical pages
 import Dashboard from "@/pages/Dashboard";
 import Profile from "@/pages/Profile";
@@ -23,10 +22,9 @@ import { LazyRoutes } from "@/utils/advanced-lazy-loading";
 
 function App() {
   return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <div className="min-h-screen bg-background font-sans antialiased">
-          <Suspense fallback={<LoadingSpinner />}>
+    <AuthProvider>
+      <div className="min-h-screen bg-background font-sans antialiased">
+        <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<LazyRoutes.Welcome />} />
             <Route path="/auth" element={<LazyRoutes.Auth />} />
@@ -213,9 +211,8 @@ function App() {
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
           </Routes>
         </Suspense>
-        </div>
-      </AuthProvider>
-    </ErrorBoundary>
+      </div>
+    </AuthProvider>
   );
 }
 
