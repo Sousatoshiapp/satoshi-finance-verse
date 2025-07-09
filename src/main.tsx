@@ -43,8 +43,3 @@ root.render(
   </StrictMode>
 );
 
-// Cleanup no unload
-window.addEventListener('beforeunload', () => {
-  // Cleanup automático via performance manager
-  queryClient.clear();
-});
