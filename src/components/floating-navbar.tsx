@@ -12,7 +12,6 @@ export function FloatingNavbar() {
     { path: '/game-mode', icon: '🎮', label: 'Jogue' },
     { path: '/satoshi-city', icon: '🌃', label: 'Cidade' },
     { path: '/store', icon: '🛒', label: 'Loja' },
-    { path: '/testing-hub', icon: '🧪', label: 'Teste' },
     { path: '/profile', icon: '👤', label: 'Perfil' }
   ];
 

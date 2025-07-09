@@ -100,6 +100,11 @@ const navigation: NavItem[] = [
     ]
   },
   {
+    title: "Hub de Testes",
+    href: "/testing-hub",
+    icon: Settings,
+  },
+  {
     title: "Configurações",
     href: "/admin/settings",
     icon: Settings,

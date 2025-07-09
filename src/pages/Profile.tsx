@@ -16,8 +16,9 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useGamification } from "@/hooks/use-gamification";
 import { getLevelInfo } from "@/data/levels";
-import { Crown, Star, Shield, Camera } from "lucide-react";
+import { Crown, Star, Shield, Camera, ArrowRight } from "lucide-react";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 // Import avatar images
@@ -106,6 +107,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { subscription } = useSubscription();
+  const { achievements: realAchievements, badges, loading: gamificationLoading, getRecentAchievements } = useGamification();
   
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
@@ -520,27 +522,77 @@ export default function Profile() {
 
         {/* Achievements */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Conquistas</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {achievements.map((achievement) => (
-              <div
-                key={achievement.id}
-                className={`p-4 rounded-lg border text-center transition-all ${
-                  achievement.earned
-                    ? 'bg-primary/10 border-primary'
-                    : 'bg-muted/50 border-muted opacity-50'
-                }`}
-              >
-                <div className="text-3xl mb-2">{achievement.icon}</div>
-                <div className="font-semibold text-sm text-foreground">
-                  {achievement.name}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-foreground">Conquistas Recentes</h3>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/achievements')}
+              className="text-primary hover:text-primary/80"
+            >
+              Ver todas <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {gamificationLoading ? (
+              // Skeleton loading
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center p-3 rounded-lg border-2 bg-muted/30 animate-pulse">
+                  <div className="w-8 h-8 bg-muted rounded mb-1"></div>
+                  <div className="w-16 h-3 bg-muted rounded"></div>
                 </div>
-                {achievement.earned && (
-                  <div className="text-xs text-primary mt-1">Conquistado!</div>
-                )}
+              ))
+            ) : (
+              getRecentAchievements(6).map((achievement) => (
+                <div
+                  key={achievement.id}
+                  className="flex flex-col items-center p-3 rounded-lg border-2 bg-gradient-to-b from-yellow-50 to-yellow-100 border-yellow-300 text-yellow-800 transition-all"
+                >
+                  <div className="text-2xl mb-1">{achievement.achievements.badge_icon || '🏆'}</div>
+                  <div className="text-xs font-medium text-center">{achievement.achievements.name}</div>
+                </div>
+              ))
+            )}
+          </div>
+          {!gamificationLoading && getRecentAchievements(6).length === 0 && (
+            <div className="text-center py-4 text-muted-foreground">
+              <p className="text-sm">Complete atividades para desbloquear conquistas!</p>
+            </div>
+          )}
+        </Card>
+
+        {/* Power-ups */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-foreground">Power-ups</h3>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/powerups')}
+              className="text-primary hover:text-primary/80"
+            >
+              Gerenciar <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {badges.slice(0, 4).map((badge) => (
+              <div
+                key={badge.id}
+                className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border"
+              >
+                <div className="text-lg">⚡</div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium truncate">{badge.badge_name}</div>
+                  <div className="text-xs text-muted-foreground">Ativo</div>
+                </div>
               </div>
             ))}
           </div>
+          {badges.length === 0 && (
+            <div className="text-center py-4 text-muted-foreground">
+              <p className="text-sm">Nenhum power-up disponível</p>
+            </div>
+          )}
         </Card>
       </div>
       
