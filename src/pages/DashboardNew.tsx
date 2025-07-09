@@ -77,6 +77,7 @@ export default function DashboardNew() {
   const handleOnboardingComplete = () => {
     setShowOnboarding(false);
     toast.success("🎉 Configuração concluída! Bem-vindo ao BeetzQuiz!");
+    navigate('/dashboard');
   };
 
   if (showOnboarding) {
