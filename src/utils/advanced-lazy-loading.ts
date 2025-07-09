@@ -296,6 +296,88 @@ export const LazyRoutes = {
   DashboardNew: createLazyComponent(
     () => import('@/pages/DashboardNew'),
     { priority: 'high' }
+  ),
+
+  // Testing Hub
+  TestingHub: createLazyComponent(
+    () => import('@/pages/TestingHub'),
+    { priority: 'medium' }
+  ),
+  
+  // Gamification (Phase 3)
+  GamificationDashboard: createLazyComponent(
+    () => import('@/pages/GamificationDashboard'),
+    { priority: 'medium' }
+  ),
+  Achievements: createLazyComponent(
+    () => import('@/pages/Achievements'),
+    { priority: 'medium' }
+  ),
+  Leagues: createLazyComponent(
+    () => import('@/pages/Leagues'),
+    { priority: 'medium' }
+  ), 
+  Powerups: createLazyComponent(
+    () => import('@/pages/Powerups'),
+    { priority: 'medium' }
+  ),
+  DailyChallenges: createLazyComponent(
+    () => import('@/pages/DailyChallenges'),
+    { priority: 'medium' }
+  ),
+  
+  // AI & Content (Phase 4)
+  AITutor: createLazyComponent(
+    () => import('@/pages/AITutor'),
+    { priority: 'medium' }
+  ),
+  LearningPath: createLazyComponent(
+    () => import('@/pages/LearningPath'),
+    { priority: 'medium' }
+  ),
+  ContentGenerator: createLazyComponent(
+    () => import('@/pages/ContentGenerator'),
+    { priority: 'medium' }
+  ),
+  AISimulator: createLazyComponent(
+    () => import('@/pages/AISimulator'),
+    { priority: 'medium' }
+  ),
+  
+  // Monetization (Phase 5)
+  MonetizationDashboard: createLazyComponent(
+    () => import('@/pages/MonetizationDashboard'),
+    { priority: 'medium' }
+  ),
+  VirtualStore: createLazyComponent(
+    () => import('@/pages/VirtualStore'),
+    { priority: 'medium' }
+  ),
+  NFTMarketplace: createLazyComponent(
+    () => import('@/pages/NFTMarketplace'),
+    { priority: 'medium' }
+  ),
+  AffiliateProgram: createLazyComponent(
+    () => import('@/pages/AffiliateProgram'),
+    { priority: 'medium' }
+  ),
+  Wallet: createLazyComponent(
+    () => import('@/pages/Wallet'),
+    { priority: 'medium' }
+  ),
+  
+  // Admin Routes for New Features
+  AdminGamification: createLazyComponent(
+    () => import('@/pages/admin/AdminGamification'),
+    { priority: 'low' }
+  ),
+  AdminAIContent: createLazyComponent(
+    () => import('@/pages/admin/AdminAIContent'),
+    { priority: 'low' }
+  ),
+  AdminMonetization: createLazyComponent(
+    () => import('@/pages/admin/AdminMonetization'),
+    { priority: 'low' }
   )
 };
 
