@@ -1,5 +1,5 @@
 // Advanced Lazy Loading para Route-based Code Splitting
-import { lazy, ComponentType } from 'react';
+import React, { lazy, ComponentType } from 'react';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 // Cache de componentes lazy loaded

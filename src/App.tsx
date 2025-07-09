@@ -1,25 +1,12 @@
-import { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
-import { webWorkerManager } from "@/utils/web-workers";
-
-// Streaming Dashboard para carregamento otimizado
-import { StreamingDashboard } from "@/components/streaming-dashboard";
 
 function App() {
-  useEffect(() => {
-    // Inicializar Web Workers
-    webWorkerManager.init();
-    
-    // Cleanup na saída
-    return () => {
-      webWorkerManager.terminate();
-    };
-  }, []);
 
   return (
     <AuthProvider>

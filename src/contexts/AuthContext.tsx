@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { debugNavigation } from "@/utils/navigation-debug";
 
 interface AuthContextType {
   user: User | null;
@@ -23,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Get initial session with better error handling
     const initializeAuth = async () => {
       try {
-        debugNavigation.log('Initializing auth...');
+        console.log('🔄 Initializing auth...');
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -31,7 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Try to recover with localStorage fallback
           const savedUser = localStorage.getItem('satoshi_user');
           if (savedUser && mounted) {
-            debugNavigation.log('Using localStorage fallback for auth');
+            console.log('🔄 Using localStorage fallback for auth');
             // Allow app to continue with localStorage data
           }
         }
@@ -39,7 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
-          debugNavigation.logAuthState(session?.user, session, false);
           
           // Critical debug info
           console.log('🔄 AUTH INITIALIZATION COMPLETE:', {
@@ -54,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } finally {
         if (mounted) {
           setLoading(false);
-          debugNavigation.log('Auth initialization complete');
+          console.log('🔄 Auth initialization complete');
         }
       }
     };
@@ -62,14 +60,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Set up auth state listener with improved error handling
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        debugNavigation.log(`Auth event: ${event}`, { hasSession: !!session });
+        console.log(`🔄 Auth event: ${event}`, { hasSession: !!session });
         
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
-          
-          debugNavigation.logAuthState(session?.user, session, false);
           
           // Detailed event logging
           console.log('🔄 AUTH STATE CHANGE:', {
@@ -83,13 +79,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           // Handle specific auth events
           if (event === 'SIGNED_OUT') {
-            debugNavigation.log('User signed out, clearing cache');
+            console.log('🔄 User signed out, clearing cache');
             localStorage.removeItem('supabase.auth.token');
             localStorage.removeItem('satoshi_user');
           } else if (event === 'TOKEN_REFRESHED') {
-            debugNavigation.log('Token refreshed successfully');
+            console.log('🔄 Token refreshed successfully');
           } else if (event === 'SIGNED_IN') {
-            debugNavigation.log('User signed in successfully');
+            console.log('🔄 User signed in successfully');
           }
         }
       }
@@ -100,20 +96,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       mounted = false;
       subscription.unsubscribe();
-      debugNavigation.log('Auth provider cleanup');
+      console.log('🔄 Auth provider cleanup');
     };
   }, []);
 
   const signOut = async () => {
     try {
-      debugNavigation.log('Signing out...');
+      console.log('🔄 Signing out...');
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('❌ Sign out error:', error);
       }
       // Clear localStorage data
       localStorage.removeItem('satoshi_user');
-      debugNavigation.log('Sign out complete');
+      console.log('🔄 Sign out complete');
     } catch (error) {
       console.error('❌ Failed to sign out:', error);
     }
