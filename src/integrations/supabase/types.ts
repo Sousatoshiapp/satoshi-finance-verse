@@ -726,6 +726,48 @@ export type Database = {
           },
         ]
       }
+      daily_challenges: {
+        Row: {
+          beetz_reward: number
+          challenge_type: string
+          created_at: string
+          description: string
+          difficulty: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          target_value: number
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          beetz_reward?: number
+          challenge_type: string
+          created_at?: string
+          description: string
+          difficulty?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          target_value?: number
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          beetz_reward?: number
+          challenge_type?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          target_value?: number
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       daily_missions: {
         Row: {
           beetz_reward: number
@@ -5961,6 +6003,10 @@ export type Database = {
           points: number
         }[]
       }
+      generate_daily_challenges: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_daily_missions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -6069,6 +6115,17 @@ export type Database = {
       update_bot_nicknames: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      update_challenge_progress: {
+        Args: {
+          profile_id: string
+          challenge_type_param: string
+          progress_amount?: number
+        }
+        Returns: {
+          challenge_completed: boolean
+          rewards_earned: Json
+        }[]
       }
       update_learning_analytics: {
         Args: {
