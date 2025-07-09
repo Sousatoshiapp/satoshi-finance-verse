@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { AvatarSelection } from "@/components/avatar-selection";
-import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/avatar-display-optimized";
+import { AvatarDisplayOptimized } from "@/components/avatar-display-optimized";
 import { TournamentCarousel } from "@/components/tournaments/tournament-carousel";
 import { DuelPlaygroundGrid } from "@/components/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/subscription-indicator";
@@ -208,7 +208,7 @@ export default function Dashboard() {
               {userAvatar ? (
                 <div className="flex justify-center">
                   <div className="relative">
-                    <AvatarDisplay 
+                    <AvatarDisplayOptimized 
                       avatar={userAvatar} 
                       size="lg"
                       showBadge={true}

@@ -13,7 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 import { supabase } from "@/integrations/supabase/client";
-import { AvatarDisplay } from "@/components/avatar-display";
+import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/avatar-display-optimized";
 import defeatAnimation from "@/assets/defeat-animation.jpg";
 
 const duelQuestions = [

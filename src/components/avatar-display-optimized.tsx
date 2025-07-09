@@ -1,7 +1,65 @@
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { memo, useMemo, useState, useEffect } from "react";
-import { loadAvatarImage } from "@/utils/lazy-imports";
+
+// Import all avatar images directly
+import neoTrader from "@/assets/avatars/neo-trader.jpg";
+import cryptoAnalyst from "@/assets/avatars/crypto-analyst.jpg";
+import financeHacker from "@/assets/avatars/finance-hacker.jpg";
+import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
+import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
+import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
+import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
+import neuralArchitect from "@/assets/avatars/neural-architect.jpg";
+import dataMiner from "@/assets/avatars/data-miner.jpg";
+import blockchainGuardian from "@/assets/avatars/blockchain-guardian.jpg";
+import quantumPhysician from "@/assets/avatars/quantum-physician.jpg";
+import virtualRealtor from "@/assets/avatars/virtual-realtor.jpg";
+import codeAssassin from "@/assets/avatars/code-assassin.jpg";
+import cryptoShaman from "@/assets/avatars/crypto-shaman.jpg";
+import marketProphet from "@/assets/avatars/market-prophet.jpg";
+import digitalNomad from "@/assets/avatars/digital-nomad.jpg";
+import neonDetective from "@/assets/avatars/neon-detective.jpg";
+import hologramDancer from "@/assets/avatars/hologram-dancer.jpg";
+import cyberMechanic from "@/assets/avatars/cyber-mechanic.jpg";
+import ghostTrader from "@/assets/avatars/ghost-trader.jpg";
+import binaryMonk from "@/assets/avatars/binary-monk.jpg";
+import pixelArtist from "@/assets/avatars/pixel-artist.jpg";
+import quantumThief from "@/assets/avatars/quantum-thief.jpg";
+import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
+import stormHacker from "@/assets/avatars/storm-hacker.jpg";
+import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
+import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+
+const avatarImages: Record<string, string> = {
+  'neo-trader': neoTrader,
+  'crypto-analyst': cryptoAnalyst,
+  'finance-hacker': financeHacker,
+  'investment-scholar': investmentScholar,
+  'quantum-broker': quantumBroker,
+  'defi-samurai': defiSamurai,
+  'the-satoshi': theSatoshi,
+  'neural-architect': neuralArchitect,
+  'data-miner': dataMiner,
+  'blockchain-guardian': blockchainGuardian,
+  'quantum-physician': quantumPhysician,
+  'virtual-realtor': virtualRealtor,
+  'code-assassin': codeAssassin,
+  'crypto-shaman': cryptoShaman,
+  'market-prophet': marketProphet,
+  'digital-nomad': digitalNomad,
+  'neon-detective': neonDetective,
+  'hologram-dancer': hologramDancer,
+  'cyber-mechanic': cyberMechanic,
+  'ghost-trader': ghostTrader,
+  'binary-monk': binaryMonk,
+  'pixel-artist': pixelArtist,
+  'quantum-thief': quantumThief,
+  'memory-keeper': memoryKeeper,
+  'storm-hacker': stormHacker,
+  'dream-architect': dreamArchitect,
+  'chrome-gladiator': chromeGladiator,
+};
 
 interface Avatar {
   id: string;
@@ -35,16 +93,22 @@ const AvatarDisplayOptimized = memo(function AvatarDisplayOptimized({
   showBadge = true, 
   evolutionLevel = 1 
 }: AvatarDisplayProps) {
-  const [avatarImage, setAvatarImage] = useState<string>(avatar.image_url);
+  // Convert avatar name to kebab-case for image lookup
+  const getAvatarImage = (avatar: Avatar) => {
+    const key = avatar.name.toLowerCase().replace(/\s+/g, '-');
+    return avatarImages[key] || avatarImages['finance-hacker']; // Default fallback
+  };
+
+  const [avatarImage, setAvatarImage] = useState<string>(getAvatarImage(avatar));
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Simplified avatar loading - use direct URLs with fallbacks
+  // Update image when avatar changes
   useEffect(() => {
     setImageLoaded(false);
     setImageError(false);
-    setAvatarImage(avatar.image_url);
-  }, [avatar.image_url]);
+    setAvatarImage(getAvatarImage(avatar));
+  }, [avatar]);
 
   const sizeClasses = useMemo(() => {
     switch (size) {
@@ -73,10 +137,6 @@ const AvatarDisplayOptimized = memo(function AvatarDisplayOptimized({
           onError={() => {
             setImageError(true);
             setImageLoaded(false);
-            // Fallback to a default avatar or simple color background
-            if (avatarImage !== '/placeholder-avatar.png') {
-              setAvatarImage('/placeholder-avatar.png');
-            }
           }}
         />
         {(!imageLoaded || imageError) && (
