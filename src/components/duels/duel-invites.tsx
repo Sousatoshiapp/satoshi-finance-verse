@@ -3,8 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { DuelInviteModal } from "./duel-invite-modal";
 
 interface DuelInvitesProps {
   invites: any[];
@@ -13,6 +14,8 @@ interface DuelInvitesProps {
 
 export function DuelInvites({ invites, onInviteResponse }: DuelInvitesProps) {
   const [loading, setLoading] = useState<string | null>(null);
+  const [selectedInvite, setSelectedInvite] = useState<any>(null);
+  const [showModal, setShowModal] = useState(false);
   const { toast } = useToast();
 
   const handleInviteResponse = async (inviteId: string, action: 'accept' | 'decline') => {
@@ -182,18 +185,35 @@ export function DuelInvites({ invites, onInviteResponse }: DuelInvitesProps) {
                   Recusar
                 </Button>
                 <Button
-                  onClick={() => handleInviteResponse(invite.id, 'accept')}
+                  onClick={() => {
+                    setSelectedInvite(invite);
+                    setShowModal(true);
+                  }}
                   disabled={loading === invite.id}
                   className="gap-2"
                 >
-                  <CheckCircle className="h-4 w-4" />
-                  Aceitar
+                  <Eye className="h-4 w-4" />
+                  Ver Convite
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
       ))}
+
+      <DuelInviteModal
+        invite={selectedInvite}
+        open={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setSelectedInvite(null);
+        }}
+        onResponse={(accepted) => {
+          onInviteResponse();
+          setShowModal(false);
+          setSelectedInvite(null);
+        }}
+      />
     </div>
   );
 }
