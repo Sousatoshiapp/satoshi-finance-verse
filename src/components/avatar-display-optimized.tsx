@@ -39,33 +39,12 @@ const AvatarDisplayOptimized = memo(function AvatarDisplayOptimized({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Memoize the avatar loading logic
+  // Simplified avatar loading - use direct URLs with fallbacks
   useEffect(() => {
-    // Reset states when avatar changes
     setImageLoaded(false);
     setImageError(false);
-    
-    // Start with the original URL immediately for faster loading
     setAvatarImage(avatar.image_url);
-    
-    // Only try lazy loading if it's a local asset reference
-    if (avatar.image_url.startsWith('/assets/') || avatar.image_url.includes('avatars/')) {
-      const loadImage = async () => {
-        const key = avatar.name.toLowerCase().replace(/\s+/g, '-');
-        try {
-          const loadedImage = await loadAvatarImage(key);
-          if (loadedImage && loadedImage !== avatar.image_url) {
-            setAvatarImage(loadedImage);
-          }
-        } catch (error) {
-          // Keep using the original URL
-          console.debug('Lazy loading failed for avatar:', key, error);
-        }
-      };
-
-      loadImage();
-    }
-  }, [avatar.name, avatar.image_url]);
+  }, [avatar.image_url]);
 
   const sizeClasses = useMemo(() => {
     switch (size) {

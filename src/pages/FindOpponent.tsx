@@ -144,10 +144,12 @@ export default function FindOpponent() {
         .eq('user_id', user.id)
         .single();
 
+      if (!challengerProfile) return;
+
       const { error } = await supabase
         .from('duel_invites')
         .insert({
-          challenger_id: challengerProfile?.id,
+          challenger_id: challengerProfile.id,
           challenged_id: userId,
           quiz_topic: 'financas'
         });
@@ -165,6 +167,74 @@ export default function FindOpponent() {
       toast({
         title: "Erro",
         description: "Não foi possível enviar o desafio. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const findAutomaticOpponent = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) return;
+
+      // Usar a função do banco para encontrar oponente automático
+      const { data: matchResult } = await supabase
+        .rpc('find_automatic_opponent', {
+          p_user_id: profile.id,
+          p_topic: 'financas'
+        });
+
+      if (matchResult && matchResult.length > 0) {
+        const result = matchResult[0];
+        
+        if (result.match_found) {
+          if (result.opponent_type === 'human') {
+            // Criar duelo com usuário real
+            toast({
+              title: "Oponente encontrado!",
+              description: "Iniciando duelo com usuário real...",
+            });
+          } else if (result.opponent_type === 'bot') {
+            // Criar duelo com bot
+            toast({
+              title: "Bot encontrado!",
+              description: "Iniciando duelo com bot...",
+            });
+          }
+          
+          // Criar duelo automaticamente
+          const { error: duelError } = await supabase
+            .from('duel_invites')
+            .insert({
+              challenger_id: profile.id,
+              challenged_id: result.opponent_id,
+              quiz_topic: 'financas',
+              status: 'accepted' // Auto-aceitar para bots e matching automático
+            });
+
+          if (!duelError) {
+            navigate('/duels');
+          }
+        } else {
+          toast({
+            title: "Aguardando oponente...",
+            description: "Você foi adicionado à fila. Aguarde um oponente.",
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error finding automatic opponent:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível encontrar oponente automático.",
         variant: "destructive"
       });
     }
@@ -232,13 +302,23 @@ export default function FindOpponent() {
               </Button>
             </div>
 
-            <Button
-              onClick={findRandomOpponent}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
-            >
-              <Shuffle className="h-4 w-4 mr-2" />
-              Oponente Aleatório
-            </Button>
+            <div className="space-y-2">
+              <Button
+                onClick={findAutomaticOpponent}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
+              >
+                <Shuffle className="h-4 w-4 mr-2" />
+                Encontrar Oponente Automático
+              </Button>
+              
+              <Button
+                onClick={findRandomOpponent}
+                variant="outline"
+                className="w-full border-[#adff2f]/30 text-[#adff2f] hover:bg-[#adff2f]/10"
+              >
+                Desafiar Aleatório da Lista
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

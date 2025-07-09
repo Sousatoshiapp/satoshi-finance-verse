@@ -210,6 +210,27 @@ export const LazyRoutes = {
   Welcome: createLazyComponent(
     () => import('@/pages/Welcome'),
     { priority: 'high' }
+  ),
+
+  // Páginas em falta
+  Levels: createLazyComponent(
+    () => import('@/pages/Levels'),
+    { priority: 'medium' }
+  ),
+  
+  BeetzInfo: createLazyComponent(
+    () => import('@/pages/BeetzInfo'),
+    { priority: 'medium' }
+  ),
+  
+  FindOpponent: createLazyComponent(
+    () => import('@/pages/FindOpponent'),
+    { priority: 'medium' }
+  ),
+  
+  TournamentQuizSpecific: createLazyComponent(
+    () => import('@/pages/TournamentQuizSpecific'),
+    { priority: 'medium' }
   )
 };
 

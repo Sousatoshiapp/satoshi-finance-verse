@@ -119,6 +119,51 @@ export type Database = {
         }
         Relationships: []
       }
+      automated_tournaments: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_hours: number | null
+          entry_cost: number | null
+          id: string
+          is_active: boolean | null
+          max_participants: number | null
+          name: string
+          prize_pool: Json | null
+          questions_per_match: number | null
+          start_time: string
+          tournament_type: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          entry_cost?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          name: string
+          prize_pool?: Json | null
+          questions_per_match?: number | null
+          start_time: string
+          tournament_type?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          entry_cost?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_participants?: number | null
+          name?: string
+          prize_pool?: Json | null
+          questions_per_match?: number | null
+          start_time?: string
+          tournament_type?: string | null
+        }
+        Relationships: []
+      }
       avatar_evolutions: {
         Row: {
           bonus_changes: Json | null
@@ -268,6 +313,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      bot_duel_configs: {
+        Row: {
+          accuracy_percentage: number | null
+          bot_profile_id: string
+          created_at: string
+          difficulty_level: number | null
+          id: string
+          is_active: boolean | null
+          response_time_max: number | null
+          response_time_min: number | null
+        }
+        Insert: {
+          accuracy_percentage?: number | null
+          bot_profile_id: string
+          created_at?: string
+          difficulty_level?: number | null
+          id?: string
+          is_active?: boolean | null
+          response_time_max?: number | null
+          response_time_min?: number | null
+        }
+        Update: {
+          accuracy_percentage?: number | null
+          bot_profile_id?: string
+          created_at?: string
+          difficulty_level?: number | null
+          id?: string
+          is_active?: boolean | null
+          response_time_max?: number | null
+          response_time_min?: number | null
+        }
+        Relationships: []
       }
       conversations: {
         Row: {
@@ -896,6 +974,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      duel_queue: {
+        Row: {
+          created_at: string
+          district_id: string | null
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          preferred_topic: string | null
+          skill_level: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          district_id?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          preferred_topic?: string | null
+          skill_level?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          district_id?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          preferred_topic?: string | null
+          skill_level?: number | null
+          user_id?: string
+        }
+        Relationships: []
       }
       duels: {
         Row: {
@@ -2373,6 +2484,51 @@ export type Database = {
           },
         ]
       }
+      tournament_participations: {
+        Row: {
+          bracket_position: number | null
+          current_round: number | null
+          final_position: number | null
+          id: string
+          is_eliminated: boolean | null
+          joined_at: string
+          losses: number | null
+          prizes_won: Json | null
+          total_score: number | null
+          tournament_id: string
+          user_id: string
+          wins: number | null
+        }
+        Insert: {
+          bracket_position?: number | null
+          current_round?: number | null
+          final_position?: number | null
+          id?: string
+          is_eliminated?: boolean | null
+          joined_at?: string
+          losses?: number | null
+          prizes_won?: Json | null
+          total_score?: number | null
+          tournament_id: string
+          user_id: string
+          wins?: number | null
+        }
+        Update: {
+          bracket_position?: number | null
+          current_round?: number | null
+          final_position?: number | null
+          id?: string
+          is_eliminated?: boolean | null
+          joined_at?: string
+          losses?: number | null
+          prizes_won?: Json | null
+          total_score?: number | null
+          tournament_id?: string
+          user_id?: string
+          wins?: number | null
+        }
+        Relationships: []
+      }
       tournament_rewards: {
         Row: {
           created_at: string | null
@@ -2465,6 +2621,57 @@ export type Database = {
           trophy_image_url?: string | null
           trophy_name?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      trading_leaderboards: {
+        Row: {
+          created_at: string
+          ending_balance: number | null
+          id: string
+          period_end: string | null
+          period_start: string
+          portfolio_id: string
+          profit_loss: number | null
+          profit_loss_percentage: number | null
+          rank_position: number | null
+          starting_balance: number | null
+          timeframe: string | null
+          trades_count: number | null
+          user_id: string
+          win_rate: number | null
+        }
+        Insert: {
+          created_at?: string
+          ending_balance?: number | null
+          id?: string
+          period_end?: string | null
+          period_start: string
+          portfolio_id: string
+          profit_loss?: number | null
+          profit_loss_percentage?: number | null
+          rank_position?: number | null
+          starting_balance?: number | null
+          timeframe?: string | null
+          trades_count?: number | null
+          user_id: string
+          win_rate?: number | null
+        }
+        Update: {
+          created_at?: string
+          ending_balance?: number | null
+          id?: string
+          period_end?: string | null
+          period_start?: string
+          portfolio_id?: string
+          profit_loss?: number | null
+          profit_loss_percentage?: number | null
+          rank_position?: number | null
+          starting_balance?: number | null
+          timeframe?: string | null
+          trades_count?: number | null
+          user_id?: string
+          win_rate?: number | null
         }
         Relationships: []
       }
@@ -3225,6 +3432,240 @@ export type Database = {
           },
         ]
       }
+      virtual_assets: {
+        Row: {
+          category: string | null
+          created_at: string
+          current_price: number
+          description: string | null
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          market_cap: number | null
+          name: string
+          price_change_24h: number | null
+          price_change_percentage_24h: number | null
+          symbol: string
+          updated_at: string
+          volatility_level: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          current_price?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          market_cap?: number | null
+          name: string
+          price_change_24h?: number | null
+          price_change_percentage_24h?: number | null
+          symbol: string
+          updated_at?: string
+          volatility_level?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          current_price?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          market_cap?: number | null
+          name?: string
+          price_change_24h?: number | null
+          price_change_percentage_24h?: number | null
+          symbol?: string
+          updated_at?: string
+          volatility_level?: number | null
+        }
+        Relationships: []
+      }
+      virtual_holdings: {
+        Row: {
+          asset_id: string
+          avg_buy_price: number
+          created_at: string
+          current_value: number | null
+          id: string
+          portfolio_id: string
+          profit_loss: number | null
+          profit_loss_percentage: number | null
+          quantity: number
+          total_invested: number
+          updated_at: string
+        }
+        Insert: {
+          asset_id: string
+          avg_buy_price?: number
+          created_at?: string
+          current_value?: number | null
+          id?: string
+          portfolio_id: string
+          profit_loss?: number | null
+          profit_loss_percentage?: number | null
+          quantity?: number
+          total_invested?: number
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string
+          avg_buy_price?: number
+          created_at?: string
+          current_value?: number | null
+          id?: string
+          portfolio_id?: string
+          profit_loss?: number | null
+          profit_loss_percentage?: number | null
+          quantity?: number
+          total_invested?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      virtual_market_events: {
+        Row: {
+          affected_assets: string[] | null
+          created_at: string
+          description: string | null
+          duration_hours: number | null
+          ends_at: string | null
+          event_type: string | null
+          id: string
+          is_active: boolean | null
+          price_impact_percentage: number | null
+          starts_at: string
+          title: string
+        }
+        Insert: {
+          affected_assets?: string[] | null
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          ends_at?: string | null
+          event_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          price_impact_percentage?: number | null
+          starts_at?: string
+          title: string
+        }
+        Update: {
+          affected_assets?: string[] | null
+          created_at?: string
+          description?: string | null
+          duration_hours?: number | null
+          ends_at?: string | null
+          event_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          price_impact_percentage?: number | null
+          starts_at?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      virtual_portfolios: {
+        Row: {
+          best_trade_profit: number | null
+          created_at: string
+          current_balance: number | null
+          id: string
+          initial_balance: number | null
+          losing_trades: number | null
+          name: string
+          portfolio_value: number | null
+          profit_loss: number | null
+          profit_loss_percentage: number | null
+          total_invested: number | null
+          trades_count: number | null
+          updated_at: string
+          user_id: string
+          winning_trades: number | null
+          worst_trade_loss: number | null
+        }
+        Insert: {
+          best_trade_profit?: number | null
+          created_at?: string
+          current_balance?: number | null
+          id?: string
+          initial_balance?: number | null
+          losing_trades?: number | null
+          name?: string
+          portfolio_value?: number | null
+          profit_loss?: number | null
+          profit_loss_percentage?: number | null
+          total_invested?: number | null
+          trades_count?: number | null
+          updated_at?: string
+          user_id: string
+          winning_trades?: number | null
+          worst_trade_loss?: number | null
+        }
+        Update: {
+          best_trade_profit?: number | null
+          created_at?: string
+          current_balance?: number | null
+          id?: string
+          initial_balance?: number | null
+          losing_trades?: number | null
+          name?: string
+          portfolio_value?: number | null
+          profit_loss?: number | null
+          profit_loss_percentage?: number | null
+          total_invested?: number | null
+          trades_count?: number | null
+          updated_at?: string
+          user_id?: string
+          winning_trades?: number | null
+          worst_trade_loss?: number | null
+        }
+        Relationships: []
+      }
+      virtual_trades: {
+        Row: {
+          asset_id: string
+          executed_at: string
+          fees: number | null
+          id: string
+          notes: string | null
+          portfolio_id: string
+          price: number
+          profit_loss: number | null
+          quantity: number
+          total_amount: number
+          trade_type: string
+        }
+        Insert: {
+          asset_id: string
+          executed_at?: string
+          fees?: number | null
+          id?: string
+          notes?: string | null
+          portfolio_id: string
+          price: number
+          profit_loss?: number | null
+          quantity: number
+          total_amount: number
+          trade_type: string
+        }
+        Update: {
+          asset_id?: string
+          executed_at?: string
+          fees?: number | null
+          id?: string
+          notes?: string | null
+          portfolio_id?: string
+          price?: number
+          profit_loss?: number | null
+          quantity?: number
+          total_amount?: number
+          trade_type?: string
+        }
+        Relationships: []
+      }
       weekly_leaderboards: {
         Row: {
           created_at: string
@@ -3346,6 +3787,14 @@ export type Database = {
       fill_missing_bot_posts: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      find_automatic_opponent: {
+        Args: { p_user_id: string; p_topic?: string }
+        Returns: {
+          opponent_id: string
+          opponent_type: string
+          match_found: boolean
+        }[]
       }
       generate_bot_profile: {
         Args: { bot_count?: number }

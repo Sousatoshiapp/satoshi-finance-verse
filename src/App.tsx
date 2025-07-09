@@ -208,6 +208,35 @@ function App() {
               </ProtectedRoute>
             } />
             
+            {/* New Routes - Missing Pages */}
+            <Route path="/levels" element={
+              <ProtectedRoute>
+                <LazyRoutes.Levels />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/beetz-info" element={
+              <ProtectedRoute>
+                <LazyRoutes.BeetzInfo />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/find-opponent" element={
+              <ProtectedRoute>
+                <LazyRoutes.FindOpponent />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/tournament-quiz/:tournamentId" element={
+              <ProtectedRoute>
+                <LazyRoutes.TournamentQuizSpecific />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
           </Routes>
         </Suspense>
