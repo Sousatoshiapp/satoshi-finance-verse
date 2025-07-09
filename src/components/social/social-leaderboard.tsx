@@ -275,7 +275,7 @@ export function SocialLeaderboard() {
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5 mb-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-6 gap-1">
             {leaderboardTypes.map(type => {
               const IconComponent = type.icon;
               return (

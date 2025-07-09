@@ -61,9 +61,15 @@ export function SocialFeed() {
 
   useEffect(() => {
     loadCurrentUser();
-    loadPosts();
-    setupRealtimeSubscription();
   }, []);
+
+  useEffect(() => {
+    if (currentUserId) {
+      loadPosts();
+      const cleanup = setupRealtimeSubscription();
+      return cleanup;
+    }
+  }, [currentUserId]);
 
   const loadCurrentUser = async () => {
     try {
@@ -85,6 +91,7 @@ export function SocialFeed() {
   };
 
   const loadPosts = async () => {
+    if (!currentUserId) return;
     try {
       const { data: postsData, error } = await supabase
         .from('social_posts')

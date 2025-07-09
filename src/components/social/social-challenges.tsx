@@ -70,7 +70,8 @@ export function SocialChallenges() {
     if (currentUserId) {
       loadChallenges();
       loadBadges();
-      setupRealtimeSubscription();
+      const cleanup = setupRealtimeSubscription();
+      return cleanup;
     }
   }, [currentUserId]);
 

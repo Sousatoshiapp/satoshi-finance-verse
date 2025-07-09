@@ -203,13 +203,13 @@ export default function Social() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="feed" className="w-full">
-              <TabsList className="grid w-full grid-cols-6">
-                <TabsTrigger value="feed">Feed</TabsTrigger>
-                <TabsTrigger value="discover">Descobrir</TabsTrigger>
-                <TabsTrigger value="challenges">Desafios</TabsTrigger>
-                <TabsTrigger value="rankings">Rankings</TabsTrigger>
-                <TabsTrigger value="following">Seguindo</TabsTrigger>
-                <TabsTrigger value="messages">Conversas</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
+                <TabsTrigger value="feed" className="text-xs">Feed</TabsTrigger>
+                <TabsTrigger value="discover" className="text-xs">Buscar</TabsTrigger>
+                <TabsTrigger value="challenges" className="text-xs">Desafios</TabsTrigger>
+                <TabsTrigger value="rankings" className="text-xs">Ranks</TabsTrigger>
+                <TabsTrigger value="following" className="text-xs">Seguindo</TabsTrigger>
+                <TabsTrigger value="messages" className="text-xs">Chat</TabsTrigger>
               </TabsList>
 
                <TabsContent value="feed" className="space-y-4">
