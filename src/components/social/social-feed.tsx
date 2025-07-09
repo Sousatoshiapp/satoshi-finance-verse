@@ -377,42 +377,43 @@ export function SocialFeed() {
     <div className="space-y-6">
       {/* Create Post */}
       <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
               <AvatarImage src="" />
               <AvatarFallback>
-                <Plus className="h-5 w-5" />
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1">
-              <h3 className="font-semibold">Compartilhe com a comunidade</h3>
-              <p className="text-sm text-muted-foreground">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-sm sm:text-base">Compartilhe com a comunidade</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                 Conte sobre suas estratégias, conquistas ou dúvidas
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-3">
+        <CardContent className="pt-0 px-3 sm:px-6 pb-3 sm:pb-6">
+          <div className="space-y-2 sm:space-y-3">
             <Textarea
               placeholder="No que você está pensando sobre o mercado hoje?"
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
-              className="min-h-[100px] resize-none"
+              className="min-h-[80px] sm:min-h-[100px] resize-none text-sm"
               maxLength={500}
             />
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-xs text-muted-foreground">
                 {newPost.length}/500 caracteres
               </span>
               <Button 
                 onClick={handleCreatePost}
                 disabled={!newPost.trim() || posting}
-                className="bg-gradient-to-r from-primary to-primary-foreground"
+                className="bg-gradient-to-r from-primary to-primary-foreground text-sm px-3 py-2"
+                size="sm"
               >
                 {posting ? "Postando..." : "Publicar"}
-                <Send className="ml-2 h-4 w-4" />
+                <Send className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </div>
           </div>
