@@ -258,39 +258,31 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Profile Button with Side Badges - Responsive */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4">
-              {/* XP Badge - Left Side */}
+            {/* XP and Beetz Cards - Mobile Optimized */}
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {/* XP Card */}
               <div 
-                className="border border-[#adff2f] rounded-full px-3 sm:px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-full sm:w-[120px] max-w-[120px]"
+                className="border border-[#adff2f] rounded-full px-4 py-3 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 onClick={handleNavigateToLevels}
                 style={{ borderWidth: '0.5px' }}
               >
-                <span className="text-sm">⚡</span>
+                <span className="text-lg">⚡</span>
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground leading-none">XP</div>
-                  <div className="text-xs font-bold text-foreground leading-none">{userStats.currentXP}</div>
+                  <div className="text-sm font-bold text-foreground leading-none">{userStats.currentXP}</div>
                 </div>
               </div>
 
-              {/* Profile Button */}
-              <Button 
-                className="bg-gradient-to-r from-primary to-success text-black px-3 sm:px-6 py-2 rounded-full font-semibold shadow-glow w-full sm:w-[120px] max-w-[120px] text-xs sm:text-sm"
-                onClick={hasAvatar ? handleNavigateToProfile : handleNavigateToStore}
-              >
-                {hasAvatar ? 'Meu Perfil' : 'Escolher Avatar'}
-              </Button>
-
-              {/* Beetz Badge - Right Side */}
+              {/* Beetz Card */}
               <div 
-                className="border border-[#adff2f] rounded-full px-3 sm:px-6 py-2 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1.5 w-full sm:w-[120px] max-w-[120px]"
+                className="border border-[#adff2f] rounded-full px-4 py-3 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 onClick={handleNavigateToBeetzInfo}
                 style={{ borderWidth: '0.5px' }}
               >
                 <BeetzIcon size="md" />
                 <div className="text-center">
                   <div className="text-xs text-muted-foreground leading-none">Beetz</div>
-                  <div className="text-xs font-bold text-foreground leading-none">{userStats.points}</div>
+                  <div className="text-sm font-bold text-foreground leading-none">{userStats.points}</div>
                 </div>
               </div>
             </div>
