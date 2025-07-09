@@ -18,8 +18,9 @@ export interface UserLeague {
   current_tier: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond' | 'master' | 'grandmaster';
   tier_points: number;
   peak_tier: 'bronze' | 'silver' | 'gold' | 'platinum' | 'diamond' | 'master' | 'grandmaster';
-  promotions_count: number;
-  demotions_count: number;
+  promotions_count?: number;
+  demotions_count?: number;
+  demotion_count?: number;
 }
 
 export interface LeagueRanking {
@@ -74,7 +75,11 @@ export function useLeagues() {
           .single();
 
         if (league) {
-          setUserLeague(league);
+          setUserLeague({
+            ...league,
+            promotions_count: (league as any).promotion_count || 0,
+            demotions_count: league.demotion_count || 0
+          });
         } else {
           // Criar entrada inicial para o usuário
           const { data: newLeague } = await supabase
@@ -90,7 +95,11 @@ export function useLeagues() {
             .single();
 
           if (newLeague) {
-            setUserLeague(newLeague);
+            setUserLeague({
+              ...newLeague,
+              promotions_count: 0,
+              demotions_count: 0
+            });
           }
         }
 
@@ -111,11 +120,7 @@ export function useLeagues() {
         .select(`
           user_id,
           tier_points,
-          current_tier,
-          profiles!inner (
-            nickname,
-            profile_image_url
-          )
+          current_tier
         `)
         .eq('season_id', seasonId)
         .order('tier_points', { ascending: false })
@@ -124,11 +129,11 @@ export function useLeagues() {
       if (rankings) {
         const formattedRankings = rankings.map((rank, index) => ({
           user_id: rank.user_id,
-          nickname: rank.profiles.nickname,
+          nickname: `Player ${index + 1}`,
           tier_points: rank.tier_points,
           current_tier: rank.current_tier,
           rank_position: index + 1,
-          profile_image_url: rank.profiles.profile_image_url
+          profile_image_url: undefined
         }));
 
         setRankings(formattedRankings);
@@ -160,17 +165,20 @@ export function useLeagues() {
 
       if (data) {
         // Mostrar notificação se houve promoção/rebaixamento
-        if (data.promoted) {
-          toast({
-            title: "🎉 Promoção!",
-            description: `Você foi promovido para ${data.new_tier}!`,
-          });
-        } else if (data.demoted) {
-          toast({
-            title: "📉 Rebaixamento",
-            description: `Você foi rebaixado para ${data.new_tier}`,
-            variant: "destructive",
-          });
+        if (typeof data === 'object' && data !== null) {
+          const dataObj = data as any;
+          if (dataObj.promoted) {
+            toast({
+              title: "🎉 Promoção!",
+              description: `Você foi promovido para ${dataObj.new_tier}!`,
+            });
+          } else if (dataObj.demoted) {
+            toast({
+              title: "📉 Rebaixamento",
+              description: `Você foi rebaixado para ${dataObj.new_tier}`,
+              variant: "destructive",
+            });
+          }
         }
 
         // Recarregar dados

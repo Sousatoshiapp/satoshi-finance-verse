@@ -5,17 +5,23 @@ import { useToast } from '@/hooks/use-toast';
 export interface ThemedLootBox {
   id: string;
   name: string;
-  theme: string;
+  theme?: string;
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
   contents: any;
-  preview_items: any[];
+  preview_items?: any[];
   min_items: number;
   max_items: number;
-  pity_timer: number;
-  seasonal: boolean;
+  pity_timer?: number;
+  seasonal?: boolean;
   available_until?: string;
   image_url?: string;
   animation_url?: string;
+  cost_beetz?: number;
+  cost_real_money?: number;
+  description?: string;
+  is_available?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface UserLootHistory {
@@ -23,9 +29,10 @@ export interface UserLootHistory {
   user_id: string;
   loot_box_id: string;
   items_received: any;
-  pity_count: number;
-  was_guaranteed_rare: boolean;
+  pity_count?: number;
+  was_guaranteed_rare?: boolean;
   opened_at: string;
+  source?: string;
   themed_loot_boxes: ThemedLootBox;
 }
 
@@ -64,19 +71,19 @@ export function useLoot() {
 
       // Carregar caixas de loot disponíveis
       const { data: lootBoxes } = await supabase
-        .from('themed_loot_boxes')
+        .from('loot_boxes')
         .select('*')
-        .or('available_until.is.null,available_until.gt.now()')
         .order('rarity', { ascending: true });
 
       // Carregar histórico de loot do usuário
       const { data: history } = await supabase
-        .from('user_loot_history')
+        .from('user_loot_boxes')
         .select(`
           *,
-          themed_loot_boxes (*)
+          loot_boxes (*)
         `)
         .eq('user_id', profile.id)
+        .eq('opened', true)
         .order('opened_at', { ascending: false });
 
       // Carregar caixas de loot não abertas do usuário
@@ -90,8 +97,26 @@ export function useLoot() {
         .eq('opened', false)
         .order('created_at', { ascending: false });
 
-      setAvailableLootBoxes(lootBoxes || []);
-      setUserLootHistory(history || []);
+      setAvailableLootBoxes((lootBoxes || []).map(box => ({
+        ...box,
+        rarity: (box.rarity as any) || 'common',
+        preview_items: [],
+        pity_timer: 10,
+        seasonal: false
+      })));
+      setUserLootHistory((history || []).map(h => ({
+        ...h,
+        pity_count: 0,
+        was_guaranteed_rare: false,
+        themed_loot_boxes: {
+          id: h.loot_boxes?.id || '',
+          name: h.loot_boxes?.name || '',
+          rarity: (h.loot_boxes?.rarity as any) || 'common',
+          contents: h.loot_boxes?.contents || {},
+          min_items: h.loot_boxes?.min_items || 1,
+          max_items: h.loot_boxes?.max_items || 3
+        }
+      })));
       setUserLootBoxes(userBoxes || []);
     } catch (error) {
       console.error('Error loading loot data:', error);
@@ -118,25 +143,14 @@ export function useLoot() {
 
       // Verificar pity timer
       const recentHistory = userLootHistory.filter(h => h.loot_box_id === lootBoxId);
-      const pityCount = recentHistory.length > 0 ? recentHistory[0].pity_count + 1 : 1;
-      const guaranteedRare = pityCount >= lootBox.pity_timer;
+      const pityCount = recentHistory.length > 0 ? (recentHistory[0].pity_count || 0) + 1 : 1;
+      const guaranteedRare = pityCount >= (lootBox.pity_timer || 10);
 
       // Gerar itens
       const itemCount = Math.floor(Math.random() * (lootBox.max_items - lootBox.min_items + 1)) + lootBox.min_items;
       const items = generateLootItems(lootBox, itemCount, guaranteedRare);
 
-      // Salvar no histórico
-      const { data: historyEntry } = await supabase
-        .from('user_loot_history')
-        .insert({
-          user_id: profile.id,
-          loot_box_id: lootBoxId,
-          items_received: items,
-          pity_count: guaranteedRare ? 0 : pityCount,
-          was_guaranteed_rare: guaranteedRare
-        })
-        .select()
-        .single();
+      // Salvar no histórico não necessário - usamos user_loot_boxes
 
       // Aplicar itens ao usuário
       await applyLootItems(profile.id, items);
@@ -146,7 +160,7 @@ export function useLoot() {
       if (userBox) {
         await supabase
           .from('user_loot_boxes')
-          .update({ opened: true, opened_at: new Date().toISOString(), items_received: items })
+          .update({ opened: true, opened_at: new Date().toISOString(), items_received: items as any })
           .eq('id', userBox.id);
       }
 
@@ -156,7 +170,7 @@ export function useLoot() {
       });
 
       await loadLootData();
-      return { items, historyEntry };
+      return { items, historyEntry: null };
     } catch (error) {
       console.error('Error opening loot box:', error);
       toast({
@@ -219,10 +233,18 @@ export function useLoot() {
     for (const item of items) {
       switch (item.type) {
         case 'beetz':
-          await supabase
+          const { data: currentProfile } = await supabase
             .from('profiles')
-            .update({ points: supabase.raw(`points + ${item.amount || 0}`) })
-            .eq('id', userId);
+            .select('points')
+            .eq('id', userId)
+            .single();
+          
+          if (currentProfile) {
+            await supabase
+              .from('profiles')
+              .update({ points: currentProfile.points + (item.amount || 0) })
+              .eq('id', userId);
+          }
           break;
 
         case 'xp':

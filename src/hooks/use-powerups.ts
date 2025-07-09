@@ -6,13 +6,21 @@ export interface AdvancedPowerup {
   id: string;
   name: string;
   description: string;
-  category: 'offensive' | 'defensive' | 'utility' | 'legendary';
+  category: 'xp_boost' | 'score_multiplier' | 'time_extension' | 'hint_reveal' | 'streak_protection';
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
-  effect_data: any;
+  effect_data?: any;
   crafting_recipe?: any;
-  unlock_requirements: any;
-  is_tradeable: boolean;
+  unlock_requirements?: any;
+  is_tradeable?: boolean;
   icon_url?: string;
+  image_url?: string;
+  effects?: any;
+  is_active?: boolean;
+  max_uses_per_day?: number;
+  cooldown_minutes?: number;
+  duration_minutes?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface UserPowerup {
@@ -20,7 +28,10 @@ export interface UserPowerup {
   user_id: string;
   powerup_id: string;
   quantity: number;
-  obtained_at: string;
+  obtained_at?: string;
+  acquired_at?: string;
+  last_used_at?: string;
+  uses_today?: number;
   advanced_powerups: AdvancedPowerup;
 }
 
@@ -71,10 +82,17 @@ export function usePowerups() {
           advanced_powerups (*)
         `)
         .eq('user_id', profile.id)
-        .order('obtained_at', { ascending: false });
+        .order('acquired_at', { ascending: false });
 
-      setAvailablePowerups(powerups || []);
-      setUserPowerups(userPowerupsData || []);
+      setAvailablePowerups((powerups || []).map(p => ({
+        ...p,
+        effect_data: p.effects || {},
+        is_tradeable: false
+      })));
+      setUserPowerups((userPowerupsData || []).map(up => ({
+        ...up,
+        obtained_at: up.acquired_at || new Date().toISOString()
+      })));
     } catch (error) {
       console.error('Error loading powerups:', error);
     } finally {
@@ -115,10 +133,14 @@ export function usePowerups() {
       if (error) throw error;
 
       // Ativar efeito
+      const effectData = userPowerup.advanced_powerups.effects || {};
       const effect: PowerupEffect = {
-        ...userPowerup.advanced_powerups.effect_data,
+        type: (effectData as any).type || 'xp_boost',
+        value: (effectData as any).value || 1.5,
+        duration: (effectData as any).duration || 30,
+        trigger: (effectData as any).trigger || 'manual',
         active: true,
-        remaining: userPowerup.advanced_powerups.effect_data.duration
+        remaining: (effectData as any).duration || 30
       };
 
       setActivePowerups(prev => [...prev, effect]);
