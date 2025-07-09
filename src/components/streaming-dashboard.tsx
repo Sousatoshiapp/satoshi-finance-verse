@@ -8,6 +8,7 @@ import { useRenderPerformance } from '@/hooks/use-performance-monitor';
 // Componentes lazy para streaming
 const DashboardSummaryOptimized = memo(() => {
   const [Component, setComponent] = useState<any>(null);
+  const { data: dashboardData } = useDashboardData();
   
   useEffect(() => {
     import('@/components/dashboard-summary-optimized').then(module => {
@@ -19,7 +20,24 @@ const DashboardSummaryOptimized = memo(() => {
     return <div className="h-24 bg-muted/20 animate-pulse rounded-lg" />;
   }
   
-  return <Component />;
+  // Fornecer dados seguros para o componente
+  const userStats = {
+    level: dashboardData?.profile?.level || 1,
+    currentXP: dashboardData?.profile?.xp || 0,
+    nextLevelXP: dashboardData?.nextLevelXP || 100,
+    streak: dashboardData?.profile?.streak || 0,
+    completedLessons: 0,
+    points: dashboardData?.profile?.points || 0
+  };
+  
+  const subscription = {
+    tier: dashboardData?.profile?.subscription_tier || 'free',
+    xpMultiplier: dashboardData?.profile?.subscription_tier === 'pro' ? 2 : 
+                  dashboardData?.profile?.subscription_tier === 'elite' ? 3 : 1,
+    monthlyBeetz: 0
+  };
+  
+  return <Component userStats={userStats} subscription={subscription} />;
 });
 
 const QuickActionsOptimized = memo(() => {
