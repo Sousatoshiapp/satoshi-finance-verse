@@ -185,6 +185,47 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_recommendations: {
+        Row: {
+          applied: boolean | null
+          confidence_score: number | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          recommendation_data: Json
+          recommendation_type: string
+          user_id: string
+        }
+        Insert: {
+          applied?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          recommendation_data: Json
+          recommendation_type: string
+          user_id: string
+        }
+        Update: {
+          applied?: boolean | null
+          confidence_score?: number | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          recommendation_data?: Json
+          recommendation_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_recommendations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automated_tournaments: {
         Row: {
           created_at: string
@@ -1592,6 +1633,65 @@ export type Database = {
         }
         Relationships: []
       }
+      learning_analytics: {
+        Row: {
+          analytics_date: string | null
+          attention_span_minutes: number | null
+          concepts_mastered: number | null
+          created_at: string | null
+          difficulty_preference: string | null
+          id: string
+          learning_style_data: Json | null
+          learning_velocity: number | null
+          optimal_time_of_day: string | null
+          preferred_session_length: number | null
+          questions_attempted: number | null
+          questions_correct: number | null
+          total_study_time_minutes: number | null
+          user_id: string
+        }
+        Insert: {
+          analytics_date?: string | null
+          attention_span_minutes?: number | null
+          concepts_mastered?: number | null
+          created_at?: string | null
+          difficulty_preference?: string | null
+          id?: string
+          learning_style_data?: Json | null
+          learning_velocity?: number | null
+          optimal_time_of_day?: string | null
+          preferred_session_length?: number | null
+          questions_attempted?: number | null
+          questions_correct?: number | null
+          total_study_time_minutes?: number | null
+          user_id: string
+        }
+        Update: {
+          analytics_date?: string | null
+          attention_span_minutes?: number | null
+          concepts_mastered?: number | null
+          created_at?: string | null
+          difficulty_preference?: string | null
+          id?: string
+          learning_style_data?: Json | null
+          learning_velocity?: number | null
+          optimal_time_of_day?: string | null
+          preferred_session_length?: number | null
+          questions_attempted?: number | null
+          questions_correct?: number | null
+          total_study_time_minutes?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_analytics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       learning_modules: {
         Row: {
           banner_image_url: string | null
@@ -1642,6 +1742,57 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      learning_streaks: {
+        Row: {
+          created_at: string | null
+          current_streak: number | null
+          id: string
+          last_activity: string | null
+          longest_streak: number | null
+          module_id: string | null
+          streak_type: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_streak?: number | null
+          id?: string
+          last_activity?: string | null
+          longest_streak?: number | null
+          module_id?: string | null
+          streak_type?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_streak?: number | null
+          id?: string
+          last_activity?: string | null
+          longest_streak?: number | null
+          module_id?: string | null
+          streak_type?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_streaks_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_streaks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       level_tiers: {
         Row: {
@@ -3752,39 +3903,48 @@ export type Database = {
       }
       user_module_progress: {
         Row: {
+          adaptive_next_lesson: number | null
           completed_at: string | null
           current_lesson: number | null
+          difficulty_preference: string | null
           id: string
           is_completed: boolean | null
           last_accessed: string | null
           mastery_score: number | null
           module_id: string
+          personalized_path: Json | null
           started_at: string | null
           time_spent_minutes: number | null
           total_lessons: number | null
           user_id: string
         }
         Insert: {
+          adaptive_next_lesson?: number | null
           completed_at?: string | null
           current_lesson?: number | null
+          difficulty_preference?: string | null
           id?: string
           is_completed?: boolean | null
           last_accessed?: string | null
           mastery_score?: number | null
           module_id: string
+          personalized_path?: Json | null
           started_at?: string | null
           time_spent_minutes?: number | null
           total_lessons?: number | null
           user_id: string
         }
         Update: {
+          adaptive_next_lesson?: number | null
           completed_at?: string | null
           current_lesson?: number | null
+          difficulty_preference?: string | null
           id?: string
           is_completed?: boolean | null
           last_accessed?: string | null
           mastery_score?: number | null
           module_id?: string
+          personalized_path?: Json | null
           started_at?: string | null
           time_spent_minutes?: number | null
           total_lessons?: number | null
@@ -4550,6 +4710,10 @@ export type Database = {
           match_found: boolean
         }[]
       }
+      generate_ai_recommendations: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       generate_bot_profile: {
         Args: { bot_count?: number }
         Returns: {
@@ -4656,6 +4820,19 @@ export type Database = {
       update_bot_nicknames: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      update_learning_analytics: {
+        Args: {
+          p_user_id: string
+          p_study_time: number
+          p_questions_attempted: number
+          p_questions_correct: number
+        }
+        Returns: Json
+      }
+      update_learning_streak: {
+        Args: { p_user_id: string; p_module_id?: string }
+        Returns: Json
       }
       update_mission_progress: {
         Args: {
