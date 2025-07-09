@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Users, Trophy, ShoppingBag, BarChart3, Bot } from "lucide-react";
+import { Calendar, Users, Trophy, ShoppingBag, BarChart3 } from "lucide-react";
 
 export function QuickActions() {
   const navigate = useNavigate();
@@ -40,13 +40,6 @@ export function QuickActions() {
       description: "Seu progresso",
       route: "/advanced-analytics",
       color: "bg-gradient-to-r from-indigo-500 to-blue-500"
-    },
-    {
-      icon: Bot,
-      label: "IA Assistant",
-      description: "Ajuda inteligente",
-      route: "/ai-assistant",
-      color: "bg-gradient-to-r from-cyan-500 to-blue-500"
     }
   ];
 

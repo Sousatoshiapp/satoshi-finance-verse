@@ -231,10 +231,6 @@ export const LazyComponents = {
     { priority: 'medium' }
   ),
   
-  AITradingAssistant: createLazyComponent(
-    () => import('@/components/ai-trading-assistant').then(m => ({ default: m.AITradingAssistant })),
-    { priority: 'low' }
-  ),
   
   SocialFeed: createLazyComponent(
     () => import('@/components/social/social-feed').then(m => ({ default: m.SocialFeed })),

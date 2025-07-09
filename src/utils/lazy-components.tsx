@@ -7,7 +7,7 @@ export const LazyEnhancedQuizCard = lazy(() => import('@/components/quiz/enhance
 export const LazyTradingInterface = lazy(() => import('@/components/trading/trading-interface').then(module => ({ default: module.TradingInterface })));
 export const LazyPortfolioCharts = lazy(() => import('@/components/portfolio/portfolio-charts').then(module => ({ default: module.PortfolioCharts })));
 export const LazyAdvancedAnalytics = lazy(() => import('@/components/advanced-analytics-dashboard').then(module => ({ default: module.AdvancedAnalyticsDashboard })));
-export const LazyAITradingAssistant = lazy(() => import('@/components/ai-trading-assistant').then(module => ({ default: module.AITradingAssistant })));
+
 export const LazySocialFeed = lazy(() => import('@/components/social/social-feed').then(module => ({ default: module.SocialFeed })));
 export const LazyLeaderboards = lazy(() => import('@/components/leaderboards').then(module => ({ default: module.Leaderboards })));
 
