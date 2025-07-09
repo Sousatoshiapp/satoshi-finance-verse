@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/avatar-display-optimized";
 import { ArrowLeft, Sword } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
@@ -52,7 +52,7 @@ export function UsersList({ onBack }: UsersListProps) {
         .from('profiles')
         .select(`
           *,
-          avatar:avatars(id, name, image_url)
+          avatars (*)
         `)
         .neq('user_id', user.id)
         .order('xp', { ascending: false });
@@ -204,12 +204,19 @@ export function UsersList({ onBack }: UsersListProps) {
                 <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={user.avatar?.image_url} alt={user.nickname} />
-                          <AvatarFallback className="text-lg font-bold">
-                            {user.nickname.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        {user.avatars ? (
+                          <AvatarDisplay 
+                            avatar={user.avatars} 
+                            size="md" 
+                            showBadge={false}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
+                            <span className="text-lg font-bold">
+                              {user.nickname.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
                         <div>
                           <h3 className="font-semibold text-foreground">
                             {user.nickname}

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Timer, Trophy, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { BotAI } from "./bot-ai";
 
 interface ActiveDuelProps {
   duel: any;
@@ -27,6 +28,9 @@ export function ActiveDuel({ duel, onDuelEnd }: ActiveDuelProps) {
     loadProfiles();
     checkTurn();
     
+    // Iniciar IA do bot
+    const botChannel = BotAI.startBotAI(duel.id);
+    
     // Setup real-time subscription for duel updates
     const channel = supabase
       .channel('duel-updates')
@@ -47,6 +51,9 @@ export function ActiveDuel({ duel, onDuelEnd }: ActiveDuelProps) {
 
     return () => {
       supabase.removeChannel(channel);
+      if (botChannel) {
+        supabase.removeChannel(botChannel);
+      }
     };
   }, [duel.id]);
 

@@ -16,10 +16,15 @@ interface UserProfile {
   level: number;
   xp: number;
   profile_image_url?: string;
-  avatar?: {
+  avatars?: {
     id: string;
     name: string;
+    description: string;
     image_url: string;
+    avatar_class: string;
+    district_theme: string;
+    rarity: string;
+    evolution_level?: number;
   };
 }
 
@@ -73,11 +78,7 @@ export default function FindOpponent() {
           level,
           xp,
           profile_image_url,
-          avatars (
-            id,
-            name,
-            image_url
-          )
+          avatars (*)
         `)
         .neq('id', currentProfile?.id)
         .limit(10);
@@ -115,11 +116,7 @@ export default function FindOpponent() {
           level,
           xp,
           profile_image_url,
-          avatars (
-            id,
-            name,
-            image_url
-          )
+          avatars (*)
         `)
         .neq('id', currentProfile?.id)
         .ilike('nickname', `%${searchQuery}%`)
@@ -185,51 +182,115 @@ export default function FindOpponent() {
 
       if (!profile) return;
 
-      // Usar a função do banco para encontrar oponente automático
-      const { data: matchResult } = await supabase
-        .rpc('find_automatic_opponent', {
-          p_user_id: profile.id,
-          p_topic: 'financas'
+      // Buscar um bot aleatório
+      const { data: bots } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('is_bot', true)
+        .limit(10);
+
+      if (!bots || bots.length === 0) {
+        toast({
+          title: "Nenhum bot disponível",
+          description: "Não há bots disponíveis no momento.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const randomBot = bots[Math.floor(Math.random() * bots.length)];
+
+      // Gerar perguntas para o duelo
+      const questions = [
+        {
+          id: 1,
+          question: "Qual é a melhor estratégia para investir a longo prazo?",
+          options: [
+            { id: "a", text: "Ativos diversificados", isCorrect: true },
+            { id: "b", text: "Day Trading", isCorrect: false },
+            { id: "c", text: "Colocar tudo em criptomoedas", isCorrect: false },
+            { id: "d", text: "Deixar todo dinheiro no colchão", isCorrect: false }
+          ]
+        },
+        {
+          id: 2,
+          question: "O que é reserva de emergência?",
+          options: [
+            { id: "a", text: "Dinheiro para compras supérfluas", isCorrect: false },
+            { id: "b", text: "Investimento de alto risco", isCorrect: false },
+            { id: "c", text: "Recurso para situações inesperadas", isCorrect: true },
+            { id: "d", text: "Dinheiro para férias", isCorrect: false }
+          ]
+        },
+        {
+          id: 3,
+          question: "Qual a principal vantagem dos juros compostos?",
+          options: [
+            { id: "a", text: "Rendimento sobre rendimento", isCorrect: true },
+            { id: "b", text: "Garantia de lucro", isCorrect: false },
+            { id: "c", text: "Isento de riscos", isCorrect: false },
+            { id: "d", text: "Liquidez imediata", isCorrect: false }
+          ]
+        },
+        {
+          id: 4,
+          question: "O que significa 'Bull Market'?",
+          options: [
+            { id: "a", text: "Mercado em alta", isCorrect: true },
+            { id: "b", text: "Mercado em baixa", isCorrect: false },
+            { id: "c", text: "Mercado lateral", isCorrect: false },
+            { id: "d", text: "Mercado fechado", isCorrect: false }
+          ]
+        },
+        {
+          id: 5,
+          question: "O que é 'DCA' (Dollar Cost Averaging)?",
+          options: [
+            { id: "a", text: "Estratégia de investimento regular", isCorrect: true },
+            { id: "b", text: "Tipo de criptomoeda", isCorrect: false },
+            { id: "c", text: "Taxa da corretora", isCorrect: false },
+            { id: "d", text: "Método de análise gráfica", isCorrect: false }
+          ]
+        }
+      ];
+
+      // Primeiro criar um convite auto-aceito
+      const { data: inviteData, error: inviteError } = await supabase
+        .from('duel_invites')
+        .insert({
+          challenger_id: profile.id,
+          challenged_id: randomBot.id,
+          quiz_topic: 'financas',
+          status: 'accepted'
+        })
+        .select()
+        .single();
+
+      if (inviteError) throw inviteError;
+
+      // Criar duelo com bot
+      const { error: duelError } = await supabase
+        .from('duels')
+        .insert({
+          invite_id: inviteData.id,
+          player1_id: profile.id,
+          player2_id: randomBot.id,
+          quiz_topic: 'financas',
+          questions: questions,
+          status: 'active',
+          current_turn: profile.id,
+          turn_started_at: new Date().toISOString(),
+          current_question: 1
         });
 
-      if (matchResult && matchResult.length > 0) {
-        const result = matchResult[0];
-        
-        if (result.match_found) {
-          if (result.opponent_type === 'human') {
-            // Criar duelo com usuário real
-            toast({
-              title: "Oponente encontrado!",
-              description: "Iniciando duelo com usuário real...",
-            });
-          } else if (result.opponent_type === 'bot') {
-            // Criar duelo com bot
-            toast({
-              title: "Bot encontrado!",
-              description: "Iniciando duelo com bot...",
-            });
-          }
-          
-          // Criar duelo automaticamente
-          const { error: duelError } = await supabase
-            .from('duel_invites')
-            .insert({
-              challenger_id: profile.id,
-              challenged_id: result.opponent_id,
-              quiz_topic: 'financas',
-              status: 'accepted' // Auto-aceitar para bots e matching automático
-            });
+      if (duelError) throw duelError;
 
-          if (!duelError) {
-            navigate('/duels');
-          }
-        } else {
-          toast({
-            title: "Aguardando oponente...",
-            description: "Você foi adicionado à fila. Aguarde um oponente.",
-          });
-        }
-      }
+      toast({
+        title: "Bot encontrado!",
+        description: `Iniciando duelo com ${randomBot.nickname}!`,
+      });
+
+      navigate('/duels');
     } catch (error) {
       console.error('Error finding automatic opponent:', error);
       toast({
@@ -267,7 +328,7 @@ export default function FindOpponent() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('/duel-quiz')}
+            onClick={() => navigate('/duels')}
             className="text-[#adff2f] hover:bg-[#adff2f]/10 hover:text-[#adff2f] border border-[#adff2f]/30 hover:border-[#adff2f]/60 transition-all duration-300"
           >
             <ArrowLeft className="h-4 w-4" />
