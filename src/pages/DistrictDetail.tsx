@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle, ShoppingBag, Lock, Sparkles } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle, ShoppingBag, Lock, Sparkles, Search, Filter, SortAsc, SortDesc } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictQuests } from "@/components/district-quests";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
@@ -130,6 +130,13 @@ export default function DistrictDetail() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [isLoadingMembers, setIsLoadingMembers] = useState(false);
   const [userTeamMembership, setUserTeamMembership] = useState<string | null>(null);
+  
+  // Filters state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activityFilter, setActivityFilter] = useState('all');
+  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [sortOrder, setSortOrder] = useState('newest');
+  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -763,8 +770,145 @@ export default function DistrictDetail() {
             )}
           </CardContent>
         </Card>
+        
+        {/* Responsive Filters Section */}
+        <Card className="bg-slate-800/90 backdrop-blur-sm border border-slate-700 mb-6">
+          <CardHeader className="p-4">
+            <CardTitle className="text-white text-lg flex items-center">
+              <Filter className="w-5 h-5 mr-2" style={{ color: district.color_primary }} />
+              Filtros do Distrito
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 space-y-4">
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Buscar atividades, times, residentes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-gray-400"
+              />
+            </div>
+            
+            {/* Filter Controls - Responsive Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {/* Activity Type Filter */}
+              <Select value={activityFilter} onValueChange={setActivityFilter}>
+                <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                  <SelectValue placeholder="Tipo de Atividade" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="all">Todas Atividades</SelectItem>
+                  <SelectItem value="quizzes">Quizzes</SelectItem>
+                  <SelectItem value="battles">Batalhas</SelectItem>
+                  <SelectItem value="teams">Times</SelectItem>
+                  <SelectItem value="residents">Moradores</SelectItem>
+                  <SelectItem value="ranking">Ranking</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {/* Difficulty Filter */}
+              <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+                <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                  <SelectValue placeholder="Dificuldade" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="all">Todas Dificuldades</SelectItem>
+                  <SelectItem value="easy">Fácil</SelectItem>
+                  <SelectItem value="medium">Médio</SelectItem>
+                  <SelectItem value="hard">Difícil</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {/* Sort Order */}
+              <Select value={sortOrder} onValueChange={setSortOrder}>
+                <SelectTrigger className="bg-slate-700/50 border-slate-600 text-white">
+                  <SelectValue placeholder="Ordenar Por" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-700">
+                  <SelectItem value="newest">
+                    <div className="flex items-center">
+                      <SortDesc className="w-4 h-4 mr-2" />
+                      Mais Recentes
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="oldest">
+                    <div className="flex items-center">
+                      <SortAsc className="w-4 h-4 mr-2" />
+                      Mais Antigos
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="popular">
+                    <div className="flex items-center">
+                      <Star className="w-4 h-4 mr-2" />
+                      Mais Populares
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="power">
+                    <div className="flex items-center">
+                      <Zap className="w-4 h-4 mr-2" />
+                      Maior Poder
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Quick Filter Badges */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Badge 
+                variant={activityFilter === 'all' ? 'default' : 'secondary'}
+                className="cursor-pointer text-xs"
+                onClick={() => setActivityFilter('all')}
+                style={{ 
+                  backgroundColor: activityFilter === 'all' ? district.color_primary : 'transparent',
+                  borderColor: district.color_primary 
+                }}
+              >
+                Todos
+              </Badge>
+              <Badge 
+                variant={activityFilter === 'quizzes' ? 'default' : 'secondary'}
+                className="cursor-pointer text-xs"
+                onClick={() => setActivityFilter('quizzes')}
+                style={{ 
+                  backgroundColor: activityFilter === 'quizzes' ? district.color_primary : 'transparent',
+                  borderColor: district.color_primary 
+                }}
+              >
+                <BookOpen className="w-3 h-3 mr-1" />
+                Quizzes
+              </Badge>
+              <Badge 
+                variant={activityFilter === 'battles' ? 'default' : 'secondary'}
+                className="cursor-pointer text-xs"
+                onClick={() => setActivityFilter('battles')}
+                style={{ 
+                  backgroundColor: activityFilter === 'battles' ? district.color_primary : 'transparent',
+                  borderColor: district.color_primary 
+                }}
+              >
+                <Swords className="w-3 h-3 mr-1" />
+                Batalhas
+              </Badge>
+              <Badge 
+                variant={activityFilter === 'teams' ? 'default' : 'secondary'}
+                className="cursor-pointer text-xs"
+                onClick={() => setActivityFilter('teams')}
+                style={{ 
+                  backgroundColor: activityFilter === 'teams' ? district.color_primary : 'transparent',
+                  borderColor: district.color_primary 
+                }}
+              >
+                <Home className="w-3 h-3 mr-1" />
+                Times
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-
+      
       {/* Content Tabs */}
       <div className="container mx-auto px-4 py-8 pb-32">
         <Tabs defaultValue="activities" className="w-full">
