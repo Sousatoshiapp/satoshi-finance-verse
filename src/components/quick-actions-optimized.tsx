@@ -43,7 +43,7 @@ const QuickActionsOptimized = memo(function QuickActionsOptimized() {
       title: 'Duelos',
       description: 'Desafie outros jogadores',
       icon: Gamepad2,
-      route: '/duels',
+      route: '/find-opponent',
       color: 'text-red-600',
       bgGradient: 'from-red-500/10 to-red-600/5'
     },

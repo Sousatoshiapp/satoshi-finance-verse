@@ -24,7 +24,7 @@ export default function GameMode() {
           navigate('/solo-quiz');
           break;
         case 'duelo':
-          navigate('/duels');
+          navigate('/find-opponent');
           break;
         case 'torneio':
           navigate('/tournaments');

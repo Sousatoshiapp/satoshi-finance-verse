@@ -55,6 +55,14 @@ export default function Duels() {
 
       if (!profile) return;
 
+      // Clear any finished duels first
+      await supabase
+        .from('duels')
+        .update({ status: 'finished' })
+        .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
+        .eq('status', 'active')
+        .lt('updated_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // 5 minutes ago
+
       const { data: duel } = await supabase
         .from('duels')
         .select('*')
