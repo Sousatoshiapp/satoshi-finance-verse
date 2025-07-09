@@ -7,9 +7,22 @@ export default function Welcome() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="px-4 pt-8 pb-4">
-        <div className="container mx-auto max-w-md">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Cyberpunk Background */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ 
+          backgroundImage: `url(/lovable-uploads/7e6ff88b-c066-483e-9f80-3a3f362f67ac.png)`,
+          filter: 'brightness(0.4) contrast(1.1)'
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 min-h-screen pb-20">
+        <div className="px-4 pt-8 pb-4">
+          <div className="container mx-auto max-w-md">
           {/* App Logo/Title */}
           <div className="text-center mb-12">
             <div className="flex justify-center mb-4">
@@ -57,6 +70,7 @@ export default function Welcome() {
               Criar Conta
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
+          </div>
           </div>
         </div>
       </div>
