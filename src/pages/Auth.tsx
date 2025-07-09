@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { EmailVerificationNotice } from "@/components/auth/email-verification-notice";
-import authBackground from "@/assets/auth-background.jpg";
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -263,33 +262,33 @@ export default function Auth() {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ 
-          backgroundImage: `url(${authBackground})`,
-          filter: 'brightness(0.3) contrast(1.2)'
+          backgroundImage: `url(/lovable-uploads/7e6ff88b-c066-483e-9f80-3a3f362f67ac.png)`,
+          filter: 'brightness(0.4) contrast(1.1)'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/80 via-purple-900/60 to-slate-900/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-md">
-          {/* Back Button */}
+          {/* Back Button - Mobile responsive */}
           <Button
             variant="ghost"
             onClick={() => navigate('/welcome')}
-            className="mb-6 text-gray-300 hover:text-white"
+            className="mb-4 sm:mb-6 text-gray-300 hover:text-white text-sm sm:text-base"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar
           </Button>
 
-          {/* Auth Card */}
-          <Card className="bg-card/90 backdrop-blur-sm border-2 border-[#adff2f]/30 shadow-2xl">
-            <CardHeader className="text-center">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#adff2f] to-[#32cd32] bg-clip-text text-transparent">
+          {/* Auth Card - Mobile responsive */}
+          <Card className="bg-card/90 backdrop-blur-sm border-2 border-[#adff2f]/30 shadow-2xl mx-auto">
+            <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
+              <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#adff2f] to-[#32cd32] bg-clip-text text-transparent">
                 {isLogin ? 'Entre no Jogo' : 'Cadastro Cidadão'}
               </CardTitle>
-              <CardDescription className="text-gray-300">
+              <CardDescription className="text-gray-300 text-sm sm:text-base px-2 sm:px-0">
                 {isLogin 
                   ? 'Entre na Satoshi City e continue sua jornada'
                   : 'Torne-se um cidadão da cidade do futuro financeiro'
@@ -297,7 +296,7 @@ export default function Auth() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent>
+            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
               {showForgotPassword ? (
                 // Forgot Password Form
                 <form onSubmit={handleForgotPassword} className="space-y-4">
