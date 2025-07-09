@@ -1,5 +1,5 @@
 import React, { Suspense, useRef, useState, useCallback, useEffect, useMemo } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
 import { OrbitControls, Text, Environment } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,9 @@ import { ArrowLeft, Eye, Crown, Map } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
+
+// Extend three.js to include Line component
+extend({ Line_: THREE.Line });
 
 interface District {
   id: string;
@@ -37,7 +40,221 @@ interface UserDistrict {
   last_activity_date: string;
 }
 
-// Posições 3D simplificadas dos distritos
+// Avatar do jogador 3D
+function PlayerAvatar({ position, rotation }: { position: [number, number, number]; rotation: number }) {
+  const avatarRef = useRef<THREE.Group>(null);
+  
+  useFrame((state) => {
+    if (avatarRef.current) {
+      // Animação suave de respiração
+      avatarRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 3) * 0.1;
+      avatarRef.current.rotation.y = rotation;
+    }
+  });
+
+  return (
+    <group ref={avatarRef} position={position}>
+      {/* Corpo do avatar */}
+      <mesh position={[0, 1, 0]} castShadow>
+        <cylinderGeometry args={[0.3, 0.4, 1.5, 8]} />
+        <meshStandardMaterial color="#4a90e2" metalness={0.3} roughness={0.7} />
+      </mesh>
+      
+      {/* Cabeça */}
+      <mesh position={[0, 2, 0]} castShadow>
+        <sphereGeometry args={[0.4, 16, 16]} />
+        <meshStandardMaterial color="#ffdbac" />
+      </mesh>
+      
+      {/* Capacete futurista */}
+      <mesh position={[0, 2.2, 0]} castShadow>
+        <sphereGeometry args={[0.45, 16, 16]} />
+        <meshStandardMaterial 
+          color="#00ffff" 
+          transparent 
+          opacity={0.3}
+          emissive="#00ffff"
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+      
+      {/* Braços */}
+      <mesh position={[-0.6, 1.2, 0]} rotation={[0, 0, 0.3]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
+        <meshStandardMaterial color="#4a90e2" />
+      </mesh>
+      <mesh position={[0.6, 1.2, 0]} rotation={[0, 0, -0.3]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
+        <meshStandardMaterial color="#4a90e2" />
+      </mesh>
+      
+      {/* Pernas */}
+      <mesh position={[-0.2, 0, 0]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
+        <meshStandardMaterial color="#2c5282" />
+      </mesh>
+      <mesh position={[0.2, 0, 0]} castShadow>
+        <cylinderGeometry args={[0.15, 0.15, 1, 8]} />
+        <meshStandardMaterial color="#2c5282" />
+      </mesh>
+      
+      {/* Efeito de energia ao redor */}
+      <pointLight position={[0, 1.5, 0]} intensity={0.5} color="#00ffff" distance={5} />
+    </group>
+  );
+}
+
+// Sistema de caminhos entre distritos simplificado
+function DistrictPaths({ districts }: { districts: District[] }) {
+  return (
+    <group>
+      {districts.map((district, index) => {
+        const currentPos = district3DPositions[district.theme as keyof typeof district3DPositions];
+        if (!currentPos) return null;
+        
+        // Conectar apenas com distritos próximos usando mesh tubes
+        return districts.slice(index + 1).map((otherDistrict, otherIndex) => {
+          const otherPos = district3DPositions[otherDistrict.theme as keyof typeof district3DPositions];
+          if (!otherPos) return null;
+          
+          const distance = Math.sqrt(
+            Math.pow(currentPos.x - otherPos.x, 2) + 
+            Math.pow(currentPos.z - otherPos.z, 2)
+          );
+          
+          // Só conectar distritos próximos
+          if (distance > 30) return null;
+          
+          // Calcular posição e rotação do tubo
+          const midX = (currentPos.x + otherPos.x) / 2;
+          const midZ = (currentPos.z + otherPos.z) / 2;
+          const angle = Math.atan2(otherPos.z - currentPos.z, otherPos.x - currentPos.x);
+          
+          return (
+            <mesh 
+              key={`${district.id}-${otherDistrict.id}`}
+              position={[midX, -1.8, midZ]}
+              rotation={[0, angle, 0]}
+            >
+              <cylinderGeometry args={[0.1, 0.1, distance, 8]} />
+              <meshStandardMaterial 
+                color="#00ffff" 
+                transparent 
+                opacity={0.6}
+                emissive="#00ffff"
+                emissiveIntensity={0.2}
+              />
+            </mesh>
+          );
+        });
+      })}
+    </group>
+  );
+}
+
+// Hook para controles de movimento
+function useMovementControls() {
+  const [keys, setKeys] = useState({
+    w: false,
+    a: false,
+    s: false,
+    d: false,
+    ArrowUp: false,
+    ArrowLeft: false,
+    ArrowDown: false,
+    ArrowRight: false
+  });
+  
+  const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 0, 15]);
+  const [playerRotation, setPlayerRotation] = useState(0);
+  
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (key in keys || ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(event.key)) {
+        setKeys(prev => ({ ...prev, [event.key]: true }));
+        event.preventDefault();
+      }
+    };
+    
+    const handleKeyUp = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (key in keys || ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(event.key)) {
+        setKeys(prev => ({ ...prev, [event.key]: false }));
+        event.preventDefault();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const speed = 0.3;
+      let newX = playerPosition[0];
+      let newZ = playerPosition[2];
+      let newRotation = playerRotation;
+      
+      // Movimento frente/trás
+      if (keys.w || keys.ArrowUp) {
+        newX += Math.sin(playerRotation) * speed;
+        newZ += Math.cos(playerRotation) * speed;
+      }
+      if (keys.s || keys.ArrowDown) {
+        newX -= Math.sin(playerRotation) * speed;
+        newZ -= Math.cos(playerRotation) * speed;
+      }
+      
+      // Rotação esquerda/direita
+      if (keys.a || keys.ArrowLeft) {
+        newRotation -= 0.05;
+      }
+      if (keys.d || keys.ArrowRight) {
+        newRotation += 0.05;
+      }
+      
+      // Limitar movimento dentro da cidade
+      newX = Math.max(-40, Math.min(40, newX));
+      newZ = Math.max(-40, Math.min(40, newZ));
+      
+      setPlayerPosition([newX, 0, newZ]);
+      setPlayerRotation(newRotation);
+    }, 16); // ~60fps
+    
+    return () => clearInterval(interval);
+  }, [keys, playerPosition, playerRotation]);
+  
+  return { playerPosition, playerRotation };
+}
+
+// Componente de câmera que segue o jogador
+function FollowCamera({ playerPosition }: { playerPosition: [number, number, number] }) {
+  const { camera } = useThree();
+  
+  useFrame(() => {
+    // Câmera em terceira pessoa
+    const cameraOffset = { x: 0, y: 15, z: 10 };
+    camera.position.lerp(
+      new THREE.Vector3(
+        playerPosition[0] + cameraOffset.x,
+        playerPosition[1] + cameraOffset.y,
+        playerPosition[2] + cameraOffset.z
+      ),
+      0.1
+    );
+    
+    // Olhar para o jogador
+    camera.lookAt(playerPosition[0], playerPosition[1] + 2, playerPosition[2]);
+  });
+  
+  return null;
+}
 const district3DPositions = {
   renda_variavel: { x: -15, y: 0, z: -10 },
   educacao_financeira: { x: 15, y: 0, z: -10 },
@@ -571,14 +788,23 @@ function District3D({ district, userInfo, position, onClick }: {
   );
 }
 
-// Componente da câmera controlável
-function CameraControls() {
+// Componente de câmera controlável com modo livre
+function CameraControls({ followPlayer = false, playerPosition }: { 
+  followPlayer?: boolean; 
+  playerPosition?: [number, number, number] 
+}) {
   const { camera } = useThree();
   
   useEffect(() => {
-    camera.position.set(0, 20, 30);
-    camera.lookAt(0, 0, 0);
-  }, [camera]);
+    if (!followPlayer) {
+      camera.position.set(0, 20, 30);
+      camera.lookAt(0, 0, 0);
+    }
+  }, [camera, followPlayer]);
+
+  if (followPlayer && playerPosition) {
+    return <FollowCamera playerPosition={playerPosition} />;
+  }
 
   return <OrbitControls enablePan enableZoom enableRotate />;
 }
@@ -588,6 +814,8 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
   const [districts, setDistricts] = useState<District[]>([]);
   const [userDistricts, setUserDistricts] = useState<UserDistrict[]>([]);
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'overview' | 'exploration'>('overview');
+  const { playerPosition, playerRotation } = useMovementControls();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -658,7 +886,7 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative">
-      {/* Header fixo */}
+      {/* Header fixo com controles */}
       <div className="absolute top-0 left-0 right-0 z-20 p-4">
         <Card className="bg-slate-800/90 backdrop-blur-sm border-slate-700">
           <CardContent className="p-4">
@@ -677,6 +905,26 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
                   <Eye className="w-5 h-5 text-cyan-400" />
                   <span className="text-white font-medium">Satoshi City 3D</span>
                 </div>
+                
+                {/* Botões de modo */}
+                <div className="flex space-x-2">
+                  <Button
+                    variant={viewMode === 'overview' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('overview')}
+                    className="text-xs"
+                  >
+                    Visão Geral
+                  </Button>
+                  <Button
+                    variant={viewMode === 'exploration' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setViewMode('exploration')}
+                    className="text-xs"
+                  >
+                    Exploração
+                  </Button>
+                </div>
               </div>
               
               <div className="flex space-x-2">
@@ -684,7 +932,7 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
                   7 Distritos Ativos
                 </Badge>
                 <Badge variant="outline" className="border-purple-400 text-purple-400">
-                  Exploração 3D
+                  {viewMode === 'exploration' ? 'Modo Exploração' : 'Visão Panorâmica'}
                 </Badge>
               </div>
             </div>
@@ -702,8 +950,19 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
             {/* Iluminação ambiente melhorada */}
             <ambientLight intensity={0.2} color="#4a4a8a" />
             
-            {/* Controles de câmera */}
-            <CameraControls />
+            {/* Controles de câmera baseados no modo */}
+            <CameraControls 
+              followPlayer={viewMode === 'exploration'} 
+              playerPosition={playerPosition} 
+            />
+
+            {/* Avatar do jogador (apenas no modo exploração) */}
+            {viewMode === 'exploration' && (
+              <PlayerAvatar position={playerPosition} rotation={playerRotation} />
+            )}
+            
+            {/* Caminhos entre distritos */}
+            <DistrictPaths districts={districts} />
 
             {/* Terreno urbano da cidade */}
             <CityTerrain />
@@ -748,14 +1007,29 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
         <Card className="bg-slate-800/90 backdrop-blur-sm border-slate-700">
           <CardContent className="p-3">
             <div className="text-xs text-slate-300 space-y-1">
-              <div className="flex items-center space-x-2">
-                <Map className="w-3 h-3" />
-                <span>Arraste para rotacionar | Scroll para zoom</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Crown className="w-3 h-3 text-yellow-400" />
-                <span>Distrito com coroa = sua residência</span>
-              </div>
+              {viewMode === 'overview' ? (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <Map className="w-3 h-3" />
+                    <span>Arraste para rotacionar | Scroll para zoom</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Crown className="w-3 h-3 text-yellow-400" />
+                    <span>Distrito com coroa = sua residência</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center space-x-2">
+                    <Map className="w-3 h-3" />
+                    <span>WASD ou Setas para mover | Clique nos distritos</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Crown className="w-3 h-3 text-yellow-400" />
+                    <span>Avatar cyberpunk: W/S = frente/trás | A/D = girar</span>
+                  </div>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
