@@ -13,6 +13,7 @@ import { PlayerAvatar } from '@/components/3d/PlayerAvatar';
 import { District3D } from '@/components/3d/District3D';
 import { CityTerrain } from '@/components/3d/CityTerrain';
 import { CityEnvironment } from '@/components/3d/CityEnvironment';
+import { UrbanElements } from '@/components/3d/UrbanElements';
 import { Minimap } from '@/components/3d/Minimap';
 import { TeleportSystem } from '@/components/3d/TeleportSystem';
 
@@ -351,6 +352,9 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
 
             {/* Terreno urbano da cidade */}
             <CityTerrain />
+            
+            {/* Elementos urbanos realistas */}
+            <UrbanElements />
             
             {/* Ambiente da cidade */}
             <CityEnvironment />

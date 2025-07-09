@@ -1,54 +1,41 @@
-import React, { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import React from 'react';
 import { Environment } from '@react-three/drei';
-import * as THREE from 'three';
 import { AtmosphericParticles } from './AtmosphericParticles';
+import { RealisticSkybox } from './RealisticSkybox';
 
 export function CityEnvironment() {
-  const skyboxRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (skyboxRef.current) {
-      skyboxRef.current.rotation.y = state.clock.elapsedTime * 0.002;
-    }
-  });
-
   return (
     <>
       <Environment preset="night" />
       
-      {/* Skybox com gradiente cyberpunk */}
-      <mesh ref={skyboxRef} scale={[500, 500, 500]}>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial 
-          color="#0a0a1f"
-          side={THREE.BackSide}
-        />
-      </mesh>
+      {/* Skybox realista */}
+      <RealisticSkybox />
       
-      {/* Neblina volumétrica */}
-      <fog attach="fog" args={['#1a1a2e', 30, 200]} />
-      
-      {/* Iluminação ambiente melhorada */}
-      <ambientLight intensity={0.3} color="#4a4a8a" />
+      {/* Iluminação ambiente aprimorada */}
+      <ambientLight intensity={0.4} color="#2c2c4a" />
       
       {/* Luz principal da lua */}
       <directionalLight
-        position={[50, 100, 50]}
-        intensity={0.8}
-        color="#b8c5ff"
+        position={[300, 150, 200]}
+        intensity={1.2}
+        color="#e6e6fa"
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-near={0.5}
-        shadow-camera-far={500}
-        shadow-camera-left={-100}
-        shadow-camera-right={100}
-        shadow-camera-top={100}
-        shadow-camera-bottom={-100}
+        shadow-mapSize-width={4096}
+        shadow-mapSize-height={4096}
+        shadow-camera-near={1}
+        shadow-camera-far={1000}
+        shadow-camera-left={-200}
+        shadow-camera-right={200}
+        shadow-camera-top={200}
+        shadow-camera-bottom={-200}
       />
       
-      {/* Partículas atmosféricas */}
+      {/* Luz de preenchimento suave */}
+      <hemisphereLight
+        args={["#2c2c4a", "#1a1a2e", 0.3]}
+      />
+      
+      {/* Partículas atmosféricas melhoradas */}
       <AtmosphericParticles />
     </>
   );
