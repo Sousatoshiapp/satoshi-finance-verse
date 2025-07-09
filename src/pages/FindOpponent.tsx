@@ -50,11 +50,7 @@ export default function FindOpponent() {
 
   // Debounced search
   const debouncedSearch = useDebounce((query: string) => {
-    if (query.trim().length >= 2) {
-      searchUsers(query);
-    } else {
-      setSearchResults([]);
-    }
+    searchUsers(query);
   }, 300);
 
   useEffect(() => {
@@ -63,8 +59,12 @@ export default function FindOpponent() {
   }, []);
 
   useEffect(() => {
-    debouncedSearch(searchQuery);
-  }, [searchQuery, debouncedSearch]);
+    if (searchQuery.trim().length >= 2) {
+      debouncedSearch(searchQuery);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
 
   useEffect(() => {
     if (showWheel && !isMatchmaking) {
