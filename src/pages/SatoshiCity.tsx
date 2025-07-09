@@ -247,7 +247,7 @@ export default function SatoshiCity() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Dynamic Cyberpunk City Background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000"
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 z-0"
         style={{ 
           backgroundImage: `url(${currentCityImage})`,
           filter: 'brightness(0.6) contrast(1.3)'
@@ -257,7 +257,7 @@ export default function SatoshiCity() {
       </div>
 
       {/* Header */}
-      <div className="relative z-10 container mx-auto px-4 pt-4 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-2 text-center">
         <div className="flex justify-center mb-4">
           <img 
             src="/lovable-uploads/da61d87e-9d37-454b-bdeb-b54db4abfa9e.png" 
