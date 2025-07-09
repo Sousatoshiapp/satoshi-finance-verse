@@ -4,23 +4,28 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { LazyRoutes } from "@/utils/advanced-lazy-loading";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+// Direct imports for critical pages
+import Dashboard from "@/pages/Dashboard";
+import Profile from "@/pages/Profile";
+import UserProfile from "@/pages/UserProfile";
+import Social from "@/pages/Social";
+import Duels from "@/pages/Duels";
 import SatoshiCity from "@/pages/SatoshiCity";
 import DistrictDetail from "@/pages/DistrictDetail";
 import DistrictQuiz from "@/pages/DistrictQuiz";
 import GameMode from "@/pages/GameMode";
 import Store from "@/pages/Store";
-import Dashboard from "@/pages/Dashboard";
-import Profile from "@/pages/Profile";
-import Social from "@/pages/Social";
-import Duels from "@/pages/Duels";
-import UserProfile from "@/pages/UserProfile";
+
+// Lazy imports for less critical pages
+import { LazyRoutes } from "@/utils/advanced-lazy-loading";
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-background font-sans antialiased">
-        <Suspense fallback={<LoadingSpinner />}>
+    <ErrorBoundary>
+      <AuthProvider>
+        <div className="min-h-screen bg-background font-sans antialiased">
+          <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<LazyRoutes.Welcome />} />
             <Route path="/auth" element={<LazyRoutes.Auth />} />
@@ -200,8 +205,9 @@ function App() {
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
           </Routes>
         </Suspense>
-      </div>
-    </AuthProvider>
+        </div>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
