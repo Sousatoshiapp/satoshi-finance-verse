@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState, useCallback, useEffect } from 'react';
+import React, { Suspense, useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Text, Environment } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
@@ -48,60 +48,229 @@ const district3DPositions = {
   fintech: { x: 10, y: 0, z: 20 },
 };
 
-// Componente de terreno urbano
+// Sistema de partículas atmosféricas
+function AtmosphericParticles() {
+  const particlesRef = useRef<THREE.Points>(null);
+  const particleCount = 1000;
+  
+  const particles = useMemo(() => {
+    const temp = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      temp[i * 3] = (Math.random() - 0.5) * 100;
+      temp[i * 3 + 1] = Math.random() * 50;
+      temp[i * 3 + 2] = (Math.random() - 0.5) * 100;
+    }
+    return temp;
+  }, []);
+
+  useFrame((state) => {
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y = state.clock.elapsedTime * 0.05;
+      
+      // Movimento vertical das partículas
+      const positions = particlesRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 1; i < positions.length; i += 3) {
+        positions[i] += Math.sin(state.clock.elapsedTime + i) * 0.001;
+      }
+      particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+
+  return (
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={particles}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.1}
+        color="#ffffff"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+      />
+    </points>
+  );
+}
+
+// Sistema de iluminação dinâmica por distrito
+function DistrictLighting({ districts }: { districts: District[] }) {
+  return (
+    <>
+      {districts.map((district, index) => {
+        const position = district3DPositions[district.theme as keyof typeof district3DPositions];
+        if (!position) return null;
+        
+        return (
+          <group key={district.id}>
+            {/* Luz principal do distrito */}
+            <spotLight
+              position={[position.x, 25, position.z]}
+              target-position={[position.x, 0, position.z]}
+              angle={0.3}
+              penumbra={0.5}
+              intensity={1.5}
+              color={district.color_primary}
+              castShadow
+              shadow-mapSize-width={1024}
+              shadow-mapSize-height={1024}
+            />
+            
+            {/* Luz ambiente do distrito */}
+            <pointLight
+              position={[position.x, 15, position.z]}
+              intensity={0.8}
+              color={district.color_primary}
+              distance={30}
+              decay={2}
+            />
+            
+            {/* Efeito de halo no chão */}
+            <mesh position={[position.x, -1.8, position.z]} rotation={[-Math.PI / 2, 0, 0]}>
+              <circleGeometry args={[8, 32]} />
+              <meshBasicMaterial
+                color={district.color_primary}
+                transparent
+                opacity={0.2}
+              />
+            </mesh>
+          </group>
+        );
+      })}
+    </>
+  );
+}
+
+// Componente de terreno urbano com reflexos
 function CityTerrain() {
   return (
     <group>
-      {/* Chão principal da cidade */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+      {/* Chão principal da cidade com reflexos */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]} receiveShadow>
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial 
           color="#2a2a3a"
-          roughness={0.8}
-          metalness={0.1}
+          roughness={0.3}
+          metalness={0.7}
+          envMapIntensity={0.5}
         />
       </mesh>
       
-      {/* Ruas conectando distritos */}
-      {/* Rua horizontal principal */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.9, 0]}>
+      {/* Ruas conectando distritos com reflexos */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.9, 0]} receiveShadow>
         <planeGeometry args={[80, 4]} />
-        <meshStandardMaterial color="#404040" />
+        <meshStandardMaterial 
+          color="#404040" 
+          roughness={0.2}
+          metalness={0.8}
+        />
       </mesh>
       
-      {/* Rua vertical principal */}
-      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[0, -1.9, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[0, -1.9, 0]} receiveShadow>
         <planeGeometry args={[80, 4]} />
-        <meshStandardMaterial color="#404040" />
+        <meshStandardMaterial 
+          color="#404040"
+          roughness={0.2}
+          metalness={0.8}
+        />
       </mesh>
       
-      {/* Linhas amarelas das ruas */}
+      {/* Linhas amarelas das ruas com brilho */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 0]}>
         <planeGeometry args={[76, 0.2]} />
-        <meshBasicMaterial color="#ffff00" />
+        <meshStandardMaterial 
+          color="#ffff00" 
+          emissive="#ffff00"
+          emissiveIntensity={0.3}
+        />
       </mesh>
       
       <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[0, -1.85, 0]}>
         <planeGeometry args={[76, 0.2]} />
-        <meshBasicMaterial color="#ffff00" />
+        <meshStandardMaterial 
+          color="#ffff00"
+          emissive="#ffff00" 
+          emissiveIntensity={0.3}
+        />
       </mesh>
+      
+      {/* Poças d'água para reflexos */}
+      {Array.from({ length: 8 }, (_, i) => (
+        <mesh 
+          key={i}
+          rotation={[-Math.PI / 2, 0, 0]} 
+          position={[
+            (Math.random() - 0.5) * 60,
+            -1.85,
+            (Math.random() - 0.5) * 60
+          ]}
+        >
+          <circleGeometry args={[2 + Math.random() * 3, 16]} />
+          <meshStandardMaterial
+            color="#1a1a2e"
+            roughness={0}
+            metalness={1}
+            transparent
+            opacity={0.8}
+          />
+        </mesh>
+      ))}
     </group>
   );
 }
 
-// Componente de skybox realista
+// Componente de skybox realista com gradiente dinâmico
 function CityEnvironment() {
+  const skyboxRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((state) => {
+    if (skyboxRef.current) {
+      // Rotação suave do skybox
+      skyboxRef.current.rotation.y = state.clock.elapsedTime * 0.002;
+    }
+  });
+
   return (
     <>
       <Environment preset="night" />
-      {/* Skybox customizado com gradiente */}
-      <mesh scale={[500, 500, 500]}>
+      
+      {/* Skybox com gradiente cyberpunk */}
+      <mesh ref={skyboxRef} scale={[500, 500, 500]}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial 
           color="#0a0a1f"
           side={THREE.BackSide}
         />
       </mesh>
+      
+      {/* Neblina volumétrica */}
+      <fog attach="fog" args={['#1a1a2e', 30, 200]} />
+      
+      {/* Iluminação ambiente melhorada */}
+      <ambientLight intensity={0.3} color="#4a4a8a" />
+      
+      {/* Luz principal da lua */}
+      <directionalLight
+        position={[50, 100, 50]}
+        intensity={0.8}
+        color="#b8c5ff"
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={0.5}
+        shadow-camera-far={500}
+        shadow-camera-left={-100}
+        shadow-camera-right={100}
+        shadow-camera-top={100}
+        shadow-camera-bottom={-100}
+      />
+      
+      {/* Partículas atmosféricas */}
+      <AtmosphericParticles />
     </>
   );
 }
@@ -125,63 +294,67 @@ function District3D({ district, userInfo, position, onClick }: {
       // Suave balanceio dos edifícios
       groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
       
-      if (hovered) {
-        groupRef.current.scale.setScalar(1.05);
-      } else {
-        groupRef.current.scale.setScalar(1);
-      }
+      // Efeito de pulsação baseado no poder do distrito
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02 * (powerLevel / 100);
+      groupRef.current.scale.setScalar(hovered ? 1.05 * scale : scale);
     }
   });
 
   // Função para criar arquitetura temática por distrito
-  const getDistrictArchitecture = () => {
+  const getDistrictArchitecture = (state?: any) => {
     const theme = district.theme;
     
     switch (theme) {
       case 'criptomoedas':
         return (
           <group>
-            {/* Torre principal futurista */}
-            <mesh position={[0, 6, 0]}>
+            {/* Torre principal futurista com sombras */}
+            <mesh position={[0, 6, 0]} castShadow>
               <cylinderGeometry args={[3, 2, 12, 8]} />
               <meshStandardMaterial 
                 color={primaryColor}
                 emissive={primaryColor}
-                emissiveIntensity={0.3}
+                emissiveIntensity={0.4}
                 metalness={0.8}
                 roughness={0.2}
               />
             </mesh>
             
-            {/* Anéis holográficos */}
+            {/* Anéis holográficos animados */}
             {[4, 8, 12].map((height, i) => (
-              <mesh key={i} position={[0, height, 0]} rotation={[0, 0, 0]}>
+              <mesh key={i} position={[0, height, 0]} rotation={[0, (state?.clock?.elapsedTime || 0) * (i + 1) * 0.2, 0]}>
                 <torusGeometry args={[4, 0.2, 8, 32]} />
-                <meshBasicMaterial 
+                <meshStandardMaterial 
                   color="#00ffff"
+                  emissive="#00ffff"
+                  emissiveIntensity={0.8}
                   transparent
-                  opacity={0.6}
+                  opacity={0.7}
                 />
               </mesh>
             ))}
+            
+            {/* Efeitos de partículas crypto */}
+            <pointLight position={[0, 12, 0]} intensity={1} color="#00ffff" distance={20} />
           </group>
         );
         
       case 'sistema_bancario':
         return (
           <group>
-            {/* Arranha-céu principal */}
-            <mesh position={[0, 8, 0]}>
+            {/* Arranha-céu principal com reflexos */}
+            <mesh position={[0, 8, 0]} castShadow>
               <boxGeometry args={[4, 16, 4]} />
               <meshStandardMaterial 
                 color={primaryColor}
                 metalness={0.9}
                 roughness={0.1}
+                envMapIntensity={1}
               />
             </mesh>
             
             {/* Torres laterais */}
-            <mesh position={[-3, 5, 0]}>
+            <mesh position={[-3, 5, 0]} castShadow>
               <boxGeometry args={[2, 10, 2]} />
               <meshStandardMaterial 
                 color={primaryColor}
@@ -190,7 +363,7 @@ function District3D({ district, userInfo, position, onClick }: {
               />
             </mesh>
             
-            <mesh position={[3, 5, 0]}>
+            <mesh position={[3, 5, 0]} castShadow>
               <boxGeometry args={[2, 10, 2]} />
               <meshStandardMaterial 
                 color={primaryColor}
@@ -198,25 +371,58 @@ function District3D({ district, userInfo, position, onClick }: {
                 roughness={0.3}
               />
             </mesh>
+            
+            {/* Luzes das janelas */}
+            {Array.from({ length: 20 }, (_, i) => (
+              <mesh key={i} position={[
+                (Math.random() - 0.5) * 3,
+                Math.random() * 14 + 1,
+                2.1
+              ]}>
+                <planeGeometry args={[0.3, 0.3]} />
+                <meshStandardMaterial 
+                  color="#ffff88"
+                  emissive="#ffff88"
+                  emissiveIntensity={0.5}
+                />
+              </mesh>
+            ))}
+            
+            <pointLight position={[0, 16, 0]} intensity={0.8} color={primaryColor} distance={25} />
           </group>
         );
         
       case 'fintech':
         return (
           <group>
-            {/* Estrutura modular */}
+            {/* Estrutura modular com efeitos */}
             {[0, 2, 4].map((height, i) => (
-              <mesh key={i} position={[0, height * 2 + 2, 0]} rotation={[0, i * 0.3, 0]}>
+              <mesh key={i} position={[0, height * 2 + 2, 0]} rotation={[0, i * 0.3, 0]} castShadow>
                 <octahedronGeometry args={[2 + i * 0.5]} />
                 <meshStandardMaterial 
                   color={primaryColor}
                   emissive={primaryColor}
-                  emissiveIntensity={0.2}
+                  emissiveIntensity={0.3}
                   metalness={0.6}
                   roughness={0.4}
                 />
               </mesh>
             ))}
+            
+            {/* Hologramas flutuantes */}
+            {[2, 6, 10].map((height, i) => (
+              <mesh key={i} position={[4, height, 0]} rotation={[0, (state?.clock?.elapsedTime || 0), 0]}>
+                <planeGeometry args={[2, 2]} />
+                <meshBasicMaterial 
+                  color="#00ff88"
+                  transparent
+                  opacity={0.6}
+                  side={THREE.DoubleSide}
+                />
+              </mesh>
+            ))}
+            
+            <pointLight position={[0, 10, 0]} intensity={0.7} color="#00ff88" distance={20} />
           </group>
         );
         
@@ -224,7 +430,7 @@ function District3D({ district, userInfo, position, onClick }: {
         return (
           <group>
             {/* Torres residenciais */}
-            <mesh position={[0, 7, 0]}>
+            <mesh position={[0, 7, 0]} castShadow>
               <boxGeometry args={[3, 14, 6]} />
               <meshStandardMaterial 
                 color={primaryColor}
@@ -234,13 +440,22 @@ function District3D({ district, userInfo, position, onClick }: {
             </mesh>
             
             {/* Detalhes arquitetônicos */}
-            <mesh position={[0, 14.5, 0]}>
+            <mesh position={[0, 14.5, 0]} castShadow>
               <coneGeometry args={[2, 3, 8]} />
               <meshStandardMaterial 
                 color="#8b4513"
                 roughness={0.8}
               />
             </mesh>
+            
+            {/* Varandas iluminadas */}
+            {Array.from({ length: 10 }, (_, i) => (
+              <mesh key={i} position={[0, i * 1.4 + 1, 3.1]}>
+                <boxGeometry args={[2.8, 0.2, 0.5]} />
+                <meshStandardMaterial color="#666666" />
+                <pointLight position={[0, 0, 0.3]} intensity={0.3} color="#ffaa00" distance={5} />
+              </mesh>
+            ))}
           </group>
         );
         
@@ -248,7 +463,7 @@ function District3D({ district, userInfo, position, onClick }: {
         return (
           <group>
             {/* Estrutura padrão moderna */}
-            <mesh position={[0, 5, 0]}>
+            <mesh position={[0, 5, 0]} castShadow>
               <boxGeometry args={[4, 10, 4]} />
               <meshStandardMaterial 
                 color={primaryColor}
@@ -258,6 +473,14 @@ function District3D({ district, userInfo, position, onClick }: {
                 roughness={0.4}
               />
             </mesh>
+            
+            {/* Antenas e detalhes */}
+            <mesh position={[0, 10.5, 0]}>
+              <cylinderGeometry args={[0.1, 0.1, 2]} />
+              <meshStandardMaterial color="#888888" metalness={0.8} />
+            </mesh>
+            
+            <pointLight position={[0, 10, 0]} intensity={0.5} color={primaryColor} distance={15} />
           </group>
         );
     }
@@ -274,35 +497,62 @@ function District3D({ district, userInfo, position, onClick }: {
       {/* Arquitetura temática */}
       {getDistrictArchitecture()}
 
-      {/* Corona de residência */}
+      {/* Corona de residência com efeito pulsante */}
       {isResidence && (
-        <mesh position={[0, 15, 0]}>
-          <torusGeometry args={[5, 0.5, 8, 32]} />
-          <meshStandardMaterial 
-            color="#FFD700"
-            emissive="#FFD700"
-            emissiveIntensity={0.8}
-          />
-        </mesh>
+        <group>
+          <mesh position={[0, 15, 0]}>
+            <torusGeometry args={[5, 0.5, 8, 32]} />
+            <meshStandardMaterial 
+              color="#FFD700"
+              emissive="#FFD700"
+              emissiveIntensity={0.8}
+            />
+          </mesh>
+          {/* Partículas douradas */}
+          {Array.from({ length: 12 }, (_, i) => (
+            <mesh key={i} position={[
+              Math.cos(i * Math.PI / 6) * 6,
+              15 + Math.sin((Date.now() * 0.001) * 2 + i) * 0.5,
+              Math.sin(i * Math.PI / 6) * 6
+            ]}>
+              <sphereGeometry args={[0.1]} />
+              <meshBasicMaterial color="#FFD700" />
+            </mesh>
+          ))}
+        </group>
       )}
 
-      {/* Luzes do distrito */}
+      {/* Sistema de iluminação dinâmica do distrito */}
       <pointLight 
-        position={[0, 10, 0]} 
-        intensity={0.5} 
+        position={[0, 12, 0]} 
+        intensity={hovered ? 1.2 : 0.8} 
         color={primaryColor}
-        distance={20}
+        distance={25}
+        decay={2}
       />
 
-      {/* Base iluminada */}
+      {/* Base iluminada com pulsação */}
       <mesh position={[0, -1.5, 0]}>
         <cylinderGeometry args={[6, 6, 0.5, 32]} />
         <meshBasicMaterial 
           color={primaryColor}
           transparent
-          opacity={0.3}
+          opacity={hovered ? 0.5 : 0.3}
         />
       </mesh>
+
+      {/* Raios de energia saindo da base */}
+      {Array.from({ length: 8 }, (_, i) => (
+        <mesh key={i} position={[0, -1.2, 0]} rotation={[0, i * Math.PI / 4, 0]}>
+          <planeGeometry args={[0.1, 8]} />
+          <meshBasicMaterial 
+            color={primaryColor}
+            transparent
+            opacity={0.4}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
 
       {/* Texto do nome do distrito */}
       <Text
@@ -446,11 +696,12 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
       <div className="w-full h-screen">
         <Canvas>
           <Suspense fallback={null}>
-            {/* Iluminação */}
-            <ambientLight intensity={0.4} />
-            <directionalLight position={[10, 10, 5]} intensity={1} />
-            <pointLight position={[0, 10, 0]} intensity={0.5} color="#8B5CF6" />
-
+            {/* Sistema de iluminação dinâmica */}
+            <DistrictLighting districts={districts} />
+            
+            {/* Iluminação ambiente melhorada */}
+            <ambientLight intensity={0.2} color="#4a4a8a" />
+            
             {/* Controles de câmera */}
             <CameraControls />
 
