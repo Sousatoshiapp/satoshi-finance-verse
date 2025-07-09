@@ -291,6 +291,11 @@ export const LazyRoutes = {
   LearningAnalytics: createLazyComponent(
     () => import('@/pages/LearningAnalytics'),
     { priority: 'medium' }
+  ),
+
+  DashboardNew: createLazyComponent(
+    () => import('@/pages/DashboardNew'),
+    { priority: 'high' }
   )
 };
 

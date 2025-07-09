@@ -200,19 +200,22 @@ async function doBackgroundSync() {
 
 // Push notifications para engajamento
 self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  
   const options = {
-    body: event.data ? event.data.text() : 'Nova atualização disponível!',
+    body: data.body || 'Nova notificação do BeetzQuiz!',
     icon: '/favicon.ico',
     badge: '/favicon.ico',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
-      primaryKey: 1
+      primaryKey: 1,
+      url: data.url || '/'
     },
     actions: [
       {
         action: 'explore',
-        title: 'Abrir App',
+        title: 'Ver no App',
         icon: '/favicon.ico'
       },
       {
@@ -224,8 +227,23 @@ self.addEventListener('push', (event) => {
   };
   
   event.waitUntil(
-    self.registration.showNotification('Satoshi Finance', options)
+    self.registration.showNotification(data.title || 'BeetzQuiz', options)
   );
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+
+  if (event.action === 'explore') {
+    const urlToOpen = event.notification.data.url || '/';
+    event.waitUntil(
+      clients.openWindow(urlToOpen)
+    );
+  }
+});
+
+self.addEventListener('notificationclose', function(event) {
+  console.log('[SW] Notification was closed', event);
 });
 
 // Utility functions

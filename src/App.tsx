@@ -296,6 +296,12 @@ function App() {
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
+
+            <Route path="/dashboard-new" element={
+              <ProtectedRoute>
+                <LazyRoutes.DashboardNew />
+              </ProtectedRoute>
+            } />
             
             <Route path="/find-opponent" element={
               <ProtectedRoute>

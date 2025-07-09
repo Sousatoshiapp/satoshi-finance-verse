@@ -3960,6 +3960,56 @@ export type Database = {
           },
         ]
       }
+      user_onboarding_profiles: {
+        Row: {
+          available_time_minutes: number | null
+          completed_at: string | null
+          created_at: string | null
+          experience_level: string
+          id: string
+          learning_style: string | null
+          motivation_factors: string[] | null
+          preferred_difficulty: string | null
+          study_goals: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          available_time_minutes?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          experience_level: string
+          id?: string
+          learning_style?: string | null
+          motivation_factors?: string[] | null
+          preferred_difficulty?: string | null
+          study_goals?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          available_time_minutes?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          experience_level?: string
+          id?: string
+          learning_style?: string | null
+          motivation_factors?: string[] | null
+          preferred_difficulty?: string | null
+          study_goals?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_onboarding_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_power_ups: {
         Row: {
           acquired_at: string
