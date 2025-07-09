@@ -14,6 +14,7 @@ import Dashboard from "@/pages/Dashboard";
 import Profile from "@/pages/Profile";
 import Social from "@/pages/Social";
 import Duels from "@/pages/Duels";
+import UserProfile from "@/pages/UserProfile";
 
 function App() {
   return (
@@ -35,6 +36,13 @@ function App() {
             <Route path="/profile" element={
               <ProtectedRoute>
                 <Profile />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/user/:userId" element={
+              <ProtectedRoute>
+                <UserProfile />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />

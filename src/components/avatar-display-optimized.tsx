@@ -37,23 +37,34 @@ const AvatarDisplayOptimized = memo(function AvatarDisplayOptimized({
 }: AvatarDisplayProps) {
   const [avatarImage, setAvatarImage] = useState<string>(avatar.image_url);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-  // Lazy load avatar image
+  // Memoize the avatar loading logic
   useEffect(() => {
-    const loadImage = async () => {
-      const key = avatar.name.toLowerCase().replace(' ', '-');
-      try {
-        const loadedImage = await loadAvatarImage(key);
-        if (loadedImage) {
-          setAvatarImage(loadedImage);
+    // Reset states when avatar changes
+    setImageLoaded(false);
+    setImageError(false);
+    
+    // Start with the original URL immediately for faster loading
+    setAvatarImage(avatar.image_url);
+    
+    // Only try lazy loading if it's a local asset reference
+    if (avatar.image_url.startsWith('/assets/') || avatar.image_url.includes('avatars/')) {
+      const loadImage = async () => {
+        const key = avatar.name.toLowerCase().replace(/\s+/g, '-');
+        try {
+          const loadedImage = await loadAvatarImage(key);
+          if (loadedImage && loadedImage !== avatar.image_url) {
+            setAvatarImage(loadedImage);
+          }
+        } catch (error) {
+          // Keep using the original URL
+          console.debug('Lazy loading failed for avatar:', key, error);
         }
-      } catch (error) {
-        // Fallback to original URL
-        setAvatarImage(avatar.image_url);
-      }
-    };
+      };
 
-    loadImage();
+      loadImage();
+    }
   }, [avatar.name, avatar.image_url]);
 
   const sizeClasses = useMemo(() => {
@@ -76,13 +87,25 @@ const AvatarDisplayOptimized = memo(function AvatarDisplayOptimized({
           src={avatarImage}
           alt={avatar.name}
           className={`w-full h-full object-cover transition-opacity duration-300 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
+            imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'
           }`}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
+          onError={() => {
+            setImageError(true);
+            setImageLoaded(false);
+            // Fallback to a default avatar or simple color background
+            if (avatarImage !== '/placeholder-avatar.png') {
+              setAvatarImage('/placeholder-avatar.png');
+            }
+          }}
         />
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-muted animate-pulse" />
+        {(!imageLoaded || imageError) && (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 animate-pulse flex items-center justify-center">
+            <span className="text-xl font-bold text-primary">
+              {avatar.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
         )}
       </div>
       
