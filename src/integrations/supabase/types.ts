@@ -239,6 +239,87 @@ export type Database = {
         }
         Relationships: []
       }
+      affiliate_commissions: {
+        Row: {
+          affiliate_id: string | null
+          commission_amount_cents: number
+          created_at: string
+          id: string
+          paid_at: string | null
+          status: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          affiliate_id?: string | null
+          commission_amount_cents: number
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          affiliate_id?: string | null
+          commission_amount_cents?: number
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_commissions_affiliate_id_fkey"
+            columns: ["affiliate_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_commissions_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_programs: {
+        Row: {
+          commission_rate: number | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          referral_code: string
+          total_commission_earned: number | null
+          total_referrals: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          commission_rate?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          referral_code: string
+          total_commission_earned?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          commission_rate?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          referral_code?: string
+          total_commission_earned?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_recommendations: {
         Row: {
           applied: boolean | null
@@ -505,6 +586,51 @@ export type Database = {
           is_active?: boolean | null
           response_time_max?: number | null
           response_time_min?: number | null
+        }
+        Relationships: []
+      }
+      collectible_items: {
+        Row: {
+          attributes: Json | null
+          category: string
+          created_at: string
+          current_supply: number | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_mintable: boolean | null
+          mint_price_beetz: number | null
+          name: string
+          rarity: string
+          total_supply: number | null
+        }
+        Insert: {
+          attributes?: Json | null
+          category: string
+          created_at?: string
+          current_supply?: number | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_mintable?: boolean | null
+          mint_price_beetz?: number | null
+          name: string
+          rarity?: string
+          total_supply?: number | null
+        }
+        Update: {
+          attributes?: Json | null
+          category?: string
+          created_at?: string
+          current_supply?: number | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_mintable?: boolean | null
+          mint_price_beetz?: number | null
+          name?: string
+          rarity?: string
+          total_supply?: number | null
         }
         Relationships: []
       }
@@ -2138,6 +2264,88 @@ export type Database = {
         }
         Relationships: []
       }
+      marketplace_listings: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          price_beetz: number
+          seller_id: string
+          updated_at: string
+          user_collectible_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          price_beetz: number
+          seller_id: string
+          updated_at?: string
+          user_collectible_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          price_beetz?: number
+          seller_id?: string
+          updated_at?: string
+          user_collectible_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_listings_user_collectible_id_fkey"
+            columns: ["user_collectible_id"]
+            isOneToOne: false
+            referencedRelation: "user_collectibles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketplace_sales: {
+        Row: {
+          buyer_id: string
+          completed_at: string
+          created_at: string
+          id: string
+          listing_id: string | null
+          platform_fee_beetz: number
+          price_beetz: number
+          seller_id: string
+        }
+        Insert: {
+          buyer_id: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          listing_id?: string | null
+          platform_fee_beetz: number
+          price_beetz: number
+          seller_id: string
+        }
+        Update: {
+          buyer_id?: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          listing_id?: string | null
+          platform_fee_beetz?: number
+          price_beetz?: number
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_sales_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentoring_missions: {
         Row: {
           created_at: string
@@ -2564,6 +2772,51 @@ export type Database = {
           price?: number
           rarity?: string
           type?: string
+        }
+        Relationships: []
+      }
+      premium_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          plan_type: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_end: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_type: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -3280,6 +3533,54 @@ export type Database = {
           },
         ]
       }
+      store_products: {
+        Row: {
+          created_at: string
+          currency: Database["public"]["Enums"]["currency_type"]
+          description: string | null
+          discount_percentage: number | null
+          featured: boolean | null
+          id: string
+          is_active: boolean | null
+          name: string
+          price_cents: number
+          product_type: Database["public"]["Enums"]["product_type"]
+          stripe_price_id: string | null
+          updated_at: string
+          virtual_reward: Json | null
+        }
+        Insert: {
+          created_at?: string
+          currency?: Database["public"]["Enums"]["currency_type"]
+          description?: string | null
+          discount_percentage?: number | null
+          featured?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price_cents: number
+          product_type: Database["public"]["Enums"]["product_type"]
+          stripe_price_id?: string | null
+          updated_at?: string
+          virtual_reward?: Json | null
+        }
+        Update: {
+          created_at?: string
+          currency?: Database["public"]["Enums"]["currency_type"]
+          description?: string | null
+          discount_percentage?: number | null
+          featured?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price_cents?: number
+          product_type?: Database["public"]["Enums"]["product_type"]
+          stripe_price_id?: string | null
+          updated_at?: string
+          virtual_reward?: Json | null
+        }
+        Relationships: []
+      }
       story_views: {
         Row: {
           id: string
@@ -3784,6 +4085,59 @@ export type Database = {
         }
         Relationships: []
       }
+      transactions: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: Database["public"]["Enums"]["currency_type"]
+          id: string
+          processed_at: string | null
+          product_id: string | null
+          status: Database["public"]["Enums"]["transaction_status"]
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+          virtual_rewards_data: Json | null
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: Database["public"]["Enums"]["currency_type"]
+          id?: string
+          processed_at?: string | null
+          product_id?: string | null
+          status?: Database["public"]["Enums"]["transaction_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+          virtual_rewards_data?: Json | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: Database["public"]["Enums"]["currency_type"]
+          id?: string
+          processed_at?: string | null
+          product_id?: string | null
+          status?: Database["public"]["Enums"]["transaction_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+          virtual_rewards_data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "store_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       unlockable_content: {
         Row: {
           asset_url: string | null
@@ -4029,6 +4383,47 @@ export type Database = {
             columns: ["challenge_id"]
             isOneToOne: false
             referencedRelation: "social_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_collectibles: {
+        Row: {
+          acquired_at: string
+          collectible_id: string | null
+          created_at: string
+          id: string
+          is_listed_for_sale: boolean | null
+          sale_price_beetz: number | null
+          token_id: string | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          collectible_id?: string | null
+          created_at?: string
+          id?: string
+          is_listed_for_sale?: boolean | null
+          sale_price_beetz?: number | null
+          token_id?: string | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          collectible_id?: string | null
+          created_at?: string
+          id?: string
+          is_listed_for_sale?: boolean | null
+          sale_price_beetz?: number | null
+          token_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_collectibles_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "collectible_items"
             referencedColumns: ["id"]
           },
         ]
@@ -5361,6 +5756,45 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          source_id: string | null
+          source_type: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          source_id?: string | null
+          source_type?: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          source_id?: string | null
+          source_type?: string | null
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_leaderboards: {
         Row: {
           created_at: string
@@ -5473,6 +5907,10 @@ export type Database = {
       check_user_team_membership: {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
+      }
+      create_affiliate_program: {
+        Args: { p_user_id: string }
+        Returns: string
       }
       create_duel_with_invite: {
         Args: {
@@ -5607,6 +6045,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      process_virtual_purchase: {
+        Args: {
+          p_user_id: string
+          p_product_id: string
+          p_transaction_id: string
+        }
+        Returns: Json
+      }
       request_guild_membership: {
         Args: { p_guild_id: string; p_user_id: string; p_message?: string }
         Returns: boolean
@@ -5702,6 +6148,7 @@ export type Database = {
         | "speed_demon"
         | "knowledge_master"
         | "quiz_dominator"
+      currency_type: "BRL" | "USD" | "EUR"
       customization_type:
         | "avatar_skin"
         | "profile_theme"
@@ -5730,8 +6177,21 @@ export type Database = {
         | "hint_reveal"
         | "streak_protection"
       powerup_rarity: "common" | "rare" | "epic" | "legendary"
+      product_type:
+        | "premium_subscription"
+        | "beetz_pack"
+        | "avatar"
+        | "powerup"
+        | "loot_box"
+        | "course_access"
       season_status: "upcoming" | "active" | "ended"
       subscription_tier: "free" | "pro" | "elite"
+      transaction_status:
+        | "pending"
+        | "completed"
+        | "failed"
+        | "refunded"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5866,6 +6326,7 @@ export const Constants = {
         "knowledge_master",
         "quiz_dominator",
       ],
+      currency_type: ["BRL", "USD", "EUR"],
       customization_type: [
         "avatar_skin",
         "profile_theme",
@@ -5898,8 +6359,23 @@ export const Constants = {
         "streak_protection",
       ],
       powerup_rarity: ["common", "rare", "epic", "legendary"],
+      product_type: [
+        "premium_subscription",
+        "beetz_pack",
+        "avatar",
+        "powerup",
+        "loot_box",
+        "course_access",
+      ],
       season_status: ["upcoming", "active", "ended"],
       subscription_tier: ["free", "pro", "elite"],
+      transaction_status: [
+        "pending",
+        "completed",
+        "failed",
+        "refunded",
+        "cancelled",
+      ],
     },
   },
 } as const
