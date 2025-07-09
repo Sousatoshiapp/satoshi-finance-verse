@@ -183,7 +183,7 @@ export default function Duels() {
                 Escolha um oponente e desafie-o para um duelo de conhecimento financeiro
               </p>
               <Button 
-                onClick={() => setCurrentView('users')}
+                onClick={() => navigate('/find-opponent')}
                 className="w-full"
               >
                 Encontrar Oponente

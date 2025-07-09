@@ -116,12 +116,7 @@ export const AvatarDisplayUniversal = memo(({
     // Try profile image URL first (uploaded images)
     if (profileImageUrl) return profileImageUrl;
     
-    // Try avatar URL (if it's a proper URL)
-    if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/'))) {
-      return avatarUrl;
-    }
-    
-    // Try to map avatar name to local image
+    // Try to map avatar name to local image first
     if (avatarName) {
       // Try exact match first
       let normalizedName = avatarName.toLowerCase().replace(/\s+/g, '-');
@@ -137,6 +132,11 @@ export const AvatarDisplayUniversal = memo(({
       if (avatarImage) {
         return avatarImage;
       }
+    }
+    
+    // Try avatar URL only if it's a proper external URL (not /src/assets)
+    if (avatarUrl && avatarUrl.startsWith('http')) {
+      return avatarUrl;
     }
     
     // Fallback to default
