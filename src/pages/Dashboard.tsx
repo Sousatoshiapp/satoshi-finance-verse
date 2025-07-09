@@ -296,10 +296,10 @@ export default function Dashboard() {
                 onClick={handleNavigateToLevels}
                 style={{ borderWidth: '0.5px' }}
               >
-                <span className="text-xl">⚡</span>
+                <span className="text-2xl">⚡</span>
                 <div className="text-center">
-                  <div className="text-sm text-muted-foreground leading-none">XP</div>
-                  <div className="text-base font-bold text-foreground leading-none">{userStats.currentXP}</div>
+                  <div className="text-base text-muted-foreground leading-tight">XP</div>
+                  <div className="text-xl font-bold text-foreground leading-tight">{userStats.currentXP}</div>
                 </div>
               </div>
 
@@ -309,10 +309,10 @@ export default function Dashboard() {
                 onClick={handleNavigateToBeetzInfo}
                 style={{ borderWidth: '0.5px' }}
               >
-                <BeetzIcon size="md" />
+                <BeetzIcon size="lg" />
                 <div className="text-center">
-                  <div className="text-sm text-muted-foreground leading-none">Beetz</div>
-                  <div className="text-base font-bold text-foreground leading-none">{userStats.points}</div>
+                  <div className="text-base text-muted-foreground leading-tight">Beetz</div>
+                  <div className="text-xl font-bold text-foreground leading-tight">{userStats.points}</div>
                 </div>
               </div>
             </div>
