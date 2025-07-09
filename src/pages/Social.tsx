@@ -12,7 +12,8 @@ import { ConversationsList } from "@/components/social/conversations-list";
 import { ChatWindow } from "@/components/social/chat-window";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MessageCircle } from "lucide-react";
+import { Search, MessageCircle, Send } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { SocialFeed } from "@/components/social/social-feed";
 import { SocialChallenges } from "@/components/social/social-challenges";
@@ -41,6 +42,9 @@ export default function Social() {
   const [followers, setFollowers] = useState<User[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [newPost, setNewPost] = useState("");
+  const [posting, setPosting] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleSearch = async (query: string) => {
@@ -179,7 +183,68 @@ export default function Social() {
   useEffect(() => {
     loadFollowing();
     loadFollowers();
+    loadCurrentUser();
   }, []);
+
+  const loadCurrentUser = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile) {
+        setCurrentUserId(profile.id);
+      }
+    } catch (error) {
+      console.error('Error loading current user:', error);
+    }
+  };
+
+  const handleCreatePost = async () => {
+    if (!newPost.trim() || posting || !currentUserId) return;
+
+    setPosting(true);
+    try {
+      const { error } = await supabase
+        .from('social_posts')
+        .insert({
+          user_id: currentUserId,
+          content: newPost.trim(),
+          post_type: 'text'
+        });
+
+      if (error) throw error;
+
+      setNewPost("");
+      toast({
+        title: "Sucesso",
+        description: "Post criado com sucesso!"
+      });
+
+      // Award challenge progress
+      await supabase.functions.invoke('process-social-activity', {
+        body: {
+          userId: currentUserId,
+          activityType: 'create_post'
+        }
+      });
+
+    } catch (error) {
+      console.error('Error creating post:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível criar o post",
+        variant: "destructive"
+      });
+    } finally {
+      setPosting(false);
+    }
+  };
 
   if (selectedConversationId) {
     return (
@@ -213,14 +278,39 @@ export default function Social() {
               </TabsList>
 
               <TabsContent value="feed" className="space-y-4">
-                {/* Mobile: Show tabs first, then create post card */}
-                <div className="block sm:hidden">
-                  <SocialFeed />
+                {/* Mobile: Create Post Card - positioned correctly below tabs */}
+                <div className="block sm:hidden mb-4">
+                  <Card className="border border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+                    <CardContent className="p-3">
+                      <div className="space-y-2">
+                        <Textarea
+                          placeholder="Compartilhe sua opinião sobre o mercado..."
+                          value={newPost}
+                          onChange={(e) => setNewPost(e.target.value)}
+                          className="min-h-[60px] resize-none text-sm border-0 bg-background/50"
+                          maxLength={500}
+                        />
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs text-muted-foreground">
+                            {newPost.length}/500
+                          </span>
+                          <Button 
+                            onClick={handleCreatePost}
+                            disabled={!newPost.trim() || posting}
+                            className="h-8 text-xs px-3"
+                            size="sm"
+                          >
+                            {posting ? "Postando..." : "Publicar"}
+                            <Send className="ml-1 h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-                {/* Desktop: Normal layout */}
-                <div className="hidden sm:block">
-                  <SocialFeed />
-                </div>
+                
+                {/* Feed Component */}
+                <SocialFeed />
               </TabsContent>
 
               <TabsContent value="challenges" className="space-y-4">
