@@ -5,6 +5,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
+import SatoshiCity from "@/pages/SatoshiCity";
 
 function App() {
   return (
@@ -88,7 +89,7 @@ function App() {
             
             <Route path="/satoshi-city" element={
               <ProtectedRoute>
-                <LazyRoutes.SatoshiCity />
+                <SatoshiCity />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />

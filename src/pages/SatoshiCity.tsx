@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -85,8 +85,8 @@ export default function SatoshiCity() {
   const [currentCityImage, setCurrentCityImage] = useState(satoshiCityNight);
   const navigate = useNavigate();
 
-  // Function to get the appropriate city image based on time
-  const getCityImageByTime = () => {
+  // Memoize the city image function
+  const getCityImageByTime = useCallback(() => {
     const hour = new Date().getHours();
     
     if (hour >= 6 && hour < 18) {
@@ -96,7 +96,7 @@ export default function SatoshiCity() {
     } else {
       return satoshiCityNight; // Night: 8PM to 6AM
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Set initial image based on current time
@@ -111,9 +111,9 @@ export default function SatoshiCity() {
     loadUserDistricts();
 
     return () => clearInterval(interval);
-  }, []);
+  }, [getCityImageByTime]);
 
-  const loadDistricts = async () => {
+  const loadDistricts = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('districts')
@@ -126,9 +126,9 @@ export default function SatoshiCity() {
     } catch (error) {
       console.error('Error loading districts:', error);
     }
-  };
+  }, []);
 
-  const loadUserDistricts = async () => {
+  const loadUserDistricts = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -153,17 +153,17 @@ export default function SatoshiCity() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const getUserDistrictInfo = (districtId: string) => {
+  const getUserDistrictInfo = useCallback((districtId: string) => {
     return userDistricts.find(ud => ud.district_id === districtId);
-  };
+  }, [userDistricts]);
 
-  const getCurrentResidence = () => {
+  const getCurrentResidence = useCallback(() => {
     return userDistricts.find(ud => ud.is_residence);
-  };
+  }, [userDistricts]);
 
-  const handleChangeResidence = async (districtId: string) => {
+  const handleChangeResidence = useCallback(async (districtId: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -230,7 +230,7 @@ export default function SatoshiCity() {
     } catch (error) {
       console.error('Error changing residence:', error);
     }
-  };
+  }, [navigate, getCurrentResidence, userDistricts, loadUserDistricts]);
 
   if (loading) {
     return (
