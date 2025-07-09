@@ -4249,6 +4249,10 @@ export type Database = {
         Args: { profile_id: string }
         Returns: string
       }
+      get_user_profile_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_xp_multiplier: {
         Args: { profile_id: string }
         Returns: number
@@ -4263,6 +4267,14 @@ export type Database = {
       }
       is_admin: {
         Args: { user_uuid?: string }
+        Returns: boolean
+      }
+      is_guild_leader_or_officer: {
+        Args: { p_user_id: string; p_guild_id: string }
+        Returns: boolean
+      }
+      is_guild_member: {
+        Args: { p_user_id: string; p_guild_id: string }
         Returns: boolean
       }
       log_security_event: {
