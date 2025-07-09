@@ -284,10 +284,10 @@ export default function Auth() {
           </Button>
 
           {/* Auth Card */}
-          <Card className="bg-slate-800/90 backdrop-blur-sm border-2 border-cyan-400/30 shadow-2xl">
+          <Card className="bg-card/90 backdrop-blur-sm border-2 border-[#adff2f]/30 shadow-2xl">
             <CardHeader className="text-center">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                {isLogin ? 'Acesso à Cidade' : 'Cadastro Cidadão'}
+              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#adff2f] to-[#32cd32] bg-clip-text text-transparent">
+                {isLogin ? 'Entre no Jogo' : 'Cadastro Cidadão'}
               </CardTitle>
               <CardDescription className="text-gray-300">
                 {isLogin 
@@ -312,18 +312,18 @@ export default function Auth() {
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       required
-                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-cyan-400"
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
                     />
                   </div>
 
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold py-3 transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-[#adff2f] to-[#32cd32] hover:from-[#9aff00] hover:to-[#228b22] text-black font-bold py-3 transition-all duration-300"
                   >
                     {loading ? (
                       <div className="flex items-center space-x-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
                         <span>Enviando...</span>
                       </div>
                     ) : (
@@ -339,17 +339,17 @@ export default function Auth() {
                         setShowForgotPassword(false);
                         setResetEmail("");
                       }}
-                      className="text-gray-400 hover:text-cyan-400"
+                      className="text-gray-400 hover:text-[#adff2f]"
                     >
                       ← Voltar ao login
                     </Button>
                   </div>
 
-                  <div className="mt-6 p-4 bg-slate-700/30 rounded-lg border border-cyan-400/20">
+                  <div className="mt-6 p-4 bg-slate-700/30 rounded-lg border border-[#adff2f]/20">
                     <p className="text-sm text-gray-300 text-center leading-relaxed">
                       Você receberá um email com instruções para redefinir sua senha.
                       <br />
-                      <span className="text-cyan-400 font-semibold">Verifique também sua caixa de spam.</span>
+                      <span className="text-[#adff2f] font-semibold">Verifique também sua caixa de spam.</span>
                     </p>
                   </div>
                 </form>
@@ -367,7 +367,7 @@ export default function Auth() {
                       placeholder="Como você quer ser conhecido?"
                       value={nickname}
                       onChange={(e) => setNickname(e.target.value)}
-                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-cyan-400"
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
                     />
                   </div>
                 )}
@@ -383,7 +383,7 @@ export default function Auth() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-cyan-400"
+                    className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
                   />
                 </div>
 
@@ -400,7 +400,7 @@ export default function Auth() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-cyan-400 pr-10"
+                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f] pr-10"
                     />
                     <Button
                       type="button"
@@ -426,15 +426,15 @@ export default function Auth() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white font-bold py-3 transition-all duration-300"
+                  className="w-full bg-gradient-to-r from-[#adff2f] to-[#32cd32] hover:from-[#9aff00] hover:to-[#228b22] text-black font-bold py-3 transition-all duration-300"
                 >
                   {loading ? (
                     <div className="flex items-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
                       <span>Processando...</span>
                     </div>
                   ) : (
-                    isLogin ? 'Entrar na Cidade' : 'Tornar-se Cidadão'
+                    isLogin ? 'Entrar no Jogo' : 'Tornar-se Cidadão'
                   )}
                 </Button>
 
@@ -445,7 +445,7 @@ export default function Auth() {
                       type="button"
                       variant="link"
                       onClick={() => setShowForgotPassword(true)}
-                      className="text-sm text-gray-400 hover:text-cyan-400"
+                      className="text-sm text-gray-400 hover:text-[#adff2f]"
                     >
                       Esqueci minha senha
                     </Button>
