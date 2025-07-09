@@ -16,6 +16,7 @@ import DistrictDetail from "@/pages/DistrictDetail";
 import DistrictQuiz from "@/pages/DistrictQuiz";
 import GameMode from "@/pages/GameMode";
 import Store from "@/pages/Store";
+import SubscriptionPlans from "@/pages/SubscriptionPlans";
 
 // Lazy imports for less critical pages
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
@@ -104,6 +105,13 @@ function App() {
             <Route path="/store" element={
               <ProtectedRoute>
                 <Store />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/subscription-plans" element={
+              <ProtectedRoute>
+                <SubscriptionPlans />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
