@@ -243,6 +243,40 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     handleAnswer(selectedAnswer);
   };
 
+  const handleSkipQuestion = () => {
+    if (answeredQuestions.has(currentQuestion) || isFinished) return;
+    
+    const newAnswer = {
+      question: currentQuestion,
+      selected: null,
+      timestamp: new Date().toISOString(),
+      skipped: true,
+      correct: false
+    };
+    
+    setPlayerAnswers(prev => [...prev, newAnswer]);
+    setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
+    
+    toast({
+      title: "⏭️ Pergunta pulada",
+      description: "Você pode pular até 2 perguntas por duelo",
+      variant: "default"
+    });
+    
+    // Auto advance after skip
+    setTimeout(() => {
+      if (currentQuestion < duel.questions.length) {
+        setCurrentQuestion(prev => prev + 1);
+        setSelectedAnswer(null);
+        setIsTimerActive(true);
+      } else {
+        setGamePhase('finished');
+        setIsFinished(true);
+        setShowResult(true);
+      }
+    }, 1000);
+  };
+
   const handleTimeUp = () => {
     if (answeredQuestions.has(currentQuestion)) return;
     
@@ -468,12 +502,12 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
         </div>
 
         {/* Pergunta */}
-        <Card className="mb-6 border-primary/20 shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-xl text-center">{question?.question}</CardTitle>
+        <Card className="mb-6 border-primary/20 shadow-lg max-w-2xl mx-auto">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg text-center leading-relaxed">{question?.question}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3 mb-6">
+            <div className="grid gap-2 mb-4">
               {question?.options.map((option: any) => (
                 <motion.div
                   key={option.id}
@@ -482,11 +516,13 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
                 >
                   <Button
                     variant="outline"
-                    className={`justify-start h-auto p-4 text-left transition-all duration-300 w-full ${getAnswerButtonClass(option.id)}`}
+                    className={`justify-start h-auto p-3 text-left transition-all duration-300 w-full text-sm ${getAnswerButtonClass(option.id)}`}
                     onClick={() => handleAnswerSelect(option.id)}
                     disabled={isQuestionAnswered}
                   >
-                    <span className="font-semibold mr-3 text-lg">{option.id.toUpperCase()})</span>
+                    <span className="mr-2 font-mono text-xs">
+                      {option.id.toUpperCase()}
+                    </span>
                     <span className="flex-1">{option.text}</span>
                     {answerResult?.answerId === option.id && (
                       <span className="ml-2">
@@ -498,30 +534,44 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
               ))}
             </div>
             
-            {/* Botão de Confirmar */}
-            <AnimatePresence>
-              {!isQuestionAnswered && selectedAnswer && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
+            {/* Botões de Ação */}
+            {!isQuestionAnswered && !isFinished && (
+              <div className="flex gap-2 justify-center">
+                <Button
+                  onClick={handleAnswerSubmit}
+                  disabled={!selectedAnswer || isWaitingForOpponent}
+                  className="flex-1 bg-primary hover:bg-primary/80"
+                  size="sm"
                 >
-                  <Button
-                    onClick={handleAnswerSubmit}
-                    className="w-full text-lg py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
-                    size="lg"
-                  >
-                    <ArrowRight className="mr-2 h-5 w-5" />
-                    Confirmar Resposta
-                  </Button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {isWaitingForOpponent ? (
+                    <>
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
+                      Processando...
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="mr-2 h-3 w-3" />
+                      Responder
+                    </>
+                  )}
+                </Button>
+                
+                <Button
+                  onClick={handleSkipQuestion}
+                  variant="outline"
+                  disabled={isWaitingForOpponent}
+                  className="border-muted-foreground/30 hover:bg-muted/50 px-3"
+                  size="sm"
+                >
+                  <ArrowRight className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
 
             {isQuestionAnswered && (
               <div className="text-center text-muted-foreground">
-                <Zap className="h-5 w-5 mx-auto mb-2 animate-pulse" />
-                Próxima pergunta em instantes...
+                <Zap className="h-4 w-4 mx-auto mb-2 animate-pulse" />
+                <p className="text-xs">Próxima pergunta em instantes...</p>
               </div>
             )}
           </CardContent>

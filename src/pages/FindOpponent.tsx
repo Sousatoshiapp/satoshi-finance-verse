@@ -181,8 +181,10 @@ export default function FindOpponent() {
 
       toast({
         title: "🎯 Convite enviado!",
-        description: `Convite de duelo enviado para ${opponent.nickname}`,
+        description: `Convite de duelo enviado para ${opponent.nickname}. Aguarde a resposta.`,
       });
+
+      // Não redirecionar automaticamente - aguardar resposta do oponente
 
     } catch (error) {
       console.error('Error challenging user:', error);

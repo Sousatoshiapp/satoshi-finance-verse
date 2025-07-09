@@ -19,11 +19,16 @@ export default function Duels() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Reset all states when component mounts (when user returns to the screen)
+    setActiveDuel(null);
+    setCurrentView('main');
+    setPendingInvites([]);
+    
     // Load user profile and check for active duels
     loadUserData();
     checkForActiveDuel();
     loadPendingInvites();
-  }, [navigate]);
+  }, []);
 
   const loadUserData = async () => {
     try {
