@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame } from "lucide-react";
+import { SatoshiCity3D } from "@/components/satoshi-city-3d";
+import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box } from "lucide-react";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
 import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
@@ -83,6 +84,7 @@ export default function SatoshiCity() {
   const [userDistricts, setUserDistricts] = useState<UserDistrict[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentCityImage, setCurrentCityImage] = useState(satoshiCityNight);
+  const [is3DMode, setIs3DMode] = useState(false);
   const navigate = useNavigate();
 
   // Memoize the city image function
@@ -243,6 +245,11 @@ export default function SatoshiCity() {
     );
   }
 
+  // Renderizar modo 3D
+  if (is3DMode) {
+    return <SatoshiCity3D onBack={() => setIs3DMode(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
       {/* Dynamic Cyberpunk City Background */}
@@ -269,13 +276,24 @@ export default function SatoshiCity() {
           Bem-vindo à cidade do futuro financeiro. 
           Clique nos distritos para explorar conhecimento.
         </p>
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center space-x-4 mb-6">
           <Badge variant="outline" className="border-cyan-400 text-cyan-400">
             7 Distritos Ativos
           </Badge>
           <Badge variant="outline" className="border-purple-400 text-purple-400">
             Sistema Neural Ativo
           </Badge>
+        </div>
+        
+        {/* Botão para modo 3D */}
+        <div className="flex justify-center">
+          <Button
+            onClick={() => setIs3DMode(true)}
+            className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-medium px-6 py-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105"
+          >
+            <Box className="w-5 h-5 mr-2" />
+            Explorar em 3D
+          </Button>
         </div>
       </div>
 
