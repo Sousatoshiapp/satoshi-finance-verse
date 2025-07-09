@@ -1,311 +1,89 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { UserCard } from "@/components/social/user-card";
-import { ArrowLeft, Search, Users, Shuffle } from "lucide-react";
+import { ArrowLeft, Users, Zap, Target, Clock, Loader2, Bot, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { FloatingNavbar } from "@/components/floating-navbar";
+import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";
 
-interface UserProfile {
-  id: string;
-  nickname: string;
-  level: number;
-  xp: number;
-  profile_image_url?: string;
-  avatars?: {
-    id: string;
-    name: string;
-    description: string;
-    image_url: string;
-    avatar_class: string;
-    district_theme: string;
-    rarity: string;
-    evolution_level?: number;
-  };
-}
+const topics = [
+  { id: "financas", name: "Finanças Gerais", description: "Conceitos básicos de educação financeira" },
+  { id: "investimentos", name: "Investimentos", description: "Ações, fundos, renda fixa" },
+  { id: "criptomoedas", name: "Criptomoedas", description: "Bitcoin, Ethereum e blockchain" },
+  { id: "economia", name: "Economia", description: "Macroeconomia e mercados" },
+];
 
 export default function FindOpponent() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState<UserProfile[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [selectedTopic, setSelectedTopic] = useState("financas");
+  const { isSearching, matchResult, startMatchmaking, cancelMatchmaking, createDuel } = useDuelMatchmaking();
+  const [searchTime, setSearchTime] = useState(0);
 
   useEffect(() => {
-    loadCurrentUser();
-    loadRandomUsers();
-  }, []);
-
-  const loadCurrentUser = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      setCurrentUser(profile);
-    } catch (error) {
-      console.error('Error loading current user:', error);
+    let interval: NodeJS.Timeout;
+    if (isSearching) {
+      interval = setInterval(() => {
+        setSearchTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      setSearchTime(0);
     }
-  };
+    return () => clearInterval(interval);
+  }, [isSearching]);
 
-  const loadRandomUsers = async () => {
-    setLoading(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: currentProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      const { data } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          nickname,
-          level,
-          xp,
-          profile_image_url,
-          avatars (*)
-        `)
-        .neq('id', currentProfile?.id)
-        .limit(10);
-
-      setUsers(data || []);
-    } catch (error) {
-      console.error('Error loading users:', error);
-    } finally {
-      setLoading(false);
+  // Handle match results
+  useEffect(() => {
+    if (matchResult?.matchFound && matchResult.opponentId) {
+      handleMatchFound();
     }
-  };
+  }, [matchResult]);
 
-  const searchUsers = async () => {
-    if (!searchQuery.trim()) {
-      loadRandomUsers();
-      return;
-    }
-
-    setLoading(true);
+  const handleMatchFound = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: currentProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      const { data } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          nickname,
-          level,
-          xp,
-          profile_image_url,
-          avatars (*)
-        `)
-        .neq('id', currentProfile?.id)
-        .ilike('nickname', `%${searchQuery}%`)
-        .limit(10);
-
-      setUsers(data || []);
-    } catch (error) {
-      console.error('Error searching users:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const challengeUser = async (userId: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: challengerProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!challengerProfile) return;
-
-      const { error } = await supabase
-        .from('duel_invites')
-        .insert({
-          challenger_id: challengerProfile.id,
-          challenged_id: userId,
-          quiz_topic: 'financas'
-        });
-
-      if (error) throw error;
-
+      if (!matchResult?.opponentId) return;
+      
+      const duel = await createDuel(matchResult.opponentId, selectedTopic);
+      
       toast({
-        title: "Desafio enviado!",
-        description: "O usuário foi desafiado. Aguarde a resposta.",
+        title: "Duelo criado!",
+        description: "Redirecionando para o duelo...",
       });
-
+      
+      // Navigate to duels page to see active duel
       navigate('/duels');
     } catch (error) {
-      console.error('Error challenging user:', error);
+      console.error('Error handling match:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível enviar o desafio. Tente novamente.",
+        title: "Erro ao criar duelo",
+        description: "Tente novamente",
         variant: "destructive"
       });
     }
   };
 
-  const findAutomaticOpponent = async () => {
+  const handleStartSearch = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!profile) return;
-
-      // Buscar um bot aleatório
-      const { data: bots } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('is_bot', true)
-        .limit(10);
-
-      if (!bots || bots.length === 0) {
-        toast({
-          title: "Nenhum bot disponível",
-          description: "Não há bots disponíveis no momento.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const randomBot = bots[Math.floor(Math.random() * bots.length)];
-
-      // Gerar perguntas para o duelo
-      const questions = [
-        {
-          id: 1,
-          question: "Qual é a melhor estratégia para investir a longo prazo?",
-          options: [
-            { id: "a", text: "Ativos diversificados", isCorrect: true },
-            { id: "b", text: "Day Trading", isCorrect: false },
-            { id: "c", text: "Colocar tudo em criptomoedas", isCorrect: false },
-            { id: "d", text: "Deixar todo dinheiro no colchão", isCorrect: false }
-          ]
-        },
-        {
-          id: 2,
-          question: "O que é reserva de emergência?",
-          options: [
-            { id: "a", text: "Dinheiro para compras supérfluas", isCorrect: false },
-            { id: "b", text: "Investimento de alto risco", isCorrect: false },
-            { id: "c", text: "Recurso para situações inesperadas", isCorrect: true },
-            { id: "d", text: "Dinheiro para férias", isCorrect: false }
-          ]
-        },
-        {
-          id: 3,
-          question: "Qual a principal vantagem dos juros compostos?",
-          options: [
-            { id: "a", text: "Rendimento sobre rendimento", isCorrect: true },
-            { id: "b", text: "Garantia de lucro", isCorrect: false },
-            { id: "c", text: "Isento de riscos", isCorrect: false },
-            { id: "d", text: "Liquidez imediata", isCorrect: false }
-          ]
-        },
-        {
-          id: 4,
-          question: "O que significa 'Bull Market'?",
-          options: [
-            { id: "a", text: "Mercado em alta", isCorrect: true },
-            { id: "b", text: "Mercado em baixa", isCorrect: false },
-            { id: "c", text: "Mercado lateral", isCorrect: false },
-            { id: "d", text: "Mercado fechado", isCorrect: false }
-          ]
-        },
-        {
-          id: 5,
-          question: "O que é 'DCA' (Dollar Cost Averaging)?",
-          options: [
-            { id: "a", text: "Estratégia de investimento regular", isCorrect: true },
-            { id: "b", text: "Tipo de criptomoeda", isCorrect: false },
-            { id: "c", text: "Taxa da corretora", isCorrect: false },
-            { id: "d", text: "Método de análise gráfica", isCorrect: false }
-          ]
-        }
-      ];
-
-      // Primeiro criar um convite auto-aceito
-      const { data: inviteData, error: inviteError } = await supabase
-        .from('duel_invites')
-        .insert({
-          challenger_id: profile.id,
-          challenged_id: randomBot.id,
-          quiz_topic: 'financas',
-          status: 'accepted'
-        })
-        .select()
-        .single();
-
-      if (inviteError) throw inviteError;
-
-      // Criar duelo com bot
-      const { error: duelError } = await supabase
-        .from('duels')
-        .insert({
-          invite_id: inviteData.id,
-          player1_id: profile.id,
-          player2_id: randomBot.id,
-          quiz_topic: 'financas',
-          questions: questions,
-          status: 'active',
-          current_turn: profile.id,
-          turn_started_at: new Date().toISOString(),
-          current_question: 1
-        });
-
-      if (duelError) throw duelError;
-
-      toast({
-        title: "Bot encontrado!",
-        description: `Iniciando duelo com ${randomBot.nickname}!`,
-      });
-
-      navigate('/duels');
+      await startMatchmaking(selectedTopic);
     } catch (error) {
-      console.error('Error finding automatic opponent:', error);
+      console.error('Error starting search:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível encontrar oponente automático.",
+        title: "Erro ao iniciar busca",
+        description: "Tente novamente",
         variant: "destructive"
       });
     }
   };
 
-  const findRandomOpponent = () => {
-    if (users.length > 0) {
-      const randomUser = users[Math.floor(Math.random() * users.length)];
-      challengeUser(randomUser.id);
-    }
+  const handleCancelSearch = async () => {
+    await cancelMatchmaking();
+    setSearchTime(0);
+    toast({
+      title: "Busca cancelada",
+      description: "Você pode tentar novamente quando quiser",
+    });
   };
 
   return (
@@ -333,97 +111,148 @@ export default function FindOpponent() {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#adff2f] via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-xl font-bold bg-gradient-to-r from-[#adff2f] via-purple-400 to-pink-400 bg-clip-text text-transparent">
             ENCONTRAR OPONENTE
           </h1>
           <div className="w-10"></div>
         </div>
 
-        {/* Search Section */}
-        <Card className="relative border-none shadow-none mb-8" style={{
+        {/* Topic Selection */}
+        <Card className="relative border-none shadow-none mb-6" style={{
           background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.1), rgba(255, 0, 255, 0.1), rgba(255, 255, 0, 0.05))',
           boxShadow: '0 8px 32px rgba(173, 255, 47, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(173, 255, 47, 0.2)'
         }}>
-          <CardContent className="p-6">
-            <div className="flex gap-2 mb-4">
-              <Input
-                placeholder="Buscar por nickname..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && searchUsers()}
-                className="bg-black/30 border-[#adff2f]/30 text-white placeholder:text-white/60"
-              />
-              <Button
-                onClick={searchUsers}
-                className="bg-[#adff2f] hover:bg-[#adff2f]/80 text-black"
+          <CardHeader className="pb-3">
+            <CardTitle className="text-[#adff2f] flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Escolha o Tópico
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {topics.map((topic) => (
+              <div
+                key={topic.id}
+                onClick={() => setSelectedTopic(topic.id)}
+                className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
+                  selectedTopic === topic.id
+                    ? 'border-[#adff2f] bg-[#adff2f]/10 text-[#adff2f]'
+                    : 'border-white/20 hover:border-[#adff2f]/50 text-white/80 hover:text-white'
+                }`}
               >
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="space-y-2">
-              <Button
-                onClick={findAutomaticOpponent}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
-              >
-                <Shuffle className="h-4 w-4 mr-2" />
-                Encontrar Oponente Automático
-              </Button>
-              
-              <Button
-                onClick={findRandomOpponent}
-                variant="outline"
-                className="w-full border-[#adff2f]/30 text-[#adff2f] hover:bg-[#adff2f]/10"
-              >
-                Desafiar Aleatório da Lista
-              </Button>
-            </div>
+                <div className="font-medium">{topic.name}</div>
+                <div className="text-xs opacity-70">{topic.description}</div>
+              </div>
+            ))}
           </CardContent>
         </Card>
 
-        {/* Users List */}
-        <div className="space-y-4">
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="text-[#adff2f]">Buscando oponentes...</div>
-            </div>
-          ) : users.length === 0 ? (
-            <Card className="bg-black/20 border-[#adff2f]/20">
-              <CardContent className="p-6 text-center">
-                <Users className="h-12 w-12 text-[#adff2f]/50 mx-auto mb-4" />
-                <p className="text-white/70">Nenhum usuário encontrado</p>
-                <p className="text-sm text-white/50 mt-2">
-                  {searchQuery ? 'Tente buscar com outro termo' : 'Carregue usuários aleatórios'}
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            users.map((user) => (
-              <Card 
-                key={user.id}
-                className="bg-black/20 border-[#adff2f]/20 hover:border-[#adff2f]/40 transition-all duration-300"
+        {/* Matchmaking Section */}
+        <Card className="relative border-none shadow-none mb-6" style={{
+          background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.1), rgba(255, 0, 255, 0.1), rgba(255, 255, 0, 0.05))',
+          boxShadow: '0 8px 32px rgba(173, 255, 47, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(173, 255, 47, 0.2)'
+        }}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-[#adff2f] flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Sistema de Duelos
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {!isSearching ? (
+              <Button 
+                onClick={handleStartSearch}
+                size="lg"
+                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4"
               >
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <UserCard
-                      user={user}
-                      compact
-                      showSocialStats={false}
-                    />
-                    <Button
-                      onClick={() => challengeUser(user.id)}
-                      className="bg-[#adff2f] hover:bg-[#adff2f]/80 text-black font-semibold"
-                    >
-                      Desafiar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
+                <Zap className="mr-2 h-5 w-5" />
+                Procurar Oponente
+              </Button>
+            ) : (
+              <div className="text-center space-y-4">
+                <div className="flex items-center justify-center space-x-2">
+                  <Loader2 className="h-6 w-6 animate-spin text-[#adff2f]" />
+                  <span className="text-lg font-medium text-white">
+                    {matchResult?.opponentType === 'waiting' ? 'Procurando oponente...' : 'Conectando...'}
+                  </span>
+                </div>
+                <div className="text-sm text-white/60">
+                  Tempo de busca: {Math.floor(searchTime / 60)}:{(searchTime % 60).toString().padStart(2, '0')}
+                </div>
+                {matchResult?.opponentType === 'waiting' && (
+                  <p className="text-xs text-white/50">
+                    Você está na fila. Um bot será designado automaticamente se nenhum jogador for encontrado.
+                  </p>
+                )}
+                <Button 
+                  onClick={handleCancelSearch}
+                  variant="outline"
+                  className="w-full border-[#adff2f]/30 text-[#adff2f] hover:bg-[#adff2f]/10"
+                >
+                  Cancelar Busca
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Match Status */}
+        {matchResult && (
+          <Card className="relative border-none shadow-none mb-6" style={{
+            background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.1), rgba(255, 0, 255, 0.1), rgba(255, 255, 0, 0.05))',
+            boxShadow: '0 8px 32px rgba(173, 255, 47, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(173, 255, 47, 0.2)'
+          }}>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-center space-x-3">
+                {matchResult.opponentType === 'bot' ? (
+                  <Bot className="h-6 w-6 text-purple-400" />
+                ) : matchResult.opponentType === 'human' ? (
+                  <User className="h-6 w-6 text-blue-400" />
+                ) : (
+                  <Clock className="h-6 w-6 text-yellow-400" />
+                )}
+                <span className="text-white font-medium">
+                  {matchResult.opponentType === 'bot' && 'Bot encontrado!'}
+                  {matchResult.opponentType === 'human' && 'Jogador encontrado!'}
+                  {matchResult.opponentType === 'waiting' && 'Na fila de espera...'}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* How it Works */}
+        <Card className="relative border-none shadow-none" style={{
+          background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.05), rgba(255, 0, 255, 0.05), rgba(255, 255, 0, 0.02))',
+          border: '1px solid rgba(173, 255, 47, 0.1)'
+        }}>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-[#adff2f] text-sm">Como Funciona</CardTitle>
+          </CardHeader>
+          <CardContent className="text-xs text-white/60 space-y-2">
+            <div className="flex items-start gap-2">
+              <div className="w-4 h-4 rounded-full bg-[#adff2f] flex items-center justify-center text-black text-xs font-bold mt-0.5">1</div>
+              <div>Escolha um tópico e clique em "Procurar Oponente"</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-4 h-4 rounded-full bg-purple-400 flex items-center justify-center text-black text-xs font-bold mt-0.5">2</div>
+              <div>Sistema busca por jogadores reais primeiro</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-4 h-4 rounded-full bg-orange-400 flex items-center justify-center text-black text-xs font-bold mt-0.5">3</div>
+              <div>Se não encontrar, um bot inteligente será seu oponente</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <div className="w-4 h-4 rounded-full bg-blue-400 flex items-center justify-center text-white text-xs font-bold mt-0.5">4</div>
+              <div>Duelo inicia automaticamente quando o match é encontrado</div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <FloatingNavbar />

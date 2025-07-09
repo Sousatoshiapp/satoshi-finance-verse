@@ -116,6 +116,8 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
                 {/* Avatar */}
                 <AvatarDisplayUniversal
                   avatarUrl={user.avatar_url}
+                  avatarName={user.avatarName}
+                  profileImageUrl={user.profileImageUrl}
                   nickname={user.username}
                   size="sm"
                 />

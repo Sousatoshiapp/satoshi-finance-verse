@@ -5,6 +5,8 @@ export interface LeaderboardUser {
   id: string;
   username: string;
   avatar_url?: string;
+  avatarName?: string;
+  profileImageUrl?: string;
   level: number;
   xp: number;
   rank: number;
@@ -49,7 +51,9 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
         return {
           id: profile.id,
           username: profile.nickname,
-          avatar_url: profile.avatars?.image_url || profile.profile_image_url,
+          avatar_url: profile.avatars?.image_url,
+          avatarName: profile.avatars?.name,
+          profileImageUrl: profile.profile_image_url,
           level: profile.level || 1,
           xp: profile.xp || 0,
           rank: index + 1,
@@ -87,7 +91,9 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
     return topProfiles.map((profile, index) => ({
       id: profile.id,
       username: profile.nickname,
-      avatar_url: (profile as any).avatars?.image_url || profile.profile_image_url,
+      avatar_url: (profile as any).avatars?.image_url,
+      avatarName: (profile as any).avatars?.name,
+      profileImageUrl: profile.profile_image_url,
       level: profile.level || 1,
       xp: profile.xp || 0,
       rank: index + 1,

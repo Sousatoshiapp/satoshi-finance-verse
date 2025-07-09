@@ -113,21 +113,28 @@ export const AvatarDisplayUniversal = memo(({
   size = "md"
 }: AvatarDisplayUniversalProps) => {
   const getAvatarImage = () => {
-    // Try avatar URL first
-    if (avatarUrl) return avatarUrl;
-    
-    // Try profile image URL
+    // Try profile image URL first (uploaded images)
     if (profileImageUrl) return profileImageUrl;
+    
+    // Try avatar URL (if it's a proper URL)
+    if (avatarUrl && (avatarUrl.startsWith('http') || avatarUrl.startsWith('/'))) {
+      return avatarUrl;
+    }
     
     // Try to map avatar name to local image
     if (avatarName) {
-      console.log('Mapping avatar name:', avatarName);
-      const normalizedName = avatarName.toLowerCase().replace(/\s+/g, '-');
-      const avatarImage = avatarImages[normalizedName as keyof typeof avatarImages] || 
-                         avatarImages[avatarName as keyof typeof avatarImages];
+      // Try exact match first
+      let normalizedName = avatarName.toLowerCase().replace(/\s+/g, '-');
+      let avatarImage = avatarImages[normalizedName as keyof typeof avatarImages];
+      
+      // If no exact match, try variations
+      if (!avatarImage) {
+        // Try with different normalizations
+        normalizedName = avatarName.toLowerCase().replace(/[\s_]+/g, '-');
+        avatarImage = avatarImages[normalizedName as keyof typeof avatarImages];
+      }
       
       if (avatarImage) {
-        console.log('Found avatar image for:', avatarName);
         return avatarImage;
       }
     }
