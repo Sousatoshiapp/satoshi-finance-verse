@@ -1181,6 +1181,51 @@ export type Database = {
           },
         ]
       }
+      educational_concepts: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          fundamental_level: number | null
+          id: string
+          learning_module_id: string | null
+          name: string
+          parent_concept_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          fundamental_level?: number | null
+          id?: string
+          learning_module_id?: string | null
+          name: string
+          parent_concept_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          fundamental_level?: number | null
+          id?: string
+          learning_module_id?: string | null
+          name?: string
+          parent_concept_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "educational_concepts_learning_module_id_fkey"
+            columns: ["learning_module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "educational_concepts_parent_concept_id_fkey"
+            columns: ["parent_concept_id"]
+            isOneToOne: false
+            referencedRelation: "educational_concepts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guild_activities: {
         Row: {
           activity_data: Json | null
@@ -1544,6 +1589,57 @@ export type Database = {
           name?: string
           rewards?: Json | null
           tier?: number
+        }
+        Relationships: []
+      }
+      learning_modules: {
+        Row: {
+          banner_image_url: string | null
+          created_at: string | null
+          description: string | null
+          difficulty_level: number | null
+          estimated_duration_minutes: number | null
+          icon: string | null
+          id: string
+          is_active: boolean | null
+          learning_objectives: string[] | null
+          module_order: number | null
+          name: string
+          prerequisite_modules: string[] | null
+          sponsor_company: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          banner_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty_level?: number | null
+          estimated_duration_minutes?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          learning_objectives?: string[] | null
+          module_order?: number | null
+          name: string
+          prerequisite_modules?: string[] | null
+          sponsor_company?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          banner_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          difficulty_level?: number | null
+          estimated_duration_minutes?: number | null
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+          learning_objectives?: string[] | null
+          module_order?: number | null
+          name?: string
+          prerequisite_modules?: string[] | null
+          sponsor_company?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -2225,43 +2321,150 @@ export type Database = {
           },
         ]
       }
+      question_concepts: {
+        Row: {
+          concept_id: string
+          id: string
+          question_id: string
+          relevance_weight: number | null
+        }
+        Insert: {
+          concept_id: string
+          id?: string
+          question_id: string
+          relevance_weight?: number | null
+        }
+        Update: {
+          concept_id?: string
+          id?: string
+          question_id?: string
+          relevance_weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_concepts_concept_id_fkey"
+            columns: ["concept_id"]
+            isOneToOne: false
+            referencedRelation: "educational_concepts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_concepts_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      question_imports: {
+        Row: {
+          created_at: string | null
+          failed_imports: number | null
+          file_name: string
+          id: string
+          learning_module_id: string | null
+          processed_at: string | null
+          status: string | null
+          successful_imports: number | null
+          total_questions: number | null
+          uploaded_by: string
+          validation_errors: Json | null
+        }
+        Insert: {
+          created_at?: string | null
+          failed_imports?: number | null
+          file_name: string
+          id?: string
+          learning_module_id?: string | null
+          processed_at?: string | null
+          status?: string | null
+          successful_imports?: number | null
+          total_questions?: number | null
+          uploaded_by: string
+          validation_errors?: Json | null
+        }
+        Update: {
+          created_at?: string | null
+          failed_imports?: number | null
+          file_name?: string
+          id?: string
+          learning_module_id?: string | null
+          processed_at?: string | null
+          status?: string | null
+          successful_imports?: number | null
+          total_questions?: number | null
+          uploaded_by?: string
+          validation_errors?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_imports_learning_module_id_fkey"
+            columns: ["learning_module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quiz_questions: {
         Row: {
           category: string
+          cognitive_level: string | null
           correct_answer: string
           created_at: string
           difficulty: string
+          difficulty_level: number | null
           district_id: string | null
+          estimated_time_seconds: number | null
           explanation: string | null
+          feedback_wrong_answers: Json | null
           id: string
+          learning_module_id: string | null
+          learning_objectives: string[] | null
           options: Json
           question: string
+          question_type: string | null
           tags: string[] | null
           updated_at: string
         }
         Insert: {
           category: string
+          cognitive_level?: string | null
           correct_answer: string
           created_at?: string
           difficulty: string
+          difficulty_level?: number | null
           district_id?: string | null
+          estimated_time_seconds?: number | null
           explanation?: string | null
+          feedback_wrong_answers?: Json | null
           id?: string
+          learning_module_id?: string | null
+          learning_objectives?: string[] | null
           options: Json
           question: string
+          question_type?: string | null
           tags?: string[] | null
           updated_at?: string
         }
         Update: {
           category?: string
+          cognitive_level?: string | null
           correct_answer?: string
           created_at?: string
           difficulty?: string
+          difficulty_level?: number | null
           district_id?: string | null
+          estimated_time_seconds?: number | null
           explanation?: string | null
+          feedback_wrong_answers?: Json | null
           id?: string
+          learning_module_id?: string | null
+          learning_objectives?: string[] | null
           options?: Json
           question?: string
+          question_type?: string | null
           tags?: string[] | null
           updated_at?: string
         }
@@ -2271,6 +2474,13 @@ export type Database = {
             columns: ["district_id"]
             isOneToOne: false
             referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_questions_learning_module_id_fkey"
+            columns: ["learning_module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
             referencedColumns: ["id"]
           },
         ]
@@ -3245,6 +3455,56 @@ export type Database = {
           },
         ]
       }
+      user_concept_mastery: {
+        Row: {
+          concept_id: string
+          correct_responses: number | null
+          created_at: string | null
+          id: string
+          last_reviewed: string | null
+          learning_strength: number | null
+          mastery_level: number | null
+          next_review: string | null
+          total_exposures: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          concept_id: string
+          correct_responses?: number | null
+          created_at?: string | null
+          id?: string
+          last_reviewed?: string | null
+          learning_strength?: number | null
+          mastery_level?: number | null
+          next_review?: string | null
+          total_exposures?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          concept_id?: string
+          correct_responses?: number | null
+          created_at?: string | null
+          id?: string
+          last_reviewed?: string | null
+          learning_strength?: number | null
+          mastery_level?: number | null
+          next_review?: string | null
+          total_exposures?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_concept_mastery_concept_id_fkey"
+            columns: ["concept_id"]
+            isOneToOne: false
+            referencedRelation: "educational_concepts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_districts: {
         Row: {
           daily_streak: number | null
@@ -3490,6 +3750,56 @@ export type Database = {
           },
         ]
       }
+      user_module_progress: {
+        Row: {
+          completed_at: string | null
+          current_lesson: number | null
+          id: string
+          is_completed: boolean | null
+          last_accessed: string | null
+          mastery_score: number | null
+          module_id: string
+          started_at: string | null
+          time_spent_minutes: number | null
+          total_lessons: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          current_lesson?: number | null
+          id?: string
+          is_completed?: boolean | null
+          last_accessed?: string | null
+          mastery_score?: number | null
+          module_id: string
+          started_at?: string | null
+          time_spent_minutes?: number | null
+          total_lessons?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          current_lesson?: number | null
+          id?: string
+          is_completed?: boolean | null
+          last_accessed?: string | null
+          mastery_score?: number | null
+          module_id?: string
+          started_at?: string | null
+          time_spent_minutes?: number | null
+          total_lessons?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_module_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_power_ups: {
         Row: {
           acquired_at: string
@@ -3639,11 +3949,17 @@ export type Database = {
       }
       user_question_progress: {
         Row: {
+          concept_mastery: number | null
+          consecutive_correct: number | null
           created_at: string
+          difficulty_preference: number | null
           easiness_factor: number
           id: string
           interval_days: number
+          last_response_time_ms: number | null
           last_reviewed: string | null
+          learning_module_id: string | null
+          learning_velocity: number | null
           next_review_date: string
           quality_responses: number[] | null
           question_id: string
@@ -3654,11 +3970,17 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          concept_mastery?: number | null
+          consecutive_correct?: number | null
           created_at?: string
+          difficulty_preference?: number | null
           easiness_factor?: number
           id?: string
           interval_days?: number
+          last_response_time_ms?: number | null
           last_reviewed?: string | null
+          learning_module_id?: string | null
+          learning_velocity?: number | null
           next_review_date?: string
           quality_responses?: number[] | null
           question_id: string
@@ -3669,11 +3991,17 @@ export type Database = {
           user_id: string
         }
         Update: {
+          concept_mastery?: number | null
+          consecutive_correct?: number | null
           created_at?: string
+          difficulty_preference?: number | null
           easiness_factor?: number
           id?: string
           interval_days?: number
+          last_response_time_ms?: number | null
           last_reviewed?: string | null
+          learning_module_id?: string | null
+          learning_velocity?: number | null
           next_review_date?: string
           quality_responses?: number[] | null
           question_id?: string
@@ -3684,6 +4012,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_question_progress_learning_module_id_fkey"
+            columns: ["learning_module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_question_progress_question_id_fkey"
             columns: ["question_id"]
@@ -4332,6 +4667,23 @@ export type Database = {
           mission_completed: boolean
           rewards_earned: Json
         }[]
+      }
+      update_module_progress: {
+        Args: {
+          p_user_id: string
+          p_module_id: string
+          p_lesson_completed?: boolean
+        }
+        Returns: undefined
+      }
+      update_srs_with_concepts: {
+        Args: {
+          p_user_id: string
+          p_question_id: string
+          p_is_correct: boolean
+          p_response_time_ms?: number
+        }
+        Returns: Json
       }
       update_user_streak: {
         Args: { profile_id: string; activity_date?: string }

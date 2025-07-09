@@ -3,23 +3,32 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useSRSSystem } from "@/hooks/use-srs-system";
-import { X } from "lucide-react";
+import { useEnhancedSRS } from "@/hooks/use-enhanced-srs";
+import { X, Brain, Clock, Target } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface SRSQuizCardProps {
   difficulty?: 'easy' | 'medium' | 'hard';
-  onComplete?: (score: number, total: number) => void;
+  moduleId?: string;
+  conceptFocus?: string[];
+  onComplete?: (score: number, total: number, conceptsImproved: number) => void;
   onExit?: () => void;
 }
 
-export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuizCardProps) {
-  const { getDueQuestions, submitAnswer } = useSRSSystem();
+export function SRSQuizCard({ 
+  difficulty = 'easy', 
+  moduleId, 
+  conceptFocus, 
+  onComplete, 
+  onExit 
+}: SRSQuizCardProps) {
+  const { getDueQuestions, submitEnhancedAnswer } = useEnhancedSRS();
   const [questions, setQuestions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
+  const [conceptsImproved, setConceptsImproved] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
   const [loading, setLoading] = useState(true);
 
@@ -29,7 +38,7 @@ export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuiz
 
   const loadQuestions = async () => {
     setLoading(true);
-    const dueQuestions = await getDueQuestions(difficulty, 10);
+    const dueQuestions = await getDueQuestions(difficulty, moduleId, 10, conceptFocus);
     setQuestions(dueQuestions);
     setLoading(false);
     setStartTime(Date.now());
@@ -47,8 +56,17 @@ export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuiz
     
     if (isCorrect) setScore(score + 1);
     
-    // Submit to SRS system
-    await submitAnswer(currentQuestion.id, isCorrect, responseTime);
+    // Submit to enhanced SRS system
+    const conceptUpdate = await submitEnhancedAnswer(
+      currentQuestion.id, 
+      isCorrect, 
+      responseTime, 
+      optionText
+    );
+    
+    if (conceptUpdate && typeof conceptUpdate === 'object' && 'concepts_improved' in conceptUpdate) {
+      setConceptsImproved(prev => prev + (conceptUpdate as any).concepts_improved);
+    }
     
     setTimeout(() => {
       if (currentIndex < questions.length - 1) {
@@ -57,9 +75,9 @@ export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuiz
         setShowResult(false);
         setStartTime(Date.now());
       } else {
-        onComplete?.(score + (isCorrect ? 1 : 0), questions.length);
+        onComplete?.(score + (isCorrect ? 1 : 0), questions.length, conceptsImproved);
       }
-    }, 2000);
+    }, 2500); // Slightly longer to show feedback
   };
 
   if (loading) {
@@ -86,19 +104,65 @@ export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuiz
   return (
     <Card className="p-6 max-w-2xl mx-auto">
       <div className="mb-4 flex items-center justify-between">
-        <Badge variant="outline">{currentQuestion.difficulty}</Badge>
-        <div className="text-sm text-muted-foreground">
-          {currentIndex + 1} / {questions.length}
+        <div className="flex items-center gap-2">
+          <Badge variant="outline">{currentQuestion.difficulty}</Badge>
+          {currentQuestion.difficulty_level && (
+            <Badge variant="secondary" className="text-xs">
+              Nível {currentQuestion.difficulty_level}
+            </Badge>
+          )}
+        </div>
+        <div className="text-sm text-muted-foreground flex items-center gap-2">
+          <span>{currentIndex + 1} / {questions.length}</span>
+          {currentQuestion.estimated_time_seconds && (
+            <div className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {currentQuestion.estimated_time_seconds}s
+            </div>
+          )}
         </div>
       </div>
 
       <div className="mb-4">
-        <Badge variant="secondary" className="mb-2">
-          {currentQuestion.category}
-        </Badge>
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="secondary">
+            {currentQuestion.category}
+          </Badge>
+          {currentQuestion.cognitive_level && (
+            <Badge variant="outline" className="text-xs">
+              {currentQuestion.cognitive_level}
+            </Badge>
+          )}
+          {currentQuestion.concepts && currentQuestion.concepts.length > 0 && (
+            <div className="flex items-center gap-1">
+              <Brain className="h-3 w-3 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">
+                {currentQuestion.concepts.length} conceito(s)
+              </span>
+            </div>
+          )}
+        </div>
         <h2 className="text-xl font-bold text-foreground leading-relaxed">
           {currentQuestion.question}
         </h2>
+        
+        {/* Learning Objectives */}
+        {currentQuestion.learning_objectives && currentQuestion.learning_objectives.length > 0 && (
+          <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-1 mb-1">
+              <Target className="h-3 w-3 text-blue-600" />
+              <span className="text-xs font-medium text-blue-700">Objetivos:</span>
+            </div>
+            <ul className="text-xs text-blue-600 space-y-1">
+              {currentQuestion.learning_objectives.map((objective: string, index: number) => (
+                <li key={index} className="flex items-start gap-1">
+                  <span>•</span>
+                  {objective}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       
       <div className="space-y-3 mb-6">
@@ -132,14 +196,49 @@ export function SRSQuizCard({ difficulty = 'easy', onComplete, onExit }: SRSQuiz
         })}
       </div>
 
-      {showResult && currentQuestion.explanation && (
-        <div className="mt-4 p-4 bg-muted rounded-lg">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-sm font-semibold">💡 Explicação:</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {currentQuestion.explanation}
-          </p>
+      {showResult && (
+        <div className="mt-4 space-y-3">
+          {/* Main Explanation */}
+          {currentQuestion.explanation && (
+            <div className="p-4 bg-muted rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-semibold">💡 Explicação:</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {currentQuestion.explanation}
+              </p>
+            </div>
+          )}
+          
+          {/* Specific Feedback for Wrong Answer */}
+          {!selectedAnswer?.includes(currentQuestion.correct_answer) && 
+           currentQuestion.feedback_wrong_answers?.[selectedAnswer || ''] && (
+            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-semibold text-yellow-700">🤔 Por que esta resposta está incorreta:</span>
+              </div>
+              <p className="text-sm text-yellow-700">
+                {currentQuestion.feedback_wrong_answers[selectedAnswer || '']}
+              </p>
+            </div>
+          )}
+          
+          {/* Concepts Mastered */}
+          {currentQuestion.concepts && currentQuestion.concepts.length > 0 && (
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Brain className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-semibold text-green-700">Conceitos Trabalhados:</span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {currentQuestion.concepts.map((concept: any, index: number) => (
+                  <Badge key={index} variant="outline" className="text-xs text-green-700 border-green-300">
+                    {concept.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
