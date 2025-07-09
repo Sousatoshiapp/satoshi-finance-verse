@@ -1,11 +1,11 @@
 import { memo, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { TrendingUp } from "@/components/icons/optimized-icons";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "@/hooks/use-leaderboard-data";
+import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 
 const CompactLeaderboard = memo(function CompactLeaderboard() {
   const navigate = useNavigate();
@@ -114,10 +114,11 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
                 </div>
                 
                 {/* Avatar */}
-                <Avatar className="h-4 w-4">
-                  <AvatarImage src={user.avatar_url} />
-                  <AvatarFallback className="text-xs font-bold text-xs">{user.username.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <AvatarDisplayUniversal
+                  avatarUrl={user.avatar_url}
+                  nickname={user.username}
+                  size="sm"
+                />
                 
                 {/* Username & Beetz */}
                 <div className="flex-1 min-w-0">

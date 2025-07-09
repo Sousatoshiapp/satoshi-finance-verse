@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 
 import { AvatarSelector } from "@/components/avatar-selector";
 import { UserInventory } from "@/components/profile/user-inventory";
@@ -381,13 +381,14 @@ export default function Profile() {
         <Card className="p-6 mb-8">
           <div className="flex items-center gap-6">
             <div className="relative">
-              <Avatar className="w-20 h-20">
-                <AvatarImage 
-                  src={getAvatarImage(userAvatar?.name) || user.profile_image_url || satoshiLogo} 
-                  alt={user.nickname} 
-                />
-                <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
+              <AvatarDisplayUniversal
+                avatarName={userAvatar?.name}
+                avatarUrl={userAvatar?.image_url}
+                profileImageUrl={user.profile_image_url}
+                nickname={user.nickname}
+                size="xl"
+                className="w-20 h-20"
+              />
               
               {/* Small upload icon */}
               <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">

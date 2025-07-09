@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useLeaderboards } from "@/hooks/use-leaderboards";
 import { Trophy, Medal, Crown, TrendingUp, Clock, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/hooks/use-i18n";
+import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 
 export function Leaderboards() {
   const { 
@@ -182,15 +182,13 @@ export function Leaderboards() {
               </div>
 
               {/* Avatar */}
-              <Avatar className="h-10 w-10">
-                <AvatarImage 
-                  src={(entry.profiles as any)?.avatars?.image_url} 
-                  alt={(entry.profiles as any)?.nickname || 'User'} 
-                />
-                <AvatarFallback>
-                  {((entry.profiles as any)?.nickname || 'U')[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarDisplayUniversal
+                avatarName={(entry.profiles as any)?.avatars?.name}
+                avatarUrl={(entry.profiles as any)?.avatars?.image_url}
+                profileImageUrl={(entry.profiles as any)?.profile_image_url}
+                nickname={(entry.profiles as any)?.nickname || 'User'}
+                size="md"
+              />
 
               {/* User Info */}
               <div className="flex-1 min-w-0">

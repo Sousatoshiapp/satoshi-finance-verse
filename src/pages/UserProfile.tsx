@@ -3,12 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { SocialButton } from "@/components/social/social-button";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Trophy, Medal, Star, TrendingUp, Users, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 
 interface UserProfileData {
   id: string;
@@ -216,12 +216,14 @@ export default function UserProfile() {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center md:items-start">
-                <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={user.avatar?.image_url || user.profile_image_url} />
-                  <AvatarFallback className="text-2xl">
-                    {user.nickname.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <AvatarDisplayUniversal
+                  avatarName={user.avatar?.name}
+                  avatarUrl={user.avatar?.image_url}
+                  profileImageUrl={user.profile_image_url}
+                  nickname={user.nickname}
+                  size="xl"
+                  className="mb-4"
+                />
                 
                 <div className="text-center md:text-left">
                   <h2 className="text-2xl font-bold mb-2">{user.nickname}</h2>
@@ -367,10 +369,12 @@ export default function UserProfile() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={user.avatar.image_url} />
-                  <AvatarFallback>{user.avatar.name.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <AvatarDisplayUniversal
+                  avatarName={user.avatar.name}
+                  avatarUrl={user.avatar.image_url}
+                  nickname={user.avatar.name}
+                  size="lg"
+                />
                 <div>
                   <h3 className="font-semibold text-lg">{user.avatar.name}</h3>
                   <Badge 
