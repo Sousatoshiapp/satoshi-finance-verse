@@ -376,44 +376,44 @@ export function SocialFeed() {
   return (
     <div className="space-y-6">
       {/* Create Post */}
-      <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+      <Card className="border border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+        <CardHeader className="pb-1 px-2 sm:px-4 pt-2 sm:pt-4">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
               <AvatarImage src="" />
               <AvatarFallback>
-                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-sm sm:text-base">Compartilhe com a comunidade</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
-                Conte sobre suas estratégias, conquistas ou dúvidas
+              <h3 className="font-medium text-xs sm:text-sm">Compartilhe</h3>
+              <p className="text-xs text-muted-foreground hidden sm:block">
+                Conte sobre suas estratégias
               </p>
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-0 px-3 sm:px-6 pb-3 sm:pb-6">
-          <div className="space-y-2 sm:space-y-3">
+        <CardContent className="pt-0 px-2 sm:px-4 pb-2 sm:pb-4">
+          <div className="space-y-2">
             <Textarea
-              placeholder="No que você está pensando sobre o mercado hoje?"
+              placeholder="No que você está pensando sobre o mercado?"
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
-              className="min-h-[80px] sm:min-h-[100px] resize-none text-sm"
+              className="min-h-[60px] sm:min-h-[80px] resize-none text-xs sm:text-sm border-0 bg-background/50"
               maxLength={500}
             />
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="text-xs text-muted-foreground">
-                {newPost.length}/500 caracteres
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-muted-foreground hidden sm:inline">
+                {newPost.length}/500
               </span>
               <Button 
                 onClick={handleCreatePost}
                 disabled={!newPost.trim() || posting}
-                className="bg-gradient-to-r from-primary to-primary-foreground text-sm px-3 py-2"
+                className="h-7 sm:h-8 text-xs px-2 sm:px-3"
                 size="sm"
               >
-                {posting ? "Postando..." : "Publicar"}
-                <Send className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                {posting ? "..." : "Publicar"}
+                <Send className="ml-1 h-3 w-3" />
               </Button>
             </div>
           </div>
