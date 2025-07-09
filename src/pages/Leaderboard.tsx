@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, TrendingUp, Flame, Crown, Medal, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
-import satoshiMascot from "@/assets/satoshi-mascot.png";
 
 interface LeaderboardUser {
   id: string;
@@ -19,7 +18,7 @@ interface LeaderboardUser {
   streak: number;
   points: number;
   profile_image_url?: string;
-  avatar?: {
+  avatars?: {
     name: string;
     image_url: string;
   };
@@ -75,7 +74,7 @@ export default function Leaderboard() {
           .from('profiles')
           .select(`
             *,
-            avatar:avatars(id, name, image_url)
+            avatars(id, name, image_url)
           `)
           .eq('user_id', authUser.id)
           .single();
@@ -96,7 +95,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatar:avatars(name, image_url)
+          avatars(name, image_url)
         `)
         .order('xp', { ascending: false })
         .limit(displayLimit);
@@ -106,7 +105,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatar:avatars(name, image_url)
+          avatars(name, image_url)
         `)
         .order('streak', { ascending: false })
         .limit(displayLimit);
@@ -116,7 +115,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatar:avatars(name, image_url)
+          avatars(name, image_url)
         `)
         .order('level', { ascending: false })
         .limit(displayLimit);
@@ -126,7 +125,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatar:avatars(name, image_url)
+          avatars(name, image_url)
         `)
         .order('points', { ascending: false })
         .limit(displayLimit);
@@ -238,10 +237,13 @@ export default function Leaderboard() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div className="text-2xl font-bold text-primary">#{getCurrentUserRank()}</div>
-                          <Avatar className="w-12 h-12">
-                            <AvatarImage src={currentUser.avatar?.image_url || satoshiMascot} alt="Você" />
-                            <AvatarFallback>{currentUser.nickname?.charAt(0).toUpperCase()}</AvatarFallback>
-                          </Avatar>
+                          <AvatarDisplayUniversal
+                            avatarName={currentUser.avatars?.name}
+                            avatarUrl={currentUser.avatars?.image_url}
+                            profileImageUrl={currentUser.profile_image_url}
+                            nickname={currentUser.nickname}
+                            size="md"
+                          />
                           <div>
                             <h3 className="font-bold text-foreground">{currentUser.nickname} (Você)</h3>
                             <p className="text-sm text-muted-foreground">
@@ -277,13 +279,14 @@ export default function Leaderboard() {
                         onClick={() => navigate(`/user/${user.id}`)}
                       >
                         <div className="text-4xl mb-2">{getRankIcon(index + 1)}</div>
-                        <Avatar className="w-16 h-16 mx-auto mb-3">
-                          <AvatarImage 
-                            src={user.avatar?.image_url || user.profile_image_url || satoshiMascot} 
-                            alt={user.nickname} 
-                          />
-                          <AvatarFallback className="text-2xl">{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
+                        <AvatarDisplayUniversal
+                          avatarName={user.avatars?.name}
+                          avatarUrl={user.avatars?.image_url}
+                          profileImageUrl={user.profile_image_url}
+                          nickname={user.nickname}
+                          size="lg"
+                          className="mx-auto mb-3"
+                        />
                         <h3 className="font-bold text-foreground mb-1">{user.nickname}</h3>
                         <p className="text-sm text-muted-foreground mb-2">
                           Nível {user.level}
@@ -319,13 +322,13 @@ export default function Leaderboard() {
                             {getRankIcon(user.rank)}
                           </div>
                           
-                          <Avatar className="w-10 h-10">
-                            <AvatarImage 
-                              src={user.avatar?.image_url || user.profile_image_url || satoshiMascot}
-                              alt={user.nickname} 
-                            />
-                            <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                          </Avatar>
+                          <AvatarDisplayUniversal
+                            avatarName={user.avatars?.name}
+                            avatarUrl={user.avatars?.image_url}
+                            profileImageUrl={user.profile_image_url}
+                            nickname={user.nickname}
+                            size="sm"
+                          />
                           
                           <div className="flex-1">
                             <h4 className="font-semibold text-foreground">
