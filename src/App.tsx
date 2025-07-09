@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -7,7 +7,6 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
 
 function App() {
-
   return (
     <AuthProvider>
       <div className="min-h-screen bg-background font-sans antialiased">
