@@ -275,6 +275,134 @@ function App() {
             } />
             
             
+            {/* Testing Hub */}
+            <Route path="/testing-hub" element={
+              <ProtectedRoute>
+                <LazyRoutes.TestingHub />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            {/* Gamification Routes (Phase 3) */}
+            <Route path="/gamification" element={
+              <ProtectedRoute>
+                <LazyRoutes.GamificationDashboard />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/achievements" element={
+              <ProtectedRoute>
+                <LazyRoutes.Achievements />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/leagues" element={
+              <ProtectedRoute>
+                <LazyRoutes.Leagues />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/powerups" element={
+              <ProtectedRoute>
+                <LazyRoutes.Powerups />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/daily-challenges" element={
+              <ProtectedRoute>
+                <LazyRoutes.DailyChallenges />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            {/* AI & Content Routes (Phase 4) */}
+            <Route path="/ai-tutor" element={
+              <ProtectedRoute>
+                <LazyRoutes.AITutor />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/learning-path" element={
+              <ProtectedRoute>
+                <LazyRoutes.LearningPath />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/content-generator" element={
+              <ProtectedRoute>
+                <LazyRoutes.ContentGenerator />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/ai-simulator" element={
+              <ProtectedRoute>
+                <LazyRoutes.AISimulator />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            {/* Monetization Routes (Phase 5) */}
+            <Route path="/monetization" element={
+              <ProtectedRoute>
+                <LazyRoutes.MonetizationDashboard />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/virtual-store" element={
+              <ProtectedRoute>
+                <LazyRoutes.VirtualStore />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/nft-marketplace" element={
+              <ProtectedRoute>
+                <LazyRoutes.NFTMarketplace />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/affiliate-program" element={
+              <ProtectedRoute>
+                <LazyRoutes.AffiliateProgram />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/wallet" element={
+              <ProtectedRoute>
+                <LazyRoutes.Wallet />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            {/* Admin Routes for New Features */}
+            <Route path="/admin/gamification" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminGamification />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/ai-content" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminAIContent />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/monetization" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminMonetization />
+              </ProtectedRoute>
+            } />
+
             {/* New Routes - Missing Pages */}
             <Route path="/levels" element={
               <ProtectedRoute>
