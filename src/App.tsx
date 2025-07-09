@@ -6,6 +6,14 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
 import SatoshiCity from "@/pages/SatoshiCity";
+import DistrictDetail from "@/pages/DistrictDetail";
+import DistrictQuiz from "@/pages/DistrictQuiz";
+import GameMode from "@/pages/GameMode";
+import Store from "@/pages/Store";
+import Dashboard from "@/pages/Dashboard";
+import Profile from "@/pages/Profile";
+import Social from "@/pages/Social";
+import Duels from "@/pages/Duels";
 
 function App() {
   return (
@@ -19,14 +27,14 @@ function App() {
             
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <LazyRoutes.Dashboard />
+                <Dashboard />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
             
             <Route path="/profile" element={
               <ProtectedRoute>
-                <LazyRoutes.Profile />
+                <Profile />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
@@ -61,14 +69,14 @@ function App() {
             
             <Route path="/duels" element={
               <ProtectedRoute>
-                <LazyRoutes.Duels />
+                <Duels />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
             
             <Route path="/social" element={
               <ProtectedRoute>
-                <LazyRoutes.Social />
+                <Social />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
@@ -82,7 +90,7 @@ function App() {
             
             <Route path="/store" element={
               <ProtectedRoute>
-                <LazyRoutes.Store />
+                <Store />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
@@ -96,7 +104,7 @@ function App() {
             
             <Route path="/game-mode" element={
               <ProtectedRoute>
-                <LazyRoutes.GameMode />
+                <GameMode />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
@@ -104,14 +112,14 @@ function App() {
             {/* District Routes */}
             <Route path="/satoshi-city/district/:districtId" element={
               <ProtectedRoute>
-                <LazyRoutes.DistrictDetail />
+                <DistrictDetail />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
             
             <Route path="/satoshi-city/district/:districtId/quiz" element={
               <ProtectedRoute>
-                <LazyRoutes.DistrictQuiz />
+                <DistrictQuiz />
                 <FloatingNavbar />
               </ProtectedRoute>
             } />
