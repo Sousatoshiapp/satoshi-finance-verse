@@ -207,7 +207,10 @@ export default function Dashboard() {
             <div className="relative mb-4">
               {userAvatar ? (
                 <div className="flex justify-center">
-                  <div className="relative">
+                  <div 
+                    className="relative cursor-pointer hover:scale-105 transition-transform duration-200"
+                    onClick={handleNavigateToProfile}
+                  >
                     <AvatarDisplayOptimized 
                       avatar={userAvatar} 
                       size="lg"
@@ -221,10 +224,25 @@ export default function Dashboard() {
                         <span className="font-bold">{userStats.level}</span>
                       </div>
                     </div>
+                    {/* Botão Evoluir Discreto */}
+                    <div className="absolute -bottom-1 left-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleNavigateToStore();
+                        }}
+                        className="bg-gradient-to-r from-primary/20 to-success/20 text-foreground px-2 py-1 rounded-full text-xs font-medium hover:from-primary/30 hover:to-success/30 transition-all duration-200 border border-border/30"
+                      >
+                        Evoluir
+                      </button>
+                    </div>
                   </div>
                 </div>
               ) : (
-                <div className="relative">
+                <div 
+                  className="relative cursor-pointer hover:scale-105 transition-transform duration-200"
+                  onClick={handleNavigateToProfile}
+                >
                   <div className="w-32 h-32 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
                     <div className="text-5xl">🤖</div>
                   </div>
@@ -233,6 +251,18 @@ export default function Dashboard() {
                       <span>Nível</span>
                       <span className="font-bold">{userStats.level}</span>
                     </div>
+                  </div>
+                  {/* Botão Evoluir Discreto */}
+                  <div className="absolute -bottom-1 left-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNavigateToStore();
+                      }}
+                      className="bg-gradient-to-r from-primary/20 to-success/20 text-foreground px-2 py-1 rounded-full text-xs font-medium hover:from-primary/30 hover:to-success/30 transition-all duration-200 border border-border/30"
+                    >
+                      Evoluir
+                    </button>
                   </div>
                 </div>
               )}
@@ -262,27 +292,27 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-3 mb-4">
               {/* XP Card */}
               <div 
-                className="border border-[#adff2f] rounded-full px-4 py-3 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                className="border border-[#adff2f] rounded-2xl px-4 py-5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 onClick={handleNavigateToLevels}
                 style={{ borderWidth: '0.5px' }}
               >
-                <span className="text-lg">⚡</span>
+                <span className="text-xl">⚡</span>
                 <div className="text-center">
-                  <div className="text-xs text-muted-foreground leading-none">XP</div>
-                  <div className="text-sm font-bold text-foreground leading-none">{userStats.currentXP}</div>
+                  <div className="text-sm text-muted-foreground leading-none">XP</div>
+                  <div className="text-base font-bold text-foreground leading-none">{userStats.currentXP}</div>
                 </div>
               </div>
 
               {/* Beetz Card */}
               <div 
-                className="border border-[#adff2f] rounded-full px-4 py-3 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                className="border border-[#adff2f] rounded-2xl px-4 py-5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
                 onClick={handleNavigateToBeetzInfo}
                 style={{ borderWidth: '0.5px' }}
               >
                 <BeetzIcon size="md" />
                 <div className="text-center">
-                  <div className="text-xs text-muted-foreground leading-none">Beetz</div>
-                  <div className="text-sm font-bold text-foreground leading-none">{userStats.points}</div>
+                  <div className="text-sm text-muted-foreground leading-none">Beetz</div>
+                  <div className="text-base font-bold text-foreground leading-none">{userStats.points}</div>
                 </div>
               </div>
             </div>
