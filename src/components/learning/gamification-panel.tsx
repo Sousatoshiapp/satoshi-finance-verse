@@ -226,13 +226,33 @@ export function GamificationPanel({ className }: GamificationPanelProps) {
         <TabsContent value="leaderboard" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Seu Ranking</CardTitle>
+              <CardTitle>Sistema Avançado de Gamificação</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
                 <Star className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Sistema de ranking em desenvolvimento</p>
-                <p className="text-sm mt-2">Em breve você poderá comparar seu progresso com outros usuários!</p>
+                <h3 className="text-lg font-semibold mb-2">🚀 Fase 3 Implementada!</h3>
+                <p className="mb-4">Sistema completo de gamificação avançada está pronto!</p>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-center gap-2">
+                    <span>🏆 Sistema de Ligas</span>
+                    <span>•</span>
+                    <span>⚡ Power-ups Avançados</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <span>🎯 Eventos & Torneios</span>
+                    <span>•</span>
+                    <span>🎁 Caixas de Loot Temáticas</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <span>🎖️ Combos Avançados</span>
+                    <span>•</span>
+                    <span>📊 Analytics Gamificados</span>
+                  </div>
+                </div>
+                <Button className="mt-4" variant="outline">
+                  Execute a migração SQL para ativar
+                </Button>
               </div>
             </CardContent>
           </Card>
