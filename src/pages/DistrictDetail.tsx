@@ -558,7 +558,7 @@ export default function DistrictDetail() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
-      <div className="relative overflow-hidden h-96">
+      <div className="relative overflow-hidden h-64 sm:h-80 lg:h-96">
         {/* 3D District Background */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -577,33 +577,34 @@ export default function DistrictDetail() {
           }}
         ></div>
         
-        <div className="relative container mx-auto px-4 py-8">
+        <div className="relative container mx-auto px-4 py-4 sm:py-8">
           <Button
             variant="ghost"
             onClick={() => navigate('/satoshi-city')}
             className="mb-4 text-gray-300 hover:text-white"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar para Satoshi City
+            <span className="hidden sm:inline">Voltar para Satoshi City</span>
+            <span className="sm:hidden">Voltar</span>
           </Button>
 
-          <div className="flex items-center justify-center mb-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center mb-6 space-y-4 sm:space-y-0">
             {districtLogo && (
               <img 
                 src={districtLogo} 
                 alt={district.name}
-                className="w-20 h-20 rounded-full object-cover mr-6 border-4"
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover sm:mr-6 border-4"
                 style={{ borderColor: district.color_primary }}
               />
             )}
             <div className="text-center">
               <h1 
-                className="text-5xl font-bold mb-4"
+                className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-2 sm:mb-4"
                 style={{ color: district.color_primary }}
               >
                 {district.name}
               </h1>
-              <p className="text-xl text-gray-300 mb-4 max-w-2xl">
+              <p className="text-sm sm:text-lg lg:text-xl text-gray-300 mb-4 max-w-2xl px-4 sm:px-0">
                 {district.description}
               </p>
             </div>
@@ -630,35 +631,35 @@ export default function DistrictDetail() {
       </div>
 
       {/* District Power & Stats Section */}
-      <div className="container mx-auto px-4 -mt-16 relative z-10 mb-8">
+      <div className="container mx-auto px-4 -mt-8 sm:-mt-16 relative z-10 mb-8">
         {/* District Power Card */}
         <Card 
           className="bg-slate-800/90 backdrop-blur-sm border-2 mb-6"
           style={{ borderColor: district.color_primary }}
         >
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+              <div className="flex items-center space-x-3 sm:space-x-4">
                 <div 
-                  className="w-12 h-12 rounded-full flex items-center justify-center"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: district.color_primary }}
                 >
-                  <Shield className="w-6 h-6 text-black" />
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                 </div>
                 <div>
-                  <CardTitle className="text-white flex items-center">
-                    Poder do Distrito
+                  <CardTitle className="text-white flex flex-col sm:flex-row sm:items-center text-lg sm:text-xl">
+                    <span className="mb-1 sm:mb-0">Poder do Distrito</span>
                     <span 
-                      className="ml-2 text-2xl font-bold"
+                      className="text-xl sm:text-2xl sm:ml-2 font-bold"
                       style={{ color: district.color_primary }}
                     >
                       {district.power_level || 100}/100
                     </span>
                   </CardTitle>
                   {district.special_power && (
-                    <CardDescription className="text-purple-300 flex items-center mt-1">
-                      <Zap className="w-4 h-4 mr-1" />
-                      {district.special_power}
+                    <CardDescription className="text-purple-300 flex items-center mt-1 text-sm">
+                      <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                      <span className="truncate">{district.special_power}</span>
                     </CardDescription>
                   )}
                 </div>
@@ -666,33 +667,33 @@ export default function DistrictDetail() {
               
               {/* Sponsor Info */}
               {district.sponsor_company && (
-                <div className="text-right">
-                  <div className="flex items-center justify-end mb-2">
-                    <Star className="w-4 h-4 text-yellow-400 mr-1" />
-                    <span className="text-sm text-gray-300">Patrocinado por</span>
+                <div className="text-left lg:text-right">
+                  <div className="flex items-center lg:justify-end mb-2">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 mr-1" />
+                    <span className="text-xs sm:text-sm text-gray-300">Patrocinado por</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     {district.sponsor_logo_url && (
                       <img 
                         src={district.sponsor_logo_url} 
                         alt={district.sponsor_company}
-                        className="w-8 h-8 rounded object-cover"
+                        className="w-6 h-6 sm:w-8 sm:h-8 rounded object-cover"
                       />
                     )}
-                    <span className="text-white font-medium">{district.sponsor_company}</span>
+                    <span className="text-white font-medium text-sm sm:text-base truncate">{district.sponsor_company}</span>
                     {district.referral_link && (
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => window.open(district.referral_link, '_blank')}
-                        className="text-xs"
+                        className="text-xs flex-shrink-0"
                         style={{ 
                           borderColor: district.color_primary,
                           color: district.color_primary 
                         }}
                       >
                         <ExternalLink className="w-3 h-3 mr-1" />
-                        Oferta
+                        <span className="hidden sm:inline">Oferta</span>
                       </Button>
                     )}
                   </div>
@@ -727,25 +728,25 @@ export default function DistrictDetail() {
             </div>
 
             {/* Battle Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="bg-slate-700/50 rounded-lg p-3 sm:p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Swords className="w-5 h-5 text-green-400 mr-2" />
-                  <span className="text-2xl font-bold text-green-400">
+                  <Swords className="w-4 h-4 sm:w-5 sm:h-5 text-green-400 mr-1 sm:mr-2" />
+                  <span className="text-lg sm:text-2xl font-bold text-green-400">
                     {district.battles_won || 0}
                   </span>
                 </div>
-                <span className="text-gray-400 text-sm">Batalhas Vencidas</span>
+                <span className="text-gray-400 text-xs sm:text-sm">Batalhas Vencidas</span>
               </div>
               
-              <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+              <div className="bg-slate-700/50 rounded-lg p-3 sm:p-4 text-center">
                 <div className="flex items-center justify-center mb-2">
-                  <Target className="w-5 h-5 text-red-400 mr-2" />
-                  <span className="text-2xl font-bold text-red-400">
+                  <Target className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 mr-1 sm:mr-2" />
+                  <span className="text-lg sm:text-2xl font-bold text-red-400">
                     {district.battles_lost || 0}
                   </span>
                 </div>
-                <span className="text-gray-400 text-sm">Batalhas Perdidas</span>
+                <span className="text-gray-400 text-xs sm:text-sm">Batalhas Perdidas</span>
               </div>
             </div>
             
@@ -767,38 +768,30 @@ export default function DistrictDetail() {
       {/* Content Tabs */}
       <div className="container mx-auto px-4 py-8 pb-32">
         <Tabs defaultValue="activities" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-8 bg-slate-800/50">
-            <TabsTrigger value="activities" className="data-[state=active]:bg-slate-700">
-              <Zap className="mr-2 h-4 w-4" />
-              Atividades
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mb-8 bg-slate-800/50 gap-1">
+            <TabsTrigger value="activities" className="data-[state=active]:bg-slate-700 text-xs sm:text-sm">
+              <Zap className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Atividades</span>
             </TabsTrigger>
-            <TabsTrigger value="battles" className="data-[state=active]:bg-slate-700">
-              <Swords className="mr-2 h-4 w-4" />
-              Batalhas
+            <TabsTrigger value="battles" className="data-[state=active]:bg-slate-700 text-xs sm:text-sm">
+              <Swords className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Batalhas</span>
             </TabsTrigger>
-            <TabsTrigger value="store" className="data-[state=active]:bg-slate-700">
-              <ShoppingBag className="mr-2 h-4 w-4" />
-              Loja
+            <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700 text-xs sm:text-sm">
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Quizzes</span>
             </TabsTrigger>
-            <TabsTrigger value="quizzes" className="data-[state=active]:bg-slate-700">
-              <BookOpen className="mr-2 h-4 w-4" />
-              Quizzes
+            <TabsTrigger value="teams" className="data-[state=active]:bg-slate-700 text-xs sm:text-sm">
+              <Home className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Times</span>
             </TabsTrigger>
-            <TabsTrigger value="residents" className="data-[state=active]:bg-slate-700">
-              <Users className="mr-2 h-4 w-4" />
-              Moradores
+            <TabsTrigger value="residents" className="data-[state=active]:bg-slate-700 text-xs sm:text-sm">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Moradores</span>
             </TabsTrigger>
-            <TabsTrigger value="ranking" className="data-[state=active]:bg-slate-700">
-              <Trophy className="mr-2 h-4 w-4" />
-              Ranking
-            </TabsTrigger>
-            <TabsTrigger value="teams" className="data-[state=active]:bg-slate-700">
-              <Home className="mr-2 h-4 w-4" />
-              Times
-            </TabsTrigger>
-            <TabsTrigger value="store" className="data-[state=active]:bg-slate-700">
-              <ShoppingBag className="mr-2 h-4 w-4" />
-              Loja Exclusiva
+            <TabsTrigger value="ranking" className="data-[state=active]:bg-slate-700 text-xs sm:text-sm">
+              <Trophy className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Ranking</span>
             </TabsTrigger>
           </TabsList>
 
@@ -906,7 +899,7 @@ export default function DistrictDetail() {
 
           {/* Quizzes Tab */}
           <TabsContent value="quizzes">
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <Card className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>
                 <CardHeader>
                   <CardTitle className="flex items-center text-white">
@@ -970,7 +963,7 @@ export default function DistrictDetail() {
 
           {/* Residents Tab */}
           <TabsContent value="residents">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {residents.map((resident) => (
                 <Card key={resident.id} className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
                   <CardContent className="p-4">
@@ -1067,17 +1060,17 @@ export default function DistrictDetail() {
 
           {/* Teams Tab */}
           <TabsContent value="teams">
-            <div className="mb-6 flex justify-between items-center">
+            <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Times do Distrito</h3>
-                <p className="text-gray-400">Junte-se ou crie um time para batalhar por {district.name}</p>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Times do Distrito</h3>
+                <p className="text-sm sm:text-base text-gray-400">Junte-se ou crie um time para batalhar por {district.name}</p>
               </div>
               
               <Dialog>
                 <DialogTrigger asChild>
                   <Button 
                     style={{ backgroundColor: district.color_primary }}
-                    className="text-black font-bold"
+                    className="text-black font-bold w-full sm:w-auto"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     Criar Time
@@ -1132,7 +1125,7 @@ export default function DistrictDetail() {
               </Dialog>
             </div>
             
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {teams.length > 0 ? (
                 teams.map((team) => (
                   <Card key={team.id} className="bg-slate-800/50 backdrop-blur-sm border-2" style={{ borderColor: district.color_primary }}>

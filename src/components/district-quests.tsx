@@ -210,15 +210,15 @@ export function DistrictQuests({ districtId, districtTheme, districtColor }: Dis
             {specialFeatures.description}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-3 mb-4">
+        <CardContent className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             {specialFeatures.features.map((feature, index) => (
               <div 
                 key={index}
                 className="flex items-center space-x-2 p-2 rounded-lg bg-slate-700/50"
               >
-                <Target className="h-4 w-4" style={{ color: districtColor }} />
-                <span className="text-sm text-gray-300">{feature}</span>
+                <Target className="h-3 w-3 sm:h-4 sm:w-4" style={{ color: districtColor }} />
+                <span className="text-xs sm:text-sm text-gray-300">{feature}</span>
               </div>
             ))}
           </div>
@@ -265,33 +265,33 @@ export function DistrictQuests({ districtId, districtTheme, districtColor }: Dis
           
           return (
             <Card key={quest.id} className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
+              <CardHeader className="pb-3 p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-3 sm:space-y-0">
                   <div className="flex-1">
-                    <CardTitle className="text-lg text-white flex items-center">
-                      <IconComponent className="mr-2 h-5 w-5" style={{ color: districtColor }} />
-                      {quest.quest_name}
+                    <CardTitle className="text-base sm:text-lg text-white flex items-center">
+                      <IconComponent className="mr-2 h-4 w-4 sm:h-5 sm:w-5" style={{ color: districtColor }} />
+                      <span className="truncate">{quest.quest_name}</span>
                       {progress?.completed && (
-                        <CheckCircle className="ml-2 h-5 w-5 text-green-400" />
+                        <CheckCircle className="ml-2 h-4 w-4 sm:h-5 sm:w-5 text-green-400" />
                       )}
                     </CardTitle>
-                    <CardDescription className="text-gray-300 mt-1">
+                    <CardDescription className="text-gray-300 mt-1 text-sm">
                       {quest.quest_description}
                     </CardDescription>
                   </div>
-                  <div className="flex space-x-2">
-                    <Badge variant="outline" style={{ borderColor: districtColor, color: districtColor }}>
+                  <div className="flex flex-row sm:flex-col sm:space-x-0 space-x-2 sm:space-y-2">
+                    <Badge variant="outline" className="text-xs" style={{ borderColor: districtColor, color: districtColor }}>
                       +{quest.xp_reward} XP
                     </Badge>
-                    <Badge variant="outline" className="border-yellow-400 text-yellow-400">
+                    <Badge variant="outline" className="border-yellow-400 text-yellow-400 text-xs">
                       +{quest.points_reward} pts
                     </Badge>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 sm:p-6">
                 <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
+                  <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-gray-400">
                       Progress: {progress?.current_progress || 0}/{quest.target_value}
                     </span>
@@ -309,7 +309,7 @@ export function DistrictQuests({ districtId, districtTheme, districtColor }: Dis
                       size="sm"
                       variant="outline"
                       style={{ borderColor: districtColor, color: districtColor }}
-                      className="w-full"
+                      className="w-full text-xs sm:text-sm"
                     >
                       {progress ? 'Continuar Quest' : 'Iniciar Quest'}
                     </Button>
