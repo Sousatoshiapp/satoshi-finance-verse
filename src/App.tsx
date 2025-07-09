@@ -107,6 +107,13 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/game-mode" element={
+              <ProtectedRoute>
+                <LazyRoutes.GameMode />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/admin" element={
               <ProtectedRoute>
                 <LazyRoutes.AdminDashboard />

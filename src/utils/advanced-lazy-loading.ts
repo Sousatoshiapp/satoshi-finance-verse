@@ -142,6 +142,11 @@ export const LazyRoutes = {
     { priority: 'low' }
   ),
 
+  GameMode: createLazyComponent(
+    () => import('@/pages/GameMode'),
+    { priority: 'medium' }
+  ),
+
   // Páginas especiais
   Auth: createLazyComponent(
     () => import('@/pages/Auth'),
