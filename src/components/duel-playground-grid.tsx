@@ -51,7 +51,7 @@ export function DuelPlaygroundGrid() {
           
           <Button 
             className="w-full bg-gradient-to-r from-destructive to-warning text-white rounded-full font-semibold shadow-glow"
-            onClick={() => navigate('/duels')}
+            onClick={() => navigate('/find-opponent')}
           >
             Duelar Agora
           </Button>
