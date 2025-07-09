@@ -224,16 +224,16 @@ export default function Dashboard() {
                         <span className="font-bold">{userStats.level}</span>
                       </div>
                     </div>
-                    {/* Botão Evoluir Discreto */}
-                    <div className="absolute -bottom-1 left-2">
+                    {/* Botão + Discreto */}
+                    <div className="absolute top-0 left-0">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           handleNavigateToStore();
                         }}
-                        className="bg-gradient-to-r from-primary/20 to-success/20 text-foreground px-2 py-1 rounded-full text-xs font-medium hover:from-primary/30 hover:to-success/30 transition-all duration-200 border border-border/30"
+                        className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-6 h-6 rounded-full text-sm font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
                       >
-                        Evoluir
+                        +
                       </button>
                     </div>
                   </div>
@@ -252,16 +252,16 @@ export default function Dashboard() {
                       <span className="font-bold">{userStats.level}</span>
                     </div>
                   </div>
-                  {/* Botão Evoluir Discreto */}
-                  <div className="absolute -bottom-1 left-2">
+                  {/* Botão + Discreto */}
+                  <div className="absolute top-0 left-0">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNavigateToStore();
                       }}
-                      className="bg-gradient-to-r from-primary/20 to-success/20 text-foreground px-2 py-1 rounded-full text-xs font-medium hover:from-primary/30 hover:to-success/30 transition-all duration-200 border border-border/30"
+                      className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-6 h-6 rounded-full text-sm font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
                     >
-                      Evoluir
+                      +
                     </button>
                   </div>
                 </div>
