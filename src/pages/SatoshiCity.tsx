@@ -297,9 +297,9 @@ export default function SatoshiCity() {
         </div>
       </div>
 
-      {/* Interactive City Map */}
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        <div className="relative w-full max-w-6xl mx-auto" style={{ paddingBottom: '56.25%' }}>
+      {/* Interactive City Map - Mobile Optimized */}
+      <div className="relative z-10 container mx-auto px-4 py-8 pb-24">
+        <div className="relative w-full max-w-6xl mx-auto min-h-[400px] sm:min-h-[600px]" style={{ paddingBottom: '56.25%' }}>
           {districts.map((district) => {
             const position = districtPositions[district.theme as keyof typeof districtPositions];
             const userInfo = getUserDistrictInfo(district.id);
@@ -313,48 +313,48 @@ export default function SatoshiCity() {
             if (!position) return null;
             
             return (
-              <div
-                key={district.id}
-                className="absolute transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer"
-                style={{ 
-                  left: `${position.x}%`, 
-                  top: `${position.y}%` 
-                }}
-                onClick={() => navigate(`/satoshi-city/district/${district.id}`)}
-              >
-                {/* Dynamic Power Aura */}
+                <div
+                  key={district.id}
+                  className="absolute transform -translate-x-1/2 -translate-y-1/2 group cursor-pointer z-20"
+                  style={{ 
+                    left: `${position.x}%`, 
+                    top: `${position.y}%` 
+                  }}
+                  onClick={() => navigate(`/satoshi-city/district/${district.id}`)}
+                >
+                {/* Dynamic Power Aura - Mobile Optimized */}
                 <div 
                   className={`absolute inset-0 rounded-full transition-all duration-500 ${
                     powerLevel > 80 ? 'animate-pulse opacity-80' : powerLevel > 50 ? 'opacity-60' : 'opacity-40'
                   }`}
                   style={{
-                    boxShadow: `0 0 ${30 + (powerLevel * 0.5)}px ${district.color_primary}${Math.round(powerLevel * 2.55).toString(16).padStart(2, '0')}`,
-                    width: `${60 + (powerLevel * 0.4)}px`,
-                    height: `${60 + (powerLevel * 0.4)}px`,
+                    boxShadow: `0 0 ${20 + (powerLevel * 0.3)}px ${district.color_primary}${Math.round(powerLevel * 2.55).toString(16).padStart(2, '0')}`,
+                    width: `${40 + (powerLevel * 0.3)}px`,
+                    height: `${40 + (powerLevel * 0.3)}px`,
                     transform: 'translate(-50%, -50%)'
                   }}
                 ></div>
                 
-                {/* District Core */}
+                {/* District Core - Mobile Optimized */}
                 <div 
-                  className={`relative w-16 h-16 rounded-full border-4 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm ${
-                    userInfo?.is_residence ? 'ring-4 ring-yellow-400 ring-opacity-60 animate-pulse' : ''
+                  className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 sm:border-4 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm ${
+                    userInfo?.is_residence ? 'ring-2 sm:ring-4 ring-yellow-400 ring-opacity-60 animate-pulse' : ''
                   } ${powerLevel < 30 ? 'opacity-75 grayscale' : ''}`}
                   style={{
                     borderColor: district.color_primary,
                     backgroundColor: `${district.color_primary}${Math.round(powerLevel * 0.8).toString(16).padStart(2, '0')}`,
-                    boxShadow: `0 0 20px ${district.color_primary}60`
+                    boxShadow: `0 0 15px ${district.color_primary}60`
                   }}
                 >
                   {districtLogo ? (
                     <img 
                       src={districtLogo} 
                       alt={district.name}
-                      className="w-8 h-8 rounded-full object-cover"
+                      className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
                     />
                   ) : (
                     <IconComponent 
-                      className="w-8 h-8" 
+                      className="w-6 h-6 sm:w-8 sm:h-8" 
                       style={{ color: district.color_primary }}
                     />
                   )}
@@ -388,10 +388,10 @@ export default function SatoshiCity() {
                   <div className="text-xs text-center text-gray-400 mt-1">{powerLevel}%</div>
                 </div>
 
-                {/* Compact District Hover Card */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 top-20 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
+                {/* Compact District Hover Card - Mobile Hidden */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 top-16 sm:top-20 opacity-0 group-hover:opacity-100 transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto hidden sm:block">
                   <Card 
-                    className="w-64 border-2 bg-slate-800/95 backdrop-blur-sm shadow-2xl"
+                    className="w-48 sm:w-64 border-2 bg-slate-800/95 backdrop-blur-sm shadow-2xl"
                     style={{ borderColor: district.color_primary }}
                   >
                     <CardHeader className="pb-3">

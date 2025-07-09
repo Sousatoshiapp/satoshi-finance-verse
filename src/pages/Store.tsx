@@ -668,14 +668,16 @@ export default function Store() {
           </Card>
         )}
 
-        {/* Tabs */}
+        {/* Tabs - Mobile Optimized */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="avatars">👤 Avatares</TabsTrigger>
-            <TabsTrigger value="skins">🎨 Skins</TabsTrigger>
-            <TabsTrigger value="boosts">⚡ Boosts</TabsTrigger>
-            <TabsTrigger value="accessories">👟 Acessórios</TabsTrigger>
-            <TabsTrigger value="beetz"><BeetzIcon size="sm" className="mr-1" /> Beetz</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6 h-auto">
+            <TabsTrigger value="avatars" className="text-xs sm:text-sm p-2 sm:p-3">👤 Avatares</TabsTrigger>
+            <TabsTrigger value="skins" className="text-xs sm:text-sm p-2 sm:p-3">🎨 Skins</TabsTrigger>
+            <TabsTrigger value="boosts" className="text-xs sm:text-sm p-2 sm:p-3">⚡ Boosts</TabsTrigger>
+            <TabsTrigger value="accessories" className="text-xs sm:text-sm p-2 sm:p-3">👟 Acessórios</TabsTrigger>
+            <TabsTrigger value="beetz" className="text-xs sm:text-sm p-2 sm:p-3 col-span-2 sm:col-span-1">
+              <BeetzIcon size="sm" className="mr-1" /> Beetz
+            </TabsTrigger>
           </TabsList>
 
           {/* Avatars Tab */}

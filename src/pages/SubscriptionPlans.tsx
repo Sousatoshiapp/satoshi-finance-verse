@@ -146,8 +146,8 @@ export default function SubscriptionPlans() {
             </p>
           </div>
 
-          {/* Plans Grid */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Plans Grid - Mobile Optimized */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {plans.map((plan) => (
               <Card 
                 key={plan.tier}
@@ -159,7 +159,7 @@ export default function SubscriptionPlans() {
                       : plan.tier === 'elite'
                         ? 'border-purple-500/30'
                         : 'border-border'
-                } ${plan.tier === 'elite' ? 'md:scale-105' : ''}`}
+                } ${plan.tier === 'elite' ? 'md:scale-105 order-first md:order-none' : ''}`}
               >
                 {plan.tier === 'elite' && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -176,13 +176,13 @@ export default function SubscriptionPlans() {
                   </div>
                   
                   <div className="space-y-2">
-                    <CardTitle className="text-xl">{plan.name}</CardTitle>
-                    <CardDescription>{plan.description}</CardDescription>
+                    <CardTitle className="text-lg sm:text-xl">{plan.name}</CardTitle>
+                    <CardDescription className="text-sm">{plan.description}</CardDescription>
                     {getPlanBadge(plan.tier)}
                   </div>
 
                   <div className="py-4">
-                    <div className="text-3xl font-bold text-foreground">
+                    <div className="text-2xl sm:text-3xl font-bold text-foreground">
                       {plan.price_monthly === 0 ? 'Grátis' : formatPrice(plan.price_monthly)}
                     </div>
                     {plan.price_monthly > 0 && (
@@ -192,11 +192,11 @@ export default function SubscriptionPlans() {
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {plan.features.map((feature, index) => (
                       <div key={index} className="flex items-start space-x-3">
-                        <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-foreground">{feature}</span>
+                        <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-xs sm:text-sm text-foreground">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -235,16 +235,16 @@ export default function SubscriptionPlans() {
             ))}
           </div>
 
-          {/* Benefits Comparison */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold text-center mb-8">Compare os Benefícios</h2>
+          {/* Benefits Comparison - Mobile Optimized */}
+          <div className="mt-8 sm:mt-12">
+            <h2 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8">Compare os Benefícios</h2>
             
             <Card>
-              <CardContent className="p-6">
-                <div className="grid md:grid-cols-4 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Funcionalidades</h3>
-                    <div className="space-y-3 text-sm">
+              <CardContent className="p-4 sm:p-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="space-y-3 sm:space-y-4">
+                    <h3 className="font-semibold text-sm sm:text-base">Funcionalidades</h3>
+                    <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
                       <div>Duelos diários</div>
                       <div>Multiplicador XP</div>
                       <div>Beetz mensais</div>

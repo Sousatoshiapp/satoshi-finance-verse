@@ -377,23 +377,23 @@ export default function Profile() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Profile Header */}
-        <Card className="p-6 mb-8">
-          <div className="flex items-center gap-6">
-            <div className="relative">
+        {/* Profile Header - Mobile Optimized */}
+        <Card className="p-4 sm:p-6 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <div className="relative self-center sm:self-auto">
               <AvatarDisplayUniversal
                 avatarName={userAvatar?.name}
                 avatarUrl={userAvatar?.image_url}
                 profileImageUrl={user.profile_image_url}
                 nickname={user.nickname}
                 size="xl"
-                className="w-20 h-20"
+                className="w-16 h-16 sm:w-20 sm:h-20"
               />
               
               {/* Small upload icon */}
               <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">
-                <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                  <Camera className="w-3.5 h-3.5 text-primary-foreground" />
+                <div className="w-6 h-6 sm:w-7 sm:h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground" />
                 </div>
               </label>
               
@@ -407,15 +407,15 @@ export default function Profile() {
               />
             </div>
             
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-foreground mb-1">{user.nickname}</h2>
-              <p className="text-muted-foreground mb-3">Nível {user.level} • {user.points} Beetz</p>
-              <div className="flex items-center gap-3">
+            <div className="flex-1 min-w-0 text-center sm:text-left">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-1 truncate">{user.nickname}</h2>
+              <p className="text-muted-foreground mb-3 text-sm sm:text-base">Nível {user.level} • {user.points} Beetz</p>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3">
                 <StreakBadge days={user.streak} />
-                <Badge variant="outline">{getLevelInfo(user.level).name}</Badge>
+                <Badge variant="outline" className="text-xs sm:text-sm">{getLevelInfo(user.level).name}</Badge>
                 <div className="flex items-center gap-2">
                   <SubscriptionIndicator tier={subscription.tier} size="sm" />
-                  <span className="text-sm text-muted-foreground">{getPlanName(subscription.tier)}</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline">{getPlanName(subscription.tier)}</span>
                 </div>
               </div>
             </div>

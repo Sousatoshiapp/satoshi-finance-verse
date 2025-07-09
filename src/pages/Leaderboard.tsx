@@ -167,7 +167,7 @@ export default function Leaderboard() {
       {/* Header */}
       <div className="px-4 py-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
                 ← Dashboard
@@ -175,13 +175,15 @@ export default function Leaderboard() {
               <h1 className="text-xl font-bold text-foreground">Ranking</h1>
             </div>
             
-            <div className="flex gap-2">
+            {/* Mobile: Stack filters vertically */}
+            <div className="flex flex-wrap gap-2 sm:gap-2">
               {(['week', 'month', 'all'] as const).map((filter) => (
                 <Button
                   key={filter}
                   variant={timeFilter === filter ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => setTimeFilter(filter)}
+                  className="flex-1 sm:flex-initial text-xs sm:text-sm"
                 >
                   {filter === 'week' ? 'Semana' : filter === 'month' ? 'Mês' : 'Geral'}
                 </Button>
@@ -266,38 +268,38 @@ export default function Leaderboard() {
                     </Card>
                   )}
 
-                  {/* Top 3 Podium */}
-                  <div className="grid grid-cols-3 gap-4 mb-8">
+                  {/* Top 3 Podium - Mobile Optimized */}
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
                     {getTopUsers().map((user, index) => (
                       <Card 
                         key={user.id} 
-                        className={`p-6 text-center cursor-pointer hover:shadow-lg transition-shadow ${
+                        className={`p-3 sm:p-6 text-center cursor-pointer hover:shadow-lg transition-shadow ${
                           index === 0 ? 'border-yellow-500 bg-yellow-500/5' :
                           index === 1 ? 'border-gray-400 bg-gray-400/5' :
                           'border-orange-500 bg-orange-500/5'
                         }`}
                         onClick={() => navigate(`/user/${user.id}`)}
                       >
-                        <div className="text-4xl mb-2">{getRankIcon(index + 1)}</div>
+                        <div className="text-2xl sm:text-4xl mb-1 sm:mb-2">{getRankIcon(index + 1)}</div>
                         <AvatarDisplayUniversal
                           avatarName={user.avatars?.name}
                           avatarUrl={user.avatars?.image_url}
                           profileImageUrl={user.profile_image_url}
                           nickname={user.nickname}
-                          size="lg"
-                          className="mx-auto mb-3"
+                          size="sm"
+                          className="mx-auto mb-2 sm:mb-3 w-8 h-8 sm:w-12 sm:h-12"
                         />
-                        <h3 className="font-bold text-foreground mb-1">{user.nickname}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">
+                        <h3 className="font-bold text-foreground mb-1 text-xs sm:text-base truncate">{user.nickname}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2 hidden sm:block">
                           Nível {user.level}
                         </p>
-                        <div className={cn("text-lg font-bold", type.color)}>
-                          {activeTab === 'xp' && `${user.xp} XP`}
-                          {activeTab === 'streak' && `${user.streak} dias`}
-                          {activeTab === 'level' && `Nível ${user.level}`}
-                          {activeTab === 'points' && `${user.points} Beetz`}
+                        <div className={cn("text-xs sm:text-lg font-bold", type.color)}>
+                          {activeTab === 'xp' && `${user.xp}`}
+                          {activeTab === 'streak' && `${user.streak}d`}
+                          {activeTab === 'level' && `N${user.level}`}
+                          {activeTab === 'points' && `${user.points}`}
                         </div>
-                        <Badge variant="outline" className="mt-2">
+                        <Badge variant="outline" className="mt-1 sm:mt-2 text-xs hidden sm:inline-flex">
                           🔥 {user.streak}
                         </Badge>
                       </Card>

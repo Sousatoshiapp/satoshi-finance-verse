@@ -1181,6 +1181,333 @@ export type Database = {
           },
         ]
       }
+      guild_activities: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          created_at: string | null
+          guild_id: string
+          id: string
+          user_id: string | null
+          xp_earned: number | null
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          created_at?: string | null
+          guild_id: string
+          id?: string
+          user_id?: string | null
+          xp_earned?: number | null
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          created_at?: string | null
+          guild_id?: string
+          id?: string
+          user_id?: string | null
+          xp_earned?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_activities_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_activities_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guild_members: {
+        Row: {
+          guild_id: string
+          id: string
+          is_active: boolean | null
+          joined_at: string | null
+          role: string | null
+          total_contribution: number | null
+          user_id: string
+          weekly_contribution: number | null
+        }
+        Insert: {
+          guild_id: string
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          role?: string | null
+          total_contribution?: number | null
+          user_id: string
+          weekly_contribution?: number | null
+        }
+        Update: {
+          guild_id?: string
+          id?: string
+          is_active?: boolean | null
+          joined_at?: string | null
+          role?: string | null
+          total_contribution?: number | null
+          user_id?: string
+          weekly_contribution?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_members_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guild_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          guild_id: string
+          id: string
+          is_deleted: boolean | null
+          message_type: string | null
+          reply_to_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          guild_id: string
+          id?: string
+          is_deleted?: boolean | null
+          message_type?: string | null
+          reply_to_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          guild_id?: string
+          id?: string
+          is_deleted?: boolean | null
+          message_type?: string | null
+          reply_to_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_messages_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "guild_messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guild_missions: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          current_progress: number | null
+          description: string | null
+          expires_at: string | null
+          guild_id: string
+          id: string
+          mission_type: string
+          name: string
+          rewards: Json | null
+          status: string | null
+          target_value: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          description?: string | null
+          expires_at?: string | null
+          guild_id: string
+          id?: string
+          mission_type: string
+          name: string
+          rewards?: Json | null
+          status?: string | null
+          target_value: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          current_progress?: number | null
+          description?: string | null
+          expires_at?: string | null
+          guild_id?: string
+          id?: string
+          mission_type?: string
+          name?: string
+          rewards?: Json | null
+          status?: string | null
+          target_value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_missions_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guild_requests: {
+        Row: {
+          created_at: string | null
+          guild_id: string
+          id: string
+          message: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          guild_id: string
+          id?: string
+          message?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          guild_id?: string
+          id?: string
+          message?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guild_requests_guild_id_fkey"
+            columns: ["guild_id"]
+            isOneToOne: false
+            referencedRelation: "guilds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guild_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guilds: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          emblem: string | null
+          id: string
+          is_recruiting: boolean | null
+          leader_id: string
+          level: number | null
+          max_members: number | null
+          member_count: number | null
+          name: string
+          perks: Json | null
+          requirements: Json | null
+          status: string | null
+          updated_at: string | null
+          weekly_goal: number | null
+          weekly_progress: number | null
+          xp: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          emblem?: string | null
+          id?: string
+          is_recruiting?: boolean | null
+          leader_id: string
+          level?: number | null
+          max_members?: number | null
+          member_count?: number | null
+          name: string
+          perks?: Json | null
+          requirements?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          weekly_goal?: number | null
+          weekly_progress?: number | null
+          xp?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          emblem?: string | null
+          id?: string
+          is_recruiting?: boolean | null
+          leader_id?: string
+          level?: number | null
+          max_members?: number | null
+          member_count?: number | null
+          name?: string
+          perks?: Json | null
+          requirements?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          weekly_goal?: number | null
+          weekly_progress?: number | null
+          xp?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guilds_leader_id_fkey"
+            columns: ["leader_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leagues: {
         Row: {
           color_primary: string
@@ -3951,6 +4278,18 @@ export type Database = {
           p_is_timeout?: boolean
         }
         Returns: Json
+      }
+      process_guild_request: {
+        Args: {
+          p_request_id: string
+          p_reviewer_id: string
+          p_approved: boolean
+        }
+        Returns: boolean
+      }
+      request_guild_membership: {
+        Args: { p_guild_id: string; p_user_id: string; p_message?: string }
+        Returns: boolean
       }
       track_district_metric: {
         Args: {

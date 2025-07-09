@@ -33,10 +33,10 @@ export function UserAffiliation({ district, team }: UserAffiliationProps) {
         >
           <div className="flex items-center gap-2">
             <div className="text-lg">🏢</div>
-            <div className="flex-1">
-              <div className="text-xs text-muted-foreground">Distrito</div>
-              <div className="text-sm font-semibold text-foreground truncate">{district.name}</div>
-            </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs text-muted-foreground">Distrito</div>
+            <div className="text-sm font-semibold text-foreground truncate leading-tight">{district.name}</div>
+          </div>
           </div>
         </div>
       ) : (
@@ -46,9 +46,9 @@ export function UserAffiliation({ district, team }: UserAffiliationProps) {
         >
           <div className="flex items-center gap-2">
             <div className="text-lg">🌟</div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="text-xs text-muted-foreground">Explorar</div>
-              <div className="text-sm font-semibold text-foreground">Escolher Distrito</div>
+              <div className="text-sm font-semibold text-foreground leading-tight">Escolher Distrito</div>
             </div>
           </div>
         </div>
@@ -66,10 +66,10 @@ export function UserAffiliation({ district, team }: UserAffiliationProps) {
         >
           <div className="flex items-center gap-2">
             <div className="text-lg">⚔️</div>
-            <div className="flex-1">
-              <div className="text-xs text-muted-foreground">Time</div>
-              <div className="text-sm font-semibold text-foreground truncate">{team.name}</div>
-            </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs text-muted-foreground">Time</div>
+            <div className="text-sm font-semibold text-foreground truncate leading-tight">{team.name}</div>
+          </div>
           </div>
         </div>
       ) : (
@@ -79,9 +79,9 @@ export function UserAffiliation({ district, team }: UserAffiliationProps) {
         >
           <div className="flex items-center gap-2">
             <div className="text-lg">⚔️</div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="text-xs text-muted-foreground">Times</div>
-              <div className="text-sm font-semibold text-foreground">Criar/Juntar Time</div>
+              <div className="text-sm font-semibold text-foreground leading-tight">Criar/Juntar Time</div>
             </div>
           </div>
         </div>
