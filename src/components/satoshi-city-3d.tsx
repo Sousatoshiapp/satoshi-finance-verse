@@ -48,71 +48,272 @@ const district3DPositions = {
   fintech: { x: 10, y: 0, z: 20 },
 };
 
-// Componente de distrito 3D simplificado
+// Componente de terreno urbano
+function CityTerrain() {
+  return (
+    <group>
+      {/* Chão principal da cidade */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2, 0]}>
+        <planeGeometry args={[100, 100]} />
+        <meshStandardMaterial 
+          color="#2a2a3a"
+          roughness={0.8}
+          metalness={0.1}
+        />
+      </mesh>
+      
+      {/* Ruas conectando distritos */}
+      {/* Rua horizontal principal */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.9, 0]}>
+        <planeGeometry args={[80, 4]} />
+        <meshStandardMaterial color="#404040" />
+      </mesh>
+      
+      {/* Rua vertical principal */}
+      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[0, -1.9, 0]}>
+        <planeGeometry args={[80, 4]} />
+        <meshStandardMaterial color="#404040" />
+      </mesh>
+      
+      {/* Linhas amarelas das ruas */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.85, 0]}>
+        <planeGeometry args={[76, 0.2]} />
+        <meshBasicMaterial color="#ffff00" />
+      </mesh>
+      
+      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 2]} position={[0, -1.85, 0]}>
+        <planeGeometry args={[76, 0.2]} />
+        <meshBasicMaterial color="#ffff00" />
+      </mesh>
+    </group>
+  );
+}
+
+// Componente de skybox realista
+function CityEnvironment() {
+  return (
+    <>
+      <Environment preset="night" />
+      {/* Skybox customizado com gradiente */}
+      <mesh scale={[500, 500, 500]}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <meshBasicMaterial 
+          color="#0a0a1f"
+          side={THREE.BackSide}
+        />
+      </mesh>
+    </>
+  );
+}
+
+// Componente de distrito 3D com arquitetura realista
 function District3D({ district, userInfo, position, onClick }: {
   district: District;
   userInfo?: UserDistrict;
   position: { x: number; y: number; z: number };
   onClick: () => void;
 }) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   
   const primaryColor = district.color_primary;
   const powerLevel = district.power_level || 100;
   const isResidence = userInfo?.is_residence || false;
 
-  useFrame(() => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.01;
+  useFrame((state) => {
+    if (groupRef.current) {
+      // Suave balanceio dos edifícios
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
       
       if (hovered) {
-        meshRef.current.scale.setScalar(1.1);
+        groupRef.current.scale.setScalar(1.05);
       } else {
-        meshRef.current.scale.setScalar(1);
+        groupRef.current.scale.setScalar(1);
       }
     }
   });
 
+  // Função para criar arquitetura temática por distrito
+  const getDistrictArchitecture = () => {
+    const theme = district.theme;
+    
+    switch (theme) {
+      case 'criptomoedas':
+        return (
+          <group>
+            {/* Torre principal futurista */}
+            <mesh position={[0, 6, 0]}>
+              <cylinderGeometry args={[3, 2, 12, 8]} />
+              <meshStandardMaterial 
+                color={primaryColor}
+                emissive={primaryColor}
+                emissiveIntensity={0.3}
+                metalness={0.8}
+                roughness={0.2}
+              />
+            </mesh>
+            
+            {/* Anéis holográficos */}
+            {[4, 8, 12].map((height, i) => (
+              <mesh key={i} position={[0, height, 0]} rotation={[0, 0, 0]}>
+                <torusGeometry args={[4, 0.2, 8, 32]} />
+                <meshBasicMaterial 
+                  color="#00ffff"
+                  transparent
+                  opacity={0.6}
+                />
+              </mesh>
+            ))}
+          </group>
+        );
+        
+      case 'sistema_bancario':
+        return (
+          <group>
+            {/* Arranha-céu principal */}
+            <mesh position={[0, 8, 0]}>
+              <boxGeometry args={[4, 16, 4]} />
+              <meshStandardMaterial 
+                color={primaryColor}
+                metalness={0.9}
+                roughness={0.1}
+              />
+            </mesh>
+            
+            {/* Torres laterais */}
+            <mesh position={[-3, 5, 0]}>
+              <boxGeometry args={[2, 10, 2]} />
+              <meshStandardMaterial 
+                color={primaryColor}
+                metalness={0.7}
+                roughness={0.3}
+              />
+            </mesh>
+            
+            <mesh position={[3, 5, 0]}>
+              <boxGeometry args={[2, 10, 2]} />
+              <meshStandardMaterial 
+                color={primaryColor}
+                metalness={0.7}
+                roughness={0.3}
+              />
+            </mesh>
+          </group>
+        );
+        
+      case 'fintech':
+        return (
+          <group>
+            {/* Estrutura modular */}
+            {[0, 2, 4].map((height, i) => (
+              <mesh key={i} position={[0, height * 2 + 2, 0]} rotation={[0, i * 0.3, 0]}>
+                <octahedronGeometry args={[2 + i * 0.5]} />
+                <meshStandardMaterial 
+                  color={primaryColor}
+                  emissive={primaryColor}
+                  emissiveIntensity={0.2}
+                  metalness={0.6}
+                  roughness={0.4}
+                />
+              </mesh>
+            ))}
+          </group>
+        );
+        
+      case 'fundos_imobiliarios':
+        return (
+          <group>
+            {/* Torres residenciais */}
+            <mesh position={[0, 7, 0]}>
+              <boxGeometry args={[3, 14, 6]} />
+              <meshStandardMaterial 
+                color={primaryColor}
+                roughness={0.5}
+                metalness={0.3}
+              />
+            </mesh>
+            
+            {/* Detalhes arquitetônicos */}
+            <mesh position={[0, 14.5, 0]}>
+              <coneGeometry args={[2, 3, 8]} />
+              <meshStandardMaterial 
+                color="#8b4513"
+                roughness={0.8}
+              />
+            </mesh>
+          </group>
+        );
+        
+      default:
+        return (
+          <group>
+            {/* Estrutura padrão moderna */}
+            <mesh position={[0, 5, 0]}>
+              <boxGeometry args={[4, 10, 4]} />
+              <meshStandardMaterial 
+                color={primaryColor}
+                emissive={primaryColor}
+                emissiveIntensity={0.2}
+                metalness={0.6}
+                roughness={0.4}
+              />
+            </mesh>
+          </group>
+        );
+    }
+  };
+
   return (
-    <group position={[position.x, position.y, position.z]}>
-      {/* Estrutura principal do distrito */}
-      <mesh
-        ref={meshRef}
-        onClick={onClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-      >
-        <boxGeometry args={[4, 6, 4]} />
-        <meshStandardMaterial 
-          color={primaryColor}
-          emissive={primaryColor}
-          emissiveIntensity={0.2}
-          metalness={0.6}
-          roughness={0.4}
-        />
-      </mesh>
+    <group 
+      ref={groupRef}
+      position={[position.x, position.y, position.z]}
+      onClick={onClick}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+    >
+      {/* Arquitetura temática */}
+      {getDistrictArchitecture()}
 
       {/* Corona de residência */}
       {isResidence && (
-        <mesh position={[0, 4, 0]}>
-          <torusGeometry args={[2.5, 0.3, 8, 16]} />
+        <mesh position={[0, 15, 0]}>
+          <torusGeometry args={[5, 0.5, 8, 32]} />
           <meshStandardMaterial 
             color="#FFD700"
             emissive="#FFD700"
-            emissiveIntensity={0.5}
+            emissiveIntensity={0.8}
           />
         </mesh>
       )}
 
+      {/* Luzes do distrito */}
+      <pointLight 
+        position={[0, 10, 0]} 
+        intensity={0.5} 
+        color={primaryColor}
+        distance={20}
+      />
+
+      {/* Base iluminada */}
+      <mesh position={[0, -1.5, 0]}>
+        <cylinderGeometry args={[6, 6, 0.5, 32]} />
+        <meshBasicMaterial 
+          color={primaryColor}
+          transparent
+          opacity={0.3}
+        />
+      </mesh>
+
       {/* Texto do nome do distrito */}
       <Text
-        position={[0, -5, 0]}
-        fontSize={1}
+        position={[0, -6, 0]}
+        fontSize={1.2}
         color="white"
         anchorX="center"
         anchorY="middle"
-        maxWidth={8}
+        maxWidth={10}
+        outlineWidth={0.1}
+        outlineColor="black"
       >
         {district.name}
       </Text>
@@ -253,11 +454,11 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
             {/* Controles de câmera */}
             <CameraControls />
 
-            {/* Chão da cidade */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
-              <planeGeometry args={[60, 60]} />
-              <meshStandardMaterial color="#1e293b" />
-            </mesh>
+            {/* Terreno urbano da cidade */}
+            <CityTerrain />
+            
+            {/* Ambiente da cidade */}
+            <CityEnvironment />
 
             {/* Distritos 3D */}
             {districts.map((district) => {
