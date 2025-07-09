@@ -165,8 +165,8 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          message: "Senha alterada com sucesso",
-          newPassword // Retorna a nova senha para o frontend atualizar
+          message: "Senha alterada com sucesso"
+          // SECURITY FIX: Remove password from response
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );

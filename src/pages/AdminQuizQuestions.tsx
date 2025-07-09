@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -172,7 +172,7 @@ export default function AdminQuizQuestions() {
   };
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="flex min-h-screen w-full bg-background">
         <AdminSidebar />
         
@@ -460,6 +460,6 @@ export default function AdminQuizQuestions() {
           </div>
         </div>
       </div>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

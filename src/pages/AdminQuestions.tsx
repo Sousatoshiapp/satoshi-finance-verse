@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { 
   HelpCircle, Plus, Search, MoreHorizontal, 
@@ -205,7 +205,7 @@ export default function AdminQuestions() {
   };
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="flex min-h-screen w-full bg-background">
         <AdminSidebar />
         
@@ -525,6 +525,6 @@ export default function AdminQuestions() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

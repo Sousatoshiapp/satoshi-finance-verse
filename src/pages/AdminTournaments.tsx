@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -133,7 +133,7 @@ export default function AdminTournaments() {
 
   if (loading) {
     return (
-      <AdminPasswordProtection>
+      <AdminAuthProtection>
         <div className="flex min-h-screen w-full bg-background">
           <AdminSidebar />
           <div className="flex-1 flex items-center justify-center">
@@ -143,12 +143,12 @@ export default function AdminTournaments() {
             </div>
           </div>
         </div>
-      </AdminPasswordProtection>
+      </AdminAuthProtection>
     );
   }
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="flex min-h-screen w-full bg-background">
         <AdminSidebar />
         
@@ -359,6 +359,6 @@ export default function AdminTournaments() {
           </div>
         </div>
       </div>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

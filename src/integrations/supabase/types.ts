@@ -100,6 +100,7 @@ export type Database = {
           id: string
           token: string
           used: boolean | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -108,6 +109,7 @@ export type Database = {
           id?: string
           token: string
           used?: boolean | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -116,6 +118,70 @@ export type Database = {
           id?: string
           token?: string
           used?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      admin_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          last_activity: string | null
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          ip_address?: unknown | null
+          last_activity?: string | null
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          last_activity?: string | null
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      admin_users: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          role: Database["public"]["Enums"]["admin_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          role?: Database["public"]["Enums"]["admin_role"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -3830,6 +3896,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_admin_role: {
+        Args: { user_uuid?: string }
+        Returns: Database["public"]["Enums"]["admin_role"]
+      }
       get_dashboard_data_optimized: {
         Args: { target_user_id: string }
         Returns: Json
@@ -3857,6 +3927,10 @@ export type Database = {
       increment_duel_count: {
         Args: { profile_id: string }
         Returns: undefined
+      }
+      is_admin: {
+        Args: { user_uuid?: string }
+        Returns: boolean
       }
       log_security_event: {
         Args: { event_type: string; user_id: string; event_data?: Json }
@@ -3915,8 +3989,13 @@ export type Database = {
         }
         Returns: undefined
       }
+      verify_admin_session: {
+        Args: { session_token: string }
+        Returns: boolean
+      }
     }
     Enums: {
+      admin_role: "super_admin" | "admin" | "moderator"
       subscription_tier: "free" | "pro" | "elite"
     }
     CompositeTypes: {
@@ -4045,6 +4124,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_role: ["super_admin", "admin", "moderator"],
       subscription_tier: ["free", "pro", "elite"],
     },
   },

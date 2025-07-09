@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { 
   Building2, BarChart3, Calendar, Store, Users, TrendingUp,
   DollarSign, Target, Crown, Zap, Settings
@@ -179,7 +179,7 @@ export default function SponsorAdmin() {
 
   if (sponsorAccess.length === 0) {
     return (
-      <AdminPasswordProtection>
+      <AdminAuthProtection>
         <div className="flex items-center justify-center min-h-screen">
           <Card className="max-w-2xl w-full">
             <CardContent className="p-8 text-center">
@@ -204,14 +204,14 @@ export default function SponsorAdmin() {
             </CardContent>
           </Card>
         </div>
-      </AdminPasswordProtection>
+      </AdminAuthProtection>
     );
   }
 
   const selectedDistrictData = sponsorAccess.find(access => access.district.id === selectedDistrict);
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto p-6">
           {/* Header */}
@@ -424,6 +424,6 @@ export default function SponsorAdmin() {
           )}
         </div>
       </div>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

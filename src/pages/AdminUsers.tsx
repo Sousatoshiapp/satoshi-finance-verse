@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { 
   Users, Search, MoreHorizontal, Crown, Shield, 
@@ -174,7 +174,7 @@ export default function AdminUsers() {
   };
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="flex min-h-screen w-full bg-background">
         <AdminSidebar />
         
@@ -416,6 +416,6 @@ export default function AdminUsers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

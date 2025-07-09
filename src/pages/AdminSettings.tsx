@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { LanguageSelector } from "@/components/admin/language-selector";
 import { BotAchievementManager } from "@/components/admin/bot-achievement-manager";
@@ -187,7 +187,7 @@ export default function AdminSettings() {
   };
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="flex min-h-screen w-full bg-background">
         <AdminSidebar />
         
@@ -293,6 +293,6 @@ export default function AdminSettings() {
           </div>
         </div>
       </div>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

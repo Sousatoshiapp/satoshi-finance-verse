@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Users, Activity, Zap, Trophy, MessageSquare, RefreshCw } from "lucide-react";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 
 export default function BotAdmin() {
   const [loading, setLoading] = useState(false);
@@ -174,7 +174,7 @@ export default function BotAdmin() {
   };
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -369,6 +369,6 @@ export default function BotAdmin() {
           </CardContent>
         </Card>
       </div>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AdminPasswordProtection } from "@/components/admin-password-protection";
+import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminStatsCards } from "@/components/admin/admin-stats-cards";
 import { AdminRecentActivity } from "@/components/admin/admin-recent-activity";
@@ -132,7 +132,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <AdminPasswordProtection>
+    <AdminAuthProtection>
       <div className="flex min-h-screen w-full bg-background">
         <AdminSidebar />
         
@@ -168,6 +168,6 @@ export default function AdminDashboard() {
           </div>
         </main>
       </div>
-    </AdminPasswordProtection>
+    </AdminAuthProtection>
   );
 }
