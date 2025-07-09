@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Users, Zap, Target, Clock, Loader2, User } from "lucide-react";
+import { ArrowLeft, Users, Zap, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";
+import { useEnhancedDuelMatchmaking } from "@/hooks/use-enhanced-duel-matchmaking";
+import { MatchmakingWheel } from "@/components/duels/matchmaking-wheel";
 
 const topics = [
   { id: "financas", name: "Finanças Gerais", description: "Conceitos básicos de educação financeira" },
@@ -19,69 +20,62 @@ export default function FindOpponent() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedTopic, setSelectedTopic] = useState("financas");
-  const { isSearching, matchResult, startMatchmaking, cancelMatchmaking, createDuel } = useDuelMatchmaking();
-  const [searchTime, setSearchTime] = useState(0);
+  const { isSearching, matchResult, startMatchmaking, cancelMatchmaking, createDuel, setIsSearching } = useEnhancedDuelMatchmaking();
+  const [showWheel, setShowWheel] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isSearching) {
-      interval = setInterval(() => {
-        setSearchTime((prev) => prev + 1);
-      }, 1000);
-    } else {
-      setSearchTime(0);
+    if (showWheel && !isSearching) {
+      setShowWheel(false);
     }
-    return () => clearInterval(interval);
-  }, [isSearching]);
+  }, [isSearching, showWheel]);
 
-  // Handle match results
-  useEffect(() => {
-    if (matchResult?.matchFound && matchResult.opponentId) {
-      handleMatchFound();
-    }
-  }, [matchResult]);
-
-  const handleMatchFound = async () => {
+  const handleMatchFound = async (opponent: any) => {
     try {
-      if (!matchResult?.opponentId) return;
+      setShowWheel(false);
+      setIsSearching(false);
       
-      const duel = await createDuel(matchResult.opponentId, selectedTopic);
+      const duel = await createDuel(opponent.id, selectedTopic);
       
       toast({
-        title: "Duelo criado!",
-        description: "Redirecionando para o duelo...",
+        title: "🎉 Duelo criado!",
+        description: `Iniciando duelo contra ${opponent.nickname}...`,
       });
       
-      // Navigate to duels page to see active duel
-      navigate('/duels');
+      setTimeout(() => {
+        navigate('/duels');
+      }, 1000);
     } catch (error) {
       console.error('Error handling match:', error);
       toast({
-        title: "Erro ao criar duelo",
+        title: "❌ Erro ao criar duelo",
         description: "Tente novamente",
         variant: "destructive"
       });
+      setShowWheel(false);
+      setIsSearching(false);
     }
   };
 
   const handleStartSearch = async () => {
     try {
+      setShowWheel(true);
       await startMatchmaking(selectedTopic);
     } catch (error) {
       console.error('Error starting search:', error);
       toast({
-        title: "Erro ao iniciar busca",
+        title: "❌ Erro ao iniciar busca",
         description: "Tente novamente",
         variant: "destructive"
       });
+      setShowWheel(false);
     }
   };
 
   const handleCancelSearch = async () => {
     await cancelMatchmaking();
-    setSearchTime(0);
+    setShowWheel(false);
     toast({
-      title: "Busca cancelada",
+      title: "🚫 Busca cancelada",
       description: "Você pode tentar novamente quando quiser",
     });
   };
@@ -131,106 +125,100 @@ export default function FindOpponent() {
                 onClick={() => setSelectedTopic(topic.id)}
                 className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
                   selectedTopic === topic.id
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border hover:border-primary/50 text-muted-foreground hover:text-foreground'
+                    ? 'border-primary bg-primary/10 text-primary shadow-lg'
+                    : 'border-border hover:border-primary/50 text-muted-foreground hover:text-foreground hover:shadow-md'
                 }`}
               >
-                <div className="font-medium">{topic.name}</div>
-                <div className="text-xs opacity-70">{topic.description}</div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold flex items-center gap-2">
+                      <Target className="h-4 w-4" />
+                      {topic.name}
+                    </div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      {topic.description}
+                    </div>
+                  </div>
+                  {selectedTopic === topic.id && (
+                    <div className="text-primary">
+                      ✓
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </CardContent>
         </Card>
 
-        {/* Matchmaking Section */}
-        <Card className="mb-6 bg-card border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-foreground flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Sistema de Duelos
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {!isSearching ? (
-              <Button 
-                onClick={handleStartSearch}
-                size="lg"
-                className="w-full bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold py-4"
-              >
-                <Zap className="mr-2 h-5 w-5" />
-                Procurar Oponente
-              </Button>
-            ) : (
-              <div className="text-center space-y-4">
-                <div className="flex items-center justify-center space-x-2">
-                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                  <span className="text-lg font-medium text-foreground">
-                    {matchResult?.opponentType === 'waiting' ? 'Procurando oponente...' : 'Conectando...'}
-                  </span>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Tempo de busca: {Math.floor(searchTime / 60)}:{(searchTime % 60).toString().padStart(2, '0')}
-                </div>
-                {matchResult?.opponentType === 'waiting' && (
-                  <p className="text-xs text-muted-foreground">
-                    Você está na fila. Um oponente será encontrado automaticamente.
-                  </p>
-                )}
-                <Button 
-                  onClick={handleCancelSearch}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Cancelar Busca
-                </Button>
+        {/* Start Match Button */}
+        <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20 shadow-xl">
+          <CardContent className="p-6">
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Zap className="h-8 w-8 text-primary animate-pulse" />
+                <h2 className="text-2xl font-bold text-primary">
+                  Arena de Duelos
+                </h2>
+                <Zap className="h-8 w-8 text-primary animate-pulse" />
               </div>
-            )}
+              
+              <p className="text-muted-foreground">
+                10 perguntas • 30 segundos cada • Duelo simultâneo
+              </p>
+              
+              <Button
+                onClick={handleStartSearch}
+                disabled={isSearching || showWheel}
+                size="lg"
+                className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold py-6 text-lg shadow-lg transform transition-transform hover:scale-105"
+              >
+                <Users className="mr-2 h-5 w-5" />
+                🎯 Encontrar Oponente
+              </Button>
+              
+              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Online
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  Buscando
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Match Status */}
-        {matchResult && (
-          <Card className="mb-6 bg-card border-border">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-center space-x-3">
-                {matchResult.opponentType === 'bot' ? (
-                  <User className="h-6 w-6 text-primary" />
-                ) : matchResult.opponentType === 'human' ? (
-                  <User className="h-6 w-6 text-primary" />
-                ) : (
-                  <Clock className="h-6 w-6 text-secondary" />
-                )}
-                <span className="text-foreground font-medium">
-                  {matchResult.opponentType === 'bot' && 'Oponente encontrado!'}
-                  {matchResult.opponentType === 'human' && 'Oponente encontrado!'}
-                  {matchResult.opponentType === 'waiting' && 'Na fila de espera...'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {/* Matchmaking Wheel */}
+        <MatchmakingWheel
+          isSearching={showWheel}
+          onMatchFound={handleMatchFound}
+          onCancel={handleCancelSearch}
+          topic={selectedTopic}
+        />
 
         {/* How it Works */}
-        <Card className="bg-card border-border">
+        <Card className="mt-6 bg-card border-border">
           <CardHeader className="pb-3">
             <CardTitle className="text-foreground text-sm">Como Funciona</CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-muted-foreground space-y-2">
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold mt-0.5">1</div>
-              <div>Escolha um tópico e clique em "Procurar Oponente"</div>
+              <Badge variant="outline" className="w-5 h-5 rounded-full p-0 flex items-center justify-center">1</Badge>
+              <div>Escolha um tópico e clique em "Encontrar Oponente"</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-bold mt-0.5">2</div>
-              <div>Sistema busca por oponentes disponíveis</div>
+              <Badge variant="outline" className="w-5 h-5 rounded-full p-0 flex items-center justify-center">2</Badge>
+              <div>Sistema busca oponentes em tempo real</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-xs font-bold mt-0.5">3</div>
-              <div>Um oponente compatível será encontrado rapidamente</div>
+              <Badge variant="outline" className="w-5 h-5 rounded-full p-0 flex items-center justify-center">3</Badge>
+              <div>Duelo inicia automaticamente quando match é encontrado</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs font-bold mt-0.5">4</div>
-              <div>Duelo inicia automaticamente quando o match é encontrado</div>
+              <Badge variant="outline" className="w-5 h-5 rounded-full p-0 flex items-center justify-center">4</Badge>
+              <div>10 perguntas • 30s cada • Melhor pontuação vence!</div>
             </div>
           </CardContent>
         </Card>

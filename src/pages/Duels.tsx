@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { UsersList } from "@/components/duels/users-list";
 import { DuelInvites } from "@/components/duels/duel-invites";
-import { SimultaneousDuel } from "@/components/duels/simultaneous-duel";
+import { EnhancedSimultaneousDuel } from "@/components/duels/enhanced-simultaneous-duel";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Duels() {
@@ -101,17 +101,27 @@ export default function Duels() {
   };
 
   if (currentView === 'active' && activeDuel) {
-    return <SimultaneousDuel 
+    return <EnhancedSimultaneousDuel 
       duel={activeDuel} 
       onDuelEnd={(result) => {
         toast({
-          title: result.winner ? "🎉 Vitória!" : "😔 Derrota",
+          title: result.winner ? "🎉 Vitória!" : result.score === result.opponentScore ? "🤝 Empate!" : "😔 Derrota",
           description: result.winner ? 
             `Parabéns! Você venceu por ${result.score} x ${result.opponentScore}!` : 
+            result.score === result.opponentScore ?
+            `Empate! Placar: ${result.score} x ${result.opponentScore}` :
             `Não foi desta vez. Placar: ${result.score} x ${result.opponentScore}`,
         });
+        
+        // Clear duel state and return to main view
         setActiveDuel(null);
         setCurrentView('main');
+        
+        // Force reload of pending invites and check for new duels
+        setTimeout(() => {
+          loadPendingInvites();
+          checkForActiveDuel();
+        }, 500);
       }} 
     />;
   }
