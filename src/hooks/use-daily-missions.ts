@@ -58,12 +58,23 @@ export function useDailyMissions() {
         return;
       }
 
-      console.log('Generating daily missions for profile:', profile.id);
-      // Generate missions if needed
-      const { error: generateError } = await supabase.rpc('generate_daily_missions');
-      if (generateError) {
-        console.error('Error generating daily missions:', generateError);
-        throw generateError;
+      // First, check if missions already exist for today
+      const today = new Date().toISOString().split('T')[0];
+      const { data: existingMissions } = await supabase
+        .from('daily_missions')
+        .select('id')
+        .eq('is_active', true)
+        .gte('expires_at', new Date().toISOString())
+        .limit(1);
+
+      // Only generate missions if none exist for today
+      if (!existingMissions || existingMissions.length === 0) {
+        console.log('Generating daily missions for profile:', profile.id);
+        const { error: generateError } = await supabase.rpc('generate_daily_missions');
+        if (generateError) {
+          console.error('Error generating daily missions:', generateError);
+          throw generateError;
+        }
       }
 
       // Get missions with user progress
