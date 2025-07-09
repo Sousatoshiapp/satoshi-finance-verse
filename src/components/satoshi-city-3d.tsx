@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
 import { OrbitControls, Text, Environment } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, Eye, Crown, Map } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -875,6 +875,159 @@ function CameraControls({ followPlayer = false, playerPosition }: {
   return <OrbitControls enablePan enableZoom enableRotate />;
 }
 
+// Sistema de minimap 3D (Fase 5)
+function Minimap({ districts, playerPosition, userDistricts }: {
+  districts: District[];
+  playerPosition: [number, number, number];
+  userDistricts: UserDistrict[];
+}) {
+  return (
+    <div className="absolute top-4 right-4 z-30">
+      <Card className="bg-slate-900/95 backdrop-blur-sm border-cyan-400/50 w-48 h-48">
+        <CardContent className="p-2 relative">
+          <div className="text-xs text-cyan-400 mb-2 text-center font-medium">MAPA DA CIDADE</div>
+          
+          {/* Área do minimap */}
+          <div className="relative w-full h-40 bg-slate-800 rounded border border-slate-600 overflow-hidden">
+            {/* Grid de fundo */}
+            <div className="absolute inset-0 opacity-20">
+              {Array.from({ length: 8 }, (_, i) => (
+                <div key={`v-${i}`} className="absolute bg-cyan-400 w-px h-full" style={{ left: `${i * 12.5}%` }} />
+              ))}
+              {Array.from({ length: 8 }, (_, i) => (
+                <div key={`h-${i}`} className="absolute bg-cyan-400 h-px w-full" style={{ top: `${i * 12.5}%` }} />
+              ))}
+            </div>
+            
+            {/* Distritos no minimap */}
+            {districts.map((district) => {
+              const position = district3DPositions[district.theme as keyof typeof district3DPositions];
+              const userInfo = userDistricts.find(ud => ud.district_id === district.id);
+              
+              if (!position) return null;
+              
+              // Converter coordenadas 3D para minimap (normalizar de -40,40 para 0,100%)
+              const mapX = ((position.x + 40) / 80) * 100;
+              const mapY = ((position.z + 40) / 80) * 100;
+              
+              return (
+                <div
+                  key={district.id}
+                  className="absolute w-2 h-2 rounded-full border transform -translate-x-1/2 -translate-y-1/2"
+                  style={{
+                    left: `${mapX}%`,
+                    top: `${mapY}%`,
+                    backgroundColor: district.color_primary,
+                    borderColor: userInfo?.is_residence ? '#FFD700' : 'transparent',
+                    boxShadow: `0 0 6px ${district.color_primary}`,
+                  }}
+                  title={district.name}
+                />
+              );
+            })}
+            
+            {/* Posição do jogador */}
+            <div
+              className="absolute w-1 h-1 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-pulse"
+              style={{
+                left: `${((playerPosition[0] + 40) / 80) * 100}%`,
+                top: `${((playerPosition[2] + 40) / 80) * 100}%`,
+                boxShadow: '0 0 4px #ffffff',
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Sistema de teleporte entre distritos (Fase 5)
+function TeleportSystem({ districts, onTeleport, currentPosition }: {
+  districts: District[];
+  onTeleport: (position: [number, number, number]) => void;
+  currentPosition: [number, number, number];
+}) {
+  const [showTeleportMenu, setShowTeleportMenu] = useState(false);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'T' || event.key === 't') {
+        setShowTeleportMenu(!showTeleportMenu);
+      }
+      if (event.key === 'Escape') {
+        setShowTeleportMenu(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [showTeleportMenu]);
+
+  if (!showTeleportMenu) return null;
+
+  return (
+    <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-40">
+      <Card className="bg-slate-900/95 backdrop-blur-sm border-cyan-400 max-w-md w-full mx-4">
+        <CardHeader>
+          <CardTitle className="text-cyan-400 text-center">Sistema de Teleporte</CardTitle>
+          <CardDescription className="text-center text-slate-300">
+            Selecione um distrito para se teleportar
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {districts.map((district) => {
+              const position = district3DPositions[district.theme as keyof typeof district3DPositions];
+              if (!position) return null;
+              
+              const distance = Math.sqrt(
+                Math.pow(currentPosition[0] - position.x, 2) + 
+                Math.pow(currentPosition[2] - position.z, 2)
+              );
+
+              return (
+                <Button
+                  key={district.id}
+                  variant="outline"
+                  className="w-full justify-start text-left h-auto p-3 border-slate-600 hover:border-cyan-400"
+                  onClick={() => {
+                    onTeleport([position.x, 0, position.z + 10]); // Teleportar próximo ao distrito
+                    setShowTeleportMenu(false);
+                  }}
+                >
+                  <div className="flex items-center space-x-3 w-full">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: district.color_primary }}
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-white">{district.name}</div>
+                      <div className="text-xs text-slate-400">
+                        Distância: {Math.round(distance)}m
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              );
+            })}
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-slate-600">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowTeleportMenu(false)}
+            >
+              Cancelar (ESC)
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 // Sistema de notificações de proximidade (Fase 4)
 function ProximityNotifications({ nearbyDistrict, districts }: { 
   nearbyDistrict: string | null; 
@@ -926,7 +1079,18 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'overview' | 'exploration'>('overview');
   const { playerPosition, playerRotation, nearbyDistrict } = useMovementControls();
+  const [playerPositionState, setPlayerPositionState] = useState<[number, number, number]>([0, 0, 15]);
   const navigate = useNavigate();
+
+  // Sincronizar posição do jogador para teleporte (Fase 5)
+  useEffect(() => {
+    setPlayerPositionState(playerPosition);
+  }, [playerPosition]);
+
+  // Sistema de teleporte (Fase 5)
+  const handleTeleport = useCallback((newPosition: [number, number, number]) => {
+    setPlayerPositionState(newPosition);
+  }, []);
 
   // Sistema de interação por proximidade (Fase 4)
   useEffect(() => {
@@ -1065,6 +1229,24 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
         </Card>
       </div>
 
+      {/* Minimap no modo exploração (Fase 5) */}
+      {viewMode === 'exploration' && (
+        <Minimap 
+          districts={districts} 
+          playerPosition={playerPosition} 
+          userDistricts={userDistricts} 
+        />
+      )}
+
+      {/* Sistema de teleporte (Fase 5) */}
+      {viewMode === 'exploration' && (
+        <TeleportSystem 
+          districts={districts} 
+          onTeleport={handleTeleport} 
+          currentPosition={playerPositionState} 
+        />
+      )}
+
       {/* Cena 3D */}
       <div className="w-full h-screen">
         <Canvas>
@@ -1156,7 +1338,7 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
                   </div>
                   <div className="flex items-center space-x-2">
                     <Crown className="w-3 h-3 text-yellow-400" />
-                    <span>Aproxime-se dos distritos para interagir</span>
+                    <span>T = Teleporte | Minimap no canto superior direito</span>
                   </div>
                 </>
               )}
