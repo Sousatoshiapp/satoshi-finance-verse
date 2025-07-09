@@ -55,7 +55,7 @@ export function TeleportSystem({ districts, onTeleport, currentPosition }: Telep
                   variant="outline"
                   className="w-full justify-start text-left h-auto p-3 border-slate-600 hover:border-cyan-400"
                   onClick={() => {
-                    onTeleport([position.x, 0, position.z + 10]);
+                    onTeleport([position.x, 2, position.z + 30]);
                     setShowTeleportMenu(false);
                   }}
                 >

@@ -13,10 +13,10 @@ export function useMovementControls() {
     ArrowRight: false
   });
   
-  const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 0, 15]);
+  const [playerPosition, setPlayerPosition] = useState<[number, number, number]>([0, 2, 50]);
   const [playerRotation, setPlayerRotation] = useState(0);
   const [nearbyDistrict, setNearbyDistrict] = useState<string | null>(null);
-  const [movementSpeed, setMovementSpeed] = useState(0.3);
+  const [movementSpeed, setMovementSpeed] = useState(1.5);
   
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -68,8 +68,8 @@ export function useMovementControls() {
         newRotation += 0.05;
       }
       
-      newX = Math.max(-40, Math.min(40, newX));
-      newZ = Math.max(-40, Math.min(40, newZ));
+      newX = Math.max(-450, Math.min(450, newX));
+      newZ = Math.max(-450, Math.min(450, newZ));
       
       let closestDistrict = null;
       let minDistance = Infinity;
@@ -78,7 +78,7 @@ export function useMovementControls() {
         const distance = Math.sqrt(
           Math.pow(newX - pos.x, 2) + Math.pow(newZ - pos.z, 2)
         );
-        if (distance < 8 && distance < minDistance) {
+        if (distance < 25 && distance < minDistance) {
           minDistance = distance;
           closestDistrict = theme;
         }

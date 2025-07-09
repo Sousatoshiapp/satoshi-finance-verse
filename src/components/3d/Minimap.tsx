@@ -35,8 +35,8 @@ export function Minimap({ districts, playerPosition, userDistricts }: MinimapPro
               
               if (!position) return null;
               
-              const mapX = ((position.x + 40) / 80) * 100;
-              const mapY = ((position.z + 40) / 80) * 100;
+              const mapX = ((position.x + 500) / 1000) * 100;
+              const mapY = ((position.z + 500) / 1000) * 100;
               
               return (
                 <div
@@ -58,8 +58,8 @@ export function Minimap({ districts, playerPosition, userDistricts }: MinimapPro
             <div
               className="absolute w-1 h-1 bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2 animate-pulse"
               style={{
-                left: `${((playerPosition[0] + 40) / 80) * 100}%`,
-                top: `${((playerPosition[2] + 40) / 80) * 100}%`,
+                left: `${((playerPosition[0] + 500) / 1000) * 100}%`,
+                top: `${((playerPosition[2] + 500) / 1000) * 100}%`,
                 boxShadow: '0 0 4px #ffffff',
               }}
             />

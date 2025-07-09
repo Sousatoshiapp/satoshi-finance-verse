@@ -21,10 +21,10 @@ export function District3D({ district, userInfo, position, onClick }: District3D
 
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.02;
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.3) * 0.01;
       
-      const scale = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02 * (powerLevel / 100);
-      groupRef.current.scale.setScalar(hovered ? 1.05 * scale : scale);
+      const scale = 1 + Math.sin(state.clock.elapsedTime * 1.5) * 0.01 * (powerLevel / 100);
+      groupRef.current.scale.setScalar(hovered ? 1.02 * scale : scale);
     }
   });
 
@@ -35,9 +35,9 @@ export function District3D({ district, userInfo, position, onClick }: District3D
       case 'criptomoedas':
         return (
           <group>
-            {/* Torre principal - Arranha-céu moderno */}
-            <mesh position={[0, 12, 0]} castShadow receiveShadow>
-              <boxGeometry args={[4, 24, 4]} />
+            {/* Torre principal - Arranha-céu futurista */}
+            <mesh position={[0, 25, 0]} castShadow receiveShadow>
+              <boxGeometry args={[8, 50, 8]} />
               <meshStandardMaterial 
                 color={primaryColor}
                 metalness={0.9}
@@ -110,9 +110,9 @@ export function District3D({ district, userInfo, position, onClick }: District3D
       case 'sistema_bancario':
         return (
           <group>
-            {/* Edifício principal - Estilo clássico bancário */}
-            <mesh position={[0, 10, 0]} castShadow receiveShadow>
-              <boxGeometry args={[6, 20, 6]} />
+            {/* Complexo bancário - Torres principais */}
+            <mesh position={[0, 20, 0]} castShadow receiveShadow>
+              <boxGeometry args={[12, 40, 12]} />
               <meshStandardMaterial 
                 color={primaryColor}
                 metalness={0.3}

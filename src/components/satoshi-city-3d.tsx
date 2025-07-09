@@ -16,6 +16,9 @@ import { CityEnvironment } from '@/components/3d/CityEnvironment';
 import { UrbanElements } from '@/components/3d/UrbanElements';
 import { Minimap } from '@/components/3d/Minimap';
 import { TeleportSystem } from '@/components/3d/TeleportSystem';
+import { GoogleMapsCamera } from '@/components/3d/navigation/GoogleMapsCamera';
+import { UrbanInfrastructure } from '@/components/3d/city/UrbanInfrastructure';
+import { RealisticSkyscraper } from '@/components/3d/buildings/RealisticSkyscraper';
 
 // Importações dos hooks customizados
 import { useMovementControls } from '@/hooks/useMovementControls';
@@ -78,14 +81,14 @@ function FollowCamera({ playerPosition }: { playerPosition: [number, number, num
   const { camera } = useThree();
   
   useFrame(() => {
-    const cameraOffset = { x: 0, y: 15, z: 10 };
+    const cameraOffset = { x: 0, y: 25, z: 20 };
     camera.position.lerp(
       new THREE.Vector3(
         playerPosition[0] + cameraOffset.x,
         playerPosition[1] + cameraOffset.y,
         playerPosition[2] + cameraOffset.z
       ),
-      0.1
+      0.08
     );
     
     camera.lookAt(playerPosition[0], playerPosition[1] + 2, playerPosition[2]);
@@ -192,7 +195,7 @@ function CameraControls({ followPlayer = false, playerPosition }: {
   
   useEffect(() => {
     if (!followPlayer) {
-      camera.position.set(0, 20, 30);
+      camera.position.set(0, 120, 200);
       camera.lookAt(0, 0, 0);
     }
   }, [camera, followPlayer]);
@@ -201,7 +204,7 @@ function CameraControls({ followPlayer = false, playerPosition }: {
     return <FollowCamera playerPosition={playerPosition} />;
   }
 
-  return <OrbitControls enablePan enableZoom enableRotate />;
+  return <GoogleMapsCamera enableControls={!followPlayer} />;
 }
 
 // Componente principal
@@ -297,7 +300,7 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
               
               <div className="flex space-x-2">
                 <Badge variant="outline" className="border-cyan-400 text-cyan-400">
-                  7 Distritos Ativos
+                  Cidade Hiperrealista
                 </Badge>
                 <Badge variant="outline" className="border-purple-400 text-purple-400">
                   {viewMode === 'exploration' ? 'Modo Exploração' : 'Visão Panorâmica'}
@@ -350,6 +353,9 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
             {/* Caminhos entre distritos */}
             <DistrictPaths districts={districts} />
 
+            {/* Infraestrutura urbana expandida */}
+            <UrbanInfrastructure />
+            
             {/* Terreno urbano da cidade */}
             <CityTerrain />
             
@@ -379,14 +385,38 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
 
             {/* Título central da cidade */}
             <Text
-              position={[0, 10, -15]}
-              fontSize={3}
+              position={[0, 30, -50]}
+              fontSize={8}
               color="#8B5CF6"
               anchorX="center"
               anchorY="middle"
+              outlineWidth={0.5}
+              outlineColor="black"
             >
               SATOSHI CITY 3D
             </Text>
+            
+            {/* Prédios adicionais para criar skyline realista */}
+            {Array.from({ length: 15 }, (_, i) => {
+              const angle = (i / 15) * Math.PI * 2;
+              const radius = 80 + Math.random() * 40;
+              const x = Math.cos(angle) * radius;
+              const z = Math.sin(angle) * radius;
+              const height = 15 + Math.random() * 25;
+              
+              return (
+                <RealisticSkyscraper
+                  key={`skyline-${i}`}
+                  position={[x, height/2, z]}
+                  height={height}
+                  width={4 + Math.random() * 3}
+                  depth={4 + Math.random() * 3}
+                  color={['#4a4a5a', '#3a3a4a', '#5a5a6a', '#2a2a3a'][i % 4]}
+                  districtTheme="generic"
+                  windowLights={Math.random() > 0.3}
+                />
+              );
+            })}
           </Suspense>
         </Canvas>
       </div>
@@ -405,7 +435,7 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
                 <>
                   <div className="flex items-center space-x-2">
                     <Map className="w-3 h-3" />
-                    <span>Arraste para rotacionar | Scroll para zoom</span>
+                    <span>Arraste para rotacionar | Scroll para zoom | Duplo clique para focar</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Crown className="w-3 h-3 text-yellow-400" />
@@ -416,7 +446,7 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
                 <>
                   <div className="flex items-center space-x-2">
                     <Map className="w-3 h-3" />
-                    <span>WASD ou Setas para mover | ENTER para explorar</span>
+                    <span>WASD para navegar | ENTER para explorar distrito</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Crown className="w-3 h-3 text-yellow-400" />
