@@ -125,17 +125,30 @@ export function useMarketplace() {
           user_collectibles (
             *,
             collectible_items (*)
-          ),
-          profiles!seller_id (
-            nickname,
-            avatar_id
           )
         `)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setListings((data || []) as MarketplaceListing[]);
+      
+      // Buscar dados dos vendedores separadamente
+      const enrichedListings = await Promise.all(
+        (data || []).map(async (listing) => {
+          const { data: sellerData } = await supabase
+            .from('profiles')
+            .select('nickname, avatar_id')
+            .eq('id', listing.seller_id)
+            .single();
+            
+          return {
+            ...listing,
+            profiles: sellerData
+          };
+        })
+      );
+      
+      setListings(enrichedListings as MarketplaceListing[]);
     } catch (error) {
       console.error('Erro ao carregar listagens:', error);
       toast({
@@ -153,18 +166,34 @@ export function useMarketplace() {
     try {
       const { data, error } = await supabase
         .from('marketplace_sales')
-        .select(`
-          *,
-          user_collectibles (
-            *,
-            collectible_items (*)
-          )
-        `)
+        .select('*')
         .or(`buyer_id.eq.${profile.id},seller_id.eq.${profile.id}`)
         .order('completed_at', { ascending: false });
 
       if (error) throw error;
-      setSales((data || []) as MarketplaceSale[]);
+      
+      // Buscar dados dos colecionáveis separadamente
+      const enrichedSales = await Promise.all(
+        (data || []).map(async (sale) => {
+          const { data: listingData } = await supabase
+            .from('marketplace_listings')
+            .select(`
+              user_collectibles (
+                *,
+                collectible_items (*)
+              )
+            `)
+            .eq('id', sale.listing_id)
+            .single();
+            
+          return {
+            ...sale,
+            user_collectibles: listingData?.user_collectibles
+          };
+        })
+      );
+      
+      setSales(enrichedSales as MarketplaceSale[]);
     } catch (error) {
       console.error('Erro ao carregar vendas:', error);
       toast({
@@ -366,13 +395,20 @@ export function useMarketplace() {
       if (debitError) throw debitError;
 
       // Creditar beetz ao vendedor
-      const { error: creditError } = await supabase
-        .rpc('update_profile_points', {
-          profile_id: listing.seller_id,
-          points_to_add: sellerAmount
-        });
+      const { data: sellerProfile } = await supabase
+        .from('profiles')
+        .select('points')
+        .eq('id', listing.seller_id)
+        .single();
 
-      if (creditError) throw creditError;
+      if (sellerProfile) {
+        const { error: creditError } = await supabase
+          .from('profiles')
+          .update({ points: sellerProfile.points + sellerAmount })
+          .eq('id', listing.seller_id);
+
+        if (creditError) throw creditError;
+      }
 
       toast({
         title: "Compra realizada!",

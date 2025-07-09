@@ -23,7 +23,11 @@ export interface Transaction {
   status: 'pending' | 'completed' | 'failed' | 'refunded' | 'cancelled';
   virtual_rewards_data: any;
   created_at: string;
-  store_products?: StoreProduct;
+  store_products?: {
+    name: string;
+    description: string;
+    product_type: 'premium_subscription' | 'beetz_pack' | 'avatar' | 'powerup' | 'loot_box' | 'course_access';
+  };
 }
 
 export function useVirtualStore() {
