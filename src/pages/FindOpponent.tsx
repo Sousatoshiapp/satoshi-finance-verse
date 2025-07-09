@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Users, Zap, Target, Clock, Loader2, Bot, User } from "lucide-react";
+import { ArrowLeft, Users, Zap, Target, Clock, Loader2, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";

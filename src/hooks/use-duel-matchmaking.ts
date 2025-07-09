@@ -163,32 +163,17 @@ export function useDuelMatchmaking() {
       // Generate random questions for the duel
       const questions = await generateDuelQuestions(topic);
       
-      // Create duel invite first
-      const { data: invite, error: inviteError } = await supabase
-        .from('duel_invites')
-        .insert({
-          challenger_id: profile.id,
-          challenged_id: opponentId,
-          quiz_topic: topic,
-          status: 'accepted'
-        })
-        .select()
-        .single();
-
-      if (inviteError) throw inviteError;
-
-      // Use RPC function to create duel (which has proper permissions)
-      const { data: duel, error: duelError } = await supabase.rpc('create_duel', {
-        p_invite_id: invite.id,
-        p_player1_id: profile.id,
-        p_player2_id: opponentId,
+      // Use RPC function to create duel with proper permissions
+      const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
+        p_challenger_id: profile.id,
+        p_challenged_id: opponentId,
         p_quiz_topic: topic,
         p_questions: questions
       });
 
       if (duelError) throw duelError;
 
-      return duel;
+      return { id: duelId };
     } catch (error) {
       console.error('Error creating duel:', error);
       throw error;

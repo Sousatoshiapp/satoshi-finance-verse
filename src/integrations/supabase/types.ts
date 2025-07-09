@@ -3770,6 +3770,15 @@ export type Database = {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
       }
+      create_duel_with_invite: {
+        Args: {
+          p_challenger_id: string
+          p_challenged_id: string
+          p_quiz_topic: string
+          p_questions: Json
+        }
+        Returns: string
+      }
       enhance_bot_realism: {
         Args: Record<PropertyKey, never>
         Returns: undefined
