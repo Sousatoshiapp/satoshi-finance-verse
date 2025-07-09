@@ -1,6 +1,6 @@
 import React, { Suspense, useRef, useState, useCallback, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Text, Box, Cylinder, Sphere, Environment, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls, Text, Environment } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -37,18 +37,18 @@ interface UserDistrict {
   last_activity_date: string;
 }
 
-// Posições 3D dos distritos
+// Posições 3D simplificadas dos distritos
 const district3DPositions = {
-  renda_variavel: { x: -20, y: 0, z: -15 },
-  educacao_financeira: { x: 20, y: 0, z: -10 },
-  criptomoedas: { x: -30, y: 0, z: 20 },
+  renda_variavel: { x: -15, y: 0, z: -10 },
+  educacao_financeira: { x: 15, y: 0, z: -10 },
+  criptomoedas: { x: -20, y: 0, z: 10 },
   sistema_bancario: { x: 0, y: 0, z: 0 },
-  fundos_imobiliarios: { x: 25, y: 0, z: 15 },
-  mercado_internacional: { x: -10, y: 0, z: -30 },
-  fintech: { x: 15, y: 0, z: 25 },
+  fundos_imobiliarios: { x: 20, y: 0, z: 10 },
+  mercado_internacional: { x: -10, y: 0, z: -20 },
+  fintech: { x: 10, y: 0, z: 20 },
 };
 
-// Componente de distrito 3D
+// Componente de distrito 3D simplificado
 function District3D({ district, userInfo, position, onClick }: {
   district: District;
   userInfo?: UserDistrict;
@@ -58,26 +58,18 @@ function District3D({ district, userInfo, position, onClick }: {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
   
-  const primaryColor = new THREE.Color(district.color_primary);
+  const primaryColor = district.color_primary;
   const powerLevel = district.power_level || 100;
   const isResidence = userInfo?.is_residence || false;
 
-  useFrame((state) => {
+  useFrame(() => {
     if (meshRef.current) {
-      // Animação de rotação suave
-      meshRef.current.rotation.y += 0.005;
+      meshRef.current.rotation.y += 0.01;
       
-      // Animação de hover
       if (hovered) {
         meshRef.current.scale.setScalar(1.1);
       } else {
         meshRef.current.scale.setScalar(1);
-      }
-      
-      // Animação de residência
-      if (isResidence) {
-        const time = state.clock.getElapsedTime();
-        meshRef.current.position.y = position.y + Math.sin(time * 2) * 0.5;
       }
     }
   });
@@ -91,29 +83,19 @@ function District3D({ district, userInfo, position, onClick }: {
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        <cylinderGeometry args={[3, 4, 8, 8]} />
+        <boxGeometry args={[4, 6, 4]} />
         <meshStandardMaterial 
           color={primaryColor}
           emissive={primaryColor}
-          emissiveIntensity={powerLevel > 70 ? 0.3 : 0.1}
+          emissiveIntensity={0.2}
           metalness={0.6}
           roughness={0.4}
         />
       </mesh>
 
-      {/* Topo do distrito */}
-      <mesh position={[0, 4.5, 0]}>
-        <cylinderGeometry args={[2, 3, 1, 8]} />
-        <meshStandardMaterial 
-          color={district.color_secondary}
-          metalness={0.8}
-          roughness={0.2}
-        />
-      </mesh>
-
       {/* Corona de residência */}
       {isResidence && (
-        <mesh position={[0, 6, 0]}>
+        <mesh position={[0, 4, 0]}>
           <torusGeometry args={[2.5, 0.3, 8, 16]} />
           <meshStandardMaterial 
             color="#FFD700"
@@ -125,45 +107,15 @@ function District3D({ district, userInfo, position, onClick }: {
 
       {/* Texto do nome do distrito */}
       <Text
-        position={[0, -6, 0]}
-        fontSize={1.5}
+        position={[0, -5, 0]}
+        fontSize={1}
         color="white"
         anchorX="center"
         anchorY="middle"
-        maxWidth={10}
+        maxWidth={8}
       >
         {district.name}
       </Text>
-
-      {/* Aura de poder */}
-      <Sphere args={[6]} position={[0, 0, 0]}>
-        <meshBasicMaterial 
-          color={primaryColor}
-          transparent
-          opacity={0.1}
-          side={THREE.BackSide}
-        />
-      </Sphere>
-
-      {/* Partículas de energia */}
-      {powerLevel > 80 && (
-        <group>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <mesh key={i} position={[
-              Math.sin(i * 2.51) * 5,
-              Math.cos(i * 1.7) * 3 + 2,
-              Math.cos(i * 2.51) * 5
-            ]}>
-              <sphereGeometry args={[0.2]} />
-              <meshStandardMaterial 
-                color={primaryColor}
-                emissive={primaryColor}
-                emissiveIntensity={0.8}
-              />
-            </mesh>
-          ))}
-        </group>
-      )}
     </group>
   );
 }
@@ -173,7 +125,7 @@ function CameraControls() {
   const { camera } = useThree();
   
   useEffect(() => {
-    camera.position.set(0, 30, 40);
+    camera.position.set(0, 20, 30);
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
@@ -291,35 +243,21 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
 
       {/* Cena 3D */}
       <div className="w-full h-screen">
-        <Canvas shadows>
+        <Canvas>
           <Suspense fallback={null}>
             {/* Iluminação */}
-            <Environment preset="night" />
-            <ambientLight intensity={0.3} />
-            <directionalLight 
-              position={[10, 10, 5]} 
-              intensity={1}
-              castShadow
-              shadow-mapSize-width={2048}
-              shadow-mapSize-height={2048}
-            />
-            <pointLight position={[0, 20, 0]} intensity={0.5} color="#8B5CF6" />
+            <ambientLight intensity={0.4} />
+            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <pointLight position={[0, 10, 0]} intensity={0.5} color="#8B5CF6" />
 
             {/* Controles de câmera */}
             <CameraControls />
 
             {/* Chão da cidade */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} receiveShadow>
-              <planeGeometry args={[100, 100]} />
-              <meshStandardMaterial 
-                color="#1e293b"
-                metalness={0.1}
-                roughness={0.8}
-              />
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
+              <planeGeometry args={[60, 60]} />
+              <meshStandardMaterial color="#1e293b" />
             </mesh>
-
-            {/* Grid de referência */}
-            <gridHelper args={[100, 20, "#475569", "#334155"]} position={[0, -0.9, 0]} />
 
             {/* Distritos 3D */}
             {districts.map((district) => {
@@ -341,25 +279,13 @@ export function SatoshiCity3D({ onBack }: { onBack: () => void }) {
 
             {/* Título central da cidade */}
             <Text
-              position={[0, 15, -20]}
-              fontSize={4}
+              position={[0, 10, -15]}
+              fontSize={3}
               color="#8B5CF6"
               anchorX="center"
               anchorY="middle"
-              font="/fonts/orbitron-bold.woff"
             >
-              SATOSHI CITY
-            </Text>
-
-            {/* Subtítulo */}
-            <Text
-              position={[0, 12, -20]}
-              fontSize={1.5}
-              color="#94A3B8"
-              anchorX="center"
-              anchorY="middle"
-            >
-              A Cidade do Futuro Financeiro
+              SATOSHI CITY 3D
             </Text>
           </Suspense>
         </Canvas>
