@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
 import "./i18n";
+import "@/utils/mobile-debug";
 
 // Configuração otimizada do QueryClient
 const queryClient = new QueryClient({
@@ -31,6 +32,18 @@ const container = document.getElementById("root");
 if (!container) throw new Error("Root element not found");
 
 const root = createRoot(container);
+
+// Mobile debug logging
+if (typeof window !== 'undefined') {
+  console.log('🔄 Mobile App Init:', {
+    userAgent: navigator.userAgent,
+    windowWidth: window.innerWidth,
+    windowHeight: window.innerHeight,
+    isOnline: navigator.onLine,
+    timestamp: new Date().toISOString(),
+    url: window.location.href
+  });
+}
 
 root.render(
   <StrictMode>

@@ -25,16 +25,27 @@ const CACHE_STRATEGIES = {
   auth: ['/auth/', '/login', '/logout']
 };
 
-// Instalação do Service Worker
+// Instalação do Service Worker - Otimizado para Mobile
 self.addEventListener('install', (event) => {
   console.log('[SW] Installing Service Worker');
   
+  // Detectar se é mobile
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  if (isMobile) {
+    console.log('[SW] Mobile detected - skipping aggressive caching');
+    self.skipWaiting();
+    return;
+  }
+  
   event.waitUntil(
     Promise.all([
-      // Cache recursos críticos
+      // Cache recursos críticos apenas no desktop
       caches.open(CACHE_NAME).then(cache => {
         console.log('[SW] Caching critical resources');
-        return cache.addAll(CRITICAL_RESOURCES);
+        return cache.addAll(CRITICAL_RESOURCES).catch(error => {
+          console.error('[SW] Failed to cache critical resources:', error);
+        });
       }),
       // Skip waiting para ativação imediata
       self.skipWaiting()
@@ -68,7 +79,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Interceptação de requests com estratégias otimizadas
+// Interceptação de requests - Otimizado para Mobile
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -78,7 +89,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  event.respondWith(handleRequest(request));
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Estratégia simplificada para mobile
+  if (isMobile) {
+    event.respondWith(
+      fetch(request).catch(() => {
+        // Apenas servir do cache se a rede falhar
+        return caches.match(request).then(response => {
+          if (response) {
+            console.log('[SW] Serving from cache (mobile):', request.url);
+            return response;
+          }
+          // Fallback para erro de rede
+          return new Response('Offline', { status: 503 });
+        });
+      })
+    );
+  } else {
+    event.respondWith(handleRequest(request));
+  }
 });
 
 async function handleRequest(request) {

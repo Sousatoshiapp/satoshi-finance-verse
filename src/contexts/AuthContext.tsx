@@ -16,6 +16,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Debug logging for mobile
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      console.log('🔄 AuthProvider mounted:', {
+        windowWidth: window.innerWidth,
+        userAgent: navigator.userAgent.substring(0, 100),
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, []);
+
   useEffect(() => {
     let mounted = true;
 
@@ -23,7 +34,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const initializeAuth = async () => {
       try {
         console.log('🔄 Initializing auth...');
-        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        // Add timeout to prevent hanging on mobile
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Auth timeout')), 10000);
+        });
+        
+        const sessionPromise = supabase.auth.getSession();
+        const result = await Promise.race([sessionPromise, timeoutPromise]) as any;
+        const { data: { session }, error } = result;
         
         if (error) {
           console.error('❌ Auth initialization error:', error);
@@ -31,7 +50,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const savedUser = localStorage.getItem('satoshi_user');
           if (savedUser && mounted) {
             console.log('🔄 Using localStorage fallback for auth');
-            // Allow app to continue with localStorage data
+            try {
+              const userData = JSON.parse(savedUser);
+              setUser(userData);
+            } catch (parseError) {
+              console.error('❌ Failed to parse saved user data:', parseError);
+            }
           }
         }
         
@@ -44,11 +68,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             hasUser: !!session?.user,
             hasSession: !!session,
             sessionExpiry: session?.expires_at,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            isMobile: window.innerWidth < 768
           });
         }
       } catch (error) {
         console.error('❌ Failed to initialize auth:', error);
+        // Allow app to continue even if auth fails
+        if (mounted) {
+          console.log('🔄 Continuing without auth due to error');
+        }
       } finally {
         if (mounted) {
           setLoading(false);

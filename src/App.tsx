@@ -2,8 +2,12 @@ import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { MobileLoadingSpinner } from "@/components/ui/mobile-loading-spinner";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { MobileDiagnostic } from "@/components/MobileDiagnostic";
+import { MobileCompatibilityChecker } from "@/components/MobileCompatibilityChecker";
 // Direct imports for critical pages
 import Dashboard from "@/pages/Dashboard";
 import Profile from "@/pages/Profile";
@@ -22,10 +26,11 @@ import { LazyRoutes } from "@/utils/advanced-lazy-loading";
 
 function App() {
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-background font-sans antialiased">
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
+    <ErrorBoundary>
+      <AuthProvider>
+        <div className="min-h-screen bg-background font-sans antialiased">
+          <Suspense fallback={<MobileLoadingSpinner />}>
+            <Routes>
             <Route path="/" element={<LazyRoutes.Welcome />} />
             <Route path="/auth" element={<LazyRoutes.Auth />} />
             <Route path="/welcome" element={<LazyRoutes.Welcome />} />
@@ -446,10 +451,13 @@ function App() {
             } />
             
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
-          </Routes>
-        </Suspense>
-      </div>
-    </AuthProvider>
+            </Routes>
+          </Suspense>
+          <MobileCompatibilityChecker />
+          <MobileDiagnostic />
+        </div>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
