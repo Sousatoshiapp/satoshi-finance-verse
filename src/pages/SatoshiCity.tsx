@@ -257,7 +257,7 @@ export default function SatoshiCity() {
       </div>
 
       {/* Header */}
-      <div className="relative z-10 container mx-auto px-4 pt-2 text-center">
+      <div className="relative z-10 container mx-auto px-4 pt-0 text-center">
         <div className="flex justify-center mb-4">
           <img 
             src="/lovable-uploads/da61d87e-9d37-454b-bdeb-b54db4abfa9e.png" 
