@@ -2410,6 +2410,8 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          is_approved: boolean | null
+          is_flagged: boolean | null
           likes_count: number
           media_url: string | null
           post_type: string
@@ -2422,6 +2424,8 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          is_approved?: boolean | null
+          is_flagged?: boolean | null
           likes_count?: number
           media_url?: string | null
           post_type?: string
@@ -2434,6 +2438,8 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          is_approved?: boolean | null
+          is_flagged?: boolean | null
           likes_count?: number
           media_url?: string | null
           post_type?: string

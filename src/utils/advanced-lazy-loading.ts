@@ -177,6 +177,11 @@ export const LazyRoutes = {
     { priority: 'low' }
   ),
   
+  AdminSocialPosts: createLazyComponent(
+    () => import('@/pages/AdminSocialPosts'),
+    { priority: 'low' }
+  ),
+  
   SatoshiCity: createLazyComponent(
     () => import('@/pages/SatoshiCity'),
     { priority: 'low' }

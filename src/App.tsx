@@ -268,6 +268,13 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/admin/social/posts" element={
+              <ProtectedRoute>
+                <LazyRoutes.AdminSocialPosts />
+              </ProtectedRoute>
+            } />
+            
+            
             {/* New Routes - Missing Pages */}
             <Route path="/levels" element={
               <ProtectedRoute>
