@@ -190,7 +190,6 @@ export function useDuelMatchmaking() {
 }
 
 async function generateDuelQuestions(topic: string) {
-  // This is a simplified version - in a real app you'd fetch from a questions database
   const questions = [
     {
       id: '1',
@@ -220,6 +219,76 @@ async function generateDuelQuestions(topic: string) {
         { id: 'b', text: 'Rentabilidade previsível', isCorrect: true },
         { id: 'c', text: 'Volatilidade alta', isCorrect: false },
         { id: 'd', text: 'Liquidez baixa', isCorrect: false }
+      ]
+    },
+    {
+      id: '4',
+      question: 'O que são ações?',
+      options: [
+        { id: 'a', text: 'Títulos de dívida', isCorrect: false },
+        { id: 'b', text: 'Participações no capital de empresas', isCorrect: true },
+        { id: 'c', text: 'Investimentos imobiliários', isCorrect: false },
+        { id: 'd', text: 'Reservas bancárias', isCorrect: false }
+      ]
+    },
+    {
+      id: '5',
+      question: 'Qual é o objetivo da reserva de emergência?',
+      options: [
+        { id: 'a', text: 'Investir em ações', isCorrect: false },
+        { id: 'b', text: 'Cobrir gastos imprevistos', isCorrect: true },
+        { id: 'c', text: 'Pagar impostos', isCorrect: false },
+        { id: 'd', text: 'Comprar bens de luxo', isCorrect: false }
+      ]
+    },
+    {
+      id: '6',
+      question: 'O que é inflação?',
+      options: [
+        { id: 'a', text: 'Aumento geral dos preços', isCorrect: true },
+        { id: 'b', text: 'Diminuição dos juros', isCorrect: false },
+        { id: 'c', text: 'Valorização da moeda', isCorrect: false },
+        { id: 'd', text: 'Crescimento econômico', isCorrect: false }
+      ]
+    },
+    {
+      id: '7',
+      question: 'Qual a vantagem dos fundos de investimento?',
+      options: [
+        { id: 'a', text: 'Garantia de lucro', isCorrect: false },
+        { id: 'b', text: 'Gestão profissional', isCorrect: true },
+        { id: 'c', text: 'Isenção de impostos', isCorrect: false },
+        { id: 'd', text: 'Liquidez zero', isCorrect: false }
+      ]
+    },
+    {
+      id: '8',
+      question: 'O que é Tesouro Direto?',
+      options: [
+        { id: 'a', text: 'Ações do governo', isCorrect: false },
+        { id: 'b', text: 'Títulos públicos federais', isCorrect: true },
+        { id: 'c', text: 'Investimentos privados', isCorrect: false },
+        { id: 'd', text: 'Moedas digitais', isCorrect: false }
+      ]
+    },
+    {
+      id: '9',
+      question: 'Qual é o risco da renda variável?',
+      options: [
+        { id: 'a', text: 'Perda de capital', isCorrect: true },
+        { id: 'b', text: 'Ganho garantido', isCorrect: false },
+        { id: 'c', text: 'Juros baixos', isCorrect: false },
+        { id: 'd', text: 'Liquidez alta', isCorrect: false }
+      ]
+    },
+    {
+      id: '10',
+      question: 'O que significa IPO?',
+      options: [
+        { id: 'a', text: 'Investimento Pessoal Online', isCorrect: false },
+        { id: 'b', text: 'Oferta Pública Inicial', isCorrect: true },
+        { id: 'c', text: 'Índice de Preços Oficial', isCorrect: false },
+        { id: 'd', text: 'Imposto sobre Operações', isCorrect: false }
       ]
     }
   ];

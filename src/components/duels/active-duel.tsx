@@ -71,10 +71,13 @@ export function ActiveDuel({ duel, onDuelEnd }: ActiveDuelProps) {
           return prev - 1;
         });
       }, 1000);
+    } else if (!isMyTurn) {
+      // Reset timer when it's not my turn
+      setTimeLeft(30);
     }
 
     return () => clearInterval(timer);
-  }, [isMyTurn, timeLeft]);
+  }, [isMyTurn]);
 
   const loadProfiles = async () => {
     try {
@@ -115,6 +118,9 @@ export function ActiveDuel({ duel, onDuelEnd }: ActiveDuelProps) {
     
     if (myTurn) {
       setTimeLeft(30);
+      setCurrentQuestion(duelData.current_question - 1);
+    } else {
+      // Se não é minha vez, atualizar a pergunta atual baseada no estado do duelo
       setCurrentQuestion(duelData.current_question - 1);
     }
   };
@@ -257,20 +263,22 @@ export function ActiveDuel({ duel, onDuelEnd }: ActiveDuelProps) {
         </Card>
 
         {/* Timer */}
-        {isMyTurn && (
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-center gap-4">
-                <Timer className="h-6 w-6 text-primary" />
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">{timeLeft}s</div>
-                  <div className="text-sm text-muted-foreground">Tempo restante</div>
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-center gap-4">
+              <Timer className="h-6 w-6 text-primary" />
+              <div className="text-center">
+                <div className={`text-3xl font-bold ${isMyTurn ? 'text-primary' : 'text-muted-foreground'}`}>
+                  {isMyTurn ? `${timeLeft}s` : 'Aguardando...'}
                 </div>
-                <Zap className="h-6 w-6 text-primary" />
+                <div className="text-sm text-muted-foreground">
+                  {isMyTurn ? 'Tempo restante' : 'Vez do oponente'}
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
+              <Zap className="h-6 w-6 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Question */}
         <Card className="mb-6">
