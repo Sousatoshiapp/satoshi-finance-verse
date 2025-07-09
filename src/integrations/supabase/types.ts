@@ -185,6 +185,60 @@ export type Database = {
         }
         Relationships: []
       }
+      advanced_powerups: {
+        Row: {
+          category: Database["public"]["Enums"]["powerup_category"]
+          cooldown_minutes: number | null
+          crafting_recipe: Json | null
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          effects: Json
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          max_uses_per_day: number | null
+          name: string
+          rarity: Database["public"]["Enums"]["powerup_rarity"]
+          unlock_requirements: Json | null
+          updated_at: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["powerup_category"]
+          cooldown_minutes?: number | null
+          crafting_recipe?: Json | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          effects?: Json
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          max_uses_per_day?: number | null
+          name: string
+          rarity?: Database["public"]["Enums"]["powerup_rarity"]
+          unlock_requirements?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["powerup_category"]
+          cooldown_minutes?: number | null
+          crafting_recipe?: Json | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          effects?: Json
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          max_uses_per_day?: number | null
+          name?: string
+          rarity?: Database["public"]["Enums"]["powerup_rarity"]
+          unlock_requirements?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ai_recommendations: {
         Row: {
           applied: boolean | null
@@ -453,6 +507,59 @@ export type Database = {
           response_time_min?: number | null
         }
         Relationships: []
+      }
+      combo_achievements: {
+        Row: {
+          badge_icon: string | null
+          beetz_reward: number | null
+          combo_type: Database["public"]["Enums"]["combo_type"]
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          powerup_reward: string | null
+          rarity: Database["public"]["Enums"]["powerup_rarity"] | null
+          target_value: number
+          xp_reward: number | null
+        }
+        Insert: {
+          badge_icon?: string | null
+          beetz_reward?: number | null
+          combo_type: Database["public"]["Enums"]["combo_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          powerup_reward?: string | null
+          rarity?: Database["public"]["Enums"]["powerup_rarity"] | null
+          target_value: number
+          xp_reward?: number | null
+        }
+        Update: {
+          badge_icon?: string | null
+          beetz_reward?: number | null
+          combo_type?: Database["public"]["Enums"]["combo_type"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          powerup_reward?: string | null
+          rarity?: Database["public"]["Enums"]["powerup_rarity"] | null
+          target_value?: number
+          xp_reward?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "combo_achievements_powerup_reward_fkey"
+            columns: ["powerup_reward"]
+            isOneToOne: false
+            referencedRelation: "advanced_powerups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       conversations: {
         Row: {
@@ -1267,6 +1374,60 @@ export type Database = {
           },
         ]
       }
+      game_events: {
+        Row: {
+          created_at: string
+          current_participants: number | null
+          description: string | null
+          end_time: string
+          entry_requirements: Json | null
+          event_data: Json | null
+          event_type: Database["public"]["Enums"]["event_type"]
+          id: string
+          image_url: string | null
+          max_participants: number | null
+          name: string
+          rewards: Json | null
+          start_time: string
+          status: Database["public"]["Enums"]["event_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          end_time: string
+          entry_requirements?: Json | null
+          event_data?: Json | null
+          event_type: Database["public"]["Enums"]["event_type"]
+          id?: string
+          image_url?: string | null
+          max_participants?: number | null
+          name: string
+          rewards?: Json | null
+          start_time: string
+          status?: Database["public"]["Enums"]["event_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_participants?: number | null
+          description?: string | null
+          end_time?: string
+          entry_requirements?: Json | null
+          event_data?: Json | null
+          event_type?: Database["public"]["Enums"]["event_type"]
+          id?: string
+          image_url?: string | null
+          max_participants?: number | null
+          name?: string
+          rewards?: Json | null
+          start_time?: string
+          status?: Database["public"]["Enums"]["event_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       guild_activities: {
         Row: {
           activity_data: Json | null
@@ -1593,6 +1754,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      league_seasons: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          rewards: Json | null
+          season_number: number
+          start_date: string
+          status: Database["public"]["Enums"]["season_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          rewards?: Json | null
+          season_number: number
+          start_date: string
+          status?: Database["public"]["Enums"]["season_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          rewards?: Json | null
+          season_number?: number
+          start_date?: string
+          status?: Database["public"]["Enums"]["season_status"]
+          updated_at?: string
+        }
+        Relationships: []
       }
       leagues: {
         Row: {
@@ -1938,6 +2135,90 @@ export type Database = {
           impact_percentage?: number
           is_active?: boolean
           name?: string
+        }
+        Relationships: []
+      }
+      mentoring_missions: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty_level: number | null
+          estimated_duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          learning_objectives: Json | null
+          rewards: Json | null
+          success_criteria: Json | null
+          target_audience: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: number | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          learning_objectives?: Json | null
+          rewards?: Json | null
+          success_criteria?: Json | null
+          target_audience?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: number | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          learning_objectives?: Json | null
+          rewards?: Json | null
+          success_criteria?: Json | null
+          target_audience?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      mentorship_relationships: {
+        Row: {
+          created_at: string
+          ended_at: string | null
+          goals: Json | null
+          id: string
+          mentee_id: string
+          mentor_id: string
+          progress: Json | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["mentorship_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ended_at?: string | null
+          goals?: Json | null
+          id?: string
+          mentee_id: string
+          mentor_id: string
+          progress?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["mentorship_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ended_at?: string | null
+          goals?: Json | null
+          id?: string
+          mentee_id?: string
+          mentor_id?: string
+          progress?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["mentorship_status"]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -3207,6 +3488,63 @@ export type Database = {
           },
         ]
       }
+      themed_loot_boxes: {
+        Row: {
+          animation_url: string | null
+          contents: Json
+          cost_beetz: number | null
+          cost_real_money: number | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_available: boolean | null
+          max_items: number | null
+          min_items: number | null
+          name: string
+          rarity: Database["public"]["Enums"]["powerup_rarity"]
+          theme: string
+          unlock_requirements: Json | null
+          updated_at: string
+        }
+        Insert: {
+          animation_url?: string | null
+          contents?: Json
+          cost_beetz?: number | null
+          cost_real_money?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          max_items?: number | null
+          min_items?: number | null
+          name: string
+          rarity?: Database["public"]["Enums"]["powerup_rarity"]
+          theme: string
+          unlock_requirements?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          animation_url?: string | null
+          contents?: Json
+          cost_beetz?: number | null
+          cost_real_money?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          max_items?: number | null
+          min_items?: number | null
+          name?: string
+          rarity?: Database["public"]["Enums"]["powerup_rarity"]
+          theme?: string
+          unlock_requirements?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tournament_participants: {
         Row: {
           completed_at: string | null
@@ -3446,6 +3784,57 @@ export type Database = {
         }
         Relationships: []
       }
+      unlockable_content: {
+        Row: {
+          asset_url: string | null
+          cost_beetz: number | null
+          cost_real_money: number | null
+          created_at: string
+          customization_type: Database["public"]["Enums"]["customization_type"]
+          description: string | null
+          id: string
+          is_available: boolean | null
+          is_premium: boolean | null
+          name: string
+          preview_url: string | null
+          rarity: Database["public"]["Enums"]["powerup_rarity"]
+          unlock_requirements: Json | null
+          updated_at: string
+        }
+        Insert: {
+          asset_url?: string | null
+          cost_beetz?: number | null
+          cost_real_money?: number | null
+          created_at?: string
+          customization_type: Database["public"]["Enums"]["customization_type"]
+          description?: string | null
+          id?: string
+          is_available?: boolean | null
+          is_premium?: boolean | null
+          name: string
+          preview_url?: string | null
+          rarity?: Database["public"]["Enums"]["powerup_rarity"]
+          unlock_requirements?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          asset_url?: string | null
+          cost_beetz?: number | null
+          cost_real_money?: number | null
+          created_at?: string
+          customization_type?: Database["public"]["Enums"]["customization_type"]
+          description?: string | null
+          id?: string
+          is_available?: boolean | null
+          is_premium?: boolean | null
+          name?: string
+          preview_url?: string | null
+          rarity?: Database["public"]["Enums"]["powerup_rarity"]
+          unlock_requirements?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_id: string
@@ -3474,6 +3863,44 @@ export type Database = {
             columns: ["achievement_id"]
             isOneToOne: false
             referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_advanced_powerups: {
+        Row: {
+          acquired_at: string
+          id: string
+          last_used_at: string | null
+          powerup_id: string
+          quantity: number
+          user_id: string
+          uses_today: number | null
+        }
+        Insert: {
+          acquired_at?: string
+          id?: string
+          last_used_at?: string | null
+          powerup_id: string
+          quantity?: number
+          user_id: string
+          uses_today?: number | null
+        }
+        Update: {
+          acquired_at?: string
+          id?: string
+          last_used_at?: string | null
+          powerup_id?: string
+          quantity?: number
+          user_id?: string
+          uses_today?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_advanced_powerups_powerup_id_fkey"
+            columns: ["powerup_id"]
+            isOneToOne: false
+            referencedRelation: "advanced_powerups"
             referencedColumns: ["id"]
           },
         ]
@@ -3606,6 +4033,50 @@ export type Database = {
           },
         ]
       }
+      user_combo_records: {
+        Row: {
+          achieved_at: string | null
+          best_value: number | null
+          combo_achievement_id: string
+          created_at: string
+          current_value: number | null
+          id: string
+          total_completions: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          best_value?: number | null
+          combo_achievement_id: string
+          created_at?: string
+          current_value?: number | null
+          id?: string
+          total_completions?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          best_value?: number | null
+          combo_achievement_id?: string
+          created_at?: string
+          current_value?: number | null
+          id?: string
+          total_completions?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_combo_records_combo_achievement_id_fkey"
+            columns: ["combo_achievement_id"]
+            isOneToOne: false
+            referencedRelation: "combo_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_concept_mastery: {
         Row: {
           concept_id: string
@@ -3652,6 +4123,38 @@ export type Database = {
             columns: ["concept_id"]
             isOneToOne: false
             referencedRelation: "educational_concepts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_customizations: {
+        Row: {
+          content_id: string
+          id: string
+          is_equipped: boolean | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          id?: string
+          is_equipped?: boolean | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          id?: string
+          is_equipped?: boolean | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_customizations_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "unlockable_content"
             referencedColumns: ["id"]
           },
         ]
@@ -3722,6 +4225,47 @@ export type Database = {
           },
         ]
       }
+      user_event_participation: {
+        Row: {
+          completion_data: Json | null
+          event_id: string
+          id: string
+          joined_at: string
+          rank: number | null
+          rewards_claimed: boolean | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          completion_data?: Json | null
+          event_id: string
+          id?: string
+          joined_at?: string
+          rank?: number | null
+          rewards_claimed?: boolean | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          completion_data?: Json | null
+          event_id?: string
+          id?: string
+          joined_at?: string
+          rank?: number | null
+          rewards_claimed?: boolean | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_event_participation_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "game_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_follows: {
         Row: {
           created_at: string
@@ -3754,6 +4298,53 @@ export type Database = {
             columns: ["following_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_leagues: {
+        Row: {
+          created_at: string
+          current_tier: Database["public"]["Enums"]["league_tier"]
+          demotion_count: number | null
+          id: string
+          peak_tier: Database["public"]["Enums"]["league_tier"] | null
+          promotion_count: number | null
+          season_id: string
+          tier_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_tier?: Database["public"]["Enums"]["league_tier"]
+          demotion_count?: number | null
+          id?: string
+          peak_tier?: Database["public"]["Enums"]["league_tier"] | null
+          promotion_count?: number | null
+          season_id: string
+          tier_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_tier?: Database["public"]["Enums"]["league_tier"]
+          demotion_count?: number | null
+          id?: string
+          peak_tier?: Database["public"]["Enums"]["league_tier"] | null
+          promotion_count?: number | null
+          season_id?: string
+          tier_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_leagues_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "league_seasons"
             referencedColumns: ["id"]
           },
         ]
@@ -3859,6 +4450,41 @@ export type Database = {
             columns: ["loot_box_id"]
             isOneToOne: false
             referencedRelation: "loot_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_loot_history: {
+        Row: {
+          id: string
+          items_received: Json
+          loot_box_id: string
+          opened_at: string
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          items_received?: Json
+          loot_box_id: string
+          opened_at?: string
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          items_received?: Json
+          loot_box_id?: string
+          opened_at?: string
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_loot_history_loot_box_id_fkey"
+            columns: ["loot_box_id"]
+            isOneToOne: false
+            referencedRelation: "themed_loot_boxes"
             referencedColumns: ["id"]
           },
         ]
@@ -4009,6 +4635,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_performance_analytics: {
+        Row: {
+          achievements_earned: number | null
+          average_response_time_ms: number | null
+          correct_answers: number | null
+          created_at: string
+          id: string
+          metric_date: string
+          powerups_used: number | null
+          questions_answered: number | null
+          social_interactions: number | null
+          streak_days: number | null
+          total_study_time_minutes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements_earned?: number | null
+          average_response_time_ms?: number | null
+          correct_answers?: number | null
+          created_at?: string
+          id?: string
+          metric_date?: string
+          powerups_used?: number | null
+          questions_answered?: number | null
+          social_interactions?: number | null
+          streak_days?: number | null
+          total_study_time_minutes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements_earned?: number | null
+          average_response_time_ms?: number | null
+          correct_answers?: number | null
+          created_at?: string
+          id?: string
+          metric_date?: string
+          powerups_used?: number | null
+          questions_answered?: number | null
+          social_interactions?: number | null
+          streak_days?: number | null
+          total_study_time_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_power_ups: {
         Row: {
@@ -4238,6 +4912,39 @@ export type Database = {
           },
         ]
       }
+      user_referrals: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          id: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          rewards_claimed: boolean | null
+          status: string | null
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          rewards_claimed?: boolean | null
+          status?: string | null
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referred_id?: string
+          referrer_id?: string
+          rewards_claimed?: boolean | null
+          status?: string | null
+        }
+        Relationships: []
+      }
       user_specializations: {
         Row: {
           id: string
@@ -4386,6 +5093,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_titles: {
+        Row: {
+          description: string | null
+          earned_at: string
+          id: string
+          is_active: boolean | null
+          rarity: Database["public"]["Enums"]["powerup_rarity"] | null
+          requirements_met: Json | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          description?: string | null
+          earned_at?: string
+          id?: string
+          is_active?: boolean | null
+          rarity?: Database["public"]["Enums"]["powerup_rarity"] | null
+          requirements_met?: Json | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          description?: string | null
+          earned_at?: string
+          id?: string
+          is_active?: boolean | null
+          rarity?: Database["public"]["Enums"]["powerup_rarity"] | null
+          requirements_met?: Json | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       virtual_assets: {
         Row: {
@@ -4713,6 +5453,15 @@ export type Database = {
           rewards: Json
         }[]
       }
+      calculate_league_points: {
+        Args: {
+          p_user_id: string
+          p_xp_gained: number
+          p_quiz_score: number
+          p_combo_achieved?: number
+        }
+        Returns: number
+      }
       calculate_user_level: {
         Args: { user_xp: number }
         Returns: number
@@ -4781,6 +5530,10 @@ export type Database = {
       get_admin_role: {
         Args: { user_uuid?: string }
         Returns: Database["public"]["Enums"]["admin_role"]
+      }
+      get_current_season: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_dashboard_data_optimized: {
         Args: { target_user_id: string }
@@ -4912,6 +5665,10 @@ export type Database = {
         }
         Returns: Json
       }
+      update_user_league: {
+        Args: { p_user_id: string; p_points_gained: number }
+        Returns: Json
+      }
       update_user_streak: {
         Args: { profile_id: string; activity_date?: string }
         Returns: number
@@ -4940,6 +5697,40 @@ export type Database = {
     }
     Enums: {
       admin_role: "super_admin" | "admin" | "moderator"
+      combo_type:
+        | "perfect_streak"
+        | "speed_demon"
+        | "knowledge_master"
+        | "quiz_dominator"
+      customization_type:
+        | "avatar_skin"
+        | "profile_theme"
+        | "ui_effect"
+        | "sound_pack"
+        | "emote"
+      event_status: "upcoming" | "active" | "completed" | "cancelled"
+      event_type:
+        | "quiz_marathon"
+        | "duel_tournament"
+        | "knowledge_race"
+        | "community_challenge"
+      league_tier:
+        | "bronze"
+        | "silver"
+        | "gold"
+        | "platinum"
+        | "diamond"
+        | "master"
+        | "grandmaster"
+      mentorship_status: "pending" | "active" | "completed" | "cancelled"
+      powerup_category:
+        | "xp_boost"
+        | "score_multiplier"
+        | "time_extension"
+        | "hint_reveal"
+        | "streak_protection"
+      powerup_rarity: "common" | "rare" | "epic" | "legendary"
+      season_status: "upcoming" | "active" | "ended"
       subscription_tier: "free" | "pro" | "elite"
     }
     CompositeTypes: {
@@ -5069,6 +5860,45 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["super_admin", "admin", "moderator"],
+      combo_type: [
+        "perfect_streak",
+        "speed_demon",
+        "knowledge_master",
+        "quiz_dominator",
+      ],
+      customization_type: [
+        "avatar_skin",
+        "profile_theme",
+        "ui_effect",
+        "sound_pack",
+        "emote",
+      ],
+      event_status: ["upcoming", "active", "completed", "cancelled"],
+      event_type: [
+        "quiz_marathon",
+        "duel_tournament",
+        "knowledge_race",
+        "community_challenge",
+      ],
+      league_tier: [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum",
+        "diamond",
+        "master",
+        "grandmaster",
+      ],
+      mentorship_status: ["pending", "active", "completed", "cancelled"],
+      powerup_category: [
+        "xp_boost",
+        "score_multiplier",
+        "time_extension",
+        "hint_reveal",
+        "streak_protection",
+      ],
+      powerup_rarity: ["common", "rare", "epic", "legendary"],
+      season_status: ["upcoming", "active", "ended"],
       subscription_tier: ["free", "pro", "elite"],
     },
   },
