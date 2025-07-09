@@ -114,6 +114,80 @@ function App() {
               </ProtectedRoute>
             } />
             
+            {/* District Routes */}
+            <Route path="/satoshi-city/district/:districtId" element={
+              <ProtectedRoute>
+                <LazyRoutes.DistrictDetail />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/satoshi-city/district/:districtId/quiz" element={
+              <ProtectedRoute>
+                <LazyRoutes.DistrictQuiz />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            {/* Quiz Routes */}
+            <Route path="/enhanced-quiz" element={
+              <ProtectedRoute>
+                <LazyRoutes.EnhancedQuiz />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/duel-quiz/:opponentId" element={
+              <ProtectedRoute>
+                <LazyRoutes.DuelQuiz />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            {/* Tournament Routes */}
+            <Route path="/tournament/:tournamentId" element={
+              <ProtectedRoute>
+                <LazyRoutes.TournamentDetail />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/tournament/:tournamentId/quiz" element={
+              <ProtectedRoute>
+                <LazyRoutes.TournamentQuiz />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            {/* Other Missing Routes */}
+            <Route path="/playground" element={
+              <ProtectedRoute>
+                <LazyRoutes.Playground />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/missions" element={
+              <ProtectedRoute>
+                <LazyRoutes.Missions />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/loot-boxes" element={
+              <ProtectedRoute>
+                <LazyRoutes.LootBoxes />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/guilds" element={
+              <ProtectedRoute>
+                <LazyRoutes.Guilds />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/admin" element={
               <ProtectedRoute>
                 <LazyRoutes.AdminDashboard />

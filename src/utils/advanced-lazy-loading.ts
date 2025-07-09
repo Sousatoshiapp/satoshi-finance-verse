@@ -147,6 +147,60 @@ export const LazyRoutes = {
     { priority: 'medium' }
   ),
 
+  // District pages
+  DistrictDetail: createLazyComponent(
+    () => import('@/pages/DistrictDetail'),
+    { priority: 'medium' }
+  ),
+  
+  DistrictQuiz: createLazyComponent(
+    () => import('@/pages/DistrictQuiz'),
+    { priority: 'medium' }
+  ),
+
+  // Quiz pages
+  EnhancedQuiz: createLazyComponent(
+    () => import('@/pages/EnhancedQuiz'),
+    { priority: 'medium' }
+  ),
+  
+  DuelQuiz: createLazyComponent(
+    () => import('@/pages/DuelQuiz'),
+    { priority: 'medium' }
+  ),
+
+  // Tournament pages
+  TournamentDetail: createLazyComponent(
+    () => import('@/pages/TournamentDetail'),
+    { priority: 'medium' }
+  ),
+  
+  TournamentQuiz: createLazyComponent(
+    () => import('@/pages/TournamentQuiz'),
+    { priority: 'medium' }
+  ),
+
+  // Other pages
+  Playground: createLazyComponent(
+    () => import('@/pages/Playground'),
+    { priority: 'low' }
+  ),
+  
+  Missions: createLazyComponent(
+    () => import('@/pages/Missions'),
+    { priority: 'medium' }
+  ),
+  
+  LootBoxes: createLazyComponent(
+    () => import('@/pages/LootBoxes'),
+    { priority: 'low' }
+  ),
+  
+  Guilds: createLazyComponent(
+    () => import('@/pages/Guilds'),
+    { priority: 'low' }
+  ),
+
   // Páginas especiais
   Auth: createLazyComponent(
     () => import('@/pages/Auth'),
