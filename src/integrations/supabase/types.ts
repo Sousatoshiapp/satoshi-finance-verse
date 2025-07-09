@@ -3989,6 +3989,14 @@ export type Database = {
         }
         Returns: undefined
       }
+      validate_data_integrity: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          table_name: string
+          issue_count: number
+          issue_description: string
+        }[]
+      }
       verify_admin_session: {
         Args: { session_token: string }
         Returns: boolean
