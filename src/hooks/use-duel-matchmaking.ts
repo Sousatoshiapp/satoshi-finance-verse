@@ -49,12 +49,12 @@ export function useDuelMatchmaking() {
         if (matchData.opponent_type === 'human') {
           toast({
             title: "Oponente encontrado!",
-            description: "Preparando duelo contra jogador real...",
+            description: "Preparando duelo contra outro jogador...",
           });
         } else {
           toast({
-            title: "Bot encontrado!",
-            description: "Preparando duelo contra IA...",
+            title: "Oponente encontrado!",
+            description: "Preparando duelo...",
           });
         }
       } else {
@@ -88,7 +88,7 @@ export function useDuelMatchmaking() {
               
               toast({
                 title: "Oponente encontrado!",
-                description: `Duelo iniciado contra ${pollData.opponent_type === 'human' ? 'jogador real' : 'IA'}!`,
+                description: `Duelo iniciado!`,
               });
             }
           } catch (error) {
@@ -163,7 +163,7 @@ export function useDuelMatchmaking() {
       // Generate random questions for the duel
       const questions = await generateDuelQuestions(topic);
       
-      // Create duel invite
+      // Create duel invite first
       const { data: invite, error: inviteError } = await supabase
         .from('duel_invites')
         .insert({
@@ -177,21 +177,14 @@ export function useDuelMatchmaking() {
 
       if (inviteError) throw inviteError;
 
-      // Create actual duel
-      const { data: duel, error: duelError } = await supabase
-        .from('duels')
-        .insert({
-          invite_id: invite.id,
-          player1_id: profile.id,
-          player2_id: opponentId,
-          quiz_topic: topic,
-          questions: questions,
-          status: 'active',
-          current_turn: profile.id,
-          turn_started_at: new Date().toISOString()
-        })
-        .select()
-        .single();
+      // Use RPC function to create duel (which has proper permissions)
+      const { data: duel, error: duelError } = await supabase.rpc('create_duel', {
+        p_invite_id: invite.id,
+        p_player1_id: profile.id,
+        p_player2_id: opponentId,
+        p_quiz_topic: topic,
+        p_questions: questions
+      });
 
       if (duelError) throw duelError;
 

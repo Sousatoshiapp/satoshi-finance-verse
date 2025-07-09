@@ -87,16 +87,15 @@ export default function FindOpponent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900 pb-20">
-      {/* Cyberpunk Grid Background */}
-      <div className="absolute inset-0 opacity-10">
+    <div className="min-h-screen bg-background pb-20">
+      {/* Grid pattern background like dashboard */}
+      <div className="absolute inset-0 opacity-5">
         <div className="absolute inset-0" style={{
           backgroundImage: `
-            linear-gradient(rgba(173, 255, 47, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(173, 255, 47, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(var(--primary-rgb), 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(var(--primary-rgb), 0.1) 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px',
-          animation: 'pulse 4s ease-in-out infinite'
+          backgroundSize: '20px 20px'
         }} />
       </div>
 
@@ -107,25 +106,20 @@ export default function FindOpponent() {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/duels')}
-            className="text-[#adff2f] hover:bg-[#adff2f]/10 hover:text-[#adff2f] border border-[#adff2f]/30 hover:border-[#adff2f]/60 transition-all duration-300"
+            className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-[#adff2f] via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            ENCONTRAR OPONENTE
+          <h1 className="text-xl font-bold text-foreground">
+            Encontrar Oponente
           </h1>
           <div className="w-10"></div>
         </div>
 
         {/* Topic Selection */}
-        <Card className="relative border-none shadow-none mb-6" style={{
-          background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.1), rgba(255, 0, 255, 0.1), rgba(255, 255, 0, 0.05))',
-          boxShadow: '0 8px 32px rgba(173, 255, 47, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(173, 255, 47, 0.2)'
-        }}>
+        <Card className="mb-6 bg-card border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-[#adff2f] flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Target className="h-5 w-5" />
               Escolha o Tópico
             </CardTitle>
@@ -137,8 +131,8 @@ export default function FindOpponent() {
                 onClick={() => setSelectedTopic(topic.id)}
                 className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
                   selectedTopic === topic.id
-                    ? 'border-[#adff2f] bg-[#adff2f]/10 text-[#adff2f]'
-                    : 'border-white/20 hover:border-[#adff2f]/50 text-white/80 hover:text-white'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border hover:border-primary/50 text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <div className="font-medium">{topic.name}</div>
@@ -149,14 +143,9 @@ export default function FindOpponent() {
         </Card>
 
         {/* Matchmaking Section */}
-        <Card className="relative border-none shadow-none mb-6" style={{
-          background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.1), rgba(255, 0, 255, 0.1), rgba(255, 255, 0, 0.05))',
-          boxShadow: '0 8px 32px rgba(173, 255, 47, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(173, 255, 47, 0.2)'
-        }}>
+        <Card className="mb-6 bg-card border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-[#adff2f] flex items-center gap-2">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Users className="h-5 w-5" />
               Sistema de Duelos
             </CardTitle>
@@ -166,7 +155,7 @@ export default function FindOpponent() {
               <Button 
                 onClick={handleStartSearch}
                 size="lg"
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4"
+                className="w-full bg-gradient-to-r from-primary to-secondary text-primary-foreground font-bold py-4"
               >
                 <Zap className="mr-2 h-5 w-5" />
                 Procurar Oponente
@@ -174,23 +163,23 @@ export default function FindOpponent() {
             ) : (
               <div className="text-center space-y-4">
                 <div className="flex items-center justify-center space-x-2">
-                  <Loader2 className="h-6 w-6 animate-spin text-[#adff2f]" />
-                  <span className="text-lg font-medium text-white">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  <span className="text-lg font-medium text-foreground">
                     {matchResult?.opponentType === 'waiting' ? 'Procurando oponente...' : 'Conectando...'}
                   </span>
                 </div>
-                <div className="text-sm text-white/60">
+                <div className="text-sm text-muted-foreground">
                   Tempo de busca: {Math.floor(searchTime / 60)}:{(searchTime % 60).toString().padStart(2, '0')}
                 </div>
                 {matchResult?.opponentType === 'waiting' && (
-                  <p className="text-xs text-white/50">
-                    Você está na fila. Um bot será designado automaticamente se nenhum jogador for encontrado.
+                  <p className="text-xs text-muted-foreground">
+                    Você está na fila. Um oponente será encontrado automaticamente.
                   </p>
                 )}
                 <Button 
                   onClick={handleCancelSearch}
                   variant="outline"
-                  className="w-full border-[#adff2f]/30 text-[#adff2f] hover:bg-[#adff2f]/10"
+                  className="w-full"
                 >
                   Cancelar Busca
                 </Button>
@@ -201,24 +190,19 @@ export default function FindOpponent() {
 
         {/* Match Status */}
         {matchResult && (
-          <Card className="relative border-none shadow-none mb-6" style={{
-            background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.1), rgba(255, 0, 255, 0.1), rgba(255, 255, 0, 0.05))',
-            boxShadow: '0 8px 32px rgba(173, 255, 47, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(173, 255, 47, 0.2)'
-          }}>
+          <Card className="mb-6 bg-card border-border">
             <CardContent className="p-4">
               <div className="flex items-center justify-center space-x-3">
                 {matchResult.opponentType === 'bot' ? (
-                  <Bot className="h-6 w-6 text-purple-400" />
+                  <User className="h-6 w-6 text-primary" />
                 ) : matchResult.opponentType === 'human' ? (
-                  <User className="h-6 w-6 text-blue-400" />
+                  <User className="h-6 w-6 text-primary" />
                 ) : (
-                  <Clock className="h-6 w-6 text-yellow-400" />
+                  <Clock className="h-6 w-6 text-secondary" />
                 )}
-                <span className="text-white font-medium">
-                  {matchResult.opponentType === 'bot' && 'Bot encontrado!'}
-                  {matchResult.opponentType === 'human' && 'Jogador encontrado!'}
+                <span className="text-foreground font-medium">
+                  {matchResult.opponentType === 'bot' && 'Oponente encontrado!'}
+                  {matchResult.opponentType === 'human' && 'Oponente encontrado!'}
                   {matchResult.opponentType === 'waiting' && 'Na fila de espera...'}
                 </span>
               </div>
@@ -227,28 +211,25 @@ export default function FindOpponent() {
         )}
 
         {/* How it Works */}
-        <Card className="relative border-none shadow-none" style={{
-          background: 'linear-gradient(135deg, rgba(173, 255, 47, 0.05), rgba(255, 0, 255, 0.05), rgba(255, 255, 0, 0.02))',
-          border: '1px solid rgba(173, 255, 47, 0.1)'
-        }}>
+        <Card className="bg-card border-border">
           <CardHeader className="pb-3">
-            <CardTitle className="text-[#adff2f] text-sm">Como Funciona</CardTitle>
+            <CardTitle className="text-foreground text-sm">Como Funciona</CardTitle>
           </CardHeader>
-          <CardContent className="text-xs text-white/60 space-y-2">
+          <CardContent className="text-xs text-muted-foreground space-y-2">
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#adff2f] flex items-center justify-center text-black text-xs font-bold mt-0.5">1</div>
+              <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold mt-0.5">1</div>
               <div>Escolha um tópico e clique em "Procurar Oponente"</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-purple-400 flex items-center justify-center text-black text-xs font-bold mt-0.5">2</div>
-              <div>Sistema busca por jogadores reais primeiro</div>
+              <div className="w-4 h-4 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-bold mt-0.5">2</div>
+              <div>Sistema busca por oponentes disponíveis</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-orange-400 flex items-center justify-center text-black text-xs font-bold mt-0.5">3</div>
-              <div>Se não encontrar, um bot inteligente será seu oponente</div>
+              <div className="w-4 h-4 rounded-full bg-accent flex items-center justify-center text-accent-foreground text-xs font-bold mt-0.5">3</div>
+              <div>Um oponente compatível será encontrado rapidamente</div>
             </div>
             <div className="flex items-start gap-2">
-              <div className="w-4 h-4 rounded-full bg-blue-400 flex items-center justify-center text-white text-xs font-bold mt-0.5">4</div>
+              <div className="w-4 h-4 rounded-full bg-muted flex items-center justify-center text-muted-foreground text-xs font-bold mt-0.5">4</div>
               <div>Duelo inicia automaticamente quando o match é encontrado</div>
             </div>
           </CardContent>
