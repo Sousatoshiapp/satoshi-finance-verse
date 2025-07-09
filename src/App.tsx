@@ -290,6 +290,13 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/analytics" element={
+              <ProtectedRoute>
+                <LazyRoutes.LearningAnalytics />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/find-opponent" element={
               <ProtectedRoute>
                 <LazyRoutes.FindOpponent />

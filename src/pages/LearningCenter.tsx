@@ -7,12 +7,14 @@ import { Progress } from "@/components/ui/progress";
 import { LearningModulesGrid } from "@/components/learning/learning-modules-grid";
 import { SRSQuizCard } from "@/components/srs-quiz-card";
 import { useLearningModules } from "@/hooks/use-learning-modules";
-import { BookOpen, Brain, Trophy, TrendingUp, Target, Clock, Star } from "lucide-react";
+import { BookOpen, Brain, Trophy, TrendingUp, Target, Clock, Star, BarChart3 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function LearningCenter() {
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizDifficulty, setQuizDifficulty] = useState<'easy' | 'medium' | 'hard'>('easy');
+  const navigate = useNavigate();
   
   const { 
     modules,
@@ -200,6 +202,20 @@ export default function LearningCenter() {
                   </div>
                 </Button>
               )}
+
+              <Button 
+                variant="secondary"
+                onClick={() => navigate('/analytics')}
+                className="h-auto p-4 flex-col items-start"
+              >
+                <div className="w-full text-left">
+                  <div className="font-medium flex items-center gap-2">
+                    <BarChart3 className="h-4 w-4" />
+                    Analytics Avançado
+                  </div>
+                  <div className="text-xs opacity-80">IA personalizada e gamificação</div>
+                </div>
+              </Button>
             </div>
           </CardContent>
         </Card>

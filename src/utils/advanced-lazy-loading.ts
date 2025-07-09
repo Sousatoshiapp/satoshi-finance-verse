@@ -286,6 +286,11 @@ export const LazyRoutes = {
   TournamentQuizSpecific: createLazyComponent(
     () => import('@/pages/TournamentQuizSpecific'),
     { priority: 'medium' }
+  ),
+
+  LearningAnalytics: createLazyComponent(
+    () => import('@/pages/LearningAnalytics'),
+    { priority: 'medium' }
   )
 };
 
