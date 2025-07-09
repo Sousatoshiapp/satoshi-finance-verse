@@ -630,8 +630,8 @@ export default function DistrictDetail() {
         </div>
       </div>
 
-      {/* District Power & Stats Section */}
-      <div className="container mx-auto px-4 -mt-8 sm:-mt-16 relative z-10 mb-8">
+      {/* District Power & Stats Section - Moved below banner */}
+      <div className="container mx-auto px-4 py-6">
         {/* District Power Card */}
         <Card 
           className="bg-slate-800/90 backdrop-blur-sm border-2 mb-6"
