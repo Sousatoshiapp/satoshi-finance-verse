@@ -286,7 +286,7 @@ export default function Auth() {
           <Card className="bg-card/90 backdrop-blur-sm border-2 border-[#adff2f]/30 shadow-2xl mx-auto">
             <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
               <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#adff2f] to-[#32cd32] bg-clip-text text-transparent">
-                {isLogin ? 'Entre no Jogo' : 'Cadastro Cidadão'}
+                {isLogin ? 'Entre no Jogo' : 'Entre no Jogo'}
               </CardTitle>
               <CardDescription className="text-gray-300 text-sm sm:text-base px-2 sm:px-0">
                 {isLogin 
