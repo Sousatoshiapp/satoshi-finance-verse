@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { FloatingNavbar } from "@/components/floating-navbar";
