@@ -22,7 +22,7 @@ interface Challenge {
   ends_at: string;
   is_active: boolean;
   user_progress?: {
-    current_progress: number;
+    progress: number;
     completed: boolean;
     completed_at?: string;
   };
@@ -201,7 +201,7 @@ export function SocialChallenges() {
 
   const getProgressPercentage = (challenge: Challenge) => {
     if (!challenge.user_progress) return 0;
-    return Math.min((challenge.user_progress.current_progress / challenge.target_value) * 100, 100);
+    return Math.min((challenge.user_progress.progress / challenge.target_value) * 100, 100);
   };
 
   const getChallengeIcon = (type: string) => {
@@ -340,7 +340,7 @@ export function SocialChallenges() {
                           <div className="space-y-2">
                             <div className="flex items-center justify-between text-sm">
                               <span>
-                                Progresso: {challenge.user_progress?.current_progress || 0} / {challenge.target_value}
+                                Progresso: {challenge.user_progress?.progress || 0} / {challenge.target_value}
                               </span>
                               <span className="font-medium">{Math.round(progress)}%</span>
                             </div>

@@ -12,6 +12,17 @@ export function MonetizationDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Development Banner */}
+      <div className="p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+          <div className="text-2xl">🚧</div>
+          <div>
+            <h3 className="font-semibold">Em Desenvolvimento</h3>
+            <p className="text-sm">Esta funcionalidade está sendo desenvolvida e estará disponível em breve!</p>
+          </div>
+        </div>
+      </div>
+
       <div className="text-center">
         <h1 className="text-3xl font-bold mb-2">Sistema de Monetização</h1>
         <p className="text-muted-foreground">

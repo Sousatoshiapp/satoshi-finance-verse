@@ -4390,8 +4390,8 @@ export type Database = {
           completed: boolean
           completed_at: string | null
           created_at: string
-          current_progress: number
           id: string
+          progress: number
           user_id: string
         }
         Insert: {
@@ -4399,8 +4399,8 @@ export type Database = {
           completed?: boolean
           completed_at?: string | null
           created_at?: string
-          current_progress?: number
           id?: string
+          progress?: number
           user_id: string
         }
         Update: {
@@ -4408,8 +4408,8 @@ export type Database = {
           completed?: boolean
           completed_at?: string | null
           created_at?: string
-          current_progress?: number
           id?: string
+          progress?: number
           user_id?: string
         }
         Relationships: [

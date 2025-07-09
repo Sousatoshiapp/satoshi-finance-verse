@@ -4,22 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
+import { useDailyChallenges } from "@/hooks/use-daily-challenges";
 import { Check, Clock, Trophy, Zap, ArrowLeft, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 export default function Missions() {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [filter, setFilter] = useState<'all' | 'missions' | 'challenges' | 'completed'>('all');
   const { 
     missions, 
-    loading, 
-    completedToday, 
-    completionRate, 
+    loading: missionsLoading, 
+    completedToday: missionsCompleted, 
+    completionRate: missionsCompletionRate, 
     timeUntilReset,
     getDifficultyColor,
     getCategoryIcon
   } = useDailyMissions();
+  
+  const {
+    challenges,
+    loading: challengesLoading,
+    completedToday: challengesCompleted,
+    completionRate: challengesCompletionRate,
+    getChallengeIcon,
+    getChallengeTypeColor
+  } = useDailyChallenges();
 
   const handleMissionClick = (mission: any) => {
     if (mission.completed) return;
@@ -46,13 +56,44 @@ export default function Missions() {
     }
   };
 
-  const filteredMissions = missions.filter(mission => {
+  const handleChallengeClick = (challenge: any) => {
+    if (challenge.completed) return;
+    
+    switch (challenge.challenge_type) {
+      case 'speed':
+      case 'combo':
+        navigate('/quiz');
+        break;
+      case 'social':
+        navigate('/duels');
+        break;
+      case 'exploration':
+        navigate('/satoshi-city');
+        break;
+      default:
+        navigate('/quiz');
+    }
+  };
+
+  // Combined data for filtering
+  const allItems = [
+    ...missions.map(m => ({ ...m, type: 'mission' })),
+    ...challenges.map(c => ({ ...c, type: 'challenge' }))
+  ];
+
+  const filteredItems = allItems.filter(item => {
     switch (filter) {
-      case 'active': return !mission.completed;
-      case 'completed': return mission.completed;
+      case 'missions': return item.type === 'mission';
+      case 'challenges': return item.type === 'challenge';
+      case 'completed': return item.completed;
       default: return true;
     }
   });
+
+  const loading = missionsLoading || challengesLoading;
+  const totalCompleted = missionsCompleted + challengesCompleted;
+  const totalItems = missions.length + challenges.length;
+  const overallCompletionRate = totalItems > 0 ? Math.round((totalCompleted / totalItems) * 100) : 0;
 
   if (loading) {
     return (
@@ -86,8 +127,8 @@ export default function Missions() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold">Missões Diárias</h1>
-              <p className="text-muted-foreground">Complete suas missões e ganhe recompensas</p>
+              <h1 className="text-2xl font-bold">Missões & Desafios</h1>
+              <p className="text-muted-foreground">Complete suas tarefas diárias e ganhe recompensas</p>
             </div>
           </div>
 
@@ -99,7 +140,7 @@ export default function Missions() {
                   <Zap className="h-5 w-5 text-yellow-500" />
                   Progresso de Hoje
                   <Badge variant="secondary">
-                    {completedToday}/{missions.length}
+                    {totalCompleted}/{totalItems}
                   </Badge>
                 </CardTitle>
                 
@@ -114,19 +155,32 @@ export default function Missions() {
             </CardHeader>
             
             <CardContent>
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between text-sm">
-                  <span>Progresso Diário</span>
-                  <span className="font-medium">{completionRate}%</span>
+              <div className="space-y-4 mb-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Progresso Geral</span>
+                    <span className="font-medium">{overallCompletionRate}%</span>
+                  </div>
+                  <Progress value={overallCompletionRate} className="h-3" />
                 </div>
-                <Progress value={completionRate} className="h-3" />
+                
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span>Missões: {missionsCompleted}/{missions.length}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span>Desafios: {challengesCompleted}/{challenges.length}</span>
+                  </div>
+                </div>
               </div>
               
-              {completedToday >= 4 && (
+              {totalCompleted >= 6 && (
                 <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-lg p-3 text-center">
                   <Trophy className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
                   <div className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
-                    🎉 Combo Completado! +500 XP + 1000 Beetz + Loot Box Rara!
+                    🎉 Combo Épico! +800 XP + 1500 Beetz + Loot Box Épica!
                   </div>
                 </div>
               )}
@@ -134,41 +188,50 @@ export default function Missions() {
           </Card>
 
           {/* Filter Buttons */}
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
             <Button
               variant={filter === 'all' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('all')}
             >
-              Todas ({missions.length})
+              Todas ({totalItems})
             </Button>
             <Button
-              variant={filter === 'active' ? 'default' : 'outline'}
+              variant={filter === 'missions' ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setFilter('active')}
+              onClick={() => setFilter('missions')}
             >
-              Ativas ({missions.filter(m => !m.completed).length})
+              📋 Missões ({missions.length})
+            </Button>
+            <Button
+              variant={filter === 'challenges' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('challenges')}
+            >
+              ⚡ Desafios ({challenges.length})
             </Button>
             <Button
               variant={filter === 'completed' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter('completed')}
             >
-              Completas ({completedToday})
+              ✅ Completas ({totalCompleted})
             </Button>
           </div>
 
-          {/* Missions List */}
+          {/* Items List */}
           <div className="space-y-4">
-            {filteredMissions.map((mission) => (
+            {filteredItems.map((item) => (
               <div
-                key={mission.id}
-                onClick={() => handleMissionClick(mission)}
+                key={item.id}
+                onClick={() => item.type === 'mission' ? handleMissionClick(item) : handleChallengeClick(item)}
                 className={cn(
                   "border rounded-lg p-4 transition-all duration-200 hover:shadow-md cursor-pointer hover:scale-[1.02]",
-                  mission.completed 
+                  item.completed 
                     ? "bg-green-500/10 border-green-500/30 cursor-default" 
-                    : mission.is_weekend_special
+                    : item.type === 'challenge'
+                    ? `bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/30 hover:border-orange-500/50 border-l-4 ${getChallengeTypeColor((item as any).challenge_type)}`
+                    : (item as any).is_weekend_special
                     ? "bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30 hover:border-purple-500/50"
                     : "bg-card border-border hover:border-primary/50"
                 )}
@@ -176,19 +239,28 @@ export default function Missions() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3 flex-1">
                     <div className="text-3xl">
-                      {getCategoryIcon(mission.category)}
+                      {item.type === 'mission' 
+                        ? getCategoryIcon((item as any).category) 
+                        : getChallengeIcon((item as any).challenge_type)
+                      }
                     </div>
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <h3 className={cn(
                           "font-medium text-base",
-                          mission.completed ? "line-through text-muted-foreground" : ""
+                          item.completed ? "line-through text-muted-foreground" : ""
                         )}>
-                          {mission.title}
+                          {item.title}
                         </h3>
                         
-                        {mission.is_weekend_special && (
+                        {item.type === 'challenge' && (
+                          <Badge variant="outline" className="text-xs bg-orange-500/10 border-orange-500/30">
+                            ⚡ Desafio
+                          </Badge>
+                        )}
+                        
+                        {(item as any).is_weekend_special && (
                           <Badge variant="outline" className="text-xs bg-purple-500/10 border-purple-500/30">
                             ⭐ Especial
                           </Badge>
@@ -196,14 +268,14 @@ export default function Missions() {
                         
                         <Badge 
                           variant="outline" 
-                          className={cn("text-xs", getDifficultyColor(mission.difficulty))}
+                          className={cn("text-xs", getDifficultyColor(item.difficulty))}
                         >
-                          {mission.difficulty}
+                          {item.difficulty}
                         </Badge>
                       </div>
                       
                       <p className="text-sm text-muted-foreground mb-3">
-                        {mission.description}
+                        {item.description}
                       </p>
                       
                       {/* Progress */}
@@ -211,11 +283,11 @@ export default function Missions() {
                         <div className="flex justify-between text-sm">
                           <span>Progresso</span>
                           <span className="font-medium">
-                            {Math.min(mission.progress || 0, mission.target_value)}/{mission.target_value}
+                            {Math.min(item.progress || 0, item.target_value)}/{item.target_value}
                           </span>
                         </div>
                         <Progress 
-                          value={(Math.min(mission.progress || 0, mission.target_value) / mission.target_value) * 100} 
+                          value={(Math.min(item.progress || 0, item.target_value) / item.target_value) * 100} 
                           className="h-2"
                         />
                       </div>
@@ -224,10 +296,10 @@ export default function Missions() {
                       <div className="flex items-center gap-6 text-sm">
                         <div className="flex items-center gap-1 text-blue-500">
                           <Zap className="h-4 w-4" />
-                          +{mission.xp_reward} XP
+                          +{item.xp_reward} XP
                         </div>
                         <div className="flex items-center gap-1 text-orange-500">
-                          🥕 +{mission.beetz_reward} Beetz
+                          🥕 +{item.beetz_reward} Beetz
                         </div>
                       </div>
                     </div>
@@ -235,7 +307,7 @@ export default function Missions() {
                   
                   {/* Status Icon */}
                   <div className="ml-4">
-                    {mission.completed ? (
+                    {item.completed ? (
                       <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
                         <Check className="h-4 w-4 text-white" />
                       </div>
@@ -248,14 +320,14 @@ export default function Missions() {
             ))}
           </div>
           
-          {filteredMissions.length === 0 && (
+          {filteredItems.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
               <Zap className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              <p className="text-lg">Nenhuma missão encontrada</p>
+              <p className="text-lg">Nenhuma tarefa encontrada</p>
               <p className="text-sm">
                 {filter === 'completed' 
-                  ? 'Complete algumas missões para vê-las aqui!'
-                  : 'Novas missões aparecerão em breve!'
+                  ? 'Complete algumas tarefas para vê-las aqui!'
+                  : 'Novas tarefas aparecerão em breve!'
                 }
               </p>
             </div>

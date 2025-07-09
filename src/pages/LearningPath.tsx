@@ -66,6 +66,17 @@ export default function LearningPath() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
       <div className="max-w-4xl mx-auto">
+        {/* Development Banner */}
+        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+            <div className="text-2xl">🚧</div>
+            <div>
+              <h3 className="font-semibold">Em Desenvolvimento</h3>
+              <p className="text-sm">Esta funcionalidade está sendo desenvolvida e estará disponível em breve!</p>
+            </div>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">📚 Trilha de Aprendizado</h1>
