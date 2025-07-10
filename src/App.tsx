@@ -166,13 +166,6 @@ function App() {
               </ProtectedRoute>
             } />
             
-            <Route path="/tournament/:tournamentId/quiz" element={
-              <ProtectedRoute>
-                <LazyRoutes.TournamentQuiz />
-                <FloatingNavbar />
-              </ProtectedRoute>
-            } />
-            
             {/* Other Missing Routes */}
             <Route path="/playground" element={
               <ProtectedRoute>

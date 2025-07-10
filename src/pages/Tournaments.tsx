@@ -183,7 +183,7 @@ export default function Tournaments() {
               <Card 
                 key={tournament.id} 
                 className="p-6 border border-border shadow-card hover:shadow-elevated transition-all cursor-pointer"
-                onClick={() => navigate(`/tournaments/${tournament.id}`)}
+                onClick={() => navigate(`/tournament/${tournament.id}`)}
               >
                 <div className="flex items-start gap-6">
                   <div className="flex-shrink-0">
@@ -263,7 +263,7 @@ export default function Tournaments() {
                       className="w-full bg-gradient-to-r from-primary to-success text-black rounded-full font-semibold"
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/tournaments/${tournament.id}`);
+                        navigate(`/tournament/${tournament.id}`);
                       }}
                     >
                       {tournament.status === 'active' ? 'Participar Agora' : 

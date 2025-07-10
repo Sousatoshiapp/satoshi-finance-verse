@@ -110,7 +110,7 @@ export function WeeklyTournaments() {
     if (tournament.status === 'active' && tournament.user_registered) {
       navigate(`/tournament-quiz/${tournament.id}`);
     } else {
-      navigate(`/tournament-detail/${tournament.id}`);
+      navigate(`/tournament/${tournament.id}`);
     }
   };
 
