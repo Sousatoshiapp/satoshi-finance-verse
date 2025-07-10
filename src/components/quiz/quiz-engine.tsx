@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useUnifiedSRS } from "@/hooks/use-unified-srs";
+import { BeetzAnimation } from "./beetz-animation";
 import confetti from "canvas-confetti";
 
 interface QuizQuestion {
@@ -288,7 +289,7 @@ export function QuizEngine({
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
       {/* Header com BTZ Counter */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
@@ -314,7 +315,7 @@ export function QuizEngine({
       </div>
 
       {/* Main Quiz Content */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6 pb-24">
         <div className="max-w-2xl mx-auto">
           {/* Progress Bar */}
           <div className="mb-6">
@@ -355,7 +356,7 @@ export function QuizEngine({
                           ? 'border-green-500 bg-green-500/10'
                           : isWrong
                           ? 'border-red-500 bg-red-500/10'
-                          : 'border-border hover:border-primary/50'
+                          : 'border-border hover:border-primary/50 hover:bg-[hsl(85,100%,70%)]/20'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -399,9 +400,11 @@ export function QuizEngine({
 
       {/* Gamification Overlays */}
       {gamification.showBeetzAnimation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          <div className="animate-bounce text-6xl">+{gamification.totalBTZ} BTZ! 🎉</div>
-        </div>
+        <BeetzAnimation
+          isVisible={gamification.showBeetzAnimation}
+          amount={gamification.totalBTZ}
+          onComplete={gamification.hideBeetzAnimation}
+        />
       )}
 
       {gamification.showStreakAnimation && (

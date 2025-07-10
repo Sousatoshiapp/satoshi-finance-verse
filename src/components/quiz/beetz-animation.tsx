@@ -37,30 +37,43 @@ export function BeetzAnimation({ isVisible, amount, onComplete }: BeetzAnimation
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.5, y: 50 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.5, y: -50 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          initial={{ opacity: 0, scale: 0.8, y: 0 }}
+          animate={{ 
+            opacity: [0, 1, 1, 0],
+            scale: [0.8, 1.2, 1, 0.5],
+            y: [0, -20, -30, -100]
+          }}
+          exit={{ 
+            opacity: 0, 
+            scale: 0.5, 
+            y: -150,
+            x: [0, 200]
+          }}
+          transition={{ 
+            duration: 1.5, 
+            ease: "easeOut",
+            times: [0, 0.3, 0.8, 1]
+          }}
           className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
         >
           <motion.div
             animate={{ 
-              scale: [1, 1.1, 1],
-              rotate: [0, 5, -5, 0]
+              rotate: [0, 10, -10, 5, 0]
             }}
             transition={{ 
               duration: 0.8,
-              repeat: 1,
               ease: "easeInOut"
             }}
-            className="text-center"
+            className="text-center relative"
           >
             <motion.div
-              animate={{ y: [0, -20, 0] }}
-              transition={{ duration: 0.8, repeat: 1 }}
-              className="text-8xl font-black text-[#adff2f] drop-shadow-2xl"
+              className="text-6xl font-black drop-shadow-2xl"
               style={{
-                textShadow: "0 0 20px #adff2f, 0 0 40px #adff2f, 0 0 60px #adff2f",
+                background: "linear-gradient(45deg, #adff2f, #90ee90, #32cd32)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                textShadow: "0 0 30px #adff2f80",
                 fontFamily: "Impact, Arial Black, sans-serif"
               }}
             >
@@ -68,27 +81,28 @@ export function BeetzAnimation({ isVisible, amount, onComplete }: BeetzAnimation
             </motion.div>
             
             {/* Sparkle effects */}
-            {[...Array(6)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
-                initial={{ scale: 0, opacity: 0 }}
+                initial={{ scale: 0, opacity: 0, rotate: 0 }}
                 animate={{ 
-                  scale: [0, 1, 0],
-                  opacity: [0, 1, 0],
-                  x: [0, (i % 2 === 0 ? 50 : -50) * Math.random()],
-                  y: [0, -80 * Math.random()]
+                  scale: [0, 1, 0.5, 0],
+                  opacity: [0, 1, 0.8, 0],
+                  rotate: [0, 180, 360],
+                  x: [0, (i % 2 === 0 ? 80 : -80) * (Math.random() + 0.5)],
+                  y: [0, -120 * (Math.random() + 0.5)]
                 }}
                 transition={{ 
                   duration: 1.2,
-                  delay: i * 0.1,
+                  delay: i * 0.08,
                   ease: "easeOut"
                 }}
-                className="absolute w-4 h-4 bg-[#adff2f] rounded-full"
+                className="absolute w-3 h-3 rounded-full"
                 style={{
-                  left: `${50 + (Math.random() - 0.5) * 200}%`,
-                  top: `${50 + (Math.random() - 0.5) * 100}%`,
-                  filter: "blur(1px)",
-                  boxShadow: "0 0 10px #adff2f"
+                  background: "radial-gradient(circle, #adff2f, #90ee90)",
+                  left: "50%",
+                  top: "50%",
+                  boxShadow: "0 0 15px #adff2f, 0 0 30px #adff2f80"
                 }}
               />
             ))}
