@@ -446,7 +446,7 @@ export default function SoloQuiz() {
             const isSelected = selectedAnswer === option;
             const isCorrect = option === questions[currentQuestion]?.correct_answer;
             
-            let optionClass = "bg-card border-border text-foreground hover:bg-muted";
+            let optionClass = "bg-card border-border text-foreground hover:bg-card/80 hover:border-primary/50";
             
             if (showAnswer) {
               if (isSelected && isCorrect) {
@@ -477,16 +477,6 @@ export default function SoloQuiz() {
           })}
         </div>
 
-        {/* Feedback */}
-        {showAnswer && (
-          <QuizFeedback
-            isCorrect={selectedAnswer === questions[currentQuestion]?.correct_answer}
-            explanation={questions[currentQuestion]?.explanation}
-            correctAnswer={questions[currentQuestion]?.correct_answer}
-            userAnswer={selectedAnswer}
-            show={showAnswer}
-          />
-        )}
 
         {/* Action Buttons */}
         <div className="space-y-3">

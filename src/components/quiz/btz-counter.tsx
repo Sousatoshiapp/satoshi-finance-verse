@@ -113,19 +113,19 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       <div className="relative">
         {/* Efeito de brilho quando animando */}
         {isAnimating && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-400/30 to-transparent animate-pulse rounded-lg" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-pulse rounded-lg" />
         )}
         
         <div className={`
-          bg-gradient-to-r from-yellow-600 to-yellow-500 
-          text-black font-bold text-2xl px-6 py-3 rounded-lg
-          shadow-lg border-2 border-yellow-400
-          ${isAnimating ? 'animate-bounce-gentle shadow-glow' : ''}
+          bg-black/80 backdrop-blur-sm
+          text-white font-bold text-xl px-4 py-2 rounded-lg
+          shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-white/10
+          ${isAnimating ? 'animate-pulse shadow-[0_4px_25px_rgba(255,255,255,0.1)]' : ''}
           transition-all duration-300
         `}>
           <div className="flex items-center space-x-2">
-            <span className="text-3xl">💰</span>
-            <span className="font-mono text-xl">
+            <span className="text-lg">💰</span>
+            <span className="font-mono text-base">
               {displayBTZ.toLocaleString()} BTZ
             </span>
           </div>
