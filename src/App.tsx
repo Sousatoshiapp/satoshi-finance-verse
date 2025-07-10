@@ -445,6 +445,37 @@ function App() {
               </ProtectedRoute>
             } />
             
+            {/* Detail Pages Routes */}
+            <Route path="/avatar/:id" element={
+              <ProtectedRoute>
+                <LazyRoutes.AvatarDetail />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/boost/:id" element={
+              <ProtectedRoute>
+                <LazyRoutes.BoostDetail />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/skin/:id" element={
+              <ProtectedRoute>
+                <LazyRoutes.SkinDetail />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/accessory/:id" element={
+              <ProtectedRoute>
+                <LazyRoutes.AccessoryDetail />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/password-reset" element={<LazyRoutes.PasswordReset />} />
+            
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
           </Routes>
         </Suspense>
