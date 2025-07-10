@@ -117,15 +117,18 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         )}
         
         <div className={`
-          bg-black/80 backdrop-blur-sm
-          text-white font-bold text-xl px-4 py-2 rounded-lg
-          shadow-[0_4px_20px_rgba(0,0,0,0.4)] border border-white/10
-          ${isAnimating ? 'animate-pulse shadow-[0_4px_25px_rgba(255,255,255,0.1)]' : ''}
+          bg-transparent backdrop-blur-sm
+          text-white font-bold text-4xl px-8 py-4 rounded-lg
+          shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20
+          ${isAnimating ? 'animate-pulse shadow-[0_4px_25px_rgba(173,255,47,0.3)]' : ''}
           transition-all duration-300
         `}>
-          <div className="flex items-center space-x-2">
-            <span className="text-lg">💰</span>
-            <span className="font-mono text-base">
+          <div className="flex items-center space-x-3">
+            {/* Logo Beetz simples */}
+            <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
+              <span className="text-black font-bold text-lg">B</span>
+            </div>
+            <span className="font-mono text-3xl">
               {displayBTZ.toLocaleString()} BTZ
             </span>
           </div>

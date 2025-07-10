@@ -446,7 +446,7 @@ export default function SoloQuiz() {
             const isSelected = selectedAnswer === option;
             const isCorrect = option === questions[currentQuestion]?.correct_answer;
             
-            let optionClass = "bg-card border-border text-foreground hover:bg-card/80 hover:border-primary/50";
+            let optionClass = "bg-card border-border text-foreground hover:bg-card/80 hover:border-[#adff2f]/50 hover:text-[#adff2f]";
             
             if (showAnswer) {
               if (isSelected && isCorrect) {
