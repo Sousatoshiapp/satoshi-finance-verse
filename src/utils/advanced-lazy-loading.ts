@@ -62,5 +62,10 @@ export const LazyRoutes = {
   Wallet: lazy(() => import('@/pages/Wallet')),
   AdminGamification: lazy(() => import('@/pages/admin/AdminGamification')),
   AdminAIContent: lazy(() => import('@/pages/admin/AdminAIContent')),
-  AdminMonetization: lazy(() => import('@/pages/admin/AdminMonetization'))
+  AdminMonetization: lazy(() => import('@/pages/admin/AdminMonetization')),
+  AvatarDetail: lazy(() => import('@/pages/AvatarDetail')),
+  BoostDetail: lazy(() => import('@/pages/BoostDetail')),
+  SkinDetail: lazy(() => import('@/pages/SkinDetail')),
+  AccessoryDetail: lazy(() => import('@/pages/AccessoryDetail')),
+  PasswordReset: lazy(() => import('@/pages/PasswordReset'))
 };

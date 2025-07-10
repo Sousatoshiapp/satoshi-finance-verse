@@ -11,6 +11,13 @@ export const LazyAdvancedAnalytics = lazy(() => import('@/components/advanced-an
 export const LazySocialFeed = lazy(() => import('@/components/social/social-feed').then(module => ({ default: module.SocialFeed })));
 export const LazyLeaderboards = lazy(() => import('@/components/leaderboards').then(module => ({ default: module.Leaderboards })));
 
+// Detail pages
+export const LazyAvatarDetail = lazy(() => import('@/pages/AvatarDetail'));
+export const LazyBoostDetail = lazy(() => import('@/pages/BoostDetail'));
+export const LazySkinDetail = lazy(() => import('@/pages/SkinDetail'));
+export const LazyAccessoryDetail = lazy(() => import('@/pages/AccessoryDetail'));
+export const LazyPasswordReset = lazy(() => import('@/pages/PasswordReset'));
+
 // Wrapper component for lazy loaded components
 interface LazyWrapperProps {
   children: React.ReactNode;
