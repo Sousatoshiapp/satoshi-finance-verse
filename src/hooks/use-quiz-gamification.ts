@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useQuizAudio } from "./use-quiz-audio";
 
 interface QuizGamificationState {
   streak: number;
@@ -19,6 +20,7 @@ interface QuizGamificationState {
 export function useQuizGamification() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { playCorrectSound, playWrongSound, playStreakSound } = useQuizAudio();
   
   const [state, setState] = useState<QuizGamificationState>({
     streak: 0,
@@ -53,11 +55,22 @@ export function useQuizGamification() {
         showStreakAnimation: true 
       }));
       
+      // Play streak achievement sound
+      playStreakSound(newStreak);
+      
       // Update database with streak achievement
       try {
-        await supabase.from('profiles').update({
-          points: state.totalBTZ + reward
-        }).eq('user_id', user.id);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('points')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (profile) {
+          await supabase.from('profiles').update({
+            points: profile.points + reward
+          }).eq('user_id', user.id);
+        }
       } catch (error) {
         console.error('Error updating points:', error);
       }
@@ -65,7 +78,7 @@ export function useQuizGamification() {
       return;
     }
     
-    // Regular correct answer
+    // Regular correct answer - only show +1 BTZ animation
     setState(prev => ({ 
       ...prev, 
       streak: newStreak, 
@@ -73,16 +86,28 @@ export function useQuizGamification() {
       showBeetzAnimation: true 
     }));
 
+    // Play correct answer sound with intensity based on streak
+    const intensity = Math.min(newStreak, 10);
+    playCorrectSound(intensity);
+
     // Update database with new points
     try {
-      await supabase.from('profiles').update({
-        points: state.totalBTZ + reward
-      }).eq('user_id', user.id);
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('points')
+        .eq('user_id', user.id)
+        .single();
+        
+      if (profile) {
+        await supabase.from('profiles').update({
+          points: profile.points + reward
+        }).eq('user_id', user.id);
+      }
     } catch (error) {
       console.error('Error updating points:', error);
     }
     
-  }, [state, user]);
+  }, [state, user, playCorrectSound, playStreakSound]);
 
   const handleWrongAnswer = useCallback((question?: string, correctAnswer?: string, explanation?: string) => {
     // Show video explanation for wrong answers
@@ -99,11 +124,14 @@ export function useQuizGamification() {
       currentExplanation: explanation
     }));
 
-    // Play notification sound for wrong answer
+    // Play wrong answer sound
+    playWrongSound();
+
+    // Vibration for wrong answer
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
       navigator.vibrate([200, 100, 200]); // Vibration pattern for wrong answer
     }
-  }, []);
+  }, [playWrongSound]);
 
   const hideBeetzAnimation = useCallback(() => {
     setState(prev => ({ ...prev, showBeetzAnimation: false }));

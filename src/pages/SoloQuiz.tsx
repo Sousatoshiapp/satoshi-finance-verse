@@ -15,7 +15,9 @@ import { useProgressionSystem } from "@/hooks/use-progression-system";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { BeetzAnimation } from "@/components/quiz/beetz-animation";
 import { StreakAnimation } from "@/components/quiz/streak-animation";
-import { VideoExplanation } from "@/components/quiz/video-explanation";
+import { VideoExplanationFullscreen } from "@/components/quiz/video-explanation-fullscreen";
+import { BTZCounter } from "@/components/quiz/btz-counter";
+import { ProgressiveIntensity } from "@/components/quiz/progressive-intensity";
 
 interface QuizQuestion {
   id: string;
@@ -95,6 +97,7 @@ export default function SoloQuiz() {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [currentTopicIndex, setCurrentTopicIndex] = useState(0);
+  const [intensityLevel, setIntensityLevel] = useState(0);
   const navigate = useNavigate();
   const { awardXP, updateStreak } = useProgressionSystem();
   const gamification = useQuizGamification();
@@ -401,29 +404,9 @@ export default function SoloQuiz() {
           </Button>
         </div>
 
-        {/* Avatar and Title */}
+        {/* BTZ Counter - Substitui Avatar e Card de Rewards */}
         <div className="text-center mb-8">
-          <div className="relative mb-6">
-            <div className="w-24 h-24 mx-auto bg-gradient-to-b from-green-400 to-green-600 rounded-full p-1">
-              <div className="w-full h-full bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
-                {userProfile?.avatars ? (
-                  <AvatarDisplay 
-                    avatar={userProfile.avatars} 
-                    size="lg" 
-                    showBadge={false}
-                  />
-                ) : userProfile?.profile_image_url ? (
-                  <img 
-                    src={userProfile.profile_image_url} 
-                    alt="Avatar" 
-                    className="w-16 h-16 rounded-full object-cover" 
-                  />
-                ) : (
-                  <img src={satoshiMascot} alt="Default" className="w-16 h-16" />
-                )}
-              </div>
-            </div>
-          </div>
+          <BTZCounter className="mb-6" />
           
           <h1 className="text-2xl font-bold text-white mb-2">
             {selectedTopic?.title}
@@ -432,26 +415,6 @@ export default function SoloQuiz() {
             {selectedTopic?.category} - {selectedTopic?.difficulty === 'easy' ? 'Fácil' : 
              selectedTopic?.difficulty === 'medium' ? 'Médio' : 'Difícil'}
           </p>
-
-          {/* Rewards Card */}
-          <Card className="bg-slate-800/50 border-slate-700 mb-6">
-            <CardContent className="p-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className="text-sm text-slate-400 mb-1">Ganhe</div>
-                  <div className="text-lg font-bold text-white">30 XP</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-sm text-slate-400 mb-1">Beetz</div>
-                  <div className="text-lg font-bold text-white">60</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-sm text-slate-400 mb-1">Streak</div>
-                  <div className="text-2xl">🔥</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Progress */}
@@ -582,15 +545,18 @@ export default function SoloQuiz() {
         />
       )}
 
-      {/* Video Explanation Modal */}
+      {/* Progressive Intensity Background */}
+      <ProgressiveIntensity 
+        streak={gamification.streak}
+        isActive={!showResults}
+        onIntensityChange={setIntensityLevel}
+      />
+
+      {/* Full-screen Video Explanation */}
       {gamification.showVideoExplanation && gamification.currentVideoUrl && (
-        <VideoExplanation
+        <VideoExplanationFullscreen
           videoUrl={gamification.currentVideoUrl}
-          question={gamification.currentQuestion}
-          correctAnswer={gamification.currentCorrectAnswer}
-          explanation={gamification.currentExplanation}
-          onClose={gamification.hideVideoExplanation}
-          onContinue={() => {
+          onClose={() => {
             gamification.hideVideoExplanation();
             // Continue to next question after video
             setTimeout(() => {
