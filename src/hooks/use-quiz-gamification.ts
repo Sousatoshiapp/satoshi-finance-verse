@@ -101,7 +101,7 @@ export function useQuizGamification() {
   }, [state, user, playCorrectSound, playStreakSound, playCashRegisterSound, toast]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
-    // Verificar se o usuário tem vidas para manter o streak
+    // Só pode usar vida se tem streak E tem vidas disponíveis
     if (state.streak > 0 && hasLives()) {
       // Oferecer usar vida para manter streak
       return { 
@@ -111,7 +111,7 @@ export function useQuizGamification() {
       };
     }
 
-    // Sem vidas ou streak zerado - resetar multiplicador
+    // Sem streak ou sem vidas - resetar tudo
     const videoUrl = "https://i.imgur.com/9wSK0Dy.mp4";
     
     setState(prev => ({ 

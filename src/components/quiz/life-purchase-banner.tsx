@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, ShoppingCart, Zap, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLivesSystem } from "@/hooks/use-lives-system";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LifePurchaseBannerProps {
   isVisible: boolean;
@@ -14,10 +16,41 @@ interface LifePurchaseBannerProps {
 }
 
 export function LifePurchaseBanner({ isVisible, onClose, onPurchase, onViewStore }: LifePurchaseBannerProps) {
-  const { lifePackages, purchaseLifePackage, loading } = useLivesSystem();
+  const navigate = useNavigate();
+  const { lifePackages, loading } = useLivesSystem();
   const [selectedPackage, setSelectedPackage] = useState(lifePackages[0]?.id);
+  const [processingPurchase, setProcessingPurchase] = useState(false);
 
   const promoPackage = lifePackages.find(p => p.discount_percentage > 0) || lifePackages[0];
+
+  const handleStripeCheckout = async () => {
+    if (!promoPackage) return;
+    
+    setProcessingPurchase(true);
+    try {
+      // Chamar edge function para criar sessão do Stripe
+      const { data, error } = await supabase.functions.invoke('create-life-checkout', {
+        body: { packageId: promoPackage.id }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        // Abrir Stripe checkout em nova aba
+        window.open(data.url, '_blank');
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+    } finally {
+      setProcessingPurchase(false);
+    }
+  };
+
+  const handleViewStore = () => {
+    navigate('/marketplace/lives');
+    onClose();
+  };
 
   return (
     <AnimatePresence>
@@ -88,12 +121,12 @@ export function LifePurchaseBanner({ isVisible, onClose, onPurchase, onViewStore
                   </div>
                   
                   <Button
-                    onClick={() => purchaseLifePackage(promoPackage.id)}
-                    disabled={loading}
+                    onClick={handleStripeCheckout}
+                    disabled={processingPurchase || !promoPackage}
                     className="w-full mt-3 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" />
-                    {loading ? "Processando..." : "Comprar Agora"}
+                    {processingPurchase ? "Redirecionando..." : "Comprar Agora"}
                   </Button>
                 </motion.div>
               )}
@@ -102,7 +135,7 @@ export function LifePurchaseBanner({ isVisible, onClose, onPurchase, onViewStore
               <div className="grid grid-cols-2 gap-3">
                 <Button
                   variant="outline" 
-                  onClick={onViewStore}
+                  onClick={handleViewStore}
                   className="border-primary/50 hover:bg-primary/10"
                 >
                   <Zap className="h-4 w-4 mr-2" />

@@ -9,6 +9,7 @@ import { useUnifiedSRS } from "@/hooks/use-unified-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { BTZCounter } from "./btz-counter";
+import { LivesCounter } from "./lives-counter";
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 import { LifePurchaseBanner } from "./life-purchase-banner";
@@ -466,6 +467,7 @@ export function QuizEngine({
               <div className="text-sm text-muted-foreground">
                 {getModeTitle()}
               </div>
+              <LivesCounter />
               <BTZCounter />
             </div>
           </div>
