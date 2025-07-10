@@ -103,8 +103,8 @@ export function useQuizGamification() {
   }, [state, user, playCorrectSound, playStreakSound, playCashRegisterSound, toast]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
-    // Só pode usar vida se tem streak E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
-    if (state.streak > 0 && hasLives() && !state.hasShownLifeBanner) {
+    // Só pode usar vida se tem streak >= 7 (primeiro streak real) E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
+    if (state.streak >= 7 && hasLives() && !state.hasShownLifeBanner) {
       // Marcar que já mostrou o banner nesta sessão
       setState(prev => ({ ...prev, hasShownLifeBanner: true }));
       

@@ -368,9 +368,6 @@ export default function Dashboard() {
             <DuelPlaygroundGrid />
           </div>
 
-          {/* Quick Actions */}
-          <QuickActionsOptimized />
-
         </div>
       </div>
       
