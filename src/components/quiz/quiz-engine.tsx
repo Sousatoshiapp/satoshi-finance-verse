@@ -10,6 +10,7 @@ import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { BTZCounter } from "./btz-counter";
 import { BeetzAnimation } from "./beetz-animation";
+import { StreakAnimation } from "./streak-animation";
 import { LifePurchaseBanner } from "./life-purchase-banner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -357,28 +358,62 @@ export function QuizEngine({
   }
 
   if (showResults) {
+    const percentage = Math.round((score / questions.length) * 100);
+    const isSuccess = percentage >= 60;
+    
+    const getNextQuiz = () => {
+      // Logic to determine next quiz based on context
+      switch (mode) {
+        case 'daily_mission':
+          return '/missions';
+        case 'district':
+          return `/satoshi-city/district/${districtId}`;
+        case 'tournament':
+          return `/tournament/${tournamentId}`;
+        default:
+          return '/dashboard';
+      }
+    };
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
         <Card className="w-full max-w-lg p-8 text-center">
-          <Trophy className="h-16 w-16 mx-auto mb-4 text-yellow-500" />
-          <h1 className="text-3xl font-bold mb-2">{getModeTitle()} Finalizado!</h1>
-          <div className="text-6xl mb-4">
-            {score === questions.length ? "🏆" : score >= questions.length * 0.7 ? "🥉" : "📚"}
+          {/* Success or Failure Animation */}
+          <div className="mb-6">
+            <img 
+              src={isSuccess ? "/src/assets/success-animation.png" : "/src/assets/failure-animation.png"}
+              alt={isSuccess ? "Celebração" : "Falha"}
+              className="h-32 w-32 mx-auto mb-4 object-contain"
+            />
           </div>
+          
+          <h1 className="text-3xl font-bold mb-2">
+            {isSuccess ? "Parabéns!" : "Perdeu!"}
+          </h1>
           
           <div className="mb-6">
             <div className="text-4xl font-bold text-primary mb-2">
               {score}/{questions.length}
             </div>
             <p className="text-muted-foreground">
-              {Math.round((score / questions.length) * 100)}% de acertos
+              {percentage}% de acertos
             </p>
           </div>
 
           <div className="space-y-4">
-            <Button onClick={resetQuiz} className="w-full" size="lg">
-              Jogar Novamente
-            </Button>
+            {isSuccess ? (
+              <Button 
+                onClick={() => navigate(getNextQuiz())} 
+                className="w-full" 
+                size="lg"
+              >
+                Continuar para o Próximo Quiz
+              </Button>
+            ) : (
+              <Button onClick={resetQuiz} className="w-full" size="lg">
+                Tentar Novamente
+              </Button>
+            )}
             <Button 
               variant="outline" 
               onClick={() => navigate(getBackRoute())} 
@@ -557,11 +592,10 @@ export function QuizEngine({
         </div>
       )}
 
-      {showStreakAnimation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          <div className="animate-pulse text-4xl">🔥 Streak de {streak}! 🔥</div>
-        </div>
-      )}
+      <StreakAnimation
+        isVisible={showStreakAnimation}
+        onComplete={hideStreakAnimation}
+      />
 
       <LifePurchaseBanner
         isVisible={showLifeBanner}

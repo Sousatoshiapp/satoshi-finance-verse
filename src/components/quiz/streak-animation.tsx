@@ -11,24 +11,24 @@ export function StreakAnimation({ isVisible, onComplete }: StreakAnimationProps)
 
   useEffect(() => {
     if (isVisible && !audioPlayed) {
-      // Play streak sound effect
-      const audio = new Audio("/audio/streak-achievement.mp3");
-      audio.volume = 0.7;
+      // Play futuristic streak sound effect
+      const audio = new Audio("/audio/cyberpunk-achievement.mp3");
+      audio.volume = 0.8;
       audio.play().catch(() => {
         // Fallback if audio fails
       });
       setAudioPlayed(true);
       
-      // Vibrate if on mobile - longer vibration for streak
+      // Vibrate if on mobile - futuristic pattern
       if (navigator.vibrate) {
-        navigator.vibrate([300, 100, 300]);
+        navigator.vibrate([200, 50, 200, 50, 400]);
       }
       
-      // Complete animation after 2s
+      // Complete animation after 2.5s for better impact
       setTimeout(() => {
         onComplete();
         setAudioPlayed(false);
-      }, 2000);
+      }, 2500);
     }
   }, [isVisible, audioPlayed, onComplete]);
 
@@ -41,107 +41,155 @@ export function StreakAnimation({ isVisible, onComplete }: StreakAnimationProps)
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
           style={{
-            background: "radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,140,0,0.2) 50%, transparent 100%)"
+            background: "radial-gradient(circle, rgba(0,255,255,0.4) 0%, rgba(255,0,255,0.3) 30%, rgba(0,0,0,0.8) 70%, transparent 100%)"
           }}
         >
-          {/* Main STREAK text */}
+          {/* Neon Grid Background */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `
+                linear-gradient(rgba(0,255,255,0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,255,0.3) 1px, transparent 1px)
+              `,
+              backgroundSize: "50px 50px"
+            }} />
+          </div>
+
+          {/* Main STREAK text with neon effects */}
           <motion.div
-            initial={{ scale: 0, rotate: -20 }}
+            initial={{ scale: 0, rotateY: 180 }}
             animate={{ 
-              scale: [0, 1.3, 1],
-              rotate: [0, 10, -5, 0]
+              scale: [0, 1.4, 1.1, 1],
+              rotateY: [180, 0, -10, 0]
             }}
             transition={{ 
-              duration: 1.5,
+              duration: 2,
               ease: "easeOut",
-              times: [0, 0.6, 1]
+              times: [0, 0.4, 0.7, 1]
             }}
             className="text-center relative"
           >
+            {/* Glitch effect background */}
+            <motion.div
+              animate={{
+                x: [0, -3, 3, 0],
+                opacity: [0, 0.5, 0]
+              }}
+              transition={{
+                duration: 0.15,
+                repeat: Infinity,
+                repeatDelay: 1.5,
+                times: [0, 0.5, 1]
+              }}
+              className="absolute inset-0 text-9xl font-black text-red-500"
+              style={{
+                fontFamily: "Impact, Arial Black, sans-serif",
+                WebkitTextStroke: "2px #ff0080",
+                filter: "blur(1px)"
+              }}
+            >
+              STREAK!
+            </motion.div>
+
+            {/* Main neon text */}
             <motion.div
               animate={{ 
                 textShadow: [
-                  "0 0 20px #ffd700, 0 0 40px #ffd700",
-                  "0 0 30px #ff8c00, 0 0 60px #ff8c00",
-                  "0 0 20px #ffd700, 0 0 40px #ffd700"
+                  "0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff",
+                  "0 0 15px #ff00ff, 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 120px #ff00ff",
+                  "0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff"
                 ]
               }}
               transition={{ 
-                duration: 1,
+                duration: 1.5,
                 repeat: Infinity,
                 repeatType: "reverse"
               }}
-              className="text-9xl font-black text-[#ffd700] drop-shadow-2xl"
+              className="text-9xl font-black text-white relative z-10"
               style={{
                 fontFamily: "Impact, Arial Black, sans-serif",
-                WebkitTextStroke: "3px #ff8c00"
+                WebkitTextStroke: "2px #00ffff",
+                filter: "drop-shadow(0 0 20px #00ffff)"
               }}
             >
               STREAK!
             </motion.div>
             
-            {/* Fire effects */}
-            {[...Array(8)].map((_, i) => (
+            {/* Neon particles */}
+            {[...Array(12)].map((_, i) => (
               <motion.div
                 key={i}
-                initial={{ scale: 0, opacity: 0, y: 0 }}
+                initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
                 animate={{ 
                   scale: [0, 1, 0.8, 0],
                   opacity: [0, 1, 0.8, 0],
-                  y: [0, -60, -80, -100],
-                  x: [(Math.random() - 0.5) * 100]
+                  x: [0, (Math.cos(i * 30 * Math.PI / 180) * 200)],
+                  y: [0, (Math.sin(i * 30 * Math.PI / 180) * 200)]
                 }}
                 transition={{ 
-                  duration: 1.5,
-                  delay: i * 0.1,
+                  duration: 2,
+                  delay: 0.3 + i * 0.05,
                   ease: "easeOut"
                 }}
-                className="absolute w-6 h-6 rounded-full"
+                className="absolute w-4 h-4 rounded-full"
                 style={{
-                  left: `${50 + (Math.random() - 0.5) * 300}%`,
-                  bottom: "10%",
-                  background: i % 2 === 0 
-                    ? "linear-gradient(45deg, #ff4500, #ffd700)" 
-                    : "linear-gradient(45deg, #ffd700, #ff8c00)",
-                  filter: "blur(2px)",
-                  boxShadow: "0 0 15px currentColor"
+                  left: "50%",
+                  top: "50%",
+                  background: i % 3 === 0 
+                    ? "radial-gradient(circle, #00ffff, transparent)" 
+                    : i % 3 === 1
+                    ? "radial-gradient(circle, #ff00ff, transparent)"
+                    : "radial-gradient(circle, #ffff00, transparent)",
+                  boxShadow: `0 0 20px ${i % 3 === 0 ? '#00ffff' : i % 3 === 1 ? '#ff00ff' : '#ffff00'}`
                 }}
               />
             ))}
             
-            {/* Lightning effects */}
-            {[...Array(4)].map((_, i) => (
+            {/* Energy rings */}
+            {[...Array(3)].map((_, i) => (
               <motion.div
-                key={`lightning-${i}`}
-                initial={{ opacity: 0, scaleY: 0 }}
+                key={`ring-${i}`}
+                initial={{ scale: 0, opacity: 0.8 }}
                 animate={{ 
-                  opacity: [0, 1, 0],
-                  scaleY: [0, 1, 0],
-                  x: [0, (i % 2 === 0 ? 100 : -100)]
+                  scale: [0, 2 + i * 0.5],
+                  opacity: [0.8, 0]
                 }}
                 transition={{ 
-                  duration: 0.8,
-                  delay: 0.5 + i * 0.2,
-                  ease: "easeInOut"
+                  duration: 1.8,
+                  delay: 0.2 + i * 0.3,
+                  ease: "easeOut"
                 }}
-                className="absolute w-1 h-32 bg-gradient-to-b from-transparent via-[#ffd700] to-transparent"
+                className="absolute inset-0 rounded-full border-2"
                 style={{
-                  left: `${50 + (i % 2 === 0 ? 150 : -150)}%`,
-                  top: "20%",
-                  transform: `rotate(${(i % 2 === 0 ? 15 : -15)}deg)`,
-                  filter: "blur(1px)",
-                  boxShadow: "0 0 10px #ffd700"
+                  borderColor: i % 2 === 0 ? '#00ffff' : '#ff00ff',
+                  filter: `blur(${i}px)`,
+                  boxShadow: `0 0 30px ${i % 2 === 0 ? '#00ffff' : '#ff00ff'}`
                 }}
               />
             ))}
+
+            {/* Cyberpunk scanlines */}
+            <motion.div
+              initial={{ y: "-100%" }}
+              animate={{ y: "200%" }}
+              transition={{
+                duration: 1.5,
+                delay: 0.5,
+                ease: "linear"
+              }}
+              className="absolute inset-0 w-full h-2 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60"
+              style={{
+                filter: "blur(1px)"
+              }}
+            />
           </motion.div>
           
-          {/* Screen flash effect */}
+          {/* Screen flash effect with neon colors */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.3, 0] }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-            className="absolute inset-0 bg-[#ffd700] mix-blend-overlay"
+            animate={{ opacity: [0, 0.4, 0] }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="absolute inset-0 bg-gradient-to-br from-cyan-500 via-purple-500 to-pink-500 mix-blend-overlay"
           />
         </motion.div>
       )}
