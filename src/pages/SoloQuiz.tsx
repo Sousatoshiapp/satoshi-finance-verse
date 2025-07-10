@@ -12,6 +12,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/avatar-display-optimized";
 import { QuizFeedback } from "@/components/quiz/quiz-feedback";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
+import { useQuizGamification } from "@/hooks/use-quiz-gamification";
+import { BeetzAnimation } from "@/components/quiz/beetz-animation";
+import { StreakAnimation } from "@/components/quiz/streak-animation";
+import { VideoExplanation } from "@/components/quiz/video-explanation";
 
 interface QuizQuestion {
   id: string;
@@ -93,6 +97,7 @@ export default function SoloQuiz() {
   const [currentTopicIndex, setCurrentTopicIndex] = useState(0);
   const navigate = useNavigate();
   const { awardXP, updateStreak } = useProgressionSystem();
+  const gamification = useQuizGamification();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -128,19 +133,19 @@ export default function SoloQuiz() {
         .select('*')
         .eq('category', topic.category)
         .eq('difficulty', topic.difficulty)
-        .limit(5);
+        .limit(7);
 
       if (error) throw error;
 
       if (questionsData && questionsData.length > 0) {
-        // Shuffle questions and take random 5, convert options from JSON to string array
+        // Shuffle questions and take random 7, convert options from JSON to string array
         const shuffled = questionsData
           .map(q => ({
             ...q,
             options: Array.isArray(q.options) ? q.options : JSON.parse(q.options as string)
           }))
           .sort(() => Math.random() - 0.5)
-          .slice(0, 5);
+          .slice(0, 7);
         setQuestions(shuffled);
         setSelectedTopic(topic);
         setCurrentQuestion(0);
@@ -180,8 +185,17 @@ export default function SoloQuiz() {
       setScore(score + 1);
       // Award XP for correct answer
       await awardXP(15, 'quiz_correct');
+      // Handle gamification for correct answer
+      await gamification.handleCorrectAnswer();
       // Dispara confetti quando acerta
       setTimeout(() => fireConfetti(), 500);
+    } else {
+      // Handle wrong answer with video explanation
+      gamification.handleWrongAnswer(
+        currentQ.question,
+        currentQ.correct_answer,
+        currentQ.explanation
+      );
     }
 
     // Update streak on quiz participation
@@ -211,6 +225,7 @@ export default function SoloQuiz() {
     setShowResults(false);
     setSelectedAnswer(null);
     setShowAnswer(false);
+    gamification.resetGamification();
   };
 
   // Topic Selection Screen
@@ -550,6 +565,46 @@ export default function SoloQuiz() {
       </div>
       
       <FloatingNavbar />
+
+      {/* Gamification Animations */}
+      {gamification.showBeetzAnimation && (
+        <BeetzAnimation
+          isVisible={gamification.showBeetzAnimation}
+          amount={gamification.currentMultiplier}
+          onComplete={gamification.hideBeetzAnimation}
+        />
+      )}
+
+      {gamification.showStreakAnimation && (
+        <StreakAnimation
+          isVisible={gamification.showStreakAnimation}
+          onComplete={gamification.hideStreakAnimation}
+        />
+      )}
+
+      {/* Video Explanation Modal */}
+      {gamification.showVideoExplanation && gamification.currentVideoUrl && (
+        <VideoExplanation
+          videoUrl={gamification.currentVideoUrl}
+          question={gamification.currentQuestion}
+          correctAnswer={gamification.currentCorrectAnswer}
+          explanation={gamification.currentExplanation}
+          onClose={gamification.hideVideoExplanation}
+          onContinue={() => {
+            gamification.hideVideoExplanation();
+            // Continue to next question after video
+            setTimeout(() => {
+              if (currentQuestion < questions.length - 1) {
+                setCurrentQuestion(currentQuestion + 1);
+                setSelectedAnswer(null);
+                setShowAnswer(false);
+              } else {
+                setShowResults(true);
+              }
+            }, 500);
+          }}
+        />
+      )}
     </div>
   );
 }

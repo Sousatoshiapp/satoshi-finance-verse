@@ -9,6 +9,11 @@ interface QuizGamificationState {
   currentMultiplier: number;
   showBeetzAnimation: boolean;
   showStreakAnimation: boolean;
+  showVideoExplanation: boolean;
+  currentVideoUrl: string | null;
+  currentQuestion: string;
+  currentCorrectAnswer: string;
+  currentExplanation?: string;
 }
 
 export function useQuizGamification() {
@@ -20,7 +25,12 @@ export function useQuizGamification() {
     totalBTZ: 0,
     currentMultiplier: 1,
     showBeetzAnimation: false,
-    showStreakAnimation: false
+    showStreakAnimation: false,
+    showVideoExplanation: false,
+    currentVideoUrl: null,
+    currentQuestion: "",
+    currentCorrectAnswer: "",
+    currentExplanation: undefined
   });
 
   const handleCorrectAnswer = useCallback(async () => {
@@ -74,12 +84,25 @@ export function useQuizGamification() {
     
   }, [state, user]);
 
-  const handleWrongAnswer = useCallback(() => {
+  const handleWrongAnswer = useCallback((question?: string, correctAnswer?: string, explanation?: string) => {
+    // Show video explanation for wrong answers
+    const videoUrl = "https://i.imgur.com/9wSK0Dy.mp4"; // URL do vídeo explicativo
+    
     setState(prev => ({ 
       ...prev, 
       streak: 0, 
-      currentMultiplier: 1 
+      currentMultiplier: 1,
+      showVideoExplanation: true,
+      currentVideoUrl: videoUrl,
+      currentQuestion: question || "",
+      currentCorrectAnswer: correctAnswer || "",
+      currentExplanation: explanation
     }));
+
+    // Play notification sound for wrong answer
+    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200]); // Vibration pattern for wrong answer
+    }
   }, []);
 
   const hideBeetzAnimation = useCallback(() => {
@@ -90,13 +113,29 @@ export function useQuizGamification() {
     setState(prev => ({ ...prev, showStreakAnimation: false }));
   }, []);
 
+  const hideVideoExplanation = useCallback(() => {
+    setState(prev => ({ 
+      ...prev, 
+      showVideoExplanation: false,
+      currentVideoUrl: null,
+      currentQuestion: "",
+      currentCorrectAnswer: "",
+      currentExplanation: undefined
+    }));
+  }, []);
+
   const resetGamification = useCallback(() => {
     setState({
       streak: 0,
       totalBTZ: 0,
       currentMultiplier: 1,
       showBeetzAnimation: false,
-      showStreakAnimation: false
+      showStreakAnimation: false,
+      showVideoExplanation: false,
+      currentVideoUrl: null,
+      currentQuestion: "",
+      currentCorrectAnswer: "",
+      currentExplanation: undefined
     });
   }, []);
 
@@ -138,6 +177,7 @@ export function useQuizGamification() {
     handleWrongAnswer,
     hideBeetzAnimation,
     hideStreakAnimation,
+    hideVideoExplanation,
     resetGamification,
     getQuizCompletion
   };
