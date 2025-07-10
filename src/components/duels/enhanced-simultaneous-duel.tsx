@@ -39,6 +39,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   const [gamePhase, setGamePhase] = useState<'playing' | 'finished'>('playing');
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
   const [playerAnswers, setPlayerAnswers] = useState<any[]>([]);
+  const [timeLeft, setTimeLeft] = useState(30);
   const subscriptionRef = useRef<any>(null);
   const { toast } = useToast();
 
@@ -166,8 +167,8 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   const handleAnswer = async (optionId: string) => {
     if (answeredQuestions.has(currentQuestion) || gamePhase !== 'playing') return;
     
+    // Sistema simultâneo - não esperar oponente
     setSelectedAnswer(optionId);
-    setIsWaitingForOpponent(true);
     setIsTimerActive(false);
     
     const newAnswer = {
@@ -188,9 +189,12 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     
     setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
     
-    // Update score immediately for correct answers
+    // Update score: velocidade + precisão
+    const timeBonus = Math.max(0, 30 - (30 - timeLeft)) * 2; // Bonus por velocidade
+    const scoreIncrement = newAnswer.correct ? (10 + timeBonus) : 0;
+    
     if (newAnswer.correct) {
-      setMyScore(prev => prev + 10); // 10 points per correct answer
+      setMyScore(prev => prev + scoreIncrement);
     }
     
     try {
@@ -204,13 +208,12 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
         .update({
           [playerColumn]: updatedAnswers,
           [questionColumn]: Math.min(currentQuestion + 1, duel.questions.length),
-          [scoreColumn]: newAnswer.correct ? myScore + 10 : myScore
+          [scoreColumn]: newAnswer.correct ? myScore + scoreIncrement : myScore
         })
         .eq('id', duel.id);
       
-      // Auto advance to next question after showing result
+      // Avançar imediatamente - sistema simultâneo
       setTimeout(() => {
-        setIsWaitingForOpponent(false);
         if (currentQuestion < duel.questions.length) {
           setCurrentQuestion(prev => prev + 1);
           setSelectedAnswer(null);
@@ -220,7 +223,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
           setIsFinished(true);
           setShowResult(true);
         }
-      }, 2500);
+      }, 1500); // Reduzido para 1.5s
       
     } catch (error) {
       console.error('Error submitting answer:', error);
@@ -229,7 +232,6 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
         description: "Tente novamente",
         variant: "destructive"
       });
-      setIsWaitingForOpponent(false);
     }
   };
 
@@ -324,7 +326,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
         playerNickname={currentProfile?.nickname || 'Você'}
         opponentNickname={(currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.nickname || 'Oponente'}
         timeLeft={30}
-        isWaitingForOpponent={isWaitingForOpponent}
+        isWaitingForOpponent={false}
       />
     );
   }

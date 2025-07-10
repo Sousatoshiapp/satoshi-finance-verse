@@ -2,7 +2,8 @@ import { useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useQuizAudio } from "./use-quiz-audio";
+import { useAdvancedQuizAudio } from "./use-advanced-quiz-audio";
+import { useLivesSystem } from "./use-lives-system";
 
 interface QuizGamificationState {
   streak: number;
@@ -20,7 +21,8 @@ interface QuizGamificationState {
 export function useQuizGamification() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { playCorrectSound, playWrongSound, playStreakSound } = useQuizAudio();
+  const { playCorrectSound, playWrongSound, playStreakSound, playCashRegisterSound } = useAdvancedQuizAudio();
+  const { hasLives, useLife } = useLivesSystem();
   
   const [state, setState] = useState<QuizGamificationState>({
     streak: 0,
@@ -39,53 +41,41 @@ export function useQuizGamification() {
     if (!user) return;
 
     const newStreak = state.streak + 1;
-    const baseReward = 1;
-    let multiplier = state.currentMultiplier;
-    let reward = baseReward * multiplier;
+    let newMultiplier = state.currentMultiplier;
     
-    // Streak bonus at 7 correct answers - dobra os BTZ para TODAS as 7 respostas
-    if (newStreak === 7) {
-      const totalDoubleReward = state.totalBTZ; // Dobra todos os BTZ acumulados
-      reward = baseReward + totalDoubleReward; // BTZ normal + bonus duplo
+    // Sistema de multiplicador progressivo: 1→2→4→8→16...
+    // A cada 7 corretas consecutivas, dobra o multiplicador
+    if (newStreak % 7 === 0) {
+      newMultiplier = newMultiplier * 2;
       
       setState(prev => ({ 
         ...prev, 
         streak: newStreak, 
-        totalBTZ: prev.totalBTZ + reward,
-        currentMultiplier: 2,
-        showStreakAnimation: true 
+        totalBTZ: prev.totalBTZ + newMultiplier,
+        currentMultiplier: newMultiplier,
+        showStreakAnimation: true,
+        showBeetzAnimation: true
       }));
       
       // Play streak achievement sound
       playStreakSound(newStreak);
+      playCashRegisterSound();
       
-      // Update database with streak achievement
-      try {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('points')
-          .eq('user_id', user.id)
-          .single();
-          
-        if (profile) {
-          await supabase.from('profiles').update({
-            points: profile.points + reward
-          }).eq('user_id', user.id);
-        }
-      } catch (error) {
-        console.error('Error updating points:', error);
-      }
+      toast({
+        title: `🔥 Streak de ${newStreak}!`,
+        description: `Multiplicador BTZ: ${newMultiplier}x`
+      });
+    } else {
+      // Regular correct answer com multiplicador atual
+      setState(prev => ({ 
+        ...prev, 
+        streak: newStreak, 
+        totalBTZ: prev.totalBTZ + newMultiplier,
+        showBeetzAnimation: true 
+      }));
       
-      return;
+      playCashRegisterSound();
     }
-    
-    // Regular correct answer - apenas +1 BTZ
-    setState(prev => ({ 
-      ...prev, 
-      streak: newStreak, 
-      totalBTZ: prev.totalBTZ + reward,
-      showBeetzAnimation: true 
-    }));
 
     // Play correct answer sound with intensity based on streak
     const intensity = Math.min(newStreak, 10);
@@ -101,18 +91,28 @@ export function useQuizGamification() {
         
       if (profile) {
         await supabase.from('profiles').update({
-          points: profile.points + reward
+          points: profile.points + newMultiplier
         }).eq('user_id', user.id);
       }
     } catch (error) {
       console.error('Error updating points:', error);
     }
     
-  }, [state, user, playCorrectSound, playStreakSound]);
+  }, [state, user, playCorrectSound, playStreakSound, playCashRegisterSound, toast]);
 
-  const handleWrongAnswer = useCallback((question?: string, correctAnswer?: string, explanation?: string) => {
-    // Show video explanation for wrong answers
-    const videoUrl = "https://i.imgur.com/9wSK0Dy.mp4"; // URL do vídeo explicativo
+  const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
+    // Verificar se o usuário tem vidas para manter o streak
+    if (state.streak > 0 && hasLives()) {
+      // Oferecer usar vida para manter streak
+      return { 
+        canUseLife: true, 
+        currentStreak: state.streak,
+        currentMultiplier: state.currentMultiplier 
+      };
+    }
+
+    // Sem vidas ou streak zerado - resetar multiplicador
+    const videoUrl = "https://i.imgur.com/9wSK0Dy.mp4";
     
     setState(prev => ({ 
       ...prev, 
@@ -130,9 +130,23 @@ export function useQuizGamification() {
 
     // Vibration for wrong answer
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {
-      navigator.vibrate([200, 100, 200]); // Vibration pattern for wrong answer
+      navigator.vibrate([200, 100, 200]);
     }
-  }, [playWrongSound]);
+
+    return { canUseLife: false };
+  }, [playWrongSound, state.streak, state.currentMultiplier, hasLives]);
+
+  const handleUseLife = useCallback(async () => {
+    const success = await useLife();
+    if (success) {
+      toast({
+        title: "💖 Streak salvo!",
+        description: `Você manteve sua sequência de ${state.streak} e multiplicador ${state.currentMultiplier}x`
+      });
+      return true;
+    }
+    return false;
+  }, [useLife, state.streak, state.currentMultiplier, toast]);
 
   const hideBeetzAnimation = useCallback(() => {
     setState(prev => ({ ...prev, showBeetzAnimation: false }));
@@ -204,6 +218,7 @@ export function useQuizGamification() {
     ...state,
     handleCorrectAnswer,
     handleWrongAnswer,
+    handleUseLife,
     hideBeetzAnimation,
     hideStreakAnimation,
     hideVideoExplanation,

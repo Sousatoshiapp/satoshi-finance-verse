@@ -2189,6 +2189,39 @@ export type Database = {
         }
         Relationships: []
       }
+      life_packages: {
+        Row: {
+          created_at: string
+          discount_percentage: number | null
+          id: string
+          is_active: boolean | null
+          lives_count: number
+          name: string
+          price_cents: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          lives_count: number
+          name: string
+          price_cents: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          discount_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          lives_count?: number
+          name?: string
+          price_cents?: number
+          stripe_price_id?: string | null
+        }
+        Relationships: []
+      }
       loot_boxes: {
         Row: {
           animation_url: string | null
@@ -4811,6 +4844,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "fk_user_likes_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_lives: {
+        Row: {
+          created_at: string
+          id: string
+          last_life_recovery: string | null
+          lives_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_life_recovery?: string | null
+          lives_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_life_recovery?: string | null
+          lives_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_lives_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

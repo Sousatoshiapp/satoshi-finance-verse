@@ -4,13 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
-import { BTZCounter } from "./btz-counter";
+import { cn } from "@/lib/utils";
+import { useUnifiedSRS } from "@/hooks/use-unified-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
+import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
+import { BTZCounter } from "./btz-counter";
+import { BeetzAnimation } from "./beetz-animation";
+import { LifePurchaseBanner } from "./life-purchase-banner";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useUnifiedSRS } from "@/hooks/use-unified-srs";
-import { BeetzAnimation } from "./beetz-animation";
 import confetti from "canvas-confetti";
 
 interface QuizQuestion {
@@ -36,38 +39,100 @@ interface QuizEngineProps {
 
 // Agora usa o hook unificado
 
-export function QuizEngine({ 
-  mode, 
-  topicId, 
-  opponentId, 
-  tournamentId, 
-  missionId, 
+export function QuizEngine({
+  mode = 'solo',
+  questionsCount = 7,
+  opponentId,
+  tournamentId,
+  missionId,
   districtId,
-  onComplete,
-  questionsCount = 7
+  onComplete
 }: QuizEngineProps) {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const srs = useUnifiedSRS();
-  const gamification = useQuizGamification();
-
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [answeredQuestions, setAnsweredQuestions] = useState<string[]>([]);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [showLifeBanner, setShowLifeBanner] = useState(false);
+  const [pendingWrongAnswer, setPendingWrongAnswer] = useState<{
+    question: string;
+    correctAnswer: string;
+    explanation?: string;
+  } | null>(null);
+  const [answeredQuestions, setAnsweredQuestions] = useState<Array<{
+    questionId: string;
+    selectedAnswer: string;
+    isCorrect: boolean;
+    timeSpent: number;
+  }>>([]);
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  const {
+    streak,
+    totalBTZ,
+    currentMultiplier,
+    showBeetzAnimation,
+    showStreakAnimation,
+    showVideoExplanation,
+    currentVideoUrl,
+    currentQuestion: currentQuestionText,
+    currentCorrectAnswer,
+    currentExplanation,
+    handleCorrectAnswer,
+    handleWrongAnswer,
+    handleUseLife,
+    hideBeetzAnimation,
+    hideStreakAnimation,
+    hideVideoExplanation,
+    resetGamification,
+    getQuizCompletion
+  } = useQuizGamification();
+
+  const { getDueQuestions, submitAnswer } = useUnifiedSRS();
+  const { playCountdownSound } = useAdvancedQuizAudio();
+
+  // Timer effect
+  useEffect(() => {
+    if (timeLeft > 0 && !showAnswer && !showResults && !loading) {
+      const timer = setTimeout(() => {
+        setTimeLeft(prev => {
+          const newTime = prev - 1;
+          
+          // Play countdown sound for last 5 seconds
+          if (newTime <= 5 && newTime > 0) {
+            playCountdownSound(newTime);
+          }
+          
+          // Auto submit when time runs out
+          if (newTime === 0) {
+            if (selectedAnswer) {
+              handleSubmit();
+            } else {
+              // Auto-select wrong answer if no selection
+              setSelectedAnswer('timeout');
+              setTimeout(handleSubmit, 100);
+            }
+          }
+          
+          return newTime;
+        });
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [timeLeft, showAnswer, showResults, loading, selectedAnswer, playCountdownSound]);
 
   useEffect(() => {
-    if (user) {
-      fetchUserProfile();
-      fetchQuestions();
-    }
-  }, [user]);
+    fetchUserProfile();
+    fetchQuestions();
+  }, [mode, questionsCount]);
 
   const fetchUserProfile = async () => {
     if (!user) return;
@@ -82,37 +147,35 @@ export function QuizEngine({
   };
 
   const fetchQuestions = async () => {
-    setLoading(true);
     try {
-      let difficulty = 'easy';
+      setLoading(true);
       
-      // Determinar dificuldade baseado no modo e perfil do usuário
-      if (userProfile) {
-        if (userProfile.level >= 10) difficulty = 'medium';
-        if (userProfile.level >= 20) difficulty = 'hard';
-      }
+      let difficulty = 'easy';
+      if (userProfile?.level >= 10) difficulty = 'medium';
+      if (userProfile?.level >= 20) difficulty = 'hard';
 
-      const fetchedQuestions = await srs.getDueQuestions(
-        difficulty, 
-        questionsCount, 
-        answeredQuestions
+      const fetchedQuestions = await getDueQuestions(
+        difficulty,
+        questionsCount,
+        answeredQuestions.map(q => q.questionId)
       );
       
-      if (fetchedQuestions.length > 0) {
-        setQuestions(fetchedQuestions);
-      } else {
+      if (fetchedQuestions.length === 0) {
         toast({
           title: "Sem questões disponíveis",
-          description: "Não encontramos questões para este modo. Tente novamente mais tarde.",
-          variant: "destructive",
+          description: "Não encontramos questões para este modo.",
+          variant: "destructive"
         });
+        return;
       }
+      
+      setQuestions(fetchedQuestions);
     } catch (error) {
       console.error('Error fetching questions:', error);
       toast({
         title: "Erro ao carregar questões",
-        description: "Houve um problema ao carregar as questões. Tente novamente.",
-        variant: "destructive",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
@@ -128,75 +191,135 @@ export function QuizEngine({
   };
 
   const handleOptionSelect = (option: string) => {
-    if (selectedAnswer || showAnswer) return;
+    if (showAnswer) return;
     setSelectedAnswer(option);
   };
 
   const handleSubmit = async () => {
-    if (!selectedAnswer) return;
-    
-    const currentQuestion = questions[currentQuestionIndex];
-    const isCorrect = selectedAnswer === currentQuestion.correct_answer;
-    
+    if (!selectedAnswer || showAnswer) return;
+
+    const question = questions[currentIndex];
+    if (!question) return;
+
     setShowAnswer(true);
+
+    const isCorrect = selectedAnswer === question.correct_answer;
     
-    // Atualizar SRS
-    await srs.submitAnswer(currentQuestion.id, isCorrect, 10); // tempo fixo por agora
-    
+    // Update score
     if (isCorrect) {
-      setScore(score + 1);
-      await gamification.handleCorrectAnswer();
-      setTimeout(() => fireConfetti(), 500);
+      setScore(prev => prev + 1);
+      await handleCorrectAnswer();
     } else {
-      await gamification.handleWrongAnswer(
-        currentQuestion.question,
-        currentQuestion.correct_answer,
-        currentQuestion.explanation
+      const wrongResult = await handleWrongAnswer(
+        question.question,
+        question.correct_answer,
+        question.explanation
       );
+
+      // Se pode usar vida, mostrar opção
+      if (wrongResult?.canUseLife) {
+        setPendingWrongAnswer({
+          question: question.question,
+          correctAnswer: question.correct_answer,
+          explanation: question.explanation
+        });
+        setShowLifeBanner(true);
+        return; // Não avança ainda
+      }
     }
 
-    // Adicionar questão respondida à lista
-    setAnsweredQuestions(prev => [...prev, currentQuestion.id]);
+    const answeredQuestion = {
+      questionId: question.id,
+      selectedAnswer,
+      isCorrect,
+      timeSpent: 30 - timeLeft
+    };
 
+    setAnsweredQuestions(prev => [...prev, answeredQuestion]);
+
+    // Submit to SRS system
+    await submitAnswer(question.id, isCorrect, 30 - timeLeft);
+
+    // Auto-advance after 3 seconds
     setTimeout(() => {
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      if (currentIndex < questions.length - 1) {
+        setCurrentIndex(prev => prev + 1);
         setSelectedAnswer(null);
         setShowAnswer(false);
+        setTimeLeft(30);
       } else {
         handleQuizComplete();
       }
-    }, 2000);
+    }, 3000);
   };
 
-  const handleQuizComplete = () => {
-    const results = {
-      score,
-      totalQuestions: questions.length,
-      percentage: Math.round((score / questions.length) * 100),
-      mode,
-      gamificationState: {
-        streak: gamification.streak,
-        totalBTZ: gamification.totalBTZ,
-        currentMultiplier: gamification.currentMultiplier
+  const handleLifeDecision = async (useLife: boolean) => {
+    setShowLifeBanner(false);
+    
+    if (useLife && pendingWrongAnswer) {
+      const success = await handleUseLife();
+      if (success) {
+        // Continuar como se fosse correto
+        const answeredQuestion = {
+          questionId: questions[currentIndex].id,
+          selectedAnswer: selectedAnswer!,
+          isCorrect: true, // Tratado como correto devido à vida
+          timeSpent: 30 - timeLeft
+        };
+        setAnsweredQuestions(prev => [...prev, answeredQuestion]);
+        await submitAnswer(questions[currentIndex].id, true, 30 - timeLeft);
       }
-    };
-
-    if (onComplete) {
-      onComplete(results);
+    } else if (pendingWrongAnswer) {
+      // Processar como erro normal
+      const answeredQuestion = {
+        questionId: questions[currentIndex].id,
+        selectedAnswer: selectedAnswer!,
+        isCorrect: false,
+        timeSpent: 30 - timeLeft
+      };
+      setAnsweredQuestions(prev => [...prev, answeredQuestion]);
+      await submitAnswer(questions[currentIndex].id, false, 30 - timeLeft);
     }
 
+    setPendingWrongAnswer(null);
+    
+    // Continuar para próxima pergunta
+    setTimeout(() => {
+      if (currentIndex < questions.length - 1) {
+        setCurrentIndex(prev => prev + 1);
+        setSelectedAnswer(null);
+        setShowAnswer(false);
+        setTimeLeft(30);
+      } else {
+        handleQuizComplete();
+      }
+    }, 1500);
+  };
+
+  const handleQuizComplete = async () => {
+    const results = await getQuizCompletion(score, questions.length);
     setShowResults(true);
+    
+    if (onComplete) {
+      onComplete({
+        score,
+        totalQuestions: questions.length,
+        percentage: Math.round((score / questions.length) * 100),
+        mode,
+        ...results
+      });
+    }
   };
 
   const resetQuiz = () => {
-    setCurrentQuestionIndex(0);
+    setCurrentIndex(0);
     setScore(0);
     setShowResults(false);
     setSelectedAnswer(null);
     setShowAnswer(false);
+    setTimeLeft(30);
     setAnsweredQuestions([]);
-    gamification.resetGamification();
+    resetGamification();
     fetchQuestions();
   };
 
@@ -271,7 +394,7 @@ export function QuizEngine({
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
         <Card className="w-full max-w-md p-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Sem questões disponíveis</h1>
           <p className="text-muted-foreground mb-6">
@@ -285,8 +408,8 @@ export function QuizEngine({
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+  const currentQuestion = questions[currentIndex];
+  const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
@@ -317,15 +440,18 @@ export function QuizEngine({
       {/* Main Quiz Content */}
       <div className="container mx-auto px-4 py-6 pb-24">
         <div className="max-w-2xl mx-auto">
-          {/* Progress Bar */}
+          {/* Header com informações e timer */}
           <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">
-                Questão {currentQuestionIndex + 1} de {questions.length}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {Math.round(progress)}%
-              </span>
+            <div className="text-center mb-6">
+              <div className="text-2xl font-bold text-primary mb-2">
+                Pergunta {currentIndex + 1} de {questions.length}
+              </div>
+              <div className="text-lg text-muted-foreground mb-2">
+                {getModeTitle()}
+              </div>
+              <div className={`text-4xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-primary'}`}>
+                ⏱️ {timeLeft}s
+              </div>
             </div>
             <ProgressBar value={progress} className="h-2" />
           </div>
@@ -345,19 +471,23 @@ export function QuizEngine({
                   const shouldShowCorrect = showAnswer && isCorrect;
                   
                   return (
-                    <button
+                    <Button
                       key={index}
+                      variant="outline"
                       onClick={() => handleOptionSelect(option)}
                       disabled={showAnswer}
-                      className={`w-full p-4 text-left rounded-lg border transition-all duration-200 ${
-                        isSelected && !showAnswer
-                          ? 'border-primary bg-primary/10'
-                          : shouldShowCorrect
-                          ? 'border-green-500 bg-green-500/10'
-                          : isWrong
-                          ? 'border-red-500 bg-red-500/10'
-                          : 'border-border hover:border-primary/50 hover:bg-[hsl(85,100%,70%)]/20'
-                      }`}
+                      className={cn(
+                        "w-full p-4 text-left transition-all duration-200",
+                        selectedAnswer === option
+                          ? "bg-primary text-primary-foreground border-primary scale-105"
+                          : "bg-card border-border hover:scale-102",
+                        !selectedAnswer && !showAnswer ? "hover:bg-[#adff2f] hover:text-black" : "",
+                        showAnswer && option === currentQuestion.correct_answer
+                          ? "bg-green-500 text-white border-green-500 scale-105"
+                          : showAnswer && selectedAnswer === option && option !== currentQuestion.correct_answer
+                          ? "bg-red-500 text-white border-red-500 scale-105"
+                          : ""
+                      )}
                     >
                       <div className="flex items-center justify-between">
                         <span>{option}</span>
@@ -367,7 +497,7 @@ export function QuizEngine({
                           </span>
                         )}
                       </div>
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
@@ -399,41 +529,49 @@ export function QuizEngine({
       </div>
 
       {/* Gamification Overlays */}
-      {gamification.showBeetzAnimation && (
-        <BeetzAnimation
-          isVisible={gamification.showBeetzAnimation}
-          amount={gamification.totalBTZ}
-          onComplete={gamification.hideBeetzAnimation}
-        />
-      )}
+      <BeetzAnimation
+        isVisible={showBeetzAnimation}
+        amount={currentMultiplier}
+        onComplete={hideBeetzAnimation}
+      />
 
-      {gamification.showStreakAnimation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          <div className="animate-pulse text-4xl">🔥 Streak de {gamification.streak}! 🔥</div>
-        </div>
-      )}
-
-      {gamification.showVideoExplanation && (
+      {showVideoExplanation && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
           <Card className="w-full max-w-lg">
             <CardContent className="p-6">
               <h3 className="font-bold mb-2">💡 Explicação</h3>
-              <p className="mb-4">{gamification.currentQuestion}</p>
+              <p className="mb-4">{currentQuestionText}</p>
               <div className="mb-4">
-                <strong>Resposta correta:</strong> {gamification.currentCorrectAnswer}
+                <strong>Resposta correta:</strong> {currentCorrectAnswer}
               </div>
-              {gamification.currentExplanation && (
+              {currentExplanation && (
                 <div className="mb-4">
-                  <strong>Por quê:</strong> {gamification.currentExplanation}
+                  <strong>Por quê:</strong> {currentExplanation}
                 </div>
               )}
-              <Button onClick={gamification.hideVideoExplanation} className="w-full">
+              <Button onClick={hideVideoExplanation} className="w-full">
                 Continuar
               </Button>
             </CardContent>
           </Card>
         </div>
       )}
+
+      {showStreakAnimation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="animate-pulse text-4xl">🔥 Streak de {streak}! 🔥</div>
+        </div>
+      )}
+
+      <LifePurchaseBanner
+        isVisible={showLifeBanner}
+        onClose={() => handleLifeDecision(false)}
+        onPurchase={() => handleLifeDecision(true)}
+        onViewStore={() => {
+          setShowLifeBanner(false);
+          // Redirect to store - implementar navegação
+        }}
+      />
     </div>
   );
 }

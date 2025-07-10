@@ -12,12 +12,6 @@ export function BeetzAnimation({ isVisible, amount, onComplete }: BeetzAnimation
 
   useEffect(() => {
     if (isVisible && !audioPlayed) {
-      // Play sound effect
-      const audio = new Audio("/audio/cash-register.mp3");
-      audio.volume = 0.5;
-      audio.play().catch(() => {
-        // Fallback if audio fails
-      });
       setAudioPlayed(true);
       
       // Vibrate if on mobile
