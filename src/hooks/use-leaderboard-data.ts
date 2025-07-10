@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export interface LeaderboardUser {
   id: string;
@@ -108,11 +109,49 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
 };
 
 export const useLeaderboardData = () => {
+  const queryClient = useQueryClient();
+
+  // Set up realtime subscription for leaderboard updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('leaderboard-realtime-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public', 
+          table: 'profiles',
+        },
+        (payload) => {
+          // Only invalidate if points changed to reduce unnecessary updates
+          if (payload.old.points !== payload.new.points) {
+            queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'weekly_leaderboards',
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
   return useQuery({
     queryKey: ['leaderboard-data'],
     queryFn: fetchLeaderboardDataOptimized,
-    staleTime: 5 * 60 * 1000, // 5 minutes (increased)
-    gcTime: 15 * 60 * 1000, // 15 minutes (increased)
+    staleTime: 2 * 60 * 1000, // 2 minutes for fresh leaderboard data
+    gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,
     retry: 2,
     retryDelay: 1000

@@ -20,6 +20,7 @@ import { UserAffiliation } from "@/components/user-affiliation";
 import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
+import { useRealtime } from "@/contexts/RealtimeContext";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -42,7 +43,7 @@ export default function Dashboard() {
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
-  const { points: realtimePoints } = useRealtimePoints();
+  const { points: realtimePoints, isOnline } = useRealtime();
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -166,7 +167,7 @@ export default function Dashboard() {
       completedLessons: dashboardData.profile?.completed_lessons || 0,
       points: realtimePoints || dashboardData.profile?.points || 0
     };
-  }, [dashboardData]);
+  }, [dashboardData, realtimePoints]);
 
   // Memoize user data extraction
   const userNickname = useMemo(() => dashboardData?.profile?.nickname || 'Estudante', [dashboardData?.profile?.nickname]);
@@ -193,7 +194,23 @@ export default function Dashboard() {
           {/* Simplified Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">{greeting.icon} {greeting.text}</p>
+              <p className="text-sm text-muted-foreground mb-1">
+                {greeting.icon} {greeting.text}
+                {/* Realtime connection indicator */}
+                <span className="ml-2">
+                  {isOnline ? (
+                    <span className="inline-flex items-center gap-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs text-green-500">Online</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <span className="text-xs text-red-500">Offline</span>
+                    </span>
+                  )}
+                </span>
+              </p>
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-2">

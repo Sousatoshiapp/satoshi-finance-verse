@@ -19,11 +19,13 @@ import SubscriptionPlans from "@/pages/SubscriptionPlans";
 
 // Lazy imports for less critical pages
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
+import { RealtimeProvider } from "@/contexts/RealtimeContext";
 
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-background font-sans antialiased">
+      <RealtimeProvider>
+        <div className="min-h-screen bg-background font-sans antialiased">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<LazyRoutes.Welcome />} />
@@ -472,7 +474,8 @@ function App() {
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
           </Routes>
         </Suspense>
-      </div>
+        </div>
+      </RealtimeProvider>
     </AuthProvider>
   );
 }

@@ -32,8 +32,8 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
     fetchBTZ();
 
     // Realtime subscription para atualizações de BTZ
-    const subscription = supabase
-      .channel('btz-updates')
+    const channel = supabase
+      .channel('btz-realtime-updates')
       .on(
         'postgres_changes',
         {
@@ -53,7 +53,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       .subscribe();
 
     return () => {
-      subscription.unsubscribe();
+      supabase.removeChannel(channel);
     };
   }, [user]); // Removido currentBTZ da dependência para evitar loop
 
