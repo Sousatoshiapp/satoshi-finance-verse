@@ -19,6 +19,7 @@ import { QuickActionsOptimized } from "@/components/quick-actions-optimized";
 import { UserAffiliation } from "@/components/user-affiliation";
 import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { useRealtimePoints } from "@/hooks/use-realtime-points";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -41,6 +42,7 @@ export default function Dashboard() {
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
+  const { points: realtimePoints } = useRealtimePoints();
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -50,15 +52,22 @@ export default function Dashboard() {
   const handleNavigateToSubscription = useCallback(() => navigate('/subscription-plans'), [navigate]);
 
   useEffect(() => {
-    // Preload critical resources in background
+    // Preload critical resources in background - with throttling
     const loadOptimizations = async () => {
-      try {
-        const { preloadCriticalResources, optimizeMemoryUsage } = await import('@/utils/bundle-optimizer');
-        preloadCriticalResources();
-        optimizeMemoryUsage();
-      } catch (error) {
-        // Silent fail for non-critical optimization
-        console.debug('Bundle optimization failed:', error);
+      // Only run optimizations every 10 seconds to prevent spam
+      const lastOptimization = localStorage.getItem('last-optimization');
+      const now = Date.now();
+      
+      if (!lastOptimization || (now - parseInt(lastOptimization)) > 10000) {
+        try {
+          const { preloadCriticalResources, optimizeMemoryUsage } = await import('@/utils/bundle-optimizer');
+          preloadCriticalResources();
+          optimizeMemoryUsage();
+          localStorage.setItem('last-optimization', now.toString());
+        } catch (error) {
+          // Silent fail for non-critical optimization
+          console.debug('Bundle optimization failed:', error);
+        }
       }
     };
     
@@ -155,7 +164,7 @@ export default function Dashboard() {
       nextLevelXP: dashboardData.nextLevelXP || 100,
       streak: dashboardData.profile?.streak || 0,
       completedLessons: dashboardData.profile?.completed_lessons || 0,
-      points: dashboardData.profile?.points || 0
+      points: realtimePoints || dashboardData.profile?.points || 0
     };
   }, [dashboardData]);
 

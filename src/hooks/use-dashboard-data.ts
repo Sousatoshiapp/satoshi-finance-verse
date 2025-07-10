@@ -1,5 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface DashboardData {
   profile: any;
@@ -93,14 +95,41 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
 
 export const useDashboardData = () => {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  
+  // Set up realtime subscription for profile updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('dashboard-realtime-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          // Invalidate dashboard data when profile is updated
+          queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
   
   return useQuery({
     queryKey: ['dashboard-data'],
     queryFn: fetchDashboardDataOptimized,
-    staleTime: 3 * 60 * 1000, // 3 minutes (increased from 2)
-    gcTime: 10 * 60 * 1000, // 10 minutes (increased from 5)
+    staleTime: 5 * 60 * 1000, // 5 minutes (increased for better performance)
+    gcTime: 15 * 60 * 1000, // 15 minutes
     refetchOnWindowFocus: false,
-    retry: 2, // Increased from 1
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Exponential backoff
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 };

@@ -53,10 +53,12 @@ export const optimizeMemoryUsage = () => {
   if (memory?.usedJSHeapSize) {
     const memoryUsage = memory.usedJSHeapSize / 1048576; // MB
     
-    if (memoryUsage > 100) { // Over 100MB
+    // Only warn if memory usage is extremely high to reduce console spam
+    if (memoryUsage > 150) { // Increased threshold from 100MB to 150MB
       console.warn('High memory usage detected:', memoryUsage, 'MB');
-      // Trigger garbage collection hints
-      if ('gc' in window) {
+      
+      // Try to garbage collect only if really necessary
+      if (memoryUsage > 200 && 'gc' in window) {
         (window as any).gc();
       }
     }
