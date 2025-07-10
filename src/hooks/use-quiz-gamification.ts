@@ -16,6 +16,7 @@ interface QuizGamificationState {
   currentQuestion: string;
   currentCorrectAnswer: string;
   currentExplanation?: string;
+  hasShownLifeBanner: boolean;
 }
 
 export function useQuizGamification() {
@@ -34,7 +35,8 @@ export function useQuizGamification() {
     currentVideoUrl: null,
     currentQuestion: "",
     currentCorrectAnswer: "",
-    currentExplanation: undefined
+    currentExplanation: undefined,
+    hasShownLifeBanner: false
   });
 
   const handleCorrectAnswer = useCallback(async () => {
@@ -101,8 +103,11 @@ export function useQuizGamification() {
   }, [state, user, playCorrectSound, playStreakSound, playCashRegisterSound, toast]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
-    // Só pode usar vida se tem streak E tem vidas disponíveis
-    if (state.streak > 0 && hasLives()) {
+    // Só pode usar vida se tem streak E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
+    if (state.streak > 0 && hasLives() && !state.hasShownLifeBanner) {
+      // Marcar que já mostrou o banner nesta sessão
+      setState(prev => ({ ...prev, hasShownLifeBanner: true }));
+      
       // Oferecer usar vida para manter streak
       return { 
         canUseLife: true, 
@@ -134,7 +139,7 @@ export function useQuizGamification() {
     }
 
     return { canUseLife: false };
-  }, [playWrongSound, state.streak, state.currentMultiplier, hasLives]);
+  }, [playWrongSound, state.streak, state.currentMultiplier, hasLives, state.hasShownLifeBanner]);
 
   const handleUseLife = useCallback(async () => {
     const success = await useLife();
@@ -178,7 +183,8 @@ export function useQuizGamification() {
       currentVideoUrl: null,
       currentQuestion: "",
       currentCorrectAnswer: "",
-      currentExplanation: undefined
+      currentExplanation: undefined,
+      hasShownLifeBanner: false
     });
   }, []);
 

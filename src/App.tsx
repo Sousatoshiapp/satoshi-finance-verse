@@ -109,6 +109,13 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/marketplace" element={
+              <ProtectedRoute>
+                <LazyRoutes.Marketplace />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/marketplace/lives" element={
               <ProtectedRoute>
                 <LazyRoutes.LivesMarketplace />

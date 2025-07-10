@@ -39,18 +39,18 @@ export default function LivesMarketplace() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate(-1)}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground self-start sm:self-center"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar
             </Button>
-            <h1 className="text-xl font-bold">Loja de Vidas</h1>
-            <div className="flex items-center gap-2">
+            <h1 className="text-lg sm:text-xl font-bold">Loja de Vidas</h1>
+            <div className="flex items-center gap-2 self-end sm:self-center">
               {userLives && (
                 <>
                   <div className="flex items-center gap-1">
@@ -78,24 +78,24 @@ export default function LivesMarketplace() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 pb-20">
         {/* Informações sobre vidas */}
-        <Card className="mb-8 bg-gradient-to-r from-red-500/10 to-pink-500/10 border-red-500/20">
-          <CardContent className="p-6">
-            <div className="text-center space-y-4">
+        <Card className="mb-6 bg-gradient-to-r from-red-500/10 to-pink-500/10 border-red-500/20">
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-center space-y-3 sm:space-y-4">
               <div className="flex justify-center">
-                <Heart className="h-16 w-16 text-red-500" />
+                <Heart className="h-12 w-12 sm:h-16 sm:w-16 text-red-500" />
               </div>
-              <h2 className="text-2xl font-bold">Sistema de Vidas</h2>
-              <p className="text-muted-foreground max-w-2xl">
+              <h2 className="text-xl sm:text-2xl font-bold">Sistema de Vidas</h2>
+              <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
                 As vidas permitem continuar sua sequência (streak) mesmo quando errar uma pergunta. 
                 Você pode ter até 3 vidas, que se regeneram automaticamente a cada 8 horas.
               </p>
               
               {timeToNext && !timeToNext.ready && userLives && userLives.lives_count < 3 && (
-                <div className="flex items-center justify-center gap-2 text-sm bg-muted rounded-lg p-3">
+                <div className="flex items-center justify-center gap-2 text-sm bg-muted rounded-lg p-3 mx-auto max-w-xs">
                   <Clock className="h-4 w-4" />
-                  <span>
+                  <span className="text-xs sm:text-sm">
                     Próxima vida em: {timeToNext.hours > 0 && `${timeToNext.hours}h `}
                     {timeToNext.minutes}m
                   </span>
@@ -106,7 +106,7 @@ export default function LivesMarketplace() {
         </Card>
 
         {/* Pacotes de vidas */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {lifePackages.map((pkg, index) => (
             <motion.div
               key={pkg.id}
@@ -175,13 +175,13 @@ export default function LivesMarketplace() {
         </div>
 
         {/* Dicas */}
-        <Card className="mt-8 bg-blue-500/10 border-blue-500/20">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-3">
-              <Zap className="h-5 w-5 text-blue-500 mt-0.5" />
-              <div>
-                <h3 className="font-semibold mb-2">💡 Dicas importantes:</h3>
-                <ul className="text-sm text-muted-foreground space-y-1">
+        <Card className="mt-6 bg-blue-500/10 border-blue-500/20">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start gap-3">
+              <Zap className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
+              <div className="w-full">
+                <h3 className="font-semibold mb-2 text-sm sm:text-base">💡 Dicas importantes:</h3>
+                <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
                   <li>• Vidas só podem ser usadas quando você já tem uma sequência (streak)</li>
                   <li>• Use vidas estrategicamente para manter multiplicadores altos</li>
                   <li>• Vidas se regeneram automaticamente - não precisa comprar sempre</li>

@@ -28,6 +28,7 @@ export const LazyRoutes = {
   SatoshiCity: lazy(() => import('@/pages/SatoshiCity')),
   Tournaments: lazy(() => import('@/pages/Tournaments')),
   Store: lazy(() => import('@/pages/Store')),
+  Marketplace: lazy(() => import('@/pages/Marketplace')),
   LivesMarketplace: lazy(() => import('@/pages/marketplace/Lives')),
   GameMode: lazy(() => import('@/pages/GameMode')),
   DistrictDetail: lazy(() => import('@/pages/DistrictDetail')),

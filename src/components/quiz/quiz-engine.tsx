@@ -452,23 +452,25 @@ export function QuizEngine({
       {/* Header com BTZ Counter */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate(getBackRoute())}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground self-start sm:self-center"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar
             </Button>
             
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+              <div className="text-xs sm:text-sm text-muted-foreground">
                 {getModeTitle()}
               </div>
-              <LivesCounter />
-              <BTZCounter />
+              <div className="flex items-center gap-2">
+                <LivesCounter />
+                <BTZCounter />
+              </div>
             </div>
           </div>
         </div>
@@ -478,15 +480,15 @@ export function QuizEngine({
       <div className="container mx-auto px-4 py-6 pb-24">
         <div className="max-w-2xl mx-auto">
           {/* Header com informações e timer */}
-          <div className="mb-6">
-            <div className="text-center mb-6">
-              <div className="text-2xl font-bold text-primary mb-2">
+          <div className="mb-4 sm:mb-6">
+            <div className="text-center mb-4 sm:mb-6">
+              <div className="text-lg sm:text-2xl font-bold text-primary mb-2">
                 Pergunta {currentIndex + 1} de {questions.length}
               </div>
-              <div className="text-lg text-muted-foreground mb-2">
+              <div className="text-sm sm:text-lg text-muted-foreground mb-2 hidden sm:block">
                 {getModeTitle()}
               </div>
-              <div className={`text-4xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-primary'}`}>
+              <div className={`text-2xl sm:text-4xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-primary'}`}>
                 ⏱️ {timeLeft}s
               </div>
             </div>
