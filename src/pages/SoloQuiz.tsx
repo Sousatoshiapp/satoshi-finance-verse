@@ -186,9 +186,7 @@ export default function SoloQuiz() {
     
     if (isCorrect) {
       setScore(score + 1);
-      // Award XP for correct answer
-      await awardXP(15, 'quiz_correct');
-      // Handle gamification for correct answer
+      // Handle gamification for correct answer (sem XP notification)
       await gamification.handleCorrectAnswer();
       // Dispara confetti quando acerta
       setTimeout(() => fireConfetti(), 500);
@@ -212,9 +210,7 @@ export default function SoloQuiz() {
         setSelectedAnswer(null);
         setShowAnswer(false);
       } else {
-        // Award completion bonus
-        const completionBonus = Math.round((score / questions.length) * 60);
-        awardXP(completionBonus, 'quiz_completion');
+        // Mostrar resultados (sem XP bonus)
         setShowResults(true);
       }
     }, 2000);

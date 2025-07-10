@@ -43,15 +43,16 @@ export function useQuizGamification() {
     let multiplier = state.currentMultiplier;
     let reward = baseReward * multiplier;
     
-    // Streak bonus at 7 correct answers
+    // Streak bonus at 7 correct answers - dobra os BTZ para TODAS as 7 respostas
     if (newStreak === 7) {
-      multiplier = 2; // Double BTZ
-      reward = baseReward * multiplier;
+      const totalDoubleReward = state.totalBTZ; // Dobra todos os BTZ acumulados
+      reward = baseReward + totalDoubleReward; // BTZ normal + bonus duplo
       
       setState(prev => ({ 
         ...prev, 
         streak: newStreak, 
-        currentMultiplier: multiplier,
+        totalBTZ: prev.totalBTZ + reward,
+        currentMultiplier: 2,
         showStreakAnimation: true 
       }));
       
@@ -78,7 +79,7 @@ export function useQuizGamification() {
       return;
     }
     
-    // Regular correct answer - only show +1 BTZ animation
+    // Regular correct answer - apenas +1 BTZ
     setState(prev => ({ 
       ...prev, 
       streak: newStreak, 

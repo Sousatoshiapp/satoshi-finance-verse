@@ -44,6 +44,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         },
         (payload) => {
           const newPoints = payload.new.points || 0;
+          console.log('BTZ Update received:', { currentBTZ, newPoints });
           if (newPoints !== currentBTZ) {
             animateToNewValue(newPoints);
           }
@@ -54,7 +55,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [user, currentBTZ]);
+  }, [user]); // Removido currentBTZ da dependência para evitar loop
 
   const animateToNewValue = (newValue: number) => {
     if (isAnimating) return;
