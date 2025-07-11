@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
-import { Clock, Shield, TrendingUp } from "lucide-react";
+import { Clock, Shield, TrendingUp, TrendingDown } from "lucide-react";
 
 interface BTZCounterProps {
   className?: string;
@@ -12,8 +12,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const { user } = useAuth();
   const [currentBTZ, setCurrentBTZ] = useState(0);
   const [displayBTZ, setDisplayBTZ] = useState(0);
+  const [previousBTZ, setPreviousBTZ] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showTrend, setShowTrend] = useState(false);
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
   // Buscar BTZ atual do usuário
@@ -50,7 +52,11 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           const newPoints = payload.new.points || 0;
           console.log('BTZ Update received:', { currentBTZ, newPoints });
           if (newPoints !== currentBTZ) {
+            setPreviousBTZ(currentBTZ);
             animateToNewValue(newPoints);
+            setShowTrend(true);
+            // Esconder trend após 3 segundos
+            setTimeout(() => setShowTrend(false), 3000);
           }
         }
       )
@@ -135,6 +141,17 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 {displayBTZ.toLocaleString()}
               </span>
               <span className="text-sm text-muted-foreground font-medium">BTZ</span>
+              
+              {/* Trend Arrow */}
+              {showTrend && currentBTZ !== previousBTZ && (
+                <div className={`transition-all duration-300 ${showTrend ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
+                  {currentBTZ > previousBTZ ? (
+                    <TrendingUp className="w-4 h-4 text-[#adff2f] animate-bounce" />
+                  ) : (
+                    <TrendingDown className="w-4 h-4 text-red-500 animate-bounce" />
+                  )}
+                </div>
+              )}
             </div>
             
             {/* Compact view */}
