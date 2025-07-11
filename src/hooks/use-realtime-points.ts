@@ -15,7 +15,9 @@ export function useRealtimePoints() {
 
   useEffect(() => {
     if (!user) {
+      console.log("❌ Sem usuário - definindo loading como false");
       setIsLoading(false);
+      setPoints(0);
       return;
     }
 
@@ -23,18 +25,35 @@ export function useRealtimePoints() {
     const fetchInitialPoints = async () => {
       try {
         console.log('🔍 Buscando pontos iniciais para user:', user.id);
-        const { data: profile } = await supabase
+        const { data: profile, error } = await supabase
           .from('profiles')
           .select('points')
           .eq('user_id', user.id)
           .single();
         
+        console.log('📋 Profile query result:', { profile, error });
+        
         if (profile) {
           console.log('📊 Pontos iniciais carregados:', profile.points);
           setPoints(profile.points || 0);
+        } else if (error) {
+          console.error('❌ Erro ao buscar profile:', error);
+          // Se não há profile, criar um
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert({ user_id: user.id, nickname: 'Usuário', points: 0 })
+            .select('points')
+            .single();
+          
+          if (newProfile) {
+            console.log('✅ Profile criado com pontos:', newProfile.points);
+            setPoints(newProfile.points || 0);
+          } else {
+            console.error('❌ Erro ao criar profile:', createError);
+          }
         }
       } catch (error) {
-        console.error('Error fetching initial points:', error);
+        console.error('❌ Error fetching initial points:', error);
       } finally {
         setIsLoading(false);
       }
@@ -64,7 +83,6 @@ export function useRealtimePoints() {
             oldPoints,
             isNumber: typeof newPoints === 'number',
             isDifferent: newPoints !== oldPoints,
-            currentStatePoints: points,
             timestamp: Date.now()
           });
           
@@ -76,23 +94,13 @@ export function useRealtimePoints() {
               timestamp: Date.now()
             });
             
-            // FORÇA a atualização dos pontos
-            console.log('🚀 Chamando setPoints com:', newPoints);
             setPoints(newPoints);
-            console.log('✅ setPoints chamado! Points devem ser:', newPoints);
+            console.log('✅ setPoints chamado! Novos points:', newPoints);
             
-            // Invalidate dashboard data to refresh all components
-            console.log('🔄 Invalidando queries...');
+            // Invalidate queries
             queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
             queryClient.invalidateQueries({ queryKey: ['user-profile'] });
             queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
-            console.log('✅ Queries invalidadas!');
-            
-            // Force re-render with timeout
-            setTimeout(() => {
-              console.log('⏱️ Timeout check - Points state:', points, 'Expected:', newPoints);
-            }, 100);
-            
           } else {
             console.log('⚠️ Pontos NÃO ATUALIZADOS:', { 
               reason: typeof newPoints !== 'number' ? 'not a number' : 'same value',
@@ -111,7 +119,7 @@ export function useRealtimePoints() {
       console.log('🔌 Desconectando realtime');
       supabase.removeChannel(channel);
     };
-  }, [user, queryClient]);
+  }, [user?.id, queryClient]);
 
   return { points, isLoading };
 }

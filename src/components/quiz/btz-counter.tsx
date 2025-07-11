@@ -59,7 +59,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         displayBTZ
       });
     }
-  }, [currentBTZ, displayBTZ]);
+  }, [currentBTZ, isLoading]);
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
