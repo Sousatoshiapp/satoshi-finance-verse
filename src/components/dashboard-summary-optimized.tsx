@@ -70,7 +70,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
   }, [userStats.completedLessons]);
 
   return (
-    <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5">
+    <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5 h-48">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />

@@ -83,7 +83,7 @@ export function CarouselDailyMissions() {
   const displayMissions = missions.slice(0, 3);
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-background to-muted/30">
+    <Card className="border-primary/20 bg-gradient-to-br from-background to-muted/30 h-36 overflow-auto">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
