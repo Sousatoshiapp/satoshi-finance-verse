@@ -1254,20 +1254,20 @@ export default function Store() {
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-                              <BeetzIcon size="lg" />
+                            {/* Estilo igual ao Dashboard BTZ Card */}
+                            <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
+                              <span className="text-black font-bold text-lg">B</span>
                             </div>
                             <div>
-                              <h3 className="font-bold text-foreground">{beetzPackage.name}</h3>
+                              <h3 className="font-bold text-foreground font-mono text-lg">
+                                {beetzAmount.toLocaleString()} BTZ
+                              </h3>
                               <p className="text-sm text-muted-foreground">{beetzPackage.description}</p>
                               <div className="flex items-center gap-2 mt-1">
                                 <Badge className={`${getRarityColor(beetzPackage.rarity)} text-xs`}>
                                   {getRarityIcon(beetzPackage.rarity)}
                                   {beetzPackage.rarity}
                                 </Badge>
-                                <span className="text-xs text-muted-foreground">
-                                  {beetzAmount} Beetz
-                                </span>
                               </div>
                             </div>
                           </div>

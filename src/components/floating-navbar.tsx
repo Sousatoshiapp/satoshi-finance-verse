@@ -32,7 +32,7 @@ export function FloatingNavbar() {
                     className={cn(
                      "flex flex-col items-center gap-0.5 p-1.5 md:p-2 rounded-full transition-all duration-200",
                      isActive 
-                       ? "bg-gray-900 text-gray-900 scale-110" 
+                       ? "bg-gray-900 text-white scale-110" 
                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                    )}
                  >
