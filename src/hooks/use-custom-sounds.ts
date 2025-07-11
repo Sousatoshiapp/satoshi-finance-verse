@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 interface CustomSounds {
@@ -45,6 +45,7 @@ const CUSTOM_SOUNDS: CustomSounds = {
 
 function useCustomSounds() {
   const location = useLocation();
+  const countdownAudioRef = useRef<HTMLAudioElement | null>(null);
   
   // Lista de rotas onde o countdown deve tocar (apenas rotas de quiz)
   const isQuizRoute = useCallback(() => {
@@ -111,9 +112,6 @@ function useCustomSounds() {
     playSound(soundKey);
   }, [playSound]);
 
-  // Instância única do áudio de countdown para evitar duplicações
-  let countdownAudioInstance: HTMLAudioElement | null = null;
-  
   const playCountdownSound = useCallback(() => {
     // Só toca o countdown se estiver em uma rota de quiz
     if (!isQuizRoute()) {
@@ -124,38 +122,38 @@ function useCustomSounds() {
     console.log('🔊 Tentando tocar som de countdown');
     
     // Se já existe uma instância tocando, não criar nova
-    if (countdownAudioInstance && !countdownAudioInstance.paused) {
+    if (countdownAudioRef.current && !countdownAudioRef.current.paused) {
       console.log('🔊 Som de countdown já está tocando, ignorando nova chamada');
       return;
     }
     
     try {
       // Parar e limpar instância anterior se existir
-      if (countdownAudioInstance) {
-        countdownAudioInstance.pause();
-        countdownAudioInstance.currentTime = 0;
+      if (countdownAudioRef.current) {
+        countdownAudioRef.current.pause();
+        countdownAudioRef.current.currentTime = 0;
       }
       
-      countdownAudioInstance = new Audio('/audio/10sec-digital-countdown-sfx-319873.mp3');
-      console.log('🔊 Arquivo de áudio criado:', countdownAudioInstance.src);
-      countdownAudioInstance.volume = 0.15;
+      countdownAudioRef.current = new Audio('/audio/10sec-digital-countdown-sfx-319873.mp3');
+      console.log('🔊 Arquivo de áudio criado:', countdownAudioRef.current.src);
+      countdownAudioRef.current.volume = 0.15;
       
       // Deixar o som tocar naturalmente até o fim
-      countdownAudioInstance.addEventListener('ended', () => {
+      countdownAudioRef.current.addEventListener('ended', () => {
         console.log('🔊 Som de countdown terminou naturalmente');
-        countdownAudioInstance = null;
+        countdownAudioRef.current = null;
       });
       
-      countdownAudioInstance.play().then(() => {
+      countdownAudioRef.current.play().then(() => {
         console.log('🔊 Som de countdown tocado com sucesso');
       }).catch((error) => {
         console.error('🔊 Erro ao tocar som de countdown:', error);
-        countdownAudioInstance = null;
+        countdownAudioRef.current = null;
       });
       
     } catch (error) {
       console.error('🔊 Erro ao criar áudio de countdown:', error);
-      countdownAudioInstance = null;
+      countdownAudioRef.current = null;
     }
   }, [isQuizRoute]);
 

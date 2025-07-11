@@ -117,7 +117,10 @@ export function QuizEngine({
   // Controle do timer via CircularTimer apenas
   const handleTimeUp = async () => {
     console.log('⏰ handleTimeUp chamado - tempo acabou');
-    if (showAnswer || !questions[currentIndex]) return;
+    if (showAnswer || !questions[currentIndex]) {
+      console.log('⏰ Retornando porque showAnswer=', showAnswer, 'ou pergunta inexistente');
+      return;
+    }
     
     const question = questions[currentIndex];
     console.log('⏰ Processando timeout para pergunta:', question.question);
@@ -136,18 +139,27 @@ export function QuizEngine({
     // Processar resposta errada
     await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
     
-    console.log('⏰ Mostrando resposta correta...');
+    console.log('⏰ Setando showAnswer=true para mostrar banner...');
     setShowAnswer(true);
     
-    // Mostrar resultado por mais tempo para ver banner claramente
+    // Verificar se realmente foi setado
     setTimeout(() => {
-      console.log('⏰ Tempo para mostrar banner acabou, avançando...');
+      console.log('⏰ Verificando estado showAnswer após 100ms:', showAnswer);
+    }, 100);
+    
+    // Mostrar resultado por tempo suficiente para ver banner
+    setTimeout(() => {
+      console.log('⏰ Tempo para mostrar banner acabou, verificando se pode avançar...');
+      console.log('⏰ showLifeBanner=', showLifeBanner, 'showAnswer=', showAnswer);
+      
       // Auto-advance apenas se não há banner de vida
       if (!showLifeBanner) {
         console.log('⏰ Chamando handleContinue após timeout');
         handleContinue();
+      } else {
+        console.log('⏰ Não avançando porque showLifeBanner=true');
       }
-    }, 4000); // Aumentado de 2s para 4s
+    }, 4000); // 4 segundos para ver o banner
   };
 
   useEffect(() => {
