@@ -65,12 +65,17 @@ export function useRealtimePoints() {
               new: newPoints, 
               difference: newPoints - oldPoints 
             });
+            
+            // FORÇA a atualização dos pontos
             setPoints(newPoints);
+            console.log('✅ Points setados para:', newPoints);
             
             // Invalidate dashboard data to refresh all components
             queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
             queryClient.invalidateQueries({ queryKey: ['user-profile'] });
             queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
+          } else {
+            console.log('⚠️ Pontos não mudaram ou são inválidos:', { newPoints, oldPoints });
           }
         }
       )

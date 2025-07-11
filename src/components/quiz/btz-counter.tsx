@@ -16,7 +16,12 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   
   const { points: currentBTZ, isLoading } = useRealtimePoints();
   console.log("💰 Points from useRealtimePoints:", { currentBTZ, isLoading });
-  
+
+  // Force a re-render when currentBTZ changes
+  useEffect(() => {
+    console.log("🔄 currentBTZ MUDOU:", currentBTZ);
+  }, [currentBTZ]);
+
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -85,21 +90,24 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
     console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ, isAnimating });
     
     if (!isLoading && currentBTZ !== undefined) {
-      if (displayBTZ === 0) {
-        // Initial load - set without animation
-        console.log('🚀 Carregamento inicial do BTZ:', currentBTZ);
-        setDisplayBTZ(currentBTZ);
-        setPreviousBTZ(currentBTZ);
-      } else if (currentBTZ !== displayBTZ && !isAnimating) {
-        // BTZ changed - animate to new value
-        console.log('💰 BTZ mudou - iniciando animação:', { from: displayBTZ, to: currentBTZ });
-        setPreviousBTZ(displayBTZ);
-        animateToNewValue(currentBTZ);
-        setShowTrend(true);
-        setTimeout(() => setShowTrend(false), 3000);
+      // CORREÇÃO: Sempre que currentBTZ mudar e for diferente do displayBTZ, animar
+      if (currentBTZ !== displayBTZ) {
+        if (displayBTZ === 0) {
+          // Initial load - set without animation
+          console.log('🚀 Carregamento inicial do BTZ:', currentBTZ);
+          setDisplayBTZ(currentBTZ);
+          setPreviousBTZ(currentBTZ);
+        } else if (!isAnimating) {
+          // BTZ changed - animate to new value
+          console.log('💰 BTZ mudou - iniciando animação:', { from: displayBTZ, to: currentBTZ });
+          setPreviousBTZ(displayBTZ);
+          animateToNewValue(currentBTZ);
+          setShowTrend(true);
+          setTimeout(() => setShowTrend(false), 3000);
+        }
       }
     }
-  }, [currentBTZ, isLoading, animateToNewValue]);
+  }, [currentBTZ, isLoading]);
 
   // Cleanup timer on unmount
   useEffect(() => {
