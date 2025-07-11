@@ -87,39 +87,18 @@ export function useAdvancedQuizAudio() {
     });
   }, [initAudioContext]);
 
-  // Som de caixa registradora para BTZ
+  // Som de BTZ usando arquivo MP3
   const playCashRegisterSound = useCallback(() => {
-    const audioContext = initAudioContext();
-    if (!audioContext) return;
-
-    // Simulate cash register sound
-    const oscillator1 = audioContext.createOscillator();
-    const oscillator2 = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator1.connect(gainNode);
-    oscillator2.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Cash register "cha-ching" sound
-    oscillator1.frequency.setValueAtTime(523, audioContext.currentTime); // C5
-    oscillator1.frequency.exponentialRampToValueAtTime(784, audioContext.currentTime + 0.1); // G5
-    
-    oscillator2.frequency.setValueAtTime(659, audioContext.currentTime + 0.1); // E5  
-    oscillator2.frequency.exponentialRampToValueAtTime(1047, audioContext.currentTime + 0.3); // C6
-    
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-    
-    oscillator1.type = 'triangle';
-    oscillator2.type = 'sine';
-    
-    oscillator1.start(audioContext.currentTime);
-    oscillator1.stop(audioContext.currentTime + 0.2);
-    
-    oscillator2.start(audioContext.currentTime + 0.1);
-    oscillator2.stop(audioContext.currentTime + 0.5);
-  }, [initAudioContext]);
+    try {
+      const audio = new Audio('/audio/btz-earn.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(error => {
+        console.warn('Erro ao reproduzir som de BTZ:', error);
+      });
+    } catch (error) {
+      console.warn('Erro ao carregar som de BTZ:', error);
+    }
+  }, []);
 
   // Som de contagem regressiva para os últimos 5 segundos
   const playCountdownSound = useCallback((secondsLeft: number) => {
