@@ -10,6 +10,7 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { SatoshiCity3D } from "@/components/satoshi-city-3d";
 import { PowerBar } from "@/components/ui/power-bar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DistrictTransition } from "@/components/district/DistrictTransition";
 import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box } from "lucide-react";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
@@ -91,6 +92,8 @@ export default function SatoshiCity() {
   const [is3DMode, setIs3DMode] = useState(false);
   const [selectedDistrictForMobile, setSelectedDistrictForMobile] = useState<District | null>(null);
   const [showMobileModal, setShowMobileModal] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [transitionData, setTransitionData] = useState({ from: '', to: '', targetId: '' });
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -230,21 +233,20 @@ export default function SatoshiCity() {
   }, [userDistricts]);
 
   const handleDistrictClick = useCallback((district: District) => {
-    if (isMobile) {
-      const userInfo = getUserDistrictInfo(district.id);
-      // No mobile: se não for residência atual, abrir modal de confirmação
-      if (!userInfo?.is_residence) {
-        setSelectedDistrictForMobile(district);
-        setShowMobileModal(true);
-      } else {
-        // Se já é residência, navegar para o distrito
-        navigate(`/satoshi-city/district/${district.id}`);
-      }
-    } else {
-      // Desktop: comportamento normal - navegar para o distrito
-      navigate(`/satoshi-city/district/${district.id}`);
-    }
-  }, [isMobile, getUserDistrictInfo, navigate]);
+    // Iniciar transição cinematográfica
+    setTransitionData({
+      from: 'Satoshi City',
+      to: district.name,
+      targetId: district.id
+    });
+    setIsTransitioning(true);
+  }, []);
+
+  const handleTransitionComplete = useCallback(() => {
+    setIsTransitioning(false);
+    // Navegar para a nova página imersiva
+    navigate(`/district/${transitionData.targetId}`);
+  }, [navigate, transitionData.targetId]);
 
   const handleChangeResidence = useCallback(async (districtId: string) => {
     try {
@@ -548,6 +550,14 @@ export default function SatoshiCity() {
       </div>
 
       <FloatingNavbar />
+
+      {/* Transição cinematográfica */}
+      <DistrictTransition
+        isTransitioning={isTransitioning}
+        fromLocation={transitionData.from}
+        toLocation={transitionData.to}
+        onComplete={handleTransitionComplete}
+      />
 
       {/* Mobile Confirmation Modal */}
       <Dialog open={showMobileModal} onOpenChange={setShowMobileModal}>

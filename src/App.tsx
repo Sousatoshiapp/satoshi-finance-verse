@@ -14,6 +14,8 @@ import SatoshiCity from "@/pages/SatoshiCity";
 import DistrictDetail from "@/pages/DistrictDetail";
 import DistrictQuiz from "@/pages/DistrictQuiz";
 import DistrictQuizPage from "@/pages/DistrictQuizPage";
+import { ImmersiveDistrictPage } from "@/components/district/ImmersiveDistrictPage";
+import { SponsorThemeProvider } from "@/contexts/SponsorThemeProvider";
 import GameMode from "@/pages/GameMode";
 import Store from "@/pages/Store";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
@@ -27,8 +29,9 @@ function App() {
   return (
     <AuthProvider>
       <RealtimeProvider>
-        <div className="min-h-screen bg-background font-sans antialiased">
-        <Suspense fallback={<LoadingSpinner />}>
+        <SponsorThemeProvider>
+          <div className="min-h-screen bg-background font-sans antialiased">
+          <Suspense fallback={<LoadingSpinner />}>
           <Routes>
             <Route path="/" element={<LazyRoutes.Welcome />} />
             <Route path="/auth" element={<LazyRoutes.Auth />} />
@@ -146,6 +149,12 @@ function App() {
             } />
             
             {/* District Routes */}
+            <Route path="/district/:districtId" element={
+              <ProtectedRoute>
+                <ImmersiveDistrictPage />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/satoshi-city/district/:districtId" element={
               <ProtectedRoute>
                 <DistrictDetail />
@@ -511,6 +520,7 @@ function App() {
           </Routes>
         </Suspense>
         </div>
+        </SponsorThemeProvider>
       </RealtimeProvider>
     </AuthProvider>
   );
