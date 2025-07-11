@@ -55,27 +55,51 @@ export function useRealtimePoints() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('🔄 Realtime points update recebido:', payload);
+          console.log('🔄 Realtime points update recebido:', payload, 'Timestamp:', Date.now());
           const newPoints = payload.new.points;
           const oldPoints = payload.old.points;
           
+          console.log('🔍 Analisando mudança de pontos:', {
+            newPoints,
+            oldPoints,
+            isNumber: typeof newPoints === 'number',
+            isDifferent: newPoints !== oldPoints,
+            currentStatePoints: points,
+            timestamp: Date.now()
+          });
+          
           if (typeof newPoints === 'number' && newPoints !== oldPoints) {
-            console.log('💰 Atualizando pontos via realtime:', { 
+            console.log('💰 ATUALIZANDO pontos via realtime:', { 
               old: oldPoints, 
               new: newPoints, 
-              difference: newPoints - oldPoints 
+              difference: newPoints - oldPoints,
+              timestamp: Date.now()
             });
             
             // FORÇA a atualização dos pontos
+            console.log('🚀 Chamando setPoints com:', newPoints);
             setPoints(newPoints);
-            console.log('✅ Points setados para:', newPoints);
+            console.log('✅ setPoints chamado! Points devem ser:', newPoints);
             
             // Invalidate dashboard data to refresh all components
+            console.log('🔄 Invalidando queries...');
             queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
             queryClient.invalidateQueries({ queryKey: ['user-profile'] });
             queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
+            console.log('✅ Queries invalidadas!');
+            
+            // Force re-render with timeout
+            setTimeout(() => {
+              console.log('⏱️ Timeout check - Points state:', points, 'Expected:', newPoints);
+            }, 100);
+            
           } else {
-            console.log('⚠️ Pontos não mudaram ou são inválidos:', { newPoints, oldPoints });
+            console.log('⚠️ Pontos NÃO ATUALIZADOS:', { 
+              reason: typeof newPoints !== 'number' ? 'not a number' : 'same value',
+              newPoints, 
+              oldPoints,
+              timestamp: Date.now()
+            });
           }
         }
       )

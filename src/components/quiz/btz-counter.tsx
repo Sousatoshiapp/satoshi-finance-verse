@@ -9,36 +9,57 @@ interface BTZCounterProps {
 }
 
 export function BTZCounter({ className = "" }: BTZCounterProps) {
-  console.log("🎯 BTZCounter renderizado!");
+  console.log("🎯 BTZCounter renderizado! Timestamp:", Date.now());
   
   const { user } = useAuth();
   console.log("🔑 User no BTZCounter:", user?.id);
   
   const { points: currentBTZ, isLoading } = useRealtimePoints();
-  console.log("💰 Points from useRealtimePoints:", { currentBTZ, isLoading });
-
-  // Force a re-render when currentBTZ changes
-  useEffect(() => {
-    console.log("🔄 currentBTZ MUDOU:", currentBTZ);
-    
-    // FORÇA: Se currentBTZ existe e é diferente do displayBTZ, atualiza IMEDIATAMENTE
-    if (currentBTZ !== undefined && currentBTZ !== displayBTZ) {
-      console.log("🚨 FORÇANDO update BTZ:", { currentBTZ, displayBTZ });
-      if (displayBTZ === 0) {
-        setDisplayBTZ(currentBTZ);
-        setPreviousBTZ(currentBTZ);
-      } else {
-        console.log("🎰 FORÇANDO animação BTZ");
-        animateToNewValue(currentBTZ);
-      }
-    }
-  }, [currentBTZ]);
+  console.log("💰 Points from useRealtimePoints:", { currentBTZ, isLoading, timestamp: Date.now() });
 
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
+
+  console.log("📊 BTZCounter STATE:", { 
+    displayBTZ, 
+    previousBTZ, 
+    isAnimating, 
+    currentBTZ,
+    timestamp: Date.now()
+  });
+
+  // Force a re-render when currentBTZ changes
+  useEffect(() => {
+    console.log("🔄 useEffect currentBTZ TRIGGERED:", { 
+      currentBTZ, 
+      displayBTZ, 
+      isLoading,
+      timestamp: Date.now()
+    });
+    
+    // FORÇA: Se currentBTZ existe e é diferente do displayBTZ, atualiza IMEDIATAMENTE
+    if (currentBTZ !== undefined && currentBTZ !== displayBTZ) {
+      console.log("🚨 FORÇANDO update BTZ:", { currentBTZ, displayBTZ, timestamp: Date.now() });
+      if (displayBTZ === 0) {
+        console.log("🚀 Primeira inicialização BTZ:", currentBTZ);
+        setDisplayBTZ(currentBTZ);
+        setPreviousBTZ(currentBTZ);
+      } else {
+        console.log("🎰 FORÇANDO animação BTZ de", displayBTZ, "para", currentBTZ);
+        animateToNewValue(currentBTZ);
+      }
+    } else {
+      console.log("⚠️ NÃO atualizando BTZ:", { 
+        currentBTZUndefined: currentBTZ === undefined,
+        currentBTZEqualsDisplay: currentBTZ === displayBTZ,
+        currentBTZ,
+        displayBTZ
+      });
+    }
+  }, [currentBTZ, displayBTZ]);
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);

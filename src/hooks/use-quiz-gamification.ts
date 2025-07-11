@@ -88,12 +88,28 @@ export function useQuizGamification() {
   }, [user]);
 
   const handleCorrectAnswer = useCallback(async () => {
-    console.log("✅ handleCorrectAnswer chamado no useQuizGamification");
-    if (!user || !state.isLoaded) return;
+    console.log("✅ handleCorrectAnswer chamado no useQuizGamification", {
+      user: user?.id,
+      isLoaded: state.isLoaded,
+      currentStreak: state.streak,
+      timestamp: Date.now()
+    });
+    
+    if (!user || !state.isLoaded) {
+      console.log("❌ Saindo early - sem user ou não carregado:", { user: !!user, isLoaded: state.isLoaded });
+      return;
+    }
 
     const newStreak = state.streak + 1;
     let newMultiplier = state.currentMultiplier;
     const baseBTZ = 1; // 1 BTZ base por resposta correta
+    
+    console.log("📊 Calculando recompensa:", {
+      newStreak,
+      currentMultiplier: state.currentMultiplier,
+      baseBTZ,
+      timestamp: Date.now()
+    });
     
     // Sistema de multiplicador progressivo: 1→2→4→8→16...
     // A cada 7 corretas consecutivas, dobra o multiplicador
@@ -101,6 +117,13 @@ export function useQuizGamification() {
       newMultiplier = newMultiplier * 2;
       
       const earnedBTZ = baseBTZ * newMultiplier;
+      
+      console.log("🔥 STREAK MILESTONE ATINGIDO!", {
+        newStreak,
+        newMultiplier,
+        earnedBTZ,
+        timestamp: Date.now()
+      });
       
       setState(prev => ({ 
         ...prev, 
@@ -124,6 +147,7 @@ export function useQuizGamification() {
       
       // Update database with multiplied points
       try {
+        console.log("🚀 Buscando pontos atuais do usuário...");
         const { data: profile } = await supabase
           .from('profiles')
           .select('points')
@@ -131,23 +155,38 @@ export function useQuizGamification() {
           .single();
           
         if (profile) {
-          console.log('💰 Atualizando BTZ no banco:', { before: profile.points, adding: earnedBTZ, after: profile.points + earnedBTZ });
+          console.log('💰 Atualizando BTZ no banco (STREAK):', { 
+            before: profile.points, 
+            adding: earnedBTZ, 
+            after: profile.points + earnedBTZ,
+            timestamp: Date.now()
+          });
+          
           const { error } = await supabase.from('profiles').update({
             points: profile.points + earnedBTZ
           }).eq('user_id', user.id);
           
           if (error) {
-            console.error('❌ Erro ao atualizar BTZ:', error);
+            console.error('❌ Erro ao atualizar BTZ (STREAK):', error);
           } else {
-            console.log('✅ BTZ atualizado com sucesso');
+            console.log('✅ BTZ atualizado com sucesso (STREAK)! Aguardando realtime...');
           }
+        } else {
+          console.log("❌ Profile não encontrado!");
         }
       } catch (error) {
-        console.error('Error updating points:', error);
+        console.error('💥 Error updating points (STREAK):', error);
       }
     } else {
       // Regular correct answer com multiplicador atual
       const earnedBTZ = baseBTZ * newMultiplier;
+      
+      console.log("💰 RESPOSTA CORRETA REGULAR:", {
+        newStreak,
+        currentMultiplier: newMultiplier,
+        earnedBTZ,
+        timestamp: Date.now()
+      });
       
       setState(prev => ({ 
         ...prev, 
@@ -163,6 +202,7 @@ export function useQuizGamification() {
       
       // Update database with multiplied points
       try {
+        console.log("🚀 Buscando pontos atuais do usuário (REGULAR)...");
         const { data: profile } = await supabase
           .from('profiles')
           .select('points')
@@ -170,19 +210,27 @@ export function useQuizGamification() {
           .single();
           
         if (profile) {
-          console.log('💰 Atualizando BTZ no banco:', { before: profile.points, adding: earnedBTZ, after: profile.points + earnedBTZ });
+          console.log('💰 Atualizando BTZ no banco (REGULAR):', { 
+            before: profile.points, 
+            adding: earnedBTZ, 
+            after: profile.points + earnedBTZ,
+            timestamp: Date.now()
+          });
+          
           const { error } = await supabase.from('profiles').update({
             points: profile.points + earnedBTZ
           }).eq('user_id', user.id);
           
           if (error) {
-            console.error('❌ Erro ao atualizar BTZ:', error);
+            console.error('❌ Erro ao atualizar BTZ (REGULAR):', error);
           } else {
-            console.log('✅ BTZ atualizado com sucesso');
+            console.log('✅ BTZ atualizado com sucesso (REGULAR)! Aguardando realtime...');
           }
+        } else {
+          console.log("❌ Profile não encontrado!");
         }
       } catch (error) {
-        console.error('Error updating points:', error);
+        console.error('💥 Error updating points (REGULAR):', error);
       }
     }
     
