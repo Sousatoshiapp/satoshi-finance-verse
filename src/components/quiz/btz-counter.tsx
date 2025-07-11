@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
@@ -37,30 +37,64 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
     }
   }, [currentBTZ, isLoading]);
 
+  const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const animateToNewValue = useCallback((newValue: number) => {
     if (isAnimating) return;
     
+    // Capturar valor atual dentro da função para evitar problemas de closure
+    const startValue = displayBTZ;
+    
+    // Se o valor é o mesmo, não precisa animar
+    if (startValue === newValue) {
+      console.log('🎰 BTZ: Valor inalterado, pulando animação:', newValue);
+      return;
+    }
+    
+    console.log('🎰 Iniciando animação slot machine BTZ:', { from: startValue, to: newValue });
+    
     setIsAnimating(true);
+    
+    // Limpar timer anterior se existir
+    if (animationTimerRef.current) {
+      clearInterval(animationTimerRef.current);
+      animationTimerRef.current = null;
+    }
     
     // Efeito slot machine - animar números
     const duration = 800;
     const steps = 30;
-    const increment = (newValue - displayBTZ) / steps;
+    const increment = (newValue - startValue) / steps;
     let step = 0;
 
-    const timer = setInterval(() => {
+    animationTimerRef.current = setInterval(() => {
       step++;
-      const currentStep = displayBTZ + (increment * step);
+      const currentStep = startValue + (increment * step);
+      
+      console.log('🎰 Step', step, '/', steps, ':', Math.round(currentStep));
       
       if (step >= steps) {
         setDisplayBTZ(newValue);
         setIsAnimating(false);
-        clearInterval(timer);
+        if (animationTimerRef.current) {
+          clearInterval(animationTimerRef.current);
+          animationTimerRef.current = null;
+        }
+        console.log('🎰 Animação slot machine BTZ concluída:', newValue);
       } else {
         setDisplayBTZ(Math.round(currentStep));
       }
     }, duration / steps);
-  }, [isAnimating, displayBTZ]);
+  }, [isAnimating]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (animationTimerRef.current) {
+        clearInterval(animationTimerRef.current);
+      }
+    };
+  }, []);
 
 
   return (
