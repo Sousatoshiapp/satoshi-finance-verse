@@ -116,15 +116,15 @@ const ActionCircle: React.FC<ActionCircleProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Círculo principal */}
+      {/* Círculo principal - tamanho reduzido */}
       <motion.div
         className={`
-          w-32 h-32 md:w-40 md:h-40 rounded-full 
+          w-16 h-16 md:w-20 md:h-20 rounded-full 
           bg-gradient-to-br from-white/20 to-white/5
           backdrop-blur-md border border-white/30
           flex flex-col items-center justify-center
-          shadow-2xl relative overflow-hidden
-          ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]'}
+          shadow-lg relative overflow-hidden
+          ${isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]'}
         `}
         style={{
           boxShadow: isLocked ? undefined : `0 0 30px ${theme.primaryColor}40`,
@@ -159,15 +159,15 @@ const ActionCircle: React.FC<ActionCircleProps> = ({
           }}
         />
 
-        {/* Ícone */}
+        {/* Ícone - tamanho reduzido */}
         <IconComponent 
-          className="w-8 h-8 md:w-10 md:h-10 mb-2 z-10 text-white drop-shadow-lg" 
+          className="w-4 h-4 md:w-5 md:h-5 mb-1 z-10 text-white drop-shadow-lg" 
           style={{ color: theme.accentColor }}
         />
         
-        {/* Texto */}
+        {/* Texto - tamanho reduzido */}
         <span 
-          className="text-xs md:text-sm font-bold text-center px-2 z-10 text-white drop-shadow-lg"
+          className="text-[10px] md:text-xs font-bold text-center px-1 z-10 text-white drop-shadow-lg leading-tight"
           style={{ color: 'white' }}
         >
           {actionTheme.name}
@@ -238,32 +238,13 @@ export const DistrictCircleActions: React.FC<DistrictCircleActionsProps> = ({
   const actions = ['quiz', 'account', 'access', 'members', 'duels', 'store'];
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <div className="relative w-full h-full max-w-4xl max-h-4xl pointer-events-auto">
-        {/* Posicionamento dos círculos em formação hexagonal */}
-        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2">
-          <ActionCircle action="quiz" districtTheme={districtTheme} districtId={districtId} />
-        </div>
-        
-        <div className="absolute top-1/2 left-1/4 transform -translate-y-1/2">
-          <ActionCircle action="account" districtTheme={districtTheme} districtId={districtId} />
-        </div>
-        
-        <div className="absolute top-1/2 right-1/4 transform -translate-y-1/2">
-          <ActionCircle action="access" districtTheme={districtTheme} districtId={districtId} />
-        </div>
-        
-        <div className="absolute bottom-1/4 left-1/3 transform translate-x-1/2">
-          <ActionCircle action="members" districtTheme={districtTheme} districtId={districtId} />
-        </div>
-        
-        <div className="absolute bottom-1/4 right-1/3 transform -translate-x-1/2">
-          <ActionCircle action="duels" districtTheme={districtTheme} districtId={districtId} />
-        </div>
-        
-        <div className="absolute bottom-1/6 left-1/2 transform -translate-x-1/2">
-          <ActionCircle action="store" districtTheme={districtTheme} districtId={districtId} />
-        </div>
+    <div className="w-full max-w-sm mx-auto">
+      <div className="grid grid-cols-3 gap-4 p-4">
+        {actions.map((action) => (
+          <div key={action} className="flex justify-center">
+            <ActionCircle action={action} districtTheme={districtTheme} districtId={districtId} />
+          </div>
+        ))}
       </div>
     </div>
   );

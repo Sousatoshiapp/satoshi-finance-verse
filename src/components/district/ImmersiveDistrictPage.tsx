@@ -146,11 +146,12 @@ export const ImmersiveDistrictPage: React.FC = () => {
   return (
     <>
       <FloatingNavbar />
-      <div className="relative min-h-screen w-full overflow-hidden">
+      <div className="min-h-screen w-full overflow-auto bg-gray-900">
         {/* Background dinâmico */}
-        <DistrictBackground districtTheme={district.theme} className="absolute inset-0" />
+        <DistrictBackground districtTheme={district.theme} className="fixed inset-0 z-0" />
 
-        {/* Header com navegação */}
+        {/* Container com scroll */}
+        <div className="relative z-10 min-h-screen pb-20">{/* pb-20 para espaço do navbar */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -275,6 +276,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
             <p className="text-white/70 text-sm max-w-xs">{district.special_power}</p>
           </div>
         </motion.div>
+        </div>
       </div>
     </>
   );
