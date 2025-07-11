@@ -88,36 +88,12 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         setIsAnimating(false);
         clearInterval(timer);
         
-        // Som de máquina registradora
-        playSlotMachineSound();
       } else {
         setDisplayBTZ(Math.round(currentStep));
       }
     }, duration / steps);
   };
 
-  const playSlotMachineSound = () => {
-    // Criar efeito sonoro de máquina registradora usando Web Audio API
-    if (typeof window !== 'undefined' && window.AudioContext) {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      
-      // Som de registro de dinheiro
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.3);
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.3);
-    }
-  };
 
   return (
     <div className={`relative ${className}`}>
