@@ -424,7 +424,7 @@ export default function DistrictDetail() {
           <CardContent>
             <PowerBar
               currentPower={districtPower}
-              maxPower={maxPowerInNetwork}
+              maxPower={20000000}
               label={`${districtPower.toLocaleString()} XP`}
               color={district.color_primary}
               showPercentage={false}
@@ -451,21 +451,21 @@ export default function DistrictDetail() {
         </Card>
 
         {/* Main Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-4 gap-2 mb-8">
           {/* Quiz do Distrito */}
           <Card 
-            className="cursor-pointer hover:scale-105 transition-transform border-2 h-32"
+            className="cursor-pointer hover:scale-105 transition-transform border-2 aspect-square"
             style={{ borderColor: district.color_primary }}
             onClick={handleDistrictQuiz}
           >
-            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+            <CardContent className="p-2 text-center h-full flex flex-col justify-center">
               <div 
-                className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center"
+                className="w-6 h-6 rounded-full mx-auto mb-1 flex items-center justify-center"
                 style={{ backgroundColor: district.color_primary }}
               >
-                <BookOpen className="w-4 h-4 text-white" />
+                <BookOpen className="w-3 h-3 text-white" />
               </div>
-              <h3 className="font-semibold text-sm mb-1">Quiz do Distrito</h3>
+              <h3 className="font-semibold text-xs mb-1">Quiz do Distrito</h3>
               <p className="text-xs text-muted-foreground">
                 Perguntas temáticas
               </p>
@@ -473,18 +473,18 @@ export default function DistrictDetail() {
           </Card>
 
           {/* Desafiar Distrito */}
-          <Card className="border-2 border-orange-500 h-32">
-            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-              <div className="w-8 h-8 rounded-full mx-auto mb-2 bg-orange-500 flex items-center justify-center">
-                <Swords className="w-4 h-4 text-white" />
+          <Card className="border-2 border-orange-500 aspect-square">
+            <CardContent className="p-2 text-center h-full flex flex-col justify-center">
+              <div className="w-6 h-6 rounded-full mx-auto mb-1 bg-orange-500 flex items-center justify-center">
+                <Swords className="w-3 h-3 text-white" />
               </div>
-              <h3 className="font-semibold text-sm mb-1">Desafiar Distrito</h3>
-              <p className="text-xs text-muted-foreground">
+              <h3 className="font-semibold text-xs mb-1">Desafiar Distrito</h3>
+              <p className="text-xs text-muted-foreground mb-1">
                 Duelo 20 perguntas
               </p>
-              <div className="mt-2 space-y-1">
+              <div className="space-y-1">
                 <Select value={targetDistrictId} onValueChange={setTargetDistrictId}>
-                  <SelectTrigger className="h-6 text-xs">
+                  <SelectTrigger className="h-5 text-xs">
                     <SelectValue placeholder="Adversário" />
                   </SelectTrigger>
                   <SelectContent>
@@ -497,7 +497,7 @@ export default function DistrictDetail() {
                   onClick={handleInitiateDuel}
                   disabled={!targetDistrictId || isInitiatingDuel}
                   size="sm"
-                  className="w-full h-6 text-xs bg-orange-500 hover:bg-orange-600"
+                  className="w-full h-5 text-xs bg-orange-500 hover:bg-orange-600"
                 >
                   {isInitiatingDuel ? "..." : "Desafiar"}
                 </Button>
@@ -507,38 +507,40 @@ export default function DistrictDetail() {
 
           {/* Ver Moradores */}
           <Card 
-            className="cursor-pointer hover:scale-105 transition-transform border-2 border-blue-500 h-32"
+            className="cursor-pointer hover:scale-105 transition-transform border-2 border-blue-500 aspect-square"
             onClick={handleViewResidents}
           >
-            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-              <div className="w-8 h-8 rounded-full mx-auto mb-2 bg-blue-500 flex items-center justify-center">
-                <Users className="w-4 h-4 text-white" />
+            <CardContent className="p-2 text-center h-full flex flex-col justify-center">
+              <div className="w-6 h-6 rounded-full mx-auto mb-1 bg-blue-500 flex items-center justify-center">
+                <Users className="w-3 h-3 text-white" />
               </div>
-              <h3 className="font-semibold text-sm mb-1">Ver Moradores</h3>
-              <p className="text-xs text-muted-foreground">
+              <h3 className="font-semibold text-xs mb-1">Ver Moradores</h3>
+              <p className="text-xs text-muted-foreground mb-1">
                 {residents.length} residentes
               </p>
-              {residents.slice(0, 3).map((resident, i) => (
-                <Avatar key={resident.id} className="w-4 h-4 inline-block -ml-1 first:ml-0 border border-background">
-                  <AvatarImage src={resident.profile_image_url} />
-                  <AvatarFallback className="text-xs">
-                    {resident.nickname.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
-              ))}
+              <div className="flex justify-center -space-x-1">
+                {residents.slice(0, 3).map((resident, i) => (
+                  <Avatar key={resident.id} className="w-3 h-3 border border-background">
+                    <AvatarImage src={resident.profile_image_url} />
+                    <AvatarFallback className="text-xs">
+                      {resident.nickname.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
           {/* Loja do Sponsor */}
           <Card 
-            className="cursor-pointer hover:scale-105 transition-transform border-2 border-green-500 h-32"
+            className="cursor-pointer hover:scale-105 transition-transform border-2 border-green-500 aspect-square"
             onClick={handleViewStore}
           >
-            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-              <div className="w-8 h-8 rounded-full mx-auto mb-2 bg-green-500 flex items-center justify-center">
-                <ShoppingBag className="w-4 h-4 text-white" />
+            <CardContent className="p-2 text-center h-full flex flex-col justify-center">
+              <div className="w-6 h-6 rounded-full mx-auto mb-1 bg-green-500 flex items-center justify-center">
+                <ShoppingBag className="w-3 h-3 text-white" />
               </div>
-              <h3 className="font-semibold text-sm mb-1">Loja {district.sponsor_company?.split(' ')[0]}</h3>
+              <h3 className="font-semibold text-xs mb-1">Loja {district.sponsor_company?.split(' ')[0]}</h3>
               <p className="text-xs text-muted-foreground">
                 {storeItems.length} itens exclusivos
               </p>
