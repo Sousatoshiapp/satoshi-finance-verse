@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useBTZEconomics } from "@/hooks/use-btz-economics";
+import { Clock, Shield, TrendingUp } from "lucide-react";
 
 interface BTZCounterProps {
   className?: string;
@@ -11,6 +13,8 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const [currentBTZ, setCurrentBTZ] = useState(0);
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
   // Buscar BTZ atual do usuário
   useEffect(() => {
@@ -110,28 +114,90 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   };
 
   return (
-    <div className={`flex items-center justify-center ${className}`}>
-      <div className="relative">
-        {/* Efeito de brilho quando animando */}
-        {isAnimating && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-pulse rounded-lg" />
-        )}
-        
-        <div className={`
-          bg-transparent backdrop-blur-sm
-          text-white font-bold text-4xl px-8 py-4 rounded-lg
-          shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20
-          ${isAnimating ? 'animate-pulse shadow-[0_4px_25px_rgba(173,255,47,0.3)]' : ''}
-          transition-all duration-300
-        `}>
-          <div className="flex items-center space-x-3">
-            {/* Logo Beetz simples */}
-            <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
-              <span className="text-black font-bold text-lg">B</span>
+    <div className={`relative ${className}`}>
+      <div 
+        className={`
+          bg-gradient-to-br from-[#adff2f]/10 to-[#32cd32]/10 
+          border border-[#adff2f]/20 rounded-xl p-4 
+          transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
+          ${isAnimating ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
+          cursor-pointer
+        `}
+        onClick={() => setShowDetails(!showDetails)}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
+            <span className="text-black font-bold text-lg">B</span>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-mono font-bold text-foreground">
+                {displayBTZ.toLocaleString()}
+              </span>
+              <span className="text-sm text-muted-foreground font-medium">BTZ</span>
             </div>
-            <span className="font-mono text-3xl">
-              {displayBTZ.toLocaleString()} BTZ
-            </span>
+            
+            {/* Compact view */}
+            {!showDetails && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {analytics?.current.yield_applied_today ? (
+                  <span className="text-[#adff2f]">✓ Rendeu hoje</span>
+                ) : (
+                  <span className="text-orange-500">⏰ Próximo: {analytics ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
+                )}
+              </div>
+            )}
+            
+            {/* Expanded view */}
+            {showDetails && analytics && (
+              <div className="mt-3 space-y-2">
+                {/* Daily Yield */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3 text-[#adff2f]" />
+                    <span>Próximo rendimento</span>
+                  </div>
+                  <span className="font-mono text-[#adff2f]">
+                    +{analytics.current.next_yield_amount.toLocaleString()} BTZ
+                  </span>
+                </div>
+                
+                {/* Protected BTZ */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-blue-400" />
+                    <span>BTZ Protegido</span>
+                  </div>
+                  <span className="font-mono text-blue-400">
+                    {analytics.current.protected_btz.toLocaleString()} ({getProtectionPercentage().toFixed(1)}%)
+                  </span>
+                </div>
+                
+                {/* Streak */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1">
+                    <span className="text-orange-500">🔥</span>
+                    <span>Streak</span>
+                  </div>
+                  <span className="font-mono text-orange-500">
+                    {analytics.current.consecutive_login_days} dias (+{(analytics.bonuses.streak_bonus * 100).toFixed(1)}%)
+                  </span>
+                </div>
+                
+                {/* Time until next yield */}
+                {!analytics.current.yield_applied_today && (
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-gray-400" />
+                      <span>Próximo em</span>
+                    </div>
+                    <span className="font-mono text-gray-400">
+                      {formatTimeUntilYield(analytics.current.time_until_next_yield_ms)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

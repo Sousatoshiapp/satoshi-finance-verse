@@ -589,6 +589,91 @@ export type Database = {
         }
         Relationships: []
       }
+      btz_penalty_history: {
+        Row: {
+          btz_after: number
+          btz_before: number
+          created_at: string | null
+          days_inactive: number
+          id: string
+          penalty_amount: number
+          penalty_rate: number
+          user_id: string
+        }
+        Insert: {
+          btz_after: number
+          btz_before: number
+          created_at?: string | null
+          days_inactive: number
+          id?: string
+          penalty_amount: number
+          penalty_rate: number
+          user_id: string
+        }
+        Update: {
+          btz_after?: number
+          btz_before?: number
+          created_at?: string | null
+          days_inactive?: number
+          id?: string
+          penalty_amount?: number
+          penalty_rate?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "btz_penalty_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      btz_yield_history: {
+        Row: {
+          btz_after: number
+          btz_before: number
+          created_at: string | null
+          id: string
+          streak_bonus: number | null
+          subscription_bonus: number | null
+          user_id: string
+          yield_amount: number
+          yield_rate: number
+        }
+        Insert: {
+          btz_after: number
+          btz_before: number
+          created_at?: string | null
+          id?: string
+          streak_bonus?: number | null
+          subscription_bonus?: number | null
+          user_id: string
+          yield_amount: number
+          yield_rate: number
+        }
+        Update: {
+          btz_after?: number
+          btz_before?: number
+          created_at?: string | null
+          id?: string
+          streak_bonus?: number | null
+          subscription_bonus?: number | null
+          user_id?: string
+          yield_amount?: number
+          yield_rate?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "btz_yield_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collectible_items: {
         Row: {
           attributes: Json | null
@@ -2967,65 +3052,83 @@ export type Database = {
         Row: {
           avatar_id: string | null
           completed_lessons: number | null
+          consecutive_login_days: number | null
           created_at: string
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
           id: string
           is_bot: boolean | null
+          last_login_date: string | null
+          last_yield_date: string | null
           level: number | null
           nickname: string
           points: number
           profile_image_url: string | null
+          protected_btz: number | null
           streak: number | null
           subscription_expires_at: string | null
           subscription_tier:
             | Database["public"]["Enums"]["subscription_tier"]
             | null
+          total_yield_earned: number | null
           updated_at: string
           user_id: string | null
           xp: number | null
+          yield_rate: number | null
         }
         Insert: {
           avatar_id?: string | null
           completed_lessons?: number | null
+          consecutive_login_days?: number | null
           created_at?: string
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
           id?: string
           is_bot?: boolean | null
+          last_login_date?: string | null
+          last_yield_date?: string | null
           level?: number | null
           nickname: string
           points?: number
           profile_image_url?: string | null
+          protected_btz?: number | null
           streak?: number | null
           subscription_expires_at?: string | null
           subscription_tier?:
             | Database["public"]["Enums"]["subscription_tier"]
             | null
+          total_yield_earned?: number | null
           updated_at?: string
           user_id?: string | null
           xp?: number | null
+          yield_rate?: number | null
         }
         Update: {
           avatar_id?: string | null
           completed_lessons?: number | null
+          consecutive_login_days?: number | null
           created_at?: string
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
           id?: string
           is_bot?: boolean | null
+          last_login_date?: string | null
+          last_yield_date?: string | null
           level?: number | null
           nickname?: string
           points?: number
           profile_image_url?: string | null
+          protected_btz?: number | null
           streak?: number | null
           subscription_expires_at?: string | null
           subscription_tier?:
             | Database["public"]["Enums"]["subscription_tier"]
             | null
+          total_yield_earned?: number | null
           updated_at?: string
           user_id?: string | null
           xp?: number | null
+          yield_rate?: number | null
         }
         Relationships: [
           {
@@ -5980,6 +6083,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_btz_penalty: {
+        Args: { profile_id: string }
+        Returns: {
+          penalty_applied: boolean
+          penalty_amount: number
+          days_inactive: number
+        }[]
+      }
       assign_bot_achievements: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -5995,6 +6106,15 @@ export type Database = {
           new_level: number
           level_up: boolean
           rewards: Json
+        }[]
+      }
+      calculate_daily_yield: {
+        Args: { profile_id: string }
+        Returns: {
+          yield_applied: boolean
+          yield_amount: number
+          new_total: number
+          streak_bonus: number
         }[]
       }
       calculate_league_points: {
@@ -6207,6 +6327,14 @@ export type Database = {
       update_learning_streak: {
         Args: { p_user_id: string; p_module_id?: string }
         Returns: Json
+      }
+      update_login_streak: {
+        Args: { profile_id: string }
+        Returns: {
+          streak_updated: boolean
+          new_streak: number
+          yield_bonus: number
+        }[]
       }
       update_mission_progress: {
         Args: {
