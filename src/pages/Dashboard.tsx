@@ -16,7 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DashboardSummaryOptimized } from "@/components/dashboard-summary-optimized";
 import { QuickActionsOptimized } from "@/components/quick-actions-optimized";
-import { UserAffiliation } from "@/components/user-affiliation";
+import { DistrictCircleBadge } from "@/components/district-circle-badge";
 import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
@@ -214,7 +214,8 @@ export default function Dashboard() {
               </p>
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              <DistrictCircleBadge district={userDistrict} size="md" />
               <SubscriptionIndicator tier={subscription.tier} size="sm" />
               {subscription.tier === 'free' && (
                 <Button 
@@ -321,8 +322,27 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* User Affiliation - District & Team */}
-          <UserAffiliation district={userDistrict} team={userTeam} />
+          {/* Team Info - Apenas se o usuário tiver time */}
+          {userTeam && (
+            <div className="mb-4">
+              <div 
+                className="bg-gradient-to-r from-card/80 to-muted/40 border border-border/50 rounded-2xl p-4 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
+                onClick={() => navigate('/guilds')}
+                style={{
+                  borderColor: `${userTeam.team_color}30`,
+                  background: `linear-gradient(135deg, ${userTeam.team_color}10, ${userTeam.team_color}05)`
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">⚔️</div>
+                  <div className="flex-1">
+                    <div className="text-xs text-muted-foreground">Seu Time</div>
+                    <div className="text-lg font-bold text-foreground">{userTeam.name}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
 
           {/* Ranking Semanal de Beetz */}

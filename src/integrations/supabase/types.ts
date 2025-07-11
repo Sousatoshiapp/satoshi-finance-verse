@@ -3238,11 +3238,13 @@ export type Database = {
           completed_lessons: number | null
           consecutive_login_days: number | null
           created_at: string
+          current_streak_multiplier: number | null
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
           id: string
           is_bot: boolean | null
           last_login_date: string | null
+          last_streak_reset_date: string | null
           last_yield_date: string | null
           level: number | null
           nickname: string
@@ -3250,6 +3252,7 @@ export type Database = {
           profile_image_url: string | null
           protected_btz: number | null
           streak: number | null
+          streak_session_active: boolean | null
           subscription_expires_at: string | null
           subscription_tier:
             | Database["public"]["Enums"]["subscription_tier"]
@@ -3265,11 +3268,13 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
           id?: string
           is_bot?: boolean | null
           last_login_date?: string | null
+          last_streak_reset_date?: string | null
           last_yield_date?: string | null
           level?: number | null
           nickname: string
@@ -3277,6 +3282,7 @@ export type Database = {
           profile_image_url?: string | null
           protected_btz?: number | null
           streak?: number | null
+          streak_session_active?: boolean | null
           subscription_expires_at?: string | null
           subscription_tier?:
             | Database["public"]["Enums"]["subscription_tier"]
@@ -3292,11 +3298,13 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
           id?: string
           is_bot?: boolean | null
           last_login_date?: string | null
+          last_streak_reset_date?: string | null
           last_yield_date?: string | null
           level?: number | null
           nickname?: string
@@ -3304,6 +3312,7 @@ export type Database = {
           profile_image_url?: string | null
           protected_btz?: number | null
           streak?: number | null
+          streak_session_active?: boolean | null
           subscription_expires_at?: string | null
           subscription_tier?:
             | Database["public"]["Enums"]["subscription_tier"]

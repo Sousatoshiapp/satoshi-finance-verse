@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +17,7 @@ interface QuizGamificationState {
   currentCorrectAnswer: string;
   currentExplanation?: string;
   hasShownLifeBanner: boolean;
+  isLoaded: boolean;
 }
 
 export function useQuizGamification() {
@@ -36,11 +37,61 @@ export function useQuizGamification() {
     currentQuestion: "",
     currentCorrectAnswer: "",
     currentExplanation: undefined,
-    hasShownLifeBanner: false
+    hasShownLifeBanner: false,
+    isLoaded: false
   });
 
-  const handleCorrectAnswer = useCallback(async () => {
+  // Carregar estado persistido do banco de dados
+  useEffect(() => {
+    const loadPersistedState = async () => {
+      if (!user) return;
+
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('streak, current_streak_multiplier, streak_session_active, points')
+          .eq('user_id', user.id)
+          .single();
+
+        if (profile) {
+          setState(prev => ({
+            ...prev,
+            streak: profile.streak || 0,
+            currentMultiplier: profile.current_streak_multiplier || 1,
+            totalBTZ: profile.points || 0,
+            isLoaded: true
+          }));
+        }
+      } catch (error) {
+        console.error('Error loading persisted gamification state:', error);
+        setState(prev => ({ ...prev, isLoaded: true }));
+      }
+    };
+
+    loadPersistedState();
+  }, [user]);
+
+  // Persistir estado no banco
+  const persistState = useCallback(async (newStreak: number, newMultiplier: number, isActive: boolean = true) => {
     if (!user) return;
+
+    try {
+      await supabase
+        .from('profiles')
+        .update({
+          streak: newStreak,
+          current_streak_multiplier: newMultiplier,
+          streak_session_active: isActive,
+          last_streak_reset_date: isActive ? undefined : new Date().toISOString().split('T')[0]
+        })
+        .eq('user_id', user.id);
+    } catch (error) {
+      console.error('Error persisting gamification state:', error);
+    }
+  }, [user]);
+
+  const handleCorrectAnswer = useCallback(async () => {
+    if (!user || !state.isLoaded) return;
 
     const newStreak = state.streak + 1;
     let newMultiplier = state.currentMultiplier;
@@ -61,6 +112,9 @@ export function useQuizGamification() {
         showStreakAnimation: true,
         showBeetzAnimation: true
       }));
+      
+      // Persistir estado no banco
+      await persistState(newStreak, newMultiplier, true);
       
       // Play only BTZ sound
       playCashRegisterSound();
@@ -97,6 +151,9 @@ export function useQuizGamification() {
         showBeetzAnimation: true 
       }));
       
+      // Persistir streak atualizado
+      await persistState(newStreak, newMultiplier, true);
+      
       playCashRegisterSound();
       
       // Update database with multiplied points
@@ -117,10 +174,12 @@ export function useQuizGamification() {
       }
     }
     
-  }, [state, user, playCashRegisterSound, toast]);
+  }, [state, user, playCashRegisterSound, toast, persistState]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
     console.log('❌ handleWrongAnswer chamado no useQuizGamification');
+    
+    if (!state.isLoaded) return { canUseLife: false };
     
     // Só pode usar vida se tem streak >= 7 (primeiro streak real) E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
     if (state.streak >= 7 && hasLives() && !state.hasShownLifeBanner) {
@@ -149,6 +208,9 @@ export function useQuizGamification() {
       currentExplanation: explanation
     }));
 
+    // Persistir reset no banco
+    await persistState(0, 1, false);
+
     // Guard: Only play sound if user is on quiz-related screens
     if (window.location.pathname.includes('/quiz') || 
         window.location.pathname.includes('/dashboard') ||
@@ -167,19 +229,24 @@ export function useQuizGamification() {
     }
 
     return { canUseLife: false };
-  }, [playWrongSound, state.streak, state.currentMultiplier, hasLives, state.hasShownLifeBanner]);
+  }, [playWrongSound, state.streak, state.currentMultiplier, hasLives, state.hasShownLifeBanner, state.isLoaded, persistState]);
 
   const handleUseLife = useCallback(async () => {
     const success = await useLife();
     if (success) {
+      // Manter o estado atual (não resetar streak e multiplicador)
       toast({
         title: "💖 Streak salvo!",
         description: `Você manteve sua sequência de ${state.streak} e multiplicador ${state.currentMultiplier}x`
       });
+      
+      // Persistir que a vida foi usada mantendo o estado
+      await persistState(state.streak, state.currentMultiplier, true);
+      
       return true;
     }
     return false;
-  }, [useLife, state.streak, state.currentMultiplier, toast]);
+  }, [useLife, state.streak, state.currentMultiplier, toast, persistState]);
 
   const hideBeetzAnimation = useCallback(() => {
     setState(prev => ({ ...prev, showBeetzAnimation: false }));
@@ -212,7 +279,8 @@ export function useQuizGamification() {
       currentQuestion: "",
       currentCorrectAnswer: "",
       currentExplanation: undefined,
-      hasShownLifeBanner: false
+      hasShownLifeBanner: false,
+      isLoaded: true
     });
   }, []);
 
