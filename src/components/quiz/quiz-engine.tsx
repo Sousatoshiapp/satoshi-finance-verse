@@ -111,15 +111,16 @@ export function QuizEngine({
     }
   };
 
-  // Controle do timer via CircularTimer apenas
+  // Controle do timer - SEMPRE mostrar banner quando tempo acaba
   const handleTimeUp = async () => {
     console.log('⏰ handleTimeUp chamado - tempo acabou');
-    if (showAnswer || !questions[currentIndex]) {
-      console.log('⏰ Retornando porque showAnswer=', showAnswer, 'ou pergunta inexistente');
+    
+    const question = questions[currentIndex];
+    if (!question) {
+      console.log('⏰ Pergunta não existe, retornando');
       return;
     }
     
-    const question = questions[currentIndex];
     console.log('⏰ Processando timeout para pergunta:', question.question);
     
     // Marcar como respondida incorretamente por timeout
@@ -148,7 +149,7 @@ export function QuizEngine({
       return; // Não avança ainda - aguarda decisão da vida
     }
     
-    // Se não pode usar vida, mostrar banner de resposta correta
+    // Se não pode usar vida, SEMPRE mostrar banner de resposta correta
     console.log('⏰ Não pode usar vida - mostrando banner de resposta');
     setShowAnswer(true);
   };
@@ -553,7 +554,7 @@ export function QuizEngine({
           {/* Question Card */}
           <Card className="mb-6">
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-6 leading-relaxed">
+              <h2 className="text-xl font-semibold mb-6 leading-relaxed text-center">
                 {currentQuestion.question}
               </h2>
               
