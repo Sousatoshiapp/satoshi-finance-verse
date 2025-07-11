@@ -293,52 +293,54 @@ export function PersonalizedDashboard() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* AI Recommendations */}
-        <Card className="lg:col-span-2">
+        {/* Today's Progress */}
+        <Card className="h-48">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5" />
-              Recomendações Personalizadas
+              <TrendingUp className="h-5 w-5" />
+              Progresso de Hoje
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {aiRecommendations.length > 0 ? (
-              aiRecommendations.map((recommendation) => (
-                <div key={recommendation.id} className="p-4 border rounded-lg space-y-2">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 bg-primary/10 rounded-full mt-1">
-                      {getRecommendationIcon(recommendation.recommendation_type)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-medium">
-                          {recommendation.recommendation_type === 'concept_focus' && 'Focar em Conceitos'}
-                          {recommendation.recommendation_type === 'difficulty_adjustment' && 'Ajustar Dificuldade'}
-                          {recommendation.recommendation_type === 'schedule_optimization' && 'Otimizar Horário'}
-                        </h4>
-                        <Badge variant="outline" className="text-xs">
-                          {Math.round(recommendation.confidence_score * 100)}% confiança
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {recommendation.recommendation_data?.suggestion || 
-                         'Recomendação baseada no seu padrão de estudo'}
-                      </p>
-                      <Button size="sm" className="mt-2">
-                        Aplicar Recomendação
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">
-                  Continue estudando para receber recomendações personalizadas
-                </p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">XP Ganho</span>
+              <span className="font-bold">+{stats.weeklyProgress}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Questões</span>
+              <span className="font-bold">12/15</span>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span>Meta Diária</span>
+                <span>80%</span>
               </div>
-            )}
+              <Progress value={80} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Daily Missions */}
+        <Card className="h-36">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Missões Diárias
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Completar 10 questões</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+              <span>Manter sequência</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+              <span>Ganhar 150 XP</span>
+            </div>
           </CardContent>
         </Card>
 
@@ -379,6 +381,55 @@ export function PersonalizedDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Recommendations */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="h-5 w-5" />
+            Recomendações Personalizadas
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {aiRecommendations.length > 0 ? (
+            aiRecommendations.map((recommendation) => (
+              <div key={recommendation.id} className="p-4 border rounded-lg space-y-2">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-full mt-1">
+                    {getRecommendationIcon(recommendation.recommendation_type)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-medium">
+                        {recommendation.recommendation_type === 'concept_focus' && 'Focar em Conceitos'}
+                        {recommendation.recommendation_type === 'difficulty_adjustment' && 'Ajustar Dificuldade'}
+                        {recommendation.recommendation_type === 'schedule_optimization' && 'Otimizar Horário'}
+                      </h4>
+                      <Badge variant="outline" className="text-xs">
+                        {Math.round(recommendation.confidence_score * 100)}% confiança
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {recommendation.recommendation_data?.suggestion || 
+                       'Recomendação baseada no seu padrão de estudo'}
+                    </p>
+                    <Button size="sm" className="mt-2">
+                      Aplicar Recomendação
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">
+                Continue estudando para receber recomendações personalizadas
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Quick Actions */}
       <Card>
