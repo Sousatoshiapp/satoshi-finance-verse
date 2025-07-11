@@ -175,7 +175,6 @@ export default function Dashboard() {
   const userAvatar = useMemo(() => dashboardData?.avatar, [dashboardData?.avatar]);
   const hasAvatar = useMemo(() => !!userAvatar, [userAvatar]);
   const userDistrict = useMemo(() => dashboardData?.district, [dashboardData?.district]);
-  const userTeam = useMemo(() => dashboardData?.team, [dashboardData?.team]);
 
   // Loading state
   if (isLoading) {
@@ -322,27 +321,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Team Info - Apenas se o usuário tiver time */}
-          {userTeam && (
-            <div className="mb-4">
-              <div 
-                className="bg-gradient-to-r from-card/80 to-muted/40 border border-border/50 rounded-2xl p-4 cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-md"
-                onClick={() => navigate('/guilds')}
-                style={{
-                  borderColor: `${userTeam.team_color}30`,
-                  background: `linear-gradient(135deg, ${userTeam.team_color}10, ${userTeam.team_color}05)`
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl">⚔️</div>
-                  <div className="flex-1">
-                    <div className="text-xs text-muted-foreground">Seu Time</div>
-                    <div className="text-lg font-bold text-foreground">{userTeam.name}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
 
           {/* Ranking Semanal de Beetz */}
