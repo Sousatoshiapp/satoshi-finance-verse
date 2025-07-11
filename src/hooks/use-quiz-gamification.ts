@@ -129,9 +129,16 @@ export function useQuizGamification() {
           .single();
           
         if (profile) {
-          await supabase.from('profiles').update({
+          console.log('💰 Atualizando BTZ no banco:', { before: profile.points, adding: earnedBTZ, after: profile.points + earnedBTZ });
+          const { error } = await supabase.from('profiles').update({
             points: profile.points + earnedBTZ
           }).eq('user_id', user.id);
+          
+          if (error) {
+            console.error('❌ Erro ao atualizar BTZ:', error);
+          } else {
+            console.log('✅ BTZ atualizado com sucesso');
+          }
         }
       } catch (error) {
         console.error('Error updating points:', error);
@@ -161,9 +168,16 @@ export function useQuizGamification() {
           .single();
           
         if (profile) {
-          await supabase.from('profiles').update({
+          console.log('💰 Atualizando BTZ no banco:', { before: profile.points, adding: earnedBTZ, after: profile.points + earnedBTZ });
+          const { error } = await supabase.from('profiles').update({
             points: profile.points + earnedBTZ
           }).eq('user_id', user.id);
+          
+          if (error) {
+            console.error('❌ Erro ao atualizar BTZ:', error);
+          } else {
+            console.log('✅ BTZ atualizado com sucesso');
+          }
         }
       } catch (error) {
         console.error('Error updating points:', error);
