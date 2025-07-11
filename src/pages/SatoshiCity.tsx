@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { SatoshiCity3D } from "@/components/satoshi-city-3d";
+import { PowerBar } from "@/components/ui/power-bar";
 import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box } from "lucide-react";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
@@ -82,6 +83,7 @@ const districtPositions = {
 export default function SatoshiCity() {
   const [districts, setDistricts] = useState<District[]>([]);
   const [userDistricts, setUserDistricts] = useState<UserDistrict[]>([]);
+  const [districtXPData, setDistrictXPData] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [currentCityImage, setCurrentCityImage] = useState(satoshiCityNight);
   const [is3DMode, setIs3DMode] = useState(false);
@@ -114,6 +116,63 @@ export default function SatoshiCity() {
 
     return () => clearInterval(interval);
   }, [getCityImageByTime]);
+
+  const loadDistrictXPData = useCallback(async () => {
+    try {
+      const xpData: Record<string, number> = {};
+      
+      for (const district of districts) {
+        // Get all user IDs who are residents of this district
+        const { data: residents, error: residentsError } = await supabase
+          .from('user_districts')
+          .select('user_id')
+          .eq('district_id', district.id)
+          .eq('is_residence', true);
+
+        if (residentsError) {
+          console.error(`Error loading residents for district ${district.id}:`, residentsError);
+          xpData[district.id] = 0;
+          continue;
+        }
+
+        if (!residents || residents.length === 0) {
+          xpData[district.id] = 0;
+          continue;
+        }
+
+        // Get XP for all residents
+        const userIds = residents.map(r => r.user_id);
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('xp')
+          .in('id', userIds);
+
+        if (profilesError) {
+          console.error(`Error loading profiles for district ${district.id}:`, profilesError);
+          xpData[district.id] = 0;
+          continue;
+        }
+
+        // Sum up all XP from residents
+        const totalXP = profiles?.reduce((sum, profile) => {
+          return sum + (profile.xp || 0);
+        }, 0) || 0;
+
+        xpData[district.id] = totalXP;
+      }
+      
+      setDistrictXPData(xpData);
+    } catch (error) {
+      console.error('Error loading district XP data:', error);
+    }
+  }, [districts]);
+
+  // Load district XP data after districts are loaded
+  useEffect(() => {
+    if (districts.length > 0) {
+      loadDistrictXPData();
+    }
+  }, [districts, loadDistrictXPData]);
 
   const loadDistricts = useCallback(async () => {
     try {
@@ -229,10 +288,11 @@ export default function SatoshiCity() {
       }
       
       loadUserDistricts();
+      loadDistrictXPData(); // Reload XP data after residence change
     } catch (error) {
       console.error('Error changing residence:', error);
     }
-  }, [navigate, getCurrentResidence, userDistricts, loadUserDistricts]);
+  }, [navigate, getCurrentResidence, userDistricts, loadUserDistricts, loadDistrictXPData]);
 
   if (loading) {
     return (
@@ -305,7 +365,9 @@ export default function SatoshiCity() {
             const userInfo = getUserDistrictInfo(district.id);
             const IconComponent = districtIcons[district.theme as keyof typeof districtIcons] || Building;
             const districtLogo = district.sponsor_logo_url || districtLogos[district.theme as keyof typeof districtLogos];
-            const powerLevel = district.power_level || 100;
+            const districtTotalXP = districtXPData[district.id] || 0;
+            const maxXP = 20000000; // 20 million XP max
+            const powerLevel = Math.min(100, Math.round((districtTotalXP / maxXP) * 100));
             const battleWinRate = district.battles_won + district.battles_lost > 0 
               ? Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)
               : 100;
@@ -375,17 +437,15 @@ export default function SatoshiCity() {
                 </div>
 
                 {/* Power Level Bar */}
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-16">
-                  <div className="bg-slate-700 rounded-full h-2 overflow-hidden">
-                    <div 
-                      className="h-full rounded-full transition-all duration-500"
-                      style={{ 
-                        backgroundColor: powerLevel > 70 ? '#10B981' : powerLevel > 40 ? '#F59E0B' : '#EF4444',
-                        width: `${powerLevel}%`
-                      }}
-                    ></div>
-                  </div>
-                  <div className="text-xs text-center text-gray-400 mt-1">{powerLevel}%</div>
+                <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 w-20">
+                  <PowerBar
+                    currentPower={districtTotalXP}
+                    maxPower={maxXP}
+                    label="XP Total"
+                    color={district.color_primary}
+                    showPercentage={false}
+                    className="scale-75"
+                  />
                 </div>
 
                 {/* Compact District Hover Card - Mobile Hidden */}
