@@ -559,38 +559,7 @@ export function QuizEngine({
             </Button>
           )}
 
-          {/* Answer Result and Continue Button */}
-          {showAnswer && (
-            <Card className="mt-4">
-              <CardContent className="p-4 text-center">
-                <div className={`mb-4 ${selectedAnswer === currentQuestion.correct_answer ? 'text-green-600' : 'text-red-600'}`}>
-                  <h3 className="text-xl font-bold mb-2">
-                    {selectedAnswer === currentQuestion.correct_answer ? '✅ Correto!' : '❌ Incorreto!'}
-                  </h3>
-                  {selectedAnswer !== currentQuestion.correct_answer && (
-                    <p className="text-gray-700 mb-2">
-                      Resposta correta: <strong>{currentQuestion.correct_answer}</strong>
-                    </p>
-                  )}
-                </div>
-                
-                {currentQuestion.explanation && (
-                  <div className="mb-4 p-3 bg-muted rounded text-left">
-                    <h4 className="font-semibold mb-2">Explicação:</h4>
-                    <p className="text-muted-foreground">{currentQuestion.explanation}</p>
-                  </div>
-                )}
-                
-                <Button 
-                  onClick={handleContinue}
-                  className="w-full bg-primary hover:bg-primary/90 text-white"
-                  size="lg"
-                >
-                  Continuar
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+          {/* Card de explicação removido - agora usa modal unificado */}
         </div>
       </div>
 
@@ -609,15 +578,27 @@ export function QuizEngine({
 
       {/* LifePurchaseBanner removido - sem vidas */}
 
-      {/* Modal de Timeout */}
-      <AlertDialog open={showTimeoutModal} onOpenChange={setShowTimeoutModal}>
+      {/* Modal Unificado - Timeout e Resposta Incorreta */}
+      <AlertDialog open={showTimeoutModal || showAnswer} onOpenChange={(open) => {
+        if (!open) {
+          setShowTimeoutModal(false);
+          if (showAnswer) {
+            handleContinue();
+          }
+        }
+      }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-center">⏰ Tempo Esgotado!</AlertDialogTitle>
+            <AlertDialogTitle className="text-center">
+              {showTimeoutModal ? '⏰ Tempo Esgotado!' : 
+               selectedAnswer === currentQuestion?.correct_answer ? '✅ Correto!' : '❌ Incorreto!'}
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-center space-y-4">
-              <div className="text-lg font-semibold text-white">
-                Resposta correta: <span style={{color: '#adff2f'}}>{currentQuestion?.correct_answer}</span>
-              </div>
+              {(showTimeoutModal || (showAnswer && selectedAnswer !== currentQuestion?.correct_answer)) && (
+                <div className="text-lg font-semibold text-white">
+                  Resposta correta: <span style={{color: '#adff2f'}}>{currentQuestion?.correct_answer}</span>
+                </div>
+              )}
               {currentQuestion?.explanation && (
                 <div className="text-sm text-muted-foreground">
                   {currentQuestion.explanation}
@@ -626,7 +607,7 @@ export function QuizEngine({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleTimeoutContinue} className="w-full">
+            <AlertDialogAction onClick={showTimeoutModal ? handleTimeoutContinue : handleContinue} className="w-full">
               Continuar
             </AlertDialogAction>
           </AlertDialogFooter>
