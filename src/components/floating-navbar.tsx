@@ -1,18 +1,19 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { IconSystem } from "@/components/icons/icon-system";
 
 export function FloatingNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
-    { path: '/dashboard', icon: '🏠', label: 'Home' },
-    { path: '/social', icon: '💬', label: 'Social' },
-    { path: '/game-mode', icon: '🎮', label: 'Jogue' },
-    { path: '/satoshi-city', icon: '🌃', label: 'Cidade' },
-    { path: '/store', icon: '🛒', label: 'Loja' },
-    { path: '/profile', icon: '👤', label: 'Perfil' }
+    { path: '/dashboard', icon: '🏠' as const, label: 'Home' },
+    { path: '/social', icon: '💬' as const, label: 'Social' },
+    { path: '/game-mode', icon: '🎮' as const, label: 'Jogue' },
+    { path: '/satoshi-city', icon: '🌃' as const, label: 'Cidade' },
+    { path: '/store', icon: '🛒' as const, label: 'Loja' },
+    { path: '/profile', icon: '👤' as const, label: 'Perfil' }
   ];
 
   return (
@@ -34,10 +35,15 @@ export function FloatingNavbar() {
                       ? "bg-gradient-to-r from-primary to-success text-white shadow-glow scale-110" 
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   )}
-                >
-                  <span className="text-lg md:text-xl">{item.icon}</span>
-                  <span className="text-[10px] md:text-xs font-medium leading-none">{item.label}</span>
-                </button>
+                 >
+                   <IconSystem 
+                     emoji={item.icon} 
+                     size="lg" 
+                     animated={isActive}
+                     variant={isActive ? "glow" : "default"}
+                   />
+                   <span className="text-[10px] md:text-xs font-medium leading-none">{item.label}</span>
+                 </button>
               );
             })}
           </div>

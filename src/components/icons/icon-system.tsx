@@ -10,11 +10,23 @@ import {
   CrownIcon, 
   TargetIcon, 
   ShieldIcon, 
-  RocketIcon 
+  RocketIcon,
+  HomeIcon,
+  ChatIcon,
+  GameIcon,
+  CityIcon,
+  ShopIcon,
+  UserIcon,
+  CelebrationIcon,
+  ChartIcon,
+  MoneyIcon,
+  TrendingIcon,
+  SadIcon
 } from './game-icons';
 
 // Mapeamento de emojis para componentes personalizados
 const emojiIconMap = {
+  // Ícones principais já existentes
   '🔥': StreakIcon,
   '🏆': TrophyIcon,
   '⚡': LightningIcon,
@@ -26,7 +38,21 @@ const emojiIconMap = {
   '🎯': TargetIcon,
   '🛡️': ShieldIcon,
   '🚀': RocketIcon,
-  // Adicionar mais conforme necessário
+  
+  // Novos ícones de navegação
+  '🏠': HomeIcon,
+  '💬': ChatIcon,
+  '🎮': GameIcon,
+  '🌃': CityIcon,
+  '🛒': ShopIcon,
+  '👤': UserIcon,
+  
+  // Ícones de estado e dados
+  '🎉': CelebrationIcon,
+  '📊': ChartIcon,
+  '💰': MoneyIcon,
+  '📈': TrendingIcon,
+  '😔': SadIcon
 } as const;
 
 interface IconSystemProps {
@@ -86,7 +112,7 @@ export function EmojiReplace({
   variant = 'default' 
 }: EmojiReplaceProps) {
   // Procura por emojis no texto e os substitui
-  const parts = children.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀)/);
+  const parts = children.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|🌃|🛒|👤|🎉|📊|💰|📈|😔)/);
   
   return (
     <>
@@ -126,7 +152,7 @@ export function SmartText({
   className 
 }: SmartTextProps) {
   const processText = (text: string) => {
-    const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀)/);
+    const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|🌃|🛒|👤|🎉|📊|💰|📈|😔)/);
     
     return parts.map((part, index) => {
       if (part in emojiIconMap) {
@@ -178,7 +204,7 @@ export function replaceEmojisInText(
   } = {}
 ): React.ReactNode {
   const { size = 'md', variant = 'default', animated = false } = options;
-  const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀)/);
+  const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|🌃|🛒|👤|🎉|📊|💰|📈|😔)/);
   
   return parts.map((part, index) => {
     if (part in emojiIconMap) {
@@ -208,5 +234,16 @@ export {
   CrownIcon,
   TargetIcon,
   ShieldIcon,
-  RocketIcon
+  RocketIcon,
+  HomeIcon,
+  ChatIcon,
+  GameIcon,
+  CityIcon,
+  ShopIcon,
+  UserIcon,
+  CelebrationIcon,
+  ChartIcon,
+  MoneyIcon,
+  TrendingIcon,
+  SadIcon
 };

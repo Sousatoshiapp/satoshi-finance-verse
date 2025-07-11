@@ -7,6 +7,7 @@ import { Gift, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { LightningIcon, RocketIcon, TrophyIcon, GiftIcon } from "@/components/icons/game-icons";
+import { IconSystem } from "@/components/icons/icon-system";
 
 interface AnimatedLootBoxProps {
   isAvailable: boolean;
@@ -60,7 +61,7 @@ export function AnimatedLootBox({ isAvailable }: AnimatedLootBoxProps) {
       setShowPrize(true);
       
       toast({
-        title: "🎉 Loot Box Aberta!",
+        title: "Loot Box Aberta!",
         description: `Você ganhou: ${newPrize.name}`,
       });
     }, 2000);
@@ -103,7 +104,10 @@ export function AnimatedLootBox({ isAvailable }: AnimatedLootBoxProps) {
         <Card className={cn("max-w-sm w-full border-2", getRarityColor(prize.rarity))}>
           <CardHeader className="text-center">
             <div className="text-6xl mb-4 animate-bounce">{getPrizeIcon(prize.type)}</div>
-            <CardTitle className="text-2xl">🎉 Parabéns!</CardTitle>
+            <CardTitle className="text-2xl flex items-center gap-2">
+              <IconSystem emoji="🎉" size="xl" animated variant="glow" />
+              Parabéns!
+            </CardTitle>
             <p className="text-muted-foreground">Você ganhou um prêmio incrível!</p>
           </CardHeader>
           

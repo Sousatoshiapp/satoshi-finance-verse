@@ -168,7 +168,7 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
       if (updateError) throw updateError;
 
       toast({
-        title: "🎉 Avatar Selecionado!",
+        title: "Avatar Selecionado!",
         description: `Bem-vindo(a) à Satoshi City, ${selectedAvatar.name}!`,
       });
 

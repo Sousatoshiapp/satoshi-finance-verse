@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
-import { TargetIcon } from "@/components/icons/icon-system";
+import { TargetIcon, IconSystem } from "@/components/icons/icon-system";
 
 interface MatchmakingWheelProps {
   isSearching: boolean;
@@ -194,7 +194,10 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
           ) : (
             <>
               <h2 className="text-2xl font-bold text-green-500">
-                🎉 Oponente Encontrado!
+                <span className="flex items-center gap-2">
+                  <IconSystem emoji="🎉" size="lg" animated variant="glow" />
+                  Oponente Encontrado!
+                </span>
               </h2>
               <p className="text-white text-lg font-semibold">
                 {matchedOpponent?.nickname}

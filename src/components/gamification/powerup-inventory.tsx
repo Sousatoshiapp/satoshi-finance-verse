@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { usePowerups } from "@/hooks/use-powerups";
 import { Package, Zap, Shield, Wrench, Sparkles, Clock, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SmartText, StreakIcon, LightningIcon, DiamondIcon, ShieldIcon, TargetIcon, RocketIcon } from "@/components/icons/icon-system";
+import { SmartText, StreakIcon, LightningIcon, DiamondIcon, ShieldIcon, TargetIcon, RocketIcon, IconSystem } from "@/components/icons/icon-system";
 
 export function PowerupInventory() {
   const { 
@@ -211,7 +211,14 @@ export function PowerupInventory() {
                         </div>
                         <div className="text-xs">
                           <SmartText iconSize="xs">
-                            🎁 Caixas de Loot • 🏆 Eventos • 🎯 Missões
+                            <span className="flex items-center gap-2">
+                              <IconSystem emoji="🎁" size="sm" />
+                              Caixas de Loot •
+                              <IconSystem emoji="🏆" size="sm" />
+                              Eventos •
+                              <IconSystem emoji="🎯" size="sm" />
+                              Missões
+                            </span>
                           </SmartText>
                         </div>
                       </div>

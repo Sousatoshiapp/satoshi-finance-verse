@@ -83,7 +83,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           .single();
 
         toast({
-          title: "🎉 Duelo aceito!",
+          title: "Duelo aceito!",
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
         });
 

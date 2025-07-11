@@ -10,6 +10,7 @@ import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 import { CircularTimer } from "./circular-timer";
 import { EnhancedDuelInterface } from "./enhanced-duel-interface";
 import { motion, AnimatePresence } from "framer-motion";
+import { IconSystem } from "@/components/icons/icon-system";
 
 interface EnhancedSimultaneousDuelProps {
   duel: any;
@@ -386,7 +387,21 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
           </motion.div>
           
           <h1 className="text-4xl font-bold">
-            {myScore > opponentScore ? "🎉 Vitória!" : myScore < opponentScore ? "😔 Derrota" : "🤝 Empate!"}
+            <span className="flex items-center gap-2">
+              {myScore > opponentScore ? (
+                <>
+                  <IconSystem emoji="🎉" size="lg" animated variant="glow" />
+                  Vitória!
+                </>
+              ) : myScore < opponentScore ? (
+                <>
+                  <IconSystem emoji="😔" size="lg" />
+                  Derrota
+                </>
+              ) : (
+                "🤝 Empate!"
+              )}
+            </span>
           </h1>
           
           <div className="text-6xl font-bold">

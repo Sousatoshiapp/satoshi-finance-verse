@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { StreakIcon, GiftIcon, TrophyIcon, SwordIcon, StarIcon } from "@/components/icons/icon-system";
+import { StreakIcon, GiftIcon, TrophyIcon, SwordIcon, StarIcon, IconSystem } from "@/components/icons/icon-system";
 
 interface DashboardSummaryProps {
   userStats: {
@@ -26,7 +26,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <span className="text-2xl">📊</span>
+            <IconSystem emoji="📊" size="xl" animated variant="glow" />
             Resumo do Dia
           </h3>
           <div className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">

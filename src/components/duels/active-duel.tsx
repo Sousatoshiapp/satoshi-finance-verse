@@ -196,7 +196,7 @@ export function ActiveDuel({ duel, onDuelEnd }: ActiveDuelProps) {
         // Show result and end duel
         const winner = updateData.winner_id === currentProfile.id;
         toast({
-          title: winner ? "🎉 Vitória!" : "😔 Derrota",
+          title: winner ? "Vitória!" : "Derrota",
           description: winner ? 
             "Parabéns! Você venceu o duelo!" : 
             "Não foi desta vez. Continue praticando!",

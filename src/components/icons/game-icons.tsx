@@ -402,3 +402,387 @@ export function RocketIcon({ size = 'md', className, animated = false, variant =
     </svg>
   );
 }
+
+// Home Icon - Substitui 🏠
+export function HomeIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="home-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4169e1" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#32cd32" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M3 9.5L12 1l9 8.5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-11Z" 
+        fill="url(#home-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <path d="M9 22V12h6v10" stroke="#adff2f" strokeWidth="1" fill="none" />
+      <circle cx="12" cy="8" r="1" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
+
+// Chat Icon - Substitui 💬
+export function ChatIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="chat-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ff6b6b" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#4ecdc4" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z" 
+        fill="url(#chat-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <circle cx="9" cy="10" r="1" fill="#ffffff" opacity="0.9" />
+      <circle cx="15" cy="10" r="1" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
+
+// Game Icon - Substitui 🎮
+export function GameIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-bounce',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="game-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#9c27b0" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#e91e63" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M6 12a6 6 0 0 0 12 0H6Z" 
+        fill="url(#game-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <path 
+        d="M21.47 6.19C20.88 5.47 19.91 5 18.88 5H5.12C4.09 5 3.12 5.47 2.53 6.19 1.94 6.91 1.78 7.84 2.12 8.68l1.88 4.69C4.35 14.31 5.18 15 6.12 15h11.76c.94 0 1.77-.69 2.12-1.63l1.88-4.69c.34-.84.18-1.77-.41-2.49Z" 
+        fill="url(#game-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <circle cx="17" cy="9" r="1" fill="#ffffff" opacity="0.9" />
+      <circle cx="7" cy="9" r="1" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
+
+// City Icon - Substitui 🌃
+export function CityIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="city-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2c3e50" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#34495e" />
+        </linearGradient>
+      </defs>
+      <rect x="3" y="6" width="4" height="16" fill="url(#city-gradient)" stroke="#adff2f" strokeWidth="0.5" />
+      <rect x="9" y="2" width="4" height="20" fill="url(#city-gradient)" stroke="#adff2f" strokeWidth="0.5" />
+      <rect x="15" y="8" width="4" height="14" fill="url(#city-gradient)" stroke="#adff2f" strokeWidth="0.5" />
+      <rect x="4" y="9" width="1" height="1" fill="#adff2f" />
+      <rect x="10" y="5" width="1" height="1" fill="#adff2f" />
+      <rect x="16" y="11" width="1" height="1" fill="#adff2f" />
+    </svg>
+  );
+}
+
+// Shop Icon - Substitui 🛒
+export function ShopIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-bounce',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="shop-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ff9500" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#ff6347" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M7 8a5 5 0 1 1 10 0" 
+        stroke="#adff2f" 
+        strokeWidth="1.5" 
+        fill="none"
+      />
+      <path 
+        d="M3 8h18l-1 13H4L3 8Z" 
+        fill="url(#shop-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <circle cx="9" cy="17" r="1" fill="#ffffff" opacity="0.9" />
+      <circle cx="15" cy="17" r="1" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
+
+// User Icon - Substitui 👤
+export function UserIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="user-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#667eea" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#764ba2" />
+        </linearGradient>
+      </defs>
+      <circle cx="12" cy="8" r="5" fill="url(#user-gradient)" stroke="#adff2f" strokeWidth="0.5" />
+      <path 
+        d="M20 21a8 8 0 1 0-16 0" 
+        fill="url(#user-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <circle cx="12" cy="8" r="2" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
+
+// Celebration Icon - Substitui 🎉
+export function CelebrationIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-bounce',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="celebration-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ff6b6b" />
+          <stop offset="25%" stopColor="#4ecdc4" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="75%" stopColor="#ffe66d" />
+          <stop offset="100%" stopColor="#ff6b6b" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M14 6l-1 6h-2l-1-6L12 2l2 4Z" 
+        fill="url(#celebration-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <circle cx="6" cy="8" r="1" fill="#ff6b6b" />
+      <circle cx="18" cy="8" r="1" fill="#4ecdc4" />
+      <circle cx="4" cy="12" r="1" fill="#ffe66d" />
+      <circle cx="20" cy="12" r="1" fill="#adff2f" />
+      <circle cx="6" cy="16" r="1" fill="#4ecdc4" />
+      <circle cx="18" cy="16" r="1" fill="#ff6b6b" />
+    </svg>
+  );
+}
+
+// Chart Icon - Substitui 📊
+export function ChartIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="chart-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#667eea" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#764ba2" />
+        </linearGradient>
+      </defs>
+      <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="#adff2f" strokeWidth="1" />
+      <rect x="7" y="12" width="2" height="6" fill="url(#chart-gradient)" />
+      <rect x="11" y="8" width="2" height="10" fill="url(#chart-gradient)" />
+      <rect x="15" y="10" width="2" height="8" fill="url(#chart-gradient)" />
+    </svg>
+  );
+}
+
+// Money Icon - Substitui 💰
+export function MoneyIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-bounce',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="money-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffd700" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#32cd32" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8L14 2Z" 
+        fill="url(#money-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.5"
+      />
+      <path d="M14 2v6h6" stroke="#adff2f" strokeWidth="1" fill="none" />
+      <circle cx="12" cy="15" r="3" fill="none" stroke="#ffffff" strokeWidth="1.5" />
+      <path d="M11 14h1v4h1" stroke="#ffffff" strokeWidth="1" />
+    </svg>
+  );
+}
+
+// Trending Icon - Substitui 📈
+export function TrendingIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="trending-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#32cd32" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#00ff00" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M3 17l6-6 4 4 8-8" 
+        stroke="url(#trending-gradient)" 
+        strokeWidth="2" 
+        fill="none"
+      />
+      <path d="M17 7h4v4" stroke="#adff2f" strokeWidth="1.5" fill="none" />
+      <circle cx="9" cy="11" r="1" fill="#adff2f" />
+      <circle cx="13" cy="15" r="1" fill="#adff2f" />
+    </svg>
+  );
+}
+
+// Sad Icon - Substitui 😔
+export function SadIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="sad-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ff6b6b" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#ff4757" />
+        </linearGradient>
+      </defs>
+      <circle cx="12" cy="12" r="10" fill="url(#sad-gradient)" stroke="#adff2f" strokeWidth="0.5" />
+      <circle cx="9" cy="9" r="1" fill="#ffffff" />
+      <circle cx="15" cy="9" r="1" fill="#ffffff" />
+      <path d="M9 16s1-2 3-2 3 2 3 2" stroke="#ffffff" strokeWidth="1.5" fill="none" transform="rotate(180 12 16)" />
+    </svg>
+  );
+}

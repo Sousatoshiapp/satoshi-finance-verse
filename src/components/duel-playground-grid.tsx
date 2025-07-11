@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { IconSystem } from "@/components/icons/icon-system";
 
 // Import cyberpunk images
 import duelCyberpunk from "@/assets/duel-cyberpunk-3d.jpg";
@@ -44,7 +45,7 @@ export function DuelPlaygroundGrid() {
               <div className="text-muted-foreground">Beetz</div>
             </div>
             <div>
-              <div className="text-lg">⚔️</div>
+              <IconSystem emoji="⚔️" size="lg" animated variant="glow" />
               <div className="text-muted-foreground">Troféu</div>
             </div>
           </div>
@@ -91,7 +92,7 @@ export function DuelPlaygroundGrid() {
               <div className="text-muted-foreground">Siga</div>
             </div>
             <div>
-              <div className="text-lg">📈</div>
+              <IconSystem emoji="📈" size="lg" animated variant="glow" />
               <div className="text-muted-foreground">Aprenda</div>
             </div>
           </div>

@@ -126,7 +126,7 @@ export function DailyRewards({ className }: DailyRewardsProps) {
       });
 
       toast({
-        title: "Recompensa Diária! 🎁",
+        title: "Recompensa Diária!",
         description: message,
         duration: 3000,
       });
