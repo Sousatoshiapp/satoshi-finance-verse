@@ -133,18 +133,24 @@ export function QuizEngine({
     setAnsweredQuestions(prev => [...prev, answeredQuestion]);
     await submitAnswer(question.id, false, 30);
     
-    // Processar resposta errada
-    await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
+    // Processar resposta errada - APLICAR MESMA LÓGICA DO handleSubmit
+    const wrongResult = await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
     
-    console.log('⏰ Setando showAnswer=true para mostrar banner...');
+    // Se pode usar vida, mostrar opção de vida
+    if (wrongResult?.canUseLife) {
+      console.log('⏰ Pode usar vida - mostrando banner de vida');
+      setPendingWrongAnswer({
+        question: question.question,
+        correctAnswer: question.correct_answer,
+        explanation: question.explanation
+      });
+      setShowLifeBanner(true);
+      return; // Não avança ainda - aguarda decisão da vida
+    }
+    
+    // Se não pode usar vida, mostrar banner de resposta correta
+    console.log('⏰ Não pode usar vida - mostrando banner de resposta');
     setShowAnswer(true);
-    
-    // Verificar se realmente foi setado
-    setTimeout(() => {
-      console.log('⏰ Verificando estado showAnswer após 100ms:', showAnswer);
-    }, 100);
-    
-    // Banner permanece até usuário clicar em "Continuar" - sem auto-advance
   };
 
   useEffect(() => {
