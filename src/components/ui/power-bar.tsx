@@ -9,6 +9,7 @@ interface PowerBarProps {
   className?: string;
   color?: string;
   showPercentage?: boolean;
+  showMaxValue?: boolean;
 }
 
 export function PowerBar({
@@ -17,7 +18,8 @@ export function PowerBar({
   label = "Poder",
   className,
   color = "#3B82F6",
-  showPercentage = true
+  showPercentage = true,
+  showMaxValue = true
 }: PowerBarProps) {
   const percentage = Math.min((currentPower / maxPower) * 100, 100);
   
@@ -46,7 +48,7 @@ export function PowerBar({
         />
       </div>
       
-      {maxPower > 0 && (
+      {maxPower > 0 && showMaxValue && (
         <div className="text-xs text-muted-foreground mt-1 text-right">
           Max: {maxPower.toLocaleString()}
         </div>

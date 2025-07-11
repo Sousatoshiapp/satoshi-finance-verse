@@ -444,6 +444,7 @@ export default function SatoshiCity() {
                     label="XP Total"
                     color={district.color_primary}
                     showPercentage={false}
+                    showMaxValue={false}
                     className="scale-75"
                   />
                 </div>
