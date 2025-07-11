@@ -35,7 +35,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         setTimeout(() => setShowTrend(false), 3000);
       }
     }
-  }, [currentBTZ, isLoading, displayBTZ, isAnimating]);
+  }, [currentBTZ, isLoading]);
 
   const animateToNewValue = useCallback((newValue: number) => {
     if (isAnimating) return;
