@@ -20,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import confetti from "canvas-confetti";
+import victoryImage from "@/assets/victory-celebration.png";
 
 interface QuizQuestion {
   id: string;
@@ -207,6 +208,10 @@ export function QuizEngine({
       spread: 70,
       origin: { y: 0.6 }
     });
+    
+    // Play victory sound
+    const audio = new Audio('/audio/fireworks.mp3');
+    audio.play().catch(console.error);
   };
 
   const handleOptionSelect = (option: string) => {
@@ -352,6 +357,11 @@ export function QuizEngine({
     const percentage = Math.round((score / questions.length) * 100);
     const isSuccess = percentage >= 70;
     
+    // Trigger confetti and sound for victory
+    if (isSuccess) {
+      fireConfetti();
+    }
+    
     const getContinueAction = () => {
       // Para modo solo, sempre iniciar novo quiz
       if (mode === 'solo') {
@@ -377,9 +387,9 @@ export function QuizEngine({
           {/* Success or Failure Animation */}
           <div className="mb-6">
             <img 
-              src={isSuccess ? "/src/assets/success-animation.png" : "/src/assets/failure-animation.png"}
+              src={isSuccess ? victoryImage : "/src/assets/failure-animation.png"}
               alt={isSuccess ? "Celebração" : "Falha"}
-              className="h-32 w-32 mx-auto mb-4 object-contain"
+              className="h-32 w-32 mx-auto mb-4 object-contain rounded-full"
             />
           </div>
           
