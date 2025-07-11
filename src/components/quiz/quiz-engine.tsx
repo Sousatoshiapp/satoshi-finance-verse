@@ -113,13 +113,37 @@ export function QuizEngine({
           }
           
           // Auto submit when time runs out
-          if (newTime === 0) {
-            if (selectedAnswer) {
-              handleSubmit();
-            } else {
-              // Auto-select wrong answer if no selection
-              setSelectedAnswer('timeout');
-              setTimeout(handleSubmit, 100);
+          if (newTime === 0 && !showAnswer) {
+            console.log('Timer zerou! selectedAnswer:', selectedAnswer, 'showAnswer:', showAnswer);
+            
+            // Forçar o avanço para próxima pergunta quando timer zera
+            const question = questions[currentIndex];
+            if (question) {
+              // Marcar como respondida incorretamente
+              const answeredQuestion = {
+                questionId: question.id,
+                selectedAnswer: selectedAnswer || 'timeout',
+                isCorrect: false,
+                timeSpent: 30
+              };
+              
+              setAnsweredQuestions(prev => [...prev, answeredQuestion]);
+              submitAnswer(question.id, false, 30);
+              
+              // Processar resposta errada
+              handleWrongAnswer(question.question, question.correct_answer, question.explanation);
+              
+              // Avançar imediatamente para próxima pergunta
+              setTimeout(() => {
+                if (currentIndex < questions.length - 1) {
+                  setCurrentIndex(prev => prev + 1);
+                  setSelectedAnswer(null);
+                  setShowAnswer(false);
+                  setTimeLeft(30);
+                } else {
+                  handleQuizComplete();
+                }
+              }, 1000);
             }
           }
           
