@@ -28,7 +28,7 @@ export function PowerBar({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <Zap className="w-4 h-4" style={{ color }} />
-          <span className="text-sm font-medium">{label}</span>
+          <span className="text-sm font-medium line-clamp-2 text-ellipsis overflow-hidden leading-tight">{label}</span>
         </div>
         <div className="text-sm text-muted-foreground">
           {currentPower.toLocaleString()}
