@@ -8,6 +8,21 @@ import xpNight from '@/assets/districts/xp-night.jpg';
 import animaMorning from '@/assets/districts/anima-morning.jpg';
 import animaSunset from '@/assets/districts/anima-sunset.jpg';
 import animaNight from '@/assets/districts/anima-night.jpg';
+import cryptoMorning from '@/assets/districts/crypto-morning.jpg';
+import cryptoSunset from '@/assets/districts/crypto-sunset.jpg';
+import cryptoNight from '@/assets/districts/crypto-night.jpg';
+import bankingMorning from '@/assets/districts/banking-morning.jpg';
+import bankingSunset from '@/assets/districts/banking-sunset.jpg';
+import bankingNight from '@/assets/districts/banking-night.jpg';
+import realestateMorning from '@/assets/districts/realestate-morning.jpg';
+import realestateSunset from '@/assets/districts/realestate-sunset.jpg';
+import realestateNight from '@/assets/districts/realestate-night.jpg';
+import internationalMorning from '@/assets/districts/international-morning.jpg';
+import internationalSunset from '@/assets/districts/international-sunset.jpg';
+import internationalNight from '@/assets/districts/international-night.jpg';
+import fintechMorning from '@/assets/districts/fintech-morning.jpg';
+import fintechSunset from '@/assets/districts/fintech-sunset.jpg';
+import fintechNight from '@/assets/districts/fintech-night.jpg';
 
 interface DistrictBackgroundProps {
   districtTheme: string;
@@ -25,31 +40,30 @@ const districtImages = {
     sunset: animaSunset,
     night: animaNight,
   },
-  // Para os outros distritos, usar as existentes como placeholder até gerar as específicas
   criptomoedas: {
-    morning: xpMorning, // Placeholder
-    sunset: xpSunset,   // Placeholder
-    night: xpNight,     // Placeholder
+    morning: cryptoMorning,
+    sunset: cryptoSunset,
+    night: cryptoNight,
   },
   sistema_bancario: {
-    morning: xpMorning, // Placeholder
-    sunset: xpSunset,   // Placeholder
-    night: xpNight,     // Placeholder
+    morning: bankingMorning,
+    sunset: bankingSunset,
+    night: bankingNight,
   },
   fundos_imobiliarios: {
-    morning: xpMorning, // Placeholder
-    sunset: xpSunset,   // Placeholder
-    night: xpNight,     // Placeholder
+    morning: realestateMorning,
+    sunset: realestateSunset,
+    night: realestateNight,
   },
   mercado_internacional: {
-    morning: xpMorning, // Placeholder
-    sunset: xpSunset,   // Placeholder
-    night: xpNight,     // Placeholder
+    morning: internationalMorning,
+    sunset: internationalSunset,
+    night: internationalNight,
   },
   fintech: {
-    morning: xpMorning, // Placeholder
-    sunset: xpSunset,   // Placeholder
-    night: xpNight,     // Placeholder
+    morning: fintechMorning,
+    sunset: fintechSunset,
+    night: fintechNight,
   },
 };
 

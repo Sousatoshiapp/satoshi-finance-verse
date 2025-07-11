@@ -150,8 +150,8 @@ export const ImmersiveDistrictPage: React.FC = () => {
         {/* Background dinâmico */}
         <DistrictBackground districtTheme={district.theme} className="fixed inset-0 z-0" />
 
-        {/* Container com scroll */}
-        <div className="relative z-10 min-h-screen pb-20">{/* pb-20 para espaço do navbar */}
+        {/* Container com scroll - Estrutura flex vertical */}
+        <div className="relative z-10 min-h-screen pb-32 flex flex-col">{/* pb-32 para espaço do navbar */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -180,100 +180,106 @@ export const ImmersiveDistrictPage: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Informações do distrito */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="absolute top-20 left-6 z-20 max-w-md"
-        >
-          <div className="bg-black/60 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
-            <div className="flex items-center gap-4 mb-4">
-              <img 
-                src={theme.logoUrl} 
-                alt={theme.name}
-                className="w-16 h-16 rounded-xl object-cover border-2 border-white/20"
-              />
-              <div>
-                <h1 className="text-2xl font-bold text-white mb-1">{theme.name}</h1>
-                <p className="text-white/70 text-sm">{district.description}</p>
+        {/* Layout principal - Grid responsivo */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 pt-24">
+          
+          {/* Informações do distrito - Card compacto */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <div className="bg-black/60 backdrop-blur-lg rounded-xl p-4 border border-white/20 max-w-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <img 
+                  src={theme.logoUrl} 
+                  alt={theme.name}
+                  className="w-12 h-12 rounded-lg object-cover border-2 border-white/20"
+                />
+                <div>
+                  <h1 className="text-lg font-bold text-white mb-1">{theme.name}</h1>
+                  <p className="text-white/70 text-xs leading-tight">{district.description}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-1 mb-3">
+                <Badge variant="secondary" className="bg-white/10 text-white border-white/20 text-xs px-2 py-1">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Nível {district.level_required}+
+                </Badge>
+                <Badge variant="secondary" className="bg-white/10 text-white border-white/20 text-xs px-2 py-1">
+                  <Users className="w-3 h-3 mr-1" />
+                  {memberCount} membros
+                </Badge>
+              </div>
+
+              <div className="space-y-2">
+                {!userDistrict ? (
+                  <Button
+                    onClick={handleJoinDistrict}
+                    className="w-full text-sm py-2"
+                    style={{ 
+                      backgroundColor: theme.primaryColor,
+                      borderColor: theme.accentColor 
+                    }}
+                  >
+                    <UserPlus className="w-4 h-4 mr-2" />
+                    Virar Membro
+                  </Button>
+                ) : (
+                  <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
+                    <p className="text-green-300 text-sm font-medium">
+                      ✓ Você é membro deste distrito
+                    </p>
+                    <p className="text-green-200/70 text-xs">
+                      Nível {userDistrict.level} • {userDistrict.xp} XP
+                    </p>
+                  </div>
+                )}
+
+                <Button
+                  onClick={handleViewMembers}
+                  variant="outline"
+                  className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20 text-sm py-2"
+                >
+                  <Users className="w-4 h-4 mr-2" />
+                  Ver Time
+                </Button>
+
+                {district.referral_link && (
+                  <Button
+                    onClick={() => window.open(district.referral_link, '_blank')}
+                    variant="outline"
+                    className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20 text-sm py-2"
+                  >
+                    Acessar Portal
+                  </Button>
+                )}
               </div>
             </div>
+          </motion.div>
 
-            <div className="flex flex-wrap gap-2 mb-4">
-              <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
-                <Crown className="w-3 h-3 mr-1" />
-                Nível {district.level_required}+
-              </Badge>
-              <Badge variant="secondary" className="bg-white/10 text-white border-white/20">
-                <Users className="w-3 h-3 mr-1" />
-                {memberCount} membros
-              </Badge>
-            </div>
-
-            <div className="space-y-3">
-              {!userDistrict ? (
-                <Button
-                  onClick={handleJoinDistrict}
-                  className="w-full"
-                  style={{ 
-                    backgroundColor: theme.primaryColor,
-                    borderColor: theme.accentColor 
-                  }}
-                >
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Virar Membro
-                </Button>
-              ) : (
-                <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-3">
-                  <p className="text-green-300 text-sm font-medium">
-                    ✓ Você é membro deste distrito
-                  </p>
-                  <p className="text-green-200/70 text-xs">
-                    Nível {userDistrict.level} • {userDistrict.xp} XP
-                  </p>
-                </div>
-              )}
-
-              <Button
-                onClick={handleViewMembers}
-                variant="outline"
-                className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                <Users className="w-4 h-4 mr-2" />
-                Ver Time
-              </Button>
-
-              {district.referral_link && (
-                <Button
-                  onClick={() => window.open(district.referral_link, '_blank')}
-                  variant="outline"
-                  className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
-                >
-                  Acessar Portal
-                </Button>
-              )}
-            </div>
+          {/* Círculos de ação - Centro */}
+          <div className="lg:col-span-2 flex items-center justify-center">
+            <DistrictCircleActions 
+              districtTheme={district.theme}
+              districtId={district.id}
+              userLevel={userDistrict?.level}
+            />
           </div>
-        </motion.div>
-
-        {/* Círculos de ação */}
-        <DistrictCircleActions 
-          districtTheme={district.theme}
-          districtId={district.id}
-          userLevel={userDistrict?.level}
-        />
+        </div>
 
         {/* Rodapé com informações especiais */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute bottom-6 right-6 z-20"
+          className="mt-auto p-6"
         >
-          <div className="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+          <div className="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/20 max-w-md mx-auto text-center">
             <h3 className="text-white font-semibold mb-2">Poder Especial</h3>
-            <p className="text-white/70 text-sm max-w-xs">{district.special_power}</p>
+            <p className="text-white/70 text-sm">{district.special_power}</p>
           </div>
         </motion.div>
         </div>
