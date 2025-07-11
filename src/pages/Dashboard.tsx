@@ -314,31 +314,22 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* XP and Beetz Cards - Mobile Optimized */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              {/* XP Card */}
+            {/* BTZ Card Centralizado - Igual ao Quiz */}
+            <div className="flex justify-center mb-4">
               <div 
-                className="border border-[#adff2f] rounded-2xl px-4 py-5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
-                onClick={handleNavigateToLevels}
-                style={{ borderWidth: '0.5px' }}
-              >
-                <span className="text-2xl">⚡</span>
-                <div className="text-center">
-                  <div className="text-base text-muted-foreground leading-tight">XP</div>
-                  <div className="text-xl font-bold text-foreground leading-tight">{userStats.currentXP}</div>
-                </div>
-              </div>
-
-              {/* Beetz Card */}
-              <div 
-                className="border border-[#adff2f] rounded-2xl px-4 py-5 cursor-pointer hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2"
+                className="relative cursor-pointer hover:scale-105 transition-all duration-200"
                 onClick={handleNavigateToBeetzInfo}
-                style={{ borderWidth: '0.5px' }}
               >
-                <BeetzIcon size="lg" />
-                <div className="text-center">
-                  <div className="text-base text-muted-foreground leading-tight">Beetz</div>
-                  <div className="text-xl font-bold text-foreground leading-tight">{userStats.points}</div>
+                <div className="bg-transparent backdrop-blur-sm text-white font-bold text-4xl px-8 py-4 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20 transition-all duration-300">
+                  <div className="flex items-center space-x-3">
+                    {/* Logo Beetz simples */}
+                    <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
+                      <span className="text-black font-bold text-lg">B</span>
+                    </div>
+                    <span className="font-mono text-3xl">
+                      {userStats.points.toLocaleString()} BTZ
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
