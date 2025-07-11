@@ -350,7 +350,7 @@ export function QuizEngine({
 
   if (showResults) {
     const percentage = Math.round((score / questions.length) * 100);
-    const isSuccess = percentage >= 60;
+    const isSuccess = percentage >= 70;
     
     const getContinueAction = () => {
       // Para modo solo, sempre iniciar novo quiz
@@ -578,8 +578,8 @@ export function QuizEngine({
 
       {/* LifePurchaseBanner removido - sem vidas */}
 
-      {/* Modal Unificado - Timeout e Resposta Incorreta */}
-      <AlertDialog open={showTimeoutModal || showAnswer} onOpenChange={(open) => {
+      {/* Modal Unificado - Apenas para Timeout e Resposta Incorreta */}
+      <AlertDialog open={showTimeoutModal || (showAnswer && selectedAnswer !== currentQuestion?.correct_answer)} onOpenChange={(open) => {
         if (!open) {
           setShowTimeoutModal(false);
           if (showAnswer) {
