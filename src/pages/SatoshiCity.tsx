@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { SatoshiCity3D } from "@/components/satoshi-city-3d";
 import { PowerBar } from "@/components/ui/power-bar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box } from "lucide-react";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
@@ -87,7 +89,10 @@ export default function SatoshiCity() {
   const [loading, setLoading] = useState(true);
   const [currentCityImage, setCurrentCityImage] = useState(satoshiCityNight);
   const [is3DMode, setIs3DMode] = useState(false);
+  const [selectedDistrictForMobile, setSelectedDistrictForMobile] = useState<District | null>(null);
+  const [showMobileModal, setShowMobileModal] = useState(false);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Memoize the city image function
   const getCityImageByTime = useCallback(() => {
@@ -224,6 +229,23 @@ export default function SatoshiCity() {
     return userDistricts.find(ud => ud.is_residence);
   }, [userDistricts]);
 
+  const handleDistrictClick = useCallback((district: District) => {
+    if (isMobile) {
+      const userInfo = getUserDistrictInfo(district.id);
+      // No mobile: se não for residência atual, abrir modal de confirmação
+      if (!userInfo?.is_residence) {
+        setSelectedDistrictForMobile(district);
+        setShowMobileModal(true);
+      } else {
+        // Se já é residência, navegar para o distrito
+        navigate(`/satoshi-city/district/${district.id}`);
+      }
+    } else {
+      // Desktop: comportamento normal - navegar para o distrito
+      navigate(`/satoshi-city/district/${district.id}`);
+    }
+  }, [isMobile, getUserDistrictInfo, navigate]);
+
   const handleChangeResidence = useCallback(async (districtId: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -287,6 +309,10 @@ export default function SatoshiCity() {
           });
       }
       
+      // Fechar modal se estiver aberto
+      setShowMobileModal(false);
+      setSelectedDistrictForMobile(null);
+      
       loadUserDistricts();
       loadDistrictXPData(); // Reload XP data after residence change
     } catch (error) {
@@ -334,7 +360,7 @@ export default function SatoshiCity() {
         </div>
         <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
           Bem-vindo à cidade do futuro financeiro. 
-          Clique nos distritos para explorar conhecimento.
+          {isMobile ? "Toque nos distritos para morar ou explorar." : "Clique nos distritos para explorar conhecimento."}
         </p>
         <div className="flex justify-center space-x-4 mb-6">
           <Badge variant="outline" className="border-cyan-400 text-cyan-400">
@@ -382,7 +408,7 @@ export default function SatoshiCity() {
                     left: `${position.x}%`, 
                     top: `${position.y}%` 
                   }}
-                  onClick={() => navigate(`/satoshi-city/district/${district.id}`)}
+                  onClick={() => handleDistrictClick(district)}
                 >
                 {/* Dynamic Power Aura - Mobile Optimized */}
                 <div 
@@ -522,6 +548,53 @@ export default function SatoshiCity() {
       </div>
 
       <FloatingNavbar />
+
+      {/* Mobile Confirmation Modal */}
+      <Dialog open={showMobileModal} onOpenChange={setShowMobileModal}>
+        <DialogContent className="max-w-sm mx-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <div 
+                className="w-6 h-6 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: selectedDistrictForMobile?.color_primary }}
+              >
+                {selectedDistrictForMobile && (
+                  React.createElement(
+                    districtIcons[selectedDistrictForMobile.theme as keyof typeof districtIcons] || Building, 
+                    { className: "w-4 h-4 text-white" }
+                  )
+                )}
+              </div>
+              <span>Morar em {selectedDistrictForMobile?.name}</span>
+            </DialogTitle>
+            <DialogDescription>
+              Deseja estabelecer sua residência no distrito {selectedDistrictForMobile?.name}? 
+              Você poderá participar de atividades exclusivas e representar este distrito.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex space-x-3 mt-4">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => setShowMobileModal(false)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              className="flex-1"
+              style={{ 
+                backgroundColor: selectedDistrictForMobile?.color_primary,
+                color: 'white'
+              }}
+              onClick={() => selectedDistrictForMobile && handleChangeResidence(selectedDistrictForMobile.id)}
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Confirmar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
