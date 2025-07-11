@@ -65,7 +65,6 @@ function App() {
             <Route path="/solo-quiz" element={
               <ProtectedRoute>
                 <LazyRoutes.SoloQuiz />
-                <FloatingNavbar />
               </ProtectedRoute>
             } />
             
