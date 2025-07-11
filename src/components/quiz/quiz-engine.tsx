@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CountdownBar } from "@/components/ui/countdown-bar";
+
 import { CircularTimer } from "@/components/duels/circular-timer";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -103,58 +103,47 @@ export function QuizEngine({
   const { getDueQuestions, submitAnswer } = useUnifiedSRS();
   const { } = useAdvancedQuizAudio();
 
-  // Timer effect
-  useEffect(() => {
-    if (timeLeft > 0 && !showAnswer && !showResults && !loading) {
-      const timer = setTimeout(() => {
-        setTimeLeft(prev => {
-          const newTime = prev - 1;
-          
-          // Não tocar som aqui - deixar apenas o CircularTimer controlar
-          // O som deve ser controlado apenas pelo CircularTimer para evitar duplicações
-          
-          // Auto submit when time runs out
-          if (newTime === 0 && !showAnswer) {
-            console.log('Timer zerou! selectedAnswer:', selectedAnswer, 'showAnswer:', showAnswer);
-            
-            // Forçar o avanço para próxima pergunta quando timer zera
-            const question = questions[currentIndex];
-            if (question) {
-              // Marcar como respondida incorretamente
-              const answeredQuestion = {
-                questionId: question.id,
-                selectedAnswer: selectedAnswer || 'timeout',
-                isCorrect: false,
-                timeSpent: 30
-              };
-              
-              setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-              submitAnswer(question.id, false, 30);
-              
-              // Processar resposta errada
-              handleWrongAnswer(question.question, question.correct_answer, question.explanation);
-              
-              // Avançar imediatamente para próxima pergunta
-              setTimeout(() => {
-                if (currentIndex < questions.length - 1) {
-                  setCurrentIndex(prev => prev + 1);
-                  setSelectedAnswer(null);
-                  setShowAnswer(false);
-                  setTimeLeft(30);
-                } else {
-                  handleQuizComplete();
-                }
-              }, 1000);
-            }
-          }
-          
-          return newTime;
-        });
-      }, 1000);
-
-      return () => clearTimeout(timer);
+  const handleContinue = () => {
+    if (currentIndex < questions.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setSelectedAnswer(null);
+      setShowAnswer(false);
+      setTimeLeft(30);
+    } else {
+      handleQuizComplete();
     }
-  }, [timeLeft, showAnswer, showResults, loading, selectedAnswer]);
+  };
+
+  // Controle do timer via CircularTimer apenas
+  const handleTimeUp = async () => {
+    if (showAnswer || !questions[currentIndex]) return;
+    
+    const question = questions[currentIndex];
+    
+    // Marcar como respondida incorretamente por timeout
+    const answeredQuestion = {
+      questionId: question.id,
+      selectedAnswer: selectedAnswer || 'timeout',
+      isCorrect: false,
+      timeSpent: 30
+    };
+    
+    setAnsweredQuestions(prev => [...prev, answeredQuestion]);
+    await submitAnswer(question.id, false, 30);
+    
+    // Processar resposta errada
+    await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
+    
+    setShowAnswer(true);
+    
+    // Mostrar resultado e aguardar ação do usuário
+    setTimeout(() => {
+      // Auto-advance apenas se não há banner de vida
+      if (!showLifeBanner) {
+        handleContinue();
+      }
+    }, 2000);
+  };
 
   useEffect(() => {
     fetchUserProfile();
@@ -266,19 +255,8 @@ export function QuizEngine({
 
     // Submit to SRS system
     await submitAnswer(question.id, isCorrect, 30 - timeLeft);
-
-    // Auto-advance after 3 seconds
-    setTimeout(() => {
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex(prev => prev + 1);
-        setSelectedAnswer(null);
-        setShowAnswer(false);
-        setTimeLeft(30);
-      } else {
-        handleQuizComplete();
-      }
-    }, 3000);
   };
+
 
   const handleLifeDecision = async (useLife: boolean) => {
     setShowLifeBanner(false);
@@ -310,16 +288,9 @@ export function QuizEngine({
 
     setPendingWrongAnswer(null);
     
-    // Continuar para próxima pergunta
+    // Continuar para próxima pergunta usando handleContinue
     setTimeout(() => {
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex(prev => prev + 1);
-        setSelectedAnswer(null);
-        setShowAnswer(false);
-        setTimeLeft(30);
-      } else {
-        handleQuizComplete();
-      }
+      handleContinue();
     }, 1500);
   };
 
@@ -539,21 +510,19 @@ export function QuizEngine({
                 {getModeTitle()}
               </div>
               {/* Timer circular com som de countdown */}
-              <div className="flex justify-center mb-4">
+              <div className="flex justify-center">
                 <CircularTimer
                   duration={30}
                   isActive={!showAnswer && !loading}
-                  onTimeUp={() => {
-                    // Timer zerou - deixar o useEffect cuidar da lógica
-                  }}
+                  onTimeUp={handleTimeUp}
+                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
                   onCountdown={playCountdownSound}
                   enableCountdownSound={true}
-                  size={120}
+                  size={96}
                   className="shadow-lg"
                 />
               </div>
             </div>
-            <CountdownBar timeLeft={timeLeft} totalTime={30} className="h-3" />
           </div>
 
           {/* Question Card */}
@@ -616,12 +585,37 @@ export function QuizEngine({
             </Button>
           )}
 
-          {/* Explanation */}
-          {showAnswer && currentQuestion.explanation && (
+          {/* Answer Result and Continue Button */}
+          {showAnswer && (
             <Card className="mt-4">
-              <CardContent className="p-4">
-                <h3 className="font-semibold mb-2">Explicação:</h3>
-                <p className="text-muted-foreground">{currentQuestion.explanation}</p>
+              <CardContent className="p-4 text-center">
+                <div className={`mb-4 ${selectedAnswer === currentQuestion.correct_answer ? 'text-green-600' : 'text-red-600'}`}>
+                  <h3 className="text-xl font-bold mb-2">
+                    {selectedAnswer === currentQuestion.correct_answer ? '✅ Correto!' : '❌ Incorreto!'}
+                  </h3>
+                  {selectedAnswer !== currentQuestion.correct_answer && (
+                    <p className="text-gray-700 mb-2">
+                      Resposta correta: <strong>{currentQuestion.correct_answer}</strong>
+                    </p>
+                  )}
+                </div>
+                
+                {currentQuestion.explanation && (
+                  <div className="mb-4 p-3 bg-muted rounded text-left">
+                    <h4 className="font-semibold mb-2">Explicação:</h4>
+                    <p className="text-muted-foreground">{currentQuestion.explanation}</p>
+                  </div>
+                )}
+                
+                {!showLifeBanner && (
+                  <Button 
+                    onClick={handleContinue}
+                    className="w-full bg-primary hover:bg-primary/90 text-white"
+                    size="lg"
+                  >
+                    Continuar
+                  </Button>
+                )}
               </CardContent>
             </Card>
           )}
