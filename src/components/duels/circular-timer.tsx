@@ -117,7 +117,8 @@ export function CircularTimer({
             {timeLeft}
           </div>
           <div className="text-xs text-muted-foreground">
-            segundos
+            <span className="sm:hidden">seg</span>
+            <span className="hidden sm:inline">segundos</span>
           </div>
         </div>
       </div>

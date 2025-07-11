@@ -461,14 +461,14 @@ export function QuizEngine({
               </Button>
             </div>
             
-            {/* Layout responsivo: BTZ e Timer lado a lado no mobile, centralizados no desktop */}
-            <div className="flex flex-row justify-between items-center sm:flex-col sm:space-y-4">
-              {/* BTZ Counter - esquerda no mobile, centralizado no desktop */}
+            {/* Layout responsivo: BTZ e Timer lado a lado no mobile */}
+            <div className="flex flex-row justify-between items-center sm:hidden">
+              {/* BTZ Counter - esquerda no mobile */}
               <div className="flex-shrink-0">
                 <BTZCounter />
               </div>
               
-              {/* Timer - direita no mobile, centralizado no desktop */}
+              {/* Timer - direita no mobile */}
               <div className="flex-shrink-0">
                 <CircularTimer
                   duration={30}
@@ -477,10 +477,15 @@ export function QuizEngine({
                   onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
                   onCountdown={playCountdownSound}
                   enableCountdownSound={true}
-                  size={80} // Menor no mobile
-                  className="shadow-lg sm:w-24 sm:h-24" // Maior no desktop
+                  size={80}
+                  className="shadow-lg"
                 />
               </div>
+            </div>
+            
+            {/* BTZ centralizado para desktop */}
+            <div className="hidden sm:flex justify-center">
+              <BTZCounter />
             </div>
             
             {/* Card de vidas removido */}
@@ -499,6 +504,20 @@ export function QuizEngine({
               </div>
               <div className="text-sm sm:text-lg text-muted-foreground mb-2 hidden sm:block">
                 {getModeTitle()}
+              </div>
+              
+              {/* Timer circular centralizado apenas no desktop */}
+              <div className="hidden sm:flex justify-center">
+                <CircularTimer
+                  duration={30}
+                  isActive={!showAnswer && !loading}
+                  onTimeUp={handleTimeUp}
+                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                  onCountdown={playCountdownSound}
+                  enableCountdownSound={true}
+                  size={96}
+                  className="shadow-lg"
+                />
               </div>
             </div>
           </div>
@@ -591,7 +610,7 @@ export function QuizEngine({
           }
         }
       }}>
-        <AlertDialogContent className="mx-4 max-w-sm sm:max-w-lg">
+        <AlertDialogContent className="mx-4 max-w-xs sm:max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center text-base sm:text-lg">
               {showTimeoutModal ? '⏰ Tempo Esgotado!' : 
