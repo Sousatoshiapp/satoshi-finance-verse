@@ -495,27 +495,31 @@ export function QuizEngine({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
-      {/* Header com BTZ Counter centralizado */}
+      {/* Header reorganizado */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate(getBackRoute())}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Button>
-            
-            <div className="flex flex-col items-center gap-2">
-              <BTZCounter />
-              <LivesCounter />
+          <div className="flex flex-col gap-3">
+            {/* Primeira linha: Botão voltar */}
+            <div className="flex justify-start">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(getBackRoute())}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
             </div>
-
-            <div className="text-xs sm:text-sm text-muted-foreground">
-              {getModeTitle()}
+            
+            {/* Segunda linha: BTZ centralizado */}
+            <div className="flex justify-center">
+              <BTZCounter />
+            </div>
+            
+            {/* Terceira linha: Vidas centralizadas */}
+            <div className="flex justify-center">
+              <LivesCounter />
             </div>
           </div>
         </div>
