@@ -387,12 +387,12 @@ export default function SatoshiCity() {
                 {/* Dynamic Power Aura - Mobile Optimized */}
                 <div 
                   className={`absolute inset-0 rounded-full transition-all duration-500 ${
-                    powerLevel > 80 ? 'animate-pulse opacity-80' : powerLevel > 50 ? 'opacity-60' : 'opacity-40'
+                    powerLevel > 80 ? 'animate-pulse' : powerLevel > 50 ? 'opacity-90' : 'opacity-80'
                   }`}
                   style={{
-                    boxShadow: `0 0 ${20 + (powerLevel * 0.3)}px ${district.color_primary}${Math.round(powerLevel * 2.55).toString(16).padStart(2, '0')}`,
-                    width: `${40 + (powerLevel * 0.3)}px`,
-                    height: `${40 + (powerLevel * 0.3)}px`,
+                    boxShadow: `0 0 ${40 + (powerLevel * 0.8)}px ${district.color_primary}, 0 0 ${80 + (powerLevel * 1.2)}px ${district.color_primary}80, 0 0 ${120 + (powerLevel * 1.5)}px ${district.color_primary}40`,
+                    width: `${60 + (powerLevel * 0.5)}px`,
+                    height: `${60 + (powerLevel * 0.5)}px`,
                     transform: 'translate(-50%, -50%)'
                   }}
                 ></div>
@@ -400,24 +400,24 @@ export default function SatoshiCity() {
                 {/* District Core - Mobile Optimized */}
                 <div 
                   className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 sm:border-4 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm ${
-                    userInfo?.is_residence ? 'ring-2 sm:ring-4 ring-yellow-400 ring-opacity-60 animate-pulse' : ''
-                  } ${powerLevel < 30 ? 'opacity-75 grayscale' : ''}`}
+                    userInfo?.is_residence ? 'ring-2 sm:ring-4 ring-yellow-400 ring-opacity-80 animate-pulse' : ''
+                  } ${powerLevel < 30 ? 'opacity-85' : ''}`}
                   style={{
                     borderColor: district.color_primary,
-                    backgroundColor: `${district.color_primary}${Math.round(powerLevel * 0.8).toString(16).padStart(2, '0')}`,
-                    boxShadow: `0 0 15px ${district.color_primary}60`
+                    backgroundColor: `${district.color_primary}CC`,
+                    boxShadow: `0 0 30px ${district.color_primary}, 0 0 60px ${district.color_primary}80`
                   }}
                 >
                   {districtLogo ? (
                     <img 
                       src={districtLogo} 
                       alt={district.name}
-                      className="w-6 h-6 sm:w-8 sm:h-8 rounded-full object-cover"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                     />
                   ) : (
                     <IconComponent 
-                      className="w-6 h-6 sm:w-8 sm:h-8" 
-                      style={{ color: district.color_primary }}
+                      className="w-10 h-10 sm:w-12 sm:h-12" 
+                      style={{ color: 'white' }}
                     />
                   )}
                   
