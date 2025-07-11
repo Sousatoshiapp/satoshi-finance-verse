@@ -20,6 +20,18 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   // Force a re-render when currentBTZ changes
   useEffect(() => {
     console.log("🔄 currentBTZ MUDOU:", currentBTZ);
+    
+    // FORÇA: Se currentBTZ existe e é diferente do displayBTZ, atualiza IMEDIATAMENTE
+    if (currentBTZ !== undefined && currentBTZ !== displayBTZ) {
+      console.log("🚨 FORÇANDO update BTZ:", { currentBTZ, displayBTZ });
+      if (displayBTZ === 0) {
+        setDisplayBTZ(currentBTZ);
+        setPreviousBTZ(currentBTZ);
+      } else {
+        console.log("🎰 FORÇANDO animação BTZ");
+        animateToNewValue(currentBTZ);
+      }
+    }
   }, [currentBTZ]);
 
   const [displayBTZ, setDisplayBTZ] = useState(0);
