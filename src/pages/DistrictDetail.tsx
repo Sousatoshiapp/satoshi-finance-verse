@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PowerBar } from "@/components/ui/power-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -102,6 +103,8 @@ export default function DistrictDetail() {
   const [targetDistrictId, setTargetDistrictId] = useState('');
   const [isInitiatingDuel, setIsInitiatingDuel] = useState(false);
   const [storeItems, setStoreItems] = useState<any[]>([]);
+  const [districtPower, setDistrictPower] = useState(0);
+  const [allDistrictsPower, setAllDistrictsPower] = useState<any[]>([]);
   
   const { toast } = useToast();
 
@@ -123,7 +126,7 @@ export default function DistrictDetail() {
       if (districtError) throw districtError;
       setDistrict(districtData);
 
-      // Load residents - simplified approach
+      // Load residents - using profiles directly with simplified approach
       const { data: profilesData } = await supabase
         .from('profiles')
         .select('id, nickname, profile_image_url, level, xp')
@@ -138,7 +141,25 @@ export default function DistrictDetail() {
           xp: profile.xp || 0,
           profile_image_url: profile.profile_image_url
         }));
+        
         setResidents(residentsData);
+        
+        // Calculate district power (sum of all residents XP)
+        const totalXP = residentsData.reduce((sum, resident) => sum + resident.xp, 0);
+        setDistrictPower(totalXP);
+      }
+
+      // Load all districts power for comparison - simplified approach
+      const { data: allProfilesData } = await supabase
+        .from('profiles')
+        .select('xp');
+
+      if (allProfilesData) {
+        const totalXP = allProfilesData.reduce((sum, profile) => sum + (profile.xp || 0), 0);
+        setAllDistrictsPower([
+          { id: districtId, power: districtPower || totalXP },
+          { id: 'other', power: Math.max(totalXP * 0.8, 1000) }
+        ]);
       }
 
       // Load user district progress
@@ -263,6 +284,10 @@ export default function DistrictDetail() {
     navigate(`/district-duel/${duelId}`);
   };
 
+  const handleViewResidents = () => {
+    navigate(`/district/${districtId}/residents`);
+  };
+
   const handleViewStore = () => {
     // Implementar navegação para loja do distrito
     toast({
@@ -285,8 +310,11 @@ export default function DistrictDetail() {
   const districtLogo = districtLogos[district.theme as keyof typeof districtLogos];
   const district3DImage = district3DImages[district.theme as keyof typeof district3DImages];
   const battleWinRate = district.battles_won + district.battles_lost > 0 
-    ? Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)
+    ? Math.round((district.battles_won / (district.battles_lost + district.battles_lost)) * 100)
     : 100;
+  
+  const maxPowerInNetwork = Math.max(...allDistrictsPower.map(d => d.power), 1);
+  const districtRanking = allDistrictsPower.findIndex(d => d.id === districtId) + 1;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
@@ -379,90 +407,142 @@ export default function DistrictDetail() {
         </div>
       </div>
 
-      {/* Main Actions */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* District Power Bar */}
+      <div className="container mx-auto px-4 py-6">
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Zap className="w-5 h-5" style={{ color: district.color_primary }} />
+                Poder do Distrito
+              </span>
+              <Badge variant="outline">
+                #{districtRanking} no Ranking
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <PowerBar
+              currentPower={districtPower}
+              maxPower={maxPowerInNetwork}
+              label={`${districtPower.toLocaleString()} XP`}
+              color={district.color_primary}
+              showPercentage={false}
+            />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-center text-sm">
+              <div>
+                <div className="font-semibold">{residents.length}</div>
+                <div className="text-muted-foreground">Moradores</div>
+              </div>
+              <div>
+                <div className="font-semibold">{Math.round(districtPower / Math.max(residents.length, 1))}</div>
+                <div className="text-muted-foreground">XP Médio</div>
+              </div>
+              <div>
+                <div className="font-semibold">{district.battles_won}</div>
+                <div className="text-muted-foreground">Vitórias</div>
+              </div>
+              <div>
+                <div className="font-semibold">{battleWinRate}%</div>
+                <div className="text-muted-foreground">Taxa Vitória</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Main Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {/* Quiz do Distrito */}
           <Card 
-            className="cursor-pointer hover:scale-105 transition-transform border-2"
+            className="cursor-pointer hover:scale-105 transition-transform border-2 h-32"
             style={{ borderColor: district.color_primary }}
             onClick={handleDistrictQuiz}
           >
-            <CardHeader className="text-center pb-4">
+            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
               <div 
-                className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center"
+                className="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center"
                 style={{ backgroundColor: district.color_primary }}
               >
-                <BookOpen className="w-6 h-6 text-white" />
+                <BookOpen className="w-4 h-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Quiz do Distrito</CardTitle>
-              <CardDescription>
-                Responda perguntas sobre {district.theme.replace('_', ' ')}
-              </CardDescription>
-            </CardHeader>
+              <h3 className="font-semibold text-sm mb-1">Quiz do Distrito</h3>
+              <p className="text-xs text-muted-foreground">
+                Perguntas temáticas
+              </p>
+            </CardContent>
           </Card>
 
           {/* Desafiar Distrito */}
-          <Card className="border-2 border-orange-500">
-            <CardHeader className="text-center pb-4">
-              <div className="w-12 h-12 rounded-full mx-auto mb-3 bg-orange-500 flex items-center justify-center">
-                <Swords className="w-6 h-6 text-white" />
+          <Card className="border-2 border-orange-500 h-32">
+            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+              <div className="w-8 h-8 rounded-full mx-auto mb-2 bg-orange-500 flex items-center justify-center">
+                <Swords className="w-4 h-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Desafiar Distrito</CardTitle>
-              <CardDescription>
-                Iniciar duelo com 20 perguntas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+              <h3 className="font-semibold text-sm mb-1">Desafiar Distrito</h3>
+              <p className="text-xs text-muted-foreground">
+                Duelo 20 perguntas
+              </p>
+              <div className="mt-2 space-y-1">
                 <Select value={targetDistrictId} onValueChange={setTargetDistrictId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Escolha o adversário" />
+                  <SelectTrigger className="h-6 text-xs">
+                    <SelectValue placeholder="Adversário" />
                   </SelectTrigger>
                   <SelectContent>
                     {allDistricts.map(d => (
-                      <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                      <SelectItem key={d.id} value={d.id} className="text-xs">{d.name}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <Button 
                   onClick={handleInitiateDuel}
                   disabled={!targetDistrictId || isInitiatingDuel}
-                  className="w-full bg-orange-500 hover:bg-orange-600"
+                  size="sm"
+                  className="w-full h-6 text-xs bg-orange-500 hover:bg-orange-600"
                 >
-                  {isInitiatingDuel ? "Iniciando..." : "Desafiar"}
+                  {isInitiatingDuel ? "..." : "Desafiar"}
                 </Button>
               </div>
             </CardContent>
           </Card>
 
           {/* Ver Moradores */}
-          <Card className="border-2 border-blue-500">
-            <CardHeader className="text-center pb-4">
-              <div className="w-12 h-12 rounded-full mx-auto mb-3 bg-blue-500 flex items-center justify-center">
-                <Users className="w-6 h-6 text-white" />
+          <Card 
+            className="cursor-pointer hover:scale-105 transition-transform border-2 border-blue-500 h-32"
+            onClick={handleViewResidents}
+          >
+            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+              <div className="w-8 h-8 rounded-full mx-auto mb-2 bg-blue-500 flex items-center justify-center">
+                <Users className="w-4 h-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Moradores</CardTitle>
-              <CardDescription>
-                {residents.length} residentes ativos
-              </CardDescription>
-            </CardHeader>
+              <h3 className="font-semibold text-sm mb-1">Ver Moradores</h3>
+              <p className="text-xs text-muted-foreground">
+                {residents.length} residentes
+              </p>
+              {residents.slice(0, 3).map((resident, i) => (
+                <Avatar key={resident.id} className="w-4 h-4 inline-block -ml-1 first:ml-0 border border-background">
+                  <AvatarImage src={resident.profile_image_url} />
+                  <AvatarFallback className="text-xs">
+                    {resident.nickname.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+              ))}
+            </CardContent>
           </Card>
 
           {/* Loja do Sponsor */}
           <Card 
-            className="cursor-pointer hover:scale-105 transition-transform border-2 border-green-500"
+            className="cursor-pointer hover:scale-105 transition-transform border-2 border-green-500 h-32"
             onClick={handleViewStore}
           >
-            <CardHeader className="text-center pb-4">
-              <div className="w-12 h-12 rounded-full mx-auto mb-3 bg-green-500 flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6 text-white" />
+            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+              <div className="w-8 h-8 rounded-full mx-auto mb-2 bg-green-500 flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4 text-white" />
               </div>
-              <CardTitle className="text-lg">Loja {district.sponsor_company}</CardTitle>
-              <CardDescription>
+              <h3 className="font-semibold text-sm mb-1">Loja {district.sponsor_company?.split(' ')[0]}</h3>
+              <p className="text-xs text-muted-foreground">
                 {storeItems.length} itens exclusivos
-              </CardDescription>
-            </CardHeader>
+              </p>
+            </CardContent>
           </Card>
         </div>
 

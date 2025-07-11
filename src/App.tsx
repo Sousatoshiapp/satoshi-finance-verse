@@ -173,6 +173,12 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/district/:districtId/residents" element={
+              <ProtectedRoute>
+                <LazyRoutes.DistrictResidentsPage />
+              </ProtectedRoute>
+            } />
+            
             {/* Quiz Routes */}
             <Route path="/enhanced-quiz" element={
               <ProtectedRoute>
