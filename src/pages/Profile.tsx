@@ -19,6 +19,7 @@ import { useSubscription } from "@/hooks/use-subscription";
 import { useGamification } from "@/hooks/use-gamification";
 import { getLevelInfo } from "@/data/levels";
 import { Crown, Star, Shield, Camera, ArrowRight } from "lucide-react";
+import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
 // Import avatar images
@@ -311,31 +312,31 @@ export default function Profile() {
   };
 
   const achievements = [
-    { id: 'first_lesson', name: 'Primeira Lição', icon: '🎯', earned: true },
-    { id: 'streak_7', name: '7 Dias Seguidos', icon: '🔥', earned: user?.streak >= 7 },
-    { id: 'level_5', name: 'Nível 5', icon: '⭐', earned: user?.level >= 5 },
-    { id: 'quiz_master', name: 'Mestre dos Quiz', icon: '🧠', earned: false },
-    { id: 'investor', name: 'Primeiro Investimento', icon: '📈', earned: false },
-    { id: 'saver', name: 'Poupador Expert', icon: '🏦', earned: false }
+    { id: 'first_lesson', name: 'Primeira Lição', icon: <TrophyIcon size="md" />, earned: true },
+    { id: 'streak_7', name: '7 Dias Seguidos', icon: <StreakIcon size="md" />, earned: user?.streak >= 7 },
+    { id: 'level_5', name: 'Nível 5', icon: <Star className="w-4 h-4" />, earned: user?.level >= 5 },
+    { id: 'quiz_master', name: 'Mestre dos Quiz', icon: <Shield className="w-4 h-4" />, earned: false },
+    { id: 'investor', name: 'Primeiro Investimento', icon: <TrophyIcon size="md" />, earned: false },
+    { id: 'saver', name: 'Poupador Expert', icon: <Shield className="w-4 h-4" />, earned: false }
   ];
 
   const stats = [
     { 
       label: 'XP Atual', 
       value: user?.xp || 0, 
-      icon: '⚡',
+      icon: <LightningIcon size="lg" />,
       route: '/levels'
     },
     { 
       label: 'Lições Completas', 
       value: user?.completed_lessons || 0, 
-      icon: '📚',
+      icon: <BookIcon size="lg" />,
       route: '/levels'
     },
     { 
       label: 'Dias de Sequência', 
       value: user?.streak || 0, 
-      icon: '🔥',
+      icon: <StreakIcon size="lg" />,
       route: '/profile'
     },
     { 

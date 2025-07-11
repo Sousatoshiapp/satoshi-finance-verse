@@ -612,7 +612,7 @@ export default function Store() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">🛒 Marketplace</h1>
+            <h1 className="text-2xl font-bold text-foreground">Marketplace</h1>
             <p className="text-muted-foreground text-sm">Avatares, boosts e muito mais</p>
           </div>
         </div>
@@ -671,11 +671,11 @@ export default function Store() {
         {/* Tabs - Mobile Optimized */}
         <Tabs defaultValue="avatars" className="mb-20">
           <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-6 h-auto">
-            <TabsTrigger value="avatars" className="text-xs sm:text-sm p-2 sm:p-3">👤 Avatares</TabsTrigger>
-            <TabsTrigger value="skins" className="text-xs sm:text-sm p-2 sm:p-3">🎨 Skins</TabsTrigger>
-            <TabsTrigger value="boosts" className="text-xs sm:text-sm p-2 sm:p-3">⚡ Boosts</TabsTrigger>
-            <TabsTrigger value="accessories" className="text-xs sm:text-sm p-2 sm:p-3">👟 Acessórios</TabsTrigger>
-            <TabsTrigger value="lives" className="text-xs sm:text-sm p-2 sm:p-3">💖 Vidas</TabsTrigger>
+            <TabsTrigger value="avatars" className="text-xs sm:text-sm p-2 sm:p-3">Avatares</TabsTrigger>
+            <TabsTrigger value="skins" className="text-xs sm:text-sm p-2 sm:p-3">Skins</TabsTrigger>
+            <TabsTrigger value="boosts" className="text-xs sm:text-sm p-2 sm:p-3">Boosts</TabsTrigger>
+            <TabsTrigger value="accessories" className="text-xs sm:text-sm p-2 sm:p-3">Acessórios</TabsTrigger>
+            <TabsTrigger value="lives" className="text-xs sm:text-sm p-2 sm:p-3">Vidas</TabsTrigger>
             <TabsTrigger value="beetz" className="text-xs sm:text-sm p-2 sm:p-3 col-span-3 sm:col-span-1">
               <BeetzIcon size="sm" className="mr-1" /> Beetz
             </TabsTrigger>
@@ -1152,7 +1152,7 @@ export default function Store() {
             <div className="space-y-4">
               <div className="text-center mb-6">
                 <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
-                  💖 Vidas & Proteção
+                  <Shield className="w-5 h-5" /> Vidas & Proteção
                 </h2>
                 <p className="text-sm text-muted-foreground">Mantenha sua sequência e continue jogando</p>
               </div>
@@ -1165,14 +1165,14 @@ export default function Store() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center">
-                      <span className="text-xl">💖</span>
+                      <Shield className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="text-lg font-bold text-foreground mb-1">Marketplace de Vidas</h3>
                       <p className="text-sm text-muted-foreground">Compre vidas para manter suas sequências</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
-                          <span className="mr-1">💖</span>
+                          <Shield className="w-3 h-3 mr-1" />
                           Salva Streak
                         </Badge>
                         <Badge className="bg-pink-500/20 text-pink-400 border-pink-500/30">

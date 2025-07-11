@@ -757,6 +757,39 @@ export function TrendingIcon({ size = 'md', className, animated = false, variant
   );
 }
 
+// Book Icon - Substitui 📚
+export function BookIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="book-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#adff2f" />
+          <stop offset="50%" stopColor="#32cd32" />
+          <stop offset="100%" stopColor="#00ff00" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M4 19.5C4 18.837 4.263 18.201 4.732 17.732C5.201 17.263 5.837 17 6.5 17H20M4 19.5C4 20.163 4.263 20.799 4.732 21.268C5.201 21.737 5.837 22 6.5 22H20V2H6.5C5.837 2 5.201 2.263 4.732 2.732C4.263 3.201 4 3.837 4 4.5V19.5Z" 
+        stroke="url(#book-gradient)" 
+        strokeWidth="2" 
+        fill="none"
+      />
+      <path d="M8 7h8M8 11h6" stroke="url(#book-gradient)" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 // Sad Icon - Substitui 😔
 export function SadIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
   return (

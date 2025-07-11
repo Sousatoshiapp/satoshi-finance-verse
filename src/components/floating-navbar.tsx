@@ -29,12 +29,12 @@ export function FloatingNavbar() {
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                  className={cn(
-                    "flex flex-col items-center gap-0.5 p-1.5 md:p-2 rounded-full transition-all duration-200",
-                    isActive 
-                      ? "bg-gradient-to-r from-primary to-success text-white shadow-glow scale-110" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                  )}
+                    className={cn(
+                     "flex flex-col items-center gap-0.5 p-1.5 md:p-2 rounded-full transition-all duration-200",
+                     isActive 
+                       ? "bg-gray-900 text-gray-900 scale-110" 
+                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                   )}
                  >
                    <IconSystem 
                      emoji={item.icon} 
