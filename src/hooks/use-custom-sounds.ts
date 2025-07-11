@@ -78,6 +78,14 @@ export function useCustomSounds() {
       const audio = new Audio('/audio/10sec-digital-countdown-sfx-319873.mp3');
       console.log('🔊 Arquivo de áudio criado:', audio.src);
       audio.volume = 0.15; // Volume mais baixo que os demais sons
+      
+      // Parar o áudio após 10 segundos para sincronizar com o timer
+      setTimeout(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        console.log('🔊 Som de countdown parado após 10 segundos');
+      }, 10000);
+      
       audio.play().then(() => {
         console.log('🔊 Som de countdown tocado com sucesso');
       }).catch((error) => {
