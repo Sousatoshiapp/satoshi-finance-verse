@@ -325,6 +325,23 @@ export function QuizEngine({
     fetchQuestions();
   };
 
+  const startNewQuiz = () => {
+    // Reset all state for a completely new quiz
+    setCurrentIndex(0);
+    setScore(0);
+    setShowResults(false);
+    setSelectedAnswer(null);
+    setShowAnswer(false);
+    setTimeLeft(30);
+    setAnsweredQuestions([]);
+    setShowLifeBanner(false);
+    setPendingWrongAnswer(null);
+    resetGamification();
+    
+    // Fetch new questions
+    fetchQuestions();
+  };
+
   const getBackRoute = () => {
     switch (mode) {
       case 'duel': return '/duels';
@@ -362,17 +379,22 @@ export function QuizEngine({
     const percentage = Math.round((score / questions.length) * 100);
     const isSuccess = percentage >= 60;
     
-    const getNextQuiz = () => {
-      // Logic to determine next quiz based on context
+    const getContinueAction = () => {
+      // Para modo solo, sempre iniciar novo quiz
+      if (mode === 'solo') {
+        return startNewQuiz;
+      }
+      
+      // Para outros modos, navegar para a página apropriada
       switch (mode) {
         case 'daily_mission':
-          return '/missions';
+          return () => navigate('/missions');
         case 'district':
-          return `/satoshi-city/district/${districtId}`;
+          return () => navigate(`/satoshi-city/district/${districtId}`);
         case 'tournament':
-          return `/tournament/${tournamentId}`;
+          return () => navigate(`/tournament/${tournamentId}`);
         default:
-          return '/dashboard';
+          return startNewQuiz;
       }
     };
 
@@ -404,11 +426,11 @@ export function QuizEngine({
           <div className="space-y-4">
             {isSuccess ? (
               <Button 
-                onClick={() => navigate(getNextQuiz())} 
+                onClick={getContinueAction()} 
                 className="w-full" 
                 size="lg"
               >
-                Continuar para o Próximo Quiz
+                {mode === 'solo' ? 'Próximo Quiz' : 'Continuar'}
               </Button>
             ) : (
               <Button onClick={resetQuiz} className="w-full" size="lg">
