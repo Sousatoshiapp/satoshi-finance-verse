@@ -461,9 +461,26 @@ export function QuizEngine({
               </Button>
             </div>
             
-            {/* Segunda linha: BTZ centralizado */}
-            <div className="flex justify-center">
-              <BTZCounter />
+            {/* Layout responsivo: BTZ e Timer lado a lado no mobile, centralizados no desktop */}
+            <div className="flex flex-row justify-between items-center sm:flex-col sm:space-y-4">
+              {/* BTZ Counter - esquerda no mobile, centralizado no desktop */}
+              <div className="flex-shrink-0">
+                <BTZCounter />
+              </div>
+              
+              {/* Timer - direita no mobile, centralizado no desktop */}
+              <div className="flex-shrink-0">
+                <CircularTimer
+                  duration={30}
+                  isActive={!showAnswer && !loading}
+                  onTimeUp={handleTimeUp}
+                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                  onCountdown={playCountdownSound}
+                  enableCountdownSound={true}
+                  size={80} // Menor no mobile
+                  className="shadow-lg sm:w-24 sm:h-24" // Maior no desktop
+                />
+              </div>
             </div>
             
             {/* Card de vidas removido */}
@@ -474,7 +491,7 @@ export function QuizEngine({
       {/* Main Quiz Content */}
       <div className="container mx-auto px-4 py-6 pb-24">
         <div className="max-w-2xl mx-auto">
-          {/* Header com informações e timer */}
+          {/* Header com informações */}
           <div className="mb-4 sm:mb-6">
             <div className="text-center mb-4 sm:mb-6">
               <div className="text-lg sm:text-2xl font-bold text-primary mb-2">
@@ -482,19 +499,6 @@ export function QuizEngine({
               </div>
               <div className="text-sm sm:text-lg text-muted-foreground mb-2 hidden sm:block">
                 {getModeTitle()}
-              </div>
-              {/* Timer circular com som de countdown */}
-              <div className="flex justify-center">
-                <CircularTimer
-                  duration={30}
-                  isActive={!showAnswer && !loading}
-                  onTimeUp={handleTimeUp}
-                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                  onCountdown={playCountdownSound}
-                  enableCountdownSound={true}
-                  size={96}
-                  className="shadow-lg"
-                />
               </div>
             </div>
           </div>
@@ -587,20 +591,20 @@ export function QuizEngine({
           }
         }
       }}>
-        <AlertDialogContent>
+        <AlertDialogContent className="mx-4 max-w-sm sm:max-w-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-center">
+            <AlertDialogTitle className="text-center text-base sm:text-lg">
               {showTimeoutModal ? '⏰ Tempo Esgotado!' : 
                selectedAnswer === currentQuestion?.correct_answer ? '✅ Correto!' : '❌ Incorreto!'}
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-center space-y-4">
+            <AlertDialogDescription className="text-center space-y-2 sm:space-y-4">
               {(showTimeoutModal || (showAnswer && selectedAnswer !== currentQuestion?.correct_answer)) && (
-                <div className="text-lg font-semibold text-white">
+                <div className="text-sm sm:text-lg font-semibold text-white">
                   Resposta correta: <span style={{color: '#adff2f'}}>{currentQuestion?.correct_answer}</span>
                 </div>
               )}
               {currentQuestion?.explanation && (
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs sm:text-sm text-muted-foreground">
                   {currentQuestion.explanation}
                 </div>
               )}
