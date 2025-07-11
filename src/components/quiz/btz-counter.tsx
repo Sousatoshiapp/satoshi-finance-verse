@@ -18,32 +18,19 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const [showTrend, setShowTrend] = useState(false);
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
-  // Initialize display BTZ when currentBTZ loads
-  useEffect(() => {
-    console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ });
-    if (!isLoading && currentBTZ !== displayBTZ && !isAnimating) {
-      if (displayBTZ === 0) {
-        // Initial load - set without animation
-        setDisplayBTZ(currentBTZ);
-        setPreviousBTZ(currentBTZ);
-      } else {
-        // BTZ changed - animate to new value
-        console.log('💰 BTZ mudou - animando:', { from: displayBTZ, to: currentBTZ });
-        setPreviousBTZ(displayBTZ);
-        animateToNewValue(currentBTZ);
-        setShowTrend(true);
-        setTimeout(() => setShowTrend(false), 3000);
-      }
-    }
-  }, [currentBTZ, isLoading]);
-
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const displayBTZRef = useRef(0);
+
+  // Sempre manter o ref atualizado com o valor atual
+  useEffect(() => {
+    displayBTZRef.current = displayBTZ;
+  }, [displayBTZ]);
 
   const animateToNewValue = useCallback((newValue: number) => {
     if (isAnimating) return;
     
-    // Capturar valor atual dentro da função para evitar problemas de closure
-    const startValue = displayBTZ;
+    // Usar ref para capturar o valor mais atual
+    const startValue = displayBTZRef.current;
     
     // Se o valor é o mesmo, não precisa animar
     if (startValue === newValue) {
@@ -86,6 +73,25 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       }
     }, duration / steps);
   }, [isAnimating]);
+
+  // Initialize display BTZ when currentBTZ loads
+  useEffect(() => {
+    console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ });
+    if (!isLoading && currentBTZ !== displayBTZ && !isAnimating) {
+      if (displayBTZ === 0) {
+        // Initial load - set without animation
+        setDisplayBTZ(currentBTZ);
+        setPreviousBTZ(currentBTZ);
+      } else {
+        // BTZ changed - animate to new value
+        console.log('💰 BTZ mudou - animando:', { from: displayBTZ, to: currentBTZ });
+        setPreviousBTZ(displayBTZ);
+        animateToNewValue(currentBTZ);
+        setShowTrend(true);
+        setTimeout(() => setShowTrend(false), 3000);
+      }
+    }
+  }, [currentBTZ, isLoading, animateToNewValue, displayBTZ, isAnimating]);
 
   // Cleanup timer on unmount
   useEffect(() => {
