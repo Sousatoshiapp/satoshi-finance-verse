@@ -120,6 +120,8 @@ export function useQuizGamification() {
   }, [state, user, playCashRegisterSound, toast]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
+    console.log('❌ handleWrongAnswer chamado no useQuizGamification');
+    
     // Só pode usar vida se tem streak >= 7 (primeiro streak real) E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
     if (state.streak >= 7 && hasLives() && !state.hasShownLifeBanner) {
       // Marcar que já mostrou o banner nesta sessão
@@ -147,8 +149,17 @@ export function useQuizGamification() {
       currentExplanation: explanation
     }));
 
-    // Play wrong answer sound
-    playWrongSound();
+    // Guard: Only play sound if user is on quiz-related screens
+    if (window.location.pathname.includes('/quiz') || 
+        window.location.pathname.includes('/dashboard') ||
+        window.location.pathname.includes('/missions') ||
+        window.location.pathname.includes('/tournament') ||
+        window.location.pathname.includes('/district')) {
+      console.log('🔊 Tocando som de resposta errada');
+      playWrongSound();
+    } else {
+      console.log('🚫 Som de resposta errada bloqueado - usuário não está em tela de quiz');
+    }
 
     // Vibration for wrong answer
     if (typeof window !== 'undefined' && 'vibrate' in navigator) {

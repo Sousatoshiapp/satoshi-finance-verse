@@ -281,6 +281,14 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   };
 
   const handleTimeUp = () => {
+    console.log('⏰ handleTimeUp chamado em EnhancedSimultaneousDuel');
+    
+    // Guard: Check if user is still on duel screen
+    if (!window.location.pathname.includes('/duels') && !window.location.pathname.includes('/duel/')) {
+      console.log('🚫 Usuário não está mais na tela de duelos - ignorando timeout');
+      return;
+    }
+    
     if (answeredQuestions.has(currentQuestion)) return;
     
     const newAnswer = {

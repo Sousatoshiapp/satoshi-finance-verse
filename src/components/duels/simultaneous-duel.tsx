@@ -30,6 +30,7 @@ export function SimultaneousDuel({ duel, onDuelEnd }: SimultaneousDuelProps) {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log('🎯 SimultaneousDuel component mounted');
     loadProfiles();
     
     // Setup real-time subscription for opponent progress
@@ -48,7 +49,11 @@ export function SimultaneousDuel({ duel, onDuelEnd }: SimultaneousDuelProps) {
       .subscribe();
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      console.log('🚫 SimultaneousDuel component unmounting - clearing timers and subscriptions');
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
       supabase.removeChannel(channel);
     };
   }, [duel.id]);
@@ -56,7 +61,10 @@ export function SimultaneousDuel({ duel, onDuelEnd }: SimultaneousDuelProps) {
   useEffect(() => {
     startTimer();
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     };
   }, [currentQuestion]);
 
@@ -218,9 +226,24 @@ export function SimultaneousDuel({ duel, onDuelEnd }: SimultaneousDuelProps) {
   };
 
   const handleTimeout = () => {
+    console.log('⏰ handleTimeout chamado em SimultaneousDuel');
+    
+    // Guard: Check if user is still on duel screen
+    if (!window.location.pathname.includes('/duels') && !window.location.pathname.includes('/duel/')) {
+      console.log('🚫 Usuário não está mais na tela de duelos - ignorando timeout');
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      return;
+    }
+    
     if (answeredQuestions.has(currentQuestion)) return;
     
-    if (timerRef.current) clearInterval(timerRef.current);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
     processAnswer(null, true);
     setSelectedAnswer(null);
     
