@@ -5,6 +5,7 @@ import { Trophy, Star, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { StreakIcon, TrophyIcon, CrownIcon, StarIcon } from "@/components/icons/game-icons";
 
 interface UserBadge {
   id: string;
@@ -58,11 +59,11 @@ export function CompactBadgeShowcase({ className }: CompactBadgeShowcaseProps) {
 
   const getBadgeIcon = (type: string) => {
     switch (type) {
-      case 'streak': return '🔥';
-      case 'level': return '👑';
-      case 'quiz': return '🏆';
-      case 'social': return '⭐';
-      default: return '🏅';
+      case 'streak': return <StreakIcon size="xs" animated variant="glow" />;
+      case 'level': return <CrownIcon size="xs" animated variant="glow" />;
+      case 'quiz': return <TrophyIcon size="xs" animated variant="glow" />;
+      case 'social': return <StarIcon size="xs" animated variant="glow" />;
+      default: return <TrophyIcon size="xs" variant="default" />;
     }
   };
 
@@ -111,7 +112,7 @@ export function CompactBadgeShowcase({ className }: CompactBadgeShowcaseProps) {
                 {badges.slice(0, 3).map((badge) => (
                   <div
                     key={badge.id}
-                    className="text-lg"
+                    className="flex items-center justify-center w-6 h-6"
                     title={badge.badge_description}
                   >
                     {getBadgeIcon(badge.badge_type)}

@@ -6,6 +6,7 @@ import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { Gift, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { LightningIcon, RocketIcon, TrophyIcon, GiftIcon } from "@/components/icons/game-icons";
 
 interface AnimatedLootBoxProps {
   isAvailable: boolean;
@@ -87,12 +88,12 @@ export function AnimatedLootBox({ isAvailable }: AnimatedLootBoxProps) {
 
   const getPrizeIcon = (type: string) => {
     switch (type) {
-      case 'xp': return '⚡';
-      case 'beetz': return <BeetzIcon size="md" />;
+      case 'xp': return <LightningIcon size="2xl" animated variant="glow" />;
+      case 'beetz': return <BeetzIcon size="xl" />;
       case 'avatar': return '🤖';
-      case 'boost': return '🚀';
-      case 'badge': return '🏆';
-      default: return '🎁';
+      case 'boost': return <RocketIcon size="2xl" animated variant="glow" />;
+      case 'badge': return <TrophyIcon size="2xl" animated variant="glow" />;
+      default: return <GiftIcon size="2xl" animated variant="glow" />;
     }
   };
 

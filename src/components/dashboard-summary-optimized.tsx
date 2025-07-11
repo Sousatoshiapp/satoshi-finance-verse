@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Sparkles, Trophy, Target } from "@/components/icons/optimized-icons";
 import { useRenderPerformance } from "@/hooks/use-performance-monitor";
 import { OptimizedImage } from "@/components/ui/optimized-image";
+import { StreakIcon } from "@/components/icons/game-icons";
 
 interface UserStats {
   level: number;
@@ -97,7 +98,8 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
           {/* Streak */}
           <div className="text-center p-3 rounded-lg bg-gradient-to-b from-muted/50 to-background">
             <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${streakBadgeColor}`}>
-              🔥 {userStats.streak || 0}
+              <StreakIcon size="sm" animated={(userStats.streak || 0) > 0} variant={(userStats.streak || 0) > 0 ? "glow" : "default"} className="mr-1" />
+              {userStats.streak || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-2">Sequência</p>
           </div>

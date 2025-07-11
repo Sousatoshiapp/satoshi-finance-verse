@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { StreakIcon } from "@/components/icons/game-icons";
 
 interface StreakBadgeProps {
   days: number;
@@ -12,7 +13,7 @@ export function StreakBadge({ days, className }: StreakBadgeProps) {
       days > 0 && "animate-pulse-glow",
       className
     )}>
-      <span className="text-lg">🔥</span>
+      <StreakIcon size="sm" animated={days > 0} variant={days > 0 ? "glow" : "default"} />
       <span>{days} dias</span>
     </div>
   );

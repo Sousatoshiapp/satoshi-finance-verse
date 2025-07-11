@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { StreakIcon } from "@/components/icons/game-icons";
 
 interface CompactStreakCounterProps {
   currentStreak: number;
@@ -53,7 +54,12 @@ export function CompactStreakCounter({ currentStreak, className }: CompactStreak
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Flame className={cn("h-4 w-4", currentStreak > 0 ? "text-orange-500" : "text-gray-400")} />
+              <StreakIcon 
+                size="sm" 
+                animated={currentStreak > 0} 
+                variant={currentStreak > 0 ? "glow" : "default"} 
+                className={cn(currentStreak > 0 ? "text-orange-500" : "text-gray-400")}
+              />
               {currentStreak > 0 && (
                 <div className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold text-[10px]">
                   {currentStreak > 99 ? "99+" : currentStreak}

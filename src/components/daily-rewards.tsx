@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
 import confetti from "canvas-confetti";
+import { GiftIcon } from "@/components/icons/game-icons";
 
 interface DailyReward {
   day: number;
