@@ -140,15 +140,11 @@ function useCustomSounds() {
       console.log('🔊 Arquivo de áudio criado:', countdownAudioInstance.src);
       countdownAudioInstance.volume = 0.15;
       
-      // Parar o áudio após exatos 10 segundos
-      setTimeout(() => {
-        if (countdownAudioInstance) {
-          countdownAudioInstance.pause();
-          countdownAudioInstance.currentTime = 0;
-          console.log('🔊 Som de countdown parado após 10 segundos');
-          countdownAudioInstance = null;
-        }
-      }, 10000);
+      // Deixar o som tocar naturalmente até o fim
+      countdownAudioInstance.addEventListener('ended', () => {
+        console.log('🔊 Som de countdown terminou naturalmente');
+        countdownAudioInstance = null;
+      });
       
       countdownAudioInstance.play().then(() => {
         console.log('🔊 Som de countdown tocado com sucesso');

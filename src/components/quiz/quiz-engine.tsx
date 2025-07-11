@@ -116,9 +116,11 @@ export function QuizEngine({
 
   // Controle do timer via CircularTimer apenas
   const handleTimeUp = async () => {
+    console.log('⏰ handleTimeUp chamado - tempo acabou');
     if (showAnswer || !questions[currentIndex]) return;
     
     const question = questions[currentIndex];
+    console.log('⏰ Processando timeout para pergunta:', question.question);
     
     // Marcar como respondida incorretamente por timeout
     const answeredQuestion = {
@@ -134,15 +136,18 @@ export function QuizEngine({
     // Processar resposta errada
     await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
     
+    console.log('⏰ Mostrando resposta correta...');
     setShowAnswer(true);
     
-    // Mostrar resultado e aguardar ação do usuário
+    // Mostrar resultado por mais tempo para ver banner claramente
     setTimeout(() => {
+      console.log('⏰ Tempo para mostrar banner acabou, avançando...');
       // Auto-advance apenas se não há banner de vida
       if (!showLifeBanner) {
+        console.log('⏰ Chamando handleContinue após timeout');
         handleContinue();
       }
-    }, 2000);
+    }, 4000); // Aumentado de 2s para 4s
   };
 
   useEffect(() => {
