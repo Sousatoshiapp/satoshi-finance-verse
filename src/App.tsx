@@ -16,6 +16,7 @@ import DistrictQuiz from "@/pages/DistrictQuiz";
 import GameMode from "@/pages/GameMode";
 import Store from "@/pages/Store";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
+import Icons from "@/pages/Icons";
 
 // Lazy imports for less critical pages
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
@@ -484,6 +485,14 @@ function App() {
             } />
             
             <Route path="/password-reset" element={<LazyRoutes.PasswordReset />} />
+            
+            {/* Development/Preview Pages */}
+            <Route path="/icons" element={
+              <ProtectedRoute>
+                <Icons />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
             
             <Route path="*" element={<div>404 - Página não encontrada</div>} />
           </Routes>
