@@ -655,17 +655,26 @@ export default function Store() {
           </div>
         </Card>
 
-        {/* User Points */}
+        {/* User Points - BTZ Card Igual ao Dashboard */}
         {userProfile && (
-          <Card className="mb-6 bg-gradient-beetz">
-            <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <BeetzIcon size="lg" />
-                <div className="text-xl font-bold text-white">{userProfile.points}</div>
+          <div className="flex justify-center mb-6">
+            <div 
+              className="relative cursor-pointer hover:scale-105 transition-all duration-200"
+              onClick={() => navigate('/beetz-info')}
+            >
+              <div className="bg-transparent backdrop-blur-sm text-white font-bold text-4xl px-8 py-4 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20 transition-all duration-300">
+                <div className="flex items-center space-x-3">
+                  {/* Logo Beetz simples */}
+                  <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
+                    <span className="text-black font-bold text-lg">B</span>
+                  </div>
+                  <span className="font-mono text-3xl">
+                    {userProfile.points.toLocaleString()} BTZ
+                  </span>
+                </div>
               </div>
-              <p className="text-sm text-white/70">Beetz • Nível {userProfile.level}</p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Tabs - Mobile Optimized */}
