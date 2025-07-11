@@ -155,6 +155,7 @@ const useStreamingData = () => {
 
 // Componente principal com streaming
 export const StreamingDashboard = memo(function StreamingDashboard() {
+  console.log('📱 StreamingDashboard component rendered');
   useRenderPerformance('StreamingDashboard');
   const streamedData = useStreamingData();
   const { isLoading } = useDashboardData();

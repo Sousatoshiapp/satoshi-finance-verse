@@ -51,37 +51,15 @@ export function ProgressiveIntensity({
       }
     }
 
-    // Escalada de áudio
-    playProgressiveAudio(intensityLevel);
+  // Escalada de áudio removida para evitar sons não desejados
+    // playProgressiveAudio(intensityLevel);
 
   }, [streak, isActive, onIntensityChange]);
 
   const playProgressiveAudio = (level: number) => {
-    if (!audioContextRef.current) return;
-
-    const audioContext = audioContextRef.current;
-    
-    // Frequências que aumentam com a intensidade
-    const frequencies = [440, 523, 659, 783, 880, 1047]; // C4 to C6
-    const frequency = frequencies[level] || 440;
-    
-    // Duração que aumenta com intensidade
-    const duration = 0.1 + (level * 0.05);
-    
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-    oscillator.type = level > 3 ? 'sawtooth' : 'sine'; // Som mais agressivo em níveis altos
-    
-    gainNode.gain.setValueAtTime(0.1 + (level * 0.05), audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration);
+    console.log('🚫 playProgressiveAudio foi chamado mas está desabilitado para evitar sons indesejados');
+    // REMOVIDO: Função desabilitada para evitar sons de contagem regressiva não intencionais
+    return;
   };
 
   // Retorna classes CSS baseadas na intensidade
