@@ -11,7 +11,7 @@ import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
 import { BTZCounter } from "./btz-counter";
-import { LivesCounter } from "./lives-counter";
+// import { LivesCounter } from "./lives-counter"; // Removido
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 // import { LifePurchaseBanner } from "./life-purchase-banner"; // Removido
@@ -466,10 +466,7 @@ export function QuizEngine({
               <BTZCounter />
             </div>
             
-            {/* Terceira linha: Vidas centralizadas */}
-            <div className="flex justify-center">
-              <LivesCounter />
-            </div>
+            {/* Card de vidas removido */}
           </div>
         </div>
       </div>
