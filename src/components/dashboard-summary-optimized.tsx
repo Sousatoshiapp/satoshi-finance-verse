@@ -70,17 +70,17 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
   }, [userStats.completedLessons]);
 
   return (
-    <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5 h-48">
-      <CardHeader className="pb-3">
+    <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5 h-48 overflow-hidden">
+      <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />
           Progresso Hoje
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 h-full overflow-hidden">
         {/* XP Progress */}
-        <div className="space-y-2">
+        <div className="space-y-1">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium flex items-center gap-1">
               <Sparkles className="h-4 w-4 text-yellow-500" />
@@ -94,18 +94,18 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {/* Streak */}
-          <div className="text-center p-3 rounded-lg bg-gradient-to-b from-muted/50 to-background">
+          <div className="text-center p-2 rounded-lg bg-gradient-to-b from-muted/50 to-background">
             <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-white text-xs ${streakBadgeColor}`}>
               <StreakIcon size="sm" animated={(userStats.streak || 0) > 0} variant={(userStats.streak || 0) > 0 ? "glow" : "default"} className="mr-1" />
               {userStats.streak || 0}
             </div>
-            <p className="text-xs text-muted-foreground mt-2">Sequência</p>
+            <p className="text-xs text-muted-foreground mt-1">Sequência</p>
           </div>
 
           {/* Lessons */}
-          <div className="text-center p-3 rounded-lg bg-gradient-to-b from-muted/50 to-background">
+          <div className="text-center p-2 rounded-lg bg-gradient-to-b from-muted/50 to-background">
             <div className="text-sm font-bold text-primary flex items-center justify-center gap-1">
               <Target className="h-3 w-3" />
               {userStats.completedLessons || 0}
@@ -115,13 +115,13 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
           </div>
 
           {/* XP Multiplier */}
-          <div className="text-center p-3 rounded-lg bg-gradient-to-b from-muted/50 to-background">
+          <div className="text-center p-2 rounded-lg bg-gradient-to-b from-muted/50 to-background">
             <div className="text-sm font-bold text-success">
               {subscription.xpMultiplier || 1}x
             </div>
             <p className="text-xs text-muted-foreground">XP Boost</p>
             {subscription.tier && subscription.tier !== 'free' && (
-              <Badge variant="secondary" className="text-xs mt-1">
+              <Badge variant="secondary" className="text-xs mt-1 scale-90">
                 {subscription.tier.toUpperCase()}
               </Badge>
             )}
