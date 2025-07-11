@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 interface CustomSounds {
   // Básicos
@@ -43,6 +44,22 @@ const CUSTOM_SOUNDS: CustomSounds = {
 };
 
 function useCustomSounds() {
+  const location = useLocation();
+  
+  // Lista de rotas onde o countdown deve tocar (apenas rotas de quiz)
+  const isQuizRoute = useCallback(() => {
+    const quizRoutes = [
+      '/quiz',
+      '/solo-quiz', 
+      '/enhanced-quiz',
+      '/duel-quiz',
+      '/tournament-quiz',
+      '/district-duel',
+      '/satoshi-city/district'
+    ];
+    
+    return quizRoutes.some(route => location.pathname.includes(route));
+  }, [location.pathname]);
   const playSound = useCallback((soundType: keyof typeof CUSTOM_SOUNDS, volume: number = 0.3) => {
     try {
       const audio = new Audio(CUSTOM_SOUNDS[soundType]);
@@ -98,6 +115,12 @@ function useCustomSounds() {
   let countdownAudioInstance: HTMLAudioElement | null = null;
   
   const playCountdownSound = useCallback(() => {
+    // Só toca o countdown se estiver em uma rota de quiz
+    if (!isQuizRoute()) {
+      console.log('🔊 Não está em uma rota de quiz, som de countdown bloqueado');
+      return;
+    }
+    
     console.log('🔊 Tentando tocar som de countdown');
     
     // Se já existe uma instância tocando, não criar nova
@@ -138,7 +161,7 @@ function useCustomSounds() {
       console.error('🔊 Erro ao criar áudio de countdown:', error);
       countdownAudioInstance = null;
     }
-  }, []);
+  }, [isQuizRoute]);
 
   return {
     playCorrectSound,
