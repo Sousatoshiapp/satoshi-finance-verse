@@ -85,8 +85,6 @@ export function QuizEngine({
     currentMultiplier,
     showBeetzAnimation,
     showStreakAnimation,
-    showVideoExplanation,
-    currentVideoUrl,
     currentQuestion: currentQuestionText,
     currentCorrectAnswer,
     currentExplanation,
@@ -95,7 +93,6 @@ export function QuizEngine({
     handleUseLife,
     hideBeetzAnimation,
     hideStreakAnimation,
-    hideVideoExplanation,
     resetGamification,
     getQuizCompletion
   } = useQuizGamification();
@@ -147,19 +144,7 @@ export function QuizEngine({
       console.log('⏰ Verificando estado showAnswer após 100ms:', showAnswer);
     }, 100);
     
-    // Mostrar resultado por tempo suficiente para ver banner
-    setTimeout(() => {
-      console.log('⏰ Tempo para mostrar banner acabou, verificando se pode avançar...');
-      console.log('⏰ showLifeBanner=', showLifeBanner, 'showAnswer=', showAnswer);
-      
-      // Auto-advance apenas se não há banner de vida
-      if (!showLifeBanner) {
-        console.log('⏰ Chamando handleContinue após timeout');
-        handleContinue();
-      } else {
-        console.log('⏰ Não avançando porque showLifeBanner=true');
-      }
-    }, 4000); // 4 segundos para ver o banner
+    // Banner permanece até usuário clicar em "Continuar" - sem auto-advance
   };
 
   useEffect(() => {
@@ -646,27 +631,6 @@ export function QuizEngine({
         onComplete={hideBeetzAnimation}
       />
 
-      {showVideoExplanation && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <Card className="w-full max-w-lg">
-            <CardContent className="p-6">
-              <h3 className="font-bold mb-2">💡 Explicação</h3>
-              <p className="mb-4">{currentQuestionText}</p>
-              <div className="mb-4">
-                <strong>Resposta correta:</strong> {currentCorrectAnswer}
-              </div>
-              {currentExplanation && (
-                <div className="mb-4">
-                  <strong>Por quê:</strong> {currentExplanation}
-                </div>
-              )}
-              <Button onClick={hideVideoExplanation} className="w-full">
-                Continuar
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
       <StreakAnimation
         isVisible={showStreakAnimation}
