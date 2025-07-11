@@ -153,6 +153,7 @@ export function QuizEngine({
     
     // Se não pode usar vida, mostrar modal de timeout
     console.log('⏰ Não pode usar vida - mostrando modal de timeout');
+    setShowAnswer(true); // Para desativar o timer
     setShowTimeoutModal(true);
   };
 
