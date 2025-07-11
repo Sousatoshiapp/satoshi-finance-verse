@@ -62,8 +62,7 @@ export function useQuizGamification() {
         showBeetzAnimation: true
       }));
       
-      // Play streak achievement sound
-      playStreakSound(newStreak);
+      // Play only BTZ sound
       playCashRegisterSound();
       
       toast({
@@ -117,12 +116,8 @@ export function useQuizGamification() {
         console.error('Error updating points:', error);
       }
     }
-
-    // Play correct answer sound with intensity based on streak
-    const intensity = Math.min(newStreak, 10);
-    playCorrectSound(intensity);
     
-  }, [state, user, playCorrectSound, playStreakSound, playCashRegisterSound, toast]);
+  }, [state, user, playCashRegisterSound, toast]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
     // Só pode usar vida se tem streak >= 7 (primeiro streak real) E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
