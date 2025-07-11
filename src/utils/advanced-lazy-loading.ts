@@ -46,7 +46,7 @@ export const LazyRoutes = {
   FindOpponent: lazy(() => import('@/pages/FindOpponent')),
   TournamentQuizSpecific: lazy(() => import('@/pages/TournamentQuizSpecific')),
   LearningAnalytics: lazy(() => import('@/pages/LearningAnalytics')),
-  DashboardNew: lazy(() => import('@/pages/DashboardNew')),
+  
   TestingHub: lazy(() => import('@/pages/TestingHub')),
   GamificationDashboard: lazy(() => import('@/pages/GamificationDashboard')),
   Achievements: lazy(() => import('@/pages/Achievements')),

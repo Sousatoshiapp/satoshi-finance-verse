@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { BTZCounter } from "@/components/quiz/btz-counter";
+
 import { 
   BookOpen, 
   Brain, 
@@ -205,13 +205,10 @@ export function PersonalizedDashboard() {
             Aqui está seu progresso de aprendizado personalizado
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <BTZCounter className="min-w-0" />
-          <Button onClick={() => navigate('/analytics')} variant="outline">
-            <BarChart3 className="h-4 w-4 mr-2" />
-            Ver Analytics Completo
-          </Button>
-        </div>
+        <Button onClick={() => navigate('/analytics')} variant="outline">
+          <BarChart3 className="h-4 w-4 mr-2" />
+          Ver Analytics Completo
+        </Button>
       </div>
 
       {/* Key Metrics */}

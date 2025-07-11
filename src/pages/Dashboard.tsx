@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
+import { BTZCounter } from "@/components/quiz/btz-counter";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { AvatarSelection } from "@/components/avatar-selection";
 import { AvatarDisplayOptimized } from "@/components/avatar-display-optimized";
@@ -315,24 +315,9 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* BTZ Card Centralizado - Igual ao Quiz */}
+            {/* BTZ Counter com trend arrows */}
             <div className="flex justify-center mb-4">
-              <div 
-                className="relative cursor-pointer hover:scale-105 transition-all duration-200"
-                onClick={handleNavigateToBeetzInfo}
-              >
-                <div className="bg-transparent backdrop-blur-sm text-white font-bold text-4xl px-8 py-4 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20 transition-all duration-300">
-                  <div className="flex items-center space-x-3">
-                    {/* Logo Beetz simples */}
-                    <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
-                      <span className="text-black font-bold text-lg">B</span>
-                    </div>
-                    <span className="font-mono text-3xl">
-                      {userStats.points.toLocaleString()} BTZ
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <BTZCounter />
             </div>
           </div>
 
