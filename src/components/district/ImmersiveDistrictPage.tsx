@@ -190,7 +190,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="lg:col-span-1"
           >
-            <div className="bg-black/60 backdrop-blur-lg rounded-xl p-4 border border-white/20 max-w-sm">
+            <div className="bg-black/20 backdrop-blur-lg rounded-xl p-4 border border-white/20 max-w-sm">
               <div className="flex items-center gap-3 mb-3">
                 <img 
                   src={theme.logoUrl} 
@@ -277,7 +277,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-auto p-6"
         >
-          <div className="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/20 max-w-md mx-auto text-center">
+          <div className="bg-black/20 backdrop-blur-sm rounded-xl p-4 border border-white/20 max-w-md mx-auto text-center">
             <h3 className="text-white font-semibold mb-2">Poder Especial</h3>
             <p className="text-white/70 text-sm">{district.special_power}</p>
           </div>

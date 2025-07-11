@@ -18,26 +18,33 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
 
   useEffect(() => {
     if (!isTransitioning) return;
+    
+    console.log('🚀 [TRANSIÇÃO] Iniciando transição:', { fromLocation, toLocation });
 
     const timeline = [
-      { delay: 0, stage: 1 },      // Zoom out
-      { delay: 800, stage: 2 },    // Travel effect
-      { delay: 1600, stage: 3 },   // Zoom in
-      { delay: 2400, stage: 0 },   // Complete
+      { delay: 0, stage: 1 },      // Zoom out - 1000ms
+      { delay: 1000, stage: 2 },   // Hyperspace travel - 2000ms 
+      { delay: 3000, stage: 3 },   // Zoom in - 1000ms
+      { delay: 4000, stage: 0 },   // Complete - 500ms delay
     ];
 
     const timers = timeline.map(({ delay, stage }) =>
       setTimeout(() => {
         if (stage === 0) {
+          console.log('🚀 [TRANSIÇÃO] Transição concluída');
           onComplete();
         } else {
+          console.log(`🚀 [TRANSIÇÃO] Stage ${stage} iniciado`);
           setStage(stage);
         }
       }, delay)
     );
 
-    return () => timers.forEach(clearTimeout);
-  }, [isTransitioning, onComplete]);
+    return () => {
+      console.log('🚀 [TRANSIÇÃO] Limpando timers');
+      timers.forEach(clearTimeout);
+    };
+  }, [isTransitioning, fromLocation, toLocation, onComplete]);
 
   if (!isTransitioning) return null;
 
@@ -55,13 +62,13 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
             className="absolute inset-0 bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.8 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            transition={{ duration: 1.0, ease: "easeInOut" }}
           >
             <motion.div
               className="absolute inset-0 flex items-center justify-center"
               initial={{ scale: 1 }}
               animate={{ scale: 0.8 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+              transition={{ duration: 1.0, ease: "easeInOut" }}
             >
               <div className="text-white text-center">
                 <motion.div
@@ -88,7 +95,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
             className="absolute inset-0 bg-black"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.3 }}
           >
             {/* Vignette effect */}
             <div 
@@ -134,9 +141,9 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                       opacity: [0, 1, 1, 0.6, 0],
                     }}
                     transition={{
-                      duration: 0.8,
+                      duration: 2.0,
                       ease: [0.25, 0.46, 0.45, 0.94],
-                      delay: Math.random() * 0.2,
+                      delay: Math.random() * 0.5,
                     }}
                   />
                 );
@@ -157,7 +164,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                 opacity: [0, 0.8, 0.3, 0],
               }}
               transition={{
-                duration: 0.8,
+                duration: 2.0,
                 ease: "easeOut",
               }}
             />
@@ -202,13 +209,13 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
             className="absolute inset-0 bg-black"
             initial={{ opacity: 1 }}
             animate={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+            transition={{ duration: 1.0, ease: "easeInOut" }}
           >
             <motion.div
               className="absolute inset-0 flex items-center justify-center"
               initial={{ scale: 2 }}
               animate={{ scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+              transition={{ duration: 1.0, ease: "easeInOut" }}
             >
               <div className="text-white text-center">
                 <motion.div
