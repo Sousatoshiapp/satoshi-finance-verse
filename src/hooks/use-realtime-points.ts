@@ -4,10 +4,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
 
 export function useRealtimePoints() {
+  console.log("🔗 useRealtimePoints hook inicializado");
+  
   const { user } = useAuth();
   const [points, setPoints] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
+
+  console.log("🔑 User no useRealtimePoints:", user?.id);
 
   useEffect(() => {
     if (!user) {

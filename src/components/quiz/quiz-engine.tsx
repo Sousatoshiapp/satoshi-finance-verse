@@ -226,11 +226,13 @@ export function QuizEngine({
     if (!question) return;
 
     const isCorrect = selectedAnswer === question.correct_answer;
+    console.log("🎯 Quiz Submit:", { isCorrect, selectedAnswer, correctAnswer: question.correct_answer });
     
     // SIMPLIFICADO - sem vidas
     setShowAnswer(true); // Para parar o timer
     
     if (isCorrect) {
+      console.log("✅ Resposta correta - chamando handleCorrectAnswer");
       setScore(prev => prev + 1);
       await handleCorrectAnswer();
       

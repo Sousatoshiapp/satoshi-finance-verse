@@ -9,8 +9,14 @@ interface BTZCounterProps {
 }
 
 export function BTZCounter({ className = "" }: BTZCounterProps) {
+  console.log("🎯 BTZCounter renderizado!");
+  
   const { user } = useAuth();
+  console.log("🔑 User no BTZCounter:", user?.id);
+  
   const { points: currentBTZ, isLoading } = useRealtimePoints();
+  console.log("💰 Points from useRealtimePoints:", { currentBTZ, isLoading });
+  
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);

@@ -19,6 +19,7 @@ interface QuizGamificationState {
 }
 
 export function useQuizGamification() {
+  console.log("🎮 useQuizGamification hook inicializado");
   const { user } = useAuth();
   const { toast } = useToast();
   const { playCorrectSound, playWrongSound, playStreakSound, playCashRegisterSound } = useAdvancedQuizAudio();
@@ -87,6 +88,7 @@ export function useQuizGamification() {
   }, [user]);
 
   const handleCorrectAnswer = useCallback(async () => {
+    console.log("✅ handleCorrectAnswer chamado no useQuizGamification");
     if (!user || !state.isLoaded) return;
 
     const newStreak = state.streak + 1;
