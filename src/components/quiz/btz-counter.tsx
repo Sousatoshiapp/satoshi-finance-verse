@@ -20,27 +20,22 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
   // Initialize display BTZ when currentBTZ loads
   useEffect(() => {
+    console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ });
     if (!isLoading && currentBTZ !== displayBTZ && !isAnimating) {
-      setDisplayBTZ(currentBTZ);
+      if (displayBTZ === 0) {
+        // Initial load - set without animation
+        setDisplayBTZ(currentBTZ);
+        setPreviousBTZ(currentBTZ);
+      } else {
+        // BTZ changed - animate to new value
+        console.log('💰 BTZ mudou - animando:', { from: displayBTZ, to: currentBTZ });
+        setPreviousBTZ(displayBTZ);
+        animateToNewValue(currentBTZ);
+        setShowTrend(true);
+        setTimeout(() => setShowTrend(false), 3000);
+      }
     }
-  }, [currentBTZ, isLoading]);
-
-  // Watch for BTZ changes and animate
-  useEffect(() => {
-    if (previousBTZ === 0 && currentBTZ > 0) {
-      // Initial load
-      setPreviousBTZ(currentBTZ);
-      return;
-    }
-
-    if (currentBTZ !== previousBTZ && previousBTZ > 0) {
-      console.log('🔄 BTZ changed:', { from: previousBTZ, to: currentBTZ });
-      animateToNewValue(currentBTZ);
-      setShowTrend(true);
-      setTimeout(() => setShowTrend(false), 3000);
-      setPreviousBTZ(currentBTZ);
-    }
-  }, [currentBTZ, previousBTZ]);
+  }, [currentBTZ, isLoading, displayBTZ, isAnimating]);
 
   const animateToNewValue = useCallback((newValue: number) => {
     if (isAnimating) return;

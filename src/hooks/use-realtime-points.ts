@@ -48,9 +48,10 @@ export function useRealtimePoints() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('Points updated:', payload);
+          console.log('🔄 Realtime points update:', payload);
           const newPoints = payload.new.points;
           if (typeof newPoints === 'number') {
+            console.log('💰 Atualizando pontos:', { old: points, new: newPoints });
             setPoints(newPoints);
             
             // Invalidate dashboard data to refresh all components
