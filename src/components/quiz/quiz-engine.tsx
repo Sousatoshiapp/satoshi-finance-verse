@@ -547,6 +547,7 @@ export function QuizEngine({
                     // Timer zerou - deixar o useEffect cuidar da lógica
                   }}
                   onCountdown={playCountdownSound}
+                  enableCountdownSound={true}
                   size={120}
                   className="shadow-lg"
                 />

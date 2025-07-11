@@ -6,6 +6,7 @@ interface CircularTimerProps {
   onTimeUp: () => void;
   onTick?: (timeLeft: number) => void;
   onCountdown?: () => void;
+  enableCountdownSound?: boolean; // Controla se o som de countdown deve tocar
   size?: number;
   className?: string;
 }
@@ -16,6 +17,7 @@ export function CircularTimer({
   onTimeUp, 
   onTick, 
   onCountdown,
+  enableCountdownSound = false,
   size = 120,
   className = ""
 }: CircularTimerProps) {
@@ -32,8 +34,8 @@ export function CircularTimer({
       return;
     }
 
-    // Tocar som de contagem regressiva aos 10 segundos
-    if (timeLeft === 10) {
+    // Tocar som de contagem regressiva aos 10 segundos (apenas se habilitado)
+    if (timeLeft === 10 && enableCountdownSound) {
       console.log('🔊 Disparando countdown aos 10 segundos');
       onCountdown?.();
     }

@@ -114,7 +114,7 @@ export function EnhancedDuelInterface({
               duration={30}
               isActive={!hasAnswered && !isWaitingForOpponent}
               onTimeUp={handleTimeUp}
-              onCountdown={playCountdownSound}
+              enableCountdownSound={false}
               size={80}
               className="mx-auto mb-2"
             />

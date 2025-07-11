@@ -523,7 +523,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
             duration={30}
             isActive={isTimerActive}
             onTimeUp={handleTimeUp}
-            onCountdown={playCountdownSound}
+            enableCountdownSound={false}
             size={120}
             className="shadow-lg"
           />

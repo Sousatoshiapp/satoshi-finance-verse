@@ -32,17 +32,9 @@ export function DistrictCircleBadge({ district, size = "md" }: DistrictCircleBad
     );
   }
 
-  // Mapear temas para emojis/ícones
-  const getDistrictIcon = (theme: string) => {
-    switch (theme) {
-      case 'financas': return '💰';
-      case 'crypto': return '₿';
-      case 'investimentos': return '📈';
-      case 'economia': return '🏦';
-      case 'educacao': return '🎓';
-      case 'tecnologia': return '💻';
-      default: return '🏢';
-    }
+  // Obter inicial do nome do distrito como fallback
+  const getDistrictInitial = (name: string) => {
+    return name.charAt(0).toUpperCase();
   };
 
   return (
@@ -55,7 +47,7 @@ export function DistrictCircleBadge({ district, size = "md" }: DistrictCircleBad
       }}
       title={`Distrito: ${district.name}`}
     >
-      {/* Logo do patrocinador se disponível */}
+      {/* Logo do patrocinador ou inicial do distrito */}
       {district.sponsor_logo_url ? (
         <img 
           src={district.sponsor_logo_url} 
@@ -63,8 +55,8 @@ export function DistrictCircleBadge({ district, size = "md" }: DistrictCircleBad
           className="w-full h-full object-contain rounded-full p-1"
         />
       ) : (
-        <span className="text-white font-bold">
-          {getDistrictIcon(district.theme)}
+        <span className="text-white font-bold text-lg">
+          {getDistrictInitial(district.name)}
         </span>
       )}
       
