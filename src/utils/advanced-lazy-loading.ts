@@ -33,6 +33,7 @@ export const LazyRoutes = {
   GameMode: lazy(() => import('@/pages/GameMode')),
   DistrictDetail: lazy(() => import('@/pages/DistrictDetail')),
   DistrictQuiz: lazy(() => import('@/pages/DistrictQuiz')),
+  DistrictDuelPage: lazy(() => import('@/pages/DistrictDuelPage')),
   EnhancedQuiz: lazy(() => import('@/pages/EnhancedQuiz')),
   DuelQuiz: lazy(() => import('@/pages/DuelQuiz')),
   TournamentDetail: lazy(() => import('@/pages/TournamentDetail')),

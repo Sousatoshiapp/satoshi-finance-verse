@@ -13,6 +13,7 @@ import Duels from "@/pages/Duels";
 import SatoshiCity from "@/pages/SatoshiCity";
 import DistrictDetail from "@/pages/DistrictDetail";
 import DistrictQuiz from "@/pages/DistrictQuiz";
+import DistrictQuizPage from "@/pages/DistrictQuizPage";
 import GameMode from "@/pages/GameMode";
 import Store from "@/pages/Store";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
@@ -157,6 +158,18 @@ function App() {
               <ProtectedRoute>
                 <DistrictQuiz />
                 <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/quiz/district/:districtId" element={
+              <ProtectedRoute>
+                <DistrictQuizPage />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/district-duel/:duelId" element={
+              <ProtectedRoute>
+                <LazyRoutes.DistrictDuelPage />
               </ProtectedRoute>
             } />
             

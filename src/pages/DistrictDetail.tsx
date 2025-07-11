@@ -5,17 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Award, Star, Home, Shield, Swords, Target, Flame, ExternalLink, Plus, UserPlus, Settings, Clock, AlertTriangle, CheckCircle, ShoppingBag, Lock, Sparkles, Search, Filter, SortAsc, SortDesc } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { DistrictQuests } from "@/components/district-quests";
-import { SponsorActivationBanner } from "@/components/sponsor-activation-banner";
 import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -48,35 +42,10 @@ interface District {
   special_power: string;
 }
 
-interface Team {
-  id: string;
-  name: string;
-  description: string;
-  max_members: number;
-  members_count: number;
-  team_power: number;
-  team_color: string;
-  captain_id: string;
-  achievements: any;
-  team_motto: string;
-  sponsor_themed: boolean;
-}
-
-interface TeamMember {
-  id: string;
-  user_id: string;
-  role: string;
-  joined_at: string;
-  profiles: {
-    nickname: string;
-    level: number;
-    profile_image_url?: string;
-  };
-}
-
 interface UserDistrict {
   level: number;
   xp: number;
+  is_residence: boolean;
 }
 
 interface Resident {
@@ -85,6 +54,19 @@ interface Resident {
   level: number;
   xp: number;
   profile_image_url?: string;
+}
+
+interface DistrictDuel {
+  id: string;
+  initiator_district: { name: string };
+  challenged_district: { name: string };
+  status: string;
+  participants_count_initiator: number;
+  participants_count_challenged: number;
+  average_score_initiator: number;
+  average_score_challenged: number;
+  winner_district_id: string | null;
+  end_time: string;
 }
 
 const districtLogos = {
@@ -111,30 +93,15 @@ export default function DistrictDetail() {
   const { districtId } = useParams();
   const navigate = useNavigate();
   const [district, setDistrict] = useState<District | null>(null);
-  const [teams, setTeams] = useState<Team[]>([]);
   const [userDistrict, setUserDistrict] = useState<UserDistrict | null>(null);
   const [residents, setResidents] = useState<Resident[]>([]);
-  const [ranking, setRanking] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentProfile, setCurrentProfile] = useState<any>(null);
-  const [newTeamName, setNewTeamName] = useState('');
-  const [newTeamDescription, setNewTeamDescription] = useState('');
-  const [isCreatingTeam, setIsCreatingTeam] = useState(false);
   const [allDistricts, setAllDistricts] = useState<District[]>([]);
-  const [activeBattles, setActiveBattles] = useState<any[]>([]);
+  const [activeDuels, setActiveDuels] = useState<DistrictDuel[]>([]);
   const [targetDistrictId, setTargetDistrictId] = useState('');
-  const [isInitiatingBattle, setIsInitiatingBattle] = useState(false);
+  const [isInitiatingDuel, setIsInitiatingDuel] = useState(false);
   const [storeItems, setStoreItems] = useState<any[]>([]);
-  const [userPurchases, setUserPurchases] = useState<any[]>([]);
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [isLoadingMembers, setIsLoadingMembers] = useState(false);
-  const [userTeamMembership, setUserTeamMembership] = useState<string | null>(null);
-  
-  // Simplified filters state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activityFilter, setActivityFilter] = useState('all');
   
   const { toast } = useToast();
 
@@ -156,33 +123,22 @@ export default function DistrictDetail() {
       if (districtError) throw districtError;
       setDistrict(districtData);
 
-      // Load teams
-      const { data: teamsData, error: teamsError } = await supabase
-        .from('district_teams')
-        .select('*')
-        .eq('district_id', districtId)
-        .order('created_at', { ascending: false });
-
-      if (teamsError) throw teamsError;
-      setTeams(teamsData || []);
-
-      // Load residents and ranking - simplificado por ora
-      const { data: allProfiles } = await supabase
+      // Load residents - simplified approach
+      const { data: profilesData } = await supabase
         .from('profiles')
-        .select('id, nickname, profile_image_url')
-        .limit(10);
+        .select('id, nickname, profile_image_url, level, xp')
+        .order('xp', { ascending: false })
+        .limit(20);
 
-      if (allProfiles) {
-        const mockResidents = allProfiles.map((profile, index) => ({
+      if (profilesData) {
+        const residentsData = profilesData.map(profile => ({
           id: profile.id,
-          nickname: profile.nickname,
-          level: Math.floor(Math.random() * 10) + 1,
-          xp: Math.floor(Math.random() * 5000) + 100,
+          nickname: profile.nickname || 'Usuário',
+          level: profile.level || 1,
+          xp: profile.xp || 0,
           profile_image_url: profile.profile_image_url
         }));
-        
-        setResidents(mockResidents);
-        setRanking(mockResidents.sort((a, b) => b.xp - a.xp).slice(0, 10));
+        setResidents(residentsData);
       }
 
       // Load user district progress
@@ -197,54 +153,54 @@ export default function DistrictDetail() {
         if (profile) {
           setCurrentProfile(profile);
           
-          // Load user team membership
-          const { data: teamMembership } = await supabase
-            .from('team_members')
-            .select('team_id, district_teams(name)')
+          const { data: userDistrictData } = await supabase
+            .from('user_districts')
+            .select('*')
             .eq('user_id', profile.id)
-            .eq('is_active', true)
+            .eq('district_id', districtId)
             .single();
-          
-          if (teamMembership) {
-            setUserTeamMembership(teamMembership.district_teams?.name || null);
-          }
 
-          // Simular dados do distrito do usuário
-          setUserDistrict({
-            level: Math.floor(Math.random() * 5) + 1,
-            xp: Math.floor(Math.random() * 1000) + 100
-          });
+          if (userDistrictData) {
+            setUserDistrict({
+              level: userDistrictData.level || 1,
+              xp: userDistrictData.xp || 0,
+              is_residence: userDistrictData.is_residence || false
+            });
+          }
         }
       }
 
-      // Load all districts for battles
+      // Load all districts for duels
       const { data: districtsData } = await supabase
         .from('districts')
         .select('*')
-        .neq('id', districtId);
+        .neq('id', districtId)
+        .eq('is_active', true);
       
       setAllDistricts(districtsData || []);
 
-      // Load active battles
-      const { data: battlesData } = await supabase
-        .from('district_battles')
+      // Load active duels
+      const { data: duelsData } = await supabase
+        .from('district_duels')
         .select(`
           *,
-          attacking_district:districts!district_battles_attacking_district_id_fkey(name),
-          defending_district:districts!district_battles_defending_district_id_fkey(name)
+          initiator_district:districts!district_duels_initiator_district_id_fkey(name),
+          challenged_district:districts!district_duels_challenged_district_id_fkey(name)
         `)
-        .or(`attacking_district_id.eq.${districtId},defending_district_id.eq.${districtId}`)
+        .or(`initiator_district_id.eq.${districtId},challenged_district_id.eq.${districtId}`)
         .in('status', ['pending', 'active'])
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .limit(5);
 
-      setActiveBattles(battlesData || []);
+      setActiveDuels(duelsData || []);
 
       // Load store items
       const { data: itemsData } = await supabase
         .from('district_store_items')
         .select('*')
         .eq('district_id', districtId)
-        .eq('is_available', true);
+        .eq('is_available', true)
+        .limit(6);
 
       setStoreItems(itemsData || []);
 
@@ -260,134 +216,11 @@ export default function DistrictDetail() {
     }
   };
 
-  const handleStartQuiz = () => {
-    navigate(`/quiz/${district?.theme}`);
+  const handleDistrictQuiz = () => {
+    navigate(`/quiz/district/${districtId}`);
   };
 
-  const handleJoinTeam = async (teamId: string) => {
-    if (!currentProfile) {
-      toast({
-        title: "Erro",
-        description: "Você precisa estar logado para entrar em um time",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('team_members')
-        .insert({
-          team_id: teamId,
-          user_id: currentProfile.id,
-          role: 'member'
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Sucesso!",
-        description: "Você entrou no time com sucesso!"
-      });
-
-      loadDistrictData(); // Reload data
-    } catch (error) {
-      console.error('Erro ao entrar no time:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível entrar no time",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleViewTeamMembers = async (team: Team) => {
-    setSelectedTeam(team);
-    setIsLoadingMembers(true);
-    
-    try {
-      const { data, error } = await supabase
-        .from('team_members')
-        .select(`
-          *,
-          profiles (nickname, level, profile_image_url)
-        `)
-        .eq('team_id', team.id)
-        .eq('is_active', true);
-
-      if (error) throw error;
-      setTeamMembers(data || []);
-    } catch (error) {
-      console.error('Erro ao carregar membros do time:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível carregar os membros do time",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoadingMembers(false);
-    }
-  };
-
-  const handleCreateTeam = async () => {
-    if (!currentProfile || !newTeamName.trim()) {
-      toast({
-        title: "Erro",
-        description: "Nome do time é obrigatório",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsCreatingTeam(true);
-    try {
-      const { data: teamData, error: teamError } = await supabase
-        .from('district_teams')
-        .insert({
-          name: newTeamName.trim(),
-          description: newTeamDescription.trim(),
-          district_id: districtId,
-          captain_id: currentProfile.id,
-          max_members: 10,
-          members_count: 1
-        })
-        .select()
-        .single();
-
-      if (teamError) throw teamError;
-
-      // Add creator as team member
-      const { error: memberError } = await supabase
-        .from('team_members')
-        .insert({
-          team_id: teamData.id,
-          user_id: currentProfile.id,
-          role: 'captain'
-        });
-
-      if (memberError) throw memberError;
-
-      toast({
-        title: "Sucesso!",
-        description: "Time criado com sucesso!"
-      });
-
-      setNewTeamName('');
-      setNewTeamDescription('');
-      loadDistrictData(); // Reload teams
-    } catch (error) {
-      console.error('Erro ao criar time:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível criar o time",
-        variant: "destructive"
-      });
-    } finally {
-      setIsCreatingTeam(false);
-    }
-  };
-
-  const handleInitiateBattle = async () => {
+  const handleInitiateDuel = async () => {
     if (!targetDistrictId || !currentProfile) {
       toast({
         title: "Erro",
@@ -397,56 +230,45 @@ export default function DistrictDetail() {
       return;
     }
 
-    setIsInitiatingBattle(true);
+    setIsInitiatingDuel(true);
     try {
-      const { error } = await supabase
-        .from('district_battles')
-        .insert({
-          attacking_district_id: districtId,
-          defending_district_id: targetDistrictId,
-          status: 'pending'
-        });
+      const { data, error } = await supabase.rpc('start_district_duel', {
+        p_initiator_district_id: districtId,
+        p_challenged_district_id: targetDistrictId
+      });
 
       if (error) throw error;
 
       toast({
-        title: "Batalha Iniciada!",
-        description: "O distrito rival foi desafiado!"
+        title: "Duelo Iniciado!",
+        description: "O distrito foi desafiado! O duelo começou e durará 24 horas.",
+        duration: 5000
       });
 
       setTargetDistrictId('');
-      loadDistrictData(); // Reload battles
+      loadDistrictData(); // Reload duels
     } catch (error) {
-      console.error('Erro ao iniciar batalha:', error);
+      console.error('Erro ao iniciar duelo:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível iniciar a batalha",
+        description: "Não foi possível iniciar o duelo",
         variant: "destructive"
       });
     } finally {
-      setIsInitiatingBattle(false);
+      setIsInitiatingDuel(false);
     }
   };
 
-  const handlePurchaseItem = async (item: any) => {
-    if (!currentProfile) {
-      toast({
-        title: "Erro",
-        description: "Você precisa estar logado para comprar items",
-        variant: "destructive"
-      });
-      return;
-    }
+  const handleJoinDuel = (duelId: string) => {
+    navigate(`/district-duel/${duelId}`);
+  };
 
-    // Simplified purchase logic without database insert for now
+  const handleViewStore = () => {
+    // Implementar navegação para loja do distrito
     toast({
-      title: "Compra Realizada!",
-      description: `Você comprou ${item.name}!`
+      title: "Em breve!",
+      description: "A loja do distrito estará disponível em breve"
     });
-  };
-
-  const canPurchaseItem = (item: any) => {
-    return item.is_available;
   };
 
   if (loading || !district) {
@@ -460,26 +282,17 @@ export default function DistrictDetail() {
     );
   }
 
-  const nextLevelXP = userDistrict ? userDistrict.level * 1000 : 1000;
-  const currentLevelXP = userDistrict ? userDistrict.xp % 1000 : 0;
-  const progressPercent = (currentLevelXP / 1000) * 100;
   const districtLogo = districtLogos[district.theme as keyof typeof districtLogos];
   const district3DImage = district3DImages[district.theme as keyof typeof district3DImages];
-
-  const getRankIcon = (position: number) => {
-    switch (position) {
-      case 1: return <Crown className="h-5 w-5 text-yellow-400" />;
-      case 2: return <Medal className="h-5 w-5 text-gray-400" />;
-      case 3: return <Award className="h-5 w-5 text-amber-600" />;
-      default: return <Star className="h-5 w-5 text-gray-500" />;
-    }
-  };
+  const battleWinRate = district.battles_won + district.battles_lost > 0 
+    ? Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)
+    : 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Optimized Mobile Header */}
-      <div className="relative overflow-hidden h-48 sm:h-64 lg:h-80">
-        {/* 3D District Background */}
+      {/* Hero Header */}
+      <div className="relative overflow-hidden h-64 sm:h-80">
+        {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ 
@@ -497,441 +310,245 @@ export default function DistrictDetail() {
           }}
         ></div>
         
-        <div className="relative container mx-auto px-4 py-4">
-          <Button
-            variant="ghost"
+        <div className="relative container mx-auto px-4 py-6 h-full flex flex-col">
+          {/* Back Button */}
+          <Button 
+            variant="ghost" 
             onClick={() => navigate('/satoshi-city')}
-            className="mb-4 text-gray-300 hover:text-white text-sm"
+            className="self-start mb-4 text-white hover:bg-white/10"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Voltar para Satoshi City</span>
-            <span className="sm:hidden">Voltar</span>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar à Cidade
           </Button>
 
-          <div className="flex flex-col items-center text-center">
-            {districtLogo && (
-              <img 
-                src={districtLogo} 
-                alt={district.name}
-                className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover mb-3 border-2"
-                style={{ borderColor: district.color_primary }}
-              />
-            )}
-            <h1 
-              className="text-xl sm:text-2xl lg:text-4xl font-bold mb-2"
-              style={{ color: district.color_primary }}
-            >
-              {district.name}
-            </h1>
-            <p className="text-sm lg:text-base text-gray-300 mb-4 max-w-md">
-              {district.description}
-            </p>
-            
-            {/* Simplified District Power Display */}
-            <div className="flex items-center space-x-2 mb-2">
-              <Shield className="w-4 h-4" style={{ color: district.color_primary }} />
-              <span className="text-sm text-gray-300">Poder:</span>
-              <span 
-                className="font-bold text-sm"
-                style={{ color: district.color_primary }}
+          {/* District Info */}
+          <div className="flex-1 flex items-center">
+            <div className="flex items-center space-x-6">
+              <div 
+                className="w-20 h-20 rounded-xl flex items-center justify-center border-4"
+                style={{ 
+                  borderColor: district.color_primary,
+                  backgroundColor: `${district.color_primary}40`
+                }}
               >
-                {district.power_level || 100}/100
-              </span>
-            </div>
-            
-            {userDistrict && (
-              <div className="w-full max-w-sm">
-                <div className="flex justify-between mb-1 text-xs">
-                  <span className="text-gray-400">Nível {userDistrict.level}</span>
-                  <span style={{ color: district.color_primary }}>
-                    {currentLevelXP} / 1000 XP
-                  </span>
-                </div>
-                <Progress 
-                  value={progressPercent} 
-                  className="h-2"
-                  style={{
-                    background: 'rgb(51, 65, 85)'
-                  }}
-                />
+                {districtLogo ? (
+                  <img 
+                    src={districtLogo} 
+                    alt={district.name}
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                ) : (
+                  <Building className="w-12 h-12" style={{ color: district.color_primary }} />
+                )}
               </div>
-            )}
+              
+              <div className="text-white">
+                <h1 className="text-3xl font-bold mb-2">{district.name}</h1>
+                <p className="text-gray-300 mb-3 max-w-2xl">{district.description}</p>
+                
+                <div className="flex items-center space-x-4">
+                  <Badge 
+                    variant="outline" 
+                    className="border-white/30 text-white"
+                  >
+                    <Zap className="w-3 h-3 mr-1" />
+                    Power {district.power_level}%
+                  </Badge>
+                  
+                  <Badge 
+                    variant="outline" 
+                    className="border-white/30 text-white"
+                  >
+                    <Trophy className="w-3 h-3 mr-1" />
+                    {battleWinRate}% Vitórias
+                  </Badge>
+
+                  {userDistrict?.is_residence && (
+                    <Badge 
+                      variant="outline" 
+                      className="border-yellow-400 text-yellow-400"
+                    >
+                      <Crown className="w-3 h-3 mr-1" />
+                      Minha Casa
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Sponsor Activation Banner - Positioned for maximum visibility */}
-      <SponsorActivationBanner district={district} />
+      {/* Main Actions */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Quiz do Distrito */}
+          <Card 
+            className="cursor-pointer hover:scale-105 transition-transform border-2"
+            style={{ borderColor: district.color_primary }}
+            onClick={handleDistrictQuiz}
+          >
+            <CardHeader className="text-center pb-4">
+              <div 
+                className="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center"
+                style={{ backgroundColor: district.color_primary }}
+              >
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <CardTitle className="text-lg">Quiz do Distrito</CardTitle>
+              <CardDescription>
+                Responda perguntas sobre {district.theme.replace('_', ' ')}
+              </CardDescription>
+            </CardHeader>
+          </Card>
 
-      {/* Simplified Mobile Filters */}
-      <div className="container mx-auto px-4 py-4">
-        <Card className="bg-slate-800/90 backdrop-blur-sm border border-slate-700 mb-6">
-          <CardContent className="p-3">
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Combined Search */}
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar no distrito..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 bg-slate-700/50 border-slate-600 text-white placeholder-gray-400 h-10"
-                />
+          {/* Desafiar Distrito */}
+          <Card className="border-2 border-orange-500">
+            <CardHeader className="text-center pb-4">
+              <div className="w-12 h-12 rounded-full mx-auto mb-3 bg-orange-500 flex items-center justify-center">
+                <Swords className="w-6 h-6 text-white" />
               </div>
-              
-              {/* Quick Filter Chips */}
-              <div className="flex gap-2 overflow-x-auto">
-                <Button
-                  variant={activityFilter === 'all' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setActivityFilter('all')}
-                  className="whitespace-nowrap h-10 px-4 text-xs"
-                  style={activityFilter === 'all' ? { backgroundColor: district.color_primary, color: 'black' } : {}}
+              <CardTitle className="text-lg">Desafiar Distrito</CardTitle>
+              <CardDescription>
+                Iniciar duelo com 20 perguntas
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <Select value={targetDistrictId} onValueChange={setTargetDistrictId}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Escolha o adversário" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allDistricts.map(d => (
+                      <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button 
+                  onClick={handleInitiateDuel}
+                  disabled={!targetDistrictId || isInitiatingDuel}
+                  className="w-full bg-orange-500 hover:bg-orange-600"
                 >
-                  Todos
-                </Button>
-                <Button
-                  variant={activityFilter === 'quests' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setActivityFilter('quests')}
-                  className="whitespace-nowrap h-10 px-4 text-xs"
-                  style={activityFilter === 'quests' ? { backgroundColor: district.color_primary, color: 'black' } : {}}
-                >
-                  Quests
-                </Button>
-                <Button
-                  variant={activityFilter === 'teams' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setActivityFilter('teams')}
-                  className="whitespace-nowrap h-10 px-4 text-xs"
-                  style={activityFilter === 'teams' ? { backgroundColor: district.color_primary, color: 'black' } : {}}
-                >
-                  Times
+                  {isInitiatingDuel ? "Iniciando..." : "Desafiar"}
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Ver Moradores */}
+          <Card className="border-2 border-blue-500">
+            <CardHeader className="text-center pb-4">
+              <div className="w-12 h-12 rounded-full mx-auto mb-3 bg-blue-500 flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
+              </div>
+              <CardTitle className="text-lg">Moradores</CardTitle>
+              <CardDescription>
+                {residents.length} residentes ativos
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          {/* Loja do Sponsor */}
+          <Card 
+            className="cursor-pointer hover:scale-105 transition-transform border-2 border-green-500"
+            onClick={handleViewStore}
+          >
+            <CardHeader className="text-center pb-4">
+              <div className="w-12 h-12 rounded-full mx-auto mb-3 bg-green-500 flex items-center justify-center">
+                <ShoppingBag className="w-6 h-6 text-white" />
+              </div>
+              <CardTitle className="text-lg">Loja {district.sponsor_company}</CardTitle>
+              <CardDescription>
+                {storeItems.length} itens exclusivos
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+
+        {/* Active Duels */}
+        {activeDuels.length > 0 && (
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Flame className="w-5 h-5 text-orange-500" />
+                Duelos Ativos
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {activeDuels.map(duel => (
+                  <div 
+                    key={duel.id}
+                    className="flex items-center justify-between p-4 bg-muted rounded-lg"
+                  >
+                    <div>
+                      <h3 className="font-semibold">
+                        {duel.initiator_district.name} vs {duel.challenged_district.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {duel.participants_count_initiator + duel.participants_count_challenged} participantes
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-center">
+                        <div className="text-sm font-bold">
+                          {duel.average_score_initiator.toFixed(1)} vs {duel.average_score_challenged.toFixed(1)}
+                        </div>
+                        <div className="text-xs text-muted-foreground">Média</div>
+                      </div>
+                      <Button 
+                        onClick={() => handleJoinDuel(duel.id)}
+                        className="bg-orange-500 hover:bg-orange-600"
+                      >
+                        <Target className="w-4 h-4 mr-2" />
+                        Participar
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Ranking dos Moradores */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-yellow-500" />
+              Ranking do Distrito
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {residents.slice(0, 10).map((resident, index) => (
+                <div 
+                  key={resident.id}
+                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold">
+                      {index + 1}
+                    </div>
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={resident.profile_image_url} />
+                      <AvatarFallback>{resident.nickname.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">{resident.nickname}</p>
+                      <p className="text-sm text-muted-foreground">Nível {resident.level}</p>
+                    </div>
+                  </div>
+                  <Badge variant="outline">
+                    {resident.xp} XP
+                  </Badge>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
-        
-        {/* Optimized Mobile Content Tabs - Reduced to 3 essential tabs */}
-        <Tabs defaultValue="activities" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6 bg-slate-800/50 gap-1 p-1">
-            <TabsTrigger 
-              value="activities" 
-              className="data-[state=active]:bg-slate-700 text-xs sm:text-sm flex items-center justify-center py-3"
-              style={{ 
-                fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-                minHeight: '44px'
-              }}
-            >
-              <Zap className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>Atividades</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="teams" 
-              className="data-[state=active]:bg-slate-700 text-xs sm:text-sm flex items-center justify-center py-3"
-              style={{ 
-                fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-                minHeight: '44px'
-              }}
-            >
-              <Home className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>Times</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="ranking" 
-              className="data-[state=active]:bg-slate-700 text-xs sm:text-sm flex items-center justify-center py-3"
-              style={{ 
-                fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-                minHeight: '44px'
-              }}
-            >
-              <Trophy className="h-4 w-4 mr-1 sm:mr-2" />
-              <span>Ranking</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Activities Tab - Integrated with quests, quizzes and battles */}
-          <TabsContent value="activities" className="space-y-6">
-            {/* District Quests */}
-            <DistrictQuests 
-              districtId={district.id}
-              districtTheme={district.theme}
-              districtColor={district.color_primary}
-            />
-            
-            {/* Quick Actions Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Quick Quiz */}
-              <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center text-white text-base">
-                    <BookOpen className="mr-2 h-4 w-4" style={{ color: district.color_primary }} />
-                    Quiz Rápido
-                  </CardTitle>
-                  <CardDescription className="text-gray-300 text-sm">
-                    Fundamentos de {district.theme.replace('_', ' ')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <Badge variant="outline" style={{ borderColor: district.color_primary, color: district.color_primary }} className="text-xs">
-                        +50 XP
-                      </Badge>
-                      <p className="text-xs text-gray-400">10 perguntas • 5 min</p>
-                    </div>
-                    <Button 
-                      onClick={handleStartQuiz}
-                      style={{ backgroundColor: district.color_primary }}
-                      className="text-black font-bold text-sm"
-                      size="sm"
-                    >
-                      Começar
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Battles Summary */}
-              <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-white flex items-center text-base">
-                    <Swords className="mr-2 h-4 w-4" style={{ color: district.color_primary }} />
-                    Batalhas
-                  </CardTitle>
-                  <CardDescription className="text-gray-300 text-sm">
-                    Ativas: {activeBattles.length} | Vitórias: {district.battles_won}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs text-gray-400">
-                      Taxa de vitória: {Math.round((district.battles_won / (district.battles_won + district.battles_lost || 1)) * 100)}%
-                    </div>
-                    <Button 
-                      variant="outline"
-                      size="sm"
-                      className="text-sm"
-                      style={{ borderColor: district.color_primary, color: district.color_primary }}
-                    >
-                      Ver Todas
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Teams Tab */}
-          <TabsContent value="teams" className="space-y-6">
-            {/* Create Team */}
-            {!userTeamMembership && (
-              <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center text-base">
-                    <Plus className="mr-2 h-4 w-4" style={{ color: district.color_primary }} />
-                    Criar Novo Time
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Input
-                    placeholder="Nome do time"
-                    value={newTeamName}
-                    onChange={(e) => setNewTeamName(e.target.value)}
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                  <Textarea
-                    placeholder="Descrição do time (opcional)"
-                    value={newTeamDescription}
-                    onChange={(e) => setNewTeamDescription(e.target.value)}
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                  <Button 
-                    onClick={handleCreateTeam}
-                    disabled={!newTeamName.trim() || isCreatingTeam}
-                    style={{ backgroundColor: district.color_primary }}
-                    className="w-full text-black font-bold"
-                  >
-                    {isCreatingTeam ? "Criando..." : "Criar Time"}
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Teams List */}
-            <div className="grid grid-cols-1 gap-4">
-              {teams.map((team) => (
-                <Card key={team.id} className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-white text-base">{team.name}</h3>
-                        {team.description && (
-                          <p className="text-sm text-gray-400 mt-1">{team.description}</p>
-                        )}
-                        {team.team_motto && (
-                          <p className="text-xs text-gray-500 italic mt-1">"{team.team_motto}"</p>
-                        )}
-                      </div>
-                      <div 
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: team.team_color || district.color_primary }}
-                      ></div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4 text-sm text-gray-400">
-                        <span className="flex items-center">
-                          <Users className="w-3 h-3 mr-1" />
-                          {team.members_count}/{team.max_members}
-                        </span>
-                        <span className="flex items-center">
-                          <Zap className="w-3 h-3 mr-1" />
-                          {team.team_power || 0}
-                        </span>
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleViewTeamMembers(team)}
-                          className="text-xs"
-                        >
-                          Ver Membros
-                        </Button>
-                        {!userTeamMembership && team.members_count < team.max_members && (
-                          <Button
-                            size="sm"
-                            onClick={() => handleJoinTeam(team.id)}
-                            style={{ backgroundColor: district.color_primary }}
-                            className="text-black font-bold text-xs"
-                          >
-                            Entrar
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-              
-              {teams.length === 0 && (
-                <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-                  <CardContent className="p-8 text-center">
-                    <Home className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-                    <p className="text-gray-400">Nenhum time criado ainda. Seja o primeiro!</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </TabsContent>
-
-          {/* Ranking Tab */}
-          <TabsContent value="ranking">
-            <Card className="bg-slate-800/50 backdrop-blur-sm border border-slate-600">
-              <CardHeader>
-                <CardTitle className="flex items-center text-white text-base">
-                  <Trophy className="mr-2 h-4 w-4" style={{ color: district.color_primary }} />
-                  Top 10 do Distrito
-                </CardTitle>
-                <CardDescription className="text-gray-300 text-sm">
-                  Os melhores especialistas em {district.theme.replace('_', ' ')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {ranking.map((user, index) => (
-                    <div 
-                      key={user.id}
-                      className={`flex items-center space-x-3 p-3 rounded-lg ${
-                        index < 3 ? 'bg-gradient-to-r from-slate-700/50 to-slate-600/50' : 'bg-slate-700/30'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2">
-                        {getRankIcon(index + 1)}
-                        <span className="text-sm font-bold text-white">#{index + 1}</span>
-                      </div>
-                      
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={user.profile_image_url} />
-                        <AvatarFallback className="bg-slate-600 text-white text-xs">
-                          {user.nickname.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-white text-sm">{user.nickname}</h3>
-                        <p className="text-xs text-gray-400">Nível {user.level}</p>
-                      </div>
-                      
-                      <div className="text-right">
-                        <p className="font-bold text-sm" style={{ color: district.color_primary }}>
-                          {user.xp.toLocaleString()} XP
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {ranking.length === 0 && (
-                    <div className="text-center py-8">
-                      <Trophy className="h-16 w-16 text-gray-500 mx-auto mb-4" />
-                      <p className="text-gray-400">Ranking será atualizado em breve</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
       </div>
-
-      {/* Team Members Dialog */}
-      <Dialog open={selectedTeam !== null} onOpenChange={() => setSelectedTeam(null)}>
-        <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Users className="mr-2 h-5 w-5" style={{ color: district.color_primary }} />
-              Membros - {selectedTeam?.name}
-            </DialogTitle>
-            <DialogDescription className="text-gray-300">
-              {selectedTeam?.members_count} membros ativos
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-3 max-h-80 overflow-y-auto">
-            {isLoadingMembers ? (
-              <div className="text-center py-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400 mx-auto"></div>
-              </div>
-            ) : (
-              teamMembers.map((member) => (
-                <div key={member.id} className="flex items-center space-x-3 p-3 bg-slate-700/50 rounded-lg">
-                  <Avatar>
-                    <AvatarImage src={member.profiles?.profile_image_url} />
-                    <AvatarFallback className="bg-slate-600 text-white">
-                      {member.profiles?.nickname?.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-white">{member.profiles?.nickname}</h4>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <span className="text-gray-400">Nível {member.profiles?.level}</span>
-                      {member.role === 'captain' && (
-                        <Badge variant="outline" style={{ borderColor: district.color_primary, color: district.color_primary }}>
-                          <Crown className="w-3 h-3 mr-1" />
-                          Capitão
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
 
       <FloatingNavbar />
     </div>

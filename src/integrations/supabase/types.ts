@@ -1152,6 +1152,140 @@ export type Database = {
           },
         ]
       }
+      district_duel_participants: {
+        Row: {
+          answers: Json | null
+          completed_at: string | null
+          created_at: string | null
+          district_id: string
+          duel_id: string
+          id: string
+          participation_time_seconds: number | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          district_id: string
+          duel_id: string
+          id?: string
+          participation_time_seconds?: number | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          district_id?: string
+          duel_id?: string
+          id?: string
+          participation_time_seconds?: number | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_duel_participants_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_duel_participants_duel_id_fkey"
+            columns: ["duel_id"]
+            isOneToOne: false
+            referencedRelation: "district_duels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_duel_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      district_duels: {
+        Row: {
+          average_score_challenged: number | null
+          average_score_initiator: number | null
+          challenged_district_id: string
+          created_at: string | null
+          end_time: string | null
+          id: string
+          initiator_district_id: string
+          participants_count_challenged: number | null
+          participants_count_initiator: number | null
+          questions: Json | null
+          start_time: string | null
+          status: string | null
+          total_questions: number | null
+          updated_at: string | null
+          winner_district_id: string | null
+        }
+        Insert: {
+          average_score_challenged?: number | null
+          average_score_initiator?: number | null
+          challenged_district_id: string
+          created_at?: string | null
+          end_time?: string | null
+          id?: string
+          initiator_district_id: string
+          participants_count_challenged?: number | null
+          participants_count_initiator?: number | null
+          questions?: Json | null
+          start_time?: string | null
+          status?: string | null
+          total_questions?: number | null
+          updated_at?: string | null
+          winner_district_id?: string | null
+        }
+        Update: {
+          average_score_challenged?: number | null
+          average_score_initiator?: number | null
+          challenged_district_id?: string
+          created_at?: string | null
+          end_time?: string | null
+          id?: string
+          initiator_district_id?: string
+          participants_count_challenged?: number | null
+          participants_count_initiator?: number | null
+          questions?: Json | null
+          start_time?: string | null
+          status?: string | null
+          total_questions?: number | null
+          updated_at?: string | null
+          winner_district_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_duels_challenged_district_id_fkey"
+            columns: ["challenged_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_duels_initiator_district_id_fkey"
+            columns: ["initiator_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "district_duels_winner_district_id_fkey"
+            columns: ["winner_district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       district_notifications: {
         Row: {
           created_at: string | null
@@ -1202,6 +1336,56 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      district_quiz_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string | null
+          difficulty_level: number | null
+          district_id: string
+          explanation: string | null
+          id: string
+          is_active: boolean | null
+          options: Json
+          question: string
+          tags: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string | null
+          difficulty_level?: number | null
+          district_id: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean | null
+          options: Json
+          question: string
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string | null
+          difficulty_level?: number | null
+          district_id?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean | null
+          options?: Json
+          question?: string
+          tags?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "district_quiz_questions_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
             referencedColumns: ["id"]
           },
         ]
@@ -6138,6 +6322,15 @@ export type Database = {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
       }
+      complete_duel_participation: {
+        Args: {
+          p_duel_id: string
+          p_user_id: string
+          p_answers: Json
+          p_participation_time_seconds: number
+        }
+        Returns: number
+      }
       create_affiliate_program: {
         Args: { p_user_id: string }
         Returns: string
@@ -6291,6 +6484,13 @@ export type Database = {
         Args: { p_guild_id: string; p_user_id: string; p_message?: string }
         Returns: boolean
       }
+      start_district_duel: {
+        Args: {
+          p_initiator_district_id: string
+          p_challenged_district_id: string
+        }
+        Returns: string
+      }
       track_district_metric: {
         Args: {
           p_district_id: string
@@ -6314,6 +6514,10 @@ export type Database = {
           challenge_completed: boolean
           rewards_earned: Json
         }[]
+      }
+      update_duel_statistics: {
+        Args: { p_duel_id: string }
+        Returns: undefined
       }
       update_learning_analytics: {
         Args: {
