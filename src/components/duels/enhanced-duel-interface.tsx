@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { useCustomSounds } from "@/hooks/use-custom-sounds";
 
 interface Question {
   id: string;
@@ -47,6 +48,7 @@ export function EnhancedDuelInterface({
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [hasAnswered, setHasAnswered] = useState(false);
+  const { playCountdownSound } = useCustomSounds();
 
   const question = questions[currentQuestion - 1];
   const progress = ((currentQuestion - 1) / questions.length) * 100;
@@ -112,6 +114,7 @@ export function EnhancedDuelInterface({
               duration={30}
               isActive={!hasAnswered && !isWaitingForOpponent}
               onTimeUp={handleTimeUp}
+              onCountdown={playCountdownSound}
               size={80}
               className="mx-auto mb-2"
             />

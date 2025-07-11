@@ -72,6 +72,16 @@ export function useCustomSounds() {
     playSound(soundKey);
   }, [playSound]);
 
+  const playCountdownSound = useCallback(() => {
+    try {
+      const audio = new Audio('/audio/10sec-digital-countdown-sfx-319873.mp3');
+      audio.volume = 0.15; // Volume mais baixo que os demais sons
+      audio.play().catch(console.warn);
+    } catch (error) {
+      console.warn('Erro ao tocar countdown:', error);
+    }
+  }, []);
+
   return {
     playCorrectSound,
     playWrongSound,
@@ -82,6 +92,7 @@ export function useCustomSounds() {
     playPerfectScoreSound,
     playAchievementSound,
     playDistrictSound,
+    playCountdownSound,
     playSound
   };
 }

@@ -11,6 +11,7 @@ import { CircularTimer } from "./circular-timer";
 import { EnhancedDuelInterface } from "./enhanced-duel-interface";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconSystem } from "@/components/icons/icon-system";
+import { useCustomSounds } from "@/hooks/use-custom-sounds";
 
 interface EnhancedSimultaneousDuelProps {
   duel: any;
@@ -43,6 +44,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   const [timeLeft, setTimeLeft] = useState(30);
   const subscriptionRef = useRef<any>(null);
   const { toast } = useToast();
+  const { playCountdownSound } = useCustomSounds();
 
   useEffect(() => {
     loadProfiles();
@@ -521,6 +523,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
             duration={30}
             isActive={isTimerActive}
             onTimeUp={handleTimeUp}
+            onCountdown={playCountdownSound}
             size={120}
             className="shadow-lg"
           />

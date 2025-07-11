@@ -5,6 +5,7 @@ interface CircularTimerProps {
   isActive: boolean;
   onTimeUp: () => void;
   onTick?: (timeLeft: number) => void;
+  onCountdown?: () => void;
   size?: number;
   className?: string;
 }
@@ -14,6 +15,7 @@ export function CircularTimer({
   isActive, 
   onTimeUp, 
   onTick, 
+  onCountdown,
   size = 120,
   className = ""
 }: CircularTimerProps) {
@@ -30,6 +32,11 @@ export function CircularTimer({
       return;
     }
 
+    // Tocar som de contagem regressiva aos 10 segundos
+    if (timeLeft === 10) {
+      onCountdown?.();
+    }
+
     const timer = setTimeout(() => {
       const newTime = timeLeft - 1;
       setTimeLeft(newTime);
@@ -41,7 +48,7 @@ export function CircularTimer({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, isActive, duration, onTimeUp, onTick]);
+  }, [timeLeft, isActive, duration, onTimeUp, onTick, onCountdown]);
 
   const progress = timeLeft / duration;
   const circumference = 2 * Math.PI * (size / 2 - 8);

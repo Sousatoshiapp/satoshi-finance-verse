@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// Categorias financeiras válidas
+const FINANCE_CATEGORIES = [
+  'finance', 'investment', 'cryptocurrency', 'trading', 'economics', 
+  'banking', 'portfolio_management', 'Investimentos Básicos', 
+  'Educação Financeira', 'Orçamento Pessoal', 'Mercado de Ações',
+  'Criptomoedas', 'Planejamento Financeiro', 'Análise Técnica',
+  'Fundos de Investimento', 'Renda Fixa', 'Renda Variável'
+];
+
 interface Question {
   id: string;
   question: string;
@@ -87,6 +96,7 @@ export function useUnifiedSRS() {
             consecutive_correct
           )
         `)
+        .in('category', FINANCE_CATEGORIES)
         .eq('user_question_progress.user_id', profile.id)
         .lte('user_question_progress.next_review_date', new Date().toISOString());
 
@@ -113,6 +123,7 @@ export function useUnifiedSRS() {
               last_reviewed
             )
           `)
+          .in('category', FINANCE_CATEGORIES)
           .eq('user_question_progress.user_id', profile.id)
           .or('user_question_progress.last_reviewed.is.null,user_question_progress.last_reviewed.lt.' + 
               new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()); // 7 dias atrás
@@ -133,6 +144,7 @@ export function useUnifiedSRS() {
           const { data: randomQuestions } = await supabase
             .from('quiz_questions')
             .select('*')
+            .in('category', FINANCE_CATEGORIES)
             .eq('difficulty', difficulty || 'easy')
             .not('id', 'in', `(${[...excludeIds, ...(dueQuestions?.map(q => q.id) || []), ...(newQuestions?.map(q => q.id) || [])].join(',')})`)
             .limit(stillNeeded);
@@ -143,7 +155,15 @@ export function useUnifiedSRS() {
             ...(randomQuestions || [])
           ];
           
-          return formatQuestions(combined);
+          const formattedQuestions = formatQuestions(combined);
+          
+          // Log para monitoramento
+          console.log(`📚 Perguntas selecionadas: ${formattedQuestions.length}`, {
+            categories: [...new Set(formattedQuestions.map(q => q.category))],
+            difficulties: [...new Set(formattedQuestions.map(q => q.difficulty))]
+          });
+          
+          return formattedQuestions;
         }
 
         const combined = [...(dueQuestions || []), ...(newQuestions || [])];
@@ -168,6 +188,7 @@ export function useUnifiedSRS() {
     let query = supabase
       .from('quiz_questions')
       .select('*')
+      .in('category', FINANCE_CATEGORIES)
       .eq('difficulty', difficulty || 'easy');
 
     if (excludeIds.length > 0) {
