@@ -98,7 +98,7 @@ export function QuizEngine({
   } = useQuizGamification();
 
   const { getDueQuestions, submitAnswer } = useUnifiedSRS();
-  const { playCountdownSound } = useAdvancedQuizAudio();
+  const { } = useAdvancedQuizAudio();
 
   // Timer effect
   useEffect(() => {
@@ -107,10 +107,6 @@ export function QuizEngine({
         setTimeLeft(prev => {
           const newTime = prev - 1;
           
-          // Play countdown sound for last 5 seconds
-          if (newTime <= 5 && newTime > 0) {
-            playCountdownSound(newTime);
-          }
           
           // Auto submit when time runs out
           if (newTime === 0 && !showAnswer) {

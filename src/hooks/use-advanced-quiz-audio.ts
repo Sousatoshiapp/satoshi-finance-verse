@@ -100,35 +100,11 @@ export function useAdvancedQuizAudio() {
     }
   }, []);
 
-  // Som de contagem regressiva para os últimos 5 segundos
-  const playCountdownSound = useCallback((secondsLeft: number) => {
-    const audioContext = initAudioContext();
-    if (!audioContext) return;
-
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Frequência mais aguda conforme o tempo diminui
-    const baseFreq = secondsLeft === 1 ? 800 : 400 + (100 * (6 - secondsLeft));
-    oscillator.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
-    
-    const volume = secondsLeft === 1 ? 0.4 : 0.2;
-    gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-    
-    oscillator.type = secondsLeft === 1 ? 'square' : 'triangle';
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.2);
-  }, [initAudioContext]);
 
   return {
     playCorrectSound,
     playWrongSound,
     playStreakSound,
-    playCashRegisterSound,
-    playCountdownSound
+    playCashRegisterSound
   };
 }
