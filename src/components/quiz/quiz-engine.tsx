@@ -103,6 +103,7 @@ export function QuizEngine({
   const { } = useAdvancedQuizAudio();
 
   const handleContinue = () => {
+    console.log('🔄 handleContinue chamado');
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setSelectedAnswer(null);
@@ -113,9 +114,10 @@ export function QuizEngine({
     }
   };
 
-  // Controle do timer - SEMPRE mostrar banner quando tempo acaba
+  // SIMPLIFICADO - Apenas mostrar modal de timeout
   const handleTimeUp = async () => {
     console.log('⏰ handleTimeUp chamado - tempo acabou');
+    console.log('⏰ Estado atual do showTimeoutModal:', showTimeoutModal);
     
     const question = questions[currentIndex];
     if (!question) {
@@ -123,9 +125,15 @@ export function QuizEngine({
       return;
     }
     
-    console.log('⏰ Processando timeout para pergunta:', question.question);
+    console.log('⏰ Forçando modal de timeout');
     
-    // Marcar como respondida incorretamente por timeout
+    // SIMPLIFICADO - apenas marcar resposta como incorreta e mostrar modal
+    setShowAnswer(true); // Para parar o timer
+    setShowTimeoutModal(true);
+    
+    console.log('⏰ Modal de timeout setado para true');
+    
+    // Processar no background
     const answeredQuestion = {
       questionId: question.id,
       selectedAnswer: selectedAnswer || 'timeout',
@@ -135,32 +143,20 @@ export function QuizEngine({
     
     setAnsweredQuestions(prev => [...prev, answeredQuestion]);
     await submitAnswer(question.id, false, 30);
-    
-    // Processar resposta errada - APLICAR MESMA LÓGICA DO handleSubmit
-    const wrongResult = await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
-    
-    // Se pode usar vida, mostrar modal de vida
-    if (wrongResult?.canUseLife) {
-      console.log('⏰ Pode usar vida - mostrando modal de vida');
-      setPendingWrongAnswer({
-        question: question.question,
-        correctAnswer: question.correct_answer,
-        explanation: question.explanation
-      });
-      setShowLifeBanner(true);
-      return; // Não avança ainda - aguarda decisão da vida
-    }
-    
-    // Se não pode usar vida, mostrar modal de timeout
-    console.log('⏰ Não pode usar vida - mostrando modal de timeout');
-    setShowAnswer(true); // Para desativar o timer
-    setShowTimeoutModal(true);
+    await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
   };
 
+  // Debug para rastrear mudanças no showTimeoutModal
   useEffect(() => {
-    fetchUserProfile();
-    fetchQuestions();
-  }, [mode, questionsCount]);
+    console.log('🔍 showTimeoutModal mudou para:', showTimeoutModal);
+  }, [showTimeoutModal]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+      fetchQuestions();
+    }
+  }, [mode, questionsCount, user]);
 
   const fetchUserProfile = async () => {
     if (!user) return;
