@@ -93,7 +93,7 @@ export default function SatoshiCity() {
   const [selectedDistrictForMobile, setSelectedDistrictForMobile] = useState<District | null>(null);
   const [showMobileModal, setShowMobileModal] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [transitionData, setTransitionData] = useState({ from: '', to: '', targetId: '' });
+  const [transitionData, setTransitionData] = useState({ from: '', to: '', targetId: '', theme: '' });
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
@@ -237,7 +237,8 @@ export default function SatoshiCity() {
     setTransitionData({
       from: 'Satoshi City',
       to: district.name,
-      targetId: district.id
+      targetId: district.id,
+      theme: district.theme
     });
     setIsTransitioning(true);
   }, []);
@@ -556,6 +557,7 @@ export default function SatoshiCity() {
         isTransitioning={isTransitioning}
         fromLocation={transitionData.from}
         toLocation={transitionData.to}
+        toDistrictTheme={transitionData.theme}
         onComplete={handleTransitionComplete}
       />
 

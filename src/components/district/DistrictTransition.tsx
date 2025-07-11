@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSponsorTheme } from '@/contexts/SponsorThemeProvider';
 
 interface DistrictTransitionProps {
   isTransitioning: boolean;
   fromLocation: string;
   toLocation: string;
+  toDistrictTheme?: string;
   onComplete: () => void;
 }
 
@@ -12,9 +14,13 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
   isTransitioning,
   fromLocation,
   toLocation,
+  toDistrictTheme,
   onComplete
 }) => {
   const [stage, setStage] = useState(0);
+  const { getTheme } = useSponsorTheme();
+  
+  const sponsorTheme = toDistrictTheme ? getTheme(toDistrictTheme) : null;
 
   useEffect(() => {
     if (!isTransitioning) return;
@@ -170,26 +176,45 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
             />
 
             <motion.div
-              className="absolute inset-0 flex items-center justify-center text-white text-center"
+              className="absolute inset-0 flex flex-col items-center justify-center text-white text-center"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4 }}
             >
-              <div>
-                <motion.div
-                  className="text-2xl font-bold mb-4"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.7, 1, 0.7],
+              <motion.div
+                className="text-2xl font-bold mb-8"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.7, 1, 0.7],
+                }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                Viajando para
+              </motion.div>
+              
+              {sponsorTheme?.logoUrl ? (
+                <motion.img
+                  src={sponsorTheme.logoUrl}
+                  alt={sponsorTheme.name}
+                  className="w-48 h-48 object-contain"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ 
+                    opacity: 1, 
+                    scale: [0.5, 1.1, 1],
                   }}
-                  transition={{
+                  transition={{ 
                     duration: 1.2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
+                    ease: "easeOut"
                   }}
-                >
-                  Viajando para
-                </motion.div>
+                  style={{
+                    filter: 'drop-shadow(0 0 20px rgba(173, 255, 47, 0.3))',
+                  }}
+                />
+              ) : (
                 <motion.div
                   className="text-3xl font-bold text-cyan-300"
                   initial={{ letterSpacing: '0.1em' }}
@@ -198,7 +223,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                 >
                   {toLocation}
                 </motion.div>
-              </div>
+              )}
             </motion.div>
           </motion.div>
         )}

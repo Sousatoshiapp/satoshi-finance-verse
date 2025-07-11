@@ -118,11 +118,11 @@ export const ImmersiveDistrictPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-blue-900">
+      <div className="min-h-screen flex items-center justify-center bg-black">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full"
+          className="w-12 h-12 border-4 border-gray-800 border-t-[#adff2f] rounded-full"
         />
       </div>
     );
