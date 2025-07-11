@@ -126,40 +126,95 @@ export default function DistrictDetail() {
       if (districtError) throw districtError;
       setDistrict(districtData);
 
-      // Load residents - using profiles directly with simplified approach
-      const { data: profilesData } = await supabase
-        .from('profiles')
-        .select('id, nickname, profile_image_url, level, xp')
-        .order('xp', { ascending: false })
-        .limit(20);
+      // Load actual residents of this district
+      const { data: userDistrictsData } = await supabase
+        .from('user_districts')
+        .select('user_id')
+        .eq('district_id', districtId)
+        .eq('is_residence', true);
 
-      if (profilesData) {
-        const residentsData = profilesData.map(profile => ({
-          id: profile.id,
-          nickname: profile.nickname || 'Usuário',
-          level: profile.level || 1,
-          xp: profile.xp || 0,
-          profile_image_url: profile.profile_image_url
-        }));
-        
-        setResidents(residentsData);
-        
-        // Calculate district power (sum of all residents XP)
-        const totalXP = residentsData.reduce((sum, resident) => sum + resident.xp, 0);
-        setDistrictPower(totalXP);
+      let residentsData = [];
+      let totalDistrictXP = 0;
+
+      if (userDistrictsData && userDistrictsData.length > 0) {
+        // Get profiles for district residents
+        const userIds = userDistrictsData.map(ud => ud.user_id);
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, nickname, profile_image_url, level, xp')
+          .in('id', userIds)
+          .order('xp', { ascending: false });
+
+        if (profilesData) {
+          residentsData = profilesData.map(profile => ({
+            id: profile.id,
+            nickname: profile.nickname || 'Usuário',
+            level: profile.level || 1,
+            xp: profile.xp || 0,
+            profile_image_url: profile.profile_image_url
+          }));
+          
+          totalDistrictXP = residentsData.reduce((sum, resident) => sum + resident.xp, 0);
+        }
+      } else {
+        // Fallback: use top profiles if no district residents found
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, nickname, profile_image_url, level, xp')
+          .order('xp', { ascending: false })
+          .limit(20);
+
+        if (profilesData) {
+          residentsData = profilesData.map(profile => ({
+            id: profile.id,
+            nickname: profile.nickname || 'Usuário',
+            level: profile.level || 1,
+            xp: profile.xp || 0,
+            profile_image_url: profile.profile_image_url
+          }));
+          
+          totalDistrictXP = residentsData.reduce((sum, resident) => sum + resident.xp, 0);
+        }
       }
+      
+      setResidents(residentsData);
+      setDistrictPower(totalDistrictXP);
 
-      // Load all districts power for comparison - simplified approach
-      const { data: allProfilesData } = await supabase
-        .from('profiles')
-        .select('xp');
+      // Calculate ranking among all districts
+      const { data: allDistrictsData } = await supabase
+        .from('districts')
+        .select('id, name');
 
-      if (allProfilesData) {
-        const totalXP = allProfilesData.reduce((sum, profile) => sum + (profile.xp || 0), 0);
-        setAllDistrictsPower([
-          { id: districtId, power: districtPower || totalXP },
-          { id: 'other', power: Math.max(totalXP * 0.8, 1000) }
-        ]);
+      if (allDistrictsData) {
+        const districtPowerMap = await Promise.all(
+          allDistrictsData.map(async (dist) => {
+            // Get users for this district
+            const { data: districtUsers } = await supabase
+              .from('user_districts')
+              .select('user_id')
+              .eq('district_id', dist.id)
+              .eq('is_residence', true);
+
+            if (districtUsers && districtUsers.length > 0) {
+              const userIds = districtUsers.map(du => du.user_id);
+              const { data: districtProfiles } = await supabase
+                .from('profiles')
+                .select('xp')
+                .in('id', userIds);
+
+              const districtXP = districtProfiles?.reduce((sum, profile) => 
+                sum + (profile.xp || 0), 0) || 0;
+
+              return { id: dist.id, power: districtXP, name: dist.name };
+            }
+
+            return { id: dist.id, power: 0, name: dist.name };
+          })
+        );
+
+        // Sort by power descending
+        const sortedDistricts = districtPowerMap.sort((a, b) => b.power - a.power);
+        setAllDistrictsPower(sortedDistricts);
       }
 
       // Load user district progress
@@ -310,8 +365,8 @@ export default function DistrictDetail() {
   const districtLogo = districtLogos[district.theme as keyof typeof districtLogos];
   const district3DImage = district3DImages[district.theme as keyof typeof district3DImages];
   const battleWinRate = district.battles_won + district.battles_lost > 0 
-    ? Math.round((district.battles_won / (district.battles_lost + district.battles_lost)) * 100)
-    : 100;
+    ? Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)
+    : 0;
   
   const maxPowerInNetwork = Math.max(...allDistrictsPower.map(d => d.power), 1);
   const districtRanking = allDistrictsPower.findIndex(d => d.id === districtId) + 1;
@@ -380,7 +435,7 @@ export default function DistrictDetail() {
                     className="border-white/30 text-white"
                   >
                     <Zap className="w-3 h-3 mr-1" />
-                    Power {district.power_level}%
+                    XP Total: {districtPower.toLocaleString()}
                   </Badge>
                   
                   <Badge 
