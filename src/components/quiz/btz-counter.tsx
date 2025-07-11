@@ -123,7 +123,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
     <div className={`relative ${className}`}>
       <div 
         className={`
-          bg-gradient-to-br from-[#adff2f]/10 to-[#32cd32]/10 
+          bg-transparent backdrop-blur-sm 
           border border-[#adff2f]/20 rounded-xl p-4 
           transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
           ${isAnimating ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
