@@ -7,6 +7,7 @@ import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/avatar-dis
 import { ArrowLeft, Sword } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { StreakIcon } from "@/components/icons/icon-system";
 
 interface UsersListProps {
   onBack: () => void;
@@ -229,7 +230,9 @@ export function UsersList({ onBack }: UsersListProps) {
                               {user.xp} XP
                             </span>
                             <span className="text-sm text-muted-foreground">
-                              🔥 {user.streak} dias
+                              <span className="flex items-center gap-1">
+                                <StreakIcon size="xs" animated={user.streak > 0} /> {user.streak} dias
+                              </span>
                             </span>
                           </div>
                         </div>

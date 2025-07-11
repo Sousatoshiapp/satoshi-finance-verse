@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Gift, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { GiftIcon } from "@/components/icons/icon-system";
 
 export function CompactStreakRewards() {
   const navigate = useNavigate();
@@ -75,7 +76,9 @@ export function CompactStreakRewards() {
               <span className="font-medium">Próximo Marco: {nextRewardDay} dias</span>
             </div>
             <Badge variant="secondary" className="text-xs">
-              🎁 Mega Recompensa
+              <span className="flex items-center gap-1">
+                <GiftIcon size="xs" variant="glow" /> Mega Recompensa
+              </span>
             </Badge>
           </div>
         </div>

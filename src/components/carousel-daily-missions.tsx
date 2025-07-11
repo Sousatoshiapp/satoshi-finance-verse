@@ -8,6 +8,8 @@ import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { Check, Clock, Trophy, Zap, ChevronRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { StarIcon } from "@/components/icons/icon-system";
+import { SmartText } from "@/components/icons/icon-system";
 
 export function CarouselDailyMissions() {
   const navigate = useNavigate();
@@ -126,7 +128,9 @@ export function CarouselDailyMissions() {
           <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-lg p-3 text-center">
             <Trophy className="h-5 w-5 text-yellow-500 mx-auto mb-1" />
             <div className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
-              🎉 Combo Completado! +500 XP + 1000 Beetz + Loot Box Rara!
+              <SmartText iconVariant="glow" animated>
+                🎉 Combo Completado! +500 XP + 1000 Beetz + Loot Box Rara!
+              </SmartText>
             </div>
           </div>
         )}
@@ -192,7 +196,9 @@ export function CarouselDailyMissions() {
                             
                             {mission.is_weekend_special && (
                               <Badge variant="outline" className="text-xs bg-purple-500/10 border-purple-500/30">
-                                ⭐ Especial
+                                <span className="flex items-center gap-1">
+                                  <StarIcon size="xs" variant="glow" /> Especial
+                                </span>
                               </Badge>
                             )}
                             

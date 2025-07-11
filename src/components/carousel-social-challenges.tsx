@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Users, Trophy, Star, ChevronLeft, ChevronRight, Swords } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { TrophyIcon } from "@/components/icons/icon-system";
 
 interface SocialChallenge {
   id: string;
@@ -218,7 +219,9 @@ export function CarouselSocialChallenges() {
                         {/* Reward and Deadline */}
                         <div className="flex items-center justify-between text-xs">
                           <div className="text-green-500 font-medium">
-                            🏆 {challenge.reward}
+                            <span className="flex items-center gap-1">
+                              <TrophyIcon size="xs" variant="glow" /> {challenge.reward}
+                            </span>
                           </div>
                           <div className="text-muted-foreground">
                             ⏰ {challenge.deadline}

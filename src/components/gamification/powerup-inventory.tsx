@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { usePowerups } from "@/hooks/use-powerups";
 import { Package, Zap, Shield, Wrench, Sparkles, Clock, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SmartText, StreakIcon, LightningIcon, DiamondIcon, ShieldIcon, TargetIcon, RocketIcon } from "@/components/icons/icon-system";
 
 export function PowerupInventory() {
   const { 
@@ -209,7 +210,9 @@ export function PowerupInventory() {
                           Disponível em:
                         </div>
                         <div className="text-xs">
-                          🎁 Caixas de Loot • 🏆 Eventos • 🎯 Missões
+                          <SmartText iconSize="xs">
+                            🎁 Caixas de Loot • 🏆 Eventos • 🎯 Missões
+                          </SmartText>
                         </div>
                       </div>
                     </CardContent>
@@ -237,18 +240,30 @@ export function PowerupInventory() {
                 </p>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-center gap-2">
-                    <span>🔥 Fire Streak</span>
+                    <span className="flex items-center gap-1">
+                      <StreakIcon size="xs" /> Fire Streak
+                    </span>
                     <Plus className="h-4 w-4" />
-                    <span>⚡ Lightning</span>
+                    <span className="flex items-center gap-1">
+                      <LightningIcon size="xs" /> Lightning
+                    </span>
                     <span>=</span>
-                    <span>💎 Ultimate Power</span>
+                    <span className="flex items-center gap-1">
+                      <DiamondIcon size="xs" variant="glow" /> Ultimate Power
+                    </span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <span>🛡️ Shield</span>
+                    <span className="flex items-center gap-1">
+                      <ShieldIcon size="xs" /> Shield
+                    </span>
                     <Plus className="h-4 w-4" />
-                    <span>🎯 Focus</span>
+                    <span className="flex items-center gap-1">
+                      <TargetIcon size="xs" /> Focus
+                    </span>
                     <span>=</span>
-                    <span>🚀 Super Shield</span>
+                    <span className="flex items-center gap-1">
+                      <RocketIcon size="xs" variant="glow" /> Super Shield
+                    </span>
                   </div>
                 </div>
                 <Button className="mt-4" variant="outline">

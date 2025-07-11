@@ -109,6 +109,93 @@ export function EmojiReplace({
   );
 }
 
+// Componente inteligente que substitui automaticamente emojis em texto
+interface SmartTextProps {
+  children: React.ReactNode;
+  iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+  iconVariant?: 'default' | 'glow' | 'pulse';
+  animated?: boolean;
+  className?: string;
+}
+
+export function SmartText({ 
+  children, 
+  iconSize = 'md', 
+  iconVariant = 'default',
+  animated = false,
+  className 
+}: SmartTextProps) {
+  const processText = (text: string) => {
+    const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀)/);
+    
+    return parts.map((part, index) => {
+      if (part in emojiIconMap) {
+        return (
+          <IconSystem
+            key={index}
+            emoji={part as keyof typeof emojiIconMap}
+            size={iconSize}
+            animated={animated}
+            variant={iconVariant}
+          />
+        );
+      }
+      return part;
+    });
+  };
+
+  const processNode = (node: React.ReactNode): React.ReactNode => {
+    if (typeof node === 'string') {
+      return processText(node);
+    }
+    
+    if (React.isValidElement(node) && node.props.children) {
+      return React.cloneElement(node, {
+        ...node.props,
+        children: Array.isArray(node.props.children) 
+          ? node.props.children.map(processNode)
+          : processNode(node.props.children)
+      });
+    }
+    
+    return node;
+  };
+
+  return (
+    <span className={className}>
+      {processNode(children)}
+    </span>
+  );
+}
+
+// Função utilitária para substituir emojis em strings
+export function replaceEmojisInText(
+  text: string,
+  options: {
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+    variant?: 'default' | 'glow' | 'pulse';
+    animated?: boolean;
+  } = {}
+): React.ReactNode {
+  const { size = 'md', variant = 'default', animated = false } = options;
+  const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀)/);
+  
+  return parts.map((part, index) => {
+    if (part in emojiIconMap) {
+      return (
+        <IconSystem
+          key={index}
+          emoji={part as keyof typeof emojiIconMap}
+          size={size}
+          animated={animated}
+          variant={variant}
+        />
+      );
+    }
+    return part;
+  });
+}
+
 // Exportar componentes individuais para uso direto
 export {
   StreakIcon,

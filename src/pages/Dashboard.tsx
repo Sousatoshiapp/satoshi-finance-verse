@@ -21,7 +21,7 @@ import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
-import { Link } from "react-router-dom";
+
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -339,15 +339,6 @@ export default function Dashboard() {
           {/* User Affiliation - District & Team */}
           <UserAffiliation district={userDistrict} team={userTeam} />
 
-          {/* Temporary Icons Preview Link */}
-          <div className="mb-4 text-center">
-            <Link 
-              to="/icons" 
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-md"
-            >
-              🎨 Ver Novos Ícones
-            </Link>
-          </div>
 
           {/* Ranking Semanal de Beetz */}
           <div className="mb-4">

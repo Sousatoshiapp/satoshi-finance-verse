@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { StreakIcon, GiftIcon, TrophyIcon, SwordIcon, StarIcon } from "@/components/icons/icon-system";
 
 interface DashboardSummaryProps {
   userStats: {
@@ -39,7 +40,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-2xl p-4 text-center cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-lg"
             onClick={() => navigate('/profile')}
           >
-            <div className="text-3xl mb-2">🔥</div>
+            <div className="mb-2">
+              <StreakIcon size="lg" animated={userStats.streak > 0} variant={userStats.streak > 0 ? "glow" : "default"} />
+            </div>
             <div className="text-xs text-muted-foreground mb-1">Sequência</div>
             <div className="text-lg font-bold text-foreground">{userStats.streak}</div>
             <div className="text-xs text-orange-600 font-medium">dias</div>
@@ -50,7 +53,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-500/30 rounded-2xl p-4 text-center cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-lg"
             onClick={() => navigate('/missions')}
           >
-            <div className="text-3xl mb-2">🎁</div>
+            <div className="mb-2">
+              <GiftIcon size="lg" animated variant="glow" />
+            </div>
             <div className="text-xs text-muted-foreground mb-1">Recompensas</div>
             <div className="text-lg font-bold text-foreground">{userStats.completedLessons}/5</div>
             <div className="text-xs text-green-600 font-medium">missões</div>
@@ -61,7 +66,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             className="bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border border-purple-500/30 rounded-2xl p-4 text-center cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-lg"
             onClick={() => navigate('/profile')}
           >
-            <div className="text-3xl mb-2">🏆</div>
+            <div className="mb-2">
+              <TrophyIcon size="lg" animated variant="glow" />
+            </div>
             <div className="text-xs text-muted-foreground mb-1">Conquistas</div>
             <div className="text-lg font-bold text-foreground">{Math.min(userStats.level * 2, 12)}</div>
             <div className="text-xs text-purple-600 font-medium">badges</div>
@@ -73,7 +80,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
           <div className="bg-gradient-to-r from-muted/30 to-muted/10 border border-border/50 rounded-2xl p-4 backdrop-blur-sm">
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-lg">⚔️</span>
+                <SwordIcon size="sm" />
                 <span className="text-sm font-semibold text-foreground">Duelos Diários</span>
               </div>
               <Badge variant="outline" className="text-xs border-yellow-500/50 text-yellow-600">
@@ -94,7 +101,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
                 onClick={() => navigate('/subscription-plans')}
                 className="text-xs text-yellow-600 hover:text-yellow-500 hover:bg-yellow-500/10"
               >
-                Upgrade ⭐
+                <span className="flex items-center gap-1">
+                  Upgrade <StarIcon size="xs" animated variant="glow" />
+                </span>
               </Button>
             </div>
           </div>

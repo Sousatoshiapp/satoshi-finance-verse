@@ -94,7 +94,7 @@ export function CompactDailyRewards({ className }: CompactDailyRewardsProps) {
       });
 
       toast({
-        title: "🎁 Recompensa Coletada!",
+        title: "Recompensa Coletada! 🎁",
         description: `+${rewardAmount} Beetz`,
         duration: 3000,
       });
