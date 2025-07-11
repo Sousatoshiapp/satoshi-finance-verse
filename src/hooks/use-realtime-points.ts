@@ -18,6 +18,7 @@ export function useRealtimePoints() {
     // Fetch initial points
     const fetchInitialPoints = async () => {
       try {
+        console.log('🔍 Buscando pontos iniciais para user:', user.id);
         const { data: profile } = await supabase
           .from('profiles')
           .select('points')
@@ -25,6 +26,7 @@ export function useRealtimePoints() {
           .single();
         
         if (profile) {
+          console.log('📊 Pontos iniciais carregados:', profile.points);
           setPoints(profile.points || 0);
         }
       } catch (error) {
@@ -37,8 +39,9 @@ export function useRealtimePoints() {
     fetchInitialPoints();
 
     // Set up realtime subscription for points updates
+    console.log('🔗 Configurando realtime para user:', user.id);
     const channel = supabase
-      .channel('profile-points-changes')
+      .channel(`profile-points-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -48,10 +51,16 @@ export function useRealtimePoints() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('🔄 Realtime points update:', payload);
+          console.log('🔄 Realtime points update recebido:', payload);
           const newPoints = payload.new.points;
-          if (typeof newPoints === 'number') {
-            console.log('💰 Atualizando pontos:', { old: points, new: newPoints });
+          const oldPoints = payload.old.points;
+          
+          if (typeof newPoints === 'number' && newPoints !== oldPoints) {
+            console.log('💰 Atualizando pontos via realtime:', { 
+              old: oldPoints, 
+              new: newPoints, 
+              difference: newPoints - oldPoints 
+            });
             setPoints(newPoints);
             
             // Invalidate dashboard data to refresh all components
@@ -61,9 +70,12 @@ export function useRealtimePoints() {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Status da conexão realtime:', status);
+      });
 
     return () => {
+      console.log('🔌 Desconectando realtime');
       supabase.removeChannel(channel);
     };
   }, [user, queryClient]);

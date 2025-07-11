@@ -76,22 +76,24 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
   // Initialize display BTZ when currentBTZ loads
   useEffect(() => {
-    console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ });
-    if (!isLoading && currentBTZ !== displayBTZ && !isAnimating) {
+    console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ, isAnimating });
+    
+    if (!isLoading && currentBTZ !== undefined) {
       if (displayBTZ === 0) {
         // Initial load - set without animation
+        console.log('🚀 Carregamento inicial do BTZ:', currentBTZ);
         setDisplayBTZ(currentBTZ);
         setPreviousBTZ(currentBTZ);
-      } else {
+      } else if (currentBTZ !== displayBTZ && !isAnimating) {
         // BTZ changed - animate to new value
-        console.log('💰 BTZ mudou - animando:', { from: displayBTZ, to: currentBTZ });
+        console.log('💰 BTZ mudou - iniciando animação:', { from: displayBTZ, to: currentBTZ });
         setPreviousBTZ(displayBTZ);
         animateToNewValue(currentBTZ);
         setShowTrend(true);
         setTimeout(() => setShowTrend(false), 3000);
       }
     }
-  }, [currentBTZ, isLoading, animateToNewValue, displayBTZ, isAnimating]);
+  }, [currentBTZ, isLoading, animateToNewValue]);
 
   // Cleanup timer on unmount
   useEffect(() => {
