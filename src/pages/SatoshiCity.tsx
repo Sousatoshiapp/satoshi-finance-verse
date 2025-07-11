@@ -366,7 +366,7 @@ export default function SatoshiCity() {
             const IconComponent = districtIcons[district.theme as keyof typeof districtIcons] || Building;
             const districtLogo = district.sponsor_logo_url || districtLogos[district.theme as keyof typeof districtLogos];
             const districtTotalXP = districtXPData[district.id] || 0;
-            const maxXP = 20000000; // 20 million XP max
+            const maxXP = 100000; // 100K XP max
             const powerLevel = Math.min(100, Math.round((districtTotalXP / maxXP) * 100));
             const battleWinRate = district.battles_won + district.battles_lost > 0 
               ? Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)
@@ -441,7 +441,7 @@ export default function SatoshiCity() {
                   <PowerBar
                     currentPower={districtTotalXP}
                     maxPower={maxXP}
-                    label="XP Total"
+                    label={district.name}
                     color={district.color_primary}
                     showPercentage={false}
                     showMaxValue={false}
