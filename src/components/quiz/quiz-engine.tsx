@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ProgressBar } from "@/components/ui/progress-bar";
+import { CountdownBar } from "@/components/ui/countdown-bar";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUnifiedSRS } from "@/hooks/use-unified-srs";
@@ -544,7 +544,7 @@ export function QuizEngine({
                 ⏱️ {timeLeft}s
               </div>
             </div>
-            <ProgressBar value={progress} className="h-2" />
+            <CountdownBar timeLeft={timeLeft} totalTime={30} className="h-3" />
           </div>
 
           {/* Question Card */}
