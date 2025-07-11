@@ -3465,8 +3465,12 @@ export type Database = {
       }
       quiz_questions: {
         Row: {
+          approved_by: string | null
+          author_notes: string | null
+          avg_response_time: number | null
           category: string
           cognitive_level: string | null
+          concepts: string[] | null
           correct_answer: string
           created_at: string
           difficulty: string
@@ -3476,17 +3480,27 @@ export type Database = {
           explanation: string | null
           feedback_wrong_answers: Json | null
           id: string
+          is_approved: boolean | null
+          last_reviewed_date: string | null
           learning_module_id: string | null
           learning_objectives: string[] | null
           options: Json
           question: string
           question_type: string | null
+          source_material: string | null
+          success_rate: number | null
           tags: string[] | null
           updated_at: string
+          usage_count: number | null
+          version: number | null
         }
         Insert: {
+          approved_by?: string | null
+          author_notes?: string | null
+          avg_response_time?: number | null
           category: string
           cognitive_level?: string | null
+          concepts?: string[] | null
           correct_answer: string
           created_at?: string
           difficulty: string
@@ -3496,17 +3510,27 @@ export type Database = {
           explanation?: string | null
           feedback_wrong_answers?: Json | null
           id?: string
+          is_approved?: boolean | null
+          last_reviewed_date?: string | null
           learning_module_id?: string | null
           learning_objectives?: string[] | null
           options: Json
           question: string
           question_type?: string | null
+          source_material?: string | null
+          success_rate?: number | null
           tags?: string[] | null
           updated_at?: string
+          usage_count?: number | null
+          version?: number | null
         }
         Update: {
+          approved_by?: string | null
+          author_notes?: string | null
+          avg_response_time?: number | null
           category?: string
           cognitive_level?: string | null
+          concepts?: string[] | null
           correct_answer?: string
           created_at?: string
           difficulty?: string
@@ -3516,13 +3540,19 @@ export type Database = {
           explanation?: string | null
           feedback_wrong_answers?: Json | null
           id?: string
+          is_approved?: boolean | null
+          last_reviewed_date?: string | null
           learning_module_id?: string | null
           learning_objectives?: string[] | null
           options?: Json
           question?: string
           question_type?: string | null
+          source_material?: string | null
+          success_rate?: number | null
           tags?: string[] | null
           updated_at?: string
+          usage_count?: number | null
+          version?: number | null
         }
         Relationships: [
           {
@@ -6400,6 +6430,30 @@ export type Database = {
       generate_daily_missions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      generate_question_template: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          question: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          correct_answer: string
+          explanation: string
+          category: string
+          difficulty: string
+          difficulty_level: number
+          district_id: string
+          learning_module_id: string
+          tags: string
+          learning_objectives: string
+          estimated_time_seconds: number
+          question_type: string
+          cognitive_level: string
+          concepts: string
+          source_material: string
+        }[]
       }
       get_admin_role: {
         Args: { user_uuid?: string }
