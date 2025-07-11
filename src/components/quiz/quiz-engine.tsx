@@ -14,7 +14,7 @@ import { BTZCounter } from "./btz-counter";
 import { LivesCounter } from "./lives-counter";
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
-import { LifePurchaseBanner } from "./life-purchase-banner";
+// import { LifePurchaseBanner } from "./life-purchase-banner"; // Removido
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -63,12 +63,7 @@ export function QuizEngine({
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState(30);
-  const [showLifeBanner, setShowLifeBanner] = useState(false);
-  const [pendingWrongAnswer, setPendingWrongAnswer] = useState<{
-    question: string;
-    correctAnswer: string;
-    explanation?: string;
-  } | null>(null);
+  // Estados de vida removidos para simplificar
   const [answeredQuestions, setAnsweredQuestions] = useState<Array<{
     questionId: string;
     selectedAnswer: string;
@@ -92,7 +87,7 @@ export function QuizEngine({
     currentExplanation,
     handleCorrectAnswer,
     handleWrongAnswer,
-    handleUseLife,
+    // handleUseLife removido
     hideBeetzAnimation,
     hideStreakAnimation,
     resetGamification,
@@ -227,48 +222,24 @@ export function QuizEngine({
 
     const isCorrect = selectedAnswer === question.correct_answer;
     
-    // Update score
+    // SIMPLIFICADO - sem vidas
+    setShowAnswer(true); // Para parar o timer
+    
     if (isCorrect) {
       setScore(prev => prev + 1);
       await handleCorrectAnswer();
-      
-      // Para resposta correta, apenas continuar sem banner
-      const answeredQuestion = {
-        questionId: question.id,
-        selectedAnswer,
-        isCorrect,
-        timeSpent: 30 - timeLeft
-      };
-
-      setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-      await submitAnswer(question.id, isCorrect, 30 - timeLeft);
       
       // Continuar automaticamente após delay mínimo
       setTimeout(() => {
         handleContinue();
       }, 1000);
-      
     } else {
-      // Para resposta errada, mostrar modal de vida ou resposta
-      const wrongResult = await handleWrongAnswer(
+      // Para resposta errada, apenas processar e mostrar explicação
+      await handleWrongAnswer(
         question.question,
         question.correct_answer,
         question.explanation
       );
-
-      // Se pode usar vida, mostrar modal de vida
-      if (wrongResult?.canUseLife) {
-        setPendingWrongAnswer({
-          question: question.question,
-          correctAnswer: question.correct_answer,
-          explanation: question.explanation
-        });
-        setShowLifeBanner(true);
-        return; // Não avança ainda
-      }
-      
-      // Se não pode usar vida, mostrar banner de resposta
-      setShowAnswer(true);
     }
 
     const answeredQuestion = {
@@ -283,41 +254,7 @@ export function QuizEngine({
   };
 
 
-  const handleLifeDecision = async (useLife: boolean) => {
-    setShowLifeBanner(false);
-    
-    if (useLife && pendingWrongAnswer) {
-      const success = await handleUseLife();
-      if (success) {
-        // Continuar como se fosse correto
-        const answeredQuestion = {
-          questionId: questions[currentIndex].id,
-          selectedAnswer: selectedAnswer!,
-          isCorrect: true, // Tratado como correto devido à vida
-          timeSpent: 30 - timeLeft
-        };
-        setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-        await submitAnswer(questions[currentIndex].id, true, 30 - timeLeft);
-      }
-    } else if (pendingWrongAnswer) {
-      // Processar como erro normal
-      const answeredQuestion = {
-        questionId: questions[currentIndex].id,
-        selectedAnswer: selectedAnswer!,
-        isCorrect: false,
-        timeSpent: 30 - timeLeft
-      };
-      setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-      await submitAnswer(questions[currentIndex].id, false, 30 - timeLeft);
-    }
-
-    setPendingWrongAnswer(null);
-    
-    // Continuar para próxima pergunta usando handleContinue
-    setTimeout(() => {
-      handleContinue();
-    }, 1500);
-  };
+  // handleLifeDecision removido - sem vidas
 
   const handleQuizComplete = async () => {
     const results = await getQuizCompletion(score, questions.length);
@@ -371,8 +308,7 @@ export function QuizEngine({
     setShowAnswer(false);
     setTimeLeft(30);
     setAnsweredQuestions([]);
-    setShowLifeBanner(false);
-    setPendingWrongAnswer(null);
+    // Estados de vida removidos
     resetGamification();
     
     // Fetch new questions
@@ -648,15 +584,13 @@ export function QuizEngine({
                   </div>
                 )}
                 
-                {!showLifeBanner && (
-                  <Button 
-                    onClick={handleContinue}
-                    className="w-full bg-primary hover:bg-primary/90 text-white"
-                    size="lg"
-                  >
-                    Continuar
-                  </Button>
-                )}
+                <Button 
+                  onClick={handleContinue}
+                  className="w-full bg-primary hover:bg-primary/90 text-white"
+                  size="lg"
+                >
+                  Continuar
+                </Button>
               </CardContent>
             </Card>
           )}
@@ -676,15 +610,7 @@ export function QuizEngine({
         onComplete={hideStreakAnimation}
       />
 
-      <LifePurchaseBanner
-        isVisible={showLifeBanner}
-        onClose={() => handleLifeDecision(false)}
-        onPurchase={() => handleLifeDecision(true)}
-        onViewStore={() => {
-          setShowLifeBanner(false);
-          // Redirect to store - implementar navegação
-        }}
-      />
+      {/* LifePurchaseBanner removido - sem vidas */}
 
       {/* Modal de Timeout */}
       <AlertDialog open={showTimeoutModal} onOpenChange={setShowTimeoutModal}>
@@ -692,8 +618,8 @@ export function QuizEngine({
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center">⏰ Tempo Esgotado!</AlertDialogTitle>
             <AlertDialogDescription className="text-center space-y-4">
-              <div className="text-lg font-semibold text-destructive">
-                Resposta correta: {currentQuestion?.correct_answer}
+              <div className="text-lg font-semibold text-white">
+                Resposta correta: <span style={{color: '#adff2f'}}>{currentQuestion?.correct_answer}</span>
               </div>
               {currentQuestion?.explanation && (
                 <div className="text-sm text-muted-foreground">
