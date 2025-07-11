@@ -136,9 +136,9 @@ export function QuizEngine({
     // Processar resposta errada - APLICAR MESMA LÓGICA DO handleSubmit
     const wrongResult = await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
     
-    // Se pode usar vida, mostrar opção de vida
+    // Se pode usar vida, mostrar modal de vida
     if (wrongResult?.canUseLife) {
-      console.log('⏰ Pode usar vida - mostrando banner de vida');
+      console.log('⏰ Pode usar vida - mostrando modal de vida');
       setPendingWrongAnswer({
         question: question.question,
         correctAnswer: question.correct_answer,
@@ -225,22 +225,38 @@ export function QuizEngine({
     const question = questions[currentIndex];
     if (!question) return;
 
-    setShowAnswer(true);
-
     const isCorrect = selectedAnswer === question.correct_answer;
     
     // Update score
     if (isCorrect) {
       setScore(prev => prev + 1);
       await handleCorrectAnswer();
+      
+      // Para resposta correta, apenas continuar sem banner
+      const answeredQuestion = {
+        questionId: question.id,
+        selectedAnswer,
+        isCorrect,
+        timeSpent: 30 - timeLeft
+      };
+
+      setAnsweredQuestions(prev => [...prev, answeredQuestion]);
+      await submitAnswer(question.id, isCorrect, 30 - timeLeft);
+      
+      // Continuar automaticamente após delay mínimo
+      setTimeout(() => {
+        handleContinue();
+      }, 1000);
+      
     } else {
+      // Para resposta errada, mostrar modal de vida ou resposta
       const wrongResult = await handleWrongAnswer(
         question.question,
         question.correct_answer,
         question.explanation
       );
 
-      // Se pode usar vida, mostrar opção
+      // Se pode usar vida, mostrar modal de vida
       if (wrongResult?.canUseLife) {
         setPendingWrongAnswer({
           question: question.question,
@@ -250,6 +266,9 @@ export function QuizEngine({
         setShowLifeBanner(true);
         return; // Não avança ainda
       }
+      
+      // Se não pode usar vida, mostrar banner de resposta
+      setShowAnswer(true);
     }
 
     const answeredQuestion = {
@@ -260,8 +279,6 @@ export function QuizEngine({
     };
 
     setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-
-    // Submit to SRS system
     await submitAnswer(question.id, isCorrect, 30 - timeLeft);
   };
 
