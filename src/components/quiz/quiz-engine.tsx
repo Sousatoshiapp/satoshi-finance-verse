@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CountdownBar } from "@/components/ui/countdown-bar";
+import { CircularTimer } from "@/components/duels/circular-timer";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUnifiedSRS } from "@/hooks/use-unified-srs";
@@ -109,11 +110,8 @@ export function QuizEngine({
         setTimeLeft(prev => {
           const newTime = prev - 1;
           
-          // Tocar som de countdown aos 10 segundos
-          if (newTime === 10) {
-            console.log('🔊 Disparando countdown no QuizEngine aos 10 segundos');
-            playCountdownSound();
-          }
+          // Não tocar som aqui - deixar apenas o CircularTimer controlar
+          // O som deve ser controlado apenas pelo CircularTimer para evitar duplicações
           
           // Auto submit when time runs out
           if (newTime === 0 && !showAnswer) {
@@ -540,8 +538,18 @@ export function QuizEngine({
               <div className="text-sm sm:text-lg text-muted-foreground mb-2 hidden sm:block">
                 {getModeTitle()}
               </div>
-              <div className={`text-2xl sm:text-4xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-primary'}`}>
-                ⏱️ {timeLeft}s
+              {/* Timer circular com som de countdown */}
+              <div className="flex justify-center mb-4">
+                <CircularTimer
+                  duration={30}
+                  isActive={!showAnswer && !loading}
+                  onTimeUp={() => {
+                    // Timer zerou - deixar o useEffect cuidar da lógica
+                  }}
+                  onCountdown={playCountdownSound}
+                  size={120}
+                  className="shadow-lg"
+                />
               </div>
             </div>
             <CountdownBar timeLeft={timeLeft} totalTime={30} className="h-3" />
