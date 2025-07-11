@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
+import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
 import { Clock, Shield, TrendingUp, TrendingDown } from "lucide-react";
 
@@ -10,7 +10,7 @@ interface BTZCounterProps {
 
 export function BTZCounter({ className = "" }: BTZCounterProps) {
   const { user } = useAuth();
-  const [currentBTZ, setCurrentBTZ] = useState(0);
+  const { points: currentBTZ, isLoading } = useRealtimePoints();
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -18,60 +18,34 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const [showTrend, setShowTrend] = useState(false);
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
-  // Buscar BTZ atual do usuário
+  // Initialize display BTZ when currentBTZ loads
   useEffect(() => {
-    if (!user) return;
+    if (!isLoading && currentBTZ !== displayBTZ && !isAnimating) {
+      setDisplayBTZ(currentBTZ);
+    }
+  }, [currentBTZ, isLoading]);
 
-    const fetchBTZ = async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('points')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (data) {
-        setCurrentBTZ(data.points || 0);
-        setDisplayBTZ(data.points || 0);
-      }
-    };
+  // Watch for BTZ changes and animate
+  useEffect(() => {
+    if (previousBTZ === 0 && currentBTZ > 0) {
+      // Initial load
+      setPreviousBTZ(currentBTZ);
+      return;
+    }
 
-    fetchBTZ();
+    if (currentBTZ !== previousBTZ && previousBTZ > 0) {
+      console.log('🔄 BTZ changed:', { from: previousBTZ, to: currentBTZ });
+      animateToNewValue(currentBTZ);
+      setShowTrend(true);
+      setTimeout(() => setShowTrend(false), 3000);
+      setPreviousBTZ(currentBTZ);
+    }
+  }, [currentBTZ, previousBTZ]);
 
-    // Realtime subscription para atualizações de BTZ
-    const channel = supabase
-      .channel('btz-realtime-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          const newPoints = payload.new.points || 0;
-          console.log('BTZ Update received:', { currentBTZ, newPoints });
-          if (newPoints !== currentBTZ) {
-            setPreviousBTZ(currentBTZ);
-            animateToNewValue(newPoints);
-            setShowTrend(true);
-            // Esconder trend após 3 segundos
-            setTimeout(() => setShowTrend(false), 3000);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user]); // Removido currentBTZ da dependência para evitar loop
-
-  const animateToNewValue = (newValue: number) => {
+  const animateToNewValue = useCallback((newValue: number) => {
     if (isAnimating) return;
     
     setIsAnimating(true);
-    setCurrentBTZ(newValue);
     
     // Efeito slot machine - animar números
     const duration = 800;
@@ -87,12 +61,11 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         setDisplayBTZ(newValue);
         setIsAnimating(false);
         clearInterval(timer);
-        
       } else {
         setDisplayBTZ(Math.round(currentStep));
       }
     }, duration / steps);
-  };
+  }, [isAnimating, displayBTZ]);
 
 
   return (
