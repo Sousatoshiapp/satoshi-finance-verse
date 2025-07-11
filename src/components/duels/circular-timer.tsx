@@ -34,6 +34,7 @@ export function CircularTimer({
 
     // Tocar som de contagem regressiva aos 10 segundos
     if (timeLeft === 10) {
+      console.log('🔊 Disparando countdown aos 10 segundos');
       onCountdown?.();
     }
 

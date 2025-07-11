@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useUnifiedSRS } from "@/hooks/use-unified-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
+import { useCustomSounds } from "@/hooks/use-custom-sounds";
 import { BTZCounter } from "./btz-counter";
 import { LivesCounter } from "./lives-counter";
 import { BeetzAnimation } from "./beetz-animation";
@@ -75,6 +76,7 @@ export function QuizEngine({
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { playCountdownSound } = useCustomSounds();
   
   const {
     streak,
@@ -107,6 +109,11 @@ export function QuizEngine({
         setTimeLeft(prev => {
           const newTime = prev - 1;
           
+          // Tocar som de countdown aos 10 segundos
+          if (newTime === 10) {
+            console.log('🔊 Disparando countdown no QuizEngine aos 10 segundos');
+            playCountdownSound();
+          }
           
           // Auto submit when time runs out
           if (newTime === 0 && !showAnswer) {

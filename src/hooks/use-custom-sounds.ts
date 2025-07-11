@@ -73,12 +73,18 @@ export function useCustomSounds() {
   }, [playSound]);
 
   const playCountdownSound = useCallback(() => {
+    console.log('🔊 Tentando tocar som de countdown');
     try {
       const audio = new Audio('/audio/10sec-digital-countdown-sfx-319873.mp3');
+      console.log('🔊 Arquivo de áudio criado:', audio.src);
       audio.volume = 0.15; // Volume mais baixo que os demais sons
-      audio.play().catch(console.warn);
+      audio.play().then(() => {
+        console.log('🔊 Som de countdown tocado com sucesso');
+      }).catch((error) => {
+        console.warn('⚠️ Erro ao tocar countdown:', error);
+      });
     } catch (error) {
-      console.warn('Erro ao tocar countdown:', error);
+      console.warn('⚠️ Erro ao criar countdown:', error);
     }
   }, []);
 
