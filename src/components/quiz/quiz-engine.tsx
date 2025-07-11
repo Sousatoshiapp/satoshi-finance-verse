@@ -610,7 +610,7 @@ export function QuizEngine({
           }
         }
       }}>
-        <AlertDialogContent className="mx-4 max-w-xs sm:max-w-lg rounded-2xl sm:rounded-lg">
+        <AlertDialogContent className="mx-auto max-w-xs sm:max-w-lg rounded-2xl sm:rounded-lg left-1/2 transform -translate-x-1/2">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center text-base sm:text-lg">
               {showTimeoutModal ? '⏰ Tempo Esgotado!' : 
