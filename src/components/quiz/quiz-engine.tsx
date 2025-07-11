@@ -153,7 +153,7 @@ export function QuizEngine({
 
       return () => clearTimeout(timer);
     }
-  }, [timeLeft, showAnswer, showResults, loading, selectedAnswer, playCountdownSound]);
+  }, [timeLeft, showAnswer, showResults, loading, selectedAnswer]);
 
   useEffect(() => {
     fetchUserProfile();

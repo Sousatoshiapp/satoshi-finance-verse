@@ -12,8 +12,8 @@ export function StreakAnimation({ isVisible, onComplete }: StreakAnimationProps)
   useEffect(() => {
     if (isVisible && !audioPlayed) {
       // Play futuristic streak sound effect
-      const audio = new Audio("/audio/cyberpunk-achievement.mp3");
-      audio.volume = 0.8;
+      const audio = new Audio("/audio/streak.mp3");
+      audio.volume = 0.6;
       audio.play().catch(() => {
         // Fallback if audio fails
       });
