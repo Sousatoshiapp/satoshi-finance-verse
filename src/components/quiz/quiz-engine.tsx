@@ -15,6 +15,7 @@ import { LivesCounter } from "./lives-counter";
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 import { LifePurchaseBanner } from "./life-purchase-banner";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -56,6 +57,7 @@ export function QuizEngine({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [showTimeoutModal, setShowTimeoutModal] = useState(false);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -149,9 +151,9 @@ export function QuizEngine({
       return; // Não avança ainda - aguarda decisão da vida
     }
     
-    // Se não pode usar vida, SEMPRE mostrar banner de resposta correta
-    console.log('⏰ Não pode usar vida - mostrando banner de resposta');
-    setShowAnswer(true);
+    // Se não pode usar vida, mostrar modal de timeout
+    console.log('⏰ Não pode usar vida - mostrando modal de timeout');
+    setShowTimeoutModal(true);
   };
 
   useEffect(() => {
@@ -332,6 +334,22 @@ export function QuizEngine({
         mode,
         ...results
       });
+    }
+  };
+
+  const handleTimeoutContinue = () => {
+    console.log('⏰ Usuário clicou continuar no modal de timeout');
+    setShowTimeoutModal(false);
+    
+    if (currentIndex < questions.length - 1) {
+      console.log('⏰ Avançando para próxima pergunta');
+      setCurrentIndex(prev => prev + 1);
+      setSelectedAnswer(null);
+      setShowAnswer(false);
+      setTimeLeft(30);
+    } else {
+      console.log('⏰ Quiz finalizado após timeout');
+      handleQuizComplete();
     }
   };
 
@@ -670,6 +688,30 @@ export function QuizEngine({
           // Redirect to store - implementar navegação
         }}
       />
+
+      {/* Modal de Timeout */}
+      <AlertDialog open={showTimeoutModal} onOpenChange={setShowTimeoutModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center">⏰ Tempo Esgotado!</AlertDialogTitle>
+            <AlertDialogDescription className="text-center space-y-4">
+              <div className="text-lg font-semibold text-destructive">
+                Resposta correta: {currentQuestion?.correct_answer}
+              </div>
+              {currentQuestion?.explanation && (
+                <div className="text-sm text-muted-foreground">
+                  {currentQuestion.explanation}
+                </div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={handleTimeoutContinue} className="w-full">
+              Continuar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
