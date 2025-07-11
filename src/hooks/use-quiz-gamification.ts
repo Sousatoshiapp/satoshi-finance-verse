@@ -44,16 +44,19 @@ export function useQuizGamification() {
 
     const newStreak = state.streak + 1;
     let newMultiplier = state.currentMultiplier;
+    const baseBTZ = 1; // 1 BTZ base por resposta correta
     
     // Sistema de multiplicador progressivo: 1→2→4→8→16...
     // A cada 7 corretas consecutivas, dobra o multiplicador
     if (newStreak % 7 === 0) {
       newMultiplier = newMultiplier * 2;
       
+      const earnedBTZ = baseBTZ * newMultiplier;
+      
       setState(prev => ({ 
         ...prev, 
         streak: newStreak, 
-        totalBTZ: prev.totalBTZ + newMultiplier,
+        totalBTZ: prev.totalBTZ + earnedBTZ,
         currentMultiplier: newMultiplier,
         showStreakAnimation: true,
         showBeetzAnimation: true
@@ -65,40 +68,59 @@ export function useQuizGamification() {
       
       toast({
         title: `🔥 Streak de ${newStreak}!`,
-        description: `Multiplicador BTZ: ${newMultiplier}x`
+        description: `Multiplicador BTZ: ${newMultiplier}x | +${earnedBTZ} BTZ`
       });
+      
+      // Update database with multiplied points
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('points')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (profile) {
+          await supabase.from('profiles').update({
+            points: profile.points + earnedBTZ
+          }).eq('user_id', user.id);
+        }
+      } catch (error) {
+        console.error('Error updating points:', error);
+      }
     } else {
       // Regular correct answer com multiplicador atual
+      const earnedBTZ = baseBTZ * newMultiplier;
+      
       setState(prev => ({ 
         ...prev, 
         streak: newStreak, 
-        totalBTZ: prev.totalBTZ + newMultiplier,
+        totalBTZ: prev.totalBTZ + earnedBTZ,
         showBeetzAnimation: true 
       }));
       
       playCashRegisterSound();
+      
+      // Update database with multiplied points
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('points')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (profile) {
+          await supabase.from('profiles').update({
+            points: profile.points + earnedBTZ
+          }).eq('user_id', user.id);
+        }
+      } catch (error) {
+        console.error('Error updating points:', error);
+      }
     }
 
     // Play correct answer sound with intensity based on streak
     const intensity = Math.min(newStreak, 10);
     playCorrectSound(intensity);
-
-    // Update database with new points
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('points')
-        .eq('user_id', user.id)
-        .single();
-        
-      if (profile) {
-        await supabase.from('profiles').update({
-          points: profile.points + newMultiplier
-        }).eq('user_id', user.id);
-      }
-    } catch (error) {
-      console.error('Error updating points:', error);
-    }
     
   }, [state, user, playCorrectSound, playStreakSound, playCashRegisterSound, toast]);
 

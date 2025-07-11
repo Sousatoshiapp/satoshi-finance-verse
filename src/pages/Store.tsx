@@ -670,12 +670,13 @@ export default function Store() {
 
         {/* Tabs - Mobile Optimized */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 mb-6 h-auto">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-6 h-auto">
             <TabsTrigger value="avatars" className="text-xs sm:text-sm p-2 sm:p-3">👤 Avatares</TabsTrigger>
             <TabsTrigger value="skins" className="text-xs sm:text-sm p-2 sm:p-3">🎨 Skins</TabsTrigger>
             <TabsTrigger value="boosts" className="text-xs sm:text-sm p-2 sm:p-3">⚡ Boosts</TabsTrigger>
             <TabsTrigger value="accessories" className="text-xs sm:text-sm p-2 sm:p-3">👟 Acessórios</TabsTrigger>
-            <TabsTrigger value="beetz" className="text-xs sm:text-sm p-2 sm:p-3 col-span-2 sm:col-span-1">
+            <TabsTrigger value="lives" className="text-xs sm:text-sm p-2 sm:p-3">💖 Vidas</TabsTrigger>
+            <TabsTrigger value="beetz" className="text-xs sm:text-sm p-2 sm:p-3 col-span-3 sm:col-span-1">
               <BeetzIcon size="sm" className="mr-1" /> Beetz
             </TabsTrigger>
           </TabsList>
@@ -1143,6 +1144,93 @@ export default function Store() {
                   </Card>
                 );
               })}
+            </div>
+          </TabsContent>
+
+          {/* Lives Tab */}
+          <TabsContent value="lives">
+            <div className="space-y-4">
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+                  💖 Vidas & Proteção
+                </h2>
+                <p className="text-sm text-muted-foreground">Mantenha sua sequência e continue jogando</p>
+              </div>
+              
+              {/* Go to Lives Marketplace Card */}
+              <Card 
+                className="p-4 bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20 cursor-pointer hover:shadow-lg transition-all"
+                onClick={() => navigate('/marketplace/lives')}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center">
+                      <span className="text-xl">💖</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground mb-1">Marketplace de Vidas</h3>
+                      <p className="text-sm text-muted-foreground">Compre vidas para manter suas sequências</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
+                          <span className="mr-1">💖</span>
+                          Salva Streak
+                        </Badge>
+                        <Badge className="bg-pink-500/20 text-pink-400 border-pink-500/30">
+                          <Zap className="w-3 h-3 mr-1" />
+                          Multiplica BTZ
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <Button 
+                      variant="outline"
+                      className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                    >
+                      Ver Vidas
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+              
+              {/* Benefits Info */}
+              <div className="grid grid-cols-1 gap-3">
+                <Card className="p-3 bg-muted/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center">
+                      <Shield className="w-4 h-4 text-red-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground">Proteção de Streak</h4>
+                      <p className="text-xs text-muted-foreground">Use uma vida para manter sua sequência ativa</p>
+                    </div>
+                  </div>
+                </Card>
+                
+                <Card className="p-3 bg-muted/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center">
+                      <Gem className="w-4 h-4 text-yellow-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground">Mantenha Multiplicadores</h4>
+                      <p className="text-xs text-muted-foreground">Preserve seus multiplicadores de BTZ ativos</p>
+                    </div>
+                  </div>
+                </Card>
+                
+                <Card className="p-3 bg-muted/30">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-green-400" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-foreground">Continue Sem Parar</h4>
+                      <p className="text-xs text-muted-foreground">Não perca o momentum do seu aprendizado</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 
