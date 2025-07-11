@@ -157,7 +157,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       <div 
         className={`
           bg-transparent backdrop-blur-sm 
-          border border-[#adff2f]/20 rounded-xl p-4 
+          border border-[#adff2f]/20 rounded-lg px-8 py-4 
           transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
           ${isAnimating ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
           cursor-pointer
@@ -170,10 +170,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-2xl font-mono font-bold text-foreground">
+              <span className="text-4xl font-mono font-bold text-foreground">
                 {displayBTZ.toLocaleString()}
               </span>
-              <span className="text-sm text-muted-foreground font-medium">BTZ</span>
+              <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
               
               {/* Trend Arrow */}
               {showTrend && currentBTZ !== previousBTZ && (
