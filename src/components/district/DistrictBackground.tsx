@@ -1,13 +1,40 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
-import xpDistrict3D from "@/assets/districts/xp-district-3d.jpg";
-import animaDistrict3D from "@/assets/districts/anima-district-3d.jpg";
-import criptoDistrict3D from "@/assets/districts/cripto-district-3d.jpg";
-import bankingDistrict3D from "@/assets/districts/banking-district-3d.jpg";
-import realEstateDistrict3D from "@/assets/districts/real-estate-district-3d.jpg";
-import tradeDistrict3D from "@/assets/districts/trade-district-3d.jpg";
-import fintechDistrict3D from "@/assets/districts/fintech-district-3d.jpg";
+// XP District Images
+import xpMorning from "@/assets/districts/xp-morning.jpg";
+import xpSunset from "@/assets/districts/xp-sunset.jpg";
+import xpNight from "@/assets/districts/xp-night.jpg";
+
+// Anima District Images
+import animaMorning from "@/assets/districts/anima-morning.jpg";
+import animaSunset from "@/assets/districts/anima-sunset.jpg";
+import animaNight from "@/assets/districts/anima-night.jpg";
+
+// Crypto District Images
+import cryptoMorning from "@/assets/districts/crypto-morning.jpg";
+import cryptoSunset from "@/assets/districts/crypto-sunset.jpg";
+import cryptoNight from "@/assets/districts/crypto-night.jpg";
+
+// Banking District Images
+import bankingMorning from "@/assets/districts/banking-morning.jpg";
+import bankingSunset from "@/assets/districts/banking-sunset.jpg";
+import bankingNight from "@/assets/districts/banking-night.jpg";
+
+// Real Estate District Images
+import realestateMorning from "@/assets/districts/realestate-morning.jpg";
+import realestateSunset from "@/assets/districts/realestate-sunset.jpg";
+import realestateNight from "@/assets/districts/realestate-night.jpg";
+
+// International District Images
+import internationalMorning from "@/assets/districts/international-morning.jpg";
+import internationalSunset from "@/assets/districts/international-sunset.jpg";
+import internationalNight from "@/assets/districts/international-night.jpg";
+
+// Fintech District Images
+import fintechMorning from "@/assets/districts/fintech-morning.jpg";
+import fintechSunset from "@/assets/districts/fintech-sunset.jpg";
+import fintechNight from "@/assets/districts/fintech-night.jpg";
 
 // Paleta de cores temáticas por distrito
 const districtColors = {
@@ -59,14 +86,48 @@ interface District {
   color_secondary: string;
 }
 
-const districtImages = {
-  renda_variavel: xpDistrict3D,
-  educacao_financeira: animaDistrict3D,
-  criptomoedas: criptoDistrict3D,
-  sistema_bancario: bankingDistrict3D,
-  fundos_imobiliarios: realEstateDistrict3D,
-  mercado_internacional: tradeDistrict3D,
-  fintech: fintechDistrict3D,
+// Mapeamento de imagens por distrito e período do dia
+const getDistrictImage = (districtTheme: string, timeOfDay: string) => {
+  const imageMap = {
+    renda_variavel: {
+      morning: xpMorning,
+      sunset: xpSunset,
+      night: xpNight,
+    },
+    educacao_financeira: {
+      morning: animaMorning,
+      sunset: animaSunset,
+      night: animaNight,
+    },
+    criptomoedas: {
+      morning: cryptoMorning,
+      sunset: cryptoSunset,
+      night: cryptoNight,
+    },
+    sistema_bancario: {
+      morning: bankingMorning,
+      sunset: bankingSunset,
+      night: bankingNight,
+    },
+    fundos_imobiliarios: {
+      morning: realestateMorning,
+      sunset: realestateSunset,
+      night: realestateNight,
+    },
+    mercado_internacional: {
+      morning: internationalMorning,
+      sunset: internationalSunset,
+      night: internationalNight,
+    },
+    fintech: {
+      morning: fintechMorning,
+      sunset: fintechSunset,
+      night: fintechNight,
+    },
+  };
+
+  const district = imageMap[districtTheme as keyof typeof imageMap];
+  return district ? district[timeOfDay as keyof typeof district] : null;
 };
 
 // Função para gerar gradientes temáticos baseados no distrito e período
@@ -144,8 +205,8 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
     night: 'bg-gradient-to-b from-purple-900/30 via-transparent to-blue-900/40'
   };
 
-  // Obter imagem local baseada no tema do distrito
-  const districtImage = districtImages[districtTheme as keyof typeof districtImages];
+  // Obter imagem local baseada no tema do distrito e período do dia
+  const districtImage = getDistrictImage(districtTheme, timeOfDay);
 
   return (
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
