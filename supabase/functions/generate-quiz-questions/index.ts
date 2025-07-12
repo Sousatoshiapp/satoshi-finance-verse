@@ -61,13 +61,17 @@ serve(async (req) => {
   }
 
   try {
-    const { category, difficulty, count = 10, topics } = await req.json();
+    console.log('🚀 Iniciando geração de perguntas...');
+    const { category, difficulty, count = 3, topics } = await req.json(); // Reduzido para 3 perguntas por lote
+
+    console.log('📝 Parâmetros recebidos:', { category, difficulty, count, topics });
 
     if (!openAIApiKey) {
+      console.error('❌ OpenAI API key não encontrada');
       throw new Error('OpenAI API key não configurada');
     }
 
-    console.log(`Gerando ${count} perguntas para categoria: ${category}, dificuldade: ${difficulty}`);
+    console.log(`🎯 Gerando ${count} perguntas para categoria: ${category}, dificuldade: ${difficulty}`);
 
     const template = categoryTemplates[category] || {
       topics: topics || ['conceitos gerais'],
@@ -108,6 +112,8 @@ FORMATO DE RESPOSTA (JSON válido):
 
 Gere ${count} perguntas seguindo exatamente este formato:`;
 
+    console.log('🤖 Enviando requisição para OpenAI...');
+    
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -115,7 +121,7 @@ Gere ${count} perguntas seguindo exatamente este formato:`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini', // Mudado para modelo mais rápido
         messages: [
           {
             role: 'system',
@@ -127,36 +133,56 @@ Gere ${count} perguntas seguindo exatamente este formato:`;
           }
         ],
         temperature: 0.7,
-        max_tokens: 4000
+        max_tokens: 2000 // Reduzido para ser mais rápido
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API erro: ${response.status}`);
+      const errorText = await response.text();
+      console.error('❌ Erro na OpenAI API:', { status: response.status, error: errorText });
+      throw new Error(`OpenAI API erro: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
     const generatedContent = data.choices[0].message.content;
 
-    console.log('Resposta da OpenAI:', generatedContent);
+    console.log('✅ Resposta recebida da OpenAI');
+    console.log('📄 Conteúdo gerado:', generatedContent.substring(0, 200) + '...');
 
     // Parse do JSON gerado
     let questionsData;
     try {
+      console.log('🔍 Tentando fazer parse do JSON...');
       questionsData = JSON.parse(generatedContent);
     } catch (e) {
-      // Tentar extrair JSON se estiver com markdown
-      const jsonMatch = generatedContent.match(/```json\n([\s\S]*?)\n```/) || 
-                       generatedContent.match(/```\n([\s\S]*?)\n```/) ||
-                       [null, generatedContent];
-      questionsData = JSON.parse(jsonMatch[1]);
+      console.log('⚠️ Parse direto falhou, tentando extrair JSON do markdown...');
+      try {
+        // Tentar extrair JSON se estiver com markdown
+        const jsonMatch = generatedContent.match(/```json\n([\s\S]*?)\n```/) || 
+                         generatedContent.match(/```\n([\s\S]*?)\n```/) ||
+                         [null, generatedContent];
+        if (jsonMatch[1]) {
+          questionsData = JSON.parse(jsonMatch[1]);
+        } else {
+          questionsData = JSON.parse(generatedContent);
+        }
+      } catch (parseError) {
+        console.error('❌ Erro no parse do JSON:', parseError);
+        console.error('📝 Conteúdo original:', generatedContent);
+        throw new Error(`Erro no parse do JSON: ${parseError.message}`);
+      }
     }
 
     if (!questionsData.questions || !Array.isArray(questionsData.questions)) {
-      throw new Error('Formato de resposta inválido da OpenAI');
+      console.error('❌ Formato inválido:', questionsData);
+      throw new Error('Formato de resposta inválido da OpenAI - questions não encontrado ou não é array');
     }
 
+    console.log(`✅ Parse bem-sucedido: ${questionsData.questions.length} perguntas geradas`);
+
     // Inserir perguntas no banco
+    console.log('💾 Preparando inserção no banco de dados...');
+    
     const questionsToInsert = questionsData.questions.map(q => ({
       question: q.question,
       options: JSON.stringify(q.options),
@@ -166,17 +192,19 @@ Gere ${count} perguntas seguindo exatamente este formato:`;
       difficulty: q.difficulty
     }));
 
+    console.log(`📊 Inserindo ${questionsToInsert.length} perguntas no banco...`);
+
     const { data: insertedQuestions, error: insertError } = await supabase
       .from('quiz_questions')
       .insert(questionsToInsert)
       .select();
 
     if (insertError) {
-      console.error('Erro ao inserir perguntas:', insertError);
+      console.error('❌ Erro ao inserir perguntas no banco:', insertError);
       throw new Error(`Erro ao salvar perguntas: ${insertError.message}`);
     }
 
-    console.log(`${questionsToInsert.length} perguntas inseridas com sucesso`);
+    console.log(`✅ ${questionsToInsert.length} perguntas inseridas com sucesso no banco!`);
 
     return new Response(JSON.stringify({
       success: true,
@@ -189,10 +217,22 @@ Gere ${count} perguntas seguindo exatamente este formato:`;
     });
 
   } catch (error) {
-    console.error('Erro na geração de perguntas:', error);
+    console.error('❌ ERRO FATAL na geração de perguntas:', error);
+    console.error('📍 Stack trace:', error.stack);
+    
+    // Determinar tipo de erro para melhor debug
+    let errorType = 'unknown';
+    if (error.message.includes('OpenAI')) errorType = 'openai';
+    else if (error.message.includes('JSON')) errorType = 'parse';
+    else if (error.message.includes('banco')) errorType = 'database';
+    
+    console.error('🏷️ Tipo de erro:', errorType);
+    
     return new Response(JSON.stringify({ 
       error: error.message,
-      success: false 
+      success: false,
+      errorType,
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

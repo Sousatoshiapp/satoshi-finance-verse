@@ -127,28 +127,40 @@ serve(async (req) => {
           try {
             console.log(`Gerando ${count} perguntas ${difficulty} para ${categoryPlan.category}`);
 
+            console.log(`🎯 Gerando para ${categoryPlan.category} (${difficulty}) - ${count} perguntas`);
+            
             const { data: generateResult, error: generateError } = await supabase.functions.invoke('generate-quiz-questions', {
               body: {
                 category: categoryPlan.category,
                 difficulty,
-                count: Math.min(count, 10) // Máximo 10 por chamada para evitar timeout
+                count: Math.min(count, 3) // Reduzido para 3 por chamada
               }
             });
 
             if (generateError) {
-              console.error(`Erro ao gerar perguntas para ${categoryPlan.category} (${difficulty}):`, generateError);
+              console.error(`❌ Erro ao gerar perguntas para ${categoryPlan.category} (${difficulty}):`, generateError);
+              results.push({
+                category: categoryPlan.category,
+                difficulty,
+                generated: 0,
+                success: false,
+                error: generateError.message || 'Erro na Edge Function'
+              });
               continue;
             }
+
+            console.log(`✅ Sucesso para ${categoryPlan.category}: ${generateResult?.generated || 0} perguntas`);
 
             results.push({
               category: categoryPlan.category,
               difficulty,
-              generated: generateResult.generated,
-              success: generateResult.success
+              generated: generateResult?.generated || 0,
+              success: generateResult?.success || false
             });
 
-            // Delay pequeno entre chamadas
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Delay maior entre chamadas para evitar rate limiting
+            console.log('⏳ Aguardando 3 segundos antes da próxima geração...');
+            await new Promise(resolve => setTimeout(resolve, 3000));
 
           } catch (error) {
             console.error(`Erro ao processar ${categoryPlan.category} (${difficulty}):`, error);
