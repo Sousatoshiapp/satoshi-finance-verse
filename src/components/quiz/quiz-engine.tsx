@@ -506,14 +506,11 @@ export function QuizEngine({
           </div>
 
           {/* Question Card */}
-          <Card className="mb-6 bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20">
+          <Card className="mb-6">
             <CardContent className="p-4 sm:p-6">
-              <div className="flex items-start gap-3 mb-6">
-                <span className="text-2xl">🎯</span>
-                <h2 className="text-xl sm:text-2xl font-semibold leading-relaxed text-primary flex-1">
-                  {currentQuestion.question}
-                </h2>
-              </div>
+              <h2 className="text-primary font-semibold text-xl sm:text-2xl leading-relaxed mb-6">
+                {currentQuestion.question}
+              </h2>
               
               <div className="space-y-3">
                 {currentQuestion.options.map((option, index) => {
