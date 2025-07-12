@@ -15,12 +15,26 @@ const sizeClasses = {
   "2xl": "w-16 h-16"
 };
 
+const fontSizeClasses = {
+  xs: "text-[6px]",
+  sm: "text-[8px]", 
+  md: "text-[10px]",
+  lg: "text-[12px]",
+  xl: "text-[18px]",
+  "2xl": "text-[24px]"
+};
+
 export function BeetzIcon({ size = "md", className }: BeetzIconProps) {
   return (
-    <img 
-      src="/lovable-uploads/073c0879-ad65-4bee-b80a-a29090231192.png" 
-      alt="Beetz" 
-      className={cn(sizeClasses[size], "inline-block", className)}
-    />
+    <div 
+      className={cn(
+        sizeClasses[size],
+        fontSizeClasses[size],
+        "inline-flex items-center justify-center rounded-full bg-[#adff2f] text-black font-bold",
+        className
+      )}
+    >
+      B
+    </div>
   );
 }
