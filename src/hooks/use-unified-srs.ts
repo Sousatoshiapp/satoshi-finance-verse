@@ -85,14 +85,14 @@ export function useUnifiedSRS() {
 
       console.log('🔍 NOVA LÓGICA DE QUESTÕES - Evitando repetições recentes');
 
-      // 1. Buscar questões respondidas recentemente (últimas 20)
+      // 1. Buscar questões respondidas recentemente (últimas 10 - reduzido de 20)
       const { data: recentAnswers } = await supabase
         .from('user_question_progress')
         .select('question_id, last_reviewed')
         .eq('user_id', profile.id)
         .not('last_reviewed', 'is', null)
         .order('last_reviewed', { ascending: false })
-        .limit(20);
+        .limit(10);
 
       const recentQuestionIds = recentAnswers?.map(r => r.question_id) || [];
       const allExcludeIds = [...excludeIds, ...recentQuestionIds];

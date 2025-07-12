@@ -20,6 +20,7 @@ import GameMode from "@/pages/GameMode";
 import Store from "@/pages/Store";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import Icons from "@/pages/Icons";
+import AdminPanel from "@/pages/AdminPanel";
 
 // Lazy imports for less critical pages
 import { LazyRoutes } from "@/utils/advanced-lazy-loading";
@@ -302,6 +303,12 @@ function App() {
             <Route path="/admin/quiz/categories" element={
               <ProtectedRoute>
                 <LazyRoutes.AdminQuizCategories />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/admin/quiz/generator" element={
+              <ProtectedRoute>
+                <AdminPanel />
               </ProtectedRoute>
             } />
             
