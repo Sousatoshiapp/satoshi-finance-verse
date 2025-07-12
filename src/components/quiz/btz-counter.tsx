@@ -12,7 +12,6 @@ interface BTZCounterProps {
 type AnimationState = 'IDLE' | 'ANIMATING' | 'COMPLETE';
 
 export function BTZCounter({ className = "" }: BTZCounterProps) {
-  const { user } = useAuth();
   const { points: currentBTZ, isLoading } = useRealtimePoints();
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
@@ -21,65 +20,50 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const [animationState, setAnimationState] = useState<AnimationState>('IDLE');
   const [showDetails, setShowDetails] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
-  const [animationProgress, setAnimationProgress] = useState(0);
 
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const trendTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastProcessedBTZ = useRef<number>(0);
 
-  // Slot machine animation com state machine robusto
+  // Slot machine animation otimizada
   const startSlotMachineAnimation = useCallback((targetValue: number, startValue: number) => {
     if (animationState !== 'IDLE' || startValue === targetValue) return;
     
     setAnimationState('ANIMATING');
     setPreviousBTZ(startValue);
-    setAnimationProgress(0);
     
     // Clear existing timers
-    if (animationTimerRef.current) {
-      clearInterval(animationTimerRef.current);
-    }
-    if (trendTimerRef.current) {
-      clearTimeout(trendTimerRef.current);
-    }
+    if (animationTimerRef.current) clearInterval(animationTimerRef.current);
+    if (trendTimerRef.current) clearTimeout(trendTimerRef.current);
     
-    const duration = 1000; // 1 segundo para animação mais fluida
-    const steps = 30; // Mais steps para smoother animation
+    const duration = 800;
+    const steps = 20;
     const increment = (targetValue - startValue) / steps;
     let currentStep = 0;
 
     animationTimerRef.current = setInterval(() => {
       currentStep++;
       const progress = currentStep / steps;
-      setAnimationProgress(progress);
       
       if (currentStep >= steps) {
-        // Animation complete
         setDisplayBTZ(targetValue);
         setAnimationState('COMPLETE');
         setShowTrend(true);
         
-        // Clean up
         if (animationTimerRef.current) {
           clearInterval(animationTimerRef.current);
           animationTimerRef.current = null;
         }
         
-        // Hide trend after 3 seconds
         trendTimerRef.current = setTimeout(() => {
           setShowTrend(false);
           setAnimationState('IDLE');
-        }, 3000);
+        }, 2000);
         
       } else {
-        // Slot machine effect with easing
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        const currentValue = startValue + (increment * currentStep * easeOutQuart);
-        
-        // Add randomness for slot machine effect (mais sutil no final)
-        const randomIntensity = Math.max(0.1, 1 - progress);
-        const randomOffset = (Math.random() - 0.5) * 10 * randomIntensity;
-        
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const currentValue = startValue + (increment * currentStep * easeOut);
+        const randomOffset = (Math.random() - 0.5) * 5 * (1 - progress);
         setDisplayBTZ(Math.round(Math.max(0, currentValue + randomOffset)));
       }
     }, duration / steps);
@@ -140,22 +124,13 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               </span>
               <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
               
-              {/* Trend Arrow com progresso de animação */}
+              {/* Trend Arrow */}
               {showTrend && currentBTZ !== previousBTZ && (
-                <div className={`transition-all duration-300 ${showTrend ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
+                <div className="transition-all duration-300">
                   {currentBTZ > previousBTZ ? (
                     <TrendingUp className="w-4 h-4 text-[#adff2f] animate-bounce" />
                   ) : (
                     <TrendingDown className="w-4 h-4 text-red-500 animate-bounce" />
-                  )}
-                  {/* Indicador de progresso durante animação */}
-                  {animationState === 'ANIMATING' && (
-                    <div className="w-8 h-1 bg-[#adff2f]/20 rounded-full overflow-hidden ml-2">
-                      <div 
-                        className="h-full bg-[#adff2f] transition-all duration-75"
-                        style={{ width: `${animationProgress * 100}%` }}
-                      />
-                    </div>
                   )}
                 </div>
               )}
