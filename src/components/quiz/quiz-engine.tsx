@@ -531,7 +531,7 @@ export function QuizEngine({
                       onClick={() => handleOptionSelect(option)}
                       disabled={showAnswer}
                       className={cn(
-                        "w-full p-3 sm:p-4 text-left transition-all duration-300 min-h-[64px] leading-relaxed group hover:shadow-lg",
+                        "w-full p-3 sm:p-4 text-left transition-all duration-300 min-h-[45px] leading-relaxed group hover:shadow-lg",
                         "text-sm sm:text-base break-words hyphens-auto",
                         selectedAnswer === option
                           ? "bg-primary text-primary-foreground border-primary scale-105 shadow-lg"
