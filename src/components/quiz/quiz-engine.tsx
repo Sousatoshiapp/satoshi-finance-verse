@@ -15,6 +15,7 @@ import { useCustomSounds } from "@/hooks/use-custom-sounds";
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 // import { LifePurchaseBanner } from "./life-purchase-banner"; // Removido
+import { QuizBTZCard } from "@/components/quiz/quiz-btz-card";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -456,6 +457,9 @@ export function QuizEngine({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
+      {/* BTZ Card - Posicionado em fixed no canto superior direito */}
+      <QuizBTZCard />
+      
       {/* Header reorganizado */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
