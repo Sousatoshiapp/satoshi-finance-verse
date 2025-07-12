@@ -35,54 +35,103 @@ export function QuestionGeneratorPanel() {
 
   const loadStatus = async () => {
     setLoading(true);
+    console.log('🔄 Carregando status...');
+    
     try {
       const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
         body: { mode: 'status' }
       });
 
-      if (error) throw error;
+      console.log('📊 Resposta do status:', { data, error });
 
+      if (error) {
+        console.error('❌ Erro da edge function:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.warn('⚠️ Dados vazios retornados');
+        throw new Error('Nenhum dado retornado do status');
+      }
+
+      console.log('✅ Status carregado:', data);
       setStatus(data);
     } catch (error) {
-      console.error('Erro ao carregar status:', error);
-      toast.error('Erro ao carregar status das perguntas');
+      console.error('❌ Erro ao carregar status:', error);
+      toast.error(`Erro ao carregar status: ${error.message || 'Erro desconhecido'}`);
     } finally {
       setLoading(false);
     }
   };
 
   const generateQuestions = async () => {
+    console.log('🚀 Iniciando geração de perguntas...');
+    console.log('📋 Status atual:', status);
+    
     setGenerating(true);
     setResults([]);
     
     try {
+      // Verificar se temos status carregado
+      if (!status) {
+        console.warn('⚠️ Status não carregado, tentando carregar...');
+        await loadStatus();
+        if (!status) {
+          throw new Error('Status não disponível');
+        }
+      }
+
+      console.log('📊 Categorias disponíveis:', status.categories);
+
       // Pegar categorias que mais precisam de perguntas
-      const categoriesToGenerate = status?.categories
-        .filter(cat => cat.needed > 0)
+      const categoriesToGenerate = status.categories
+        ?.filter(cat => {
+          console.log(`🔍 Categoria ${cat.category}: needed=${cat.needed}, current=${cat.current}, target=${cat.target}`);
+          return cat.needed > 0;
+        })
         .sort((a, b) => b.needed - a.needed)
         .slice(0, 5); // Processar 5 por vez
 
+      console.log('🎯 Categorias selecionadas para geração:', categoriesToGenerate);
+
       if (!categoriesToGenerate?.length) {
+        console.log('✅ Todas as categorias já têm perguntas suficientes!');
         toast.info('Todas as categorias já têm perguntas suficientes!');
         return;
       }
 
+      const requestBody = { 
+        mode: 'generate',
+        categories: categoriesToGenerate.map(cat => ({
+          category: cat.category,
+          targetCount: Math.min(cat.needed, 10), // Limitar a 10 por vez
+          priorities: ['easy', 'medium', 'hard']
+        }))
+      };
+
+      console.log('📤 Enviando requisição:', requestBody);
+
       const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
-        body: { 
-          mode: 'generate',
-          categories: categoriesToGenerate.map(cat => ({
-            category: cat.category,
-            targetCount: cat.target,
-            priorities: ['easy', 'medium', 'hard']
-          }))
-        }
+        body: requestBody
       });
 
-      if (error) throw error;
+      console.log('📥 Resposta da geração:', { data, error });
+
+      if (error) {
+        console.error('❌ Erro da edge function:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.warn('⚠️ Nenhum dado retornado da geração');
+        throw new Error('Nenhum dado retornado da geração');
+      }
 
       setResults(data.results || []);
       
       const totalGenerated = data.totalGenerated || 0;
+      console.log(`✅ Total de perguntas geradas: ${totalGenerated}`);
+      
       if (totalGenerated > 0) {
         toast.success(`${totalGenerated} perguntas geradas com sucesso!`);
         await loadStatus(); // Recarregar status
@@ -91,8 +140,8 @@ export function QuestionGeneratorPanel() {
       }
 
     } catch (error) {
-      console.error('Erro ao gerar perguntas:', error);
-      toast.error('Erro ao gerar perguntas');
+      console.error('❌ Erro ao gerar perguntas:', error);
+      toast.error(`Erro ao gerar perguntas: ${error.message || 'Erro desconhecido'}`);
     } finally {
       setGenerating(false);
     }

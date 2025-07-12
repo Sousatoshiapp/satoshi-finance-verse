@@ -53,7 +53,12 @@ serve(async (req) => {
   }
 
   try {
-    const { mode = 'plan', categories, batchSize = 50 } = await req.json();
+    console.log('📥 Recebida requisição:', req.method);
+    const requestBody = await req.json();
+    console.log('📦 Body da requisição:', requestBody);
+    
+    const { mode = 'plan', categories, batchSize = 50 } = requestBody;
+    console.log('🎯 Modo:', mode);
 
     if (mode === 'plan') {
       // Retornar o plano de expansão
@@ -68,12 +73,17 @@ serve(async (req) => {
     }
 
     if (mode === 'generate') {
+      console.log('🚀 Iniciando geração de perguntas...');
+      console.log('📊 Categorias recebidas:', categories);
+      
       // Gerar perguntas em lote
       const results = [];
       const categoriesToProcess = categories || expansionPlan.slice(0, 5); // Processar 5 categorias por vez
+      
+      console.log('🎯 Categorias a processar:', categoriesToProcess);
 
       for (const categoryPlan of categoriesToProcess) {
-        console.log(`Processando categoria: ${categoryPlan.category}`);
+        console.log(`🔄 Processando categoria: ${categoryPlan.category}`);
 
         // Verificar quantas perguntas já existem
         const { data: existingQuestions, error: countError } = await supabase
@@ -163,36 +173,42 @@ serve(async (req) => {
     }
 
     if (mode === 'status') {
+      console.log('📊 Verificando status...');
       // Verificar status atual vs. plano
       const statusResults = [];
 
       for (const categoryPlan of expansionPlan) {
+        console.log(`🔍 Verificando categoria: ${categoryPlan.category}`);
+        
         const { data: existingQuestions, error } = await supabase
           .from('quiz_questions')
           .select('difficulty')
           .eq('category', categoryPlan.category);
 
         if (error) {
-          console.error(`Erro ao verificar ${categoryPlan.category}:`, error);
+          console.error(`❌ Erro ao verificar ${categoryPlan.category}:`, error);
           continue;
         }
 
         const currentCount = existingQuestions?.length || 0;
         const progress = Math.min(100, (currentCount / categoryPlan.targetCount) * 100);
 
-        statusResults.push({
+        const categoryData = {
           category: categoryPlan.category,
           current: currentCount,
           target: categoryPlan.targetCount,
           progress: Math.round(progress),
           needed: Math.max(0, categoryPlan.targetCount - currentCount)
-        });
+        };
+        
+        console.log(`📊 ${categoryPlan.category}:`, categoryData);
+        statusResults.push(categoryData);
       }
 
       const totalCurrent = statusResults.reduce((sum, s) => sum + s.current, 0);
       const totalTarget = statusResults.reduce((sum, s) => sum + s.target, 0);
 
-      return new Response(JSON.stringify({
+      const response = {
         success: true,
         summary: {
           totalCurrent,
@@ -201,7 +217,11 @@ serve(async (req) => {
           remaining: totalTarget - totalCurrent
         },
         categories: statusResults
-      }), {
+      };
+      
+      console.log('✅ Status calculado:', response);
+
+      return new Response(JSON.stringify(response), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
