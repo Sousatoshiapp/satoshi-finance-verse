@@ -7,6 +7,7 @@ interface DistrictStatsCardProps {
   suffix: string;
   icon: string;
   rank?: number;
+  showRank?: boolean;
   loading?: boolean;
   className?: string;
 }
@@ -17,6 +18,7 @@ export function DistrictStatsCard({
   suffix, 
   icon, 
   rank, 
+  showRank = false,
   loading = false, 
   className = "" 
 }: DistrictStatsCardProps) {
@@ -86,17 +88,31 @@ export function DistrictStatsCard({
             {title}
           </div>
           <div className="flex items-baseline gap-1">
-            <span className="font-mono font-bold text-white text-lg leading-tight">
-              {displayValue.toLocaleString()}
-            </span>
-            <span className="text-[#adff2f] text-sm font-medium">
-              {suffix}
-            </span>
+            {showRank ? (
+              <span className="font-mono font-bold text-white text-lg leading-tight">
+                {value > 0 ? `${value}º` : '-'}
+              </span>
+            ) : (
+              <>
+                <span className="font-mono font-bold text-white text-lg leading-tight">
+                  {displayValue.toLocaleString()}
+                </span>
+                <span className="text-[#adff2f] text-sm font-medium">
+                  {suffix}
+                </span>
+              </>
+            )}
           </div>
-          {rank && (
+          {showRank ? (
             <div className="text-[#adff2f] text-xs mt-1">
-              #{rank} distrito
+              Lugar
             </div>
+          ) : (
+            rank && (
+              <div className="text-[#adff2f] text-xs mt-1">
+                #{rank} distrito
+              </div>
+            )
           )}
         </div>
       </div>

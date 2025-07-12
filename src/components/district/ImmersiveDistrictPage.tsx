@@ -9,6 +9,14 @@ import { DistrictCircleActions } from './DistrictCircleActions';
 import { DistrictStatsCard } from './DistrictStatsCard';
 import { useDistrictStats } from '@/hooks/use-district-stats';
 import { FloatingNavbar } from '@/components/floating-navbar';
+// District logos
+import xpLogo from "@/assets/xp-logo.png";
+import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
+import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
+import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
+import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
+import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
+import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
 
 interface District {
   id: string;
@@ -29,6 +37,17 @@ interface UserDistrict {
   xp: number;
   is_residence: boolean;
 }
+
+// Mapeamento de logos por tema do distrito
+const districtLogos = {
+  renda_variavel: xpLogo,
+  educacao_financeira: animaLogo,
+  criptomoedas: criptoLogo,
+  sistema_bancario: bankingLogo,
+  fundos_imobiliarios: realEstateLogo,
+  mercado_internacional: tradeLogo,
+  fintech: fintechLogo,
+};
 
 export const ImmersiveDistrictPage: React.FC = () => {
   const { districtId } = useParams();
@@ -143,12 +162,12 @@ export const ImmersiveDistrictPage: React.FC = () => {
 
         {/* Container principal */}
         <div className="relative z-10 min-h-screen pb-32 flex flex-col">
-          {/* Header com botão voltar */}
+          {/* Header com botão voltar e logo do distrito */}
           <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="p-6"
+            className="p-6 flex items-center gap-4"
           >
             <Button
               onClick={handleBack}
@@ -159,6 +178,17 @@ export const ImmersiveDistrictPage: React.FC = () => {
               <ArrowLeft className="w-5 h-5 mr-2" />
               Voltar à Cidade
             </Button>
+            
+            {/* Logo circular do distrito */}
+            {district && (
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                <img 
+                  src={districtLogos[district.theme as keyof typeof districtLogos]} 
+                  alt={district.name}
+                  className="w-8 h-8 object-contain"
+                />
+              </div>
+            )}
           </motion.div>
 
           {/* Stats Cards */}
@@ -168,13 +198,14 @@ export const ImmersiveDistrictPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="px-6 mb-8"
           >
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="grid grid-cols-3 gap-2 md:gap-4 max-w-lg mx-auto">
               <DistrictStatsCard
                 title="BTZ Total"
                 value={stats.totalBTZ}
                 suffix="BTZ"
                 icon="B"
                 loading={statsLoading}
+                className="min-w-[120px] md:min-w-[160px]"
               />
               <DistrictStatsCard
                 title="XP Total"
@@ -182,14 +213,16 @@ export const ImmersiveDistrictPage: React.FC = () => {
                 suffix="XP"
                 icon="X"
                 loading={statsLoading}
+                className="min-w-[120px] md:min-w-[160px]"
               />
               <DistrictStatsCard
-                title="Poder do Distrito"
-                value={stats.totalBTZ}
-                suffix="BTZ"
+                title="Poder"
+                value={stats.rank}
+                suffix=""
                 icon="⚡"
-                rank={stats.rank}
+                showRank={true}
                 loading={statsLoading}
+                className="min-w-[120px] md:min-w-[160px]"
               />
             </div>
           </motion.div>

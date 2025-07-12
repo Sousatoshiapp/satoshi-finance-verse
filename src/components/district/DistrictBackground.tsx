@@ -234,9 +234,7 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
         transition={{ duration: 1.2, ease: "easeInOut" }}
         className="absolute inset-0"
         style={{
-          background: districtData?.image_url 
-            ? `linear-gradient(135deg, ${districtData.color_primary}40 0%, ${districtData.color_secondary}30 50%, ${districtData.color_primary}20 100%)`
-            : currentGradient,
+          background: currentGradient,
         }}
       />
 
