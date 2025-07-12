@@ -21,6 +21,7 @@ import { CompactLeaderboard } from "@/components/compact-leaderboard";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
+import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 
 
 const getGreeting = () => {
@@ -227,6 +228,9 @@ export default function Dashboard() {
               )}
             </div>
           </div>
+
+          {/* Crisis Alert - Non-invasive placement */}
+          <CrisisAlert />
 
           {/* Consolidated Avatar & Level Section */}
           <div className="text-center mb-6">

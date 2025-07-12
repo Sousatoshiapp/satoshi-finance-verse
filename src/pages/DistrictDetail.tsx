@@ -11,6 +11,7 @@ import { PowerBar } from "@/components/ui/power-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
 import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -576,6 +577,9 @@ export default function DistrictDetail() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Crisis Alert for District */}
+        <DistrictCrisisCard districtId={districtId || ""} />
 
         {/* Main Actions */}
         <div className="grid grid-cols-4 gap-2 mb-8">

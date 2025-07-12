@@ -811,6 +811,178 @@ export type Database = {
           },
         ]
       }
+      crisis_contributions: {
+        Row: {
+          btz_contributed: number
+          contribution_type: string
+          created_at: string
+          crisis_id: string
+          district_id: string | null
+          heroic_action: string | null
+          id: string
+          user_id: string
+          xp_contributed: number
+        }
+        Insert: {
+          btz_contributed?: number
+          contribution_type?: string
+          created_at?: string
+          crisis_id: string
+          district_id?: string | null
+          heroic_action?: string | null
+          id?: string
+          user_id: string
+          xp_contributed?: number
+        }
+        Update: {
+          btz_contributed?: number
+          contribution_type?: string
+          created_at?: string
+          crisis_id?: string
+          district_id?: string | null
+          heroic_action?: string | null
+          id?: string
+          user_id?: string
+          xp_contributed?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crisis_contributions_crisis_id_fkey"
+            columns: ["crisis_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crisis_contributions_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crisis_contributions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crisis_district_goals: {
+        Row: {
+          btz_goal: number
+          completed_at: string | null
+          created_at: string
+          crisis_id: string
+          current_btz: number
+          current_xp: number
+          district_id: string
+          id: string
+          is_completed: boolean
+          updated_at: string
+          xp_goal: number
+        }
+        Insert: {
+          btz_goal?: number
+          completed_at?: string | null
+          created_at?: string
+          crisis_id: string
+          current_btz?: number
+          current_xp?: number
+          district_id: string
+          id?: string
+          is_completed?: boolean
+          updated_at?: string
+          xp_goal?: number
+        }
+        Update: {
+          btz_goal?: number
+          completed_at?: string | null
+          created_at?: string
+          crisis_id?: string
+          current_btz?: number
+          current_xp?: number
+          district_id?: string
+          id?: string
+          is_completed?: boolean
+          updated_at?: string
+          xp_goal?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crisis_district_goals_crisis_id_fkey"
+            columns: ["crisis_id"]
+            isOneToOne: false
+            referencedRelation: "crisis_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crisis_district_goals_district_id_fkey"
+            columns: ["district_id"]
+            isOneToOne: false
+            referencedRelation: "districts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crisis_events: {
+        Row: {
+          created_at: string
+          crisis_type: string
+          current_btz_contributions: number
+          current_xp_contributions: number
+          description: string
+          end_time: string
+          id: string
+          is_active: boolean
+          narrative_data: Json | null
+          reward_data: Json | null
+          start_time: string
+          status: string
+          title: string
+          total_btz_goal: number
+          total_xp_goal: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          crisis_type?: string
+          current_btz_contributions?: number
+          current_xp_contributions?: number
+          description: string
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          narrative_data?: Json | null
+          reward_data?: Json | null
+          start_time?: string
+          status?: string
+          title: string
+          total_btz_goal?: number
+          total_xp_goal?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          crisis_type?: string
+          current_btz_contributions?: number
+          current_xp_contributions?: number
+          description?: string
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          narrative_data?: Json | null
+          reward_data?: Json | null
+          start_time?: string
+          status?: string
+          title?: string
+          total_btz_goal?: number
+          total_xp_goal?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       daily_challenges: {
         Row: {
           beetz_reward: number
@@ -6372,6 +6544,17 @@ export type Database = {
       }
       create_affiliate_program: {
         Args: { p_user_id: string }
+        Returns: string
+      }
+      create_crisis_event: {
+        Args: {
+          p_title: string
+          p_description: string
+          p_crisis_type?: string
+          p_btz_goal?: number
+          p_xp_goal?: number
+          p_duration_hours?: number
+        }
         Returns: string
       }
       create_duel_with_invite: {
