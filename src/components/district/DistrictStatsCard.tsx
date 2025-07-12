@@ -1,6 +1,26 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
+// Função para formatar números grandes
+const formatLargeNumber = (value: number): { formatted: string; suffix: string } => {
+  if (value >= 1000000) {
+    return {
+      formatted: (value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1),
+      suffix: 'M'
+    };
+  }
+  if (value >= 1000) {
+    return {
+      formatted: (value / 1000).toFixed(value % 1000 === 0 ? 0 : 1),
+      suffix: 'K'
+    };
+  }
+  return {
+    formatted: value.toString(),
+    suffix: ''
+  };
+};
+
 interface DistrictStatsCardProps {
   title: string;
   value: number;
@@ -86,32 +106,31 @@ export function DistrictStatsCard({
           <div className="text-white/70 text-xs font-medium mb-1 truncate leading-tight">
             {title}
           </div>
-          <div className="flex items-baseline gap-1 overflow-hidden">
-            {showRank ? (
+          {showRank ? (
+            <div className="flex flex-col items-start">
               <span className="font-mono font-bold text-white text-sm md:text-base leading-tight truncate">
                 {value > 0 ? `${value}º` : '-'}
               </span>
-            ) : (
-              <>
-                <span className="font-mono font-bold text-white text-sm md:text-base leading-tight truncate">
-                  {displayValue.toLocaleString()}
-                </span>
-                <span className="text-[#adff2f] text-xs font-medium truncate">
-                  {suffix}
-                </span>
-              </>
-            )}
-          </div>
-          {showRank ? (
-            <div className="text-[#adff2f] text-xs mt-1 truncate">
-              Lugar
+              <div className="text-[#adff2f] text-xs mt-1 truncate">
+                Lugar
+              </div>
             </div>
           ) : (
-            rank && (
-              <div className="text-[#adff2f] text-xs mt-1 truncate">
-                #{rank} distrito
-              </div>
-            )
+            <div className="flex flex-col items-start">
+              {(() => {
+                const formatted = formatLargeNumber(displayValue);
+                return (
+                  <>
+                    <span className="font-mono font-bold text-white text-sm md:text-base leading-tight truncate">
+                      {formatted.formatted}{formatted.suffix}
+                    </span>
+                    <div className="text-[#adff2f] text-xs mt-1 truncate">
+                      {suffix}
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
           )}
         </div>
       </div>
