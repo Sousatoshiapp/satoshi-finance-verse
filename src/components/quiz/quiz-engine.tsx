@@ -457,11 +457,11 @@ export function QuizEngine({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
-      {/* Header reorganizado */}
+      {/* Header simplificado */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            {/* Botão voltar */}
+          <div className="flex justify-start">
+            {/* Apenas botão voltar */}
             <Button
               variant="ghost"
               size="sm"
@@ -471,9 +471,6 @@ export function QuizEngine({
               <ArrowLeft className="h-4 w-4 mr-2" />
               Voltar
             </Button>
-            
-            {/* BTZ Card no header */}
-            <QuizBTZCard />
           </div>
         </div>
       </div>
@@ -491,20 +488,19 @@ export function QuizEngine({
                 {getModeTitle()}
               </div>
               
-              {/* Timer responsivo - mobile à direita, desktop centralizado */}
-              <div className="flex justify-center sm:justify-center md:justify-center">
-                <div className="sm:ml-auto md:ml-0 lg:ml-0">
-                  <CircularTimer
-                    duration={30}
-                    isActive={!showAnswer && !loading}
-                    onTimeUp={handleTimeUp}
-                    onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                    onCountdown={playCountdownSound}
-                    enableCountdownSound={true}
-                    size={96}
-                    className="shadow-lg"
-                  />
-                </div>
+              {/* BTZ Card e Timer lado a lado */}
+              <div className="flex items-center justify-center gap-4 sm:gap-6">
+                <QuizBTZCard />
+                <CircularTimer
+                  duration={30}
+                  isActive={!showAnswer && !loading}
+                  onTimeUp={handleTimeUp}
+                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                  onCountdown={playCountdownSound}
+                  enableCountdownSound={true}
+                  size={96}
+                  className="shadow-lg"
+                />
               </div>
             </div>
           </div>
