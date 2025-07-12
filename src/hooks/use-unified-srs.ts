@@ -161,39 +161,43 @@ export function useUnifiedSRS() {
 
       const { data: oldQuestions } = await oldQuestionsQuery.limit(remainingCount);
 
-        // 3. Se ainda não tem o suficiente, buscar questões aleatórias
-        if ((!newQuestions || newQuestions.length < remainingCount)) {
-          const stillNeeded = remainingCount - (newQuestions?.length || 0);
-          const { data: randomQuestions } = await supabase
-            .from('quiz_questions')
-            .select('*')
-            .in('category', FINANCE_CATEGORIES)
-            .eq('difficulty', difficulty || 'easy')
-            .not('id', 'in', `(${[...excludeIds, ...(dueQuestions?.map(q => q.id) || []), ...(newQuestions?.map(q => q.id) || [])].join(',')})`)
-            .limit(stillNeeded);
+      // 5. Combinar questões nunca respondidas + antigas
+      const combinedQuestions = [
+        ...neverAnsweredQuestions,
+        ...(oldQuestions || [])
+      ];
 
-          const combined = [
-            ...(dueQuestions || []), 
-            ...(newQuestions || []), 
-            ...(randomQuestions || [])
-          ];
-          
-          const formattedQuestions = formatQuestions(combined);
-          
-          // Log para monitoramento
-          console.log(`📚 Perguntas selecionadas: ${formattedQuestions.length}`, {
-            categories: [...new Set(formattedQuestions.map(q => q.category))],
-            difficulties: [...new Set(formattedQuestions.map(q => q.difficulty))]
-          });
-          
-          return formattedQuestions;
-        }
+      console.log('📋 Resultado final:', {
+        neverAnswered: neverAnsweredQuestions.length,
+        oldQuestions: oldQuestions?.length || 0,
+        total: combinedQuestions.length
+      });
 
-        const combined = [...(dueQuestions || []), ...(newQuestions || [])];
-        return formatQuestions(combined);
+      // 6. Se ainda não tem suficientes, buscar questões completamente aleatórias
+      if (combinedQuestions.length < limit) {
+        const stillNeeded = limit - combinedQuestions.length;
+        const { data: randomQuestions } = await supabase
+          .from('quiz_questions')
+          .select('*')
+          .in('category', FINANCE_CATEGORIES)
+          .eq('difficulty', difficulty || 'easy')
+          .not('id', 'in', `(${allExcludeIds.concat(combinedQuestions.map(q => q.id)).join(',') || 'null'})`)
+          .limit(stillNeeded);
+
+        combinedQuestions.push(...(randomQuestions || []));
       }
 
-      return formatQuestions(dueQuestions);
+      const finalQuestions = combinedQuestions
+        .sort(() => Math.random() - 0.5) // Randomizar ordem
+        .slice(0, limit);
+        
+      console.log('✅ QUESTÕES FINAIS SELECIONADAS:', {
+        total: finalQuestions.length,
+        categories: [...new Set(finalQuestions.map(q => q.category))],
+        difficulties: [...new Set(finalQuestions.map(q => q.difficulty))]
+      });
+
+      return formatQuestions(finalQuestions);
     } catch (error) {
       console.error('Error getting due questions:', error);
       return await getFallbackQuestions(difficulty, limit, excludeIds);

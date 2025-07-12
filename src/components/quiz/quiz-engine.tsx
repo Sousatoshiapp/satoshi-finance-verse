@@ -486,9 +486,6 @@ export function QuizEngine({
                 className="shadow-lg"
               />
             </div>
-            </div>
-            
-            {/* Card de vidas removido */}
           </div>
         </div>
       </div>
