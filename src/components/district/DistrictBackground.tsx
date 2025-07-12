@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/integrations/supabase/client';
+import xpDistrict3D from "@/assets/districts/xp-district-3d.jpg";
+import animaDistrict3D from "@/assets/districts/anima-district-3d.jpg";
+import criptoDistrict3D from "@/assets/districts/cripto-district-3d.jpg";
+import bankingDistrict3D from "@/assets/districts/banking-district-3d.jpg";
+import realEstateDistrict3D from "@/assets/districts/real-estate-district-3d.jpg";
+import tradeDistrict3D from "@/assets/districts/trade-district-3d.jpg";
+import fintechDistrict3D from "@/assets/districts/fintech-district-3d.jpg";
 
 // Paleta de cores temáticas por distrito
 const districtColors = {
@@ -51,6 +58,16 @@ interface District {
   color_primary: string;
   color_secondary: string;
 }
+
+const districtImages = {
+  renda_variavel: xpDistrict3D,
+  educacao_financeira: animaDistrict3D,
+  criptomoedas: criptoDistrict3D,
+  sistema_bancario: bankingDistrict3D,
+  fundos_imobiliarios: realEstateDistrict3D,
+  mercado_internacional: tradeDistrict3D,
+  fintech: fintechDistrict3D,
+};
 
 // Função para gerar gradientes temáticos baseados no distrito e período
 const getDistrictGradient = (districtTheme: string, timeOfDay: string) => {
@@ -127,17 +144,20 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
     night: 'bg-gradient-to-b from-purple-900/30 via-transparent to-blue-900/40'
   };
 
+  // Obter imagem local baseada no tema do distrito
+  const districtImage = districtImages[districtTheme as keyof typeof districtImages];
+
   return (
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
-      {/* Background image se disponível */}
-      {districtData?.image_url && (
+      {/* Background image do distrito */}
+      {districtImage && (
         <motion.div
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="absolute inset-0"
           style={{
-            backgroundImage: `url(${districtData.image_url})`,
+            backgroundImage: `url(${districtImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
