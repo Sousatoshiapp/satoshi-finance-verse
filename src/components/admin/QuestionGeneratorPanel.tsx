@@ -104,7 +104,7 @@ export function QuestionGeneratorPanel() {
         mode: 'generate',
         categories: categoriesToGenerate.map(cat => ({
           category: cat.category,
-          targetCount: Math.min(cat.needed, 10), // Limitar a 10 por vez
+          target: Math.min(cat.needed, 10), // Usar 'target' em vez de 'targetCount' 
           priorities: ['easy', 'medium', 'hard']
         }))
       };

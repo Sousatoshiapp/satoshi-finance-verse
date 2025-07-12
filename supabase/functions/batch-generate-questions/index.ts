@@ -97,10 +97,10 @@ serve(async (req) => {
         }
 
         const currentCount = existingQuestions?.length || 0;
-        const needed = Math.max(0, categoryPlan.targetCount - currentCount);
+        const needed = Math.max(0, (categoryPlan.target || categoryPlan.targetCount) - currentCount);
 
         if (needed <= 0) {
-          console.log(`Categoria ${categoryPlan.category} já tem perguntas suficientes (${currentCount}/${categoryPlan.targetCount})`);
+          console.log(`Categoria ${categoryPlan.category} já tem perguntas suficientes (${currentCount}/${categoryPlan.target || categoryPlan.targetCount})`);
           continue;
         }
 
