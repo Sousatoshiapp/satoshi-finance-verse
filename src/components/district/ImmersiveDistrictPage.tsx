@@ -181,11 +181,11 @@ export const ImmersiveDistrictPage: React.FC = () => {
             
             {/* Logo circular do distrito */}
             {district && (
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
                 <img 
                   src={districtLogos[district.theme as keyof typeof districtLogos]} 
                   alt={district.name}
-                  className="w-8 h-8 object-contain"
+                  className="w-full h-full object-cover"
                 />
               </div>
             )}
@@ -234,19 +234,19 @@ export const ImmersiveDistrictPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="px-6 mb-8"
           >
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <div className="flex gap-2 justify-center items-center max-w-xs mx-auto">
               {!userDistrict ? (
                 <Button
                   onClick={handleJoinDistrict}
-                  className="bg-[#adff2f] hover:bg-[#adff2f]/90 text-black font-semibold px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base w-full sm:w-auto"
+                  className="bg-[#adff2f] hover:bg-[#adff2f]/90 text-black font-semibold px-3 py-2 text-xs flex-1"
                 >
-                  <UserPlus className="w-4 h-4 mr-2" />
+                  <UserPlus className="w-3 h-3 mr-1" />
                   Virar Membro
                 </Button>
               ) : (
-                <div className="bg-green-500/20 border border-green-500/30 rounded-lg px-4 py-2 sm:px-6 sm:py-3 w-full sm:w-auto text-center">
-                  <p className="text-green-300 font-medium text-sm sm:text-base">
-                    ✓ Você é membro deste distrito
+                <div className="bg-green-500/20 border border-green-500/30 rounded-lg px-3 py-2 flex-1 text-center">
+                  <p className="text-green-300 font-medium text-xs">
+                    ✓ Membro
                   </p>
                 </div>
               )}
@@ -254,9 +254,9 @@ export const ImmersiveDistrictPage: React.FC = () => {
               <Button
                 onClick={handleViewMembers}
                 variant="outline"
-                className="border-[#adff2f] text-[#adff2f] hover:bg-[#adff2f]/10 font-semibold px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base w-full sm:w-auto"
+                className="border-[#adff2f] text-[#adff2f] hover:bg-[#adff2f]/10 font-semibold px-3 py-2 text-xs flex-1"
               >
-                <Users className="w-4 h-4 mr-2" />
+                <Users className="w-3 h-3 mr-1" />
                 Ver Time
               </Button>
             </div>

@@ -73,7 +73,7 @@ export function DistrictStatsCard({
       "bg-black/20 backdrop-blur-lg border border-white/20 rounded-xl",
       "p-2 md:p-4 transition-all duration-300",
       "hover:border-[#adff2f]/40 hover:bg-black/30",
-      "cursor-pointer select-none",
+      "cursor-pointer select-none overflow-hidden",
       className
     )}>
       <div className="flex items-center gap-2 md:gap-3">
@@ -82,33 +82,33 @@ export function DistrictStatsCard({
           <span className="text-black font-bold text-sm md:text-lg">{icon}</span>
         </div>
         
-        <div className="flex-1 min-w-0">
-          <div className="text-white/70 text-xs font-medium mb-1 truncate">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <div className="text-white/70 text-xs font-medium mb-1 truncate leading-tight">
             {title}
           </div>
-          <div className="flex items-baseline gap-1">
+          <div className="flex items-baseline gap-1 overflow-hidden">
             {showRank ? (
-              <span className="font-mono font-bold text-white text-sm md:text-lg leading-tight">
+              <span className="font-mono font-bold text-white text-sm md:text-base leading-tight truncate">
                 {value > 0 ? `${value}º` : '-'}
               </span>
             ) : (
               <>
-                <span className="font-mono font-bold text-white text-sm md:text-lg leading-tight">
+                <span className="font-mono font-bold text-white text-sm md:text-base leading-tight truncate">
                   {displayValue.toLocaleString()}
                 </span>
-                <span className="text-[#adff2f] text-xs md:text-sm font-medium">
+                <span className="text-[#adff2f] text-xs font-medium truncate">
                   {suffix}
                 </span>
               </>
             )}
           </div>
           {showRank ? (
-            <div className="text-[#adff2f] text-xs mt-1">
+            <div className="text-[#adff2f] text-xs mt-1 truncate">
               Lugar
             </div>
           ) : (
             rank && (
-              <div className="text-[#adff2f] text-xs mt-1">
+              <div className="text-[#adff2f] text-xs mt-1 truncate">
                 #{rank} distrito
               </div>
             )
