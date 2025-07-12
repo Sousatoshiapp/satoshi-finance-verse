@@ -1,4 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
+import xpLogo from '@/assets/districts/xp-investimentos-logo.jpg';
 
 interface SponsorTheme {
   name: string;
@@ -22,7 +23,7 @@ const sponsorThemes: Record<string, SponsorTheme> = {
     primaryColor: 'hsl(142, 76%, 36%)', // Verde XP
     secondaryColor: 'hsl(220, 13%, 18%)', // Cinza escuro
     accentColor: 'hsl(142, 76%, 46%)', // Verde claro
-    logoUrl: '/assets/districts/xp-investimentos-logo.jpg',
+    logoUrl: xpLogo,
     actionThemes: {
       quiz: { name: 'Radar XP', icon: 'target', description: 'Teste seus conhecimentos em investimentos' },
       account: { name: 'Portal de Entrada', icon: 'door-open', description: 'Acesse sua conta XP' },
