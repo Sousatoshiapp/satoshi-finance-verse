@@ -137,6 +137,8 @@ serve(async (req) => {
               }
             });
 
+            console.log(`📋 Resultado completo para ${categoryPlan.category} (${difficulty}):`, { generateResult, generateError });
+
             if (generateError) {
               console.error(`❌ Erro ao gerar perguntas para ${categoryPlan.category} (${difficulty}):`, generateError);
               results.push({
