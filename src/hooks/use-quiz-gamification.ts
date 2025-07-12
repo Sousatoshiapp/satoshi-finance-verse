@@ -88,7 +88,7 @@ export function useQuizGamification() {
   }, [user]);
 
   const handleCorrectAnswer = useCallback(async () => {
-    console.log("✅ handleCorrectAnswer chamado no useQuizGamification", {
+    console.log("✅ handleCorrectAnswer chamado - NOVA LÓGICA DE STREAK", {
       user: user?.id,
       isLoaded: state.isLoaded,
       currentStreak: state.streak,
@@ -100,21 +100,21 @@ export function useQuizGamification() {
       return;
     }
 
+    // NOVA LÓGICA: Streak só incrementa com acertos consecutivos
     const newStreak = state.streak + 1;
     let newMultiplier = state.currentMultiplier;
     const baseBTZ = 1; // 1 BTZ base por resposta correta
     
-    console.log("📊 Calculando recompensa:", {
+    console.log("📊 NOVA LÓGICA - Calculando recompensa:", {
       newStreak,
       currentMultiplier: state.currentMultiplier,
       baseBTZ,
       timestamp: Date.now()
     });
     
-    // Sistema de multiplicador progressivo: 1→2→4→8→16...
-    // A cada 7 corretas consecutivas, dobra o multiplicador
-    if (newStreak % 7 === 0) {
-      newMultiplier = newMultiplier * 2;
+    // CORRIGIDO: Multiplicador só dobra com streak REAL de 7 acertos consecutivos
+    if (newStreak === 7 || newStreak === 14 || newStreak === 21) {
+      newMultiplier = newStreak === 7 ? 2 : newStreak === 14 ? 4 : 8;
       
       const earnedBTZ = baseBTZ * newMultiplier;
       
@@ -237,31 +237,26 @@ export function useQuizGamification() {
   }, [state, user, playCashRegisterSound, toast, persistState]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
-    console.log('❌ handleWrongAnswer chamado no useQuizGamification');
+    console.log('❌ handleWrongAnswer chamado - NOVA LÓGICA: SEMPRE RESETAR STREAK');
     
     if (!state.isLoaded) return { canUseLife: false };
     
-    // Só pode usar vida se tem streak >= 7 (primeiro streak real) E tem vidas disponíveis E ainda não mostrou o banner nesta sessão
-    if (state.streak >= 7 && hasLives() && !state.hasShownLifeBanner) {
-      // Marcar que já mostrou o banner nesta sessão
-      setState(prev => ({ ...prev, hasShownLifeBanner: true }));
-      
-      // Oferecer usar vida para manter streak
-      return { 
-        canUseLife: true, 
-        currentStreak: state.streak,
-        currentMultiplier: state.currentMultiplier 
-      };
-    }
+    // NOVA LÓGICA: SEMPRE resetar streak quando erra (SEM exceção de vidas)
+    // Streak só deve existir com acertos consecutivos, sem sistema de vidas
+    console.log('🔄 RESETANDO STREAK - Resposta errada:', {
+      streakAnterior: state.streak,
+      multiplicadorAnterior: state.currentMultiplier,
+      question: question?.substring(0, 50) + '...'
+    });
 
-    // Sem streak ou sem vidas - resetar tudo
     setState(prev => ({ 
       ...prev, 
       streak: 0, 
       currentMultiplier: 1,
       currentQuestion: question || "",
       currentCorrectAnswer: correctAnswer || "",
-      currentExplanation: explanation
+      currentExplanation: explanation,
+      hasShownLifeBanner: false // Reset para próxima sessão
     }));
 
     // Persistir reset no banco

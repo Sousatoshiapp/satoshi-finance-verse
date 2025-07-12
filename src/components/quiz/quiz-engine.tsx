@@ -10,7 +10,7 @@ import { useUnifiedSRS } from "@/hooks/use-unified-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
-import { BTZCounter } from "./btz-counter";
+// BTZ Counter removido do Quiz Engine para simplificar UI
 // import { LivesCounter } from "./lives-counter"; // Removido
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
@@ -473,31 +473,19 @@ export function QuizEngine({
               </Button>
             </div>
             
-            {/* Layout responsivo: BTZ e Timer lado a lado no mobile */}
-            <div className="flex flex-row justify-between items-center sm:hidden">
-              {/* BTZ Counter - esquerda no mobile */}
-              <div className="flex-shrink-0">
-                <BTZCounter />
-              </div>
-              
-              {/* Timer - direita no mobile */}
-              <div className="flex-shrink-0">
-                <CircularTimer
-                  duration={30}
-                  isActive={!showAnswer && !loading}
-                  onTimeUp={handleTimeUp}
-                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                  onCountdown={playCountdownSound}
-                  enableCountdownSound={true}
-                  size={80}
-                  className="shadow-lg"
-                />
-              </div>
+            {/* Timer centralizado para todas as telas */}
+            <div className="flex justify-center">
+              <CircularTimer
+                duration={30}
+                isActive={!showAnswer && !loading}
+                onTimeUp={handleTimeUp}
+                onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                onCountdown={playCountdownSound}
+                enableCountdownSound={true}
+                size={80}
+                className="shadow-lg"
+              />
             </div>
-            
-            {/* BTZ centralizado para desktop */}
-            <div className="hidden sm:flex justify-center">
-              <BTZCounter />
             </div>
             
             {/* Card de vidas removido */}

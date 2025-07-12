@@ -214,7 +214,6 @@ export default function Dashboard() {
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-3">
-              <DistrictCircleBadge district={userDistrict} size="md" />
               <SubscriptionIndicator tier={subscription.tier} size="sm" />
               {subscription.tier === 'free' && (
                 <Button 

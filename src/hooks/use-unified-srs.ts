@@ -63,7 +63,7 @@ export function useUnifiedSRS() {
     return { newEasiness, newRepetition, newInterval };
   };
 
-  // Buscar questões due + questões novas (evitando repetições)
+  // NOVA LÓGICA: Buscar questões evitando repetições recentes + rotação inteligente
   const getDueQuestions = async (
     difficulty?: string, 
     limit = 7, 
@@ -83,60 +83,83 @@ export function useUnifiedSRS() {
 
       if (!profile) return [];
 
-      // 1. Buscar questões que precisam revisão (SRS)
-      let dueQuery = supabase
+      console.log('🔍 NOVA LÓGICA DE QUESTÕES - Evitando repetições recentes');
+
+      // 1. Buscar questões respondidas recentemente (últimas 20)
+      const { data: recentAnswers } = await supabase
+        .from('user_question_progress')
+        .select('question_id, last_reviewed')
+        .eq('user_id', profile.id)
+        .not('last_reviewed', 'is', null)
+        .order('last_reviewed', { ascending: false })
+        .limit(20);
+
+      const recentQuestionIds = recentAnswers?.map(r => r.question_id) || [];
+      const allExcludeIds = [...excludeIds, ...recentQuestionIds];
+
+      console.log('🚫 Excluindo questões recentes:', { 
+        recentCount: recentQuestionIds.length, 
+        totalExcluded: allExcludeIds.length 
+      });
+
+      // 2. Priorizar questões NUNCA respondidas
+      let neverAnsweredQuery = supabase
+        .from('quiz_questions')
+        .select('*')
+        .in('category', FINANCE_CATEGORIES)
+        .not('id', 'in', `(${allExcludeIds.join(',') || 'null'})`);
+
+      if (difficulty) {
+        neverAnsweredQuery = neverAnsweredQuery.eq('difficulty', difficulty);
+      }
+
+      // Filtrar questões que NÃO têm progresso registrado
+      const { data: allQuestions } = await neverAnsweredQuery;
+      const { data: questionsWithProgress } = await supabase
+        .from('user_question_progress')
+        .select('question_id')
+        .eq('user_id', profile.id);
+
+      const questionsWithProgressIds = questionsWithProgress?.map(q => q.question_id) || [];
+      const neverAnsweredQuestions = allQuestions?.filter(q => 
+        !questionsWithProgressIds.includes(q.id)
+      ) || [];
+
+      console.log('✨ Questões nunca respondidas encontradas:', neverAnsweredQuestions.length);
+
+      // 3. Se tem questões suficientes nunca respondidas, usar elas
+      if (neverAnsweredQuestions.length >= limit) {
+        const selectedQuestions = neverAnsweredQuestions
+          .sort(() => Math.random() - 0.5) // Randomizar
+          .slice(0, limit);
+        
+        console.log('✅ Usando questões nunca respondidas:', selectedQuestions.length);
+        return formatQuestions(selectedQuestions);
+      }
+
+      // 4. Complementar com questões SRS antigas (>7 dias)
+      const remainingCount = limit - neverAnsweredQuestions.length;
+      
+      let oldQuestionsQuery = supabase
         .from('quiz_questions')
         .select(`
           *,
-          user_question_progress!left(
-            easiness_factor,
-            repetition_count,
-            interval_days,
-            next_review_date,
-            consecutive_correct
+          user_question_progress!inner(
+            last_reviewed,
+            next_review_date
           )
         `)
         .in('category', FINANCE_CATEGORIES)
         .eq('user_question_progress.user_id', profile.id)
-        .lte('user_question_progress.next_review_date', new Date().toISOString());
+        .lt('user_question_progress.last_reviewed', 
+            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        .not('id', 'in', `(${allExcludeIds.join(',') || 'null'})`);
 
       if (difficulty) {
-        dueQuery = dueQuery.eq('difficulty', difficulty);
+        oldQuestionsQuery = oldQuestionsQuery.eq('difficulty', difficulty);
       }
 
-      if (excludeIds.length > 0) {
-        dueQuery = dueQuery.not('id', 'in', `(${excludeIds.join(',')})`);
-      }
-
-      const { data: dueQuestions } = await dueQuery.limit(limit);
-
-      // 2. Se não tem questões suficientes, buscar novas questões
-      if (!dueQuestions || dueQuestions.length < limit) {
-        const remainingCount = limit - (dueQuestions?.length || 0);
-        
-        // Buscar questões que nunca foram respondidas ou há muito tempo
-        let newQuery = supabase
-          .from('quiz_questions')
-          .select(`
-            *,
-            user_question_progress!left(
-              last_reviewed
-            )
-          `)
-          .in('category', FINANCE_CATEGORIES)
-          .eq('user_question_progress.user_id', profile.id)
-          .or('user_question_progress.last_reviewed.is.null,user_question_progress.last_reviewed.lt.' + 
-              new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()); // 7 dias atrás
-
-        if (difficulty) {
-          newQuery = newQuery.eq('difficulty', difficulty);
-        }
-
-        if (excludeIds.length > 0) {
-          newQuery = newQuery.not('id', 'in', `(${excludeIds.join(',')})`);
-        }
-
-        const { data: newQuestions } = await newQuery.limit(remainingCount);
+      const { data: oldQuestions } = await oldQuestionsQuery.limit(remainingCount);
 
         // 3. Se ainda não tem o suficiente, buscar questões aleatórias
         if ((!newQuestions || newQuestions.length < remainingCount)) {
