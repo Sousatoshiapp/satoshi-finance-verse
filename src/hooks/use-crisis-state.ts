@@ -6,17 +6,12 @@ const CRISIS_CONTRIBUTED_KEY = "crisis_contributed";
 
 export const useCrisisState = () => {
   const { data: crisis, isLoading } = useCrisisData();
-  const [isDismissed, setIsDismissed] = useState(false);
+  const [isBannerOpen, setIsBannerOpen] = useState(false);
   const [hasContributed, setHasContributed] = useState(false);
 
   useEffect(() => {
-    // Check localStorage for dismissed state
-    const dismissed = localStorage.getItem(CRISIS_BANNER_KEY);
+    // Check localStorage for contributed state
     const contributed = localStorage.getItem(CRISIS_CONTRIBUTED_KEY);
-    
-    if (dismissed) {
-      setIsDismissed(true);
-    }
     
     if (contributed) {
       setHasContributed(true);
@@ -24,27 +19,23 @@ export const useCrisisState = () => {
   }, []);
 
   const dismissBanner = () => {
-    setIsDismissed(true);
+    setIsBannerOpen(false);
     localStorage.setItem(CRISIS_BANNER_KEY, "true");
   };
 
   const markAsContributed = () => {
     setHasContributed(true);
-    setIsDismissed(true);
+    setIsBannerOpen(false);
     localStorage.setItem(CRISIS_CONTRIBUTED_KEY, "true");
     localStorage.setItem(CRISIS_BANNER_KEY, "true");
   };
 
-  const reopenBanner = () => {
-    setIsDismissed(false);
+  const openBanner = () => {
+    setIsBannerOpen(true);
     localStorage.removeItem(CRISIS_BANNER_KEY);
   };
 
-  const openBanner = () => {
-    setIsDismissed(false);
-  };
-
-  const shouldShowBanner = crisis && !isDismissed && !isLoading;
+  const shouldShowBanner = crisis && isBannerOpen && !isLoading;
   const shouldShowIcon = crisis && !isLoading; // Ícone sempre visível durante crise
 
   return {
@@ -55,7 +46,6 @@ export const useCrisisState = () => {
     hasContributed,
     dismissBanner,
     markAsContributed,
-    reopenBanner,
     openBanner
   };
 };
