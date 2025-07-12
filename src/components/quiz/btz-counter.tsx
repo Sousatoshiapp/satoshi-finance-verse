@@ -9,13 +9,9 @@ interface BTZCounterProps {
 }
 
 export function BTZCounter({ className = "" }: BTZCounterProps) {
-  console.log("🎯 BTZCounter renderizado! Timestamp:", Date.now());
-  
   const { user } = useAuth();
-  console.log("🔑 User no BTZCounter:", user?.id);
-  
   const { points: currentBTZ, isLoading } = useRealtimePoints();
-  console.log("💰 Points from useRealtimePoints:", { currentBTZ, isLoading, timestamp: Date.now() });
+  const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
 
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
@@ -23,126 +19,60 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
 
-  console.log("📊 BTZCounter STATE:", { 
-    displayBTZ, 
-    previousBTZ, 
-    isAnimating, 
-    currentBTZ,
-    timestamp: Date.now()
-  });
-
-  // Force a re-render when currentBTZ changes
-  useEffect(() => {
-    console.log("🔄 useEffect currentBTZ TRIGGERED:", { 
-      currentBTZ, 
-      displayBTZ, 
-      isLoading,
-      timestamp: Date.now()
-    });
-    
-    // FORÇA: Se currentBTZ existe e é diferente do displayBTZ, atualiza IMEDIATAMENTE
-    if (currentBTZ !== undefined && currentBTZ !== displayBTZ) {
-      console.log("🚨 FORÇANDO update BTZ:", { currentBTZ, displayBTZ, timestamp: Date.now() });
-      if (displayBTZ === 0) {
-        console.log("🚀 Primeira inicialização BTZ:", currentBTZ);
-        setDisplayBTZ(currentBTZ);
-        setPreviousBTZ(currentBTZ);
-      } else {
-        console.log("🎰 FORÇANDO animação BTZ de", displayBTZ, "para", currentBTZ);
-        animateToNewValue(currentBTZ);
-      }
-    } else {
-      console.log("⚠️ NÃO atualizando BTZ:", { 
-        currentBTZUndefined: currentBTZ === undefined,
-        currentBTZEqualsDisplay: currentBTZ === displayBTZ,
-        currentBTZ,
-        displayBTZ
-      });
-    }
-  }, [currentBTZ, isLoading]);
-  const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
-
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const displayBTZRef = useRef(0);
 
-  // Sempre manter o ref atualizado com o valor atual
-  useEffect(() => {
-    displayBTZRef.current = displayBTZ;
-  }, [displayBTZ]);
-
-  const animateToNewValue = useCallback((newValue: number) => {
-    if (isAnimating) return;
-    
-    // Usar ref para capturar o valor mais atual
-    const startValue = displayBTZRef.current;
-    
-    // Se o valor é o mesmo, não precisa animar
-    if (startValue === newValue) {
-      console.log('🎰 BTZ: Valor inalterado, pulando animação:', newValue);
-      return;
-    }
-    
-    console.log('🎰 Iniciando animação slot machine BTZ:', { from: startValue, to: newValue });
+  const animateToNewValue = useCallback((newValue: number, startValue: number) => {
+    if (isAnimating || startValue === newValue) return;
     
     setIsAnimating(true);
+    setPreviousBTZ(startValue);
     
-    // Limpar timer anterior se existir
+    // Clear any existing timer
     if (animationTimerRef.current) {
       clearInterval(animationTimerRef.current);
-      animationTimerRef.current = null;
     }
     
-    // Efeito slot machine - animar números
-    const duration = 800;
-    const steps = 30;
+    // Slot machine animation
+    const duration = 600;
+    const steps = 20;
     const increment = (newValue - startValue) / steps;
     let step = 0;
 
     animationTimerRef.current = setInterval(() => {
       step++;
-      const currentStep = startValue + (increment * step);
-      
-      console.log('🎰 Step', step, '/', steps, ':', Math.round(currentStep));
       
       if (step >= steps) {
         setDisplayBTZ(newValue);
         setIsAnimating(false);
+        setShowTrend(true);
+        setTimeout(() => setShowTrend(false), 2500);
+        
         if (animationTimerRef.current) {
           clearInterval(animationTimerRef.current);
           animationTimerRef.current = null;
         }
-        console.log('🎰 Animação slot machine BTZ concluída:', newValue);
       } else {
+        const currentStep = startValue + (increment * step);
         setDisplayBTZ(Math.round(currentStep));
       }
     }, duration / steps);
   }, [isAnimating]);
 
-  // Initialize display BTZ when currentBTZ loads
+  // Single effect to handle BTZ changes
   useEffect(() => {
-    console.log('🔄 BTZ currentBTZ changed:', { currentBTZ, isLoading, displayBTZ, isAnimating });
+    if (isLoading || currentBTZ === undefined) return;
     
-    if (!isLoading && currentBTZ !== undefined) {
-      // CORREÇÃO: Sempre que currentBTZ mudar e for diferente do displayBTZ, animar
-      if (currentBTZ !== displayBTZ) {
-        if (displayBTZ === 0) {
-          // Initial load - set without animation
-          console.log('🚀 Carregamento inicial do BTZ:', currentBTZ);
-          setDisplayBTZ(currentBTZ);
-          setPreviousBTZ(currentBTZ);
-        } else if (!isAnimating) {
-          // BTZ changed - animate to new value
-          console.log('💰 BTZ mudou - iniciando animação:', { from: displayBTZ, to: currentBTZ });
-          setPreviousBTZ(displayBTZ);
-          animateToNewValue(currentBTZ);
-          setShowTrend(true);
-          setTimeout(() => setShowTrend(false), 3000);
-        }
-      }
+    if (displayBTZ === 0) {
+      // Initial load - set immediately
+      setDisplayBTZ(currentBTZ);
+      setPreviousBTZ(currentBTZ);
+    } else if (currentBTZ !== displayBTZ && !isAnimating) {
+      // Value changed - animate
+      animateToNewValue(currentBTZ, displayBTZ);
     }
-  }, [currentBTZ, isLoading]);
+  }, [currentBTZ, isLoading, displayBTZ, isAnimating, animateToNewValue]);
 
-  // Cleanup timer on unmount
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (animationTimerRef.current) {

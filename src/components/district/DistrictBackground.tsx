@@ -1,70 +1,61 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
-// Import das imagens por distrito
-import xpMorning from '@/assets/districts/xp-morning.jpg';
-import xpSunset from '@/assets/districts/xp-sunset.jpg';
-import xpNight from '@/assets/districts/xp-night.jpg';
-import animaMorning from '@/assets/districts/anima-morning.jpg';
-import animaSunset from '@/assets/districts/anima-sunset.jpg';
-import animaNight from '@/assets/districts/anima-night.jpg';
-import cryptoMorning from '@/assets/districts/crypto-morning.jpg';
-import cryptoSunset from '@/assets/districts/crypto-sunset.jpg';
-import cryptoNight from '@/assets/districts/crypto-night.jpg';
-import bankingMorning from '@/assets/districts/banking-morning.jpg';
-import bankingSunset from '@/assets/districts/banking-sunset.jpg';
-import bankingNight from '@/assets/districts/banking-night.jpg';
-import realestateMorning from '@/assets/districts/realestate-morning.jpg';
-import realestateSunset from '@/assets/districts/realestate-sunset.jpg';
-import realestateNight from '@/assets/districts/realestate-night.jpg';
-import internationalMorning from '@/assets/districts/international-morning.jpg';
-import internationalSunset from '@/assets/districts/international-sunset.jpg';
-import internationalNight from '@/assets/districts/international-night.jpg';
-import fintechMorning from '@/assets/districts/fintech-morning.jpg';
-import fintechSunset from '@/assets/districts/fintech-sunset.jpg';
-import fintechNight from '@/assets/districts/fintech-night.jpg';
+// Paleta de cores temáticas por distrito
+const districtColors = {
+  renda_variavel: {
+    primary: 'hsl(142, 76%, 36%)', // Verde XP
+    secondary: 'hsl(142, 85%, 25%)',
+    accent: 'hsl(142, 76%, 46%)',
+  },
+  educacao_financeira: {
+    primary: 'hsl(220, 100%, 50%)', // Azul Ânima
+    secondary: 'hsl(220, 85%, 35%)',
+    accent: 'hsl(220, 100%, 65%)',
+  },
+  criptomoedas: {
+    primary: 'hsl(45, 100%, 50%)', // Dourado crypto
+    secondary: 'hsl(39, 85%, 35%)',
+    accent: 'hsl(45, 100%, 65%)',
+  },
+  sistema_bancario: {
+    primary: 'hsl(210, 50%, 35%)', // Azul bancário
+    secondary: 'hsl(210, 60%, 25%)',
+    accent: 'hsl(210, 60%, 50%)',
+  },
+  fundos_imobiliarios: {
+    primary: 'hsl(25, 80%, 45%)', // Laranja tijolo
+    secondary: 'hsl(25, 75%, 30%)',
+    accent: 'hsl(25, 85%, 60%)',
+  },
+  mercado_internacional: {
+    primary: 'hsl(260, 70%, 45%)', // Roxo internacional
+    secondary: 'hsl(260, 75%, 30%)',
+    accent: 'hsl(260, 80%, 60%)',
+  },
+  fintech: {
+    primary: 'hsl(180, 70%, 40%)', // Ciano tech
+    secondary: 'hsl(180, 75%, 25%)',
+    accent: 'hsl(180, 80%, 55%)',
+  },
+};
 
 interface DistrictBackgroundProps {
   districtTheme: string;
   className?: string;
 }
 
-const districtImages = {
-  renda_variavel: {
-    morning: xpMorning,
-    sunset: xpSunset,
-    night: xpNight,
-  },
-  educacao_financeira: {
-    morning: animaMorning,
-    sunset: animaSunset,
-    night: animaNight,
-  },
-  criptomoedas: {
-    morning: cryptoMorning,
-    sunset: cryptoSunset,
-    night: cryptoNight,
-  },
-  sistema_bancario: {
-    morning: bankingMorning,
-    sunset: bankingSunset,
-    night: bankingNight,
-  },
-  fundos_imobiliarios: {
-    morning: realestateMorning,
-    sunset: realestateSunset,
-    night: realestateNight,
-  },
-  mercado_internacional: {
-    morning: internationalMorning,
-    sunset: internationalSunset,
-    night: internationalNight,
-  },
-  fintech: {
-    morning: fintechMorning,
-    sunset: fintechSunset,
-    night: fintechNight,
-  },
+// Função para gerar gradientes temáticos baseados no distrito e período
+const getDistrictGradient = (districtTheme: string, timeOfDay: string) => {
+  const colors = districtColors[districtTheme as keyof typeof districtColors] || districtColors.sistema_bancario;
+  
+  const gradients = {
+    morning: `linear-gradient(135deg, ${colors.primary}20 0%, ${colors.accent}30 50%, ${colors.secondary}15 100%)`,
+    sunset: `linear-gradient(135deg, ${colors.accent}25 0%, ${colors.primary}35 50%, ${colors.secondary}20 100%)`,
+    night: `linear-gradient(135deg, ${colors.secondary}30 0%, ${colors.primary}25 50%, ${colors.accent}15 100%)`,
+  };
+  
+  return gradients[timeOfDay as keyof typeof gradients] || gradients.night;
 };
 
 export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({ 
@@ -82,18 +73,18 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Determinar qual imagem usar baseado na hora
-  const currentImage = useMemo(() => {
+  // Determinar o gradiente baseado na hora e distrito
+  const currentGradient = useMemo(() => {
     const hour = currentTime.getHours();
-    const images = districtImages[districtTheme as keyof typeof districtImages] || districtImages.sistema_bancario;
+    let timeOfDay = 'night';
     
     if (hour >= 6 && hour < 12) {
-      return images.morning;
+      timeOfDay = 'morning';
     } else if (hour >= 12 && hour < 18) {
-      return images.sunset;
-    } else {
-      return images.night;
+      timeOfDay = 'sunset';
     }
+    
+    return getDistrictGradient(districtTheme, timeOfDay);
   }, [currentTime, districtTheme]);
 
   // Determinar o período do dia para efeitos
@@ -113,18 +104,15 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
 
   return (
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
-      {/* Imagem de fundo principal */}
+      {/* Background gradiente temático */}
       <motion.div
-        key={currentImage}
-        initial={{ opacity: 0, scale: 1.1 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
+        key={`${districtTheme}-${timeOfDay}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2, ease: "easeInOut" }}
         className="absolute inset-0"
         style={{
-          backgroundImage: `url(${currentImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
+          background: currentGradient,
         }}
       />
 
@@ -132,7 +120,7 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
       <div className={`absolute inset-0 ${overlayStyles[timeOfDay]}`} />
 
       {/* Overlay de gradiente para legibilidade */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
 
       {/* Efeitos de partículas sutis */}
       <div className="absolute inset-0 pointer-events-none">
