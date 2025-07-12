@@ -9,9 +9,10 @@ import { CrisisContributionModal } from "./CrisisContributionModal";
 
 interface CrisisAlertProps {
   onDismiss?: () => void;
+  onContributed?: () => void;
 }
 
-export const CrisisAlert = ({ onDismiss }: CrisisAlertProps) => {
+export const CrisisAlert = ({ onDismiss, onContributed }: CrisisAlertProps) => {
   const { crisis, shouldShowBanner } = useCrisisState();
   const [showContributionModal, setShowContributionModal] = useState(false);
 
@@ -115,6 +116,7 @@ export const CrisisAlert = ({ onDismiss }: CrisisAlertProps) => {
         isOpen={showContributionModal}
         onClose={() => setShowContributionModal(false)}
         crisis={crisis}
+        onContributed={onContributed}
       />
     </>
   );

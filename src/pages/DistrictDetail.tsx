@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PowerBar } from "@/components/ui/power-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
-import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building } from "lucide-react";
+import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
 import { useCrisisData } from "@/hooks/use-crisis-data";
@@ -451,8 +451,33 @@ export default function DistrictDetail() {
       {/* Crisis Emergency Overlay */}
       {crisis && (
         <div className="fixed inset-0 bg-red-900/10 pointer-events-none z-10">
+          {/* Top emergency bar */}
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
+          
+          {/* Crisis alert badge */}
+          <div className="absolute top-4 left-4 z-20">
+            <div className="flex items-center space-x-2 bg-red-900/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-red-500/50 animate-pulse">
+              <AlertTriangle className="h-4 w-4 text-red-400" />
+              <span className="text-red-200 text-sm font-medium">ESTADO DE EMERGÊNCIA ATIVO</span>
+            </div>
+          </div>
+          
+          {/* Floating alert particles */}
+          <div className="absolute inset-0">
+            {[...Array(15)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-red-400 rounded-full animate-ping"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${2 + Math.random() * 2}s`
+                }}
+              />
+            ))}
+          </div>
         </div>
       )}
       
@@ -609,8 +634,8 @@ export default function DistrictDetail() {
           </CardContent>
         </Card>
 
-        {/* Crisis Alert for District */}
-        <DistrictCrisisCard districtId={districtId || ""} />
+        {/* Crisis Alert for District - Only show when crisis is active */}
+        {crisis && <DistrictCrisisCard districtId={districtId || ""} />}
 
         {/* Main Actions */}
         <div className="grid grid-cols-4 gap-2 mb-8">

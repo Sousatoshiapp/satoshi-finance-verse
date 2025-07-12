@@ -40,7 +40,7 @@ export const useCrisisState = () => {
   };
 
   const shouldShowBanner = crisis && !isDismissed && !isLoading;
-  const shouldShowIcon = crisis && (isDismissed || hasContributed) && !isLoading;
+  const shouldShowIcon = crisis && isDismissed && !isLoading;
 
   return {
     crisis,

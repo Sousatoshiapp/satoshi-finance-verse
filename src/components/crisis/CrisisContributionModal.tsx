@@ -14,9 +14,10 @@ interface CrisisContributionModalProps {
   isOpen: boolean;
   onClose: () => void;
   crisis: CrisisEvent;
+  onContributed?: () => void;
 }
 
-export const CrisisContributionModal = ({ isOpen, onClose, crisis }: CrisisContributionModalProps) => {
+export const CrisisContributionModal = ({ isOpen, onClose, crisis, onContributed }: CrisisContributionModalProps) => {
   const [btzAmount, setBtzAmount] = useState("");
   const [xpAmount, setXpAmount] = useState("");
   const [isContributing, setIsContributing] = useState(false);
@@ -90,6 +91,7 @@ export const CrisisContributionModal = ({ isOpen, onClose, crisis }: CrisisContr
 
       setBtzAmount("");
       setXpAmount("");
+      onContributed?.();
       onClose();
     } catch (error) {
       console.error("Error contributing to crisis:", error);

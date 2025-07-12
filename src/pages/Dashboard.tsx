@@ -48,7 +48,7 @@ export default function Dashboard() {
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
   const { points: realtimePoints, isOnline } = useRealtime();
-  const { shouldShowBanner, shouldShowIcon, dismissBanner, reopenBanner } = useCrisisState();
+  const { shouldShowBanner, shouldShowIcon, dismissBanner, reopenBanner, markAsContributed } = useCrisisState();
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -236,7 +236,7 @@ export default function Dashboard() {
           </div>
 
           {/* Crisis Alert - Non-invasive placement */}
-          <CrisisAlert onDismiss={dismissBanner} />
+          <CrisisAlert onDismiss={dismissBanner} onContributed={markAsContributed} />
 
           {/* Consolidated Avatar & Level Section */}
           <div className="text-center mb-6">
