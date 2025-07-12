@@ -460,44 +460,20 @@ export function QuizEngine({
       {/* Header reorganizado */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-col gap-3">
-            {/* Primeira linha: Botão voltar */}
-            <div className="flex justify-start">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate(getBackRoute())}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
-              </Button>
-            </div>
+          <div className="flex justify-between items-center">
+            {/* Botão voltar */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(getBackRoute())}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar
+            </Button>
             
-            {/* Segunda linha: Timer e BTZ Card lado a lado */}
-            <div className="flex justify-between items-center">
-              {/* BTZ Card do lado esquerdo */}
-              <div className="flex-shrink-0">
-                <QuizBTZCard />
-              </div>
-              
-              {/* Timer centralizado */}
-              <div className="flex-1 flex justify-center">
-                <CircularTimer
-                  duration={30}
-                  isActive={!showAnswer && !loading}
-                  onTimeUp={handleTimeUp}
-                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                  onCountdown={playCountdownSound}
-                  enableCountdownSound={true}
-                  size={80}
-                  className="shadow-lg"
-                />
-              </div>
-              
-              {/* Espaço vazio do lado direito para equilibrar */}
-              <div className="flex-shrink-0 w-[140px]"></div>
-            </div>
+            {/* BTZ Card no header */}
+            <QuizBTZCard />
           </div>
         </div>
       </div>
@@ -511,22 +487,24 @@ export function QuizEngine({
               <div className="text-lg sm:text-2xl font-bold text-primary mb-2">
                 Pergunta {currentIndex + 1} de {questions.length}
               </div>
-              <div className="text-sm sm:text-lg text-muted-foreground mb-2 hidden sm:block">
+              <div className="text-sm sm:text-lg text-muted-foreground mb-4">
                 {getModeTitle()}
               </div>
               
-              {/* Timer circular centralizado apenas no desktop */}
-              <div className="hidden sm:flex justify-center">
-                <CircularTimer
-                  duration={30}
-                  isActive={!showAnswer && !loading}
-                  onTimeUp={handleTimeUp}
-                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                  onCountdown={playCountdownSound}
-                  enableCountdownSound={true}
-                  size={96}
-                  className="shadow-lg"
-                />
+              {/* Timer responsivo - mobile à direita, desktop centralizado */}
+              <div className="flex justify-center sm:justify-center md:justify-center">
+                <div className="sm:ml-auto md:ml-0 lg:ml-0">
+                  <CircularTimer
+                    duration={30}
+                    isActive={!showAnswer && !loading}
+                    onTimeUp={handleTimeUp}
+                    onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                    onCountdown={playCountdownSound}
+                    enableCountdownSound={true}
+                    size={96}
+                    className="shadow-lg"
+                  />
+                </div>
               </div>
             </div>
           </div>
