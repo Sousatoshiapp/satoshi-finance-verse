@@ -476,7 +476,7 @@ export function QuizEngine({
             
             {/* Centro: Informações do Quiz */}
             <div className="text-center">
-              <div className="text-lg sm:text-2xl font-bold text-primary">
+              <div className="text-sm sm:text-lg font-bold text-primary">
                 Pergunta {currentIndex + 1} de {questions.length}
               </div>
               <div className="text-sm sm:text-lg text-muted-foreground">
