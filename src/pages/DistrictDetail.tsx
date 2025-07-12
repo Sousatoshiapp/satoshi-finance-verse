@@ -12,6 +12,7 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
+import { useCrisisData } from "@/hooks/use-crisis-data";
 import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -180,6 +181,7 @@ export default function DistrictDetail() {
   const [allDistrictsPower, setAllDistrictsPower] = useState<any[]>([]);
   
   const { toast } = useToast();
+  const { data: crisis } = useCrisisData();
 
   useEffect(() => {
     if (districtId) {
@@ -445,7 +447,15 @@ export default function DistrictDetail() {
   const districtRanking = allDistrictsPower.findIndex(d => d.id === districtId) + 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative">
+      {/* Crisis Emergency Overlay */}
+      {crisis && (
+        <div className="fixed inset-0 bg-red-900/10 pointer-events-none z-10">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
+        </div>
+      )}
+      
       {/* Hero Header */}
       <div className="relative overflow-hidden h-64 sm:h-80">
         {/* Background Image */}
@@ -453,16 +463,36 @@ export default function DistrictDetail() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ 
             backgroundImage: `url(${district3DImage})`,
-            filter: 'brightness(0.3) contrast(1.2)'
+            filter: crisis ? 'brightness(0.2) contrast(1.4) hue-rotate(15deg)' : 'brightness(0.3) contrast(1.2)'
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+          <div className={`absolute inset-0 ${crisis ? 'bg-gradient-to-t from-red-900 via-slate-900/70 to-red-900/30' : 'bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent'}`}></div>
+          
+          {/* Crisis particle effects */}
+          {crisis && (
+            <div className="absolute inset-0">
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-red-400 rounded-full animate-ping"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    animationDelay: `${Math.random() * 2}s`,
+                    animationDuration: `${2 + Math.random() * 2}s`
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
         
         <div 
           className="absolute inset-0 opacity-30"
           style={{
-            background: `linear-gradient(135deg, ${district.color_primary}20, ${district.color_secondary}20)`
+            background: crisis 
+              ? `linear-gradient(135deg, #ef444420, ${district.color_primary}20)` 
+              : `linear-gradient(135deg, ${district.color_primary}20, ${district.color_secondary}20)`
           }}
         ></div>
         
@@ -481,10 +511,11 @@ export default function DistrictDetail() {
           <div className="flex-1 flex items-center">
             <div className="flex items-center space-x-6">
               <div 
-                className="w-20 h-20 rounded-xl flex items-center justify-center border-4"
+                className={`w-20 h-20 rounded-xl flex items-center justify-center border-4 ${crisis ? 'animate-pulse' : ''}`}
                 style={{ 
-                  borderColor: district.color_primary,
-                  backgroundColor: `${district.color_primary}40`
+                  borderColor: crisis ? '#ef4444' : district.color_primary,
+                  backgroundColor: crisis ? '#ef444440' : `${district.color_primary}40`,
+                  boxShadow: crisis ? `0 0 20px #ef444460` : undefined
                 }}
               >
                 {districtLogo ? (

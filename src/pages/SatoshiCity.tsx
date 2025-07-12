@@ -11,7 +11,8 @@ import { SatoshiCity3D } from "@/components/satoshi-city-3d";
 import { PowerBar } from "@/components/ui/power-bar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DistrictTransition } from "@/components/district/DistrictTransition";
-import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box } from "lucide-react";
+import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box, AlertTriangle } from "lucide-react";
+import { useCrisisData } from "@/hooks/use-crisis-data";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
 import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
@@ -96,6 +97,7 @@ export default function SatoshiCity() {
   const [transitionData, setTransitionData] = useState({ from: '', to: '', targetId: '', theme: '' });
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { data: crisis } = useCrisisData();
 
   // Memoize the city image function
   const getCityImageByTime = useCallback(() => {
@@ -341,15 +343,45 @@ export default function SatoshiCity() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Crisis Overlay */}
+      {crisis && (
+        <div className="fixed inset-0 bg-red-900/10 animate-pulse pointer-events-none z-10">
+          <div className="absolute top-4 left-4">
+            <div className="flex items-center space-x-2 bg-red-900/20 backdrop-blur-sm rounded-lg px-3 py-1 border border-red-500/30">
+              <AlertTriangle className="h-4 w-4 text-red-400 animate-pulse" />
+              <span className="text-red-300 text-sm font-medium">ESTADO DE EMERGÊNCIA</span>
+            </div>
+          </div>
+          
+          {/* Pulse effect around districts */}
+          <div className="absolute inset-0">
+            {districts.map((district, index) => (
+              <div
+                key={district.id}
+                className="absolute rounded-full border-2 border-red-500/30 animate-ping"
+                style={{
+                  left: `${districtPositions[district.theme as keyof typeof districtPositions]?.x || 50}%`,
+                  top: `${districtPositions[district.theme as keyof typeof districtPositions]?.y || 50}%`,
+                  width: '100px',
+                  height: '100px',
+                  transform: 'translate(-50%, -50%)',
+                  animationDelay: `${index * 0.5}s`
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Dynamic Cyberpunk City Background */}
       <div 
         className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 z-0"
         style={{ 
           backgroundImage: `url(${currentCityImage})`,
-          filter: 'brightness(0.6) contrast(1.3)'
+          filter: crisis ? 'brightness(0.4) contrast(1.4) hue-rotate(15deg)' : 'brightness(0.6) contrast(1.3)'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-slate-900/50"></div>
+        <div className={`absolute inset-0 ${crisis ? 'bg-gradient-to-t from-red-900/30 via-slate-900/60 to-red-900/20' : 'bg-gradient-to-t from-slate-900/70 via-transparent to-slate-900/50'}`}></div>
       </div>
 
       {/* Header */}
@@ -413,13 +445,20 @@ export default function SatoshiCity() {
                   }}
                   onClick={() => handleDistrictClick(district)}
                 >
+                {/* Crisis Effect */}
+                {crisis && (
+                  <div className="absolute inset-0 rounded-full bg-red-500/20 animate-ping pointer-events-none"></div>
+                )}
+
                 {/* Dynamic Power Aura - Mobile Optimized */}
                 <div 
                   className={`absolute inset-0 rounded-full transition-all duration-500 ${
                     powerLevel > 80 ? 'animate-pulse' : powerLevel > 50 ? 'opacity-90' : 'opacity-80'
-                  }`}
+                  } ${crisis ? 'animate-pulse' : ''}`}
                   style={{
-                    boxShadow: `0 0 ${40 + (powerLevel * 0.8)}px ${district.color_primary}, 0 0 ${80 + (powerLevel * 1.2)}px ${district.color_primary}80, 0 0 ${120 + (powerLevel * 1.5)}px ${district.color_primary}40`,
+                    boxShadow: crisis 
+                      ? `0 0 ${40 + (powerLevel * 0.8)}px #ef4444, 0 0 ${80 + (powerLevel * 1.2)}px #ef444480, 0 0 ${120 + (powerLevel * 1.5)}px ${district.color_primary}40`
+                      : `0 0 ${40 + (powerLevel * 0.8)}px ${district.color_primary}, 0 0 ${80 + (powerLevel * 1.2)}px ${district.color_primary}80, 0 0 ${120 + (powerLevel * 1.5)}px ${district.color_primary}40`,
                     width: `${60 + (powerLevel * 0.5)}px`,
                     height: `${60 + (powerLevel * 0.5)}px`,
                     transform: 'translate(-50%, -50%)'
@@ -430,11 +469,13 @@ export default function SatoshiCity() {
                 <div 
                   className={`relative w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 sm:border-4 flex items-center justify-center transition-all duration-300 hover:scale-110 backdrop-blur-sm ${
                     userInfo?.is_residence ? 'ring-2 sm:ring-4 ring-yellow-400 ring-opacity-80 animate-pulse' : ''
-                  } ${powerLevel < 30 ? 'opacity-85' : ''}`}
+                  } ${powerLevel < 30 ? 'opacity-85' : ''} ${crisis ? 'animate-pulse' : ''}`}
                   style={{
-                    borderColor: district.color_primary,
-                    backgroundColor: `${district.color_primary}CC`,
-                    boxShadow: `0 0 30px ${district.color_primary}, 0 0 60px ${district.color_primary}80`
+                    borderColor: crisis ? '#ef4444' : district.color_primary,
+                    backgroundColor: crisis ? '#ef4444CC' : `${district.color_primary}CC`,
+                    boxShadow: crisis 
+                      ? `0 0 30px #ef4444, 0 0 60px #ef444480`
+                      : `0 0 30px ${district.color_primary}, 0 0 60px ${district.color_primary}80`
                   }}
                 >
                   {districtLogo ? (

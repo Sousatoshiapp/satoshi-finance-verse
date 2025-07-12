@@ -22,6 +22,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
+import { CrisisIcon } from "@/components/crisis/CrisisIcon";
+import { useCrisisState } from "@/hooks/use-crisis-state";
 
 
 const getGreeting = () => {
@@ -46,6 +48,7 @@ export default function Dashboard() {
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
   const { points: realtimePoints, isOnline } = useRealtime();
+  const { shouldShowBanner, shouldShowIcon, dismissBanner, reopenBanner } = useCrisisState();
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -215,6 +218,9 @@ export default function Dashboard() {
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-3">
+              {shouldShowIcon && (
+                <CrisisIcon onClick={reopenBanner} />
+              )}
               <SubscriptionIndicator tier={subscription.tier} size="sm" />
               {subscription.tier === 'free' && (
                 <Button 
@@ -230,7 +236,7 @@ export default function Dashboard() {
           </div>
 
           {/* Crisis Alert - Non-invasive placement */}
-          <CrisisAlert />
+          <CrisisAlert onDismiss={dismissBanner} />
 
           {/* Consolidated Avatar & Level Section */}
           <div className="text-center mb-6">

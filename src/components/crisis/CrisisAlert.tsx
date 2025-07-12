@@ -3,15 +3,19 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { AlertTriangle, Clock, Zap } from "lucide-react";
-import { useCrisisData } from "@/hooks/use-crisis-data";
+import { AlertTriangle, Clock, Zap, X } from "lucide-react";
+import { useCrisisState } from "@/hooks/use-crisis-state";
 import { CrisisContributionModal } from "./CrisisContributionModal";
 
-export const CrisisAlert = () => {
-  const { data: crisis, isLoading } = useCrisisData();
+interface CrisisAlertProps {
+  onDismiss?: () => void;
+}
+
+export const CrisisAlert = ({ onDismiss }: CrisisAlertProps) => {
+  const { crisis, shouldShowBanner } = useCrisisState();
   const [showContributionModal, setShowContributionModal] = useState(false);
 
-  if (isLoading || !crisis) return null;
+  if (!shouldShowBanner || !crisis) return null;
 
   const btzProgress = (crisis.current_btz_contributions / crisis.total_btz_goal) * 100;
   const xpProgress = (crisis.current_xp_contributions / crisis.total_xp_goal) * 100;
@@ -38,9 +42,20 @@ export const CrisisAlert = () => {
 
   return (
     <>
-      <Alert className="border-destructive/50 bg-destructive/5 mb-6 animate-pulse">
+      <Alert className="border-destructive/50 bg-destructive/5 mb-6 animate-pulse relative">
         <AlertTriangle className="h-4 w-4 text-destructive" />
-        <AlertDescription className="space-y-3">
+        
+        {/* Close Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onDismiss}
+          className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-destructive/10"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+
+        <AlertDescription className="space-y-3 pr-8">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-destructive mb-1">{crisis.title}</h3>
