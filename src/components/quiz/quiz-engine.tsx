@@ -457,20 +457,35 @@ export function QuizEngine({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
-      {/* Header simplificado */}
+      {/* Header com três colunas */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-start">
-            {/* Apenas botão voltar */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate(getBackRoute())}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Button>
+          <div className="grid grid-cols-3 items-center">
+            {/* Esquerda: Botão Voltar */}
+            <div className="flex justify-start">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate(getBackRoute())}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Button>
+            </div>
+            
+            {/* Centro: Informações do Quiz */}
+            <div className="text-center">
+              <div className="text-lg sm:text-2xl font-bold text-primary">
+                Pergunta {currentIndex + 1} de {questions.length}
+              </div>
+              <div className="text-sm sm:text-lg text-muted-foreground">
+                {getModeTitle()}
+              </div>
+            </div>
+            
+            {/* Direita: Vazio para balanceamento */}
+            <div></div>
           </div>
         </div>
       </div>
@@ -478,30 +493,20 @@ export function QuizEngine({
       {/* Main Quiz Content */}
       <div className="container mx-auto px-4 py-6 pb-24">
         <div className="max-w-2xl mx-auto">
-          {/* Header com informações */}
+          {/* BTZ Card e Timer */}
           <div className="mb-4 sm:mb-6">
-            <div className="text-center mb-4 sm:mb-6">
-              <div className="text-lg sm:text-2xl font-bold text-primary mb-2">
-                Pergunta {currentIndex + 1} de {questions.length}
-              </div>
-              <div className="text-sm sm:text-lg text-muted-foreground mb-4">
-                {getModeTitle()}
-              </div>
-              
-              {/* BTZ Card e Timer lado a lado */}
-              <div className="flex items-center justify-center gap-4 sm:gap-6">
-                <QuizBTZCard />
-                <CircularTimer
-                  duration={30}
-                  isActive={!showAnswer && !loading}
-                  onTimeUp={handleTimeUp}
-                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                  onCountdown={playCountdownSound}
-                  enableCountdownSound={true}
-                  size={96}
-                  className="shadow-lg"
-                />
-              </div>
+            <div className="flex items-center justify-center gap-4 sm:gap-6">
+              <QuizBTZCard />
+              <CircularTimer
+                duration={30}
+                isActive={!showAnswer && !loading}
+                onTimeUp={handleTimeUp}
+                onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                onCountdown={playCountdownSound}
+                enableCountdownSound={true}
+                size={96}
+                className="shadow-lg"
+              />
             </div>
           </div>
 
@@ -531,7 +536,7 @@ export function QuizEngine({
                         selectedAnswer === option
                           ? "bg-primary text-primary-foreground border-primary scale-105 shadow-lg"
                           : "bg-card border-border hover:scale-[1.02] hover:border-primary/50",
-                        !selectedAnswer && !showAnswer ? "hover:bg-gradient-to-r hover:from-[#adff2f]/20 hover:to-[#adff2f]/10 hover:text-foreground hover:border-[#adff2f]" : "",
+                        !selectedAnswer && !showAnswer ? "hover:bg-gradient-to-r hover:from-[#adff2f]/20 hover:to-[#adff2f]/10 hover:text-black hover:border-[#adff2f]" : "",
                         showAnswer && option === currentQuestion.correct_answer
                           ? "bg-green-500 text-white border-green-500 scale-105 shadow-green-200/50 shadow-lg"
                           : showAnswer && selectedAnswer === option && option !== currentQuestion.correct_answer
@@ -562,7 +567,7 @@ export function QuizEngine({
               className="w-full transition-all duration-300 hover:scale-[1.02] shadow-lg"
               size="lg"
             >
-              {selectedAnswer ? '✨ Confirmar Resposta' : '👆 Selecione uma opção'}
+              {selectedAnswer ? 'Confirmar Resposta' : 'Selecione uma opção'}
             </Button>
           )}
 
