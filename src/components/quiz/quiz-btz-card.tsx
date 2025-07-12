@@ -86,13 +86,13 @@ export function QuizBTZCard({ className = "" }: QuizBTZCardProps) {
   if (isLoading) {
     return (
       <div className={cn(
-        "fixed top-4 right-4 z-50 bg-transparent backdrop-blur-sm border border-[#adff2f]/20 rounded-lg px-3 py-2 min-w-[120px]",
+        "bg-transparent backdrop-blur-sm border border-[#adff2f]/20 rounded-lg px-4 py-3 min-w-[140px]",
         "animate-pulse",
         className
       )}>
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-[#adff2f]/50" />
-          <div className="h-4 w-16 bg-[#adff2f]/20 rounded" />
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#adff2f]/50" />
+          <div className="h-5 w-20 bg-[#adff2f]/20 rounded" />
         </div>
       </div>
     );
@@ -101,34 +101,33 @@ export function QuizBTZCard({ className = "" }: QuizBTZCardProps) {
   return (
     <div
       className={cn(
-        "fixed top-4 right-4 z-50",
         "bg-transparent backdrop-blur-sm border border-[#adff2f]/20 rounded-lg",
-        "px-3 py-2 transition-all duration-300",
+        "px-4 py-3 transition-all duration-300",
         "hover:border-[#adff2f]/40 hover:backdrop-blur-md",
-        "cursor-pointer select-none min-w-[120px]",
+        "cursor-pointer select-none min-w-[140px]",
         showGlow && "shadow-[0_0_20px_rgba(173,255,47,0.4)]",
         className
       )}
     >
-      <div className="flex items-center gap-2">
-        {/* Logo BTZ - Círculo verde com "B" */}
+      <div className="flex items-center gap-3">
+        {/* Logo BTZ - Círculo verde com "B" - Maior */}
         <div 
           className={cn(
-            "w-6 h-6 rounded-full bg-[#adff2f] flex items-center justify-center",
+            "w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center",
             "transition-all duration-200",
             logoAnimating && "animate-bounce scale-110",
             showGlow && "shadow-[0_0_8px_rgba(173,255,47,0.6)]"
           )}
         >
-          <span className="text-black font-bold text-sm">B</span>
+          <span className="text-black font-bold text-lg">B</span>
         </div>
         
-        {/* Valor BTZ com animação */}
+        {/* Valor BTZ com animação - Maior */}
         <div className="flex flex-col">
           <div 
             className={cn(
               "font-mono font-bold text-white transition-all duration-200",
-              "text-sm leading-tight",
+              "text-lg leading-tight",
               animationState === 'ANIMATING' && "scale-105",
               showGlow && "text-[#adff2f] drop-shadow-[0_0_4px_rgba(173,255,47,0.8)]"
             )}

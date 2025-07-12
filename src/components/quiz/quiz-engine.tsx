@@ -457,9 +457,6 @@ export function QuizEngine({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
-      {/* BTZ Card - Posicionado em fixed no canto superior direito */}
-      <QuizBTZCard />
-      
       {/* Header reorganizado */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3">
@@ -477,18 +474,29 @@ export function QuizEngine({
               </Button>
             </div>
             
-            {/* Timer centralizado para todas as telas */}
-            <div className="flex justify-center">
-              <CircularTimer
-                duration={30}
-                isActive={!showAnswer && !loading}
-                onTimeUp={handleTimeUp}
-                onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
-                onCountdown={playCountdownSound}
-                enableCountdownSound={true}
-                size={80}
-                className="shadow-lg"
-              />
+            {/* Segunda linha: Timer e BTZ Card lado a lado */}
+            <div className="flex justify-between items-center">
+              {/* BTZ Card do lado esquerdo */}
+              <div className="flex-shrink-0">
+                <QuizBTZCard />
+              </div>
+              
+              {/* Timer centralizado */}
+              <div className="flex-1 flex justify-center">
+                <CircularTimer
+                  duration={30}
+                  isActive={!showAnswer && !loading}
+                  onTimeUp={handleTimeUp}
+                  onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+                  onCountdown={playCountdownSound}
+                  enableCountdownSound={true}
+                  size={80}
+                  className="shadow-lg"
+                />
+              </div>
+              
+              {/* Espaço vazio do lado direito para equilibrar */}
+              <div className="flex-shrink-0 w-[140px]"></div>
             </div>
           </div>
         </div>
