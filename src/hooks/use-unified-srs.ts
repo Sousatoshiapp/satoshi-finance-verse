@@ -106,8 +106,12 @@ export function useUnifiedSRS() {
       let neverAnsweredQuery = supabase
         .from('quiz_questions')
         .select('*')
-        .in('category', FINANCE_CATEGORIES)
-        .not('id', 'in', `(${allExcludeIds.join(',') || 'null'})`);
+        .in('category', FINANCE_CATEGORIES);
+
+      // Só aplicar filtro de exclusão se tiver IDs para excluir
+      if (allExcludeIds.length > 0) {
+        neverAnsweredQuery = neverAnsweredQuery.not('id', 'in', `(${allExcludeIds.join(',')})`);
+      }
 
       if (difficulty) {
         neverAnsweredQuery = neverAnsweredQuery.eq('difficulty', difficulty);
@@ -152,8 +156,12 @@ export function useUnifiedSRS() {
         .in('category', FINANCE_CATEGORIES)
         .eq('user_question_progress.user_id', profile.id)
         .lt('user_question_progress.last_reviewed', 
-            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-        .not('id', 'in', `(${allExcludeIds.join(',') || 'null'})`);
+            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+      // Só aplicar filtro de exclusão se tiver IDs para excluir
+      if (allExcludeIds.length > 0) {
+        oldQuestionsQuery = oldQuestionsQuery.not('id', 'in', `(${allExcludeIds.join(',')})`);
+      }
 
       if (difficulty) {
         oldQuestionsQuery = oldQuestionsQuery.eq('difficulty', difficulty);
@@ -176,14 +184,20 @@ export function useUnifiedSRS() {
       // 6. Se ainda não tem suficientes, buscar questões completamente aleatórias
       if (combinedQuestions.length < limit) {
         const stillNeeded = limit - combinedQuestions.length;
-        const { data: randomQuestions } = await supabase
+        const finalExcludeIds = allExcludeIds.concat(combinedQuestions.map(q => q.id));
+        
+        let randomQuery = supabase
           .from('quiz_questions')
           .select('*')
           .in('category', FINANCE_CATEGORIES)
-          .eq('difficulty', difficulty || 'easy')
-          .not('id', 'in', `(${allExcludeIds.concat(combinedQuestions.map(q => q.id)).join(',') || 'null'})`)
-          .limit(stillNeeded);
+          .eq('difficulty', difficulty || 'easy');
 
+        // Só aplicar filtro de exclusão se tiver IDs para excluir
+        if (finalExcludeIds.length > 0) {
+          randomQuery = randomQuery.not('id', 'in', `(${finalExcludeIds.join(',')})`);
+        }
+
+        const { data: randomQuestions } = await randomQuery.limit(stillNeeded);
         combinedQuestions.push(...(randomQuestions || []));
       }
 
