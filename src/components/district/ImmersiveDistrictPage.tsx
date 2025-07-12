@@ -198,14 +198,14 @@ export const ImmersiveDistrictPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="px-6 mb-8"
           >
-            <div className="grid grid-cols-3 gap-2 md:gap-4 max-w-lg mx-auto">
+            <div className="grid grid-cols-3 gap-1 md:gap-4 max-w-sm md:max-w-lg mx-auto">
               <DistrictStatsCard
                 title="BTZ Total"
                 value={stats.totalBTZ}
                 suffix="BTZ"
                 icon="B"
                 loading={statsLoading}
-                className="min-w-[120px] md:min-w-[160px]"
+                className="min-w-[100px] md:min-w-[160px] text-xs md:text-sm"
               />
               <DistrictStatsCard
                 title="XP Total"
@@ -213,7 +213,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
                 suffix="XP"
                 icon="X"
                 loading={statsLoading}
-                className="min-w-[120px] md:min-w-[160px]"
+                className="min-w-[100px] md:min-w-[160px] text-xs md:text-sm"
               />
               <DistrictStatsCard
                 title="Poder"
@@ -222,7 +222,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
                 icon="⚡"
                 showRank={true}
                 loading={statsLoading}
-                className="min-w-[120px] md:min-w-[160px]"
+                className="min-w-[100px] md:min-w-[160px] text-xs md:text-sm"
               />
             </div>
           </motion.div>
@@ -234,18 +234,18 @@ export const ImmersiveDistrictPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="px-6 mb-8"
           >
-            <div className="flex flex-wrap gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
               {!userDistrict ? (
                 <Button
                   onClick={handleJoinDistrict}
-                  className="bg-[#adff2f] hover:bg-[#adff2f]/90 text-black font-semibold px-6 py-3"
+                  className="bg-[#adff2f] hover:bg-[#adff2f]/90 text-black font-semibold px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base w-full sm:w-auto"
                 >
                   <UserPlus className="w-4 h-4 mr-2" />
                   Virar Membro
                 </Button>
               ) : (
-                <div className="bg-green-500/20 border border-green-500/30 rounded-lg px-6 py-3">
-                  <p className="text-green-300 font-medium">
+                <div className="bg-green-500/20 border border-green-500/30 rounded-lg px-4 py-2 sm:px-6 sm:py-3 w-full sm:w-auto text-center">
+                  <p className="text-green-300 font-medium text-sm sm:text-base">
                     ✓ Você é membro deste distrito
                   </p>
                 </div>
@@ -254,7 +254,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
               <Button
                 onClick={handleViewMembers}
                 variant="outline"
-                className="border-[#adff2f] text-[#adff2f] hover:bg-[#adff2f]/10 font-semibold px-6 py-3"
+                className="border-[#adff2f] text-[#adff2f] hover:bg-[#adff2f]/10 font-semibold px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base w-full sm:w-auto"
               >
                 <Users className="w-4 h-4 mr-2" />
                 Ver Time
