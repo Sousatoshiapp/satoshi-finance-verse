@@ -37,6 +37,7 @@ export const useCrisisState = () => {
 
   const reopenBanner = () => {
     setIsDismissed(false);
+    localStorage.removeItem(CRISIS_BANNER_KEY);
   };
 
   const shouldShowBanner = crisis && !isDismissed && !isLoading;

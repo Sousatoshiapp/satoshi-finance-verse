@@ -39,7 +39,7 @@ export const useCrisisData = () => {
         .select("*")
         .eq("is_active", true)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
       
       if (error && error.code !== "PGRST116") {
         throw error;
@@ -62,7 +62,7 @@ export const useCrisisDistrictGoal = (districtId?: string) => {
         .select("id")
         .eq("is_active", true)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
       
       if (!crisisData) return null;
       
@@ -71,7 +71,7 @@ export const useCrisisDistrictGoal = (districtId?: string) => {
         .select("*")
         .eq("crisis_id", crisisData.id)
         .eq("district_id", districtId)
-        .single();
+        .maybeSingle();
       
       if (error && error.code !== "PGRST116") {
         throw error;
@@ -95,7 +95,7 @@ export const useUserCrisisContribution = (userId?: string) => {
         .select("id")
         .eq("is_active", true)
         .eq("status", "active")
-        .single();
+        .maybeSingle();
       
       if (!crisisData) return null;
       
@@ -104,7 +104,7 @@ export const useUserCrisisContribution = (userId?: string) => {
         .select("*")
         .eq("crisis_id", crisisData.id)
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
       
       if (error && error.code !== "PGRST116") {
         throw error;
