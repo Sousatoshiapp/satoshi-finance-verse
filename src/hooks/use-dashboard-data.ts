@@ -67,7 +67,7 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
   const [districtResult, teamResult] = await Promise.all([
     supabase
       .from('user_districts')
-      .select(`districts(id, name, color_primary, color_secondary, theme)`)
+      .select(`districts(id, name, color_primary, color_secondary, theme, sponsor_logo_url)`)
       .eq('user_id', profile.id)
       .eq('is_residence', true)
       .maybeSingle(),

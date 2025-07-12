@@ -8,6 +8,9 @@ interface BTZCounterProps {
   className?: string;
 }
 
+// State machine para animação robusta
+type AnimationState = 'IDLE' | 'ANIMATING' | 'COMPLETE';
+
 export function BTZCounter({ className = "" }: BTZCounterProps) {
   const { user } = useAuth();
   const { points: currentBTZ, isLoading } = useRealtimePoints();
@@ -15,75 +18,100 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationState, setAnimationState] = useState<AnimationState>('IDLE');
   const [showDetails, setShowDetails] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
+  const [animationProgress, setAnimationProgress] = useState(0);
 
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const trendTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastProcessedBTZ = useRef<number>(0);
 
-  const animateToNewValue = useCallback((newValue: number, startValue: number) => {
-    if (isAnimating || startValue === newValue) return;
+  // Slot machine animation com state machine robusto
+  const startSlotMachineAnimation = useCallback((targetValue: number, startValue: number) => {
+    if (animationState !== 'IDLE' || startValue === targetValue) return;
     
-    console.log('🎰 Animating BTZ:', { from: startValue, to: newValue });
-    setIsAnimating(true);
+    setAnimationState('ANIMATING');
     setPreviousBTZ(startValue);
+    setAnimationProgress(0);
     
-    // Clear any existing timer
+    // Clear existing timers
     if (animationTimerRef.current) {
       clearInterval(animationTimerRef.current);
     }
+    if (trendTimerRef.current) {
+      clearTimeout(trendTimerRef.current);
+    }
     
-    // Enhanced slot machine animation
-    const duration = 800;
-    const steps = 25;
-    const increment = (newValue - startValue) / steps;
-    let step = 0;
+    const duration = 1000; // 1 segundo para animação mais fluida
+    const steps = 30; // Mais steps para smoother animation
+    const increment = (targetValue - startValue) / steps;
+    let currentStep = 0;
 
     animationTimerRef.current = setInterval(() => {
-      step++;
+      currentStep++;
+      const progress = currentStep / steps;
+      setAnimationProgress(progress);
       
-      if (step >= steps) {
-        console.log('✅ Animation complete:', newValue);
-        setDisplayBTZ(newValue);
-        setIsAnimating(false);
+      if (currentStep >= steps) {
+        // Animation complete
+        setDisplayBTZ(targetValue);
+        setAnimationState('COMPLETE');
         setShowTrend(true);
-        setTimeout(() => setShowTrend(false), 3000);
         
+        // Clean up
         if (animationTimerRef.current) {
           clearInterval(animationTimerRef.current);
           animationTimerRef.current = null;
         }
+        
+        // Hide trend after 3 seconds
+        trendTimerRef.current = setTimeout(() => {
+          setShowTrend(false);
+          setAnimationState('IDLE');
+        }, 3000);
+        
       } else {
-        const currentStep = startValue + (increment * step);
-        const randomOffset = Math.random() * 5 - 2.5; // Slot machine effect
-        setDisplayBTZ(Math.round(currentStep + randomOffset));
+        // Slot machine effect with easing
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = startValue + (increment * currentStep * easeOutQuart);
+        
+        // Add randomness for slot machine effect (mais sutil no final)
+        const randomIntensity = Math.max(0.1, 1 - progress);
+        const randomOffset = (Math.random() - 0.5) * 10 * randomIntensity;
+        
+        setDisplayBTZ(Math.round(Math.max(0, currentValue + randomOffset)));
       }
     }, duration / steps);
-  }, [isAnimating]);
+  }, [animationState]);
 
-  // Enhanced effect to handle BTZ changes with better logging
+  // Effect otimizado para mudanças de BTZ - SEM dependências circulares
   useEffect(() => {
-    if (isLoading || currentBTZ === undefined) return;
+    if (isLoading || currentBTZ === undefined || currentBTZ === null) return;
     
-    console.log('🎰 BTZ Update:', { currentBTZ, displayBTZ, isAnimating, isLoading });
-    
-    if (displayBTZ === 0) {
-      // Initial load - set immediately
-      console.log('🚀 Initial BTZ load:', currentBTZ);
+    // Initial load
+    if (lastProcessedBTZ.current === 0 && displayBTZ === 0) {
       setDisplayBTZ(currentBTZ);
       setPreviousBTZ(currentBTZ);
-    } else if (currentBTZ !== displayBTZ && !isAnimating) {
-      // Value changed - animate
-      console.log('🎰 Starting slot machine animation:', { from: displayBTZ, to: currentBTZ });
-      animateToNewValue(currentBTZ, displayBTZ);
+      lastProcessedBTZ.current = currentBTZ;
+      return;
     }
-  }, [currentBTZ, isLoading, displayBTZ, isAnimating, animateToNewValue]);
+    
+    // Value changed and animation is ready
+    if (currentBTZ !== lastProcessedBTZ.current && animationState === 'IDLE') {
+      startSlotMachineAnimation(currentBTZ, lastProcessedBTZ.current);
+      lastProcessedBTZ.current = currentBTZ;
+    }
+  }, [currentBTZ, isLoading, animationState, startSlotMachineAnimation]);
 
-  // Cleanup on unmount
+  // Cleanup robusto
   useEffect(() => {
     return () => {
       if (animationTimerRef.current) {
         clearInterval(animationTimerRef.current);
+      }
+      if (trendTimerRef.current) {
+        clearTimeout(trendTimerRef.current);
       }
     };
   }, []);
@@ -96,7 +124,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           bg-transparent backdrop-blur-sm 
           border border-[#adff2f]/20 rounded-lg px-8 py-4 
           transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
-          ${isAnimating ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
+          ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
           cursor-pointer
         `}
         onClick={() => setShowDetails(!showDetails)}
@@ -112,13 +140,22 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               </span>
               <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
               
-              {/* Trend Arrow */}
+              {/* Trend Arrow com progresso de animação */}
               {showTrend && currentBTZ !== previousBTZ && (
                 <div className={`transition-all duration-300 ${showTrend ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
                   {currentBTZ > previousBTZ ? (
                     <TrendingUp className="w-4 h-4 text-[#adff2f] animate-bounce" />
                   ) : (
                     <TrendingDown className="w-4 h-4 text-red-500 animate-bounce" />
+                  )}
+                  {/* Indicador de progresso durante animação */}
+                  {animationState === 'ANIMATING' && (
+                    <div className="w-8 h-1 bg-[#adff2f]/20 rounded-full overflow-hidden ml-2">
+                      <div 
+                        className="h-full bg-[#adff2f] transition-all duration-75"
+                        style={{ width: `${animationProgress * 100}%` }}
+                      />
+                    </div>
                   )}
                 </div>
               )}
