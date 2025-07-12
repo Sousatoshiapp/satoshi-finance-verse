@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ProgressBar } from "./progress-bar";
 import { getLevelInfo } from "@/data/levels";
+import xpLogo from "@/assets/xp-logo.png";
 
 interface XPCardProps {
   currentXP: number;
@@ -20,8 +21,8 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
     )}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-experience text-white flex items-center justify-center text-sm font-bold">
-            {level}
+          <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
+            <img src={xpLogo} alt="XP" className="w-6 h-6 object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-foreground">{currentLevelInfo.name}</span>

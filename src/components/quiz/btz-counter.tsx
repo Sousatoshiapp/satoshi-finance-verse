@@ -24,6 +24,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const animateToNewValue = useCallback((newValue: number, startValue: number) => {
     if (isAnimating || startValue === newValue) return;
     
+    console.log('🎰 Animating BTZ:', { from: startValue, to: newValue });
     setIsAnimating(true);
     setPreviousBTZ(startValue);
     
@@ -32,9 +33,9 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       clearInterval(animationTimerRef.current);
     }
     
-    // Slot machine animation
-    const duration = 600;
-    const steps = 20;
+    // Enhanced slot machine animation
+    const duration = 800;
+    const steps = 25;
     const increment = (newValue - startValue) / steps;
     let step = 0;
 
@@ -42,10 +43,11 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       step++;
       
       if (step >= steps) {
+        console.log('✅ Animation complete:', newValue);
         setDisplayBTZ(newValue);
         setIsAnimating(false);
         setShowTrend(true);
-        setTimeout(() => setShowTrend(false), 2500);
+        setTimeout(() => setShowTrend(false), 3000);
         
         if (animationTimerRef.current) {
           clearInterval(animationTimerRef.current);
@@ -53,21 +55,26 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         }
       } else {
         const currentStep = startValue + (increment * step);
-        setDisplayBTZ(Math.round(currentStep));
+        const randomOffset = Math.random() * 5 - 2.5; // Slot machine effect
+        setDisplayBTZ(Math.round(currentStep + randomOffset));
       }
     }, duration / steps);
   }, [isAnimating]);
 
-  // Single effect to handle BTZ changes
+  // Enhanced effect to handle BTZ changes with better logging
   useEffect(() => {
     if (isLoading || currentBTZ === undefined) return;
     
+    console.log('🎰 BTZ Update:', { currentBTZ, displayBTZ, isAnimating, isLoading });
+    
     if (displayBTZ === 0) {
       // Initial load - set immediately
+      console.log('🚀 Initial BTZ load:', currentBTZ);
       setDisplayBTZ(currentBTZ);
       setPreviousBTZ(currentBTZ);
     } else if (currentBTZ !== displayBTZ && !isAnimating) {
       // Value changed - animate
+      console.log('🎰 Starting slot machine animation:', { from: displayBTZ, to: currentBTZ });
       animateToNewValue(currentBTZ, displayBTZ);
     }
   }, [currentBTZ, isLoading, displayBTZ, isAnimating, animateToNewValue]);

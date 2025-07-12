@@ -11,7 +11,7 @@ import { PowerBar } from "@/components/ui/power-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
+import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
 import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";

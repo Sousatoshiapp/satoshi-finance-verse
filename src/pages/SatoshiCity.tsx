@@ -16,7 +16,7 @@ import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
 import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
 import satoshiCityNight from "@/assets/satoshi-city-night-illuminated.jpg";
-import xpLogo from "@/assets/districts/xp-investimentos-logo.jpg";
+import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
 import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import xpLogo from '@/assets/districts/xp-investimentos-logo.jpg';
+import xpLogo from '@/assets/xp-logo.png';
 
 interface SponsorTheme {
   name: string;
