@@ -41,7 +41,7 @@ export const useCrisisState = () => {
   };
 
   const shouldShowBanner = crisis && !isDismissed && !isLoading;
-  const shouldShowIcon = crisis && isDismissed && !isLoading;
+  const shouldShowIcon = crisis && !isLoading; // Ícone sempre visível durante crise
 
   return {
     crisis,

@@ -12,6 +12,8 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
+import { CrisisAlert } from "@/components/crisis/CrisisAlert";
+import { useCrisisState } from "@/hooks/use-crisis-state";
 import { useCrisisData } from "@/hooks/use-crisis-data";
 import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
@@ -182,6 +184,7 @@ export default function DistrictDetail() {
   
   const { toast } = useToast();
   const { data: crisis } = useCrisisData();
+  const { shouldShowBanner, dismissBanner, markAsContributed } = useCrisisState();
 
   useEffect(() => {
     if (districtId) {
@@ -633,6 +636,13 @@ export default function DistrictDetail() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Crisis Alert Banner */}
+        {shouldShowBanner && (
+          <div className="mb-6">
+            <CrisisAlert onDismiss={dismissBanner} onContributed={markAsContributed} />
+          </div>
+        )}
 
         {/* Crisis Alert for District - Only show when crisis is active */}
         {crisis && <DistrictCrisisCard districtId={districtId || ""} />}
