@@ -18,25 +18,40 @@ import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
 import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
 import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
 import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
-import xpDistrict3D from "@/assets/districts/xp-morning.jpg";
-import xpDistrict3D from "@/assets/districts/xp-sunset.jpg";
-import xpDistrict3D from "@/assets/districts/xp-night.jpg";
-import animaDistrict3D from "@/assets/districts/anima-morning.jpg";
-import animaDistrict3D from "@/assets/districts/anima-sunset.jpg";
-import animaDistrict3D from "@/assets/districts/anima-night.jpg";
-import criptoDistrict3D from "@/assets/districts/crypto-morning.jpg";
-import criptoDistrict3D from "@/assets/districts/crypto-sunset.jpg";
-import criptoDistrict3D from "@/assets/districts/crypto-night.jpg";
-import bankingDistrict3D from "@/assets/districts/banking-morning.jpg";
-import bankingDistrict3D from "@/assets/districts/banking-sunset.jpg";
-import bankingDistrict3D from "@/assets/districts/banking-night.jpg";
-import realEstateDistrict3D from "@/assets/districts/realestate-morning.jpg";
-import realEstateDistrict3D from "@/assets/districts/realestate-sunset.jpg";
-import realEstateDistrict3D from "@/assets/districts/realestate-night.jpg";
-import tradeDistrict3D from "@/assets/districts/trade-district-3d.jpg";
-import fintechDistrict3D from "@/assets/districts/ffintech-morning.jpg";
-import fintechDistrict3D from "@/assets/districts/ffintech-sunset.jpg";
-import fintechDistrict3D from "@/assets/districts/ffintech-night.jpg";
+// XP District Images
+import xpMorning from "@/assets/districts/xp-morning.jpg";
+import xpSunset from "@/assets/districts/xp-sunset.jpg";
+import xpNight from "@/assets/districts/xp-night.jpg";
+
+// Anima District Images
+import animaMorning from "@/assets/districts/anima-morning.jpg";
+import animaSunset from "@/assets/districts/anima-sunset.jpg";
+import animaNight from "@/assets/districts/anima-night.jpg";
+
+// Crypto District Images
+import cryptoMorning from "@/assets/districts/crypto-morning.jpg";
+import cryptoSunset from "@/assets/districts/crypto-sunset.jpg";
+import cryptoNight from "@/assets/districts/crypto-night.jpg";
+
+// Banking District Images
+import bankingMorning from "@/assets/districts/banking-morning.jpg";
+import bankingSunset from "@/assets/districts/banking-sunset.jpg";
+import bankingNight from "@/assets/districts/banking-night.jpg";
+
+// Real Estate District Images
+import realEstateMorning from "@/assets/districts/realestate-morning.jpg";
+import realEstateSunset from "@/assets/districts/realestate-sunset.jpg";
+import realEstateNight from "@/assets/districts/realestate-night.jpg";
+
+// International Trade District Images
+import internationalMorning from "@/assets/districts/international-morning.jpg";
+import internationalSunset from "@/assets/districts/international-sunset.jpg";
+import internationalNight from "@/assets/districts/international-night.jpg";
+
+// Fintech District Images
+import fintechMorning from "@/assets/districts/fintech-morning.jpg";
+import fintechSunset from "@/assets/districts/fintech-sunset.jpg";
+import fintechNight from "@/assets/districts/fintech-night.jpg";
 
 interface District {
   id: string;
@@ -92,14 +107,59 @@ const districtLogos = {
   fintech: fintechLogo,
 };
 
-const district3DImages = {
-  renda_variavel: xpDistrict3D,
-  educacao_financeira: animaDistrict3D,
-  criptomoedas: criptoDistrict3D,
-  sistema_bancario: bankingDistrict3D,
-  fundos_imobiliarios: realEstateDistrict3D,
-  mercado_internacional: tradeDistrict3D,
-  fintech: fintechDistrict3D,
+// Function to get district image based on theme and time of day
+const getDistrictImage = (districtTheme: string) => {
+  const currentTime = new Date();
+  const hour = currentTime.getHours();
+  
+  let timeOfDay;
+  if (hour >= 6 && hour < 18) {
+    timeOfDay = 'morning';
+  } else if (hour >= 18 && hour < 21) {
+    timeOfDay = 'sunset';
+  } else {
+    timeOfDay = 'night';
+  }
+
+  const imageMap = {
+    renda_variavel: {
+      morning: xpMorning,
+      sunset: xpSunset,
+      night: xpNight,
+    },
+    educacao_financeira: {
+      morning: animaMorning,
+      sunset: animaSunset,
+      night: animaNight,
+    },
+    criptomoedas: {
+      morning: cryptoMorning,
+      sunset: cryptoSunset,
+      night: cryptoNight,
+    },
+    sistema_bancario: {
+      morning: bankingMorning,
+      sunset: bankingSunset,
+      night: bankingNight,
+    },
+    fundos_imobiliarios: {
+      morning: realEstateMorning,
+      sunset: realEstateSunset,
+      night: realEstateNight,
+    },
+    mercado_internacional: {
+      morning: internationalMorning,
+      sunset: internationalSunset,
+      night: internationalNight,
+    },
+    fintech: {
+      morning: fintechMorning,
+      sunset: fintechSunset,
+      night: fintechNight,
+    },
+  };
+
+  return imageMap[districtTheme as keyof typeof imageMap]?.[timeOfDay] || xpMorning;
 };
 
 export default function DistrictDetail() {
@@ -375,7 +435,7 @@ export default function DistrictDetail() {
   }
 
   const districtLogo = districtLogos[district.theme as keyof typeof districtLogos];
-  const district3DImage = district3DImages[district.theme as keyof typeof district3DImages];
+  const district3DImage = getDistrictImage(district.theme);
   const battleWinRate = district.battles_won + district.battles_lost > 0 
     ? Math.round((district.battles_won / (district.battles_won + district.battles_lost)) * 100)
     : 0;
