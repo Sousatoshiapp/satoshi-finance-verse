@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { supabase } from '@/integrations/supabase/client';
 
 // Paleta de cores temáticas por distrito
 const districtColors = {
@@ -45,6 +46,12 @@ interface DistrictBackgroundProps {
   className?: string;
 }
 
+interface District {
+  image_url: string | null;
+  color_primary: string;
+  color_secondary: string;
+}
+
 // Função para gerar gradientes temáticos baseados no distrito e período
 const getDistrictGradient = (districtTheme: string, timeOfDay: string) => {
   const colors = districtColors[districtTheme as keyof typeof districtColors] || districtColors.sistema_bancario;
@@ -63,6 +70,24 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
   className = "" 
 }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [districtData, setDistrictData] = useState<District | null>(null);
+
+  // Buscar dados do distrito
+  useEffect(() => {
+    const fetchDistrictData = async () => {
+      const { data, error } = await supabase
+        .from('districts')
+        .select('image_url, color_primary, color_secondary')
+        .eq('theme', districtTheme)
+        .single();
+      
+      if (data && !error) {
+        setDistrictData(data);
+      }
+    };
+    
+    fetchDistrictData();
+  }, [districtTheme]);
 
   // Atualizar a hora a cada minuto
   useEffect(() => {
@@ -104,6 +129,22 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
 
   return (
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
+      {/* Background image se disponível */}
+      {districtData?.image_url && (
+        <motion.div
+          initial={{ opacity: 0, scale: 1.1 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url(${districtData.image_url})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
+      )}
+
       {/* Background gradiente temático */}
       <motion.div
         key={`${districtTheme}-${timeOfDay}`}
@@ -112,7 +153,9 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
         transition={{ duration: 1.2, ease: "easeInOut" }}
         className="absolute inset-0"
         style={{
-          background: currentGradient,
+          background: districtData?.image_url 
+            ? `linear-gradient(135deg, ${districtData.color_primary}40 0%, ${districtData.color_secondary}30 50%, ${districtData.color_primary}20 100%)`
+            : currentGradient,
         }}
       />
 
@@ -120,7 +163,7 @@ export const DistrictBackground: React.FC<DistrictBackgroundProps> = ({
       <div className={`absolute inset-0 ${overlayStyles[timeOfDay]}`} />
 
       {/* Overlay de gradiente para legibilidade */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
 
       {/* Efeitos de partículas sutis */}
       <div className="absolute inset-0 pointer-events-none">

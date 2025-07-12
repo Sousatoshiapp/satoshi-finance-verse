@@ -506,11 +506,14 @@ export function QuizEngine({
           </div>
 
           {/* Question Card */}
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-6 leading-relaxed text-center">
-                {currentQuestion.question}
-              </h2>
+          <Card className="mb-6 bg-gradient-to-br from-card via-card to-muted/30 border-2 border-primary/20">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-start gap-3 mb-6">
+                <span className="text-2xl">🎯</span>
+                <h2 className="text-xl sm:text-2xl font-semibold leading-relaxed text-primary flex-1">
+                  {currentQuestion.question}
+                </h2>
+              </div>
               
               <div className="space-y-3">
                 {currentQuestion.options.map((option, index) => {
@@ -526,22 +529,23 @@ export function QuizEngine({
                       onClick={() => handleOptionSelect(option)}
                       disabled={showAnswer}
                       className={cn(
-                        "w-full p-4 text-left transition-all duration-200",
+                        "w-full p-3 sm:p-4 text-left transition-all duration-300 min-h-[64px] leading-relaxed group hover:shadow-lg",
+                        "text-sm sm:text-base break-words hyphens-auto",
                         selectedAnswer === option
-                          ? "bg-primary text-primary-foreground border-primary scale-105"
-                          : "bg-card border-border hover:scale-102",
-                        !selectedAnswer && !showAnswer ? "hover:bg-[#adff2f] hover:text-black" : "",
+                          ? "bg-primary text-primary-foreground border-primary scale-105 shadow-lg"
+                          : "bg-card border-border hover:scale-[1.02] hover:border-primary/50",
+                        !selectedAnswer && !showAnswer ? "hover:bg-gradient-to-r hover:from-[#adff2f]/20 hover:to-[#adff2f]/10 hover:text-foreground hover:border-[#adff2f]" : "",
                         showAnswer && option === currentQuestion.correct_answer
-                          ? "bg-green-500 text-white border-green-500 scale-105"
+                          ? "bg-green-500 text-white border-green-500 scale-105 shadow-green-200/50 shadow-lg"
                           : showAnswer && selectedAnswer === option && option !== currentQuestion.correct_answer
-                          ? "bg-red-500 text-white border-red-500 scale-105"
+                          ? "bg-red-500 text-white border-red-500 scale-105 shadow-red-200/50 shadow-lg"
                           : ""
                       )}
                     >
-                      <div className="flex items-center justify-between">
-                        <span>{option}</span>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="flex-1 pr-2 text-left overflow-wrap-anywhere">{option}</span>
                         {showAnswer && (
-                          <span className="text-lg">
+                          <span className="text-lg flex-shrink-0">
                             {isCorrect ? '✅' : isSelected ? '❌' : ''}
                           </span>
                         )}
@@ -558,10 +562,10 @@ export function QuizEngine({
             <Button
               onClick={handleSubmit}
               disabled={!selectedAnswer}
-              className="w-full"
+              className="w-full transition-all duration-300 hover:scale-[1.02] shadow-lg"
               size="lg"
             >
-              {selectedAnswer ? 'Confirmar Resposta' : 'Selecione uma opção'}
+              {selectedAnswer ? '✨ Confirmar Resposta' : '👆 Selecione uma opção'}
             </Button>
           )}
 
