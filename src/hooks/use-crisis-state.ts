@@ -40,6 +40,10 @@ export const useCrisisState = () => {
     localStorage.removeItem(CRISIS_BANNER_KEY);
   };
 
+  const openBanner = () => {
+    setIsDismissed(false);
+  };
+
   const shouldShowBanner = crisis && !isDismissed && !isLoading;
   const shouldShowIcon = crisis && !isLoading; // Ícone sempre visível durante crise
 
@@ -51,6 +55,7 @@ export const useCrisisState = () => {
     hasContributed,
     dismissBanner,
     markAsContributed,
-    reopenBanner
+    reopenBanner,
+    openBanner
   };
 };

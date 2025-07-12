@@ -48,7 +48,7 @@ export default function Dashboard() {
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
   const { points: realtimePoints, isOnline } = useRealtime();
-  const { shouldShowBanner, shouldShowIcon, dismissBanner, reopenBanner, markAsContributed } = useCrisisState();
+  const { shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -219,7 +219,7 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-3">
               {shouldShowIcon && (
-                <CrisisIcon onClick={reopenBanner} />
+                <CrisisIcon onClick={openBanner} />
               )}
               <SubscriptionIndicator tier={subscription.tier} size="sm" />
               {subscription.tier === 'free' && (
