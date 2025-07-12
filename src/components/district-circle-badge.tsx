@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { abbreviateDistrictName } from "@/lib/district-utils";
+import xpLogo from "@/assets/xp-logo.png";
+import animaLogo from "@/assets/anima-logo.png";
 
 interface DistrictCircleBadgeProps {
   district?: {
@@ -38,6 +40,17 @@ export function DistrictCircleBadge({ district, size = "md" }: DistrictCircleBad
     return name.charAt(0).toUpperCase();
   };
 
+  // Mapear URLs de logo para imports locais
+  const getLogoSrc = (district: any) => {
+    if (district.sponsor_company === 'XP Investimentos' || district.theme === 'renda_variavel') {
+      return xpLogo;
+    }
+    if (district.sponsor_company === 'Ânima Educação') {
+      return animaLogo;
+    }
+    return district.sponsor_logo_url;
+  };
+
   return (
     <button
       onClick={() => navigate('/satoshi-city')}
@@ -51,15 +64,21 @@ export function DistrictCircleBadge({ district, size = "md" }: DistrictCircleBad
       {/* Logo do patrocinador ou inicial do distrito */}
       {district.sponsor_logo_url ? (
         <img 
-          src={district.sponsor_logo_url} 
+          src={getLogoSrc(district)} 
           alt={district.name}
           className="w-full h-full object-contain rounded-full p-1"
+          onError={(e) => {
+            // Fallback para inicial se imagem falhar
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+          }}
         />
-      ) : (
-        <span className="text-white font-bold text-lg">
-          {getDistrictInitial(district.name)}
-        </span>
-      )}
+      ) : null}
+      
+      {/* Fallback com inicial do distrito */}
+      <span className={`text-white font-bold text-lg ${district.sponsor_logo_url ? 'hidden' : ''}`}>
+        {getDistrictInitial(district.name)}
+      </span>
       
       {/* Tooltip on hover */}
       <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
