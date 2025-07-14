@@ -184,7 +184,7 @@ export default function DistrictDetail() {
   
   const { toast } = useToast();
   const { data: crisis } = useCrisisData();
-  const { shouldShowBanner, dismissBanner, markAsContributed } = useCrisisState();
+  const { shouldShowBanner, dismissBanner, markAsContributed, crisis: crisisData } = useCrisisState();
 
   useEffect(() => {
     if (districtId) {
@@ -640,7 +640,12 @@ export default function DistrictDetail() {
         {/* Crisis Alert Banner */}
         {shouldShowBanner && (
           <div className="mb-6">
-            <CrisisAlert onDismiss={dismissBanner} onContributed={markAsContributed} />
+            <CrisisAlert 
+              crisis={crisisData}
+              shouldShowBanner={shouldShowBanner}
+              onDismiss={dismissBanner} 
+              onContributed={markAsContributed} 
+            />
           </div>
         )}
 

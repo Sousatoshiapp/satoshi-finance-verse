@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, Clock, Zap, X } from "lucide-react";
-import { useCrisisState } from "@/hooks/use-crisis-state";
 import { CrisisContributionModal } from "./CrisisContributionModal";
 
 interface CrisisAlertProps {
+  crisis: any;
+  shouldShowBanner: boolean;
   onDismiss?: () => void;
   onContributed?: () => void;
 }
 
-export const CrisisAlert = ({ onDismiss, onContributed }: CrisisAlertProps) => {
-  const { crisis, shouldShowBanner } = useCrisisState();
+export const CrisisAlert = ({ crisis, shouldShowBanner, onDismiss, onContributed }: CrisisAlertProps) => {
   const [showContributionModal, setShowContributionModal] = useState(false);
+
+  console.log('CrisisAlert render:', { shouldShowBanner, crisis: !!crisis });
 
   if (!shouldShowBanner || !crisis) return null;
 

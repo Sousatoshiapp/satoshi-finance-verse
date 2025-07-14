@@ -48,7 +48,9 @@ export default function Dashboard() {
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
   const { points: realtimePoints, isOnline } = useRealtime();
-  const { shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
+  const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
+  
+  console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -219,7 +221,10 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-3">
               {shouldShowIcon && (
-                <CrisisIcon onClick={openBanner} />
+                <CrisisIcon onClick={() => {
+                  console.log('CrisisIcon clicked, calling openBanner');
+                  openBanner();
+                }} />
               )}
               <SubscriptionIndicator tier={subscription.tier} size="sm" />
               {subscription.tier === 'free' && (
@@ -236,7 +241,15 @@ export default function Dashboard() {
           </div>
 
           {/* Crisis Alert - Non-invasive placement */}
-          <CrisisAlert onDismiss={dismissBanner} onContributed={markAsContributed} />
+          <CrisisAlert 
+            crisis={crisis}
+            shouldShowBanner={shouldShowBanner}
+            onDismiss={() => {
+              console.log('CrisisAlert dismiss button clicked');
+              dismissBanner();
+            }} 
+            onContributed={markAsContributed} 
+          />
 
           {/* Consolidated Avatar & Level Section */}
           <div className="text-center mb-6">
