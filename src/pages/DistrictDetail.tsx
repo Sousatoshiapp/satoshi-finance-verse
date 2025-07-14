@@ -186,6 +186,14 @@ export default function DistrictDetail() {
   const { toast } = useToast();
   const { data: crisis } = useCrisisData();
   const { shouldShowBanner, shouldShowIcon, dismissBanner, markAsContributed, openBanner, crisis: crisisData } = useCrisisState();
+  
+  console.log('🚨 DistrictDetail crisis state:', { 
+    crisis: !!crisis, 
+    shouldShowIcon, 
+    shouldShowBanner, 
+    crisisData: !!crisisData,
+    loading: !crisis && !crisisData 
+  });
 
   useEffect(() => {
     if (districtId) {
@@ -538,10 +546,13 @@ export default function DistrictDetail() {
             </Button>
             
             {shouldShowIcon && (
-              <CrisisIcon onClick={() => {
-                console.log('District CrisisIcon clicked, calling openBanner');
-                openBanner();
-              }} />
+              <div className="relative">
+                <CrisisIcon onClick={() => {
+                  console.log('🚨 District CrisisIcon clicked, calling openBanner');
+                  openBanner();
+                }} />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+              </div>
             )}
           </div>
 
