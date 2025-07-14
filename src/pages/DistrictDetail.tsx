@@ -15,6 +15,7 @@ import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 import { useCrisisState } from "@/hooks/use-crisis-state";
 import { useCrisisData } from "@/hooks/use-crisis-data";
+import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
 import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
@@ -184,7 +185,7 @@ export default function DistrictDetail() {
   
   const { toast } = useToast();
   const { data: crisis } = useCrisisData();
-  const { shouldShowBanner, dismissBanner, markAsContributed, crisis: crisisData } = useCrisisState();
+  const { shouldShowBanner, shouldShowIcon, dismissBanner, markAsContributed, openBanner, crisis: crisisData } = useCrisisState();
 
   useEffect(() => {
     if (districtId) {
@@ -525,15 +526,24 @@ export default function DistrictDetail() {
         ></div>
         
         <div className="relative container mx-auto px-4 py-6 h-full flex flex-col">
-          {/* Back Button */}
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/satoshi-city')}
-            className="self-start mb-4 text-white hover:bg-white/10"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar à Cidade
-          </Button>
+          {/* Header with Back Button and Crisis Icon */}
+          <div className="flex items-center justify-between mb-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/satoshi-city')}
+              className="text-white hover:bg-white/10"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Voltar à Cidade
+            </Button>
+            
+            {shouldShowIcon && (
+              <CrisisIcon onClick={() => {
+                console.log('District CrisisIcon clicked, calling openBanner');
+                openBanner();
+              }} />
+            )}
+          </div>
 
           {/* District Info */}
           <div className="flex-1 flex items-center">
