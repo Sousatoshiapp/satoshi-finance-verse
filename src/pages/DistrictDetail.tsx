@@ -13,6 +13,7 @@ import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Ta
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
+import { CrisisEmergencyModal } from "@/components/crisis/CrisisEmergencyModal";
 import { useCrisisState } from "@/hooks/use-crisis-state";
 import { useCrisisData } from "@/hooks/use-crisis-data";
 import { CrisisIcon } from "@/components/crisis/CrisisIcon";
@@ -182,6 +183,9 @@ export default function DistrictDetail() {
   const [storeItems, setStoreItems] = useState<any[]>([]);
   const [districtPower, setDistrictPower] = useState(0);
   const [allDistrictsPower, setAllDistrictsPower] = useState<any[]>([]);
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const [userBtz, setUserBtz] = useState(0);
+  const [userXp, setUserXp] = useState(0);
   
   const { toast } = useToast();
   const { data: crisis } = useCrisisData();
@@ -315,6 +319,18 @@ export default function DistrictDetail() {
 
         if (profile) {
           setCurrentProfile(profile);
+          
+          // Get user profile data including BTZ and XP
+          const { data: userProfileData } = await supabase
+            .from('profiles')
+            .select('points, xp')
+            .eq('id', profile.id)
+            .single();
+          
+          if (userProfileData) {
+            setUserBtz(userProfileData.points || 0);
+            setUserXp(userProfileData.xp || 0);
+          }
           
           const { data: userDistrictData } = await supabase
             .from('user_districts')
@@ -459,7 +475,17 @@ export default function DistrictDetail() {
   const districtRanking = allDistrictsPower.findIndex(d => d.id === districtId) + 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative">
+    <div 
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: `url(${district3DImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Full screen overlay */}
+      <div className={`absolute inset-0 ${crisis ? 'bg-gradient-to-br from-red-900/80 via-slate-900/80 to-red-900/60' : 'bg-gradient-to-br from-slate-900/85 via-purple-900/75 to-slate-900/85'}`}></div>
       {/* Crisis Emergency Overlay */}
       {crisis && (
         <div className="fixed inset-0 bg-red-900/10 pointer-events-none z-10">
@@ -467,11 +493,15 @@ export default function DistrictDetail() {
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 via-orange-500 to-red-500 animate-pulse"></div>
           
-          {/* Crisis alert badge */}
+          {/* Crisis alert badge with clickable action */}
           <div className="absolute top-4 left-4 z-20">
-            <div className="flex items-center space-x-2 bg-red-900/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-red-500/50 animate-pulse">
+            <div 
+              className="flex items-center space-x-2 bg-red-900/80 backdrop-blur-sm rounded-lg px-3 py-2 border border-red-500/50 animate-pulse cursor-pointer hover:bg-red-800/80 transition-colors pointer-events-auto"
+              onClick={() => setShowEmergencyModal(true)}
+            >
               <AlertTriangle className="h-4 w-4 text-red-400" />
               <span className="text-red-200 text-sm font-medium">ESTADO DE EMERGÊNCIA ATIVO</span>
+              <span className="text-red-300 text-xs">Clique para ajudar</span>
             </div>
           </div>
           
@@ -494,38 +524,12 @@ export default function DistrictDetail() {
       )}
       
       {/* Hero Header */}
-      <div className="relative overflow-hidden h-64 sm:h-80">
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ 
-            backgroundImage: `url(${district3DImage})`,
-            filter: crisis ? 'brightness(0.2) contrast(1.4) hue-rotate(15deg)' : 'brightness(0.3) contrast(1.2)'
-          }}
-        >
-          <div className={`absolute inset-0 ${crisis ? 'bg-gradient-to-t from-red-900 via-slate-900/70 to-red-900/30' : 'bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent'}`}></div>
-          
-          {/* Crisis particle effects */}
-          {crisis && (
-            <div className="absolute inset-0">
-              {[...Array(12)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-1 h-1 bg-red-400 rounded-full animate-ping"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animationDelay: `${Math.random() * 2}s`,
-                    animationDuration: `${2 + Math.random() * 2}s`
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="relative overflow-hidden h-64 sm:h-80 z-20">
+        {/* Overlay for better text readability */}
+        <div className={`absolute inset-0 ${crisis ? 'bg-gradient-to-t from-red-900/60 via-slate-900/40 to-red-900/20' : 'bg-gradient-to-t from-slate-900/60 via-slate-900/30 to-transparent'}`}></div>
         
         <div 
-          className="absolute inset-0 opacity-30"
+          className="absolute inset-0 opacity-20"
           style={{
             background: crisis 
               ? `linear-gradient(135deg, #ef444420, ${district.color_primary}20)` 
@@ -548,8 +552,8 @@ export default function DistrictDetail() {
             {shouldShowIcon && (
               <div className="relative">
                 <CrisisIcon onClick={() => {
-                  console.log('🚨 District CrisisIcon clicked, calling openBanner');
-                  openBanner();
+                  console.log('🚨 District CrisisIcon clicked, opening emergency modal');
+                  setShowEmergencyModal(true);
                 }} />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
               </div>
@@ -616,7 +620,7 @@ export default function DistrictDetail() {
       </div>
 
       {/* District Power Bar */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6 relative z-20">
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -856,6 +860,21 @@ export default function DistrictDetail() {
       </div>
 
       <FloatingNavbar />
+      
+      {/* Crisis Emergency Modal */}
+      {crisis && (
+        <CrisisEmergencyModal
+          isOpen={showEmergencyModal}
+          onClose={() => setShowEmergencyModal(false)}
+          crisis={crisis}
+          userBtz={userBtz}
+          userXp={userXp}
+          onContributionSuccess={() => {
+            // Reload user data after contribution
+            loadDistrictData();
+          }}
+        />
+      )}
     </div>
   );
 }
