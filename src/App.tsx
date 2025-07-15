@@ -156,19 +156,6 @@ function App() {
               </ProtectedRoute>
             } />
             
-            <Route path="/satoshi-city/district/:districtId" element={
-              <ProtectedRoute>
-                <DistrictDetail />
-                <FloatingNavbar />
-              </ProtectedRoute>
-            } />
-            
-            <Route path="/satoshi-city/district/:districtId/quiz" element={
-              <ProtectedRoute>
-                <DistrictQuiz />
-                <FloatingNavbar />
-              </ProtectedRoute>
-            } />
             
             <Route path="/quiz/district/:districtId" element={
               <ProtectedRoute>
