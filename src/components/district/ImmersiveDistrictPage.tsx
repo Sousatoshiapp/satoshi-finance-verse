@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Users, UserPlus } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { DistrictBackground } from './DistrictBackground';
@@ -9,6 +9,8 @@ import { DistrictCircleActions } from './DistrictCircleActions';
 import { DistrictStatsCard } from './DistrictStatsCard';
 import { useDistrictStats } from '@/hooks/use-district-stats';
 import { FloatingNavbar } from '@/components/floating-navbar';
+import { useCrisisState } from '@/hooks/use-crisis-state';
+import { CrisisEmergencyModal } from '@/components/crisis/CrisisEmergencyModal';
 // District logos
 import xpLogo from "@/assets/xp-logo.png";
 import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
@@ -17,6 +19,11 @@ import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
 import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
 import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
 import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
+
+// District backgrounds - dynamic time-based backgrounds
+import morningBg from "@/assets/districts/morning.jpg";
+import sunsetBg from "@/assets/districts/sunset.jpg";
+import nightBg from "@/assets/districts/night.jpg";
 
 interface District {
   id: string;
@@ -55,7 +62,10 @@ export const ImmersiveDistrictPage: React.FC = () => {
   const [district, setDistrict] = useState<District | null>(null);
   const [userDistrict, setUserDistrict] = useState<UserDistrict | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [crisisModalOpen, setCrisisModalOpen] = useState(false);
   const { stats, loading: statsLoading } = useDistrictStats(districtId);
+  const { crisis, shouldShowBanner, shouldShowIcon, openBanner } = useCrisisState();
 
   useEffect(() => {
     loadDistrictData();
@@ -75,7 +85,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
       if (districtError) throw districtError;
       setDistrict(districtData);
 
-      // Carregar dados do usuário no distrito
+      // Carregar dados do usuário no distrito e perfil
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: userDistrictData } = await supabase
@@ -86,6 +96,15 @@ export const ImmersiveDistrictPage: React.FC = () => {
           .single();
 
         setUserDistrict(userDistrictData);
+
+        // Carregar perfil do usuário
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        setUserProfile(profileData);
       }
 
       // Member count will come from stats hook
@@ -94,6 +113,22 @@ export const ImmersiveDistrictPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Função para determinar o fundo baseado na hora
+  const getCurrentBackground = () => {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 18) {
+      return morningBg;
+    } else if (hour >= 18 && hour < 21) {
+      return sunsetBg;
+    } else {
+      return nightBg;
+    }
+  };
+
+  const handleCrisisClick = () => {
+    setCrisisModalOpen(true);
   };
 
   const handleJoinDistrict = async () => {
@@ -156,40 +191,81 @@ export const ImmersiveDistrictPage: React.FC = () => {
   return (
     <>
       <FloatingNavbar />
-      <div className="min-h-screen w-full overflow-auto bg-gray-900">
-        {/* Background dinâmico */}
-        <DistrictBackground districtTheme={district.theme} className="fixed inset-0 z-0" />
+      <div className="min-h-screen w-full overflow-auto bg-gray-900 relative">
+        {/* Background dinâmico baseado na hora */}
+        <div 
+          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${getCurrentBackground()})` }}
+        />
+        
+        {/* Overlay de emergência se houver crise ativa */}
+        {crisis && (
+          <div className="fixed inset-0 z-5 bg-red-900/20 animate-pulse pointer-events-none" />
+        )}
 
         {/* Container principal */}
         <div className="relative z-10 min-h-screen pb-32 flex flex-col">
-          {/* Header com botão voltar e logo do distrito */}
+          {/* Header com botão voltar, logo do distrito e alerta de crise */}
           <motion.div
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="p-6 flex items-center gap-4"
+            className="p-6 flex items-center justify-between gap-4"
           >
-            <Button
-              onClick={handleBack}
-              variant="ghost"
-              size="lg"
-              className="bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 border border-white/20"
-            >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Voltar à Cidade
-            </Button>
-            
-            {/* Logo circular do distrito */}
-            {district && (
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
-                <img 
-                  src={districtLogos[district.theme as keyof typeof districtLogos]} 
-                  alt={district.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={handleBack}
+                variant="ghost"
+                size="lg"
+                className="bg-black/40 backdrop-blur-sm text-white hover:bg-black/60 border border-white/20"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Voltar à Cidade
+              </Button>
+              
+              {/* Logo circular do distrito */}
+              {district && (
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
+                  <img 
+                    src={districtLogos[district.theme as keyof typeof districtLogos]} 
+                    alt={district.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Ícone de alerta de crise */}
+            {shouldShowIcon && (
+              <Button
+                onClick={handleCrisisClick}
+                variant="ghost"
+                size="sm"
+                className="bg-red-600/80 hover:bg-red-600 text-white border border-red-500 animate-pulse"
+              >
+                <AlertTriangle className="w-5 h-5" />
+              </Button>
             )}
           </motion.div>
+
+          {/* Badge de estado de emergência */}
+          {crisis && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="px-6 mb-4"
+            >
+              <div 
+                onClick={handleCrisisClick}
+                className="mx-auto max-w-fit bg-red-600/90 backdrop-blur-sm border border-red-500 rounded-full px-4 py-2 cursor-pointer hover:bg-red-600 transition-colors animate-pulse"
+              >
+                <p className="text-white font-bold text-sm text-center">
+                  🚨 ESTADO DE EMERGÊNCIA ATIVO - CLIQUE PARA AJUDAR
+                </p>
+              </div>
+            </motion.div>
+          )}
 
           {/* Stats Cards */}
           <motion.div
@@ -285,6 +361,30 @@ export const ImmersiveDistrictPage: React.FC = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Modal de emergência de crise */}
+      {crisis && userProfile && (
+        <CrisisEmergencyModal
+          isOpen={crisisModalOpen}
+          onClose={() => setCrisisModalOpen(false)}
+          crisis={{
+            id: crisis.id,
+            title: crisis.title,
+            description: crisis.description,
+            end_time: crisis.end_time,
+            total_btz_goal: crisis.total_btz_goal,
+            total_xp_goal: crisis.total_xp_goal,
+            current_btz_contributions: crisis.current_btz_contributions,
+            current_xp_contributions: crisis.current_xp_contributions
+          }}
+          userBtz={userProfile.points || 0}
+          userXp={userProfile.xp || 0}
+          onContributionSuccess={() => {
+            loadDistrictData(); // Recarregar dados após contribuição
+            setCrisisModalOpen(false);
+          }}
+        />
+      )}
     </>
   );
 };
