@@ -20,10 +20,10 @@ import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
 import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
 import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
 
-// District backgrounds - dynamic time-based backgrounds
-import morningBg from "@/assets/districts/morning.jpg";
-import sunsetBg from "@/assets/districts/sunset.jpg";
-import nightBg from "@/assets/districts/night.jpg";
+// District backgrounds - dynamic time-based backgrounds (using Unsplash placeholders)
+const morningBg = "https://images.unsplash.com/photo-1500673922987-e212871fec22"; // yellow lights between trees - morning
+const sunsetBg = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"; // foggy mountain summit - sunset  
+const nightBg = "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb"; // blue starry night
 
 interface District {
   id: string;
