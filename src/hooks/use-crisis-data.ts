@@ -39,6 +39,7 @@ export const useCrisisData = () => {
         .select("*")
         .eq("is_active", true)
         .eq("status", "active")
+        .gt("end_time", new Date().toISOString())
         .maybeSingle();
       
       if (error && error.code !== "PGRST116") {
