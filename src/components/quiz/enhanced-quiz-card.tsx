@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useEnhancedQuiz } from "@/hooks/use-enhanced-quiz";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
+import { useQuizShuffle } from "@/hooks/use-quiz-shuffle";
 import { Clock, Zap, Target, Star, Gift } from "lucide-react";
 import confetti from "canvas-confetti";
 
@@ -25,6 +26,17 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showPowerUps, setShowPowerUps] = useState(false);
+  const [shuffledQuestions, setShuffledQuestions] = useState(questions);
+
+  const { shuffleQuestions } = useQuizShuffle();
+
+  // Embaralhar questões quando recebermos novas
+  useEffect(() => {
+    if (questions && questions.length > 0) {
+      const shuffled = shuffleQuestions(questions);
+      setShuffledQuestions(shuffled);
+    }
+  }, [questions, shuffleQuestions]);
 
   const {
     quizState,
@@ -35,11 +47,11 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
     submitAnswer,
     nextQuestion,
     finishQuiz
-  } = useEnhancedQuiz(questions);
+  } = useEnhancedQuiz(shuffledQuestions);
 
   const { completeQuizMission } = useDailyMissions();
 
-  const currentQuestion = questions[quizState.currentQuestion];
+  const currentQuestion = shuffledQuestions[quizState.currentQuestion];
 
   useEffect(() => {
     if (quizState.timeLeft === 0 && isQuizActive && !showResult) {
@@ -80,7 +92,7 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
     }
 
     setTimeout(() => {
-      if (quizState.currentQuestion < questions.length - 1) {
+      if (quizState.currentQuestion < shuffledQuestions.length - 1) {
         nextQuestion();
         setSelectedAnswer(null);
         setShowResult(false);
@@ -139,7 +151,7 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
   if (!currentQuestion) return null;
 
   const timePercentage = (quizState.timeLeft / 30) * 100;
-  const progressPercentage = ((quizState.currentQuestion + 1) / questions.length) * 100;
+  const progressPercentage = ((quizState.currentQuestion + 1) / shuffledQuestions.length) * 100;
 
   return (
     <Card className={cn("max-w-4xl mx-auto cyber-card relative overflow-hidden", className)}>
@@ -154,7 +166,7 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-4">
             <Badge variant="outline" className="border-cyan-500 text-cyan-400">
-              NODE {quizState.currentQuestion + 1}/{questions.length}
+              NODE {quizState.currentQuestion + 1}/{shuffledQuestions.length}
             </Badge>
             <div className={cn("combo-counter flex items-center gap-2", 
               quizState.combo > 0 && "text-yellow-400"

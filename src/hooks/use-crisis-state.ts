@@ -10,13 +10,23 @@ export const useCrisisState = () => {
   const [hasContributed, setHasContributed] = useState(false);
 
   useEffect(() => {
-    // Check localStorage for contributed state
-    const contributed = localStorage.getItem(CRISIS_CONTRIBUTED_KEY);
-    
-    if (contributed) {
-      setHasContributed(true);
+    // If there's no active crisis, clear all crisis-related localStorage
+    if (!crisis && !isLoading) {
+      localStorage.removeItem(CRISIS_BANNER_KEY);
+      localStorage.removeItem(CRISIS_CONTRIBUTED_KEY);
+      setHasContributed(false);
+      setIsBannerOpen(false);
+      return;
     }
-  }, []);
+
+    // Check localStorage for contributed state only if there's an active crisis
+    if (crisis) {
+      const contributed = localStorage.getItem(CRISIS_CONTRIBUTED_KEY);
+      if (contributed) {
+        setHasContributed(true);
+      }
+    }
+  }, [crisis, isLoading]);
 
   const dismissBanner = () => {
     setIsBannerOpen(false);

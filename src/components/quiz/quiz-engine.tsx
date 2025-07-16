@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CircularTimer } from "@/components/duels/circular-timer";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuizShuffle } from '@/hooks/use-quiz-shuffle';
 import { useUnifiedSRS } from "@/hooks/use-unified-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
@@ -98,6 +99,7 @@ export function QuizEngine({
 
   const { getDueQuestions, submitAnswer } = useUnifiedSRS();
   const { } = useAdvancedQuizAudio();
+  const { shuffleQuestions } = useQuizShuffle();
 
   const handleContinue = () => {
     console.log('🔄 handleContinue chamado');
@@ -190,7 +192,10 @@ export function QuizEngine({
         return;
       }
       
-      setQuestions(fetchedQuestions);
+      // Embaralhar as opções de cada questão
+      const shuffledQuestions = shuffleQuestions(fetchedQuestions);
+      
+      setQuestions(shuffledQuestions);
     } catch (error) {
       console.error('Error fetching questions:', error);
       toast({
