@@ -20,10 +20,65 @@ import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
 import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
 import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
 
-// District backgrounds - dynamic time-based backgrounds (using Unsplash placeholders)
-const morningBg = "https://images.unsplash.com/photo-1500673922987-e212871fec22"; // yellow lights between trees - morning
-const sunsetBg = "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05"; // foggy mountain summit - sunset  
-const nightBg = "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb"; // blue starry night
+// District backgrounds - dynamic time-based backgrounds
+import bankingMorning from "@/assets/districts/banking-morning.jpg";
+import bankingSunset from "@/assets/districts/banking-sunset.jpg";
+import bankingNight from "@/assets/districts/banking-night.jpg";
+import cryptoMorning from "@/assets/districts/crypto-morning.jpg";
+import cryptoSunset from "@/assets/districts/crypto-sunset.jpg";
+import cryptoNight from "@/assets/districts/crypto-night.jpg";
+import animaMorning from "@/assets/districts/anima-morning.jpg";
+import animaSunset from "@/assets/districts/anima-sunset.jpg";
+import animaNight from "@/assets/districts/anima-night.jpg";
+import fintechMorning from "@/assets/districts/fintech-morning.jpg";
+import fintechSunset from "@/assets/districts/fintech-sunset.jpg";
+import fintechNight from "@/assets/districts/fintech-night.jpg";
+import realEstateMorning from "@/assets/districts/real-estate-morning.jpg";
+import realEstateSunset from "@/assets/districts/real-estate-sunset.jpg";
+import realEstateNight from "@/assets/districts/real-estate-night.jpg";
+import tradeMorning from "@/assets/districts/trade-morning.jpg";
+import tradeSunset from "@/assets/districts/trade-sunset.jpg";
+import tradeNight from "@/assets/districts/trade-night.jpg";
+
+// Mapeamento de fundos por tema e hora
+const districtBackgrounds = {
+  sistema_bancario: {
+    morning: bankingMorning,
+    sunset: bankingSunset,
+    night: bankingNight
+  },
+  criptomoedas: {
+    morning: cryptoMorning,
+    sunset: cryptoSunset,
+    night: cryptoNight
+  },
+  educacao_financeira: {
+    morning: animaMorning,
+    sunset: animaSunset,
+    night: animaNight
+  },
+  fintech: {
+    morning: fintechMorning,
+    sunset: fintechSunset,
+    night: fintechNight
+  },
+  fundos_imobiliarios: {
+    morning: realEstateMorning,
+    sunset: realEstateSunset,
+    night: realEstateNight
+  },
+  mercado_internacional: {
+    morning: tradeMorning,
+    sunset: tradeSunset,
+    night: tradeNight
+  },
+  // Fallback para renda variável (XP)
+  renda_variavel: {
+    morning: bankingMorning,
+    sunset: bankingSunset,
+    night: bankingNight
+  }
+};
 
 interface District {
   id: string;
@@ -115,15 +170,22 @@ export const ImmersiveDistrictPage: React.FC = () => {
     }
   };
 
-  // Função para determinar o fundo baseado na hora
+  // Função para determinar o fundo baseado na hora e tema do distrito
   const getCurrentBackground = () => {
+    if (!district) return null;
+    
     const hour = new Date().getHours();
+    const theme = district.theme as keyof typeof districtBackgrounds;
+    const backgrounds = districtBackgrounds[theme];
+    
+    if (!backgrounds) return null;
+    
     if (hour >= 6 && hour < 18) {
-      return morningBg;
+      return backgrounds.morning;
     } else if (hour >= 18 && hour < 21) {
-      return sunsetBg;
+      return backgrounds.sunset;
     } else {
-      return nightBg;
+      return backgrounds.night;
     }
   };
 
