@@ -20,64 +20,49 @@ import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
 import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
 import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
 
-// District backgrounds - dynamic time-based backgrounds
+// District backgrounds - only import images that actually exist
 import bankingMorning from "@/assets/districts/banking-morning.jpg";
-import bankingSunset from "@/assets/districts/banking-sunset.jpg";
 import bankingNight from "@/assets/districts/banking-night.jpg";
 import cryptoMorning from "@/assets/districts/crypto-morning.jpg";
-import cryptoSunset from "@/assets/districts/crypto-sunset.jpg";
-import cryptoNight from "@/assets/districts/crypto-night.jpg";
-import animaMorning from "@/assets/districts/anima-morning.jpg";
-import animaSunset from "@/assets/districts/anima-sunset.jpg";
-import animaNight from "@/assets/districts/anima-night.jpg";
-import fintechMorning from "@/assets/districts/fintech-morning.jpg";
-import fintechSunset from "@/assets/districts/fintech-sunset.jpg";
-import fintechNight from "@/assets/districts/fintech-night.jpg";
-import realEstateMorning from "@/assets/districts/real-estate-morning.jpg";
-import realEstateSunset from "@/assets/districts/real-estate-sunset.jpg";
-import realEstateNight from "@/assets/districts/real-estate-night.jpg";
-import tradeMorning from "@/assets/districts/trade-morning.jpg";
-import tradeSunset from "@/assets/districts/trade-sunset.jpg";
-import tradeNight from "@/assets/districts/trade-night.jpg";
+import internationalMorning from "@/assets/districts/international-morning.jpg";
 
-// Mapeamento de fundos por tema e hora
-const districtBackgrounds = {
+// District 3D backgrounds (fallback for all districts)
+import animaDistrict3D from "@/assets/districts/anima-district-3d.jpg";
+import bankingDistrict3D from "@/assets/districts/banking-district-3d.jpg";
+import cryptoDistrict3D from "@/assets/districts/cripto-district-3d.jpg";
+import fintechDistrict3D from "@/assets/districts/fintech-district-3d.jpg";
+import realEstateDistrict3D from "@/assets/districts/real-estate-district-3d.jpg";
+import tradeDistrict3D from "@/assets/districts/trade-district-3d.jpg";
+
+// Fallback placeholder images for missing time-based variants
+const fallbackMorning = "https://images.unsplash.com/photo-1500673922987-e212871fec22";
+const fallbackNight = "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb";
+
+// District 3D backgrounds mapping
+const district3DBackgrounds = {
+  educacao_financeira: animaDistrict3D,
+  sistema_bancario: bankingDistrict3D,
+  criptomoedas: cryptoDistrict3D,
+  fintech: fintechDistrict3D,
+  fundos_imobiliarios: realEstateDistrict3D,
+  mercado_internacional: tradeDistrict3D,
+  renda_variavel: bankingDistrict3D, // fallback for XP
+};
+
+// Time-based backgrounds mapping (only for districts that have them)
+const timeBasedBackgrounds = {
   sistema_bancario: {
     morning: bankingMorning,
-    sunset: bankingSunset,
-    night: bankingNight
+    night: bankingNight,
   },
   criptomoedas: {
     morning: cryptoMorning,
-    sunset: cryptoSunset,
-    night: cryptoNight
-  },
-  educacao_financeira: {
-    morning: animaMorning,
-    sunset: animaSunset,
-    night: animaNight
-  },
-  fintech: {
-    morning: fintechMorning,
-    sunset: fintechSunset,
-    night: fintechNight
-  },
-  fundos_imobiliarios: {
-    morning: realEstateMorning,
-    sunset: realEstateSunset,
-    night: realEstateNight
+    night: cryptoDistrict3D, // fallback to 3D
   },
   mercado_internacional: {
-    morning: tradeMorning,
-    sunset: tradeSunset,
-    night: tradeNight
+    morning: internationalMorning,
+    night: tradeDistrict3D, // fallback to 3D
   },
-  // Fallback para renda variável (XP)
-  renda_variavel: {
-    morning: bankingMorning,
-    sunset: bankingSunset,
-    night: bankingNight
-  }
 };
 
 interface District {
@@ -175,18 +160,26 @@ export const ImmersiveDistrictPage: React.FC = () => {
     if (!district) return null;
     
     const hour = new Date().getHours();
-    const theme = district.theme as keyof typeof districtBackgrounds;
-    const backgrounds = districtBackgrounds[theme];
+    const theme = district.theme as keyof typeof timeBasedBackgrounds;
+    const timeBasedBg = timeBasedBackgrounds[theme];
     
-    if (!backgrounds) return null;
-    
-    if (hour >= 6 && hour < 18) {
-      return backgrounds.morning;
-    } else if (hour >= 18 && hour < 21) {
-      return backgrounds.sunset;
-    } else {
-      return backgrounds.night;
+    // Se tem backgrounds específicos para horário, use-os
+    if (timeBasedBg) {
+      if (hour >= 6 && hour < 18) {
+        return timeBasedBg.morning;
+      } else {
+        return timeBasedBg.night;
+      }
     }
+    
+    // Caso contrário, use o background 3D do distrito
+    const district3DBg = district3DBackgrounds[theme];
+    if (district3DBg) {
+      return district3DBg;
+    }
+    
+    // Fallback final para placeholder
+    return hour >= 6 && hour < 18 ? fallbackMorning : fallbackNight;
   };
 
   const handleCrisisClick = () => {
