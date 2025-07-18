@@ -17,13 +17,7 @@ import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
 import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
 import satoshiCityNight from "@/assets/satoshi-city-night-illuminated.jpg";
-import xpLogo from "@/assets/xp-logo.png";
-import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
-import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
-import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
-import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
-import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
-import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
+// Note: District logos are missing from assets, using icon fallback system
 
 interface District {
   id: string;
@@ -64,13 +58,25 @@ const districtIcons = {
 };
 
 const districtLogos = {
-  renda_variavel: xpLogo,
-  educacao_financeira: animaLogo,
-  criptomoedas: criptoLogo,
-  sistema_bancario: bankingLogo,
-  fundos_imobiliarios: realEstateLogo,
-  mercado_internacional: tradeLogo,
-  fintech: fintechLogo,
+  // Note: District logos are missing from assets, using icon fallback system
+};
+
+// Função para obter logo ou ícone de fallback
+const getDistrictLogoOrIcon = (theme: string, districtSponsorLogoUrl?: string) => {
+  // First try sponsor logo if available
+  if (districtSponsorLogoUrl) {
+    return { type: 'image', src: districtSponsorLogoUrl };
+  }
+  
+  // Then try theme-specific logo
+  const logo = districtLogos[theme as keyof typeof districtLogos];
+  if (logo) {
+    return { type: 'image', src: logo };
+  }
+  
+  // Finally use theme icon
+  const IconComponent = districtIcons[theme as keyof typeof districtIcons];
+  return { type: 'icon', component: IconComponent };
 };
 
 // Posições dos distritos no mapa (coordenadas em %)
@@ -425,7 +431,7 @@ export default function SatoshiCity() {
             const position = districtPositions[district.theme as keyof typeof districtPositions];
             const userInfo = getUserDistrictInfo(district.id);
             const IconComponent = districtIcons[district.theme as keyof typeof districtIcons] || Building;
-            const districtLogo = district.sponsor_logo_url || districtLogos[district.theme as keyof typeof districtLogos];
+            const logoOrIcon = getDistrictLogoOrIcon(district.theme, district.sponsor_logo_url);
             const districtTotalXP = districtXPData[district.id] || 0;
             const maxXP = 100000; // 100K XP max
             const powerLevel = Math.min(100, Math.round((districtTotalXP / maxXP) * 100));
@@ -478,18 +484,25 @@ export default function SatoshiCity() {
                       : `0 0 30px ${district.color_primary}, 0 0 60px ${district.color_primary}80`
                   }}
                 >
-                  {districtLogo ? (
-                    <img 
-                      src={districtLogo} 
-                      alt={district.name}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <IconComponent 
-                      className="w-10 h-10 sm:w-12 sm:h-12" 
-                      style={{ color: 'white' }}
-                    />
-                  )}
+                  {(() => {
+                    if (logoOrIcon.type === 'image') {
+                      return (
+                        <img 
+                          src={logoOrIcon.src} 
+                          alt={district.name}
+                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
+                        />
+                      );
+                    } else {
+                      const IconComponent = logoOrIcon.component;
+                      return (
+                        <IconComponent 
+                          className="w-10 h-10 sm:w-12 sm:h-12" 
+                          style={{ color: 'white' }}
+                        />
+                      );
+                    }
+                  })()}
                   
                   {/* Residence Crown */}
                   {userInfo?.is_residence && (

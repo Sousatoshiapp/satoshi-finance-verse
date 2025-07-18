@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Users, UserPlus, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, AlertTriangle, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { DistrictBackground } from './DistrictBackground';
@@ -11,14 +11,7 @@ import { useDistrictStats } from '@/hooks/use-district-stats';
 import { FloatingNavbar } from '@/components/floating-navbar';
 import { useCrisisState } from '@/hooks/use-crisis-state';
 import { CrisisEmergencyModal } from '@/components/crisis/CrisisEmergencyModal';
-// District logos
-import xpLogo from "@/assets/xp-logo.png";
-import animaLogo from "@/assets/districts/anima-educacao-logo.jpg";
-import criptoLogo from "@/assets/districts/cripto-valley-logo.jpg";
-import bankingLogo from "@/assets/districts/banking-sector-logo.jpg";
-import realEstateLogo from "@/assets/districts/real-estate-logo.jpg";
-import tradeLogo from "@/assets/districts/international-trade-logo.jpg";
-import fintechLogo from "@/assets/districts/tech-finance-logo.jpg";
+// Note: District logos are missing from assets, using icon fallback system
 
 // District backgrounds - only import images that actually exist
 import bankingMorning from "@/assets/districts/banking-morning.jpg";
@@ -87,13 +80,28 @@ interface UserDistrict {
 
 // Mapeamento de logos por tema do distrito
 const districtLogos = {
-  renda_variavel: xpLogo,
-  educacao_financeira: animaLogo,
-  criptomoedas: criptoLogo,
-  sistema_bancario: bankingLogo,
-  fundos_imobiliarios: realEstateLogo,
-  mercado_internacional: tradeLogo,
-  fintech: fintechLogo,
+  // Note: District logos are missing from assets, using icon fallback system
+};
+
+// Mapeamento de ícones por tema do distrito
+const districtIcons = {
+  renda_variavel: TrendingUp,
+  educacao_financeira: GraduationCap,
+  criptomoedas: Bitcoin,
+  sistema_bancario: Banknote,
+  fundos_imobiliarios: Home,
+  mercado_internacional: Globe,
+  fintech: Cpu,
+};
+
+// Função para obter logo ou ícone de fallback
+const getDistrictLogoOrIcon = (theme: string) => {
+  const logo = districtLogos[theme as keyof typeof districtLogos];
+  if (logo) {
+    return { type: 'image', src: logo };
+  }
+  const IconComponent = districtIcons[theme as keyof typeof districtIcons];
+  return { type: 'icon', component: IconComponent };
 };
 
 export const ImmersiveDistrictPage: React.FC = () => {
@@ -280,12 +288,26 @@ export const ImmersiveDistrictPage: React.FC = () => {
               
               {/* Logo circular do distrito */}
               {district && (
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
-                  <img 
-                    src={districtLogos[district.theme as keyof typeof districtLogos]} 
-                    alt={district.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                  {(() => {
+                    const logoOrIcon = getDistrictLogoOrIcon(district.theme);
+                    if (logoOrIcon.type === 'image') {
+                      return (
+                        <img 
+                          src={logoOrIcon.src} 
+                          alt={district.name}
+                          className="w-full h-full object-cover"
+                        />
+                      );
+                    } else {
+                      const IconComponent = logoOrIcon.component;
+                      return (
+                        <IconComponent 
+                          className="w-8 h-8 text-white" 
+                        />
+                      );
+                    }
+                  })()}
                 </div>
               )}
             </div>
