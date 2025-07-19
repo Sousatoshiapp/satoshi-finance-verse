@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSponsorTheme } from '@/contexts/SponsorThemeProvider';
+import { TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from 'lucide-react';
+
+// Import district logos
+import bankingLogo from "@/assets/districts/banking-sector-logo.png";
+import cryptoLogo from "@/assets/districts/cripto-valley-logo.png";
+import tradeLogo from "@/assets/districts/international-trade-logo.png";
+import realEstateLogo from "@/assets/districts/real-estate-logo.png";
+import techLogo from "@/assets/districts/tech-finance-logo.png";
 
 interface DistrictTransitionProps {
   isTransitioning: boolean;
@@ -21,6 +29,46 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
   const { getTheme } = useSponsorTheme();
   
   const sponsorTheme = toDistrictTheme ? getTheme(toDistrictTheme) : null;
+
+  // District logos mapping
+  const districtLogos = {
+    sistema_bancario: bankingLogo,
+    criptomoedas: cryptoLogo,
+    mercado_internacional: tradeLogo,
+    fundos_imobiliarios: realEstateLogo,
+    fintech: techLogo,
+  };
+
+  // District icons mapping
+  const districtIcons = {
+    renda_variavel: TrendingUp,
+    educacao_financeira: GraduationCap,
+    criptomoedas: Bitcoin,
+    sistema_bancario: Banknote,
+    fundos_imobiliarios: Home,
+    mercado_internacional: Globe,
+    fintech: Cpu,
+  };
+
+  // Function to get district logo with fallback system
+  const getDistrictLogoOrIcon = () => {
+    // Priority 1: sponsor logo from database
+    if (sponsorTheme?.logoUrl) {
+      return { type: 'image', src: sponsorTheme.logoUrl };
+    }
+    
+    // Priority 2: local theme logo
+    if (toDistrictTheme && districtLogos[toDistrictTheme as keyof typeof districtLogos]) {
+      return { type: 'image', src: districtLogos[toDistrictTheme as keyof typeof districtLogos] };
+    }
+    
+    // Priority 3: fallback icon
+    if (toDistrictTheme && districtIcons[toDistrictTheme as keyof typeof districtIcons]) {
+      return { type: 'icon', component: districtIcons[toDistrictTheme as keyof typeof districtIcons] };
+    }
+    
+    return null;
+  };
 
   useEffect(() => {
     if (!isTransitioning) return;
@@ -196,34 +244,64 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                 Viajando para
               </motion.div>
               
-              {sponsorTheme?.logoUrl ? (
-                <motion.img
-                  src={sponsorTheme.logoUrl}
-                  alt={sponsorTheme.name}
-                  className="w-48 h-48 object-contain"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: [0.5, 1.1, 1],
-                  }}
-                  transition={{ 
-                    duration: 1.2,
-                    ease: "easeOut"
-                  }}
-                  style={{
-                    filter: 'drop-shadow(0 0 20px rgba(173, 255, 47, 0.3))',
-                  }}
-                />
-              ) : (
-                <motion.div
-                  className="text-3xl font-bold text-cyan-300"
-                  initial={{ letterSpacing: '0.1em' }}
-                  animate={{ letterSpacing: '0.2em' }}
-                  transition={{ duration: 0.8 }}
-                >
-                  {toLocation}
-                </motion.div>
-              )}
+              {(() => {
+                const logoOrIcon = getDistrictLogoOrIcon();
+                if (logoOrIcon?.type === 'image') {
+                  return (
+                    <motion.img
+                      src={logoOrIcon.src}
+                      alt={toLocation}
+                      className="w-48 h-48 object-contain"
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: [0.5, 1.1, 1],
+                      }}
+                      transition={{ 
+                        duration: 1.2,
+                        ease: "easeOut"
+                      }}
+                      style={{
+                        filter: 'drop-shadow(0 0 20px rgba(173, 255, 47, 0.3))',
+                      }}
+                    />
+                  );
+                } else if (logoOrIcon?.type === 'icon') {
+                  const IconComponent = logoOrIcon.component;
+                  return (
+                    <motion.div
+                      className="flex items-center justify-center w-48 h-48"
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: [0.5, 1.1, 1],
+                      }}
+                      transition={{ 
+                        duration: 1.2,
+                        ease: "easeOut"
+                      }}
+                    >
+                      <IconComponent 
+                        className="w-32 h-32 text-[#adff2f]"
+                        style={{
+                          filter: 'drop-shadow(0 0 20px rgba(173, 255, 47, 0.3))',
+                        }}
+                      />
+                    </motion.div>
+                  );
+                } else {
+                  return (
+                    <motion.div
+                      className="text-3xl font-bold text-cyan-300"
+                      initial={{ letterSpacing: '0.1em' }}
+                      animate={{ letterSpacing: '0.2em' }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      {toLocation}
+                    </motion.div>
+                  );
+                }
+              })()}
             </motion.div>
           </motion.div>
         )}
