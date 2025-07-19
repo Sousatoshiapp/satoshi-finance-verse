@@ -11,7 +11,12 @@ import { useDistrictStats } from '@/hooks/use-district-stats';
 import { FloatingNavbar } from '@/components/floating-navbar';
 import { useCrisisState } from '@/hooks/use-crisis-state';
 import { CrisisEmergencyModal } from '@/components/crisis/CrisisEmergencyModal';
-// Note: District logos are missing from assets, using icon fallback system
+// Import district logos
+import bankingLogo from "@/assets/districts/banking-sector-logo.png";
+import cryptoLogo from "@/assets/districts/cripto-valley-logo.png";
+import tradeLogo from "@/assets/districts/international-trade-logo.png";
+import realEstateLogo from "@/assets/districts/real-estate-logo.png";
+import techLogo from "@/assets/districts/tech-finance-logo.png";
 
 // District backgrounds - only import images that actually exist
 import bankingMorning from "@/assets/districts/banking-morning.jpg";
@@ -68,6 +73,7 @@ interface District {
   level_required: number;
   power_level: number;
   sponsor_company: string;
+  sponsor_logo_url: string;
   referral_link: string;
   special_power: string;
 }
@@ -80,7 +86,11 @@ interface UserDistrict {
 
 // Mapeamento de logos por tema do distrito
 const districtLogos = {
-  // Note: District logos are missing from assets, using icon fallback system
+  sistema_bancario: bankingLogo,
+  criptomoedas: cryptoLogo,
+  mercado_internacional: tradeLogo,
+  fundos_imobiliarios: realEstateLogo,
+  fintech: techLogo,
 };
 
 // Mapeamento de ícones por tema do distrito
@@ -95,11 +105,19 @@ const districtIcons = {
 };
 
 // Função para obter logo ou ícone de fallback
-const getDistrictLogoOrIcon = (theme: string) => {
+const getDistrictLogoOrIcon = (theme: string, sponsorLogoUrl?: string) => {
+  // Priority 1: sponsor logo from database
+  if (sponsorLogoUrl) {
+    return { type: 'image', src: sponsorLogoUrl };
+  }
+  
+  // Priority 2: local theme logo
   const logo = districtLogos[theme as keyof typeof districtLogos];
   if (logo) {
     return { type: 'image', src: logo };
   }
+  
+  // Priority 3: fallback icon
   const IconComponent = districtIcons[theme as keyof typeof districtIcons];
   return { type: 'icon', component: IconComponent };
 };
@@ -290,7 +308,7 @@ export const ImmersiveDistrictPage: React.FC = () => {
               {district && (
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
                   {(() => {
-                    const logoOrIcon = getDistrictLogoOrIcon(district.theme);
+                    const logoOrIcon = getDistrictLogoOrIcon(district.theme, district.sponsor_logo_url);
                     if (logoOrIcon.type === 'image') {
                       return (
                         <img 

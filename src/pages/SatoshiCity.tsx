@@ -17,7 +17,12 @@ import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
 import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
 import satoshiCityNight from "@/assets/satoshi-city-night-illuminated.jpg";
-// Note: District logos are missing from assets, using icon fallback system
+// Import district logos
+import bankingLogo from "@/assets/districts/banking-sector-logo.png";
+import cryptoLogo from "@/assets/districts/cripto-valley-logo.png";
+import tradeLogo from "@/assets/districts/international-trade-logo.png";
+import realEstateLogo from "@/assets/districts/real-estate-logo.png";
+import techLogo from "@/assets/districts/tech-finance-logo.png";
 
 interface District {
   id: string;
@@ -58,7 +63,11 @@ const districtIcons = {
 };
 
 const districtLogos = {
-  // Note: District logos are missing from assets, using icon fallback system
+  sistema_bancario: bankingLogo,
+  criptomoedas: cryptoLogo,
+  mercado_internacional: tradeLogo,
+  fundos_imobiliarios: realEstateLogo,
+  fintech: techLogo,
 };
 
 // Função para obter logo ou ícone de fallback
