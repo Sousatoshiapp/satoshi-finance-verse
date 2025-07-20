@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSponsorTheme } from '@/contexts/SponsorThemeProvider';
@@ -9,6 +10,8 @@ import cryptoLogo from "@/assets/districts/cripto-valley-logo.png";
 import tradeLogo from "@/assets/districts/international-trade-logo.png";
 import realEstateLogo from "@/assets/districts/real-estate-logo.png";
 import techLogo from "@/assets/districts/tech-finance-logo.png";
+import variableIncomeLogo from "@/assets/districts/variable-income-logo.png";
+import financialEducationLogo from "@/assets/districts/financial-education-logo.png";
 
 interface DistrictTransitionProps {
   isTransitioning: boolean;
@@ -30,16 +33,18 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
   
   const sponsorTheme = toDistrictTheme ? getTheme(toDistrictTheme) : null;
 
-  // District logos mapping
+  // District logos mapping - COMPLETO com todos os temas
   const districtLogos = {
     sistema_bancario: bankingLogo,
     criptomoedas: cryptoLogo,
     mercado_internacional: tradeLogo,
     fundos_imobiliarios: realEstateLogo,
     fintech: techLogo,
+    renda_variavel: variableIncomeLogo,
+    educacao_financeira: financialEducationLogo,
   };
 
-  // District icons mapping
+  // District icons mapping - COMPLETO com todos os temas
   const districtIcons = {
     renda_variavel: TrendingUp,
     educacao_financeira: GraduationCap,
@@ -50,30 +55,38 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
     fintech: Cpu,
   };
 
-  // Function to get district logo with fallback system
+  // Function to get district logo with fallback system - CORRIGIDA
   const getDistrictLogoOrIcon = () => {
+    console.log('🎯 [TRANSIÇÃO] Buscando logo para tema:', toDistrictTheme);
+    
     // Priority 1: sponsor logo from database
     if (sponsorTheme?.logoUrl) {
+      console.log('✅ [TRANSIÇÃO] Usando sponsor logo:', sponsorTheme.logoUrl);
       return { type: 'image', src: sponsorTheme.logoUrl };
     }
     
     // Priority 2: local theme logo
     if (toDistrictTheme && districtLogos[toDistrictTheme as keyof typeof districtLogos]) {
-      return { type: 'image', src: districtLogos[toDistrictTheme as keyof typeof districtLogos] };
+      const logoSrc = districtLogos[toDistrictTheme as keyof typeof districtLogos];
+      console.log('✅ [TRANSIÇÃO] Usando logo local:', logoSrc);
+      return { type: 'image', src: logoSrc };
     }
     
     // Priority 3: fallback icon
     if (toDistrictTheme && districtIcons[toDistrictTheme as keyof typeof districtIcons]) {
-      return { type: 'icon', component: districtIcons[toDistrictTheme as keyof typeof districtIcons] };
+      const IconComponent = districtIcons[toDistrictTheme as keyof typeof districtIcons];
+      console.log('✅ [TRANSIÇÃO] Usando ícone fallback para tema:', toDistrictTheme);
+      return { type: 'icon', component: IconComponent };
     }
     
+    console.log('⚠️ [TRANSIÇÃO] Nenhum logo/ícone encontrado para tema:', toDistrictTheme);
     return null;
   };
 
   useEffect(() => {
     if (!isTransitioning) return;
     
-    console.log('🚀 [TRANSIÇÃO] Iniciando transição:', { fromLocation, toLocation });
+    console.log('🚀 [TRANSIÇÃO] Iniciando transição:', { fromLocation, toLocation, toDistrictTheme });
 
     const timeline = [
       { delay: 0, stage: 1 },      // Zoom out - 1000ms
