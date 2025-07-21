@@ -329,6 +329,20 @@ function App() {
               </ProtectedRoute>
             } />
 
+            <Route path="/inventory" element={
+              <ProtectedRoute>
+                <LazyRoutes.Inventory />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/avatar-shop" element={
+              <ProtectedRoute>
+                <LazyRoutes.AvatarShop />
+                <FloatingNavbar />
+              </ProtectedRoute>
+            } />
+
             <Route path="/leagues" element={
               <ProtectedRoute>
                 <LazyRoutes.Leagues />

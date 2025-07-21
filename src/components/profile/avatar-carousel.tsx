@@ -38,6 +38,8 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
 
   const loadAvatars = async () => {
     try {
+      console.log('🔍 Loading avatars for profile:', userProfileId);
+      
       const { data: availableAvatars, error } = await supabase
         .from('avatars')
         .select('*')
@@ -45,19 +47,28 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
         .limit(6);
 
       if (error) throw error;
+      console.log('📋 Available avatars:', availableAvatars);
 
-      const { data: userAvatars } = await supabase
+      const { data: userAvatars, error: userAvatarsError } = await supabase
         .from('user_avatars')
         .select('avatar_id')
         .eq('user_id', userProfileId);
 
+      if (userAvatarsError) {
+        console.error('❌ Error loading user avatars:', userAvatarsError);
+      }
+
+      console.log('👤 User owned avatars:', userAvatars);
       const ownedAvatarIds = userAvatars?.map(ua => ua.avatar_id) || [];
+      console.log('🎯 Owned avatar IDs:', ownedAvatarIds);
 
       const avatarsWithOwnership = availableAvatars?.map(avatar => ({
         ...avatar,
         is_owned: ownedAvatarIds.includes(avatar.id),
         is_active: avatar.id === currentAvatarId
       })) || [];
+
+      console.log('✨ Avatars with ownership:', avatarsWithOwnership);
 
       // Sort to show active first, then owned, then others
       const sortedAvatars = avatarsWithOwnership.sort((a, b) => {
