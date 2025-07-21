@@ -2,23 +2,23 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { XPCard } from "@/components/ui/xp-card";
 import { StreakBadge } from "@/components/ui/streak-badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
-
-import { AvatarSelector } from "@/components/avatar-selector";
-import { UserInventory } from "@/components/profile/user-inventory";
 import { SubscriptionIndicator } from "@/components/subscription-indicator";
+import { InventoryCarousel } from "@/components/profile/inventory-carousel";
+import { AvatarCarousel } from "@/components/profile/avatar-carousel";
+import { AchievementsCarousel } from "@/components/profile/achievements-carousel";
+import { StatsGrid } from "@/components/profile/stats-grid";
+import { QuickActions } from "@/components/profile/quick-actions";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useGamification } from "@/hooks/use-gamification";
 import { getLevelInfo } from "@/data/levels";
-import { Crown, Star, Shield, Camera, ArrowRight } from "lucide-react";
+import { Crown, Star, Shield, Camera } from "lucide-react";
 import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
@@ -108,7 +108,6 @@ export default function Profile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { subscription } = useSubscription();
-  const { achievements: realAchievements, badges, loading: gamificationLoading, getRecentAchievements } = useGamification();
   
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
@@ -311,42 +310,6 @@ export default function Profile() {
     }
   };
 
-  const achievements = [
-    { id: 'first_lesson', name: 'Primeira Lição', icon: <TrophyIcon size="md" />, earned: true },
-    { id: 'streak_7', name: '7 Dias Seguidos', icon: <StreakIcon size="md" />, earned: user?.streak >= 7 },
-    { id: 'level_5', name: 'Nível 5', icon: <Star className="w-4 h-4" />, earned: user?.level >= 5 },
-    { id: 'quiz_master', name: 'Mestre dos Quiz', icon: <Shield className="w-4 h-4" />, earned: false },
-    { id: 'investor', name: 'Primeiro Investimento', icon: <TrophyIcon size="md" />, earned: false },
-    { id: 'saver', name: 'Poupador Expert', icon: <Shield className="w-4 h-4" />, earned: false }
-  ];
-
-  const stats = [
-    { 
-      label: 'XP Atual', 
-      value: user?.xp || 0, 
-      icon: <LightningIcon size="lg" />,
-      route: '/levels'
-    },
-    { 
-      label: 'Lições Completas', 
-      value: user?.completed_lessons || 0, 
-      icon: <BookIcon size="lg" />,
-      route: '/levels'
-    },
-    { 
-      label: 'Dias de Sequência', 
-      value: user?.streak || 0, 
-      icon: <StreakIcon size="lg" />,
-      route: '/profile'
-    },
-    { 
-      label: 'Beetz', 
-      value: user?.points || 0, 
-      icon: <BeetzIcon size="lg" />,
-      route: '/beetz-info'
-    }
-  ];
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -363,7 +326,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="px-4 py-4">
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b px-4 py-3">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -379,24 +342,23 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Profile Header - Mobile Optimized */}
-        <Card className="p-4 sm:p-6 mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-            <div className="relative self-center sm:self-auto">
+      <div className="max-w-4xl mx-auto px-4 py-4 space-y-6">
+        {/* Profile Header - Enhanced Mobile Design */}
+        <Card className="p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+            <div className="relative self-center md:self-auto">
               <AvatarDisplayUniversal
                 avatarName={userAvatar?.name}
                 avatarUrl={userAvatar?.image_url}
                 profileImageUrl={user.profile_image_url}
                 nickname={user.nickname}
                 size="xl"
-                className="w-16 h-16 sm:w-20 sm:h-20"
+                className="w-20 h-20 md:w-24 md:h-24"
               />
               
-              {/* Small upload icon */}
               <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                  <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary-foreground" />
+                <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+                  <Camera className="w-3.5 h-3.5 text-primary-foreground" />
                 </div>
               </label>
               
@@ -410,75 +372,44 @@ export default function Profile() {
               />
             </div>
             
-            <div className="flex-1 min-w-0 text-center sm:text-left">
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-1 truncate">{user.nickname}</h2>
-              <p className="text-muted-foreground mb-3 text-sm sm:text-base">Nível {user.level} • {user.points} Beetz</p>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3">
+            <div className="flex-1 min-w-0 text-center md:text-left">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2 truncate">
+                {user.nickname}
+              </h2>
+              <p className="text-muted-foreground mb-3 text-sm md:text-base">
+                {getLevelInfo(user.level).name} • {user.points} Beetz
+              </p>
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
                 <StreakBadge days={user.streak} />
-                <Badge variant="outline" className="text-xs sm:text-sm">{getLevelInfo(user.level).name}</Badge>
-                <div className="flex items-center gap-2">
-                  <SubscriptionIndicator tier={subscription.tier} size="sm" />
-                  <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline">{getPlanName(subscription.tier)}</span>
-                </div>
+                <SubscriptionIndicator tier={subscription.tier} size="sm" />
+                <Badge variant="outline" className="text-xs md:text-sm">
+                  Nível {user.level}
+                </Badge>
               </div>
             </div>
           </div>
         </Card>
 
-        {/* Subscription Plan Card */}
-        <Card className="p-6 mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              {getPlanIcon(subscription.tier)}
-              <div>
-                <h3 className="text-lg font-bold text-foreground mb-1">{getPlanName(subscription.tier)}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {subscription.tier === 'free' 
-                    ? 'Faça upgrade para desbloquear benefícios exclusivos'
-                    : `XP ${subscription.xpMultiplier}x • Duelos Ilimitados • ${subscription.monthlyBeetz} Beetz/mês`
-                  }
-                </p>
-              </div>
-            </div>
-            <Button 
-              variant={subscription.tier === 'free' ? 'default' : 'outline'}
-              onClick={() => navigate('/subscription-plans')}
-              className={subscription.tier === 'free' 
-                ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white border-0' 
-                : ''
-              }
-            >
-              {subscription.tier === 'free' ? '⭐ Fazer Upgrade' : 'Gerenciar Plano'}
-            </Button>
-          </div>
-          
-          {subscription.tier !== 'free' && (
-            <div className="grid grid-cols-3 gap-4 mt-4 text-xs">
-              <div className="text-center">
-                <div className="text-purple-400 font-bold">∞</div>
-                <div className="text-muted-foreground">Duelos</div>
-              </div>
-              <div className="text-center">
-                <div className="text-purple-400 font-bold">{subscription.xpMultiplier}x</div>
-                <div className="text-muted-foreground">XP Boost</div>
-              </div>
-              <div className="text-center">
-                <div className="text-purple-400 font-bold">{subscription.monthlyBeetz}</div>
-                <div className="text-muted-foreground">Beetz/mês</div>
-              </div>
-            </div>
-          )}
-        </Card>
+        {/* Quick Actions */}
+        <QuickActions subscription={subscription} />
 
-        {/* XP and Level */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Stats Grid */}
+        <StatsGrid
+          xp={user.xp}
+          completedLessons={user.completed_lessons}
+          streak={user.streak}
+          points={user.points}
+        />
+
+        {/* XP and Progress Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <XPCard
             level={user.level}
             currentXP={user.xp}
             nextLevelXP={user.level * 100}
           />
           
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <h3 className="font-bold text-foreground mb-4">Progresso Geral</h3>
             <ProgressBar
               value={user.completed_lessons}
@@ -492,108 +423,51 @@ export default function Profile() {
           </Card>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat) => (
-            <Card 
-              key={stat.label} 
-              className="p-4 text-center cursor-pointer hover:scale-105 transition-all duration-200 hover:shadow-lg"
-              onClick={() => navigate(stat.route)}
-            >
-              <div className="text-2xl mb-2">{stat.icon}</div>
-              <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
-            </Card>
-          ))}
-        </div>
+        {/* Carousels Section */}
+        <div className="space-y-6">
+          {/* Achievements Carousel */}
+          <AchievementsCarousel />
 
-        {/* Avatar Selector */}
-        <div className="mb-8">
-          <AvatarSelector
+          {/* Avatar Carousel */}
+          <AvatarCarousel
             userProfileId={user.id}
             currentAvatarId={user.avatar_id}
             onAvatarChanged={handleAvatarChanged}
           />
+
+          {/* Inventory Carousel */}
+          <InventoryCarousel />
         </div>
 
-        {/* User Inventory */}
-        <div className="mb-8">
-          <UserInventory />
-        </div>
-
-        {/* Achievements */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-foreground">Conquistas Recentes</h3>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate('/achievements')}
-              className="text-primary hover:text-primary/80"
-            >
-              Ver todas <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-          <div className="grid grid-cols-3 gap-3">
-            {gamificationLoading ? (
-              // Skeleton loading
-              Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="flex flex-col items-center p-3 rounded-lg border-2 bg-muted/30 animate-pulse">
-                  <div className="w-8 h-8 bg-muted rounded mb-1"></div>
-                  <div className="w-16 h-3 bg-muted rounded"></div>
-                </div>
-              ))
-            ) : (
-              getRecentAchievements(6).map((achievement) => (
-                <div
-                  key={achievement.id}
-                  className="flex flex-col items-center p-3 rounded-lg border-2 bg-gradient-to-b from-yellow-50 to-yellow-100 border-yellow-300 text-yellow-800 transition-all"
-                >
-                  <div className="text-2xl mb-1">{achievement.achievements.badge_icon || '🏆'}</div>
-                  <div className="text-xs font-medium text-center">{achievement.achievements.name}</div>
-                </div>
-              ))
-            )}
-          </div>
-          {!gamificationLoading && getRecentAchievements(6).length === 0 && (
-            <div className="text-center py-4 text-muted-foreground">
-              <p className="text-sm">Complete atividades para desbloquear conquistas!</p>
-            </div>
-          )}
-        </Card>
-
-        {/* Power-ups */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold text-foreground">Power-ups</h3>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate('/powerups')}
-              className="text-primary hover:text-primary/80"
-            >
-              Gerenciar <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {badges.slice(0, 4).map((badge) => (
-              <div
-                key={badge.id}
-                className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 border"
-              >
-                <div className="text-lg">⚡</div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium truncate">{badge.badge_name}</div>
-                  <div className="text-xs text-muted-foreground">Ativo</div>
-                </div>
+        {/* Subscription Plan Card - Compact Design */}
+        <Card className="p-4 md:p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {getPlanIcon(subscription.tier)}
+              <div>
+                <h3 className="text-lg font-bold text-foreground">
+                  {getPlanName(subscription.tier)}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {subscription.tier === 'free' 
+                    ? 'Desbloqueie benefícios exclusivos'
+                    : `XP ${subscription.xpMultiplier}x • ${subscription.monthlyBeetz} Beetz/mês`
+                  }
+                </p>
               </div>
-            ))}
-          </div>
-          {badges.length === 0 && (
-            <div className="text-center py-4 text-muted-foreground">
-              <p className="text-sm">Nenhum power-up disponível</p>
             </div>
-          )}
+            <Button 
+              variant={subscription.tier === 'free' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => navigate('/subscription-plans')}
+              className={subscription.tier === 'free' 
+                ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white' 
+                : ''
+              }
+            >
+              {subscription.tier === 'free' ? '⭐ Upgrade' : 'Gerenciar'}
+            </Button>
+          </div>
         </Card>
       </div>
       
