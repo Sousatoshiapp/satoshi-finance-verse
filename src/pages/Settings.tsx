@@ -267,7 +267,10 @@ export default function Settings() {
         password: passwordForm.newPassword
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Password update error:', error);
+        throw error;
+      }
 
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setDialogStates({ ...dialogStates, changePassword: false });
@@ -276,10 +279,11 @@ export default function Settings() {
         title: "Senha alterada! 🔐",
         description: "Sua senha foi atualizada com sucesso.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error changing password:', error);
       toast({
         title: "Erro ❌",
-        description: "Não foi possível alterar a senha.",
+        description: error.message || "Não foi possível alterar a senha.",
         variant: "destructive"
       });
     }
@@ -300,7 +304,10 @@ export default function Settings() {
         email: emailForm.newEmail
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Email update error:', error);
+        throw error;
+      }
 
       setEmailForm({ newEmail: '', password: '' });
       setDialogStates({ ...dialogStates, changeEmail: false });
@@ -309,10 +316,11 @@ export default function Settings() {
         title: "Email alterado! 📧",
         description: "Verifique seu novo email para confirmar a alteração.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error changing email:', error);
       toast({
         title: "Erro ❌",
-        description: "Não foi possível alterar o email.",
+        description: error.message || "Não foi possível alterar o email.",
         variant: "destructive"
       });
     }
