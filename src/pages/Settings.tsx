@@ -539,7 +539,10 @@ export default function Settings() {
                   <Button variant="outline" onClick={() => closeDialog('changePassword')}>
                     Cancelar
                   </Button>
-                  <Button onClick={handleChangePassword}>
+                  <Button onClick={() => {
+                    console.log('🔴 Botão de alterar senha clicado!');
+                    handleChangePassword();
+                  }}>
                     Alterar Senha
                   </Button>
                 </DialogFooter>
@@ -571,7 +574,10 @@ export default function Settings() {
                   <Button variant="outline" onClick={() => closeDialog('changeEmail')}>
                     Cancelar
                   </Button>
-                  <Button onClick={handleChangeEmail}>
+                  <Button onClick={() => {
+                    console.log('🔴 Botão de alterar email clicado!');
+                    handleChangeEmail();
+                  }}>
                     Alterar Email
                   </Button>
                 </DialogFooter>
