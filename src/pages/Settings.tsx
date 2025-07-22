@@ -244,6 +244,8 @@ export default function Settings() {
   };
 
   const handleChangePassword = async () => {
+    console.log('🔐 Tentando alterar senha...');
+    
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       toast({
         title: "Erro ❌",
@@ -263,12 +265,15 @@ export default function Settings() {
     }
 
     try {
-      const { error } = await supabase.auth.updateUser({
+      console.log('📝 Enviando requisição para atualizar senha...');
+      const { data, error } = await supabase.auth.updateUser({
         password: passwordForm.newPassword
       });
 
+      console.log('📄 Resposta do Supabase:', { data, error });
+
       if (error) {
-        console.error('Password update error:', error);
+        console.error('❌ Erro específico ao alterar senha:', error);
         throw error;
       }
 
@@ -280,7 +285,7 @@ export default function Settings() {
         description: "Sua senha foi atualizada com sucesso.",
       });
     } catch (error: any) {
-      console.error('Error changing password:', error);
+      console.error('💥 Erro completo ao alterar senha:', error);
       toast({
         title: "Erro ❌",
         description: error.message || "Não foi possível alterar a senha.",
@@ -290,6 +295,8 @@ export default function Settings() {
   };
 
   const handleChangeEmail = async () => {
+    console.log('📧 Tentando alterar email...');
+    
     if (!emailForm.newEmail || !emailForm.password) {
       toast({
         title: "Erro ❌",
@@ -300,12 +307,15 @@ export default function Settings() {
     }
 
     try {
-      const { error } = await supabase.auth.updateUser({
+      console.log('📝 Enviando requisição para atualizar email...');
+      const { data, error } = await supabase.auth.updateUser({
         email: emailForm.newEmail
       });
 
+      console.log('📄 Resposta do Supabase:', { data, error });
+
       if (error) {
-        console.error('Email update error:', error);
+        console.error('❌ Erro específico ao alterar email:', error);
         throw error;
       }
 
@@ -317,7 +327,7 @@ export default function Settings() {
         description: "Verifique seu novo email para confirmar a alteração.",
       });
     } catch (error: any) {
-      console.error('Error changing email:', error);
+      console.error('💥 Erro completo ao alterar email:', error);
       toast({
         title: "Erro ❌",
         description: error.message || "Não foi possível alterar o email.",
