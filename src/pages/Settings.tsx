@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/use-profile";
 
 export default function Settings() {
   const [settings, setSettings] = useState({
@@ -45,34 +46,50 @@ export default function Settings() {
   });
 
   const [importText, setImportText] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { profile } = useProfile();
 
   useEffect(() => {
-    const userData = localStorage.getItem('satoshi_user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      setUserInfo({
-        nickname: user.nickname || '',
-        email: user.email || '',
-        financialGoal: user.financialGoal || ''
-      });
-    }
-    
-    const savedSettings = localStorage.getItem('satoshi_settings');
-    if (savedSettings) {
-      const parsedSettings = JSON.parse(savedSettings);
-      setSettings(parsedSettings);
+    loadUserData();
+  }, [profile]);
+
+  const loadUserData = async () => {
+    try {
+      setLoading(true);
       
-      // Aplicar modo escuro
-      if (parsedSettings.darkMode) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+      // Buscar dados do usuário autenticado
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user && profile) {
+        setUserInfo({
+          nickname: profile.nickname || '',
+          email: user.email || '',
+          financialGoal: (profile as any).financial_goal || ''
+        });
       }
+      
+      // Carregar configurações salvas
+      const savedSettings = localStorage.getItem('satoshi_settings');
+      if (savedSettings) {
+        const parsedSettings = JSON.parse(savedSettings);
+        setSettings(parsedSettings);
+        
+        // Aplicar modo escuro
+        if (parsedSettings.darkMode) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
 
   // Aplicar mudanças em tempo real
   useEffect(() => {
@@ -83,21 +100,64 @@ export default function Settings() {
     }
   }, [settings.darkMode]);
 
-  const handleSaveSettings = () => {
-    localStorage.setItem('satoshi_settings', JSON.stringify(settings));
-    
-    // Atualizar também as informações do usuário
-    const userData = localStorage.getItem('satoshi_user');
-    if (userData) {
-      const user = JSON.parse(userData);
-      const updatedUser = { ...user, ...userInfo };
-      localStorage.setItem('satoshi_user', JSON.stringify(updatedUser));
+  const handleSaveSettings = async () => {
+    try {
+      setLoading(true);
+      
+      // Salvar configurações no localStorage
+      localStorage.setItem('satoshi_settings', JSON.stringify(settings));
+      
+      // Atualizar perfil no Supabase se há mudanças no nickname ou objetivo
+      if (profile) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ 
+            nickname: userInfo.nickname,
+            financial_goal: userInfo.financialGoal 
+          })
+          .eq('id', profile.id);
+          
+        if (profileError) throw profileError;
+      }
+      
+      // Atualizar email no auth se foi alterado
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && userInfo.email !== user.email) {
+        const { error: emailError } = await supabase.auth.updateUser({
+          email: userInfo.email
+        });
+        
+        if (emailError) {
+          toast({
+            title: "Aviso ⚠️",
+            description: "Email não foi alterado. Use a opção 'Alterar Email' na seção Conta.",
+            variant: "destructive"
+          });
+        }
+      }
+      
+      // Atualizar localStorage para compatibilidade
+      const userData = localStorage.getItem('satoshi_user');
+      if (userData) {
+        const user = JSON.parse(userData);
+        const updatedUser = { ...user, ...userInfo };
+        localStorage.setItem('satoshi_user', JSON.stringify(updatedUser));
+      }
+      
+      toast({
+        title: "Configurações salvas! ✅",
+        description: "Suas informações foram atualizadas no banco de dados.",
+      });
+    } catch (error) {
+      console.error('Erro ao salvar configurações:', error);
+      toast({
+        title: "Erro ❌",
+        description: "Não foi possível salvar algumas informações.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    toast({
-      title: "Configurações salvas! ✅",
-      description: "Suas preferências foram atualizadas.",
-    });
   };
 
   const handleResetProgress = () => {
