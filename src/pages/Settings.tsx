@@ -599,7 +599,7 @@ export default function Settings() {
           <h3 className="font-bold text-foreground mb-4">Sobre o Satoshi</h3>
           <p className="text-muted-foreground mb-4">
             Versão 1.0.0<br />
-            O Duolingo das finanças
+            O game das finanças
           </p>
           <div className="flex gap-2 justify-center">
             <Dialog open={dialogStates.terms} onOpenChange={() => closeDialog('terms')}>
