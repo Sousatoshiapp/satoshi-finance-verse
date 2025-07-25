@@ -983,6 +983,60 @@ export type Database = {
         }
         Relationships: []
       }
+      crypto_payments: {
+        Row: {
+          amount_usd: number
+          confirmed_at: string | null
+          created_at: string
+          crypto_amount: number | null
+          crypto_currency: string | null
+          expires_at: string | null
+          id: string
+          payment_id: string
+          payment_url: string | null
+          product_id: string
+          product_name: string
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_usd: number
+          confirmed_at?: string | null
+          created_at?: string
+          crypto_amount?: number | null
+          crypto_currency?: string | null
+          expires_at?: string | null
+          id?: string
+          payment_id: string
+          payment_url?: string | null
+          product_id: string
+          product_name: string
+          status?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_usd?: number
+          confirmed_at?: string | null
+          created_at?: string
+          crypto_amount?: number | null
+          crypto_currency?: string | null
+          expires_at?: string | null
+          id?: string
+          payment_id?: string
+          payment_url?: string | null
+          product_id?: string
+          product_name?: string
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_challenges: {
         Row: {
           beetz_reward: number

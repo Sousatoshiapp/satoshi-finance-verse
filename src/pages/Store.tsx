@@ -8,6 +8,8 @@ import { BeetzIcon } from "@/components/ui/beetz-icon";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { FloatingNavbar } from "@/components/floating-navbar";
+import { PaymentMethodSelector } from "@/components/ui/payment-method-selector";
+import { useCryptoPayments } from "@/hooks/use-crypto-payments";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield } from "lucide-react";
 
@@ -146,8 +148,11 @@ export default function Store() {
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showBeetzModal, setShowBeetzModal] = useState(false);
+  const [showPaymentSelector, setShowPaymentSelector] = useState(false);
+  const [selectedBeetzPackage, setSelectedBeetzPackage] = useState<{ amount: number; price: number; name: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { createCryptoPayment, redirectToCryptoPayment, isLoading: cryptoLoading } = useCryptoPayments();
 
   useEffect(() => {
     loadStoreData();
@@ -468,26 +473,46 @@ export default function Store() {
     }
   };
 
-  const purchaseBeetz = async (amount: number, price: number, packageName: string) => {
-    if (!userProfile) return;
+  const handleBeetzPurchaseClick = (amount: number, price: number, packageName: string) => {
+    setSelectedBeetzPackage({ amount, price, name: packageName });
+    setShowPaymentSelector(true);
+  };
+
+  const handlePaymentMethodSelect = async (method: 'card' | 'crypto') => {
+    if (!selectedBeetzPackage || !userProfile) return;
+    
+    const { amount, price, name } = selectedBeetzPackage;
     setPurchasing(`beetz-${amount}`);
+    setShowPaymentSelector(false);
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
+      if (method === 'card') {
+        // Stripe payment
+        const { data, error } = await supabase.functions.invoke('create-payment', {
+          body: {
+            productId: `beetz-${amount}`,
+            productName: `${name} - ${amount} Beetz`,
+            amount: price * 100, // Convert to centavos
+            type: 'beetz'
+          }
+        });
+
+        if (error) throw new Error(error.message);
+        window.open(data.url, '_blank');
+        
+      } else {
+        // Crypto payment
+        const cryptoPayment = await createCryptoPayment({
           productId: `beetz-${amount}`,
-          productName: `${packageName} - ${amount} Beetz`,
+          productName: `${name} - ${amount} Beetz`,
           amount: price * 100, // Convert to centavos
           type: 'beetz'
+        });
+
+        if (cryptoPayment?.payment_url) {
+          redirectToCryptoPayment(cryptoPayment.payment_url);
         }
-      });
-
-      if (error) {
-        throw new Error(error.message);
       }
-
-      // Open Stripe checkout in a new tab
-      window.open(data.url, '_blank');
     } catch (error) {
       console.error('Error purchasing Beetz:', error);
       toast({
@@ -497,6 +522,7 @@ export default function Store() {
       });
     } finally {
       setPurchasing(null);
+      setSelectedBeetzPackage(null);
     }
   };
 
@@ -1286,7 +1312,7 @@ export default function Store() {
                               R$ {priceInReais.toFixed(2)}
                             </div>
                             <Button
-                              onClick={() => purchaseBeetz(
+                              onClick={() => handleBeetzPurchaseClick(
                                 beetzAmount, 
                                 priceInReais, 
                                 beetzPackage.name
@@ -1337,7 +1363,7 @@ export default function Store() {
           <div className="space-y-3">
             <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
                   onClick={() => {
-                    purchaseBeetz(20, 2, "Pacote Básico");
+                    handleBeetzPurchaseClick(20, 2, "Pacote Básico");
                     setShowBeetzModal(false);
                   }}>
               <div className="flex items-center justify-between">
@@ -1359,7 +1385,7 @@ export default function Store() {
 
             <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
                   onClick={() => {
-                    purchaseBeetz(50, 4, "Pacote Popular");
+                    handleBeetzPurchaseClick(50, 4, "Pacote Popular");
                     setShowBeetzModal(false);
                   }}>
               <div className="flex items-center justify-between">
@@ -1381,7 +1407,7 @@ export default function Store() {
 
             <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
                   onClick={() => {
-                    purchaseBeetz(100, 7, "Pacote Premium");
+                    handleBeetzPurchaseClick(100, 7, "Pacote Premium");
                     setShowBeetzModal(false);
                   }}>
               <div className="flex items-center justify-between">
@@ -1403,7 +1429,7 @@ export default function Store() {
 
             <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer" 
                   onClick={() => {
-                    purchaseBeetz(500, 50, "Pacote Supremo");
+                    handleBeetzPurchaseClick(500, 50, "Pacote Supremo");
                     setShowBeetzModal(false);
                   }}>
               <div className="flex items-center justify-between">
@@ -1423,6 +1449,20 @@ export default function Store() {
               </div>
             </Card>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Payment Method Selector Dialog */}
+      <Dialog open={showPaymentSelector} onOpenChange={setShowPaymentSelector}>
+        <DialogContent>
+          {selectedBeetzPackage && (
+            <PaymentMethodSelector 
+              onPaymentMethodSelect={handlePaymentMethodSelect}
+              isLoading={purchasing !== null || cryptoLoading}
+              amount={selectedBeetzPackage.price * 100} // Convert to cents
+              productName={`${selectedBeetzPackage.name} - ${selectedBeetzPackage.amount} Beetz`}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </div>
