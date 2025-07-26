@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Download, FileSpreadsheet, Eye, Edit, Trash2, Plus, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { optimizedCSVGeneration, generateQuestionCSV } from "@/utils/csv-optimizer";
 
 interface QuizQuestion {
   id: string;
@@ -115,12 +116,8 @@ export function UnifiedQuestionManager() {
       
       if (error) throw error;
       
-      // Converter para CSV
-      const headers = Object.keys(data[0]).join(',');
-      const rows = data.map(row => Object.values(row).map(val => String(val)).join(','));
-      const csvContent = [headers, ...rows].join('\n');
+      const csvContent = optimizedCSVGeneration(data);
       
-      // Download
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -144,28 +141,7 @@ export function UnifiedQuestionManager() {
   };
 
   const exportQuestions = () => {
-    const headers = [
-      'question', 'option_a', 'option_b', 'option_c', 'option_d', 
-      'correct_answer', 'explanation', 'category', 'difficulty', 
-      'tags', 'concepts', 'source_material'
-    ];
-    
-    const rows = questions.map(q => [
-      q.question,
-      q.options[0] || '',
-      q.options[1] || '',
-      q.options[2] || '',
-      q.options[3] || '',
-      q.correct_answer,
-      q.explanation || '',
-      q.category,
-      q.difficulty,
-      (q.tags || []).join(';'),
-      (q.concepts || []).join(';'),
-      q.source_material || ''
-    ]);
-    
-    const csvContent = [headers.join(','), ...rows.map(row => row.map(field => `"${field}"`).join(','))].join('\n');
+    const csvContent = generateQuestionCSV(questions);
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
