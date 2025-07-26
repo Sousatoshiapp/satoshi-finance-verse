@@ -17,6 +17,8 @@ interface CryptoPaymentResponse {
   crypto_amount?: number;
   crypto_currency?: string;
   address?: string;
+  expires_at?: string;
+  qr_code?: string;
   error?: string;
 }
 
@@ -81,9 +83,30 @@ export function useCryptoPayments() {
     window.open(paymentUrl, '_blank');
   };
 
+  const checkPaymentStatus = async (paymentId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('crypto_payments')
+        .select('status, confirmed_at')
+        .eq('payment_id', paymentId)
+        .single();
+      
+      if (error) {
+        console.error('Error checking payment status:', error);
+        return null;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      return null;
+    }
+  };
+
   return {
     isLoading,
     createCryptoPayment,
     redirectToCryptoPayment,
+    checkPaymentStatus,
   };
 }

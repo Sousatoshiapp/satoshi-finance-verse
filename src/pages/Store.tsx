@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { PaymentMethodSelector } from "@/components/ui/payment-method-selector";
+import { CryptoCheckout } from "@/components/crypto/crypto-checkout";
 import { useCryptoPayments } from "@/hooks/use-crypto-payments";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield } from "lucide-react";
@@ -149,6 +150,8 @@ export default function Store() {
   const [purchasing, setPurchasing] = useState<string | null>(null);
   const [showBeetzModal, setShowBeetzModal] = useState(false);
   const [showPaymentSelector, setShowPaymentSelector] = useState(false);
+  const [showCryptoCheckout, setShowCryptoCheckout] = useState(false);
+  const [cryptoPaymentData, setCryptoPaymentData] = useState<any>(null);
   const [selectedBeetzPackage, setSelectedBeetzPackage] = useState<{ amount: number; price: number; name: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -501,7 +504,7 @@ export default function Store() {
         window.open(data.url, '_blank');
         
       } else {
-        // Crypto payment
+        // Crypto payment - redirect to checkout page
         const cryptoPayment = await createCryptoPayment({
           productId: `beetz-${amount}`,
           productName: `${name} - ${amount} Beetz`,
@@ -509,8 +512,14 @@ export default function Store() {
           type: 'beetz'
         });
 
-        if (cryptoPayment?.payment_url) {
-          redirectToCryptoPayment(cryptoPayment.payment_url);
+        if (cryptoPayment && cryptoPayment.success) {
+          setCryptoPaymentData({
+            ...cryptoPayment,
+            productName: `${name} - ${amount} Beetz`,
+            originalAmount: price * 100
+          });
+          setShowCryptoCheckout(true);
+          setPurchasing(null); // Remove loading state since we're showing checkout
         }
       }
     } catch (error) {
@@ -520,10 +529,25 @@ export default function Store() {
         description: "Não foi possível processar a compra de Beetz",
         variant: "destructive"
       });
-    } finally {
       setPurchasing(null);
       setSelectedBeetzPackage(null);
     }
+  };
+
+  const handleCryptoCheckoutBack = () => {
+    setShowCryptoCheckout(false);
+    setShowPaymentSelector(true);
+    setCryptoPaymentData(null);
+  };
+
+  const handleCryptoSuccess = () => {
+    setShowCryptoCheckout(false);
+    setSelectedBeetzPackage(null);
+    setCryptoPaymentData(null);
+    toast({
+      title: "Pagamento enviado!",
+      description: "Aguardando confirmação da transação. Você receberá seus Beetz em alguns minutos.",
+    });
   };
 
   const purchaseItem = async (item: Avatar | Product, type: 'avatar' | 'product' | 'skin') => {
@@ -1461,6 +1485,21 @@ export default function Store() {
               isLoading={purchasing !== null || cryptoLoading}
               amount={selectedBeetzPackage.price * 100} // Convert to cents
               productName={`${selectedBeetzPackage.name} - ${selectedBeetzPackage.amount} Beetz`}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Crypto Checkout Dialog */}
+      <Dialog open={showCryptoCheckout} onOpenChange={setShowCryptoCheckout}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {cryptoPaymentData && (
+            <CryptoCheckout
+              paymentData={cryptoPaymentData}
+              productName={cryptoPaymentData.productName}
+              originalAmount={cryptoPaymentData.originalAmount}
+              onBack={handleCryptoCheckoutBack}
+              onSuccess={handleCryptoSuccess}
             />
           )}
         </DialogContent>
