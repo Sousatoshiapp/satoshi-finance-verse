@@ -4,7 +4,7 @@ export interface CSVOptions {
   escapeQuotes?: boolean;
 }
 
-export function optimizedCSVGeneration<T extends Record<string, any>>(
+export function optimizedCSVGeneration<T extends Record<string, unknown>>(
   data: T[],
   headers?: string[],
   options: CSVOptions = {}
@@ -31,13 +31,23 @@ export function optimizedCSVGeneration<T extends Record<string, any>>(
   const headerRow = csvHeaders.map(escapeField).join(delimiter);
   
   const dataRows = data.map(row => 
-    csvHeaders.map(header => escapeField(row[header] || '')).join(delimiter)
+    csvHeaders.map(header => escapeField(String(row[header] || ''))).join(delimiter)
   );
 
   return [headerRow, ...dataRows].join('\n');
 }
 
-export function generateQuestionCSV(questions: any[]): string {
+export function generateQuestionCSV(questions: Array<{
+  question: string;
+  options: string[];
+  correct_answer: string;
+  explanation?: string;
+  category: string;
+  difficulty: string;
+  tags?: string[];
+  concepts?: string[];
+  source_material?: string;
+}>): string {
   const headers = [
     'question', 'option_a', 'option_b', 'option_c', 'option_d', 
     'correct_answer', 'explanation', 'category', 'difficulty', 
