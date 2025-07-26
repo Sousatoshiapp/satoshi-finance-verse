@@ -727,18 +727,56 @@ export default function Store() {
           </div>
         )}
 
-        {/* Tabs - Mobile Optimized */}
+        {/* Filtros - Mobile Optimizado */}
         <Tabs defaultValue="avatars" className="mb-20">
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-6 h-auto">
-            <TabsTrigger value="avatars" className="text-xs sm:text-sm p-2 sm:p-3">Avatares</TabsTrigger>
-            <TabsTrigger value="skins" className="text-xs sm:text-sm p-2 sm:p-3">Skins</TabsTrigger>
-            <TabsTrigger value="boosts" className="text-xs sm:text-sm p-2 sm:p-3">Boosts</TabsTrigger>
-            <TabsTrigger value="accessories" className="text-xs sm:text-sm p-2 sm:p-3">Acessórios</TabsTrigger>
-            <TabsTrigger value="lives" className="text-xs sm:text-sm p-2 sm:p-3">Vidas</TabsTrigger>
-            <TabsTrigger value="beetz" className="text-xs sm:text-sm p-2 sm:p-3 col-span-3 sm:col-span-1">
-              <BeetzIcon size="sm" className="mr-1" /> Beetz
-            </TabsTrigger>
-          </TabsList>
+          <div className="mb-6">
+            <TabsList className="grid grid-cols-3 gap-2 h-auto bg-transparent p-0 mb-3">
+              <TabsTrigger 
+                value="avatars" 
+                className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
+              >
+                <div className="text-lg">👤</div>
+                <span className="text-xs font-medium">Avatares</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="skins" 
+                className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
+              >
+                <div className="text-lg">🎨</div>
+                <span className="text-xs font-medium">Skins</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="boosts" 
+                className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
+              >
+                <div className="text-lg">⚡</div>
+                <span className="text-xs font-medium">Boosts</span>
+              </TabsTrigger>
+            </TabsList>
+            <TabsList className="grid grid-cols-3 gap-2 h-auto bg-transparent p-0">
+              <TabsTrigger 
+                value="accessories" 
+                className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
+              >
+                <div className="text-lg">🎒</div>
+                <span className="text-xs font-medium">Acessórios</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="lives" 
+                className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
+              >
+                <div className="text-lg">❤️</div>
+                <span className="text-xs font-medium">Vidas</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="beetz" 
+                className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
+              >
+                <BeetzIcon size="sm" />
+                <span className="text-xs font-medium">Beetz</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Avatars Tab */}
           <TabsContent value="avatars">
