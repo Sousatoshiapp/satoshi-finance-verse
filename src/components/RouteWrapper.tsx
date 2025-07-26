@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { AuthMiddleware } from '@/middleware/AuthMiddleware';
 import { FloatingNavbar } from '@/components/floating-navbar';
 
 interface RouteWrapperProps {
@@ -15,17 +15,10 @@ export function RouteWrapper({
   showNavbar = true,
   adminOnly = false
 }: RouteWrapperProps) {
-  const content = requiresAuth ? (
-    <ProtectedRoute>
+  return (
+    <AuthMiddleware requiresAuth={requiresAuth} adminOnly={adminOnly}>
       {children}
       {showNavbar && <FloatingNavbar />}
-    </ProtectedRoute>
-  ) : (
-    <>
-      {children}
-      {showNavbar && <FloatingNavbar />}
-    </>
+    </AuthMiddleware>
   );
-
-  return content;
 }
