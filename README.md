@@ -1,5 +1,7 @@
 # Welcome to your Lovable project
 
+*This repository has been verified for access by Devin AI.*
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/d2e8a781-1b9b-4d86-a980-5a42d9bce352
