@@ -6693,8 +6693,8 @@ export type Database = {
         }[]
       }
       get_admin_role: {
-        Args: { user_uuid?: string }
-        Returns: Database["public"]["Enums"]["admin_role"]
+        Args: { user_uuid: string }
+        Returns: string
       }
       get_current_season: {
         Args: Record<PropertyKey, never>
@@ -6733,7 +6733,7 @@ export type Database = {
         Returns: undefined
       }
       is_admin: {
-        Args: { user_uuid?: string }
+        Args: { user_uuid: string }
         Returns: boolean
       }
       is_guild_leader_or_officer: {
@@ -6742,6 +6742,10 @@ export type Database = {
       }
       is_guild_member: {
         Args: { p_user_id: string; p_guild_id: string }
+        Returns: boolean
+      }
+      is_master_admin: {
+        Args: { email_check: string }
         Returns: boolean
       }
       log_security_event: {
