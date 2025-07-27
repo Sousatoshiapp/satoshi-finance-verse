@@ -674,6 +674,107 @@ export type Database = {
           },
         ]
       }
+      city_emergency_contributions: {
+        Row: {
+          btz_contributed: number | null
+          contribution_type: string | null
+          created_at: string | null
+          emergency_id: string
+          heroic_action: string | null
+          id: string
+          user_id: string
+          xp_contributed: number | null
+        }
+        Insert: {
+          btz_contributed?: number | null
+          contribution_type?: string | null
+          created_at?: string | null
+          emergency_id: string
+          heroic_action?: string | null
+          id?: string
+          user_id: string
+          xp_contributed?: number | null
+        }
+        Update: {
+          btz_contributed?: number | null
+          contribution_type?: string | null
+          created_at?: string | null
+          emergency_id?: string
+          heroic_action?: string | null
+          id?: string
+          user_id?: string
+          xp_contributed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "city_emergency_contributions_emergency_id_fkey"
+            columns: ["emergency_id"]
+            isOneToOne: false
+            referencedRelation: "city_emergency_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      city_emergency_events: {
+        Row: {
+          btz_goal: number
+          created_at: string | null
+          crisis_type: string
+          current_btz_contributions: number | null
+          current_xp_contributions: number | null
+          description: string
+          duration_hours: number | null
+          end_time: string | null
+          id: string
+          is_active: boolean | null
+          penalty_multiplier: number | null
+          reward_multiplier: number | null
+          start_time: string | null
+          theme_data: Json | null
+          title: string
+          updated_at: string | null
+          xp_goal: number
+        }
+        Insert: {
+          btz_goal?: number
+          created_at?: string | null
+          crisis_type?: string
+          current_btz_contributions?: number | null
+          current_xp_contributions?: number | null
+          description: string
+          duration_hours?: number | null
+          end_time?: string | null
+          id?: string
+          is_active?: boolean | null
+          penalty_multiplier?: number | null
+          reward_multiplier?: number | null
+          start_time?: string | null
+          theme_data?: Json | null
+          title: string
+          updated_at?: string | null
+          xp_goal?: number
+        }
+        Update: {
+          btz_goal?: number
+          created_at?: string | null
+          crisis_type?: string
+          current_btz_contributions?: number | null
+          current_xp_contributions?: number | null
+          description?: string
+          duration_hours?: number | null
+          end_time?: string | null
+          id?: string
+          is_active?: boolean | null
+          penalty_multiplier?: number | null
+          reward_multiplier?: number | null
+          start_time?: string | null
+          theme_data?: Json | null
+          title?: string
+          updated_at?: string | null
+          xp_goal?: number
+        }
+        Relationships: []
+      }
       collectible_items: {
         Row: {
           attributes: Json | null
@@ -3558,6 +3659,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      push_notification_logs: {
+        Row: {
+          body: string
+          created_at: string | null
+          data: Json | null
+          error_message: string | null
+          id: string
+          notification_type: string
+          sent_at: string | null
+          status: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          data?: Json | null
+          error_message?: string | null
+          id?: string
+          notification_type: string
+          sent_at?: string | null
+          status?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          data?: Json | null
+          error_message?: string | null
+          id?: string
+          notification_type?: string
+          sent_at?: string | null
+          status?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       push_notification_settings: {
         Row: {
