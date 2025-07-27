@@ -6778,6 +6778,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      finalize_expired_emergencies: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       find_automatic_opponent: {
         Args: { p_user_id: string; p_topic?: string }
         Returns: {
