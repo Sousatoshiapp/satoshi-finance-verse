@@ -279,14 +279,14 @@ export default function Social() {
 
               {/* Mobile: Create Post Card - positioned correctly below tabs */}
               <div className="block sm:hidden mt-4 mb-4">
-                <Card className="border border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+                <Card className="border border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 mx-1">
                   <CardContent className="p-3">
                     <div className="space-y-2">
                       <Textarea
                         placeholder="Compartilhe sua opinião sobre o mercado..."
                         value={newPost}
                         onChange={(e) => setNewPost(e.target.value)}
-                        className="min-h-[60px] resize-none text-sm border-0 bg-background/50"
+                        className="min-h-[50px] resize-none text-sm border-0 bg-background/50 text-xs"
                         maxLength={500}
                       />
                       <div className="flex items-center justify-between gap-2">
@@ -296,7 +296,7 @@ export default function Social() {
                         <Button 
                           onClick={handleCreatePost}
                           disabled={!newPost.trim() || posting}
-                          className="h-8 text-xs px-3"
+                          className="h-7 text-xs px-2"
                           size="sm"
                         >
                           {posting ? "Postando..." : "Publicar"}
