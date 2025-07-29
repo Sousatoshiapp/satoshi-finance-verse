@@ -147,7 +147,7 @@ export default function Duels() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8 overflow-x-hidden">
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-6">
           <Button 
@@ -191,7 +191,7 @@ export default function Duels() {
               <CardTitle className="text-lg sm:text-xl">Suas Estatísticas</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center min-w-0">
                 <div>
                   <div className="text-xl sm:text-2xl font-bold text-primary">
                     {userProfile.level}
@@ -216,7 +216,7 @@ export default function Duels() {
         )}
 
         {/* Main Actions */}
-        <div className="grid gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid gap-4 sm:gap-6 mb-6 sm:mb-8 w-full min-w-0">
           <Card className="cursor-pointer hover:shadow-lg transition-shadow">
             <CardHeader className="pb-3 sm:pb-6">
               <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
