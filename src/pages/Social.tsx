@@ -268,13 +268,13 @@ export default function Social() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="feed" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1">
-                <TabsTrigger value="feed" className="text-xs">Feed</TabsTrigger>
-                <TabsTrigger value="discover" className="text-xs">Buscar</TabsTrigger>
-                <TabsTrigger value="challenges" className="text-xs">Desafios</TabsTrigger>
-                <TabsTrigger value="rankings" className="text-xs">Ranks</TabsTrigger>
-                <TabsTrigger value="following" className="text-xs">Seguindo</TabsTrigger>
-                <TabsTrigger value="messages" className="text-xs">Chat</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1 text-xs">
+                <TabsTrigger value="feed" className="text-xs px-2 py-1">Feed</TabsTrigger>
+                <TabsTrigger value="discover" className="text-xs px-2 py-1">Buscar</TabsTrigger>
+                <TabsTrigger value="challenges" className="text-xs px-2 py-1">Desafios</TabsTrigger>
+                <TabsTrigger value="rankings" className="text-xs px-2 py-1">Ranks</TabsTrigger>
+                <TabsTrigger value="following" className="text-xs px-2 py-1">Seguindo</TabsTrigger>
+                <TabsTrigger value="messages" className="text-xs px-2 py-1">Chat</TabsTrigger>
               </TabsList>
 
               {/* Desktop: Create Post Card */}
@@ -307,8 +307,37 @@ export default function Social() {
                 </Card>
               </div>
 
-
               <TabsContent value="feed" className="space-y-4">
+                {/* Mobile: Create Post Card - only on feed tab */}
+                <div className="block sm:hidden">
+                  <Card className="border border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
+                    <CardContent className="p-3">
+                      <div className="space-y-3">
+                        <Textarea
+                          placeholder="Compartilhe sua opinião sobre o mercado..."
+                          value={newPost}
+                          onChange={(e) => setNewPost(e.target.value)}
+                          className="min-h-[70px] resize-none text-sm"
+                          maxLength={500}
+                        />
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">
+                            {newPost.length}/500
+                          </span>
+                          <Button 
+                            onClick={handleCreatePost}
+                            disabled={!newPost.trim() || posting}
+                            size="sm"
+                            className="h-8 text-xs px-3"
+                          >
+                            {posting ? "Postando..." : "Publicar"}
+                            <Send className="ml-1 h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
                 <SocialFeed />
               </TabsContent>
 
