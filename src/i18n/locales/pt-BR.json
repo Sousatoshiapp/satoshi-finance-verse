@@ -12,6 +12,39 @@
     "xp": "XP",
     "beetz": "Beetz"
   },
+  "quiz": {
+    "title": "Quiz",
+    "question": "Questão {{number}} de {{total}}",
+    "nextQuestion": "Próxima Questão",
+    "finishQuiz": "Finalizar Quiz",
+    "timeRemaining": "Tempo Restante",
+    "correct": "Correto!",
+    "incorrect": "Incorreto!",
+    "explanation": "Explicação",
+    "score": "Pontuação",
+    "completed": "Quiz Concluído!",
+    "startQuiz": "Iniciar Quiz",
+    "questions": {
+      "q1": {
+        "question": "Qual é a principal função de uma bolsa de valores?",
+        "options": ["Emprestar dinheiro para empresas", "Facilitar a negociação de títulos", "Definir taxas de juros", "Imprimir dinheiro"],
+        "correct": "Facilitar a negociação de títulos",
+        "explanation": "Bolsas de valores facilitam a negociação de títulos entre compradores e vendedores."
+      },
+      "q2": {
+        "question": "O que significa IPO?",
+        "options": ["Oferta Pública Inicial", "Ordem de Compra Internacional", "Opções de Portfólio de Investimento", "Otimização Interna de Preços"],
+        "correct": "Oferta Pública Inicial",
+        "explanation": "IPO significa Oferta Pública Inicial, quando uma empresa vende ações ao público pela primeira vez."
+      },
+      "q3": {
+        "question": "O que é diversificação em investimentos?",
+        "options": ["Investir todo o dinheiro em uma ação", "Espalhar investimentos entre diferentes ativos", "Comprar apenas ações", "Vender todos os investimentos"],
+        "correct": "Espalhar investimentos entre diferentes ativos",
+        "explanation": "Diversificação envolve espalhar investimentos entre diferentes ativos para reduzir riscos."
+      }
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "quiz": "Quiz",
@@ -57,5 +90,31 @@
     "botManagement": "Gerenciamento de Bots",
     "enhanceBotRealism": "Aprimorar Realismo dos Bots",
     "updateBotNicknames": "Atualizar Nomes dos Bots"
+  },
+  "quizEngine": {
+    "loadingQuestions": "Carregando questões...",
+    "noQuestionsAvailable": "Nenhuma questão disponível",
+    "couldNotLoadQuestions": "Não foi possível carregar as questões no momento.",
+    "question": "Questão {{current}} de {{total}}",
+    "soloQuiz": "Quiz Solo",
+    "duelQuiz": "Quiz Duelo",
+    "tournamentQuiz": "Quiz Torneio",
+    "dailyMission": "Missão Diária",
+    "districtQuiz": "Quiz do Distrito",
+    "congratulations": "Parabéns!",
+    "lost": "Perdeu!",
+    "correctAnswers": "respostas corretas",
+    "accuracy": "precisão",
+    "nextQuiz": "Próximo Quiz",
+    "continue": "Continuar",
+    "tryAgain": "Tentar Novamente",
+    "back": "Voltar",
+    "confirmAnswer": "Confirmar Resposta",
+    "selectOption": "Selecione uma opção",
+    "timeUp": "Tempo Esgotado!",
+    "correct": "Correto!",
+    "incorrect": "Incorreto!",
+    "correctAnswer": "Resposta correta: ",
+    "timeRemaining": "Tempo Restante"
   }
 }

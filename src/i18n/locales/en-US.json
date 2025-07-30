@@ -12,6 +12,39 @@
     "xp": "XP",
     "beetz": "Beetz"
   },
+  "quiz": {
+    "title": "Quiz",
+    "question": "Question {{number}} of {{total}}",
+    "nextQuestion": "Next Question",
+    "finishQuiz": "Finish Quiz",
+    "timeRemaining": "Time Remaining",
+    "correct": "Correct!",
+    "incorrect": "Incorrect!",
+    "explanation": "Explanation",
+    "score": "Score",
+    "completed": "Quiz Completed!",
+    "startQuiz": "Start Quiz",
+    "questions": {
+      "q1": {
+        "question": "What is the main function of a stock exchange?",
+        "options": ["Lend money to companies", "Facilitate trading of securities", "Set interest rates", "Print money"],
+        "correct": "Facilitate trading of securities",
+        "explanation": "Stock exchanges facilitate the trading of securities between buyers and sellers."
+      },
+      "q2": {
+        "question": "What does IPO stand for?",
+        "options": ["Initial Public Offering", "International Purchase Order", "Investment Portfolio Options", "Internal Price Optimization"],
+        "correct": "Initial Public Offering",
+        "explanation": "IPO stands for Initial Public Offering, when a company first sells shares to the public."
+      },
+      "q3": {
+        "question": "What is diversification in investing?",
+        "options": ["Investing all money in one stock", "Spreading investments across different assets", "Only buying stocks", "Selling all investments"],
+        "correct": "Spreading investments across different assets",
+        "explanation": "Diversification involves spreading investments across different assets to reduce risk."
+      }
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "quiz": "Quiz",
@@ -57,5 +90,31 @@
     "botManagement": "Bot Management",
     "enhanceBotRealism": "Enhance Bot Realism",
     "updateBotNicknames": "Update Bot Nicknames"
+  },
+  "quizEngine": {
+    "loadingQuestions": "Loading questions...",
+    "noQuestionsAvailable": "No questions available",
+    "couldNotLoadQuestions": "Could not load questions at the moment.",
+    "question": "Question {{current}} of {{total}}",
+    "soloQuiz": "Solo Quiz",
+    "duelQuiz": "Duel Quiz",
+    "tournamentQuiz": "Tournament Quiz",
+    "dailyMission": "Daily Mission",
+    "districtQuiz": "District Quiz",
+    "congratulations": "Congratulations!",
+    "lost": "Lost!",
+    "correctAnswers": "correct answers",
+    "accuracy": "accuracy",
+    "nextQuiz": "Next Quiz",
+    "continue": "Continue",
+    "tryAgain": "Try Again",
+    "back": "Back",
+    "confirmAnswer": "Confirm Answer",
+    "selectOption": "Select an option",
+    "timeUp": "Time's Up!",
+    "correct": "Correct!",
+    "incorrect": "Incorrect!",
+    "correctAnswer": "Correct answer: ",
+    "timeRemaining": "Time Remaining"
   }
 }

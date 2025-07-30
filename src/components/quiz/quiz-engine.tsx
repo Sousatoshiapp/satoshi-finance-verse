@@ -11,6 +11,8 @@ import { useUnifiedSRS } from "@/hooks/use-unified-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
+import { useI18n } from "@/hooks/use-i18n";
+import { useQuizTranslations } from "@/hooks/use-quiz-translations";
 // BTZ Counter removido do Quiz Engine para simplificar UI
 // import { LivesCounter } from "./lives-counter"; // Removido
 import { BeetzAnimation } from "./beetz-animation";
@@ -100,6 +102,8 @@ export function QuizEngine({
   const { getDueQuestions, submitAnswer } = useUnifiedSRS();
   const { } = useAdvancedQuizAudio();
   const { shuffleQuestions } = useQuizShuffle();
+  const { t } = useI18n();
+  const { translateQuestions } = useQuizTranslations();
 
   const handleContinue = () => {
     console.log('🔄 handleContinue chamado');
@@ -185,8 +189,8 @@ export function QuizEngine({
       
       if (fetchedQuestions.length === 0) {
         toast({
-          title: "Sem questões disponíveis",
-          description: "Não encontramos questões para este modo.",
+          title: t('quizEngine.noQuestionsAvailable'),
+          description: t('quizEngine.couldNotLoadQuestions'),
           variant: "destructive"
         });
         return;
@@ -195,12 +199,15 @@ export function QuizEngine({
       // Embaralhar as opções de cada questão
       const shuffledQuestions = shuffleQuestions(fetchedQuestions);
       
-      setQuestions(shuffledQuestions);
+      // Aplicar traduções
+      const translatedQuestions = translateQuestions(shuffledQuestions);
+      
+      setQuestions(translatedQuestions);
     } catch (error) {
       console.error('Error fetching questions:', error);
       toast({
-        title: "Erro ao carregar questões",
-        description: "Tente novamente mais tarde.",
+        title: t('common.error'),
+        description: t('quizEngine.couldNotLoadQuestions'),
         variant: "destructive"
       });
     } finally {
@@ -340,11 +347,11 @@ export function QuizEngine({
 
   const getModeTitle = () => {
     switch (mode) {
-      case 'duel': return 'Duelo Quiz';
-      case 'tournament': return 'Torneio Quiz';
-      case 'daily_mission': return 'Missão Diária';
-      case 'district': return 'Quiz do Distrito';
-      default: return 'Quiz Solo';
+      case 'duel': return t('quizEngine.duelQuiz');
+      case 'tournament': return t('quizEngine.tournamentQuiz');
+      case 'daily_mission': return t('quizEngine.dailyMission');
+      case 'district': return t('quizEngine.districtQuiz');
+      default: return t('quizEngine.soloQuiz');
     }
   };
 
@@ -354,7 +361,7 @@ export function QuizEngine({
         <Card className="w-full max-w-md p-8">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Carregando questões...</p>
+            <p className="text-muted-foreground">{t('quizEngine.loadingQuestions')}</p>
           </div>
         </Card>
       </div>
@@ -402,7 +409,7 @@ export function QuizEngine({
           </div>
           
           <h1 className="text-3xl font-bold mb-2">
-            {isSuccess ? "Parabéns!" : "Perdeu!"}
+            {isSuccess ? t('quizEngine.congratulations') : t('quizEngine.lost')}
           </h1>
           
           <div className="mb-6">
@@ -410,7 +417,7 @@ export function QuizEngine({
               {score}/{questions.length}
             </div>
             <p className="text-muted-foreground">
-              {percentage}% de acertos
+              {percentage}% {t('quizEngine.accuracy')}
             </p>
           </div>
 
@@ -421,11 +428,11 @@ export function QuizEngine({
                 className="w-full" 
                 size="lg"
               >
-                {mode === 'solo' ? 'Próximo Quiz' : 'Continuar'}
+                {mode === 'solo' ? t('quizEngine.nextQuiz') : t('quizEngine.continue')}
               </Button>
             ) : (
               <Button onClick={resetQuiz} className="w-full" size="lg">
-                Tentar Novamente
+                {t('quizEngine.tryAgain')}
               </Button>
             )}
             <Button 
@@ -433,7 +440,7 @@ export function QuizEngine({
               onClick={() => navigate(getBackRoute())} 
               className="w-full"
             >
-              Voltar
+              {t('quizEngine.back')}
             </Button>
           </div>
         </Card>
@@ -475,14 +482,14 @@ export function QuizEngine({
                 className="text-muted-foreground hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar
+                {t('quizEngine.back')}
               </Button>
             </div>
             
             {/* Centro: Informações do Quiz */}
             <div className="text-center">
               <div className="text-sm sm:text-lg font-bold text-primary">
-                Pergunta {currentIndex + 1} de {questions.length}
+                {t('quizEngine.question', { current: currentIndex + 1, total: questions.length })}
               </div>
               <div className="text-sm sm:text-lg text-muted-foreground">
                 {getModeTitle()}
@@ -572,7 +579,7 @@ export function QuizEngine({
               className="w-full transition-all duration-300 hover:scale-[1.02] shadow-lg"
               size="lg"
             >
-              {selectedAnswer ? 'Confirmar Resposta' : 'Selecione uma opção'}
+              {selectedAnswer ? t('quizEngine.confirmAnswer') : t('quizEngine.selectOption')}
             </Button>
           )}
 
@@ -607,13 +614,13 @@ export function QuizEngine({
         <AlertDialogContent className="mx-auto max-w-xs sm:max-w-lg rounded-2xl sm:rounded-lg left-1/2 transform -translate-x-1/2">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-center text-base sm:text-lg">
-              {showTimeoutModal ? '⏰ Tempo Esgotado!' : 
-               selectedAnswer === currentQuestion?.correct_answer ? '✅ Correto!' : '❌ Incorreto!'}
+              {showTimeoutModal ? `⏰ ${t('quizEngine.timeUp')}` : 
+               selectedAnswer === currentQuestion?.correct_answer ? `✅ ${t('quizEngine.correct')}` : `❌ ${t('quizEngine.incorrect')}`}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center space-y-2 sm:space-y-4">
               {(showTimeoutModal || (showAnswer && selectedAnswer !== currentQuestion?.correct_answer)) && (
                 <div className="text-sm sm:text-lg font-semibold text-white">
-                  Resposta correta: <span style={{color: '#adff2f'}}>{currentQuestion?.correct_answer}</span>
+                  {t('quizEngine.correctAnswer')}<span style={{color: '#adff2f'}}>{currentQuestion?.correct_answer}</span>
                 </div>
               )}
               {currentQuestion?.explanation && (
@@ -625,7 +632,7 @@ export function QuizEngine({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction onClick={showTimeoutModal ? handleTimeoutContinue : handleContinue} className="w-full">
-              Continuar
+              {t('quizEngine.continue')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -15,6 +15,10 @@ export function LanguageSelector() {
 
   const handleLanguageChange = (languageCode: string) => {
     changeLanguage(languageCode);
+    // Force a full page reload to ensure all components update
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   return (
@@ -32,7 +36,7 @@ export function LanguageSelector() {
         
         <Select value={currentLang} onValueChange={handleLanguageChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Selecione um idioma" />
+            <SelectValue placeholder={t('admin.changeLanguage')} />
           </SelectTrigger>
           <SelectContent>
             {languages.map((language) => (
