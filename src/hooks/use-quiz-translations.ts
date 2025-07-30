@@ -72,6 +72,48 @@ const questionTranslations: Record<string, Record<string, any>> = {
       correct_answer: "Mercado em alta",
       explanation: "Bull Market é período de crescimento contínuo."
     }
+  },
+  "O que é ROI?": {
+    'en-US': {
+      question: "What is ROI?",
+      options: ["Return on Investment", "Rate of Interest", "Risk of Investment", "Real Operating Income"],
+      correct_answer: "Return on Investment",
+      explanation: "ROI stands for Return on Investment, measuring profitability."
+    },
+    'pt-BR': {
+      question: "O que é ROI?",
+      options: ["Retorno sobre Investimento", "Taxa de Juros", "Risco do Investimento", "Receita Operacional Real"],
+      correct_answer: "Retorno sobre Investimento",
+      explanation: "ROI significa Retorno sobre Investimento, medindo rentabilidade."
+    }
+  },
+  "O que é volatilidade?": {
+    'en-US': {
+      question: "What is volatility?",
+      options: ["Price stability", "Price variation", "Investment guarantee", "Fixed return"],
+      correct_answer: "Price variation",
+      explanation: "Volatility measures how much an asset's price fluctuates."
+    },
+    'pt-BR': {
+      question: "O que é volatilidade?",
+      options: ["Estabilidade de preços", "Variação de preços", "Garantia de investimento", "Retorno fixo"],
+      correct_answer: "Variação de preços",
+      explanation: "Volatilidade mede o quanto o preço de um ativo oscila."
+    }
+  },
+  "O que é Bear Market?": {
+    'en-US': {
+      question: "What is Bear Market?",
+      options: ["Rising market", "Falling market", "Stable market", "New market"],
+      correct_answer: "Falling market",
+      explanation: "Bear Market is a period of declining prices."
+    },
+    'pt-BR': {
+      question: "O que é Bear Market?",
+      options: ["Mercado em alta", "Mercado em baixa", "Mercado estável", "Mercado novo"],
+      correct_answer: "Mercado em baixa",
+      explanation: "Bear Market é período de queda de preços."
+    }
   }
 };
 

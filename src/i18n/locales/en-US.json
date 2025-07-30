@@ -10,7 +10,10 @@
     "level": "Level",
     "points": "Points",
     "xp": "XP",
-    "beetz": "Beetz"
+    "beetz": "Beetz",
+    "pro": "Pro",
+    "online": "Online",
+    "offline": "Offline"
   },
   "quiz": {
     "title": "Quiz",
@@ -59,7 +62,12 @@
     "weeklyRanking": "Weekly Ranking",
     "dailyMissions": "Daily Missions",
     "streak": "Streak",
-    "level": "Level {{level}}"
+    "level": "Level {{level}}",
+    "goodMorning": "GOOD MORNING",
+    "goodAfternoon": "GOOD AFTERNOON",
+    "goodNight": "GOOD NIGHT",
+    "student": "Student",
+    "goal": "Goal"
   },
   "leaderboard": {
     "weeklyRankings": "Weekly Rankings",
@@ -116,5 +124,68 @@
     "incorrect": "Incorrect!",
     "correctAnswer": "Correct answer: ",
     "timeRemaining": "Time Remaining"
+  },
+  "social": {
+    "socialFeed": "Social Feed",
+    "shareOpinion": "Share your opinion about the market",
+    "whatsHappening": "What's happening?",
+    "post": "Post",
+    "like": "Like",
+    "comment": "Comment",
+    "share": "Share"
+  },
+  "store": {
+    "store": "Store",
+    "avatars": "Avatars",
+    "upgrades": "Upgrades",
+    "buy": "Buy",
+    "owned": "Owned"
+  },
+  "subscription": {
+    "plans": "Subscription Plans",
+    "choosePlan": "Choose your Plan",
+    "free": "Free",
+    "premium": "Premium",
+    "elite": "Elite",
+    "monthly": "Monthly",
+    "annually": "Annually",
+    "subscribe": "Subscribe",
+    "benefits": "Benefits",
+    "compareBenefits": "Compare Benefits"
+  },
+  "settings": {
+    "settings": "Settings",
+    "account": "Account",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "theme": "Theme",
+    "language": "Language"
+  },
+  "missions": {
+    "dailyMissions": "Daily Missions",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "reward": "Reward",
+    "claim": "Claim"
+  },
+  "tournaments": {
+    "tournaments": "Tournaments",
+    "joinTournament": "Join Tournament",
+    "upcoming": "Upcoming",
+    "active": "Active",
+    "finished": "Finished"
+  },
+  "duels": {
+    "duels": "Duels",
+    "challenge": "Challenge",
+    "accept": "Accept",
+    "decline": "Decline",
+    "waiting": "Waiting"
+  },
+  "levels": {
+    "levels": "Levels",
+    "currentLevel": "Current Level",
+    "nextLevel": "Next Level",
+    "progress": "Progress"
   }
 }

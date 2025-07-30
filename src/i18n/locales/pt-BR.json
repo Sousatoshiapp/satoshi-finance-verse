@@ -10,7 +10,10 @@
     "level": "Nível",
     "points": "Pontos",
     "xp": "XP",
-    "beetz": "Beetz"
+    "beetz": "Beetz",
+    "pro": "Pro",
+    "online": "Online",
+    "offline": "Offline"
   },
   "quiz": {
     "title": "Quiz",
@@ -59,7 +62,12 @@
     "weeklyRanking": "Ranking Semanal",
     "dailyMissions": "Missões Diárias",
     "streak": "Sequência",
-    "level": "Nível {{level}}"
+    "level": "Nível {{level}}",
+    "goodMorning": "BOM DIA",
+    "goodAfternoon": "BOA TARDE",
+    "goodNight": "BOA NOITE",
+    "student": "Estudante",
+    "goal": "Meta"
   },
   "leaderboard": {
     "weeklyRankings": "Rankings Semanais",
@@ -116,5 +124,68 @@
     "incorrect": "Incorreto!",
     "correctAnswer": "Resposta correta: ",
     "timeRemaining": "Tempo Restante"
+  },
+  "social": {
+    "socialFeed": "Feed Social",
+    "shareOpinion": "Compartilhe sua opinião sobre o mercado",
+    "whatsHappening": "O que está acontecendo?",
+    "post": "Postar",
+    "like": "Curtir",
+    "comment": "Comentar",
+    "share": "Compartilhar"
+  },
+  "store": {
+    "store": "Loja",
+    "avatars": "Avatares",
+    "upgrades": "Melhorias",
+    "buy": "Comprar",
+    "owned": "Possui"
+  },
+  "subscription": {
+    "plans": "Planos de Assinatura",
+    "choosePlan": "Escolha seu Plano",
+    "free": "Grátis",
+    "premium": "Premium",
+    "elite": "Elite",
+    "monthly": "Mensal",
+    "annually": "Anual",
+    "subscribe": "Assinar",
+    "benefits": "Benefícios",
+    "compareBenefits": "Compare os Benefícios"
+  },
+  "settings": {
+    "settings": "Configurações",
+    "account": "Conta",
+    "notifications": "Notificações",
+    "privacy": "Privacidade",
+    "theme": "Tema",
+    "language": "Idioma"
+  },
+  "missions": {
+    "dailyMissions": "Missões Diárias",
+    "completed": "Concluída",
+    "inProgress": "Em Progresso",
+    "reward": "Recompensa",
+    "claim": "Resgatar"
+  },
+  "tournaments": {
+    "tournaments": "Torneios",
+    "joinTournament": "Participar do Torneio",
+    "upcoming": "Próximos",
+    "active": "Ativos",
+    "finished": "Finalizados"
+  },
+  "duels": {
+    "duels": "Duelos",
+    "challenge": "Desafiar",
+    "accept": "Aceitar",
+    "decline": "Recusar",
+    "waiting": "Aguardando"
+  },
+  "levels": {
+    "levels": "Níveis",
+    "currentLevel": "Nível Atual",
+    "nextLevel": "Próximo Nível",
+    "progress": "Progresso"
   }
 }

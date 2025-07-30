@@ -24,22 +24,25 @@ import { useRealtime } from "@/contexts/RealtimeContext";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import { useCrisisState } from "@/hooks/use-crisis-state";
+import { LanguageSwitch } from "@/components/language-switch";
+import { useI18n } from "@/hooks/use-i18n";
 
 
-const getGreeting = () => {
+const getGreeting = (t: any) => {
   const hour = new Date().getHours();
   
   if (hour >= 5 && hour < 12) {
-    return { text: "BOM DIA", icon: "☀️" };
+    return { text: t('dashboard.goodMorning'), icon: "☀️" };
   } else if (hour >= 12 && hour < 18) {
-    return { text: "BOA TARDE", icon: "🌤️" };
+    return { text: t('dashboard.goodAfternoon'), icon: "🌤️" };
   } else {
-    return { text: "BOA NOITE", icon: "🌙" };
+    return { text: t('dashboard.goodNight'), icon: "🌙" };
   }
 };
 
 export default function Dashboard() {
-  const [greeting, setGreeting] = useState(getGreeting());
+  const { t } = useI18n();
+  const [greeting, setGreeting] = useState(getGreeting(t));
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   
   const navigate = useNavigate();
@@ -95,7 +98,7 @@ export default function Dashboard() {
     
     // Update greeting every minute
     const interval = setInterval(() => {
-      setGreeting(getGreeting());
+      setGreeting(getGreeting(t));
     }, 60000);
     
     return () => clearInterval(interval);
@@ -177,7 +180,7 @@ export default function Dashboard() {
   }, [dashboardData, realtimePoints]);
 
   // Memoize user data extraction
-  const userNickname = useMemo(() => dashboardData?.profile?.nickname || 'Estudante', [dashboardData?.profile?.nickname]);
+  const userNickname = useMemo(() => dashboardData?.profile?.nickname || t('dashboard.student'), [dashboardData?.profile?.nickname, t]);
   const userAvatar = useMemo(() => dashboardData?.avatar, [dashboardData?.avatar]);
   const hasAvatar = useMemo(() => !!userAvatar, [userAvatar]);
   const userDistrict = useMemo(() => dashboardData?.district, [dashboardData?.district]);
@@ -207,12 +210,12 @@ export default function Dashboard() {
                   {isOnline ? (
                     <span className="inline-flex items-center gap-1">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-green-500">Online</span>
+                      <span className="text-xs text-green-500">{t('common.online')}</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1">
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span className="text-xs text-red-500">Offline</span>
+                      <span className="text-xs text-red-500">{t('common.offline')}</span>
                     </span>
                   )}
                 </span>
@@ -220,6 +223,7 @@ export default function Dashboard() {
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitch />
               {shouldShowIcon && (
                 <CrisisIcon onClick={() => {
                   console.log('CrisisIcon clicked, calling openBanner');
@@ -234,7 +238,7 @@ export default function Dashboard() {
                   onClick={handleNavigateToSubscription}
                   className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0"
                 >
-                  ⭐ Pro
+                  ⭐ {t('common.pro')}
                 </Button>
               )}
             </div>
@@ -269,7 +273,7 @@ export default function Dashboard() {
                     {/* Level Badge - Positioned Right Side */}
                     <div className="absolute -bottom-0.5 right-2">
                       <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
-                        <span>Nível</span>
+                        <span>{t('common.level')}</span>
                         <span className="font-bold">{userStats.level}</span>
                       </div>
                     </div>
@@ -297,7 +301,7 @@ export default function Dashboard() {
                   </div>
                   <div className="absolute -bottom-0.5 right-2">
                     <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
-                      <span>Nível</span>
+                      <span>{t('common.level')}</span>
                       <span className="font-bold">{userStats.level}</span>
                     </div>
                   </div>
@@ -332,8 +336,8 @@ export default function Dashboard() {
               </div>
               
               <div className="flex justify-between items-center text-xs text-muted-foreground mb-4 px-1">
-                <span>XP: {userStats.currentXP}</span>
-                <span>Meta: {userStats.nextLevelXP}</span>
+                <span>{t('common.xp')}: {userStats.currentXP}</span>
+                <span>{t('dashboard.goal')}: {userStats.nextLevelXP}</span>
               </div>
             </div>
 
