@@ -237,14 +237,53 @@ export default function SubscriptionPlans() {
 
           {/* Benefits Comparison - Mobile Optimized */}
           <div className="mt-8 sm:mt-12">
-            <h2 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8">Compare os Benefícios</h2>
+            <h2 className="text-lg sm:text-2xl font-bold text-center mb-4 sm:mb-8">Compare os Benefícios</h2>
             
             <Card>
-              <CardContent className="p-4 sm:p-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6">
-                  <div className="space-y-3 sm:space-y-4">
-                    <h3 className="font-semibold text-sm sm:text-base">Funcionalidades</h3>
-                    <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
+              <CardContent className="p-3 sm:p-6">
+                {/* Mobile: Show key benefits only */}
+                <div className="block md:hidden">
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs font-medium">
+                      <div className="text-blue-500">FREE</div>
+                      <div className="text-yellow-500">PRO</div>
+                      <div className="text-purple-500">ELITE</div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-4 gap-1 text-xs items-center">
+                        <div className="text-left text-muted-foreground">Duelos</div>
+                        <div className="text-center">10/dia</div>
+                        <div className="text-center">∞</div>
+                        <div className="text-center">∞</div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1 text-xs items-center">
+                        <div className="text-left text-muted-foreground">XP</div>
+                        <div className="text-center">1x</div>
+                        <div className="text-center">2x</div>
+                        <div className="text-center">3x</div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1 text-xs items-center">
+                        <div className="text-left text-muted-foreground">Beetz</div>
+                        <div className="text-center">0</div>
+                        <div className="text-center">50</div>
+                        <div className="text-center">100</div>
+                      </div>
+                      <div className="grid grid-cols-4 gap-1 text-xs items-center">
+                        <div className="text-left text-muted-foreground">AI Advisor</div>
+                        <div className="text-center">❌</div>
+                        <div className="text-center">❌</div>
+                        <div className="text-center">✅</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop: Full comparison */}
+                <div className="hidden md:grid md:grid-cols-4 gap-6">
+                  <div className="space-y-4">
+                    <h3 className="font-semibold">Funcionalidades</h3>
+                    <div className="space-y-3 text-sm">
                       <div>Duelos diários</div>
                       <div>Multiplicador XP</div>
                       <div>Beetz mensais</div>
