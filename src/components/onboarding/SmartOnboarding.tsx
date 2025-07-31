@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Brain, 
@@ -38,6 +39,7 @@ interface UserProfile {
 }
 
 export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
+  const { t } = useI18n();
   const [currentStep, setCurrentStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>({
     experience_level: '',
@@ -369,7 +371,7 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
     } catch (error) {
       console.error('Error saving profile:', error);
       toast({
-        title: "Erro ao salvar perfil",
+        title: t('errors.error'),
         description: "Tente novamente ou continue para configurar depois",
         variant: "destructive"
       });
@@ -440,7 +442,7 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
               disabled={!canProceed() || loading}
               className="min-w-32"
             >
-              {loading ? 'Salvando...' : 'Finalizar'}
+              {loading ? t('admin.saving') : 'Finalizar'}
               <CheckCircle className="h-4 w-4 ml-2" />
             </Button>
           ) : (

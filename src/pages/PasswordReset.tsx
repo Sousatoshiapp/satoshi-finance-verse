@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 export default function PasswordReset() {
+  const { t } = useI18n();
   const [searchParams] = useSearchParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -70,7 +72,7 @@ export default function PasswordReset() {
 
       if (error) {
         toast({
-          title: "Erro ao redefinir senha",
+          title: t('errors.error'),
           description: error.message,
           variant: "destructive"
         });
@@ -211,7 +213,7 @@ export default function PasswordReset() {
                   {loading ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
-                      <span>Salvando...</span>
+                      <span>{t('admin.saving')}</span>
                     </div>
                   ) : (
                     'Salvar Nova Senha'

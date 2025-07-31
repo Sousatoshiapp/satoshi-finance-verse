@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { EmailVerificationNotice } from "@/components/auth/email-verification-notice";
@@ -24,6 +25,7 @@ export default function Auth() {
   const [registeredEmail, setRegisteredEmail] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useI18n();
 
   useEffect(() => {
     const mode = searchParams.get('mode');
@@ -177,7 +179,7 @@ export default function Auth() {
 
       if (error) {
         toast({
-          title: "Erro ao redefinir senha",
+          title: t('errors.passwordResetError'),
           description: error.message,
           variant: "destructive",
         });
@@ -221,7 +223,7 @@ export default function Auth() {
 
       if (error) {
         toast({
-          title: "Erro ao reenviar email",
+          title: t('errors.resendEmailError'),
           description: error.message,
           variant: "destructive",
         });

@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { DollarSign, TrendingUp, Users, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminFinanceRevenue() {
+  const { t } = useI18n();
   const [revenueData, setRevenueData] = useState({
     totalRevenue: 0,
     monthlyRevenue: 0,
@@ -53,7 +55,7 @@ export default function AdminFinanceRevenue() {
       });
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar dados de receita",
+        title: t('errors.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -166,7 +168,7 @@ export default function AdminFinanceRevenue() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {loading ? (
-                      <div className="text-center py-4">Carregando...</div>
+                      <div className="text-center py-4">{t('common.loading')}...</div>
                     ) : (
                       <>
                         <div className="flex justify-between items-center">

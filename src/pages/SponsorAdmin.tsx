@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { 
   Building2, BarChart3, Calendar, Store, Users, TrendingUp,
@@ -32,6 +33,7 @@ interface AnalyticsData {
 }
 
 export default function SponsorAdmin() {
+  const { t } = useI18n();
   const [sponsorAccess, setSponsorAccess] = useState<SponsorAccess[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
@@ -105,7 +107,7 @@ export default function SponsorAdmin() {
     } catch (error: any) {
       console.error('Error loading sponsor access:', error);
       toast({
-        title: "Erro ao carregar acesso",
+        title: t('errors.loadAccessError'),
         description: error.message,
         variant: "destructive",
       });
@@ -171,7 +173,7 @@ export default function SponsorAdmin() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Carregando painel de patrocinadores...</p>
+          <p className="text-muted-foreground">{t('common.loading')}...</p>
         </div>
       </div>
     );
@@ -184,22 +186,22 @@ export default function SponsorAdmin() {
           <Card className="max-w-2xl w-full">
             <CardContent className="p-8 text-center">
               <Building2 className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="text-xl font-bold mb-2">Acesso Negado</h2>
+              <h2 className="text-xl font-bold mb-2">{t('errors.accessDenied')}</h2>
               <p className="text-muted-foreground mb-6">
-                Você não possui acesso administrativo a nenhum distrito patrocinado.
+                {t('admin.noSponsorAccess')}
               </p>
               <div className="text-sm text-muted-foreground mb-4">
-                Para configurar acessos de sponsor admin, acesse:
+                {t('admin.configureAccess')}
               </div>
-              <Button 
+              <Button
                 onClick={() => window.location.href = '/admin/settings'}
                 className="mb-4"
               >
                 <Settings className="w-4 h-4 mr-2" />
-                Configurações do Sistema
+                {t('admin.systemSettings')}
               </Button>
               <div className="text-xs text-muted-foreground">
-                Procure pela seção "Gerenciamento de Acesso de Sponsors"
+                {t('admin.lookForSection')}
               </div>
             </CardContent>
           </Card>
@@ -219,10 +221,10 @@ export default function SponsorAdmin() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
-                  Painel de Patrocinadores
+                  {t('admin.sponsorPanel')}
                 </h1>
                 <p className="text-muted-foreground">
-                  Gerencie seus distritos patrocinados e analise o desempenho
+                  {t('admin.manageSponsoredDistricts')}
                 </p>
               </div>
               
@@ -230,7 +232,7 @@ export default function SponsorAdmin() {
               {localStorage.getItem("admin_access_granted") === "true" && (
                 <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black">
                   <Crown className="w-3 h-3 mr-1" />
-                  Acesso Admin Completo
+                  {t('admin.fullAdminAccess')}
                 </Badge>
               )}
             </div>
@@ -263,9 +265,9 @@ export default function SponsorAdmin() {
             <Tabs defaultValue="analytics" className="space-y-6">
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                <TabsTrigger value="store">Loja</TabsTrigger>
-                <TabsTrigger value="events">Eventos</TabsTrigger>
-                <TabsTrigger value="users">Usuários</TabsTrigger>
+                <TabsTrigger value="store">{t('store.store')}</TabsTrigger>
+                <TabsTrigger value="events">{t('admin.events')}</TabsTrigger>
+                <TabsTrigger value="users">{t('profile.userProfile')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="analytics" className="space-y-6">
@@ -278,7 +280,7 @@ export default function SponsorAdmin() {
                           <div className="flex items-center">
                             <Users className="h-8 w-8 text-blue-600" />
                             <div className="ml-2">
-                              <p className="text-sm font-medium text-muted-foreground">Total Usuários</p>
+                              <p className="text-sm font-medium text-muted-foreground">{t('admin.totalUsers')}</p>
                               <p className="text-2xl font-bold">{analytics.totalUsers}</p>
                             </div>
                           </div>
@@ -290,7 +292,7 @@ export default function SponsorAdmin() {
                           <div className="flex items-center">
                             <TrendingUp className="h-8 w-8 text-green-600" />
                             <div className="ml-2">
-                              <p className="text-sm font-medium text-muted-foreground">Usuários Ativos</p>
+                              <p className="text-sm font-medium text-muted-foreground">{t('admin.activeUsers')}</p>
                               <p className="text-2xl font-bold">{analytics.activeUsers}</p>
                             </div>
                           </div>
@@ -302,7 +304,7 @@ export default function SponsorAdmin() {
                           <div className="flex items-center">
                             <DollarSign className="h-8 w-8 text-green-600" />
                             <div className="ml-2">
-                              <p className="text-sm font-medium text-muted-foreground">Receita Loja</p>
+                              <p className="text-sm font-medium text-muted-foreground">{t('admin.storeRevenue')}</p>
                               <p className="text-2xl font-bold">₿{analytics.storeRevenue}</p>
                             </div>
                           </div>
@@ -314,7 +316,7 @@ export default function SponsorAdmin() {
                           <div className="flex items-center">
                             <Calendar className="h-8 w-8 text-purple-600" />
                             <div className="ml-2">
-                              <p className="text-sm font-medium text-muted-foreground">Eventos</p>
+                              <p className="text-sm font-medium text-muted-foreground">{t('admin.events')}</p>
                               <p className="text-2xl font-bold">{analytics.eventsCreated}</p>
                             </div>
                           </div>
@@ -326,7 +328,7 @@ export default function SponsorAdmin() {
                           <div className="flex items-center">
                             <Target className="h-8 w-8 text-orange-600" />
                             <div className="ml-2">
-                              <p className="text-sm font-medium text-muted-foreground">Engajamento</p>
+                              <p className="text-sm font-medium text-muted-foreground">{t('admin.engagement')}</p>
                               <p className="text-2xl font-bold">{analytics.engagement}%</p>
                             </div>
                           </div>
@@ -338,24 +340,24 @@ export default function SponsorAdmin() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <Card>
                         <CardHeader>
-                          <CardTitle>Crescimento de Usuários</CardTitle>
+                          <CardTitle>{t('admin.userGrowth')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="h-64 flex items-center justify-center text-muted-foreground">
                             <BarChart3 className="w-16 h-16 mb-2" />
-                            <p>Gráfico de crescimento em desenvolvimento</p>
+                            <p>{t('admin.growthChartInDevelopment')}</p>
                           </div>
                         </CardContent>
                       </Card>
 
                       <Card>
                         <CardHeader>
-                          <CardTitle>Receita da Loja</CardTitle>
+                          <CardTitle>{t('admin.storeRevenue')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="h-64 flex items-center justify-center text-muted-foreground">
                             <DollarSign className="w-16 h-16 mb-2" />
-                            <p>Gráfico de receita em desenvolvimento</p>
+                            <p>{t('admin.revenueChartInDevelopment')}</p>
                           </div>
                         </CardContent>
                       </Card>
@@ -369,14 +371,14 @@ export default function SponsorAdmin() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Store className="w-5 h-5" />
-                      Gerenciamento da Loja
+                      {t('admin.storeManagement')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-8">
                       <Store className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                       <p className="text-muted-foreground">
-                        Interface de gerenciamento da loja em desenvolvimento
+                        {t('admin.storeInterfaceInDevelopment')}
                       </p>
                     </div>
                   </CardContent>
@@ -388,14 +390,14 @@ export default function SponsorAdmin() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Calendar className="w-5 h-5" />
-                      Eventos e Promoções
+                      {t('admin.eventsPromotions')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-8">
                       <Calendar className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                       <p className="text-muted-foreground">
-                        Interface de gerenciamento de eventos em desenvolvimento
+                        {t('admin.eventsInterfaceInDevelopment')}
                       </p>
                     </div>
                   </CardContent>
@@ -407,14 +409,14 @@ export default function SponsorAdmin() {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Users className="w-5 h-5" />
-                      Gestão de Usuários
+                      {t('admin.userManagement')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-8">
                       <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                       <p className="text-muted-foreground">
-                        Interface de gestão de usuários em desenvolvimento
+                        {t('admin.userInterfaceInDevelopment')}
                       </p>
                     </div>
                   </CardContent>

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 
@@ -11,6 +12,7 @@ export default function AdminPasswordReset() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useI18n();
   
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -84,8 +86,8 @@ export default function AdminPasswordReset() {
     } catch (error: any) {
       console.error('Password reset error:', error);
       toast({
-        title: "Erro ao redefinir senha",
-        description: error.message || "Token inválido ou expirado.",
+        title: t('errors.passwordResetError'),
+        description: error.message || t('errors.invalidToken'),
         variant: "destructive",
       });
     } finally {

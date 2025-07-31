@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { Search, Eye, MessageSquare, Heart, Trash2, Flag, CheckCircle, XCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -30,6 +31,7 @@ interface SocialPost {
 }
 
 export default function AdminSocialPosts() {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,8 +100,8 @@ export default function AdminSocialPosts() {
     } catch (error) {
       console.error('Error approving post:', error);
       toast({
-        title: "Erro",
-        description: "Erro ao aprovar post",
+        title: t('errors.error'),
+        description: t('errors.errorApprovingPost'),
         variant: "destructive"
       });
     }
@@ -123,8 +125,8 @@ export default function AdminSocialPosts() {
     } catch (error) {
       console.error('Error rejecting post:', error);
       toast({
-        title: "Erro",
-        description: "Erro ao rejeitar post",
+        title: t('errors.error'),
+        description: t('errors.errorRejectingPost'),
         variant: "destructive"
       });
     }
@@ -150,8 +152,8 @@ export default function AdminSocialPosts() {
     } catch (error) {
       console.error('Error deleting post:', error);
       toast({
-        title: "Erro",
-        description: "Erro ao deletar post",
+        title: t('errors.error'),
+        description: t('errors.errorDeletingPost'),
         variant: "destructive"
       });
     }

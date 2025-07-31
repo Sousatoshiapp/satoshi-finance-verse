@@ -3,15 +3,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { QuestionGeneratorPanel } from "@/components/admin/QuestionGeneratorPanel";
 import { Database, Brain, Settings } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminPanel() {
+  const { t } = useI18n();
+  
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Painel Administrativo</h1>
+          <h1 className="text-3xl font-bold">{t('admin.adminPanel')}</h1>
           <p className="text-muted-foreground">
-            Gerenciamento do sistema de perguntas e configurações
+            {t('admin.systemManagement')}
           </p>
         </div>
 
@@ -19,22 +22,22 @@ export default function AdminPanel() {
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="questions" className="flex items-center gap-2">
               <Database className="w-4 h-4" />
-              Banco de Perguntas
+              {t('admin.questionBank')}
             </TabsTrigger>
             <TabsTrigger value="ai" className="flex items-center gap-2">
               <Brain className="w-4 h-4" />
-              Geração IA
+              {t('admin.aiGeneration')}
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
-              Configurações
+              {t('settings.settings')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="questions">
             <Card>
               <CardHeader>
-                <CardTitle>Status do Banco de Perguntas</CardTitle>
+                <CardTitle>{t('admin.questionBank')} Status</CardTitle>
                 <CardDescription>
                   Análise atual e métricas do banco de dados
                 </CardDescription>
@@ -65,9 +68,9 @@ export default function AdminPanel() {
           <TabsContent value="settings">
             <Card>
               <CardHeader>
-                <CardTitle>Configurações do Sistema</CardTitle>
+                <CardTitle>{t('admin.systemConfiguration')}</CardTitle>
                 <CardDescription>
-                  Ajustes e parâmetros do sistema
+                  {t('admin.systemAdjustments')}
                 </CardDescription>
               </CardHeader>
               <CardContent>

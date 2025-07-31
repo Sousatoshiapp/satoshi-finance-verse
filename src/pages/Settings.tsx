@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
 import { PasswordChangeDialog } from "@/components/settings/password-change-dialog";
@@ -12,6 +13,7 @@ import { EmailChangeDialog } from "@/components/settings/email-change-dialog";
 import { Edit } from "lucide-react";
 
 export default function Settings() {
+  const { t } = useI18n();
   const [settings, setSettings] = useState({
     notifications: true,
     dailyReminder: true,
@@ -134,7 +136,7 @@ export default function Settings() {
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
       toast({
-        title: "Erro ❌",
+        title: t('errors.error') + " ❌",
         description: "Não foi possível salvar algumas informações.",
         variant: "destructive"
       });
@@ -324,7 +326,7 @@ export default function Settings() {
         {/* Salvar */}
         <Card className="p-6">
           <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
-            {loading ? "Salvando..." : "💾 Salvar Configurações"}
+            {loading ? t('admin.saving') : "💾 Salvar Configurações"}
           </Button>
         </Card>
 

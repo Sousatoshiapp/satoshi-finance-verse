@@ -6,8 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Crown, Star, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminUsersPremium() {
+  const { t } = useI18n();
   const [premiumUsers, setPremiumUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -29,7 +31,7 @@ export default function AdminUsersPremium() {
       setPremiumUsers(data || []);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar usuários premium",
+        title: t('errors.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -117,7 +119,7 @@ export default function AdminUsersPremium() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {premiumUsers.map((user) => (

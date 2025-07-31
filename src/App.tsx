@@ -8,6 +8,12 @@ import { I18nProvider } from "@/contexts/I18nProvider";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { generateRoutes } from "@/components/RouteGenerator";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { useI18n } from "@/hooks/use-i18n";
+
+function NotFoundPage() {
+  const { t } = useI18n();
+  return <div>{t('errors.pageNotFound')}</div>;
+}
 
 function App() {
   return (
@@ -21,7 +27,7 @@ function App() {
                   <Suspense fallback={<LoadingSpinner />}>
                     <Routes>
                       {generateRoutes()}
-                      <Route path="*" element={<div>404 - Página não encontrada</div>} />
+                      <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </Suspense>
                 </div>

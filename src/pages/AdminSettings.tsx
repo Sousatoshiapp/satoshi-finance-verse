@@ -11,6 +11,7 @@ import { LanguageSelector } from "@/components/admin/language-selector";
 import { BotAchievementManager } from "@/components/admin/bot-achievement-manager";
 import { SponsorAccessManager } from "@/components/admin/sponsor-access-manager";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { 
   Settings, Save, RefreshCw, Database, Shield, 
   Bell, Gamepad2, DollarSign, Users 
@@ -58,6 +59,7 @@ export default function AdminSettings() {
   });
   
   const { toast } = useToast();
+  const { t } = useI18n();
 
   const handleSaveSettings = async () => {
     setLoading(true);
@@ -71,8 +73,8 @@ export default function AdminSettings() {
       });
     } catch (error) {
       toast({
-        title: "Erro ao Salvar",
-        description: "Falha ao atualizar configurações.",
+        title: t('errors.error'),
+        description: t('errors.failedToUpdate'),
         variant: "destructive"
       });
     } finally {
@@ -207,7 +209,7 @@ export default function AdminSettings() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {loading ? 'Salvando...' : 'Salvar Tudo'}
+                  {loading ? t('admin.saving') : t('admin.saveAll')}
                 </Button>
               </div>
 

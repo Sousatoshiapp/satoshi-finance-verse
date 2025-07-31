@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { 
   Trophy, Plus, Calendar, Users, BarChart3, 
   Clock, Target, Crown, Gamepad2, Edit, Trash2 
@@ -25,6 +26,7 @@ interface Tournament {
 }
 
 export default function AdminTournaments() {
+  const { t } = useI18n();
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -99,8 +101,8 @@ export default function AdminTournaments() {
     } catch (error) {
       console.error('Error loading tournaments:', error);
       toast({
-        title: "Erro ao carregar torneios",
-        description: "Tente novamente mais tarde.",
+        title: t('errors.error'),
+        description: t('common.tryAgainLater'),
         variant: "destructive",
       });
     } finally {

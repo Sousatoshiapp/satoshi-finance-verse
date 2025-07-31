@@ -11,6 +11,7 @@ import { PowerBar } from "@/components/ui/power-bar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 import { CrisisEmergencyModal } from "@/components/crisis/CrisisEmergencyModal";
@@ -171,6 +172,7 @@ const getDistrictImage = (districtTheme: string) => {
 export default function DistrictDetail() {
   const { districtId } = useParams();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [district, setDistrict] = useState<District | null>(null);
   const [userDistrict, setUserDistrict] = useState<UserDistrict | null>(null);
   const [residents, setResidents] = useState<Resident[]>([]);

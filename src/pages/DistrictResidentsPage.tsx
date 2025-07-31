@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Crown, Users, Zap, Trophy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface Resident {
   id: string;
@@ -31,6 +32,7 @@ interface District {
 export default function DistrictResidentsPage() {
   const { districtId } = useParams();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [district, setDistrict] = useState<District | null>(null);
   const [residents, setResidents] = useState<Resident[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,8 +98,8 @@ export default function DistrictResidentsPage() {
     } catch (error) {
       console.error('Erro ao carregar moradores:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível carregar os moradores",
+        title: t('errors.error'),
+        description: t('errors.couldNotLoadResidents'),
         variant: "destructive"
       });
     } finally {

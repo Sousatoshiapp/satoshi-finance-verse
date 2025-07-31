@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { ArrowLeft, Clock, Trophy, Users, Target, Flame, Timer, CheckCircle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface DuelQuestion {
   id: string;
@@ -39,6 +40,7 @@ interface DistrictDuel {
 export default function DistrictDuelPage() {
   const { duelId } = useParams();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [duel, setDuel] = useState<DistrictDuel | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
@@ -156,8 +158,8 @@ export default function DistrictDuelPage() {
     } catch (error) {
       console.error('Erro ao carregar duelo:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível carregar o duelo",
+        title: t('errors.error'),
+        description: t('errors.couldNotLoadDuel'),
         variant: "destructive"
       });
       navigate('/satoshi-city');

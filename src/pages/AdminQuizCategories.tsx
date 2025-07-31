@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FolderOpen, Plus, Edit, Trash2, HelpCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface Category {
   id: string;
@@ -20,6 +21,7 @@ interface Category {
 }
 
 export default function AdminQuizCategories() {
+  const { t } = useI18n();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -93,7 +95,7 @@ export default function AdminQuizCategories() {
       setCategories(mockCategories);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar categorias",
+        title: t('errors.error') + " ao carregar categorias",
         description: error.message,
         variant: "destructive",
       });
@@ -127,7 +129,7 @@ export default function AdminQuizCategories() {
       resetForm();
     } catch (error: any) {
       toast({
-        title: "Erro ao salvar categoria",
+        title: t('errors.error') + " ao salvar categoria",
         description: error.message,
         variant: "destructive",
       });
@@ -143,7 +145,7 @@ export default function AdminQuizCategories() {
       });
     } catch (error: any) {
       toast({
-        title: "Erro ao remover categoria",
+        title: t('errors.error') + " ao remover categoria",
         description: error.message,
         variant: "destructive",
       });
@@ -161,7 +163,7 @@ export default function AdminQuizCategories() {
       });
     } catch (error: any) {
       toast({
-        title: "Erro ao alterar status",
+        title: t('errors.error') + " ao alterar status",
         description: error.message,
         variant: "destructive",
       });
@@ -339,7 +341,7 @@ export default function AdminQuizCategories() {
               {/* Categories Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loading ? (
-                  <div className="col-span-full text-center py-8">Carregando...</div>
+                  <div className="col-span-full text-center py-8">{t('common.loading')}...</div>
                 ) : (
                   categories.map((category) => (
                     <Card key={category.id} className={`relative ${!category.isActive ? 'opacity-60' : ''}`}>

@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Zap, Plus, Minus, TrendingUp, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminFinanceBeetz() {
+  const { t } = useI18n();
   const [beetzStats, setBeetzStats] = useState({
     totalBeetzInCirculation: 0,
     totalBeetzDistributed: 0,
@@ -46,7 +48,7 @@ export default function AdminFinanceBeetz() {
       });
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar dados dos Beetz",
+        title: t('errors.error') + " ao carregar dados dos Beetz",
         description: error.message,
         variant: "destructive",
       });
@@ -95,7 +97,7 @@ export default function AdminFinanceBeetz() {
       loadBeetzData();
     } catch (error: any) {
       toast({
-        title: "Erro ao distribuir Beetz",
+        title: t('errors.error') + " ao distribuir Beetz",
         description: error.message,
         variant: "destructive",
       });
@@ -194,7 +196,7 @@ export default function AdminFinanceBeetz() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {beetzStats.topUsers.map((user: any, index) => (
