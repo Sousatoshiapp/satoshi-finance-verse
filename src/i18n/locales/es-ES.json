@@ -70,7 +70,8 @@
     "goodAfternoon": "BUENAS TARDES",
     "goodNight": "BUENAS NOCHES",
     "student": "Estudiante",
-    "goal": "Objetivo"
+    "goal": "Objetivo",
+    "rankingBeetz": "Ranking Beetz"
   },
   "leaderboard": {
     "weeklyRankings": "Clasificaciones Semanales",
@@ -405,7 +406,9 @@
     "challenge": "Desafiar",
     "accept": "Aceptar",
     "decline": "Rechazar",
-    "waiting": "Esperando"
+    "waiting": "Esperando",
+    "financialDuel": "Duelo Financiero",
+    "duelNow": "Duelar Ahora"
   },
   "levels": {
     "levels": "Niveles",

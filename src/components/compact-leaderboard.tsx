@@ -6,10 +6,12 @@ import { TrendingUp } from "@/components/icons/optimized-icons";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "@/hooks/use-leaderboard-data";
 import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { useI18n } from "@/hooks/use-i18n";
 
 const CompactLeaderboard = memo(function CompactLeaderboard() {
   const navigate = useNavigate();
   const { data: topUsers = [], isLoading } = useLeaderboardData();
+  const { t } = useI18n();
 
 
   // Memoize callback functions
@@ -78,7 +80,7 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
         <div className="flex items-center justify-between">
           <CardTitle className="text-xs flex items-center gap-1">
             <TrendingUp className="h-3 w-3 text-amber-500" />
-            Ranking Beetz
+            {t('dashboard.rankingBeetz')}
           </CardTitle>
           
           <Button 
@@ -87,7 +89,7 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
             onClick={handleViewAll}
             className="text-xs h-5 px-2 text-amber-500 hover:bg-amber-500/10"
           >
-            Ver Tudo
+            {t('common.viewAll')}
           </Button>
         </div>
       </CardHeader>

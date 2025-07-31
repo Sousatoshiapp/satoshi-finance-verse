@@ -48,6 +48,8 @@
     "settings": "Settings",
     "help": "Help",
     "followers": "followers",
+    "playground": "Playground",
+    "explore": "Explore",
     "following": "Following",
     "publish": "Publish",
     "publishing": "Publishing...",
@@ -133,7 +135,8 @@
     "todayProgress": "Today's Progress",
     "experience": "Experience",
     "lessons": "Lessons",
-    "xpBoost": "XP Boost"
+    "xpBoost": "XP Boost",
+    "rankingBeetz": "Beetz Ranking"
   },
   "leaderboard": {
     "weeklyRankings": "Weekly Rankings",
@@ -433,7 +436,9 @@
     "challenge": "Challenge",
     "accept": "Accept",
     "decline": "Decline",
-    "waiting": "Waiting"
+    "waiting": "Waiting",
+    "financialDuel": "Financial Duel",
+    "duelNow": "Duel Now"
   },
   "levels": {
     "levels": "Levels",
@@ -531,6 +536,12 @@
     "incorrectAnswers": "Incorrect",
     "quizCompleted2": "Quiz Completed!",
     "youGained": "You gained {{xp}} XP! Score: {{score}}/{{total}}"
+  },
+  "btz": {
+    "yieldedToday": "Yielded today",
+    "nextYield": "Next yield",
+    "protectedBTZ": "Protected BTZ",
+    "streak": "Streak"
   },
   "common": {
     "loading": "Loading",

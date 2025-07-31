@@ -133,7 +133,8 @@
     "todayProgress": "今日进度",
     "experience": "经验",
     "lessons": "课程",
-    "xpBoost": "经验值增强"
+    "xpBoost": "经验值增强",
+    "rankingBeetz": "Beetz排行榜"
   },
   "leaderboard": {
     "weeklyRankings": "周排行榜",
@@ -571,7 +572,9 @@
     "challenge": "挑战",
     "accept": "接受",
     "decline": "拒绝",
-    "waiting": "等待中"
+    "waiting": "等待中",
+    "financialDuel": "金融决斗",
+    "duelNow": "立即决斗"
   },
   "levels": {
     "levels": "等级",

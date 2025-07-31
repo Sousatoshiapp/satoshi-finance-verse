@@ -78,6 +78,7 @@
     "missions": "مهام",
     "achievements": "الإنجازات",
     "badges": "الشارات",
+    "rankingBeetz": "ترتيب Beetz",
     "dailyDuels": "المبارزات اليومية",
     "resetIn24h": "إعادة تعيين خلال 24 ساعة",
     "upgrade": "ترقية",
@@ -305,7 +306,9 @@
     "challenge": "تحدي",
     "accept": "قبول",
     "decline": "رفض",
-    "waiting": "انتظار"
+    "waiting": "انتظار",
+    "financialDuel": "مبارزة مالية",
+    "duelNow": "ابدأ المبارزة الآن"
   },
   "levels": {
     "levels": "المستويات",
