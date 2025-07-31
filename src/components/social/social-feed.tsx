@@ -13,6 +13,7 @@ import { Heart, MessageCircle, Share2, Send, TrendingUp, Award, Plus } from "luc
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface SocialPost {
   id: string;
@@ -49,6 +50,7 @@ interface PostComment {
 }
 
 export function SocialFeed() {
+  const { t } = useI18n();
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [newPost, setNewPost] = useState("");
   const [loading, setLoading] = useState(true);
@@ -384,9 +386,9 @@ export function SocialFeed() {
             <CardContent className="p-8 text-center">
               <div className="space-y-3">
                 <Award className="h-12 w-12 mx-auto text-muted-foreground" />
-                <h3 className="font-semibold">Seja o primeiro a postar!</h3>
+                <h3 className="font-semibold">{t('social.messages.beFirstToPost')}</h3>
                 <p className="text-muted-foreground">
-                  Compartilhe suas experiências de trading e conecte-se com outros investidores
+                  {t('social.shareOpinion')}
                 </p>
               </div>
             </CardContent>
@@ -407,7 +409,7 @@ export function SocialFeed() {
                     <div className="flex items-center gap-2">
                       <h4 className="font-semibold">{post.profiles?.nickname}</h4>
                       <Badge variant="secondary" className="text-xs">
-                        Nível {post.profiles?.level || 1}
+                        {t('common.level')} {post.profiles?.level || 1}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
@@ -432,7 +434,7 @@ export function SocialFeed() {
                     <div className="mt-3 p-3 bg-muted rounded-lg border">
                       <div className="flex items-center gap-2 mb-2">
                         <TrendingUp className="h-4 w-4 text-primary" />
-                        <span className="font-medium">Trade Compartilhado</span>
+                        <span className="font-medium">{t('social.buttons.share')}</span>
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {/* Trade data visualization would go here */}
@@ -467,7 +469,7 @@ export function SocialFeed() {
                   </Button>
                   <Button variant="ghost" size="sm" className="gap-2 hover:bg-green-50 hover:text-green-600">
                     <Share2 className="h-4 w-4" />
-                    Compartilhar
+                    {t('social.buttons.share')}
                   </Button>
                 </div>
 
@@ -479,7 +481,7 @@ export function SocialFeed() {
                       {/* Add Comment */}
                       <div className="flex gap-2">
                         <Input
-                          placeholder="Adicione um comentário..."
+                          placeholder={t('social.chat.typeMessage')}
                           value={newComment[post.id] || ""}
                           onChange={(e) => setNewComment(prev => ({
                             ...prev,

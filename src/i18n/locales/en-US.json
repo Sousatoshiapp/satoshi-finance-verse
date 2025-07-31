@@ -16,7 +16,54 @@
     "offline": "Offline",
     "viewAll": "View All",
     "start": "Start",
-    "end": "End"
+    "end": "End",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "continue": "Continue",
+    "submit": "Submit",
+    "reset": "Reset",
+    "clear": "Clear",
+    "select": "Select",
+    "share": "Share",
+    "like": "Like",
+    "unlike": "Unlike",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "followers": "followers",
+    "following": "Following",
+    "publish": "Publish",
+    "publishing": "Publishing...",
+    "searchUsers": "Search users...",
+    "comingSoon": "Coming soon",
+    "beFirstToPost": "Be the first to post!",
+    "removed": "Removed",
+    "added": "Added",
+    "likeRemoved": "Like removed",
+    "nowFollowing": "Following!",
+    "typeMessage": "Type your message...",
+    "loadingConversation": "Loading conversation...",
+    "totalXP": "Total XP",
+    "highestStreak": "Highest Streak",
+    "postsCreated": "Posts Created",
+    "likesReceived": "Likes Received"
   },
   "quiz": {
     "title": "Quiz",
@@ -116,7 +163,32 @@
     "memberSince": "Member since",
     "activeAvatar": "Active Avatar",
     "message": "Message",
-    "anonymousUser": "Anonymous User"
+    "anonymousUser": "Anonymous User",
+    "header": {
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "stats": {
+      "level": "Level",
+      "beetz": "Beetz",
+      "followers": "Followers",
+      "following": "Following",
+      "progress": "Progress",
+      "lessonsCompleted": "Lessons Completed",
+      "of": "of"
+    },
+    "plans": {
+      "satoshiPro": "Satoshi Pro",
+      "satoshiElite": "Satoshi Elite"
+    },
+    "loading": "Loading profile...",
+    "notFound": "User not found",
+    "achievements": {
+      "tournamentsWon": "Tournaments Won",
+      "quizzesCompleted": "Quizzes Completed",
+      "perfectScore": "Perfect Score",
+      "socialInteractions": "Social Interactions"
+    }
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -301,7 +373,27 @@
     "interactionSounds": "Interaction and achievement sounds",
     "darkInterface": "Dark theme interface",
     "aboutSatoshi": "About Satoshi",
-    "gameVersion": "The finance game"
+    "gameVersion": "The finance game",
+    "header": {
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "sections": {
+      "personalInfo": "Personal Information",
+      "notifications": "Notifications",
+      "experience": "Experience",
+      "account": "Account",
+      "aboutSatoshi": "About Satoshi"
+    },
+    "buttons": {
+      "saving": "Saving...",
+      "saveSettings": "💾 Save Settings",
+      "logout": "🚪 Logout"
+    },
+    "app": {
+      "version": "Version 1.0.0",
+      "description": "The finance game"
+    }
   },
   "missions": {
     "dailyMissions": "Daily Missions",
@@ -444,6 +536,134 @@
     "loading": "Loading",
     "accessDenied": "Access Denied",
     "noSponsorAccess": "You do not have administrative access to any sponsored districts",
-    "configureAccess": "To configure sponsor admin access, go to"
+    "configureAccess": "To configure sponsor admin access, go to",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "level": "Level"
+  },
+  "satoshiCity": {
+    "welcome": "Welcome to the city of financial future.",
+    "instructions": {
+      "mobile": "Tap on districts to live or explore.",
+      "desktop": "Click on districts to explore knowledge."
+    },
+    "badges": {
+      "activeDistricts": "7 Active Districts",
+      "neuralSystem": "Neural System Active"
+    },
+    "buttons": {
+      "3dDevelopment": "3D in Development"
+    },
+    "residence": {
+      "home": "Home",
+      "current": "This is your current residence",
+      "liveHere": "Live Here"
+    },
+    "modal": {
+      "liveIn": "Live in",
+      "confirmResidence": "Do you want to establish your residence in {{districtName}} district? You will be able to participate in exclusive activities and represent this district."
+    }
+  },
+  "social": {
+    "tabs": {
+      "feed": "Feed",
+      "search": "Search",
+      "challenges": "Challenges",
+      "ranks": "Ranks",
+      "following": "Following",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "Share your opinion about the market...",
+      "searchUsers": "Search users by nickname..."
+    },
+    "buttons": {
+      "publish": "Publish",
+      "publishing": "Publishing...",
+      "share": "Share"
+    },
+    "messages": {
+      "beFirstToPost": "Be the first to post!",
+      "searchingUsers": "Searching users...",
+      "comingSoon": "Coming soon"
+    },
+    "profile": {
+      "level": "Level",
+      "followers": "followers"
+    },
+    "chat": {
+      "typeMessage": "Add a comment..."
+    },
+    "shareOpinion": "Share your trading experiences and connect with other investors"
+  },
+  "store": {
+    "header": {
+      "marketplace": "Marketplace",
+      "subtitle": "Avatars, boosts and much more"
+    },
+    "premium": {
+      "title": "Premium Plans",
+      "subtitle": "Accelerate your progress",
+      "viewPlans": "View Plans",
+      "duels": "Duels",
+      "xpBoost": "XP Boost",
+      "beetzPerMonth": "Beetz/month"
+    },
+    "tabs": {
+      "avatars": "Avatars",
+      "skins": "Skins",
+      "boosts": "Boosts",
+      "accessories": "Accessories",
+      "lives": "Lives",
+      "beetz": "Beetz"
+    },
+    "buttons": {
+      "owns": "Owns",
+      "buy": "Buy",
+      "noBeetz": "No Beetz",
+      "viewDetails": "View Details"
+    },
+    "lives": {
+      "title": "Lives & Protection",
+      "subtitle": "Keep your streak and continue playing",
+      "marketplace": "Lives Marketplace"
+    },
+    "beetzPackages": {
+      "title": "Beetz Packages",
+      "subtitle": "Buy Beetz with real money via Stripe"
+    },
+    "security": {
+      "title": "Secure Payment",
+      "subtitle": "Processed via Stripe with maximum security"
+    },
+    "loading": "Loading marketplace...",
+    "error": {
+      "title": "Error",
+      "message": "Could not load the store"
+    },
+    "livesProtection": "Lives & Protection",
+    "maintainStreak": "Keep your streak and continue playing",
+    "marketplaceLives": "Lives Marketplace",
+    "buyLivesKeepStreak": "Buy lives to keep your streak",
+    "savesStreak": "Saves Streak",
+    "multipliesBTZ": "Multiplies BTZ",
+    "viewLives": "View Lives",
+    "streakProtection": "Streak Protection",
+    "useLifeKeepStreak": "Use a life to keep your streak active",
+    "keepMultipliers": "Keep Multipliers",
+    "preserveBTZMultipliers": "Preserve your BTZ multipliers",
+    "continueWithoutStop": "Continue Without Stop",
+    "dontLoseMomentum": "Don't lose the momentum of your progress",
+    "beetzPackages": "Beetz Packages",
+    "buyBeetzReal": "Buy Beetz with real money via Stripe",
+    "buy": "Buy",
+    "securePayment": "Secure Payment",
+    "processedStripe": "Processed via Stripe with maximum security",
+    "buyBeetz": "Buy Beetz",
+    "notEnoughBeetz": "You don't have enough Beetz for this purchase",
+    "basicPackage": "Basic Package",
+    "popularPackage": "Popular Package",
+    "premiumPackage": "Premium Package",
+    "supremePackage": "Supreme Package"
   }
 }

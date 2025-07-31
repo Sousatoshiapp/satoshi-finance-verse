@@ -420,7 +420,7 @@ export default function Profile() {
               className="mb-3"
             />
             <p className="text-sm text-muted-foreground">
-              {user.completed_lessons} de 20 {t('profile.completedLessons')}
+              {user.completed_lessons} {t('profile.stats.of')} 20 {t('profile.stats.lessonsCompleted')}
             </p>
           </Card>
         </div>

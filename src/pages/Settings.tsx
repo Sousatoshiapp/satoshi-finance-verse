@@ -199,9 +199,9 @@ export default function Settings() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
-              ← Perfil
+              ← {t('profile.header.profile')}
             </Button>
-            <h1 className="text-xl font-bold text-foreground">Configurações</h1>
+            <h1 className="text-xl font-bold text-foreground">{t('settings.header.settings')}</h1>
           </div>
         </div>
       </div>
@@ -326,7 +326,7 @@ export default function Settings() {
         {/* Salvar */}
         <Card className="p-6">
           <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
-            {loading ? "Salvando..." : "💾 " + t('settings.saveSettings')}
+            {loading ? t('settings.buttons.saving') : "💾 " + t('settings.buttons.saveSettings')}
           </Button>
         </Card>
 
@@ -339,7 +339,7 @@ export default function Settings() {
               onClick={handleLogout}
               className="w-full"
             >
-              🚪 {t('settings.logout')}
+              🚪 {t('settings.buttons.logout')}
             </Button>
           </div>
         </Card>
@@ -348,8 +348,8 @@ export default function Settings() {
         <Card className="p-6 text-center">
           <h3 className="font-bold text-foreground mb-4">{t('settings.aboutSatoshi')}</h3>
           <p className="text-muted-foreground mb-4">
-            Versão 1.0.0<br />
-            {t('settings.gameVersion')}
+            {t('settings.app.version')}<br />
+            {t('settings.app.description')}
           </p>
           <div className="text-sm text-muted-foreground">
             <p>Email: suporte@satoshi.app</p>

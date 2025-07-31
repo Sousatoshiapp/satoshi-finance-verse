@@ -16,7 +16,54 @@
     "offline": "Offline",
     "viewAll": "Ver Todos",
     "start": "Início",
-    "end": "Fim"
+    "end": "Fim",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "add": "Adicionar",
+    "remove": "Remover",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "sort": "Ordenar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "close": "Fechar",
+    "open": "Abrir",
+    "yes": "Sim",
+    "no": "Não",
+    "ok": "OK",
+    "continue": "Continuar",
+    "submit": "Enviar",
+    "reset": "Resetar",
+    "clear": "Limpar",
+    "select": "Selecionar",
+    "share": "Compartilhar",
+    "like": "Curtir",
+    "unlike": "Descurtir",
+    "follow": "Seguir",
+    "unfollow": "Deixar de seguir",
+    "login": "Entrar",
+    "logout": "Sair",
+    "register": "Registrar",
+    "profile": "Perfil",
+    "settings": "Configurações",
+    "help": "Ajuda",
+    "followers": "seguidores",
+    "following": "Seguindo",
+    "publish": "Publicar",
+    "publishing": "Publicando...",
+    "searchUsers": "Buscar usuários...",
+    "comingSoon": "Em breve",
+    "beFirstToPost": "Seja o primeiro a postar!",
+    "removed": "Removido",
+    "added": "Adicionado",
+    "likeRemoved": "Curtida removida",
+    "nowFollowing": "Seguindo!",
+    "typeMessage": "Digite sua mensagem...",
+    "loadingConversation": "Carregando conversa...",
+    "totalXP": "XP Total",
+    "highestStreak": "Maior Streak",
+    "postsCreated": "Posts Criados",
+    "likesReceived": "Curtidas Recebidas"
   },
   "quiz": {
     "title": "Quiz",
@@ -444,6 +491,134 @@
     "loading": "Carregando",
     "accessDenied": "Acesso Negado",
     "noSponsorAccess": "Você não possui acesso administrativo a nenhum distrito patrocinado",
-    "configureAccess": "Para configurar acessos de sponsor admin, acesse"
+    "configureAccess": "Para configurar acessos de sponsor admin, acesse",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "level": "Nível"
+  },
+  "satoshiCity": {
+    "welcome": "Bem-vindo à cidade do futuro financeiro.",
+    "instructions": {
+      "mobile": "Toque nos distritos para morar ou explorar.",
+      "desktop": "Clique nos distritos para explorar conhecimento."
+    },
+    "badges": {
+      "activeDistricts": "7 Distritos Ativos",
+      "neuralSystem": "Sistema Neural Ativo"
+    },
+    "buttons": {
+      "3dDevelopment": "3D em Desenvolvimento"
+    },
+    "residence": {
+      "home": "Casa",
+      "current": "Esta é sua residência atual",
+      "liveHere": "Morar Aqui"
+    },
+    "modal": {
+      "liveIn": "Morar em",
+      "confirmResidence": "Deseja estabelecer sua residência no distrito {{districtName}}? Você poderá participar de atividades exclusivas e representar este distrito."
+    }
+  },
+  "social": {
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafios",
+      "ranks": "Ranks",
+      "following": "Seguindo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "Compartilhe sua opinião sobre o mercado...",
+      "searchUsers": "Buscar usuários por nickname..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Postando...",
+      "share": "Compartilhar"
+    },
+    "messages": {
+      "beFirstToPost": "Seja o primeiro a postar!",
+      "searchingUsers": "Buscando usuários...",
+      "comingSoon": "Em breve"
+    },
+    "profile": {
+      "level": "Nível",
+      "followers": "seguidores"
+    },
+    "chat": {
+      "typeMessage": "Adicione um comentário..."
+    },
+    "shareOpinion": "Compartilhe suas experiências de trading e conecte-se com outros investidores"
+  },
+  "store": {
+    "header": {
+      "marketplace": "Marketplace",
+      "subtitle": "Avatares, boosts e muito mais"
+    },
+    "premium": {
+      "title": "Planos Premium",
+      "subtitle": "Acelere seu progresso",
+      "viewPlans": "Ver Planos",
+      "duels": "Duelos",
+      "xpBoost": "XP Boost",
+      "beetzPerMonth": "Beetz/mês"
+    },
+    "tabs": {
+      "avatars": "Avatares",
+      "skins": "Skins",
+      "boosts": "Boosts",
+      "accessories": "Acessórios",
+      "lives": "Vidas",
+      "beetz": "Beetz"
+    },
+    "buttons": {
+      "owns": "Possui",
+      "buy": "Comprar",
+      "noBeetz": "Sem Beetz",
+      "viewDetails": "Ver Detalhes"
+    },
+    "lives": {
+      "title": "Vidas & Proteção",
+      "subtitle": "Mantenha sua sequência e continue jogando",
+      "marketplace": "Marketplace de Vidas"
+    },
+    "beetzPackages": {
+      "title": "Pacotes de Beetz",
+      "subtitle": "Compre Beetz com dinheiro real via Stripe"
+    },
+    "security": {
+      "title": "Pagamento Seguro",
+      "subtitle": "Processado via Stripe com máxima segurança"
+    },
+    "loading": "Carregando marketplace...",
+    "error": {
+      "title": "Erro",
+      "message": "Não foi possível carregar a loja"
+    },
+    "livesProtection": "Vidas & Proteção",
+    "maintainStreak": "Mantenha sua sequência e continue jogando",
+    "marketplaceLives": "Marketplace de Vidas",
+    "buyLivesKeepStreak": "Compre vidas para manter sua sequência",
+    "savesStreak": "Salva Sequência",
+    "multipliesBTZ": "Multiplica BTZ",
+    "viewLives": "Ver Vidas",
+    "streakProtection": "Proteção de Sequência",
+    "useLifeKeepStreak": "Use uma vida para manter sua sequência ativa",
+    "keepMultipliers": "Manter Multiplicadores",
+    "preserveBTZMultipliers": "Preserve seus multiplicadores de BTZ",
+    "continueWithoutStop": "Continue Sem Parar",
+    "dontLoseMomentum": "Não perca o momentum do seu progresso",
+    "beetzPackages": "Pacotes de Beetz",
+    "buyBeetzReal": "Compre Beetz com dinheiro real via Stripe",
+    "buy": "Comprar",
+    "securePayment": "Pagamento Seguro",
+    "processedStripe": "Processado via Stripe com máxima segurança",
+    "buyBeetz": "Comprar Beetz",
+    "notEnoughBeetz": "Você não tem Beetz suficientes para esta compra",
+    "basicPackage": "Pacote Básico",
+    "popularPackage": "Pacote Popular",
+    "premiumPackage": "Pacote Premium",
+    "supremePackage": "Pacote Supremo"
   }
 }
