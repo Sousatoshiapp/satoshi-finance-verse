@@ -10,6 +10,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { EmailVerificationNotice } from "@/components/auth/email-verification-notice";
+import { useTranslation } from "react-i18next";
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -25,7 +26,7 @@ export default function Auth() {
   const [registeredEmail, setRegisteredEmail] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const mode = searchParams.get('mode');
@@ -50,19 +51,19 @@ export default function Auth() {
         if (error) {
           if (error.message.includes("Invalid login credentials")) {
             toast({
-              title: "Erro de Login",
-              description: "Email ou senha incorretos. Verifique suas credenciais.",
+              title: t('auth.loginError'),
+              description: t('auth.invalidCredentials'),
               variant: "destructive",
             });
           } else if (error.message.includes("Email not confirmed")) {
             toast({
-              title: "Email não confirmado",
-              description: "Verifique sua caixa de email e clique no link de confirmação antes de fazer login.",
+              title: t('auth.emailNotConfirmed'),
+              description: t('auth.emailNotConfirmedDescription'),
               variant: "destructive",
             });
           } else {
             toast({
-              title: "Erro de Login",
+              title: t('auth.loginError'),
               description: error.message,
               variant: "destructive",
             });
@@ -71,8 +72,8 @@ export default function Auth() {
         }
 
         toast({
-          title: "Login realizado com sucesso!",
-          description: "Bem-vindo de volta à Satoshi City.",
+          title: t('auth.loginSuccess'),
+          description: t('auth.loginSuccessDescription'),
         });
         
         navigate("/dashboard");
@@ -92,13 +93,13 @@ export default function Auth() {
         if (error) {
           if (error.message.includes("User already registered")) {
             toast({
-              title: "Usuário já existe",
-              description: "Esta conta já está cadastrada. Faça login ou use outro email.",
+              title: t('auth.userAlreadyExists'),
+              description: t('auth.userAlreadyExistsDescription'),
               variant: "destructive",
             });
           } else {
             toast({
-              title: "Erro no Cadastro",
+              title: t('auth.signupError'),
               description: error.message,
               variant: "destructive",
             });
@@ -111,22 +112,22 @@ export default function Auth() {
           setRegisteredEmail(email);
           setShowEmailVerification(true);
           toast({
-            title: "Cadastro realizado!",
-            description: "Verifique seu email para ativar sua conta"
+            title: t('auth.signupSuccess'),
+            description: t('auth.signupSuccessDescription')
           });
         } else if (data.session) {
           // User is already confirmed
           toast({
-            title: "Bem-vindo!",
-            description: "Conta criada com sucesso"
+            title: t('auth.welcomeMessage'),
+            description: t('auth.accountCreatedSuccess')
           });
           navigate("/dashboard");
         }
       }
     } catch (error) {
       toast({
-        title: "Erro inesperado",
-        description: "Algo deu errado. Tente novamente.",
+        title: t('auth.unexpectedError'),
+        description: t('auth.unexpectedErrorDescription'),
         variant: "destructive",
       });
     } finally {
@@ -164,8 +165,8 @@ export default function Auth() {
     
     if (!resetEmail) {
       toast({
-        title: "Email obrigatório",
-        description: "Digite seu email para receber o link de redefinição.",
+        title: t('auth.emailRequired'),
+        description: t('auth.emailRequiredDescription'),
         variant: "destructive",
       });
       return;
@@ -185,16 +186,16 @@ export default function Auth() {
         });
       } else {
         toast({
-          title: "Email enviado!",
-          description: "Verifique sua caixa de email para redefinir sua senha.",
+          title: t('auth.emailSent'),
+          description: t('auth.emailSentDescription'),
         });
         setShowForgotPassword(false);
         setResetEmail("");
       }
     } catch (error) {
       toast({
-        title: "Erro inesperado",
-        description: "Algo deu errado. Tente novamente.",
+        title: t('auth.unexpectedError'),
+        description: t('auth.unexpectedErrorDescription'),
         variant: "destructive",
       });
     } finally {
@@ -205,8 +206,8 @@ export default function Auth() {
   const handleResendConfirmation = async () => {
     if (!email) {
       toast({
-        title: "Email obrigatório",
-        description: "Digite seu email para reenviar a confirmação.",
+        title: t('auth.emailRequiredResend'),
+        description: t('auth.emailRequiredResendDescription'),
         variant: "destructive",
       });
       return;
@@ -229,14 +230,14 @@ export default function Auth() {
         });
       } else {
         toast({
-          title: "Email reenviado!",
-          description: "Verifique sua caixa de email para confirmar sua conta.",
+          title: t('auth.emailResent'),
+          description: t('auth.emailResentDescription'),
         });
       }
     } catch (error) {
       toast({
-        title: "Erro inesperado",
-        description: "Algo deu errado. Tente novamente.",
+        title: t('auth.unexpectedError'),
+        description: t('auth.unexpectedErrorDescription'),
         variant: "destructive",
       });
     }

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface EmailChangeDialogProps {
   isOpen: boolean;
@@ -18,12 +19,13 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleEmailChangeRequest = () => {
     if (newEmail !== confirmEmail) {
       toast({
-        title: "Erro",
-        description: "Os emails não coincidem",
+        title: t('settings.emailChange.emailMismatch'),
+        description: t('settings.emailChange.emailMismatch'),
         variant: "destructive"
       });
       return;
@@ -31,8 +33,8 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
 
     if (!newEmail.includes('@')) {
       toast({
-        title: "Erro",
-        description: "Digite um email válido",
+        title: t('settings.emailChange.invalidEmail'),
+        description: t('settings.emailChange.invalidEmail'),
         variant: "destructive"
       });
       return;
@@ -40,8 +42,8 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
 
     if (newEmail === currentEmail) {
       toast({
-        title: "Erro",
-        description: "O novo email deve ser diferente do atual",
+        title: t('settings.emailChange.sameEmail'),
+        description: t('settings.emailChange.sameEmail'),
         variant: "destructive"
       });
       return;
@@ -60,8 +62,8 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
       if (error) throw error;
 
       toast({
-        title: "Sucesso",
-        description: `Solicitação de alteração enviada! Verifique o email ${newEmail} para confirmar a alteração.`
+        title: t('settings.emailChange.success'),
+        description: t('settings.emailChange.successDescription', { email: newEmail })
       });
 
       // Reset form
@@ -72,8 +74,8 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
 
     } catch (error: any) {
       toast({
-        title: "Erro",
-        description: error.message || "Não foi possível alterar o email",
+        title: t('settings.emailChange.error'),
+        description: error.message || t('settings.emailChange.errorDescription'),
         variant: "destructive"
       });
     } finally {
@@ -90,14 +92,14 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {showConfirmation ? "Confirmar Alteração" : "Alterar Email"}
+            {showConfirmation ? t('settings.emailChange.confirmTitle') : t('settings.emailChange.title')}
           </DialogTitle>
         </DialogHeader>
         
         {!showConfirmation ? (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="current-email">Email Atual</Label>
+              <Label htmlFor="current-email">{t('settings.emailChange.currentEmail')}</Label>
               <Input
                 id="current-email"
                 type="email"
@@ -108,24 +110,24 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="new-email">Novo Email</Label>
+              <Label htmlFor="new-email">{t('settings.emailChange.newEmail')}</Label>
               <Input
                 id="new-email"
                 type="email"
                 value={newEmail}
                 onChange={(e) => setNewEmail(e.target.value)}
-                placeholder="Digite o novo email"
+                placeholder={t('settings.emailChange.newEmailPlaceholder')}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirm-email">Confirmar Novo Email</Label>
+              <Label htmlFor="confirm-email">{t('settings.emailChange.confirmEmail')}</Label>
               <Input
                 id="confirm-email"
                 type="email"
                 value={confirmEmail}
                 onChange={(e) => setConfirmEmail(e.target.value)}
-                placeholder="Confirme o novo email"
+                placeholder={t('settings.emailChange.confirmEmailPlaceholder')}
               />
             </div>
 
@@ -138,7 +140,7 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
                 disabled={!newEmail || !confirmEmail}
                 className="flex-1"
               >
-                Continuar
+                {t('settings.emailChange.continue')}
               </Button>
             </div>
           </div>
@@ -146,26 +148,26 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
           <div className="space-y-4">
             <div className="text-center space-y-2">
               <p className="text-sm text-muted-foreground">
-                Tem certeza que deseja alterar seu email de:
+                {t('settings.emailChange.confirmQuestion')}
               </p>
               <p className="font-medium">{currentEmail}</p>
-              <p className="text-sm text-muted-foreground">para:</p>
+              <p className="text-sm text-muted-foreground">{t('settings.emailChange.to')}</p>
               <p className="font-medium">{newEmail}</p>
               <p className="text-xs text-muted-foreground mt-4">
-                Um email de confirmação será enviado para o novo endereço.
+                {t('settings.emailChange.confirmationNote')}
               </p>
             </div>
 
             <div className="flex gap-2 pt-4">
               <Button variant="outline" onClick={handleBack} className="flex-1">
-                Voltar
+                {t('settings.emailChange.back')}
               </Button>
               <Button 
                 onClick={handleEmailChange} 
                 disabled={loading}
                 className="flex-1"
               >
-                {loading ? "Enviando..." : "Confirmar Alteração"}
+                {loading ? t('settings.emailChange.sending') : t('settings.emailChange.confirmChange')}
               </Button>
             </div>
           </div>

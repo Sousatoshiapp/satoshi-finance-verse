@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PasswordChangeDialogProps {
   isOpen: boolean;
@@ -21,12 +22,13 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
       toast({
-        title: "Erro",
-        description: "As senhas não coincidem",
+        title: t('settings.passwordChange.passwordMismatch'),
+        description: t('settings.passwordChange.passwordMismatch'),
         variant: "destructive"
       });
       return;
@@ -34,8 +36,8 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
 
     if (newPassword.length < 6) {
       toast({
-        title: "Erro", 
-        description: "A nova senha deve ter pelo menos 6 caracteres",
+        title: t('settings.passwordChange.passwordTooShort'), 
+        description: t('settings.passwordChange.passwordTooShort'),
         variant: "destructive"
       });
       return;
@@ -50,8 +52,8 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
       if (error) throw error;
 
       toast({
-        title: "Sucesso",
-        description: "Senha alterada com sucesso! Um email de confirmação foi enviado."
+        title: t('settings.passwordChange.success'),
+        description: t('settings.passwordChange.successDescription')
       });
 
       // Reset form
@@ -62,8 +64,8 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
 
     } catch (error: any) {
       toast({
-        title: "Erro",
-        description: error.message || "Não foi possível alterar a senha",
+        title: t('settings.passwordChange.error'),
+        description: error.message || t('settings.passwordChange.errorDescription'),
         variant: "destructive"
       });
     } finally {
@@ -75,18 +77,18 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Alterar Senha</DialogTitle>
+          <DialogTitle>{t('settings.passwordChange.title')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="current-password">Senha Atual</Label>
+            <Label htmlFor="current-password">{t('settings.passwordChange.currentPassword')}</Label>
             <div className="relative">
               <Input
                 id="current-password"
                 type={showCurrentPassword ? "text" : "password"}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Digite sua senha atual"
+                placeholder={t('settings.passwordChange.currentPasswordPlaceholder')}
               />
               <Button
                 type="button"
@@ -105,14 +107,14 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="new-password">Nova Senha</Label>
+            <Label htmlFor="new-password">{t('settings.passwordChange.newPassword')}</Label>
             <div className="relative">
               <Input
                 id="new-password"
                 type={showNewPassword ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Digite a nova senha"
+                placeholder={t('settings.passwordChange.newPasswordPlaceholder')}
               />
               <Button
                 type="button"
@@ -131,14 +133,14 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="confirm-password">Confirmar Nova Senha</Label>
+            <Label htmlFor="confirm-password">{t('settings.passwordChange.confirmPassword')}</Label>
             <div className="relative">
               <Input
                 id="confirm-password"
                 type={showConfirmPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirme a nova senha"
+                placeholder={t('settings.passwordChange.confirmPasswordPlaceholder')}
               />
               <Button
                 type="button"
@@ -165,7 +167,7 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
               disabled={loading || !currentPassword || !newPassword || !confirmPassword}
               className="flex-1"
             >
-              {loading ? "Alterando..." : "Alterar Senha"}
+              {loading ? t('settings.passwordChange.changing') : t('settings.passwordChange.changePassword')}
             </Button>
           </div>
         </div>
