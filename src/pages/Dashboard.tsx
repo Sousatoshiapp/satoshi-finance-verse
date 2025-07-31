@@ -210,12 +210,12 @@ export default function Dashboard() {
                   {isOnline ? (
                     <span className="inline-flex items-center gap-1">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-green-500">{t('common.online')}</span>
+                      <span className="text-xs text-green-500">{t('online')}</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1">
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span className="text-xs text-red-500">{t('common.offline')}</span>
+                      <span className="text-xs text-red-500">{t('offline')}</span>
                     </span>
                   )}
                 </span>
