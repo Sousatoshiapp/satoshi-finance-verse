@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/hooks/use-i18n";
 import { StreakIcon, GiftIcon, TrophyIcon, SwordIcon, StarIcon, IconSystem } from "@/components/icons/icon-system";
 
 interface DashboardSummaryProps {
@@ -16,6 +17,7 @@ interface DashboardSummaryProps {
 
 export function DashboardSummary({ userStats, subscription }: DashboardSummaryProps) {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <div className="bg-gradient-to-br from-card via-muted/50 to-card rounded-3xl p-6 mb-6 border border-border/50 shadow-elevated relative overflow-hidden">
@@ -27,7 +29,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
             <IconSystem emoji="📊" size="xl" animated variant="glow" />
-            Resumo do Dia
+            {t('dashboard.dailySummary')}
           </h3>
           <div className="text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">
             {new Date().toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
@@ -43,9 +45,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             <div className="mb-2">
               <StreakIcon size="lg" animated={userStats.streak > 0} variant={userStats.streak > 0 ? "glow" : "default"} />
             </div>
-            <div className="text-xs text-muted-foreground mb-1">Sequência</div>
+            <div className="text-xs text-muted-foreground mb-1">{t('dashboard.sequence')}</div>
             <div className="text-lg font-bold text-foreground">{userStats.streak}</div>
-            <div className="text-xs text-orange-600 font-medium">dias</div>
+            <div className="text-xs text-orange-600 font-medium">{t('dashboard.days')}</div>
           </div>
 
           {/* Daily Rewards */}
@@ -56,9 +58,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             <div className="mb-2">
               <GiftIcon size="lg" animated variant="glow" />
             </div>
-            <div className="text-xs text-muted-foreground mb-1">Recompensas</div>
+            <div className="text-xs text-muted-foreground mb-1">{t('dashboard.rewards')}</div>
             <div className="text-lg font-bold text-foreground">{userStats.completedLessons}/5</div>
-            <div className="text-xs text-green-600 font-medium">missões</div>
+            <div className="text-xs text-green-600 font-medium">{t('dashboard.missions')}</div>
           </div>
 
           {/* Badges */}
@@ -69,9 +71,9 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             <div className="mb-2">
               <TrophyIcon size="lg" animated variant="glow" />
             </div>
-            <div className="text-xs text-muted-foreground mb-1">Conquistas</div>
+            <div className="text-xs text-muted-foreground mb-1">{t('dashboard.achievements')}</div>
             <div className="text-lg font-bold text-foreground">{Math.min(userStats.level * 2, 12)}</div>
-            <div className="text-xs text-purple-600 font-medium">badges</div>
+            <div className="text-xs text-purple-600 font-medium">{t('dashboard.badges')}</div>
           </div>
         </div>
 
@@ -81,7 +83,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
             <div className="flex justify-between items-center mb-3">
               <div className="flex items-center gap-2">
                 <SwordIcon size="sm" />
-                <span className="text-sm font-semibold text-foreground">Duelos Diários</span>
+                <span className="text-sm font-semibold text-foreground">{t('dashboard.dailyDuels')}</span>
               </div>
               <Badge variant="outline" className="text-xs border-yellow-500/50 text-yellow-600">
                 {subscription.dailyDuelsUsed}/{subscription.dailyDuelsLimit}
@@ -94,7 +96,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
               />
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-xs text-muted-foreground">Reset em 24h</span>
+              <span className="text-xs text-muted-foreground">{t('dashboard.resetIn24h')}</span>
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -102,7 +104,7 @@ export function DashboardSummary({ userStats, subscription }: DashboardSummaryPr
                 className="text-xs text-yellow-600 hover:text-yellow-500 hover:bg-yellow-500/10"
               >
                 <span className="flex items-center gap-1">
-                  Upgrade <StarIcon size="xs" animated variant="glow" />
+                  {t('dashboard.upgrade')} <StarIcon size="xs" animated variant="glow" />
                 </span>
               </Button>
             </div>

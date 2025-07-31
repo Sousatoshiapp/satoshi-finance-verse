@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/hooks/use-i18n";
 import { Trophy, Users, Clock, ArrowLeft } from "lucide-react";
 
 // Import trophy images
@@ -44,6 +45,7 @@ export default function Tournaments() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'active' | 'upcoming' | 'finished'>('all');
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   useEffect(() => {
     loadTournaments();
@@ -156,7 +158,7 @@ export default function Tournaments() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Dashboard
             </Button>
-            <h1 className="text-2xl font-bold text-foreground">Torneios Épicos</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('tournaments.epicTournaments')}</h1>
           </div>
 
           {/* Filter Tabs */}
@@ -169,10 +171,10 @@ export default function Tournaments() {
                 onClick={() => setFilter(key as any)}
                 className="flex-shrink-0"
               >
-                {key === 'all' ? 'Todos' :
-                 key === 'active' ? 'Ativos' :
-                 key === 'upcoming' ? 'Em Breve' :
-                 'Finalizados'} ({count})
+                {key === 'all' ? t('tournaments.all') :
+                 key === 'active' ? t('tournaments.active') :
+                 key === 'upcoming' ? t('tournaments.soon') :
+                 t('tournaments.finished')} ({count})
               </Button>
             ))}
           </div>
@@ -237,7 +239,7 @@ export default function Tournaments() {
                             {(tournament.prize_pool || 0).toLocaleString()}
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground">Prêmio Beetz</div>
+                        <div className="text-xs text-muted-foreground">{t('tournaments.prizeBeetz')}</div>
                       </div>
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 text-info mb-1">
@@ -246,7 +248,7 @@ export default function Tournaments() {
                             {tournament.participants_count || 0}/{tournament.max_participants || 100}
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground">Jogadores</div>
+                        <div className="text-xs text-muted-foreground">{t('tournaments.players')}</div>
                       </div>
                       <div className="text-center">
                         <div className="flex items-center justify-center gap-1 text-warning mb-1">
@@ -255,7 +257,7 @@ export default function Tournaments() {
                             {formatTimeRemaining(tournament.end_date)}
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground">Tempo Restante</div>
+                        <div className="text-xs text-muted-foreground">{t('tournaments.timeRemaining')}</div>
                       </div>
                     </div>
 
@@ -266,8 +268,8 @@ export default function Tournaments() {
                         navigate(`/tournament/${tournament.id}`);
                       }}
                     >
-                      {tournament.status === 'active' ? 'Participar Agora' : 
-                       tournament.status === 'upcoming' ? 'Ver Detalhes' : 'Ver Resultados'}
+                      {tournament.status === 'active' ? t('tournaments.participateNow') : 
+                       tournament.status === 'upcoming' ? t('tournaments.viewDetails') : t('tournaments.viewResults')}
                     </Button>
                   </div>
                 </div>
@@ -279,12 +281,14 @@ export default function Tournaments() {
             <div className="text-center py-12">
               <div className="text-6xl mb-4">🏆</div>
               <h3 className="text-lg font-semibold text-foreground mb-2">
-                Nenhum torneio encontrado
+                {t('tournaments.noTournamentsFound')}
               </h3>
               <p className="text-muted-foreground">
                 {filter === 'all' 
-                  ? 'Não há torneios disponíveis no momento'
-                  : `Não há torneios ${filter === 'active' ? 'ativos' : filter === 'upcoming' ? 'em breve' : 'finalizados'} no momento`
+                  ? t('tournaments.noTournamentsAvailable')
+                  : filter === 'active' ? t('tournaments.noActiveTournaments')
+                  : filter === 'upcoming' ? t('tournaments.noUpcomingTournaments')
+                  : t('tournaments.noFinishedTournaments')
                 }
               </p>
             </div>
