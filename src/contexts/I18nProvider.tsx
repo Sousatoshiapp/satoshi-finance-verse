@@ -18,16 +18,23 @@ export const useI18nContext = () => useContext(I18nContext);
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation();
   const [isReady, setIsReady] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const handleLanguageChanged = (lng?: string) => {
-      setIsReady(true);
       const currentLang = lng || i18n.language;
       
       const isRTL = currentLang === 'ar-SA';
       document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
       document.documentElement.setAttribute('lang', currentLang);
       document.body.setAttribute('data-lang', currentLang);
+      
+      setIsTransitioning(false);
+      setIsReady(true);
+    };
+
+    const handleLanguageChanging = () => {
+      setIsTransitioning(true);
     };
 
     if (i18n.isInitialized) {
@@ -37,20 +44,20 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     }
 
     i18n.on('languageChanged', handleLanguageChanged);
+    i18n.on('languageChanging', handleLanguageChanging);
 
     return () => {
       i18n.off('initialized', handleLanguageChanged);
       i18n.off('languageChanged', handleLanguageChanged);
+      i18n.off('languageChanging', handleLanguageChanging);
     };
   }, [i18n]);
 
   return (
     <I18nContext.Provider value={{ isReady, language: i18n.language }}>
-      {isReady ? children : (
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <LoadingSpinner />
-        </div>
-      )}
+      <div className={isTransitioning ? 'opacity-90 transition-opacity duration-200' : ''}>
+        {children}
+      </div>
     </I18nContext.Provider>
   );
 }

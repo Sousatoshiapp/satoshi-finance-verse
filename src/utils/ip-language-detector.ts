@@ -89,15 +89,15 @@ export const createIPLanguageDetector = () => {
     lookup: (options: any): string | undefined => {
       detectLanguageByIP().then(language => {
         if (language && options?.caches) {
-          localStorage.setItem('i18nextLng-ip', language);
+          localStorage.setItem('i18nextLng', language);
         }
       });
       
-      const cachedIPLanguage = localStorage.getItem('i18nextLng-ip');
+      const cachedIPLanguage = localStorage.getItem('i18nextLng');
       return cachedIPLanguage || undefined;
     },
     cacheUserLanguage: (lng: string) => {
-      localStorage.setItem('i18nextLng-ip', lng);
+      localStorage.setItem('i18nextLng', lng);
     }
   };
 };

@@ -41,6 +41,7 @@ i18n
     resources,
     fallbackLng: 'pt-BR',
     debug: false,
+    preload: ['pt-BR', 'en-US', 'es-ES', 'hi-IN', 'zh-CN', 'ar-SA'],
     
     interpolation: {
       escapeValue: false,
