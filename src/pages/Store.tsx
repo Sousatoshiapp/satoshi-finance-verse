@@ -664,8 +664,8 @@ export default function Store() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">Marketplace</h1>
-            <p className="text-muted-foreground text-sm">Avatares, boosts e muito mais</p>
+            <h1 className="text-2xl font-bold text-foreground">{t('store.header.marketplace')}</h1>
+            <p className="text-muted-foreground text-sm">{t('store.header.subtitle')}</p>
           </div>
         </div>
 
@@ -677,8 +677,8 @@ export default function Store() {
                 <Crown className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-foreground mb-1">Planos Premium</h3>
-                <p className="text-xs text-muted-foreground">Acelere seu progresso</p>
+                <h3 className="text-sm font-bold text-foreground mb-1">{t('store.premium.title')}</h3>
+                <p className="text-xs text-muted-foreground">{t('store.premium.subtitle')}</p>
               </div>
             </div>
             <Button 
@@ -687,22 +687,22 @@ export default function Store() {
               onClick={() => navigate('/subscription-plans')}
               className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
             >
-              Ver Planos
+              {t('store.premium.viewPlans')}
             </Button>
           </div>
           
           <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
             <div className="text-center">
               <div className="text-purple-400 font-bold">∞</div>
-              <div className="text-muted-foreground text-xs">Duelos</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.duels')}</div>
             </div>
             <div className="text-center">
               <div className="text-purple-400 font-bold">3x</div>
-              <div className="text-muted-foreground text-xs">XP Boost</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.xpBoost')}</div>
             </div>
             <div className="text-center">
               <div className="text-purple-400 font-bold">100</div>
-              <div className="text-muted-foreground text-xs">Beetz/mês</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.beetzPerMonth')}</div>
             </div>
           </div>
         </Card>
@@ -738,21 +738,21 @@ export default function Store() {
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">👤</div>
-                <span className="text-xs font-medium">Avatares</span>
+                <span className="text-xs font-medium">{t('store.tabs.avatars')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="skins" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">🎨</div>
-                <span className="text-xs font-medium">Skins</span>
+                <span className="text-xs font-medium">{t('store.tabs.skins')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="boosts" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">⚡</div>
-                <span className="text-xs font-medium">Boosts</span>
+                <span className="text-xs font-medium">{t('store.tabs.boosts')}</span>
               </TabsTrigger>
             </TabsList>
             <TabsList className="grid grid-cols-3 gap-2 h-auto bg-transparent p-0">
@@ -761,21 +761,21 @@ export default function Store() {
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">🎒</div>
-                <span className="text-xs font-medium">Acessórios</span>
+                <span className="text-xs font-medium">{t('store.tabs.accessories')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="lives" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">❤️</div>
-                <span className="text-xs font-medium">Vidas</span>
+                <span className="text-xs font-medium">{t('store.tabs.lives')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="beetz" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <BeetzIcon size="sm" />
-                <span className="text-xs font-medium">Beetz</span>
+                <span className="text-xs font-medium">{t('store.tabs.beetz')}</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -878,7 +878,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <div className="space-y-1">
@@ -893,8 +893,8 @@ export default function Store() {
                           >
                             {purchasing === avatar.id ? "..." :
                              !meetsLevel ? `Nv ${avatar.level_required}` :
-                             !canAfford ? (avatar.price === 0 ? "Selecionar" : "Sem Beetz") : 
-                             avatar.price === 0 ? "Selecionar" : "Comprar"
+                             !canAfford ? (avatar.price === 0 ? t('store.buttons.buy') : t('store.buttons.noBeetz')) : 
+                             avatar.price === 0 ? t('store.buttons.buy') : t('store.buttons.buy')
                             }
                           </Button>
                           <Button
@@ -903,7 +903,7 @@ export default function Store() {
                             size="sm"
                             className="w-full text-xs py-1 h-6 text-muted-foreground hover:text-primary"
                           >
-                            Ver Detalhes
+                            {t('store.buttons.viewDetails')}
                           </Button>
                         </div>
                       )}
@@ -992,7 +992,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <div className="space-y-1">
@@ -1016,7 +1016,7 @@ export default function Store() {
                             size="sm"
                             className="w-full text-xs py-1 h-6 text-muted-foreground hover:text-primary"
                           >
-                            Ver Detalhes
+                            {t('store.buttons.viewDetails')}
                           </Button>
                         </div>
                       )}
@@ -1111,7 +1111,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <Button
@@ -1224,7 +1224,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <Button

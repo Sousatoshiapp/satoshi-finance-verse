@@ -100,7 +100,32 @@
     "memberSince": "Miembro desde",
     "activeAvatar": "Avatar Activo",
     "message": "Mensaje",
-    "anonymousUser": "Usuario Anónimo"
+    "anonymousUser": "Usuario Anónimo",
+    "header": {
+      "profile": "Perfil",
+      "settings": "Configuración"
+    },
+    "stats": {
+      "level": "Nivel",
+      "beetz": "Beetz",
+      "followers": "Seguidores",
+      "following": "Siguiendo",
+      "progress": "Progreso",
+      "lessonsCompleted": "Lecciones Completadas",
+      "of": "de"
+    },
+    "plans": {
+      "satoshiPro": "Satoshi Pro",
+      "satoshiElite": "Satoshi Elite"
+    },
+    "loading": "Cargando perfil...",
+    "notFound": "Usuario no encontrado",
+    "achievements": {
+      "tournamentsWon": "Torneos Ganados",
+      "quizzesCompleted": "Quizzes Completados",
+      "perfectScore": "Puntuación Perfecta",
+      "socialInteractions": "Interacciones Sociales"
+    }
   },
   "admin": {
     "dashboard": "Panel de Administración",
@@ -144,6 +169,95 @@
     "like": "Me gusta",
     "comment": "Comentar",
     "share": "Compartir"
+  },
+  "satoshiCity": {
+    "welcome": "Bienvenido a la ciudad del futuro financiero",
+    "subtitle": "Haz clic en los distritos para explorar conocimiento",
+    "badges": {
+      "activeDistricts": "7 Distritos Activos",
+      "neuralSystem": "Sistema Neural Activo",
+      "hyperRealistic": "Ciudad Hiperrealista"
+    },
+    "modes": {
+      "3dDevelopment": "3D en Desarrollo",
+      "back2d": "Volver 2D",
+      "overview": "Vista General",
+      "exploration": "Exploración"
+    },
+    "loading": {
+      "city": "Cargando Satoshi City...",
+      "city3d": "Cargando Satoshi City 3D..."
+    },
+    "emergency": {
+      "state": "ESTADO DE EMERGENCIA",
+      "hackDetected": "HACK FINANCIERO DETECTADO",
+      "marketCollapse": "COLAPSO DEL MERCADO",
+      "cyberAttack": "ATAQUE CIBERNÉTICO"
+    },
+    "avatar": {
+      "chooseTitle": "Elige tu Ciudadano Digital",
+      "chooseSubtitle": "Selecciona tu avatar inicial para comenzar tu viaje"
+    },
+    "affiliation": {
+      "district": "Distrito",
+      "explore": "Explorar",
+      "chooseDistrict": "Elegir Distrito",
+      "team": "Equipo",
+      "createJoinTeam": "Crear/Unirse al Equipo"
+    },
+    "contribution": {
+      "title": "Contribuir a la Emergencia",
+      "subtitle": "Tus contribuciones son amplificadas",
+      "button": "Contribuir Ahora"
+    }
+  },
+  "districts": {
+    "navigation": {
+      "backToCity": "Volver a la Ciudad",
+      "becomeMember": "Convertirse en Miembro",
+      "viewTeam": "Ver Equipo"
+    },
+    "stats": {
+      "totalBTZ": "BTZ Total",
+      "totalXP": "XP Total",
+      "power": "Poder"
+    },
+    "timeOfDay": {
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "night": "Noche"
+    },
+    "specialPower": "Poder Especial",
+    "actions": {
+      "access": "Acceder",
+      "districtQuiz": "Quiz del Distrito",
+      "challengeDistrict": "Desafiar Distrito",
+      "viewResidents": "Ver Residentes"
+    },
+    "loading": {
+      "district": "Cargando distrito...",
+      "notFound": "Distrito no encontrado"
+    },
+    "quiz": {
+      "prepare": "¡Prepárate para poner a prueba tus conocimientos!",
+      "questions": "preguntas",
+      "secondsPerQuestion": "segundos por pregunta",
+      "xpPerCorrect": "XP por respuesta correcta"
+    },
+    "ranking": {
+      "districtPower": "Poder del Distrito",
+      "inRanking": "en el Ranking",
+      "residents": "Residentes",
+      "averageXP": "XP Promedio",
+      "victories": "Victorias",
+      "winRate": "Tasa de Victoria"
+    },
+    "duels": {
+      "activeDuels": "Duelos Activos",
+      "challenge": "Desafiar",
+      "participants": "participantes",
+      "average": "Promedio"
+    }
   },
   "store": {
     "store": "Tienda",
@@ -231,7 +345,27 @@
     "interactionSounds": "Sonidos de interacción y logros",
     "darkInterface": "Interfaz con tema oscuro",
     "aboutSatoshi": "Acerca de Satoshi",
-    "gameVersion": "El juego de las finanzas"
+    "gameVersion": "El juego de las finanzas",
+    "header": {
+      "profile": "Perfil",
+      "settings": "Configuración"
+    },
+    "sections": {
+      "personalInfo": "Información Personal",
+      "notifications": "Notificaciones",
+      "experience": "Experiencia",
+      "account": "Cuenta",
+      "aboutSatoshi": "Acerca de Satoshi"
+    },
+    "buttons": {
+      "saving": "Guardando...",
+      "saveSettings": "💾 Guardar Configuración",
+      "logout": "🚪 Cerrar Sesión"
+    },
+    "app": {
+      "version": "Versión 1.0.0",
+      "description": "El juego de las finanzas"
+    }
   },
   "missions": {
     "dailyMissions": "Misiones Diarias",
@@ -295,5 +429,139 @@
     "searching": "Buscando oponente...",
     "found": "¡Oponente encontrado!",
     "cancel": "Cancelar"
+  },
+  "common": {
+    "loading": "Cargando",
+    "accessDenied": "Acceso Denegado",
+    "noSponsorAccess": "No tienes acceso administrativo a ningún distrito patrocinado",
+    "configureAccess": "Para configurar el acceso de administrador patrocinador, ve a",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "level": "Nivel"
+  },
+  "satoshiCity": {
+    "welcome": "Bienvenido a la ciudad del futuro financiero.",
+    "instructions": {
+      "mobile": "Toca los distritos para vivir o explorar.",
+      "desktop": "Haz clic en los distritos para explorar conocimiento."
+    },
+    "badges": {
+      "activeDistricts": "7 Distritos Activos",
+      "neuralSystem": "Sistema Neural Activo"
+    },
+    "buttons": {
+      "3dDevelopment": "3D en Desarrollo"
+    },
+    "residence": {
+      "home": "Casa",
+      "current": "Esta es tu residencia actual",
+      "liveHere": "Vivir Aquí"
+    },
+    "modal": {
+      "liveIn": "Vivir en",
+      "confirmResidence": "¿Quieres establecer tu residencia en el distrito {{districtName}}? Podrás participar en actividades exclusivas y representar este distrito."
+    }
+  },
+  "social": {
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafíos",
+      "ranks": "Rangos",
+      "following": "Siguiendo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "Comparte tu opinión sobre el mercado...",
+      "searchUsers": "Buscar usuarios por apodo..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "share": "Compartir"
+    },
+    "messages": {
+      "beFirstToPost": "¡Sé el primero en publicar!",
+      "searchingUsers": "Buscando usuarios...",
+      "comingSoon": "Próximamente"
+    },
+    "profile": {
+      "level": "Nivel",
+      "followers": "seguidores"
+    },
+    "chat": {
+      "typeMessage": "Añadir un comentario..."
+    },
+    "shareOpinion": "Comparte tus experiencias de trading y conéctate con otros inversores"
+  },
+  "store": {
+    "header": {
+      "marketplace": "Mercado",
+      "subtitle": "Avatares, potenciadores y mucho más"
+    },
+    "premium": {
+      "title": "Planes Premium",
+      "subtitle": "Acelera tu progreso",
+      "viewPlans": "Ver Planes",
+      "duels": "Duelos",
+      "xpBoost": "Potenciador XP",
+      "beetzPerMonth": "Beetz/mes"
+    },
+    "tabs": {
+      "avatars": "Avatares",
+      "skins": "Aspectos",
+      "boosts": "Potenciadores",
+      "accessories": "Accesorios",
+      "lives": "Vidas",
+      "beetz": "Beetz"
+    },
+    "buttons": {
+      "owns": "Posee",
+      "buy": "Comprar",
+      "noBeetz": "Sin Beetz",
+      "viewDetails": "Ver Detalles"
+    },
+    "lives": {
+      "title": "Vidas y Protección",
+      "subtitle": "Mantén tu racha y sigue jugando",
+      "marketplace": "Mercado de Vidas"
+    },
+    "beetzPackages": {
+      "title": "Paquetes de Beetz",
+      "subtitle": "Compra Beetz con dinero real vía Stripe"
+    },
+    "security": {
+      "title": "Pago Seguro",
+      "subtitle": "Procesado vía Stripe con máxima seguridad"
+    },
+    "loading": "Cargando mercado...",
+    "error": {
+      "title": "Error",
+      "message": "No se pudo cargar la tienda"
+    },
+    "livesProtection": "Vidas y Protección",
+    "maintainStreak": "Mantén tu racha y sigue jugando",
+    "marketplaceLives": "Mercado de Vidas",
+    "buyLivesKeepStreak": "Compra vidas para mantener tu racha",
+    "savesStreak": "Salva Racha",
+    "multipliesBTZ": "Multiplica BTZ",
+    "viewLives": "Ver Vidas",
+    "streakProtection": "Protección de Racha",
+    "useLifeKeepStreak": "Usa una vida para mantener tu racha activa",
+    "keepMultipliers": "Mantener Multiplicadores",
+    "preserveBTZMultipliers": "Preserva tus multiplicadores de BTZ",
+    "continueWithoutStop": "Continuar Sin Parar",
+    "dontLoseMomentum": "No pierdas el impulso de tu progreso",
+    "beetzPackages": "Paquetes de Beetz",
+    "buyBeetzReal": "Compra Beetz con dinero real vía Stripe",
+    "buy": "Comprar",
+    "securePayment": "Pago Seguro",
+    "processedStripe": "Procesado vía Stripe con máxima seguridad",
+    "buyBeetz": "Comprar Beetz",
+    "notEnoughBeetz": "No tienes suficientes Beetz para esta compra",
+    "basicPackage": "Paquete Básico",
+    "popularPackage": "Paquete Popular",
+    "premiumPackage": "Paquete Premium",
+    "supremePackage": "Paquete Supremo"
   }
 }

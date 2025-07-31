@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SocialButton } from "./social-button";
 import { Button } from "@/components/ui/button";
 import { Users, TrendingUp, MessageCircle } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface UserCardProps {
   user: {
@@ -27,6 +28,7 @@ interface UserCardProps {
 }
 
 export function UserCard({ user, showSocialStats = true, compact = false, onStartConversation, onClick }: UserCardProps) {
+  const { t } = useI18n();
   if (compact) {
     return (
       <div 
@@ -44,7 +46,7 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
               variant="secondary" 
               className="text-xs bg-orange-500 text-white"
             >
-              Nível {user.level || 1}
+              {t('social.profile.level')} {user.level || 1}
             </Badge>
             {user.avatar && (
               <span className="text-xs text-muted-foreground truncate">
@@ -83,7 +85,7 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
                 variant="secondary" 
                 className="text-xs bg-orange-500 text-white"
               >
-                Nível {user.level || 1}
+                {t('social.profile.level')} {user.level || 1}
               </Badge>
             </div>
             
@@ -102,7 +104,7 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
               {showSocialStats && (
                 <div className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  {user.follower_count || 0} seguidores
+                  {user.follower_count || 0} {t('social.profile.followers')}
                 </div>
               )}
             </div>

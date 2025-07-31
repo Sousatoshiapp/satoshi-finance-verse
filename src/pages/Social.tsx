@@ -18,6 +18,7 @@ import { FloatingNavbar } from "@/components/floating-navbar";
 import { SocialFeed } from "@/components/social/social-feed";
 import { SocialChallenges } from "@/components/social/social-challenges";
 import { SocialLeaderboard } from "@/components/social/social-leaderboard";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface User {
   id: string;
@@ -36,6 +37,7 @@ interface User {
 
 export default function Social() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [following, setFollowing] = useState<User[]>([]);
@@ -269,12 +271,12 @@ export default function Social() {
           <CardContent>
             <Tabs defaultValue="feed" className="w-full">
               <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-1 overflow-x-auto">
-                <TabsTrigger value="feed" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">Feed</TabsTrigger>
-                <TabsTrigger value="discover" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">Buscar</TabsTrigger>
-                <TabsTrigger value="challenges" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">Desafios</TabsTrigger>
-                <TabsTrigger value="rankings" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">Ranks</TabsTrigger>
-                <TabsTrigger value="following" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">Seguindo</TabsTrigger>
-                <TabsTrigger value="messages" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">Chat</TabsTrigger>
+                <TabsTrigger value="feed" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">{t('social.tabs.feed')}</TabsTrigger>
+                <TabsTrigger value="discover" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">{t('social.tabs.search')}</TabsTrigger>
+                <TabsTrigger value="challenges" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">{t('social.tabs.challenges')}</TabsTrigger>
+                <TabsTrigger value="rankings" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">{t('social.tabs.ranks')}</TabsTrigger>
+                <TabsTrigger value="following" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">{t('social.tabs.following')}</TabsTrigger>
+                <TabsTrigger value="messages" className="text-xs px-1 py-1 min-w-0 flex-shrink-0">{t('social.tabs.chat')}</TabsTrigger>
               </TabsList>
 
               {/* Desktop: Create Post Card */}
@@ -283,7 +285,7 @@ export default function Social() {
                   <CardContent className="p-4">
                     <div className="space-y-3">
                       <Textarea
-                        placeholder="Compartilhe sua opinião sobre o mercado..."
+                        placeholder={t('social.placeholders.shareOpinion')}
                         value={newPost}
                         onChange={(e) => setNewPost(e.target.value)}
                         className="min-h-[80px] resize-none"
@@ -298,7 +300,7 @@ export default function Social() {
                           disabled={!newPost.trim() || posting}
                           size="sm"
                         >
-                          {posting ? "Postando..." : "Publicar"}
+                          {posting ? t('social.buttons.publishing') : t('social.buttons.publish')}
                           <Send className="ml-2 h-4 w-4" />
                         </Button>
                       </div>
@@ -314,7 +316,7 @@ export default function Social() {
                     <CardContent className="p-3">
                       <div className="space-y-2">
                         <Textarea
-                          placeholder="Compartilhe sua opinião..."
+                          placeholder={t('social.placeholders.shareOpinion')}
                           value={newPost}
                           onChange={(e) => setNewPost(e.target.value)}
                           className="min-h-[60px] resize-none text-sm"
@@ -330,7 +332,7 @@ export default function Social() {
                             size="sm"
                             className="h-7 text-xs px-2"
                           >
-                            {posting ? "..." : "Publicar"}
+                            {posting ? "..." : t('social.buttons.publish')}
                             <Send className="ml-1 h-3 w-3" />
                           </Button>
                         </div>
@@ -353,7 +355,7 @@ export default function Social() {
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Buscar usuários por nickname..."
+                    placeholder={t('social.placeholders.searchUsers')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-9"
@@ -364,7 +366,7 @@ export default function Social() {
                   <div className="space-y-3">
                     {loading ? (
                       <div className="text-center text-muted-foreground">
-                        Buscando usuários...
+                        {t('social.messages.searchingUsers')}
                       </div>
                     ) : searchResults.length > 0 ? (
                       searchResults.map((user) => (
@@ -375,8 +377,8 @@ export default function Social() {
                           onStartConversation={(userId) => {
                             // TODO: Implement start conversation
                             toast({
-                              title: "Em breve",
-                              description: "Funcionalidade de mensagens será implementada em breve"
+                              title: t('social.messages.comingSoon'),
+                              description: t('social.messages.comingSoon')
                             });
                           }}
                           onClick={(userId) => {
@@ -386,11 +388,11 @@ export default function Social() {
                       ))
                     ) : searchQuery ? (
                       <div className="text-center text-muted-foreground">
-                        Nenhum usuário encontrado
+                        {t('social.messages.comingSoon')}
                       </div>
                     ) : (
                       <div className="text-center text-muted-foreground">
-                        Digite um nickname para buscar usuários
+                        {t('social.placeholders.searchUsers')}
                       </div>
                     )}
                   </div>
@@ -413,7 +415,7 @@ export default function Social() {
                       ))
                     ) : (
                       <div className="text-center text-muted-foreground">
-                        Você ainda não segue ninguém
+                        {t('social.messages.comingSoon')}
                       </div>
                     )}
                   </div>
@@ -436,7 +438,7 @@ export default function Social() {
                       ))
                     ) : (
                       <div className="text-center text-muted-foreground">
-                        Você ainda não tem seguidores
+                        {t('social.messages.comingSoon')}
                       </div>
                     )}
                   </div>
