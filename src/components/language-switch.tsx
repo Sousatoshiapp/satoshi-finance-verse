@@ -21,10 +21,6 @@ export function LanguageSwitch() {
     const nextIndex = (currentLanguageIndex + 1) % languages.length;
     const newLang = languages[nextIndex].code;
     changeLanguage(newLang);
-    // Force reload to ensure all components update
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
   };
 
   return (

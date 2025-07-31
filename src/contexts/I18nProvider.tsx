@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import '../i18n';
 
 interface I18nContextType {
@@ -45,7 +46,11 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <I18nContext.Provider value={{ isReady, language: i18n.language }}>
-      {children}
+      {isReady ? children : (
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      )}
     </I18nContext.Provider>
   );
 }
