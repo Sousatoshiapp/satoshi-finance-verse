@@ -19,10 +19,6 @@ export function LanguageSelector() {
 
   const handleLanguageChange = (languageCode: string) => {
     changeLanguage(languageCode);
-    // Force a full page reload to ensure all components update
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
   };
 
   return (
