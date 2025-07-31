@@ -79,6 +79,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
             
             // Show visual feedback for large point changes
             if (Math.abs(newPoints - points) >= 100) {
+              setLastUpdate(new Date());
             }
           }
         }
