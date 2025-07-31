@@ -1,0 +1,234 @@
+{
+  "common": {
+    "back": "वापस",
+    "save": "सेव करें",
+    "cancel": "रद्द करें",
+    "confirm": "पुष्टि करें",
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "level": "स्तर",
+    "points": "अंक",
+    "xp": "XP",
+    "beetz": "Beetz",
+    "pro": "प्रो",
+    "online": "ऑनलाइन",
+    "offline": "ऑफलाइन",
+    "viewAll": "सभी देखें"
+  },
+  "quiz": {
+    "title": "क्विज़",
+    "question": "प्रश्न {{number}} का {{total}}",
+    "nextQuestion": "अगला प्रश्न",
+    "finishQuiz": "क्विज़ समाप्त करें",
+    "timeRemaining": "शेष समय",
+    "correct": "सही!",
+    "incorrect": "गलत!",
+    "explanation": "व्याख्या",
+    "score": "स्कोर",
+    "completed": "क्विज़ पूरा हुआ!",
+    "startQuiz": "क्विज़ शुरू करें",
+    "questions": {
+      "q1": {
+        "question": "स्टॉक एक्सचेंज का मुख्य कार्य क्या है?",
+        "options": ["कंपनियों को पैसा उधार देना", "प्रतिभूतियों के व्यापार की सुविधा", "ब्याज दरें निर्धारित करना", "पैसा छापना"],
+        "correct": "प्रतिभूतियों के व्यापार की सुविधा",
+        "explanation": "स्टॉक एक्सचेंज खरीदारों और विक्रेताओं के बीच प्रतिभूतियों के व्यापार की सुविधा प्रदान करते हैं।"
+      },
+      "q2": {
+        "question": "IPO का क्या मतलब है?",
+        "options": ["प्रारंभिक सार्वजनिक पेशकश", "अंतर्राष्ट्रीय खरीद आदेश", "निवेश पोर्टफोलियो विकल्प", "आंतरिक मूल्य अनुकूलन"],
+        "correct": "प्रारंभिक सार्वजनिक पेशकश",
+        "explanation": "IPO का मतलब प्रारंभिक सार्वजनिक पेशकश है, जब कोई कंपनी पहली बार जनता को शेयर बेचती है।"
+      },
+      "q3": {
+        "question": "निवेश में विविधीकरण क्या है?",
+        "options": ["सारा पैसा एक स्टॉक में लगाना", "विभिन्न संपत्तियों में निवेश फैलाना", "केवल स्टॉक खरीदना", "सभी निवेश बेचना"],
+        "correct": "विभिन्न संपत्तियों में निवेश फैलाना",
+        "explanation": "विविधीकरण में जोखिम कम करने के लिए विभिन्न संपत्तियों में निवेश फैलाना शामिल है।"
+      }
+    }
+  },
+  "navigation": {
+    "dashboard": "डैशबोर्ड",
+    "quiz": "क्विज़",
+    "social": "सामाजिक",
+    "profile": "प्रोफ़ाइल",
+    "leaderboard": "लीडरबोर्ड",
+    "store": "स्टोर",
+    "settings": "सेटिंग्स",
+    "city": "शहर",
+    "game": "गेम"
+  },
+  "dashboard": {
+    "welcome": "सतोशी फाइनेंस गेम में आपका स्वागत है!",
+    "weeklyRanking": "साप्ताहिक रैंकिंग",
+    "dailyMissions": "दैनिक मिशन",
+    "streak": "स्ट्रीक",
+    "level": "स्तर {{level}}",
+    "goodMorning": "सुप्रभात",
+    "goodAfternoon": "शुभ दोपहर",
+    "goodNight": "शुभ रात्रि",
+    "student": "छात्र",
+    "goal": "लक्ष्य"
+  },
+  "leaderboard": {
+    "weeklyRankings": "साप्ताहिक रैंकिंग",
+    "global": "वैश्विक",
+    "league": "लीग",
+    "yourPosition": "आपकी स्थिति",
+    "totalScore": "कुल स्कोर",
+    "resetIn": "रीसेट में",
+    "noRank": "कोई रैंक नहीं",
+    "noRankingAvailable": "कोई रैंकिंग उपलब्ध नहीं",
+    "beFirstInRanking": "साप्ताहिक रैंकिंग में दिखाई देने वाले पहले व्यक्ति बनें!",
+    "climbRanking": "रैंकिंग में चढ़ें!",
+    "climbRankingDescription": "क्विज़ पूरे करें, द्वंद्व जीतें और रैंकिंग में चढ़ने के लिए XP अर्जित करें",
+    "pointsPerXP": "+1 pt प्रति XP",
+    "pointsPerQuiz": "+1 pt प्रति क्विज़",
+    "pointsPerDuel": "+100 pts प्रति द्वंद्व"
+  },
+  "profile": {
+    "userProfile": "उपयोगकर्ता प्रोफ़ाइल",
+    "achievements": "उपलब्धियां",
+    "statistics": "आंकड़े",
+    "followersCount": "फॉलोअर्स",
+    "followingCount": "फॉलो कर रहे",
+    "completedLessons": "पूरे किए गए पाठ",
+    "currentStreak": "वर्तमान स्ट्रीक",
+    "publicPortfolios": "सार्वजनिक पोर्टफोलियो",
+    "memberSince": "सदस्य बने",
+    "activeAvatar": "सक्रिय अवतार",
+    "message": "संदेश",
+    "anonymousUser": "अज्ञात उपयोगकर्ता"
+  },
+  "admin": {
+    "dashboard": "एडमिन डैशबोर्ड",
+    "language": "भाषा",
+    "changeLanguage": "भाषा बदलें",
+    "botManagement": "बॉट प्रबंधन",
+    "enhanceBotRealism": "बॉट यथार्थवाद बढ़ाएं",
+    "updateBotNicknames": "बॉट नाम अपडेट करें"
+  },
+  "quizEngine": {
+    "loadingQuestions": "प्रश्न लोड हो रहे हैं...",
+    "noQuestionsAvailable": "कोई प्रश्न उपलब्ध नहीं",
+    "couldNotLoadQuestions": "इस समय प्रश्न लोड नहीं हो सके।",
+    "question": "प्रश्न {{current}} का {{total}}",
+    "soloQuiz": "सोलो क्विज़",
+    "duelQuiz": "द्वंद्व क्विज़",
+    "tournamentQuiz": "टूर्नामेंट क्विज़",
+    "dailyMission": "दैनिक मिशन",
+    "districtQuiz": "जिला क्विज़",
+    "congratulations": "बधाई हो!",
+    "lost": "हार गए!",
+    "correctAnswers": "सही उत्तर",
+    "accuracy": "सटीकता",
+    "nextQuiz": "अगली क्विज़",
+    "continue": "जारी रखें",
+    "tryAgain": "फिर कोशिश करें",
+    "back": "वापस",
+    "confirmAnswer": "उत्तर की पुष्टि करें",
+    "selectOption": "एक विकल्प चुनें",
+    "timeUp": "समय समाप्त!",
+    "correct": "सही!",
+    "incorrect": "गलत!",
+    "correctAnswer": "सही उत्तर: ",
+    "timeRemaining": "शेष समय"
+  },
+  "social": {
+    "socialFeed": "सामाजिक फीड",
+    "shareOpinion": "बाजार के बारे में अपनी राय साझा करें",
+    "whatsHappening": "क्या हो रहा है?",
+    "post": "पोस्ट",
+    "like": "पसंद",
+    "comment": "टिप्पणी",
+    "share": "साझा करें"
+  },
+  "store": {
+    "store": "स्टोर",
+    "avatars": "अवतार",
+    "upgrades": "अपग्रेड",
+    "buy": "खरीदें",
+    "owned": "स्वामित्व",
+    "loading": "स्टोर लोड हो रहा है...",
+    "error": "त्रुटि",
+    "errorLoadingStore": "स्टोर लोड नहीं हो सका",
+    "purchaseError": "खरीदारी त्रुटि",
+    "processing": "प्रसंस्करण...",
+    "upgradeSuccessful": "खरीदारी सफल!",
+    "insufficientFunds": "अपर्याप्त Beetz",
+    "alreadyOwned": "पहले से स्वामित्व",
+    "levelRequired": "स्तर {{level}} आवश्यक",
+    "selectPaymentMethod": "भुगतान विधि चुनें"
+  },
+  "subscription": {
+    "plans": "सब्स्क्रिप्शन प्लान",
+    "choosePlan": "अपना प्लान चुनें",
+    "free": "मुफ्त",
+    "premium": "प्रीमियम",
+    "elite": "एलीट",
+    "monthly": "मासिक",
+    "annually": "वार्षिक",
+    "subscribe": "सब्स्क्राइब करें",
+    "benefits": "लाभ",
+    "compareBenefits": "लाभों की तुलना करें"
+  },
+  "settings": {
+    "settings": "सेटिंग्स",
+    "account": "खाता",
+    "notifications": "सूचनाएं",
+    "privacy": "गोपनीयता",
+    "theme": "थीम",
+    "language": "भाषा"
+  },
+  "missions": {
+    "dailyMissions": "दैनिक मिशन",
+    "completed": "पूर्ण",
+    "inProgress": "प्रगति में",
+    "reward": "पुरस्कार",
+    "claim": "दावा करें",
+    "dailyProgress": "दैनिक प्रगति",
+    "comboCompleted": "कॉम्बो पूरा! +500 XP + 1000 Beetz + दुर्लभ लूट बॉक्स!",
+    "special": "विशेष",
+    "noMissionsAvailable": "इस समय कोई मिशन उपलब्ध नहीं",
+    "newMissionsSoon": "नए मिशन जल्द ही दिखाई देंगे!"
+  },
+  "tournaments": {
+    "tournaments": "टूर्नामेंट",
+    "joinTournament": "टूर्नामेंट में शामिल हों",
+    "upcoming": "आगामी",
+    "active": "सक्रिय",
+    "finished": "समाप्त"
+  },
+  "duels": {
+    "duels": "द्वंद्व",
+    "challenge": "चुनौती",
+    "accept": "स्वीकार करें",
+    "decline": "अस्वीकार करें",
+    "waiting": "प्रतीक्षा"
+  },
+  "levels": {
+    "levels": "स्तर",
+    "currentLevel": "वर्तमान स्तर",
+    "nextLevel": "अगला स्तर",
+    "progress": "समग्र प्रगति"
+  },
+  "gameMode": {
+    "title": "गेम मोड",
+    "selectMode": "मोड चुनें",
+    "chooseHow": "चुनें कि आप कैसे खेलना चाहते हैं",
+    "solo": "सोलो मोड",
+    "duel": "द्वंद्व मोड",
+    "tournament": "टूर्नामेंट",
+    "soloDescription": "अकेले खेलें और अपने कौशल में सुधार करें",
+    "duelDescription": "अन्य खिलाड़ियों को चुनौती दें",
+    "tournamentDescription": "टूर्नामेंट में प्रतिस्पर्धा करें"
+  },
+  "findOpponent": {
+    "title": "प्रतिद्वंद्वी खोजें",
+    "searching": "प्रतिद्वंद्वी खोज रहे हैं...",
+    "found": "प्रतिद्वंद्वी मिल गया!",
+    "cancel": "रद्द करें"
+  }
+}

@@ -19,12 +19,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const handleLanguageChanged = () => {
+    const handleLanguageChanged = (lng?: string) => {
       setIsReady(true);
+      const currentLang = lng || i18n.language;
+      
+      const isRTL = currentLang === 'ar-SA';
+      document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+      document.documentElement.setAttribute('lang', currentLang);
+      document.body.setAttribute('data-lang', currentLang);
     };
 
     if (i18n.isInitialized) {
-      setIsReady(true);
+      handleLanguageChanged();
     } else {
       i18n.on('initialized', handleLanguageChanged);
     }

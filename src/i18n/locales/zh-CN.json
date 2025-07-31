@@ -1,0 +1,234 @@
+{
+  "common": {
+    "back": "返回",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "level": "等级",
+    "points": "积分",
+    "xp": "经验值",
+    "beetz": "Beetz",
+    "pro": "专业版",
+    "online": "在线",
+    "offline": "离线",
+    "viewAll": "查看全部"
+  },
+  "quiz": {
+    "title": "测验",
+    "question": "第{{number}}题，共{{total}}题",
+    "nextQuestion": "下一题",
+    "finishQuiz": "完成测验",
+    "timeRemaining": "剩余时间",
+    "correct": "正确！",
+    "incorrect": "错误！",
+    "explanation": "解释",
+    "score": "得分",
+    "completed": "测验完成！",
+    "startQuiz": "开始测验",
+    "questions": {
+      "q1": {
+        "question": "证券交易所的主要功能是什么？",
+        "options": ["向公司放贷", "促进证券交易", "设定利率", "印刷货币"],
+        "correct": "促进证券交易",
+        "explanation": "证券交易所促进买卖双方之间的证券交易。"
+      },
+      "q2": {
+        "question": "IPO代表什么？",
+        "options": ["首次公开募股", "国际采购订单", "投资组合选项", "内部价格优化"],
+        "correct": "首次公开募股",
+        "explanation": "IPO代表首次公开募股，即公司首次向公众出售股票。"
+      },
+      "q3": {
+        "question": "投资中的多元化是什么？",
+        "options": ["将所有资金投入一只股票", "将投资分散到不同资产", "只购买股票", "出售所有投资"],
+        "correct": "将投资分散到不同资产",
+        "explanation": "多元化涉及将投资分散到不同资产以降低风险。"
+      }
+    }
+  },
+  "navigation": {
+    "dashboard": "仪表板",
+    "quiz": "测验",
+    "social": "社交",
+    "profile": "个人资料",
+    "leaderboard": "排行榜",
+    "store": "商店",
+    "settings": "设置",
+    "city": "城市",
+    "game": "游戏"
+  },
+  "dashboard": {
+    "welcome": "欢迎来到中本聪金融游戏！",
+    "weeklyRanking": "周排行榜",
+    "dailyMissions": "每日任务",
+    "streak": "连胜",
+    "level": "等级{{level}}",
+    "goodMorning": "早上好",
+    "goodAfternoon": "下午好",
+    "goodNight": "晚上好",
+    "student": "学生",
+    "goal": "目标"
+  },
+  "leaderboard": {
+    "weeklyRankings": "周排行榜",
+    "global": "全球",
+    "league": "联赛",
+    "yourPosition": "您的位置",
+    "totalScore": "总分",
+    "resetIn": "重置时间",
+    "noRank": "无排名",
+    "noRankingAvailable": "暂无排行榜",
+    "beFirstInRanking": "成为第一个出现在周排行榜上的人！",
+    "climbRanking": "攀登排行榜！",
+    "climbRankingDescription": "完成测验，赢得决斗并获得经验值以攀登排行榜",
+    "pointsPerXP": "每经验值+1分",
+    "pointsPerQuiz": "每测验+1分",
+    "pointsPerDuel": "每决斗+100分"
+  },
+  "profile": {
+    "userProfile": "用户资料",
+    "achievements": "成就",
+    "statistics": "统计",
+    "followersCount": "关注者",
+    "followingCount": "关注中",
+    "completedLessons": "已完成课程",
+    "currentStreak": "当前连胜",
+    "publicPortfolios": "公开投资组合",
+    "memberSince": "注册时间",
+    "activeAvatar": "活跃头像",
+    "message": "消息",
+    "anonymousUser": "匿名用户"
+  },
+  "admin": {
+    "dashboard": "管理员仪表板",
+    "language": "语言",
+    "changeLanguage": "更改语言",
+    "botManagement": "机器人管理",
+    "enhanceBotRealism": "增强机器人真实感",
+    "updateBotNicknames": "更新机器人昵称"
+  },
+  "quizEngine": {
+    "loadingQuestions": "加载问题中...",
+    "noQuestionsAvailable": "暂无问题",
+    "couldNotLoadQuestions": "目前无法加载问题。",
+    "question": "第{{current}}题，共{{total}}题",
+    "soloQuiz": "单人测验",
+    "duelQuiz": "决斗测验",
+    "tournamentQuiz": "锦标赛测验",
+    "dailyMission": "每日任务",
+    "districtQuiz": "区域测验",
+    "congratulations": "恭喜！",
+    "lost": "失败！",
+    "correctAnswers": "正确答案",
+    "accuracy": "准确率",
+    "nextQuiz": "下一个测验",
+    "continue": "继续",
+    "tryAgain": "重试",
+    "back": "返回",
+    "confirmAnswer": "确认答案",
+    "selectOption": "选择一个选项",
+    "timeUp": "时间到！",
+    "correct": "正确！",
+    "incorrect": "错误！",
+    "correctAnswer": "正确答案：",
+    "timeRemaining": "剩余时间"
+  },
+  "social": {
+    "socialFeed": "社交动态",
+    "shareOpinion": "分享您对市场的看法",
+    "whatsHappening": "发生了什么？",
+    "post": "发布",
+    "like": "点赞",
+    "comment": "评论",
+    "share": "分享"
+  },
+  "store": {
+    "store": "商店",
+    "avatars": "头像",
+    "upgrades": "升级",
+    "buy": "购买",
+    "owned": "已拥有",
+    "loading": "商店加载中...",
+    "error": "错误",
+    "errorLoadingStore": "无法加载商店",
+    "purchaseError": "购买错误",
+    "processing": "处理中...",
+    "upgradeSuccessful": "购买成功！",
+    "insufficientFunds": "Beetz不足",
+    "alreadyOwned": "已拥有",
+    "levelRequired": "需要等级{{level}}",
+    "selectPaymentMethod": "选择支付方式"
+  },
+  "subscription": {
+    "plans": "订阅计划",
+    "choosePlan": "选择您的计划",
+    "free": "免费",
+    "premium": "高级版",
+    "elite": "精英版",
+    "monthly": "月付",
+    "annually": "年付",
+    "subscribe": "订阅",
+    "benefits": "福利",
+    "compareBenefits": "比较福利"
+  },
+  "settings": {
+    "settings": "设置",
+    "account": "账户",
+    "notifications": "通知",
+    "privacy": "隐私",
+    "theme": "主题",
+    "language": "语言"
+  },
+  "missions": {
+    "dailyMissions": "每日任务",
+    "completed": "已完成",
+    "inProgress": "进行中",
+    "reward": "奖励",
+    "claim": "领取",
+    "dailyProgress": "每日进度",
+    "comboCompleted": "连击完成！+500经验值+1000 Beetz+稀有战利品箱！",
+    "special": "特殊",
+    "noMissionsAvailable": "目前没有可用任务",
+    "newMissionsSoon": "新任务即将出现！"
+  },
+  "tournaments": {
+    "tournaments": "锦标赛",
+    "joinTournament": "加入锦标赛",
+    "upcoming": "即将开始",
+    "active": "进行中",
+    "finished": "已结束"
+  },
+  "duels": {
+    "duels": "决斗",
+    "challenge": "挑战",
+    "accept": "接受",
+    "decline": "拒绝",
+    "waiting": "等待中"
+  },
+  "levels": {
+    "levels": "等级",
+    "currentLevel": "当前等级",
+    "nextLevel": "下一等级",
+    "progress": "总体进度"
+  },
+  "gameMode": {
+    "title": "游戏模式",
+    "selectMode": "选择模式",
+    "chooseHow": "选择您想要的游戏方式",
+    "solo": "单人模式",
+    "duel": "决斗模式",
+    "tournament": "锦标赛",
+    "soloDescription": "独自游戏并提高技能",
+    "duelDescription": "挑战其他玩家",
+    "tournamentDescription": "参加锦标赛"
+  },
+  "findOpponent": {
+    "title": "寻找对手",
+    "searching": "正在寻找对手...",
+    "found": "找到对手！",
+    "cancel": "取消"
+  }
+}
