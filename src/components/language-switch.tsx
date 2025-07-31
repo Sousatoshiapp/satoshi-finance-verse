@@ -6,8 +6,20 @@ export function LanguageSwitch() {
   const { getCurrentLanguage, changeLanguage } = useI18n();
   const currentLang = getCurrentLanguage();
   
+  const languages = [
+    { code: 'pt-BR', name: 'Português', flag: '🇧🇷' },
+    { code: 'en-US', name: 'English', flag: '🇺🇸' },
+    { code: 'es-ES', name: 'Español', flag: '🇪🇸' },
+    { code: 'hi-IN', name: 'हिन्दी', flag: '🇮🇳' },
+    { code: 'zh-CN', name: '中文', flag: '🇨🇳' },
+    { code: 'ar-SA', name: 'العربية', flag: '🇸🇦' }
+  ];
+
+  const currentLanguageIndex = languages.findIndex(lang => lang.code === currentLang);
+  
   const toggleLanguage = () => {
-    const newLang = currentLang === 'pt-BR' ? 'en-US' : 'pt-BR';
+    const nextIndex = (currentLanguageIndex + 1) % languages.length;
+    const newLang = languages[nextIndex].code;
     changeLanguage(newLang);
     // Force reload to ensure all components update
     setTimeout(() => {
@@ -21,7 +33,7 @@ export function LanguageSwitch() {
       size="sm"
       onClick={toggleLanguage}
       className="text-xs p-1 h-7 w-7 rounded-full hover:bg-muted/80"
-      title={currentLang === 'pt-BR' ? 'Switch to English' : 'Mudar para Português'}
+      title={`Switch to ${languages[(currentLanguageIndex + 1) % languages.length].name}`}
     >
       <Globe className="h-3 w-3" />
     </Button>

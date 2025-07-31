@@ -1,0 +1,234 @@
+{
+  "common": {
+    "back": "Atrás",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "level": "Nivel",
+    "points": "Puntos",
+    "xp": "XP",
+    "beetz": "Beetz",
+    "pro": "Pro",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "viewAll": "Ver Todo"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "question": "Pregunta {{number}} de {{total}}",
+    "nextQuestion": "Siguiente Pregunta",
+    "finishQuiz": "Finalizar Quiz",
+    "timeRemaining": "Tiempo Restante",
+    "correct": "¡Correcto!",
+    "incorrect": "¡Incorrecto!",
+    "explanation": "Explicación",
+    "score": "Puntuación",
+    "completed": "¡Quiz Completado!",
+    "startQuiz": "Iniciar Quiz",
+    "questions": {
+      "q1": {
+        "question": "¿Cuál es la función principal de una bolsa de valores?",
+        "options": ["Prestar dinero a empresas", "Facilitar el comercio de valores", "Establecer tasas de interés", "Imprimir dinero"],
+        "correct": "Facilitar el comercio de valores",
+        "explanation": "Las bolsas de valores facilitan el comercio de valores entre compradores y vendedores."
+      },
+      "q2": {
+        "question": "¿Qué significa IPO?",
+        "options": ["Oferta Pública Inicial", "Orden de Compra Internacional", "Opciones de Cartera de Inversión", "Optimización Interna de Precios"],
+        "correct": "Oferta Pública Inicial",
+        "explanation": "IPO significa Oferta Pública Inicial, cuando una empresa vende acciones al público por primera vez."
+      },
+      "q3": {
+        "question": "¿Qué es la diversificación en inversiones?",
+        "options": ["Invertir todo el dinero en una acción", "Distribuir inversiones entre diferentes activos", "Solo comprar acciones", "Vender todas las inversiones"],
+        "correct": "Distribuir inversiones entre diferentes activos",
+        "explanation": "La diversificación implica distribuir inversiones entre diferentes activos para reducir el riesgo."
+      }
+    }
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "quiz": "Quiz",
+    "social": "Social",
+    "profile": "Perfil",
+    "leaderboard": "Clasificación",
+    "store": "Tienda",
+    "settings": "Configuración",
+    "city": "Ciudad",
+    "game": "Juego"
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenido al Juego de Finanzas Satoshi!",
+    "weeklyRanking": "Clasificación Semanal",
+    "dailyMissions": "Misiones Diarias",
+    "streak": "Racha",
+    "level": "Nivel {{level}}",
+    "goodMorning": "BUENOS DÍAS",
+    "goodAfternoon": "BUENAS TARDES",
+    "goodNight": "BUENAS NOCHES",
+    "student": "Estudiante",
+    "goal": "Objetivo"
+  },
+  "leaderboard": {
+    "weeklyRankings": "Clasificaciones Semanales",
+    "global": "Global",
+    "league": "Liga",
+    "yourPosition": "Tu Posición",
+    "totalScore": "Puntuación Total",
+    "resetIn": "Reinicio en",
+    "noRank": "Sin rango",
+    "noRankingAvailable": "No hay clasificación disponible",
+    "beFirstInRanking": "¡Sé el primero en aparecer en la clasificación semanal!",
+    "climbRanking": "¡Sube en la Clasificación!",
+    "climbRankingDescription": "Completa quizzes, gana duelos y obtén XP para subir en la clasificación",
+    "pointsPerXP": "+1 pt por XP",
+    "pointsPerQuiz": "+1 pt por Quiz",
+    "pointsPerDuel": "+100 pts por Duelo"
+  },
+  "profile": {
+    "userProfile": "Perfil de Usuario",
+    "achievements": "Logros",
+    "statistics": "Estadísticas",
+    "followersCount": "Seguidores",
+    "followingCount": "Siguiendo",
+    "completedLessons": "Lecciones Completadas",
+    "currentStreak": "Racha Actual",
+    "publicPortfolios": "Carteras Públicas",
+    "memberSince": "Miembro desde",
+    "activeAvatar": "Avatar Activo",
+    "message": "Mensaje",
+    "anonymousUser": "Usuario Anónimo"
+  },
+  "admin": {
+    "dashboard": "Panel de Administración",
+    "language": "Idioma",
+    "changeLanguage": "Cambiar Idioma",
+    "botManagement": "Gestión de Bots",
+    "enhanceBotRealism": "Mejorar Realismo de Bots",
+    "updateBotNicknames": "Actualizar Nombres de Bots"
+  },
+  "quizEngine": {
+    "loadingQuestions": "Cargando preguntas...",
+    "noQuestionsAvailable": "No hay preguntas disponibles",
+    "couldNotLoadQuestions": "No se pudieron cargar las preguntas en este momento.",
+    "question": "Pregunta {{current}} de {{total}}",
+    "soloQuiz": "Quiz Solo",
+    "duelQuiz": "Quiz Duelo",
+    "tournamentQuiz": "Quiz Torneo",
+    "dailyMission": "Misión Diaria",
+    "districtQuiz": "Quiz del Distrito",
+    "congratulations": "¡Felicitaciones!",
+    "lost": "¡Perdiste!",
+    "correctAnswers": "respuestas correctas",
+    "accuracy": "precisión",
+    "nextQuiz": "Siguiente Quiz",
+    "continue": "Continuar",
+    "tryAgain": "Intentar de Nuevo",
+    "back": "Atrás",
+    "confirmAnswer": "Confirmar Respuesta",
+    "selectOption": "Selecciona una opción",
+    "timeUp": "¡Se Acabó el Tiempo!",
+    "correct": "¡Correcto!",
+    "incorrect": "¡Incorrecto!",
+    "correctAnswer": "Respuesta correcta: ",
+    "timeRemaining": "Tiempo Restante"
+  },
+  "social": {
+    "socialFeed": "Feed Social",
+    "shareOpinion": "Comparte tu opinión sobre el mercado",
+    "whatsHappening": "¿Qué está pasando?",
+    "post": "Publicar",
+    "like": "Me gusta",
+    "comment": "Comentar",
+    "share": "Compartir"
+  },
+  "store": {
+    "store": "Tienda",
+    "avatars": "Avatares",
+    "upgrades": "Mejoras",
+    "buy": "Comprar",
+    "owned": "Poseído",
+    "loading": "Cargando tienda...",
+    "error": "Error",
+    "errorLoadingStore": "No se pudo cargar la tienda",
+    "purchaseError": "Error de Compra",
+    "processing": "Procesando...",
+    "upgradeSuccessful": "¡Compra Exitosa!",
+    "insufficientFunds": "Beetz Insuficientes",
+    "alreadyOwned": "Ya Poseído",
+    "levelRequired": "Nivel {{level}} requerido",
+    "selectPaymentMethod": "Seleccionar Método de Pago"
+  },
+  "subscription": {
+    "plans": "Planes de Suscripción",
+    "choosePlan": "Elige tu Plan",
+    "free": "Gratis",
+    "premium": "Premium",
+    "elite": "Elite",
+    "monthly": "Mensual",
+    "annually": "Anual",
+    "subscribe": "Suscribirse",
+    "benefits": "Beneficios",
+    "compareBenefits": "Comparar Beneficios"
+  },
+  "settings": {
+    "settings": "Configuración",
+    "account": "Cuenta",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad",
+    "theme": "Tema",
+    "language": "Idioma"
+  },
+  "missions": {
+    "dailyMissions": "Misiones Diarias",
+    "completed": "Completada",
+    "inProgress": "En Progreso",
+    "reward": "Recompensa",
+    "claim": "Reclamar",
+    "dailyProgress": "Progreso Diario",
+    "comboCompleted": "¡Combo Completado! +500 XP + 1000 Beetz + ¡Caja de Botín Rara!",
+    "special": "Especial",
+    "noMissionsAvailable": "No hay misiones disponibles en este momento",
+    "newMissionsSoon": "¡Nuevas misiones aparecerán pronto!"
+  },
+  "tournaments": {
+    "tournaments": "Torneos",
+    "joinTournament": "Unirse al Torneo",
+    "upcoming": "Próximos",
+    "active": "Activos",
+    "finished": "Terminados"
+  },
+  "duels": {
+    "duels": "Duelos",
+    "challenge": "Desafiar",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "waiting": "Esperando"
+  },
+  "levels": {
+    "levels": "Niveles",
+    "currentLevel": "Nivel Actual",
+    "nextLevel": "Siguiente Nivel",
+    "progress": "Progreso General"
+  },
+  "gameMode": {
+    "title": "Modos de Juego",
+    "selectMode": "Seleccionar Modo",
+    "chooseHow": "Elige cómo te gustaría jugar",
+    "solo": "Modo Solo",
+    "duel": "Modo Duelo",
+    "tournament": "Torneo",
+    "soloDescription": "Juega solo y mejora tus habilidades",
+    "duelDescription": "Desafía a otros jugadores",
+    "tournamentDescription": "Compite en torneos"
+  },
+  "findOpponent": {
+    "title": "Encontrar Oponente",
+    "searching": "Buscando oponente...",
+    "found": "¡Oponente encontrado!",
+    "cancel": "Cancelar"
+  }
+}

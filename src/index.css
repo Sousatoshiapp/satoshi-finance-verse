@@ -106,6 +106,59 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground font-nunito;
   }
+
+  /* RTL Support for Arabic */
+  [dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+  }
+
+  [dir="rtl"] .flex {
+    flex-direction: row-reverse;
+  }
+
+  [dir="rtl"] .justify-start {
+    justify-content: flex-end;
+  }
+
+  [dir="rtl"] .justify-end {
+    justify-content: flex-start;
+  }
+
+  [dir="rtl"] .text-left {
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-right {
+    text-align: left;
+  }
+
+  /* Font support for different languages */
+  .font-arabic {
+    font-family: 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+  }
+
+  .font-hindi {
+    font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', sans-serif;
+  }
+
+  .font-chinese {
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'SimHei', sans-serif;
+  }
+
+  /* Language-specific body classes */
+  body[data-lang="ar-SA"] {
+    direction: rtl;
+    font-family: 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+  }
+
+  body[data-lang="hi-IN"] {
+    font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', sans-serif;
+  }
+
+  body[data-lang="zh-CN"] {
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'SimHei', sans-serif;
+  }
 }
 
 /* Custom Gamification Utilities */

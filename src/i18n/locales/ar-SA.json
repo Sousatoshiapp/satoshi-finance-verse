@@ -1,0 +1,234 @@
+{
+  "common": {
+    "back": "رجوع",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "loading": "جاري التحميل...",
+    "error": "خطأ",
+    "success": "نجح",
+    "level": "المستوى",
+    "points": "النقاط",
+    "xp": "نقاط الخبرة",
+    "beetz": "Beetz",
+    "pro": "محترف",
+    "online": "متصل",
+    "offline": "غير متصل",
+    "viewAll": "عرض الكل"
+  },
+  "quiz": {
+    "title": "اختبار",
+    "question": "السؤال {{number}} من {{total}}",
+    "nextQuestion": "السؤال التالي",
+    "finishQuiz": "إنهاء الاختبار",
+    "timeRemaining": "الوقت المتبقي",
+    "correct": "صحيح!",
+    "incorrect": "خطأ!",
+    "explanation": "التفسير",
+    "score": "النتيجة",
+    "completed": "اكتمل الاختبار!",
+    "startQuiz": "بدء الاختبار",
+    "questions": {
+      "q1": {
+        "question": "ما هي الوظيفة الرئيسية لبورصة الأوراق المالية؟",
+        "options": ["إقراض الأموال للشركات", "تسهيل تداول الأوراق المالية", "تحديد أسعار الفائدة", "طباعة النقود"],
+        "correct": "تسهيل تداول الأوراق المالية",
+        "explanation": "تسهل بورصات الأوراق المالية تداول الأوراق المالية بين المشترين والبائعين."
+      },
+      "q2": {
+        "question": "ماذا يعني IPO؟",
+        "options": ["الطرح العام الأولي", "أمر الشراء الدولي", "خيارات محفظة الاستثمار", "تحسين الأسعار الداخلي"],
+        "correct": "الطرح العام الأولي",
+        "explanation": "IPO يعني الطرح العام الأولي، عندما تبيع الشركة الأسهم للجمهور لأول مرة."
+      },
+      "q3": {
+        "question": "ما هو التنويع في الاستثمار؟",
+        "options": ["استثمار كل الأموال في سهم واحد", "توزيع الاستثمارات عبر أصول مختلفة", "شراء الأسهم فقط", "بيع جميع الاستثمارات"],
+        "correct": "توزيع الاستثمارات عبر أصول مختلفة",
+        "explanation": "التنويع يتضمن توزيع الاستثمارات عبر أصول مختلفة لتقليل المخاطر."
+      }
+    }
+  },
+  "navigation": {
+    "dashboard": "لوحة التحكم",
+    "quiz": "اختبار",
+    "social": "اجتماعي",
+    "profile": "الملف الشخصي",
+    "leaderboard": "لوحة المتصدرين",
+    "store": "المتجر",
+    "settings": "الإعدادات",
+    "city": "المدينة",
+    "game": "اللعبة"
+  },
+  "dashboard": {
+    "welcome": "مرحباً بك في لعبة ساتوشي المالية!",
+    "weeklyRanking": "الترتيب الأسبوعي",
+    "dailyMissions": "المهام اليومية",
+    "streak": "السلسلة",
+    "level": "المستوى {{level}}",
+    "goodMorning": "صباح الخير",
+    "goodAfternoon": "مساء الخير",
+    "goodNight": "تصبح على خير",
+    "student": "طالب",
+    "goal": "الهدف"
+  },
+  "leaderboard": {
+    "weeklyRankings": "الترتيب الأسبوعي",
+    "global": "عالمي",
+    "league": "الدوري",
+    "yourPosition": "موقعك",
+    "totalScore": "النتيجة الإجمالية",
+    "resetIn": "إعادة تعيين في",
+    "noRank": "لا يوجد ترتيب",
+    "noRankingAvailable": "لا يوجد ترتيب متاح",
+    "beFirstInRanking": "كن أول من يظهر في الترتيب الأسبوعي!",
+    "climbRanking": "تسلق الترتيب!",
+    "climbRankingDescription": "أكمل الاختبارات، اربح المبارزات واكسب نقاط الخبرة لتسلق الترتيب",
+    "pointsPerXP": "+1 نقطة لكل نقطة خبرة",
+    "pointsPerQuiz": "+1 نقطة لكل اختبار",
+    "pointsPerDuel": "+100 نقطة لكل مبارزة"
+  },
+  "profile": {
+    "userProfile": "الملف الشخصي للمستخدم",
+    "achievements": "الإنجازات",
+    "statistics": "الإحصائيات",
+    "followersCount": "المتابعون",
+    "followingCount": "يتابع",
+    "completedLessons": "الدروس المكتملة",
+    "currentStreak": "السلسلة الحالية",
+    "publicPortfolios": "المحافظ العامة",
+    "memberSince": "عضو منذ",
+    "activeAvatar": "الصورة الرمزية النشطة",
+    "message": "رسالة",
+    "anonymousUser": "مستخدم مجهول"
+  },
+  "admin": {
+    "dashboard": "لوحة تحكم المدير",
+    "language": "اللغة",
+    "changeLanguage": "تغيير اللغة",
+    "botManagement": "إدارة البوتات",
+    "enhanceBotRealism": "تعزيز واقعية البوت",
+    "updateBotNicknames": "تحديث أسماء البوتات"
+  },
+  "quizEngine": {
+    "loadingQuestions": "جاري تحميل الأسئلة...",
+    "noQuestionsAvailable": "لا توجد أسئلة متاحة",
+    "couldNotLoadQuestions": "لا يمكن تحميل الأسئلة في الوقت الحالي.",
+    "question": "السؤال {{current}} من {{total}}",
+    "soloQuiz": "اختبار فردي",
+    "duelQuiz": "اختبار مبارزة",
+    "tournamentQuiz": "اختبار البطولة",
+    "dailyMission": "المهمة اليومية",
+    "districtQuiz": "اختبار المنطقة",
+    "congratulations": "تهانينا!",
+    "lost": "خسرت!",
+    "correctAnswers": "إجابات صحيحة",
+    "accuracy": "الدقة",
+    "nextQuiz": "الاختبار التالي",
+    "continue": "متابعة",
+    "tryAgain": "حاول مرة أخرى",
+    "back": "رجوع",
+    "confirmAnswer": "تأكيد الإجابة",
+    "selectOption": "اختر خياراً",
+    "timeUp": "انتهى الوقت!",
+    "correct": "صحيح!",
+    "incorrect": "خطأ!",
+    "correctAnswer": "الإجابة الصحيحة: ",
+    "timeRemaining": "الوقت المتبقي"
+  },
+  "social": {
+    "socialFeed": "الخلاصة الاجتماعية",
+    "shareOpinion": "شارك رأيك حول السوق",
+    "whatsHappening": "ماذا يحدث؟",
+    "post": "نشر",
+    "like": "إعجاب",
+    "comment": "تعليق",
+    "share": "مشاركة"
+  },
+  "store": {
+    "store": "المتجر",
+    "avatars": "الصور الرمزية",
+    "upgrades": "الترقيات",
+    "buy": "شراء",
+    "owned": "مملوك",
+    "loading": "جاري تحميل المتجر...",
+    "error": "خطأ",
+    "errorLoadingStore": "لا يمكن تحميل المتجر",
+    "purchaseError": "خطأ في الشراء",
+    "processing": "جاري المعالجة...",
+    "upgradeSuccessful": "تم الشراء بنجاح!",
+    "insufficientFunds": "Beetz غير كافية",
+    "alreadyOwned": "مملوك بالفعل",
+    "levelRequired": "المستوى {{level}} مطلوب",
+    "selectPaymentMethod": "اختر طريقة الدفع"
+  },
+  "subscription": {
+    "plans": "خطط الاشتراك",
+    "choosePlan": "اختر خطتك",
+    "free": "مجاني",
+    "premium": "مميز",
+    "elite": "نخبة",
+    "monthly": "شهري",
+    "annually": "سنوي",
+    "subscribe": "اشترك",
+    "benefits": "المزايا",
+    "compareBenefits": "قارن المزايا"
+  },
+  "settings": {
+    "settings": "الإعدادات",
+    "account": "الحساب",
+    "notifications": "الإشعارات",
+    "privacy": "الخصوصية",
+    "theme": "المظهر",
+    "language": "اللغة"
+  },
+  "missions": {
+    "dailyMissions": "المهام اليومية",
+    "completed": "مكتملة",
+    "inProgress": "قيد التنفيذ",
+    "reward": "المكافأة",
+    "claim": "استلام",
+    "dailyProgress": "التقدم اليومي",
+    "comboCompleted": "اكتمل الكومبو! +500 نقطة خبرة + 1000 Beetz + صندوق غنائم نادر!",
+    "special": "خاص",
+    "noMissionsAvailable": "لا توجد مهام متاحة في الوقت الحالي",
+    "newMissionsSoon": "ستظهر مهام جديدة قريباً!"
+  },
+  "tournaments": {
+    "tournaments": "البطولات",
+    "joinTournament": "انضم للبطولة",
+    "upcoming": "قادمة",
+    "active": "نشطة",
+    "finished": "منتهية"
+  },
+  "duels": {
+    "duels": "المبارزات",
+    "challenge": "تحدي",
+    "accept": "قبول",
+    "decline": "رفض",
+    "waiting": "انتظار"
+  },
+  "levels": {
+    "levels": "المستويات",
+    "currentLevel": "المستوى الحالي",
+    "nextLevel": "المستوى التالي",
+    "progress": "التقدم العام"
+  },
+  "gameMode": {
+    "title": "أنماط اللعب",
+    "selectMode": "اختر النمط",
+    "chooseHow": "اختر كيف تريد أن تلعب",
+    "solo": "النمط الفردي",
+    "duel": "نمط المبارزة",
+    "tournament": "البطولة",
+    "soloDescription": "العب بمفردك وحسن مهاراتك",
+    "duelDescription": "تحدى لاعبين آخرين",
+    "tournamentDescription": "تنافس في البطولات"
+  },
+  "findOpponent": {
+    "title": "البحث عن خصم",
+    "searching": "جاري البحث عن خصم...",
+    "found": "تم العثور على خصم!",
+    "cancel": "إلغاء"
+  }
+}
