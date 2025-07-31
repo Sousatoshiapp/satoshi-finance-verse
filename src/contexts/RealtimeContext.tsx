@@ -66,8 +66,6 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          console.log('🔄 Realtime points update:', payload);
-          
           const newPoints = payload.new.points;
           if (typeof newPoints === 'number' && newPoints !== points) {
             setPoints(newPoints);
@@ -81,22 +79,19 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
             
             // Show visual feedback for large point changes
             if (Math.abs(newPoints - points) >= 100) {
-              console.log(`💰 Large point change detected: ${points} → ${newPoints}`);
             }
           }
         }
       )
       .subscribe((status) => {
-        console.log('📡 Realtime subscription status:', status);
         setIsOnline(status === 'SUBSCRIBED');
       });
 
     return () => {
-      console.log('🔌 Disconnecting realtime subscription');
       supabase.removeChannel(channel);
       setIsOnline(false);
     };
-  }, [user, queryClient]);
+  }, [user, queryClient, points]);
 
   return (
     <RealtimeContext.Provider value={{ points, isOnline, lastUpdate }}>
