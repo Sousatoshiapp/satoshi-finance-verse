@@ -599,6 +599,15 @@
     "found": "找到对手！",
     "cancel": "取消"
   },
+  "btz": {
+    "yieldedToday": "今日收益",
+    "nextYield": "下次收益",
+    "protectedBTZ": "受保护的BTZ",
+    "streak": "连胜",
+    "next": "下一个",
+    "days": "天",
+    "nextIn": "下次在"
+  },
   "common": {
     "loading": "加载中",
     "accessDenied": "访问被拒绝",

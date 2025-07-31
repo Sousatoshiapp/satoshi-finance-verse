@@ -144,7 +144,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 {analytics?.current.yield_applied_today ? (
                   <span className="text-[#adff2f]">✓ {t('btz.yieldedToday')}</span>
                 ) : (
-                  <span className="text-orange-500">⏰ Próximo: {analytics ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
+                  <span className="text-orange-500">⏰ {t('btz.next')}: {analytics ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
                 )}
               </div>
             )}
@@ -181,7 +181,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                     <span>{t('btz.streak')}</span>
                   </div>
                   <span className="font-mono text-orange-500">
-                    {analytics.current.consecutive_login_days} dias (+{(analytics.bonuses.streak_bonus * 100).toFixed(1)}%)
+                    {analytics.current.consecutive_login_days} {t('btz.days')} (+{(analytics.bonuses.streak_bonus * 100).toFixed(1)}%)
                   </span>
                 </div>
                 
@@ -190,7 +190,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3 text-gray-400" />
-                      <span>Próximo em</span>
+                      <span>{t('btz.nextIn')}</span>
                     </div>
                     <span className="font-mono text-gray-400">
                       {formatTimeUntilYield(analytics.current.time_until_next_yield_ms)}

@@ -496,7 +496,10 @@
     "yieldedToday": "Rendeu hoje",
     "nextYield": "Próximo rendimento",
     "protectedBTZ": "BTZ Protegido",
-    "streak": "Streak"
+    "streak": "Streak",
+    "next": "Próximo",
+    "days": "dias",
+    "nextIn": "Próximo em"
   },
   "satoshiCity": {
     "welcome": "Bem-vindo à cidade do futuro financeiro.",
