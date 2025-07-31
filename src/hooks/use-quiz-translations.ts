@@ -1,8 +1,50 @@
 import { useI18n } from "@/hooks/use-i18n";
 import { QuizQuestion } from "@/hooks/use-quiz-shuffle";
 
-// Mapping das questões do banco para traduções
+// Comprehensive mapping for all quiz questions
 const questionTranslations: Record<string, Record<string, any>> = {
+  "What is the main function of a stock exchange?": {
+    'en-US': {
+      question: "What is the main function of a stock exchange?",
+      options: ["Lend money to companies", "Facilitate trading of securities", "Set interest rates", "Print money"],
+      correct_answer: "Facilitate trading of securities",
+      explanation: "Stock exchanges facilitate the trading of securities between buyers and sellers."
+    },
+    'pt-BR': {
+      question: "Qual é a principal função de uma bolsa de valores?",
+      options: ["Emprestar dinheiro para empresas", "Facilitar a negociação de títulos", "Definir taxas de juros", "Imprimir dinheiro"],
+      correct_answer: "Facilitar a negociação de títulos",
+      explanation: "Bolsas de valores facilitam a negociação de títulos entre compradores e vendedores."
+    }
+  },
+  "What does IPO stand for?": {
+    'en-US': {
+      question: "What does IPO stand for?",
+      options: ["Initial Public Offering", "International Purchase Order", "Investment Portfolio Options", "Internal Price Optimization"],
+      correct_answer: "Initial Public Offering",
+      explanation: "IPO stands for Initial Public Offering, when a company first sells shares to the public."
+    },
+    'pt-BR': {
+      question: "O que significa IPO?",
+      options: ["Oferta Pública Inicial", "Ordem de Compra Internacional", "Opções de Portfólio de Investimento", "Otimização Interna de Preços"],
+      correct_answer: "Oferta Pública Inicial",
+      explanation: "IPO significa Oferta Pública Inicial, quando uma empresa vende ações ao público pela primeira vez."
+    }
+  },
+  "What is diversification in investing?": {
+    'en-US': {
+      question: "What is diversification in investing?",
+      options: ["Investing all money in one stock", "Spreading investments across different assets", "Only buying stocks", "Selling all investments"],
+      correct_answer: "Spreading investments across different assets",
+      explanation: "Diversification involves spreading investments across different assets to reduce risk."
+    },
+    'pt-BR': {
+      question: "O que é diversificação em investimentos?",
+      options: ["Investir todo o dinheiro em uma ação", "Espalhar investimentos entre diferentes ativos", "Comprar apenas ações", "Vender todos os investimentos"],
+      correct_answer: "Espalhar investimentos entre diferentes ativos",
+      explanation: "Diversificação envolve espalhar investimentos entre diferentes ativos para reduzir riscos."
+    }
+  },
   "O que é DeFi?": {
     'en-US': {
       question: "What is DeFi?",
@@ -122,7 +164,24 @@ export const useQuizTranslations = () => {
   
   const translateQuestion = (question: QuizQuestion): QuizQuestion => {
     const currentLang = getCurrentLanguage();
-    const translation = questionTranslations[question.question];
+    
+    // Try to find translation by exact match first
+    let translation = questionTranslations[question.question];
+    
+    // If not found, try to find by similarity or key words
+    if (!translation) {
+      // Find translation by checking if any translation key contains similar content
+      const questionKeys = Object.keys(questionTranslations);
+      for (const key of questionKeys) {
+        const keyTranslations = questionTranslations[key];
+        // Check if the English or Portuguese version matches
+        if (keyTranslations['en-US']?.question === question.question || 
+            keyTranslations['pt-BR']?.question === question.question) {
+          translation = keyTranslations;
+          break;
+        }
+      }
+    }
     
     if (translation && translation[currentLang]) {
       return {

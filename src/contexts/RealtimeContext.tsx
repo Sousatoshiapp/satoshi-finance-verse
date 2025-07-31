@@ -86,10 +86,6 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
           }
         }
       )
-      .on('system', {}, (status) => {
-        console.log('🌐 Realtime connection status:', status);
-        setIsOnline(status === 'ONLINE');
-      })
       .subscribe((status) => {
         console.log('📡 Realtime subscription status:', status);
         setIsOnline(status === 'SUBSCRIBED');

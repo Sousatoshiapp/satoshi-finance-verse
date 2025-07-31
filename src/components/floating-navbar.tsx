@@ -2,18 +2,20 @@ import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { IconSystem } from "@/components/icons/icon-system";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function FloatingNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useI18n();
 
   const navItems = [
-    { path: '/dashboard', icon: '🏠' as const, label: 'Home' },
-    { path: '/social', icon: '💬' as const, label: 'Social' },
-    { path: '/game-mode', icon: '🎮' as const, label: 'Jogue' },
-    { path: '/satoshi-city', icon: '🌃' as const, label: 'Cidade' },
-    { path: '/store', icon: '🛒' as const, label: 'Loja' },
-    { path: '/profile', icon: '👤' as const, label: 'Perfil' }
+    { path: '/dashboard', icon: '🏠' as const, label: t('navigation.dashboard') },
+    { path: '/social', icon: '💬' as const, label: t('navigation.social') },
+    { path: '/game-mode', icon: '🎮' as const, label: t('navigation.game') },
+    { path: '/satoshi-city', icon: '🌃' as const, label: t('navigation.city') },
+    { path: '/store', icon: '🛒' as const, label: t('navigation.store') },
+    { path: '/profile', icon: '👤' as const, label: t('navigation.profile') }
   ];
 
   return (

@@ -55,7 +55,9 @@
     "profile": "Perfil",
     "leaderboard": "Ranking",
     "store": "Loja",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "city": "Cidade",
+    "game": "Jogue"
   },
   "dashboard": {
     "welcome": "Bem-vindo ao Satoshi Finance Game!",
@@ -139,7 +141,17 @@
     "avatars": "Avatares",
     "upgrades": "Melhorias",
     "buy": "Comprar",
-    "owned": "Possui"
+    "owned": "Possui",
+    "loading": "Carregando loja...",
+    "error": "Erro",
+    "errorLoadingStore": "Não foi possível carregar a loja",
+    "purchaseError": "Erro na Compra",
+    "processing": "Processando...",
+    "upgradeSuccessful": "Compra Realizada!",
+    "insufficientFunds": "Beetz Insuficientes",
+    "alreadyOwned": "Já Possui",
+    "levelRequired": "Nível {{level}} necessário",
+    "selectPaymentMethod": "Selecione o Método de Pagamento"
   },
   "subscription": {
     "plans": "Planos de Assinatura",
@@ -186,6 +198,22 @@
     "levels": "Níveis",
     "currentLevel": "Nível Atual",
     "nextLevel": "Próximo Nível",
-    "progress": "Progresso"
+    "progress": "Progresso Geral"
+  },
+  "gameMode": {
+    "title": "Modo de Jogo",
+    "selectMode": "Selecione o Modo de Jogo",
+    "solo": "Solo",
+    "duel": "Duelo",
+    "tournament": "Torneio",
+    "soloDescription": "Jogue sozinho e melhore suas habilidades",
+    "duelDescription": "Desafie outros jogadores",
+    "tournamentDescription": "Participe de torneios"
+  },
+  "findOpponent": {
+    "title": "Encontrar Oponente",
+    "searching": "Procurando oponente...",
+    "found": "Oponente encontrado!",
+    "cancel": "Cancelar"
   }
 }
