@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Settings, Zap, Users, Trophy, Gamepad2 } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function GameMode() {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [hologramRotation, setHologramRotation] = useState(0);
 
@@ -47,7 +49,7 @@ export default function GameMode() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-xl font-bold text-foreground">
-            Modos de Jogo
+            {t('gameMode.title')}
           </h1>
           <Button
             variant="ghost"
@@ -64,10 +66,10 @@ export default function GameMode() {
           <CardContent className="p-6">
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-foreground mb-2">
-                Selecione o Modo
+                {t('gameMode.selectMode')}
               </h2>
               <p className="text-muted-foreground text-sm">
-                Escolha como você gostaria de jogar
+                {t('gameMode.chooseHow')}
               </p>
             </div>
 
@@ -81,7 +83,7 @@ export default function GameMode() {
               >
                 <div className="flex items-center justify-center gap-3">
                   <Gamepad2 className="h-5 w-5" />
-                  Modo Solo
+                  {t('gameMode.solo')}
                 </div>
               </Button>
 
@@ -94,7 +96,7 @@ export default function GameMode() {
               >
                 <div className="flex items-center justify-center gap-3">
                   <Users className="h-5 w-5" />
-                  Modo Duelo
+                  {t('gameMode.duel')}
                 </div>
               </Button>
 
@@ -107,7 +109,7 @@ export default function GameMode() {
               >
                 <div className="flex items-center justify-center gap-3">
                   <Trophy className="h-5 w-5" />
-                  Torneio
+                  {t('gameMode.tournament')}
                 </div>
               </Button>
             </div>

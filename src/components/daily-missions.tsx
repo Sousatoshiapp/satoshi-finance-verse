@@ -10,10 +10,12 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { StarIcon, IconSystem } from "@/components/icons/icon-system";
 import { SmartText } from "@/components/icons/icon-system";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function DailyMissions() {
   const navigate = useNavigate();
-  const { 
+  const { t } = useI18n();
+  const {
     missions, 
     loading, 
     completedToday, 
@@ -58,7 +60,7 @@ export function DailyMissions() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
-            Missões Diárias
+            {t('missions.dailyMissions')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -81,13 +83,13 @@ export function DailyMissions() {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-yellow-500" />
-            Missões Diárias
+            {t('missions.dailyMissions')}
             <Badge variant="secondary" className="ml-2">
               {completedToday}/{missions.length}
             </Badge>
           </CardTitle>
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Reset em</div>
+            <div className="text-xs text-muted-foreground">{t('leaderboard.resetIn')}</div>
             <div className="text-sm font-medium flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {timeUntilReset}
@@ -98,7 +100,7 @@ export function DailyMissions() {
         {/* Progress Bar */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span>Progresso Diário</span>
+            <span>{t('missions.dailyProgress')}</span>
             <span className="font-medium">{completionRate}%</span>
           </div>
           <Progress value={completionRate} className="h-2" />
@@ -112,7 +114,7 @@ export function DailyMissions() {
               <SmartText iconVariant="glow" animated>
                 <span className="flex items-center gap-2">
                   <IconSystem emoji="🎉" size="sm" animated variant="glow" />
-                  Combo Completado! +500 XP + 1000 Beetz + Loot Box Rara!
+                  {t('missions.comboCompleted')}
                 </span>
               </SmartText>
             </div>
@@ -152,7 +154,7 @@ export function DailyMissions() {
                     {mission.is_weekend_special && (
                       <Badge variant="outline" className="text-xs bg-purple-500/10 border-purple-500/30">
                         <span className="flex items-center gap-1">
-                          <StarIcon size="xs" variant="glow" /> Especial
+                          <StarIcon size="xs" variant="glow" /> {t('missions.special')}
                         </span>
                       </Badge>
                     )}
@@ -172,7 +174,7 @@ export function DailyMissions() {
                   {/* Progress */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
-                      <span>Progresso</span>
+                      <span>{t('levels.progress')}</span>
                       <span className="font-medium">
                         {Math.min(mission.progress || 0, mission.target_value)}/{mission.target_value}
                       </span>
@@ -216,8 +218,8 @@ export function DailyMissions() {
         {missions.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <Zap className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>Nenhuma missão disponível no momento</p>
-            <p className="text-sm">Novas missões aparecerão em breve!</p>
+            <p>{t('missions.noMissionsAvailable')}</p>
+            <p className="text-sm">{t('missions.newMissionsSoon')}</p>
           </div>
         )}
       </CardContent>

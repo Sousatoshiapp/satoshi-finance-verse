@@ -13,7 +13,8 @@
     "beetz": "Beetz",
     "pro": "Pro",
     "online": "Online",
-    "offline": "Offline"
+    "offline": "Offline",
+    "viewAll": "Ver Tudo"
   },
   "quiz": {
     "title": "Quiz",
@@ -78,7 +79,14 @@
     "yourPosition": "Sua Posição",
     "totalScore": "Pontuação Total",
     "resetIn": "Reset em",
-    "noRank": "Sem rank"
+    "noRank": "Sem rank",
+    "noRankingAvailable": "Nenhum ranking disponível",
+    "beFirstInRanking": "Seja o primeiro a aparecer no ranking semanal!",
+    "climbRanking": "Suba no Ranking!",
+    "climbRankingDescription": "Complete quizzes, vença duelos e ganhe XP para subir de posição",
+    "pointsPerXP": "+1 pt por XP",
+    "pointsPerQuiz": "+1 pt por Quiz",
+    "pointsPerDuel": "+100 pts por Duelo"
   },
   "profile": {
     "userProfile": "Perfil do Usuário",
@@ -91,7 +99,8 @@
     "publicPortfolios": "Carteiras Públicas",
     "memberSince": "Membro desde",
     "activeAvatar": "Avatar Ativo",
-    "message": "Mensagem"
+    "message": "Mensagem",
+    "anonymousUser": "Usuário Anônimo"
   },
   "admin": {
     "dashboard": "Painel Administrativo",
@@ -178,7 +187,12 @@
     "completed": "Concluída",
     "inProgress": "Em Progresso",
     "reward": "Recompensa",
-    "claim": "Resgatar"
+    "claim": "Resgatar",
+    "dailyProgress": "Progresso Diário",
+    "comboCompleted": "Combo Completado! +500 XP + 1000 Beetz + Loot Box Rara!",
+    "special": "Especial",
+    "noMissionsAvailable": "Nenhuma missão disponível no momento",
+    "newMissionsSoon": "Novas missões aparecerão em breve!"
   },
   "tournaments": {
     "tournaments": "Torneios",
@@ -201,10 +215,11 @@
     "progress": "Progresso Geral"
   },
   "gameMode": {
-    "title": "Modo de Jogo",
-    "selectMode": "Selecione o Modo de Jogo",
-    "solo": "Solo",
-    "duel": "Duelo",
+    "title": "Modos de Jogo",
+    "selectMode": "Selecione o Modo",
+    "chooseHow": "Escolha como você gostaria de jogar",
+    "solo": "Modo Solo",
+    "duel": "Modo Duelo",
     "tournament": "Torneio",
     "soloDescription": "Jogue sozinho e melhore suas habilidades",
     "duelDescription": "Desafie outros jogadores",

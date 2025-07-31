@@ -28,7 +28,7 @@ export function Leaderboards() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Trophy className="h-5 w-5" />
-            Rankings
+            {t('leaderboard.weeklyRankings')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -60,7 +60,7 @@ export function Leaderboards() {
             {t('leaderboard.weeklyRankings')}
           </CardTitle>
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Reset em</div>
+            <div className="text-xs text-muted-foreground">{t('leaderboard.resetIn')}</div>
             <div className="text-sm font-medium flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {timeUntilReset}
@@ -73,13 +73,13 @@ export function Leaderboards() {
           <div className="bg-gradient-to-r from-muted/30 to-primary/10 rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-muted-foreground">Sua Posição</div>
+                <div className="text-sm text-muted-foreground">{t('leaderboard.yourPosition')}</div>
                 <div className={cn("text-2xl font-bold", getRankColor(userStats.currentRank))}>
-                  {userStats.currentRank > 0 ? getRankIcon(userStats.currentRank) : 'Sem rank'}
+                  {userStats.currentRank > 0 ? getRankIcon(userStats.currentRank) : t('leaderboard.noRank')}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-muted-foreground">Pontuação Total</div>
+                <div className="text-sm text-muted-foreground">{t('leaderboard.totalScore')}</div>
                 <div className="text-2xl font-bold text-primary">
                   {userStats.totalScore.toLocaleString()}
                 </div>
@@ -96,7 +96,7 @@ export function Leaderboards() {
                   </div>
                   {progressData.next && (
                     <div className="flex items-center gap-2 text-muted-foreground">
-                      <span>Próxima:</span>
+                      <span>{t('levels.nextLevel')}:</span>
                       <span>{progressData.next.icon}</span>
                       <span>{progressData.next.name}</span>
                     </div>
@@ -150,7 +150,7 @@ export function Leaderboards() {
             className="flex-1"
           >
             <Trophy className="h-4 w-4 mr-1" />
-            Global
+            {t('leaderboard.global')}
           </Button>
           <Button
             variant={activeTab === 'league' ? 'default' : 'ghost'}
@@ -159,7 +159,7 @@ export function Leaderboards() {
             className="flex-1"
           >
             <Crown className="h-4 w-4 mr-1" />
-            Liga
+            {t('leaderboard.league')}
           </Button>
         </div>
 
@@ -193,7 +193,7 @@ export function Leaderboards() {
               {/* User Info */}
               <div className="flex-1 min-w-0">
                 <div className="font-medium text-sm truncate">
-                  {(entry.profiles as any)?.nickname || 'Usuário Anônimo'}
+                  {(entry.profiles as any)?.nickname || t('profile.anonymousUser')}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1">
@@ -223,7 +223,7 @@ export function Leaderboards() {
                 <div className="font-bold text-primary">
                   {entry.total_score.toLocaleString()}
                 </div>
-                <div className="text-xs text-muted-foreground">Beetz</div>
+                <div className="text-xs text-muted-foreground">{t('common.beetz')}</div>
               </div>
             </div>
           ))}
@@ -232,8 +232,8 @@ export function Leaderboards() {
         {leaderboard.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <Trophy className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p className="mb-2">Nenhum ranking disponível</p>
-            <p className="text-sm">Seja o primeiro a aparecer no ranking semanal!</p>
+            <p className="mb-2">{t('leaderboard.noRankingAvailable')}</p>
+            <p className="text-sm">{t('leaderboard.beFirstInRanking')}</p>
           </div>
         )}
 
@@ -241,19 +241,19 @@ export function Leaderboards() {
         {leaderboard.length > 0 && (
           <div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg text-center">
             <TrendingUp className="h-8 w-8 mx-auto mb-2 text-primary" />
-            <h3 className="font-medium mb-1">Suba no Ranking!</h3>
+            <h3 className="font-medium mb-1">{t('leaderboard.climbRanking')}</h3>
             <p className="text-sm text-muted-foreground mb-3">
-              Complete quizzes, vença duelos e ganhe XP para subir de posição
+              {t('leaderboard.climbRankingDescription')}
             </p>
             <div className="flex justify-center gap-2">
               <Badge variant="outline" className="text-xs">
-                +1 pt por XP
+                {t('leaderboard.pointsPerXP')}
               </Badge>
               <Badge variant="outline" className="text-xs">
-                +1 pt por Quiz
+                {t('leaderboard.pointsPerQuiz')}
               </Badge>
               <Badge variant="outline" className="text-xs">
-                +100 pts por Duelo
+                {t('leaderboard.pointsPerDuel')}
               </Badge>
             </div>
           </div>

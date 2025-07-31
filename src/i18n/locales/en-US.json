@@ -13,7 +13,8 @@
     "beetz": "Beetz",
     "pro": "Pro",
     "online": "Online",
-    "offline": "Offline"
+    "offline": "Offline",
+    "viewAll": "View All"
   },
   "quiz": {
     "title": "Quiz",
@@ -78,7 +79,14 @@
     "yourPosition": "Your Position",
     "totalScore": "Total Score",
     "resetIn": "Reset in",
-    "noRank": "No rank"
+    "noRank": "No rank",
+    "noRankingAvailable": "No ranking available",
+    "beFirstInRanking": "Be the first to appear in the weekly ranking!",
+    "climbRanking": "Climb the Ranking!",
+    "climbRankingDescription": "Complete quizzes, win duels and earn XP to climb the ranking",
+    "pointsPerXP": "+1 pt per XP",
+    "pointsPerQuiz": "+1 pt per Quiz",
+    "pointsPerDuel": "+100 pts per Duel"
   },
   "profile": {
     "userProfile": "User Profile",
@@ -91,7 +99,8 @@
     "publicPortfolios": "Public Portfolios",
     "memberSince": "Member since",
     "activeAvatar": "Active Avatar",
-    "message": "Message"
+    "message": "Message",
+    "anonymousUser": "Anonymous User"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -178,7 +187,12 @@
     "completed": "Completed",
     "inProgress": "In Progress",
     "reward": "Reward",
-    "claim": "Claim"
+    "claim": "Claim",
+    "dailyProgress": "Daily Progress",
+    "comboCompleted": "Combo Completed! +500 XP + 1000 Beetz + Rare Loot Box!",
+    "special": "Special",
+    "noMissionsAvailable": "No missions available at the moment",
+    "newMissionsSoon": "New missions will appear soon!"
   },
   "tournaments": {
     "tournaments": "Tournaments",
@@ -201,10 +215,11 @@
     "progress": "Overall Progress"
   },
   "gameMode": {
-    "title": "Game Mode",
-    "selectMode": "Select Game Mode",
-    "solo": "Solo",
-    "duel": "Duel",
+    "title": "Game Modes",
+    "selectMode": "Select Mode",
+    "chooseHow": "Choose how you would like to play",
+    "solo": "Solo Mode",
+    "duel": "Duel Mode",
     "tournament": "Tournament",
     "soloDescription": "Play alone and improve your skills",
     "duelDescription": "Challenge other players",
