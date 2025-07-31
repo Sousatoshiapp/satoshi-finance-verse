@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { 
   validatePortfolioName, 
   validatePortfolioDescription, 
@@ -21,6 +22,7 @@ interface PortfolioBuilderProps {
 }
 
 export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProps) {
+  const { t } = useI18n();
   const [portfolio, setPortfolio] = useState<Portfolio>({
     name: '',
     description: '',
@@ -144,8 +146,8 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
     } catch (error) {
       console.error('Error saving portfolio:', error);
       toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar a carteira",
+        title: t('errors.error'),
+        description: t('errors.couldNotSave'),
         variant: "destructive"
       });
     } finally {
@@ -178,7 +180,7 @@ export function PortfolioBuilder({ districtTheme, onSave }: PortfolioBuilderProp
         className="w-full"
         size="lg"
       >
-        {loading ? 'Salvando...' : 'Criar Carteira'}
+        {loading ? t('admin.saving') : 'Criar Carteira'}
       </Button>
     </div>
   );

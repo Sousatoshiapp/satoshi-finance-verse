@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Users, Activity, Zap, Trophy, MessageSquare, RefreshCw } from "lucide-react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 
 export default function BotAdmin() {
+  const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [generatingBots, setGeneratingBots] = useState(false);
   const [batchSize, setBatchSize] = useState(500);
@@ -61,7 +63,7 @@ export default function BotAdmin() {
     } catch (error: any) {
       console.error('Error generating bots:', error);
       toast({
-        title: "Erro ao Gerar Bots",
+        title: t('errors.error') + " ao Gerar Bots",
         description: error.message || "Falha ao criar bots",
         variant: "destructive",
       });
@@ -164,7 +166,7 @@ export default function BotAdmin() {
     } catch (error: any) {
       console.error('Error clearing bots:', error);
       toast({
-        title: "Erro ao Remover Bots",
+        title: t('errors.error') + " ao Remover Bots",
         description: error.message,
         variant: "destructive",
       });

@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Users, Zap, Target, Search, Heart, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { useEnhancedDuelMatchmaking } from "@/hooks/use-enhanced-duel-matchmaking";
 import { MatchmakingWheel } from "@/components/duels/matchmaking-wheel";
@@ -37,6 +38,7 @@ interface UserProfile {
 export default function FindOpponent() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useI18n();
   const [selectedTopic, setSelectedTopic] = useState("financas");
   const [activeTab, setActiveTab] = useState("quick");
   const [searchQuery, setSearchQuery] = useState("");
@@ -189,7 +191,7 @@ export default function FindOpponent() {
     } catch (error) {
       console.error('Error challenging user:', error);
       toast({
-        title: "❌ Erro ao enviar convite",
+        title: `❌ ${t('errors.error')} ao enviar convite`,
         description: "Tente novamente",
         variant: "destructive"
       });
@@ -214,7 +216,7 @@ export default function FindOpponent() {
     } catch (error) {
       console.error('Error handling match:', error);
       toast({
-        title: "❌ Erro ao criar duelo",
+        title: `❌ ${t('errors.error')} ao criar duelo`,
         description: "Tente novamente",
         variant: "destructive"
       });
@@ -230,7 +232,7 @@ export default function FindOpponent() {
     } catch (error) {
       console.error('Error starting search:', error);
       toast({
-        title: "❌ Erro ao iniciar busca",
+        title: `❌ ${t('errors.error')} ao iniciar busca`,
         description: "Tente novamente",
         variant: "destructive"
       });

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
 import { TargetIcon, IconSystem } from "@/components/icons/icon-system";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface MatchmakingWheelProps {
   isSearching: boolean;
@@ -12,6 +13,7 @@ interface MatchmakingWheelProps {
 }
 
 export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }: MatchmakingWheelProps) {
+  const { t } = useI18n();
   const [potentialOpponents, setPotentialOpponents] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTime, setSearchTime] = useState(0);
@@ -185,7 +187,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
                 </span>
               </h2>
               <p className="text-muted-foreground">
-                {currentOpponent?.nickname || "Carregando..."}
+                {currentOpponent?.nickname || t('common.loading') + "..."}
               </p>
               <div className="text-sm text-muted-foreground">
                 Tempo: {searchTime}s

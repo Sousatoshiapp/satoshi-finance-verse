@@ -137,8 +137,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error processing payment:', error);
       toast({
-        title: "Erro ao processar pagamento",
-        description: "Houve um problema ao ativar sua assinatura. Entre em contato com o suporte.",
+        title: t('errors.paymentProcessingError'),
+        description: t('errors.subscriptionActivationProblem'),
         variant: "destructive"
       });
     }

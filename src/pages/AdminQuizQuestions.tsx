@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { HelpCircle, Plus, Edit, Trash2, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface Question {
   id: string;
@@ -25,6 +26,7 @@ interface Question {
 }
 
 export default function AdminQuizQuestions() {
+  const { t } = useI18n();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,7 +86,7 @@ export default function AdminQuizQuestions() {
       setQuestions(mockQuestions);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar questões",
+        title: t('errors.error') + " ao carregar questões",
         description: error.message,
         variant: "destructive",
       });
@@ -117,7 +119,7 @@ export default function AdminQuizQuestions() {
       resetForm();
     } catch (error: any) {
       toast({
-        title: "Erro ao salvar questão",
+        title: t('errors.error') + " ao salvar questão",
         description: error.message,
         variant: "destructive",
       });
@@ -133,7 +135,7 @@ export default function AdminQuizQuestions() {
       });
     } catch (error: any) {
       toast({
-        title: "Erro ao remover questão",
+        title: t('errors.error') + " ao remover questão",
         description: error.message,
         variant: "destructive",
       });
@@ -386,7 +388,7 @@ export default function AdminQuizQuestions() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {filteredQuestions.map((question) => (

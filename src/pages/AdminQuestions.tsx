@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
@@ -76,6 +77,7 @@ export default function AdminQuestions() {
     tags: ""
   });
   const { toast } = useToast();
+  const { t } = useI18n();
 
   const categories = [
     "Análise Técnica",
@@ -105,7 +107,7 @@ export default function AdminQuestions() {
     } catch (error: any) {
       console.error('Error loading questions:', error);
       toast({
-        title: "Erro ao carregar perguntas",
+        title: t('errors.error') + " ao carregar perguntas",
         description: error.message,
         variant: "destructive",
       });
@@ -136,7 +138,7 @@ export default function AdminQuestions() {
     } catch (error: any) {
       console.error('Error deleting question:', error);
       toast({
-        title: "Erro ao deletar pergunta",
+        title: t('errors.error') + " ao deletar pergunta",
         description: error.message,
         variant: "destructive",
       });
@@ -178,7 +180,7 @@ export default function AdminQuestions() {
     } catch (error: any) {
       console.error('Error adding question:', error);
       toast({
-        title: "Erro ao adicionar pergunta",
+        title: t('errors.error') + " ao adicionar pergunta",
         description: error.message,
         variant: "destructive",
       });

@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Shield, AlertTriangle, Ban, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminUsersModeration() {
+  const { t } = useI18n();
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -44,7 +46,7 @@ export default function AdminUsersModeration() {
       setReports(mockReports);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar relatórios",
+        title: t('errors.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -135,7 +137,7 @@ export default function AdminUsersModeration() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {reports.map((report) => (
