@@ -418,6 +418,89 @@
     "found": "Oponente encontrado!",
     "cancel": "Cancelar"
   },
+  "auth": {
+    "title": {
+      "login": "Entre no Jogo",
+      "signup": "Entre no Jogo"
+    },
+    "description": {
+      "login": "Entre na Satoshi City e continue sua jornada",
+      "signup": "Torne-se um cidadão da cidade do futuro financeiro"
+    },
+    "form": {
+      "nickname": "Nome de Usuário",
+      "nicknamePlaceholder": "Como você quer ser conhecido?",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "password": "Senha",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "Mínimo de 6 caracteres",
+      "resetEmail": "Email para redefinição",
+      "resetEmailPlaceholder": "Digite seu email cadastrado"
+    },
+    "buttons": {
+      "back": "Voltar",
+      "login": "Entrar no Jogo",
+      "signup": "Tornar-se Cidadão",
+      "processing": "Processando...",
+      "sending": "Enviando...",
+      "forgotPassword": "Esqueci minha senha",
+      "backToLogin": "← Voltar ao login",
+      "sendResetLink": "Enviar Link de Redefinição",
+      "resendConfirmation": "Reenviar email de confirmação",
+      "socialSeparator": "ou continue com",
+      "toggleLogin": "Já é cidadão? Faça login",
+      "toggleSignup": "Novo na cidade? Crie sua conta"
+    },
+    "messages": {
+      "loginError": "Erro de Login",
+      "invalidCredentials": "Email ou senha incorretos. Verifique suas credenciais.",
+      "emailNotConfirmed": "Email não confirmado",
+      "emailNotConfirmedDesc": "Verifique sua caixa de email e clique no link de confirmação antes de fazer login.",
+      "loginSuccess": "Login realizado com sucesso!",
+      "loginSuccessDesc": "Bem-vindo de volta à Satoshi City.",
+      "userExists": "Usuário já existe",
+      "userExistsDesc": "Esta conta já está cadastrada. Faça login ou use outro email.",
+      "signupError": "Erro no Cadastro",
+      "signupSuccess": "Cadastro realizado!",
+      "signupSuccessDesc": "Verifique seu email para ativar sua conta",
+      "welcomeNew": "Bem-vindo!",
+      "welcomeNewDesc": "Conta criada com sucesso",
+      "unexpectedError": "Erro inesperado",
+      "unexpectedErrorDesc": "Algo deu errado. Tente novamente.",
+      "socialLoginError": "Erro no Login Social",
+      "socialLoginErrorDesc": "Algo deu errado com o login social. Tente novamente.",
+      "emailRequired": "Email obrigatório",
+      "emailRequiredDesc": "Digite seu email para receber o link de redefinição.",
+      "emailSent": "Email enviado!",
+      "emailSentDesc": "Verifique sua caixa de email para redefinir sua senha.",
+      "emailRequiredResend": "Email obrigatório",
+      "emailRequiredResendDesc": "Digite seu email para reenviar a confirmação.",
+      "emailResent": "Email reenviado!",
+      "emailResentDesc": "Verifique sua caixa de email para confirmar sua conta.",
+      "resetInstructions": "Você receberá um email com instruções para redefinir sua senha.",
+      "checkSpam": "Verifique também sua caixa de spam."
+    },
+    "narrative": {
+      "loginText": "aguarda seu retorno.",
+      "loginSubtext": "Seus distritos e conquistas estão preservados.",
+      "signupText": "Bem-vindo ao futuro das finanças em",
+      "signupSubtext": "Explore distritos, ganhe XP e domine o conhecimento financeiro.",
+      "satoshiCity": "Satoshi City"
+    }
+  },
+  "welcome": {
+    "title": "O futuro das finanças chegou",
+    "badges": {
+      "neuralSystem": "Sistema Neural",
+      "districts": "7 Distritos",
+      "multiplayer": "Multiplayer"
+    },
+    "buttons": {
+      "enterGame": "Entrar no Jogo",
+      "createAccount": "Criar Conta"
+    }
+  },
   "errors": {
     "pageNotFound": "404 - Página não encontrada",
     "quizNotAvailable": "Quiz não disponível",
