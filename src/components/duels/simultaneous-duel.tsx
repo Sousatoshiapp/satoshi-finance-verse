@@ -226,11 +226,11 @@ export function SimultaneousDuel({ duel, onDuelEnd }: SimultaneousDuelProps) {
   };
 
   const handleTimeout = () => {
-    console.log('⏰ handleTimeout chamado em SimultaneousDuel');
+    console.log('⏰ handleTimeout called in SimultaneousDuel');
     
     // Guard: Check if user is still on duel screen
     if (!window.location.pathname.includes('/duels') && !window.location.pathname.includes('/duel/')) {
-      console.log('🚫 Usuário não está mais na tela de duelos - ignorando timeout');
+      console.log('🚫 User is no longer on duel screen - ignoring timeout');
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;

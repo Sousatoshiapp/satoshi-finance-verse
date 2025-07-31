@@ -237,7 +237,7 @@ export const useQuizTranslations = () => {
   const translateQuestion = (question: QuizQuestion): QuizQuestion => {
     const currentLang = getCurrentLanguage();
     
-    console.log('🌍 Traduzindo pergunta:', question.question, 'para idioma:', currentLang);
+    console.log('🌍 Translating question:', question.question, 'to language:', currentLang);
     
     // Try to find translation by exact match first
     let translation = questionTranslations[question.question];
@@ -258,7 +258,7 @@ export const useQuizTranslations = () => {
     }
     
     if (translation && translation[currentLang]) {
-      console.log('✅ Tradução encontrada para:', currentLang);
+      console.log('✅ Translation found for:', currentLang);
       return {
         ...question,
         question: translation[currentLang].question,
@@ -268,7 +268,7 @@ export const useQuizTranslations = () => {
       };
     }
     
-    console.log('❌ Tradução não encontrada para:', question.question);
+    console.log('❌ Translation not found for:', question.question);
     return question;
   };
 

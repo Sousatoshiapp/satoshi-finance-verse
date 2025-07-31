@@ -113,13 +113,13 @@ export default function AdminTournaments() {
   const getStatusBadge = (status: Tournament['status']) => {
     switch (status) {
       case 'upcoming':
-        return <Badge variant="secondary">Em Breve</Badge>;
+        return <Badge variant="secondary">{t('tournaments.upcoming')}</Badge>;
       case 'active':
-        return <Badge className="bg-green-500 text-white">Ativo</Badge>;
+        return <Badge className="bg-green-500 text-white">{t('tournaments.active')}</Badge>;
       case 'completed':
-        return <Badge variant="outline">Finalizado</Badge>;
+        return <Badge variant="outline">{t('tournaments.finished')}</Badge>;
       default:
-        return <Badge variant="outline">Desconhecido</Badge>;
+        return <Badge variant="outline">Unknown</Badge>;
     }
   };
 
@@ -141,7 +141,7 @@ export default function AdminTournaments() {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
               <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Carregando torneios...</p>
+              <p className="text-muted-foreground">{t('admin.loadingTournaments')}</p>
             </div>
           </div>
         </div>
@@ -161,16 +161,16 @@ export default function AdminTournaments() {
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-3xl font-bold gradient-primary bg-clip-text text-transparent mb-2">
-                    Gerenciamento de Torneios
+                    {t('admin.tournamentManagement')}
                   </h1>
                   <p className="text-muted-foreground">
-                    Administre competições e torneios da plataforma
+                    {t('admin.manageTournaments')}
                   </p>
                 </div>
                 
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
-                  Criar Torneio
+                  {t('admin.createTournament')}
                 </Button>
               </div>
 
@@ -181,7 +181,7 @@ export default function AdminTournaments() {
                     <div className="flex items-center">
                       <Trophy className="h-8 w-8 text-yellow-600" />
                       <div className="ml-2">
-                        <p className="text-sm font-medium text-muted-foreground">Total de Torneios</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('admin.totalTournaments')}</p>
                         <p className="text-2xl font-bold">{stats.totalTournaments}</p>
                       </div>
                     </div>
@@ -193,7 +193,7 @@ export default function AdminTournaments() {
                     <div className="flex items-center">
                       <Gamepad2 className="h-8 w-8 text-green-600" />
                       <div className="ml-2">
-                        <p className="text-sm font-medium text-muted-foreground">Torneios Ativos</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('admin.activeTournaments')}</p>
                         <p className="text-2xl font-bold">{stats.activeTournaments}</p>
                       </div>
                     </div>
@@ -205,7 +205,7 @@ export default function AdminTournaments() {
                     <div className="flex items-center">
                       <Users className="h-8 w-8 text-blue-600" />
                       <div className="ml-2">
-                        <p className="text-sm font-medium text-muted-foreground">Total Participantes</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('admin.totalParticipants')}</p>
                         <p className="text-2xl font-bold">{stats.totalParticipants}</p>
                       </div>
                     </div>
@@ -217,7 +217,7 @@ export default function AdminTournaments() {
                     <div className="flex items-center">
                       <Crown className="h-8 w-8 text-purple-600" />
                       <div className="ml-2">
-                        <p className="text-sm font-medium text-muted-foreground">Prêmios Totais</p>
+                        <p className="text-sm font-medium text-muted-foreground">{t('admin.totalPrizes')}</p>
                         <p className="text-2xl font-bold">₿{stats.totalPrizePool.toLocaleString()}</p>
                       </div>
                     </div>
@@ -228,10 +228,10 @@ export default function AdminTournaments() {
               {/* Tabs */}
               <Tabs defaultValue="all" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="all">Todos</TabsTrigger>
-                  <TabsTrigger value="active">Ativos</TabsTrigger>
-                  <TabsTrigger value="upcoming">Em Breve</TabsTrigger>
-                  <TabsTrigger value="completed">Finalizados</TabsTrigger>
+                  <TabsTrigger value="all">{t('tournaments.all')}</TabsTrigger>
+                  <TabsTrigger value="active">{t('tournaments.active')}</TabsTrigger>
+                  <TabsTrigger value="upcoming">{t('tournaments.upcoming')}</TabsTrigger>
+                  <TabsTrigger value="completed">{t('tournaments.finished')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all" className="space-y-4">
@@ -261,7 +261,7 @@ export default function AdminTournaments() {
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-muted-foreground" />
                             <div>
-                              <p className="text-xs text-muted-foreground">Início</p>
+                              <p className="text-xs text-muted-foreground">{t('common.start')}</p>
                               <p className="text-sm font-medium">{formatDate(tournament.start_date)}</p>
                             </div>
                           </div>
@@ -269,7 +269,7 @@ export default function AdminTournaments() {
                           <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4 text-muted-foreground" />
                             <div>
-                              <p className="text-xs text-muted-foreground">Fim</p>
+                              <p className="text-xs text-muted-foreground">{t('common.end')}</p>
                               <p className="text-sm font-medium">{formatDate(tournament.end_date)}</p>
                             </div>
                           </div>
@@ -277,7 +277,7 @@ export default function AdminTournaments() {
                           <div className="flex items-center gap-2">
                             <Users className="w-4 h-4 text-muted-foreground" />
                             <div>
-                              <p className="text-xs text-muted-foreground">Participantes</p>
+                              <p className="text-xs text-muted-foreground">{t('admin.participants')}</p>
                               <p className="text-sm font-medium">
                                 {tournament.participants_count}/{tournament.max_participants}
                               </p>
@@ -287,7 +287,7 @@ export default function AdminTournaments() {
                           <div className="flex items-center gap-2">
                             <Crown className="w-4 h-4 text-muted-foreground" />
                             <div>
-                              <p className="text-xs text-muted-foreground">Prêmio</p>
+                              <p className="text-xs text-muted-foreground">{t('tournaments.prizeBeetz')}</p>
                               <p className="text-sm font-medium">₿{tournament.prize_pool.toLocaleString()}</p>
                             </div>
                           </div>

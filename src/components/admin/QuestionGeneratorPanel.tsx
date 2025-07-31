@@ -65,7 +65,7 @@ export function QuestionGeneratorPanel() {
   };
 
   const generateQuestions = async () => {
-    console.log('🚀 Iniciando geração de perguntas...');
+    console.log('🚀 Starting question generation...');
     console.log('📋 Status atual:', status);
     
     setGenerating(true);
@@ -92,10 +92,10 @@ export function QuestionGeneratorPanel() {
         .sort((a, b) => b.needed - a.needed)
         .slice(0, 5); // Processar 5 por vez
 
-      console.log('🎯 Categorias selecionadas para geração:', categoriesToGenerate);
+      console.log('🎯 Categories selected for generation:', categoriesToGenerate);
 
       if (!categoriesToGenerate?.length) {
-        console.log('✅ Todas as categorias já têm perguntas suficientes!');
+        console.log('✅ All categories already have sufficient questions!');
         toast.info('Todas as categorias já têm perguntas suficientes!');
         return;
       }
@@ -109,13 +109,13 @@ export function QuestionGeneratorPanel() {
         }))
       };
 
-      console.log('📤 Enviando requisição:', requestBody);
+      console.log('📤 Sending request:', requestBody);
 
       const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
         body: requestBody
       });
 
-      console.log('📥 Resposta da geração:', { data, error });
+      console.log('📥 Generation response:', { data, error });
 
       if (error) {
         console.error('❌ Erro da edge function:', error);

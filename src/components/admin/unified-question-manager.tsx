@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Download, FileSpreadsheet, Eye, Edit, Trash2, Plus, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { optimizedCSVGeneration, generateQuestionCSV } from "@/utils/csv-optimizer";
 
 interface QuizQuestion {
@@ -58,6 +59,7 @@ export function UnifiedQuestionManager() {
   const [editingQuestion, setEditingQuestion] = useState<QuizQuestion | null>(null);
   const [showNewQuestion, setShowNewQuestion] = useState(false);
   const { toast } = useToast();
+  const { t } = useI18n();
 
   // Novo questionário em branco
   const emptyQuestion: Partial<QuizQuestion> = {
@@ -198,31 +200,31 @@ export function UnifiedQuestionManager() {
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold">Gerenciador de Perguntas</h1>
-          <p className="text-muted-foreground">Sistema unificado para criar e gerenciar perguntas de quiz</p>
+          <h1 className="text-3xl font-bold">{t('admin.questionManager')}</h1>
+          <p className="text-muted-foreground">{t('admin.questionManagerDescription')}</p>
         </div>
         
         <div className="flex gap-2">
           <Button onClick={downloadTemplate} variant="outline">
             <FileSpreadsheet className="w-4 h-4 mr-2" />
-            Template
+            {t('admin.template')}
           </Button>
           <Button onClick={exportQuestions} variant="outline">
             <Download className="w-4 h-4 mr-2" />
-            Exportar
+            {t('admin.export')}
           </Button>
           <Button onClick={() => setShowNewQuestion(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Nova Pergunta
+            {t('admin.newQuestion')}
           </Button>
         </div>
       </div>
 
       <Tabs defaultValue="list" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="list">Lista de Perguntas</TabsTrigger>
-          <TabsTrigger value="import">Importar Planilha</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="list">{t('admin.questionList')}</TabsTrigger>
+          <TabsTrigger value="import">{t('admin.importSpreadsheet')}</TabsTrigger>
+          <TabsTrigger value="analytics">{t('admin.analytics')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="list" className="space-y-4">
@@ -231,11 +233,11 @@ export function UnifiedQuestionManager() {
             <CardContent className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label>Buscar</Label>
+                  <Label>{t('admin.search')}</Label>
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Buscar perguntas..."
+                      placeholder={t('admin.searchPlaceholder')}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10"
@@ -244,13 +246,13 @@ export function UnifiedQuestionManager() {
                 </div>
                 
                 <div>
-                  <Label>Categoria</Label>
+                  <Label>{t('admin.category')}</Label>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todas</SelectItem>
+                      <SelectItem value="all">{t('admin.all')}</SelectItem>
                       {CATEGORIES.map(cat => (
                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                       ))}
@@ -259,13 +261,13 @@ export function UnifiedQuestionManager() {
                 </div>
                 
                 <div>
-                  <Label>Dificuldade</Label>
+                  <Label>{t('admin.difficulty')}</Label>
                   <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todas</SelectItem>
+                      <SelectItem value="all">{t('admin.all')}</SelectItem>
                       {DIFFICULTIES.map(diff => (
                         <SelectItem key={diff} value={diff}>{diff}</SelectItem>
                       ))}
@@ -275,7 +277,7 @@ export function UnifiedQuestionManager() {
                 
                 <div className="flex items-end">
                   <Badge variant="secondary">
-                    {filteredQuestions.length} de {questions.length} perguntas
+                    {t('admin.questionsCount', { count: filteredQuestions.length, total: questions.length })}
                   </Badge>
                 </div>
               </div>
@@ -285,10 +287,10 @@ export function UnifiedQuestionManager() {
           {/* Lista de Perguntas */}
           <div className="grid gap-4">
             {loading ? (
-              <div className="text-center py-8">Carregando perguntas...</div>
+              <div className="text-center py-8">{t('admin.loadingQuestions')}</div>
             ) : filteredQuestions.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                Nenhuma pergunta encontrada
+                {t('admin.noQuestionsFound')}
               </div>
             ) : (
               filteredQuestions.map((question) => (
@@ -300,12 +302,12 @@ export function UnifiedQuestionManager() {
                         <div className="flex gap-2 mb-2">
                           <Badge variant="outline">{question.category}</Badge>
                           <Badge variant="outline">{question.difficulty}</Badge>
-                          {question.is_approved && <Badge className="bg-green-100 text-green-800">Aprovada</Badge>}
+                          {question.is_approved && <Badge className="bg-green-100 text-green-800">{t('admin.approved')}</Badge>}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          Usada {question.usage_count || 0} vezes • 
-                          Taxa de acerto: {question.success_rate || 0}% •
-                          Tempo médio: {question.avg_response_time || 30}s
+                          {t('admin.usedTimes', { count: question.usage_count || 0 })} • 
+                          {t('admin.successRate', { rate: question.success_rate || 0 })} •
+                          {t('admin.avgResponseTime', { time: question.avg_response_time || 30 })}
                         </div>
                       </div>
                       
@@ -346,13 +348,13 @@ export function UnifiedQuestionManager() {
         <TabsContent value="import">
           <Card>
             <CardHeader>
-              <CardTitle>Importar Perguntas via Planilha</CardTitle>
+              <CardTitle>{t('admin.importSpreadsheet')}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                 <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                <p className="text-lg mb-2">Arraste seu arquivo CSV aqui</p>
-                <p className="text-sm text-gray-500 mb-4">ou clique para selecionar</p>
+                <p className="text-lg mb-2">{t('admin.dragFileHere')}</p>
+                <p className="text-sm text-gray-500 mb-4">{t('admin.clickToSelect')}</p>
                 <input
                   type="file"
                   accept=".csv,.xlsx"
@@ -361,16 +363,16 @@ export function UnifiedQuestionManager() {
                 />
                 <label htmlFor="file-upload">
                   <Button variant="outline" className="cursor-pointer">
-                    Selecionar Arquivo
+                    {t('admin.selectFile')}
                   </Button>
                 </label>
               </div>
               
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h4 className="font-semibold mb-2">⚠️ Formato da Planilha</h4>
+                <h4 className="font-semibold mb-2">⚠️ {t('admin.spreadsheetFormat')}</h4>
                 <p className="text-sm">
-                  Baixe o template para ver o formato correto. As colunas obrigatórias são:
-                  question, option_a, option_b, option_c, option_d, correct_answer, category, difficulty
+                  {t('admin.downloadTemplate')}
+                  {t('admin.requiredColumns')}
                 </p>
               </div>
             </CardContent>
@@ -382,7 +384,7 @@ export function UnifiedQuestionManager() {
             <Card>
               <CardContent className="p-4">
                 <div className="text-2xl font-bold">{questions.length}</div>
-                <div className="text-sm text-muted-foreground">Total de Perguntas</div>
+                <div className="text-sm text-muted-foreground">{t('admin.totalQuestions')}</div>
               </CardContent>
             </Card>
             
@@ -391,7 +393,7 @@ export function UnifiedQuestionManager() {
                 <div className="text-2xl font-bold">
                   {questions.filter(q => q.is_approved).length}
                 </div>
-                <div className="text-sm text-muted-foreground">Perguntas Aprovadas</div>
+                <div className="text-sm text-muted-foreground">{t('admin.approvedQuestions')}</div>
               </CardContent>
             </Card>
             
@@ -400,7 +402,7 @@ export function UnifiedQuestionManager() {
                 <div className="text-2xl font-bold">
                   {CATEGORIES.length}
                 </div>
-                <div className="text-sm text-muted-foreground">Categorias Ativas</div>
+                <div className="text-sm text-muted-foreground">{t('admin.activeCategories')}</div>
               </CardContent>
             </Card>
             
@@ -409,7 +411,7 @@ export function UnifiedQuestionManager() {
                 <div className="text-2xl font-bold">
                   {questions.reduce((sum, q) => sum + (q.usage_count || 0), 0)}
                 </div>
-                <div className="text-sm text-muted-foreground">Total de Usos</div>
+                <div className="text-sm text-muted-foreground">{t('admin.totalUsage')}</div>
               </CardContent>
             </Card>
           </div>
