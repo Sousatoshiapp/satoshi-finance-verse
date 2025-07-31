@@ -310,5 +310,13 @@
     "accessDenied": "Access Denied",
     "noSponsorAccess": "You do not have administrative access to any sponsored districts",
     "configureAccess": "To configure sponsor admin access, go to"
+  },
+  "welcome": {
+    "futureOfFinance": "The future of finance has arrived",
+    "neuralSystem": "Neural System",
+    "districts": "7 Districts",
+    "multiplayer": "Multiplayer",
+    "enterGame": "Enter Game",
+    "createAccount": "Create Account"
   }
 }
