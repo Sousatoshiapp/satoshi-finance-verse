@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -28,7 +28,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-  const updateOnlineStatus = async () => {
+  const updateOnlineStatus = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -44,7 +44,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error updating online status:', error);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -84,7 +84,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
           .select(`
             user_id,
             last_seen,
-            profiles!inner(username, avatar_url)
+            profiles!inner(nickname, profile_image_url)
           `)
           .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString())
           .eq('is_online', true);
@@ -93,8 +93,8 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
         
         const formattedUsers = data?.map(item => ({
           user_id: item.user_id,
-          username: item.profiles.username,
-          avatar_url: item.profiles.avatar_url,
+          username: item.profiles?.nickname || 'Anonymous',
+          avatar_url: item.profiles?.profile_image_url || null,
           last_seen: item.last_seen,
         })) || [];
         
@@ -110,7 +110,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
       clearInterval(interval);
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, updateOnlineStatus]);
 
   return (
     <OnlineStatusContext.Provider value={{ onlineUsers, isOnline, updateOnlineStatus }}>

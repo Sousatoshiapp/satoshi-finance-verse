@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -21,7 +21,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
   const [points, setPoints] = useState(0);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  const refreshPoints = async () => {
+  const refreshPoints = useCallback(async () => {
     if (!user) return;
     
     try {
@@ -40,7 +40,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error fetching points:', error);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -63,7 +63,9 @@ export function PointsProvider({ children }: { children: ReactNode }) {
       })
       .subscribe();
 
-    return () => supabase.removeChannel(channel);
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user, points]);
 
   return (
