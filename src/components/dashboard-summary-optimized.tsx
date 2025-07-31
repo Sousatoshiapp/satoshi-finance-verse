@@ -6,6 +6,7 @@ import { Sparkles, Trophy, Target } from "@/components/icons/optimized-icons";
 import { useRenderPerformance } from "@/hooks/use-performance-monitor";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { StreakIcon } from "@/components/icons/game-icons";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface UserStats {
   level: number;
@@ -29,6 +30,7 @@ interface DashboardSummaryProps {
 
 const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ userStats, subscription }: DashboardSummaryProps) {
   useRenderPerformance('DashboardSummaryOptimized');
+  const { t } = useI18n();
   
   // Verificações de segurança para dados não definidos
   if (!userStats || !subscription) {
@@ -74,7 +76,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />
-          Progresso Hoje
+          {t('dashboard.todayProgress')}
         </CardTitle>
       </CardHeader>
       
@@ -84,7 +86,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium flex items-center gap-1">
               <Sparkles className="h-4 w-4 text-yellow-500" />
-              Experiência
+              {t('dashboard.experience')}
             </span>
             <span className="text-xs text-muted-foreground">
               {userStats.currentXP || 0} / {userStats.nextLevelXP || 0} XP
@@ -101,7 +103,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
               <StreakIcon size="sm" animated={(userStats.streak || 0) > 0} variant={(userStats.streak || 0) > 0 ? "glow" : "default"} className="mr-1" />
               {userStats.streak || 0}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Sequência</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('dashboard.sequence')}</p>
           </div>
 
           {/* Lessons */}
@@ -110,7 +112,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
               <Target className="h-3 w-3" />
               {userStats.completedLessons || 0}
             </div>
-            <p className="text-xs text-muted-foreground">Lições</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.lessons')}</p>
             <Progress value={lessonProgress} className="h-1 mt-1" />
           </div>
 
@@ -119,7 +121,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
             <div className="text-sm font-bold text-success">
               {subscription.xpMultiplier || 1}x
             </div>
-            <p className="text-xs text-muted-foreground">XP Boost</p>
+            <p className="text-xs text-muted-foreground">{t('dashboard.xpBoost')}</p>
             {subscription.tier && subscription.tier !== 'free' && (
               <Badge variant="secondary" className="text-xs mt-1 scale-90">
                 {subscription.tier.toUpperCase()}

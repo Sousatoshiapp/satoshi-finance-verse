@@ -209,10 +209,10 @@ export default function Settings() {
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         {/* Informações Pessoais */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Informações Pessoais</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.personalInfo')}</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Apelido</label>
+              <label className="block text-sm font-medium mb-2">{t('settings.nickname')}</label>
               <Input
                 value={userInfo.nickname}
                 onChange={(e) => setUserInfo({...userInfo, nickname: e.target.value})}
@@ -220,7 +220,7 @@ export default function Settings() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label className="block text-sm font-medium mb-2">{t('settings.email')}</label>
               <div className="flex gap-2">
                 <Input
                   type="email"
@@ -239,7 +239,7 @@ export default function Settings() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Senha</label>
+              <label className="block text-sm font-medium mb-2">{t('settings.password')}</label>
               <div className="flex gap-2">
                 <Input
                   type="password"
@@ -257,7 +257,7 @@ export default function Settings() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Objetivo Financeiro</label>
+              <label className="block text-sm font-medium mb-2">{t('settings.financialGoal')}</label>
               <Input
                 value={userInfo.financialGoal}
                 onChange={(e) => setUserInfo({...userInfo, financialGoal: e.target.value})}
@@ -269,12 +269,12 @@ export default function Settings() {
 
         {/* Notificações */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Notificações</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.notifications')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Notificações Push</h4>
-                <p className="text-sm text-muted-foreground">Receber notificações do app</p>
+                <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.receiveNotifications')}</p>
               </div>
               <Switch
                 checked={settings.notifications}
@@ -284,8 +284,8 @@ export default function Settings() {
             
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Lembrete Diário</h4>
-                <p className="text-sm text-muted-foreground">Lembrete para estudar todos os dias</p>
+                <h4 className="font-medium text-foreground">{t('settings.dailyReminder')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.studyReminder')}</p>
               </div>
               <Switch
                 checked={settings.dailyReminder}
@@ -297,12 +297,12 @@ export default function Settings() {
 
         {/* Experiência */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Experiência</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.experience')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Efeitos Sonoros</h4>
-                <p className="text-sm text-muted-foreground">Sons de interação e conquistas</p>
+                <h4 className="font-medium text-foreground">{t('settings.soundEffects')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.interactionSounds')}</p>
               </div>
               <Switch
                 checked={settings.soundEffects}
@@ -312,8 +312,8 @@ export default function Settings() {
             
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Modo Escuro</h4>
-                <p className="text-sm text-muted-foreground">Interface com tema escuro</p>
+                <h4 className="font-medium text-foreground">{t('settings.darkMode')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.darkInterface')}</p>
               </div>
               <Switch
                 checked={settings.darkMode}
@@ -326,30 +326,30 @@ export default function Settings() {
         {/* Salvar */}
         <Card className="p-6">
           <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
-            {loading ? t('admin.saving') : "💾 Salvar Configurações"}
+            {loading ? "Salvando..." : "💾 " + t('settings.saveSettings')}
           </Button>
         </Card>
 
         {/* Conta */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Conta</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.account')}</h3>
           <div className="space-y-4">
             <Button 
               variant="destructive"
               onClick={handleLogout}
               className="w-full"
             >
-              🚪 Sair da Conta
+              🚪 {t('settings.logout')}
             </Button>
           </div>
         </Card>
 
         {/* Sobre */}
         <Card className="p-6 text-center">
-          <h3 className="font-bold text-foreground mb-4">Sobre o Satoshi</h3>
+          <h3 className="font-bold text-foreground mb-4">{t('settings.aboutSatoshi')}</h3>
           <p className="text-muted-foreground mb-4">
             Versão 1.0.0<br />
-            O game das finanças
+            {t('settings.gameVersion')}
           </p>
           <div className="text-sm text-muted-foreground">
             <p>Email: suporte@satoshi.app</p>
