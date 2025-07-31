@@ -451,5 +451,88 @@
     "next": "التالي",
     "days": "أيام",
     "nextIn": "التالي في"
+  },
+  "auth": {
+    "title": {
+      "login": "ادخل إلى اللعبة",
+      "signup": "ادخل إلى اللعبة"
+    },
+    "description": {
+      "login": "ادخل إلى مدينة ساتوشي وتابع رحلتك",
+      "signup": "كن مواطناً في مدينة المستقبل المالي"
+    },
+    "form": {
+      "nickname": "اسم المستخدم",
+      "nicknamePlaceholder": "كيف تريد أن تُعرف؟",
+      "email": "البريد الإلكتروني",
+      "emailPlaceholder": "بريدك@الإلكتروني.com",
+      "password": "كلمة المرور",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "6 أحرف كحد أدنى",
+      "resetEmail": "البريد الإلكتروني للإعادة تعيين",
+      "resetEmailPlaceholder": "أدخل بريدك الإلكتروني المسجل"
+    },
+    "buttons": {
+      "back": "رجوع",
+      "login": "ادخل إلى اللعبة",
+      "signup": "كن مواطناً",
+      "processing": "جاري المعالجة...",
+      "sending": "جاري الإرسال...",
+      "forgotPassword": "نسيت كلمة المرور",
+      "backToLogin": "← العودة إلى تسجيل الدخول",
+      "sendResetLink": "إرسال رابط إعادة التعيين",
+      "resendConfirmation": "إعادة إرسال بريد التأكيد",
+      "socialSeparator": "أو تابع مع",
+      "toggleLogin": "مواطن بالفعل؟ سجل دخولك",
+      "toggleSignup": "جديد في المدينة؟ أنشئ حسابك"
+    },
+    "messages": {
+      "loginError": "خطأ في تسجيل الدخول",
+      "invalidCredentials": "بريد إلكتروني أو كلمة مرور خاطئة. تحقق من بياناتك.",
+      "emailNotConfirmed": "البريد الإلكتروني غير مؤكد",
+      "emailNotConfirmedDesc": "تحقق من بريدك الإلكتروني وانقر على رابط التأكيد قبل تسجيل الدخول.",
+      "loginSuccess": "تم تسجيل الدخول بنجاح!",
+      "loginSuccessDesc": "مرحباً بعودتك إلى مدينة ساتوشي.",
+      "userExists": "المستخدم موجود بالفعل",
+      "userExistsDesc": "هذا الحساب مسجل بالفعل. سجل دخولك أو استخدم بريد إلكتروني آخر.",
+      "signupError": "خطأ في التسجيل",
+      "signupSuccess": "تم التسجيل!",
+      "signupSuccessDesc": "تحقق من بريدك الإلكتروني لتفعيل حسابك",
+      "welcomeNew": "مرحباً!",
+      "welcomeNewDesc": "تم إنشاء الحساب بنجاح",
+      "unexpectedError": "خطأ غير متوقع",
+      "unexpectedErrorDesc": "حدث خطأ ما. حاول مرة أخرى.",
+      "socialLoginError": "خطأ في تسجيل الدخول الاجتماعي",
+      "socialLoginErrorDesc": "حدث خطأ في تسجيل الدخول الاجتماعي. حاول مرة أخرى.",
+      "emailRequired": "البريد الإلكتروني مطلوب",
+      "emailRequiredDesc": "أدخل بريدك الإلكتروني لتلقي رابط إعادة التعيين.",
+      "emailSent": "تم إرسال البريد الإلكتروني!",
+      "emailSentDesc": "تحقق من بريدك الإلكتروني لإعادة تعيين كلمة المرور.",
+      "emailRequiredResend": "البريد الإلكتروني مطلوب",
+      "emailRequiredResendDesc": "أدخل بريدك الإلكتروني لإعادة إرسال التأكيد.",
+      "emailResent": "تم إعادة إرسال البريد الإلكتروني!",
+      "emailResentDesc": "تحقق من بريدك الإلكتروني لتأكيد حسابك.",
+      "resetInstructions": "ستتلقى بريداً إلكترونياً يحتوي على تعليمات إعادة تعيين كلمة المرور.",
+      "checkSpam": "تحقق أيضاً من مجلد الرسائل غير المرغوب فيها."
+    },
+    "narrative": {
+      "loginText": "تنتظر عودتك.",
+      "loginSubtext": "مناطقك وإنجازاتك محفوظة.",
+      "signupText": "مرحباً بك في مستقبل المال في",
+      "signupSubtext": "استكشف المناطق، اكسب XP وأتقن المعرفة المالية.",
+      "satoshiCity": "مدينة ساتوشي"
+    }
+  },
+  "welcome": {
+    "title": "مستقبل المال قد وصل",
+    "badges": {
+      "neuralSystem": "النظام العصبي",
+      "districts": "7 مناطق",
+      "multiplayer": "متعدد اللاعبين"
+    },
+    "buttons": {
+      "enterGame": "ادخل إلى اللعبة",
+      "createAccount": "إنشاء حساب"
+    }
   }
 }

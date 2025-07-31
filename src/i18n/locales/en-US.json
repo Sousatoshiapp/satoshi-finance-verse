@@ -463,6 +463,89 @@
     "found": "Opponent found!",
     "cancel": "Cancel"
   },
+  "auth": {
+    "title": {
+      "login": "Enter the Game",
+      "signup": "Enter the Game"
+    },
+    "description": {
+      "login": "Enter Satoshi City and continue your journey",
+      "signup": "Become a citizen of the financial future city"
+    },
+    "form": {
+      "nickname": "Username",
+      "nicknamePlaceholder": "How do you want to be known?",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "Minimum 6 characters",
+      "resetEmail": "Email for reset",
+      "resetEmailPlaceholder": "Enter your registered email"
+    },
+    "buttons": {
+      "back": "Back",
+      "login": "Enter the Game",
+      "signup": "Become Citizen",
+      "processing": "Processing...",
+      "sending": "Sending...",
+      "forgotPassword": "Forgot my password",
+      "backToLogin": "← Back to login",
+      "sendResetLink": "Send Reset Link",
+      "resendConfirmation": "Resend confirmation email",
+      "socialSeparator": "or continue with",
+      "toggleLogin": "Already a citizen? Log in",
+      "toggleSignup": "New to the city? Create your account"
+    },
+    "messages": {
+      "loginError": "Login Error",
+      "invalidCredentials": "Incorrect email or password. Check your credentials.",
+      "emailNotConfirmed": "Email not confirmed",
+      "emailNotConfirmedDesc": "Check your email and click the confirmation link before logging in.",
+      "loginSuccess": "Login successful!",
+      "loginSuccessDesc": "Welcome back to Satoshi City.",
+      "userExists": "User already exists",
+      "userExistsDesc": "This account is already registered. Log in or use another email.",
+      "signupError": "Registration Error",
+      "signupSuccess": "Registration completed!",
+      "signupSuccessDesc": "Check your email to activate your account",
+      "welcomeNew": "Welcome!",
+      "welcomeNewDesc": "Account created successfully",
+      "unexpectedError": "Unexpected error",
+      "unexpectedErrorDesc": "Something went wrong. Try again.",
+      "socialLoginError": "Social Login Error",
+      "socialLoginErrorDesc": "Something went wrong with social login. Try again.",
+      "emailRequired": "Email required",
+      "emailRequiredDesc": "Enter your email to receive the reset link.",
+      "emailSent": "Email sent!",
+      "emailSentDesc": "Check your email to reset your password.",
+      "emailRequiredResend": "Email required",
+      "emailRequiredResendDesc": "Enter your email to resend confirmation.",
+      "emailResent": "Email resent!",
+      "emailResentDesc": "Check your email to confirm your account.",
+      "resetInstructions": "You will receive an email with instructions to reset your password.",
+      "checkSpam": "Also check your spam folder."
+    },
+    "narrative": {
+      "loginText": "awaits your return.",
+      "loginSubtext": "Your districts and achievements are preserved.",
+      "signupText": "Welcome to the future of finance in",
+      "signupSubtext": "Explore districts, earn XP and master financial knowledge.",
+      "satoshiCity": "Satoshi City"
+    }
+  },
+  "welcome": {
+    "title": "The future of finance has arrived",
+    "badges": {
+      "neuralSystem": "Neural System",
+      "districts": "7 Districts",
+      "multiplayer": "Multiplayer"
+    },
+    "buttons": {
+      "enterGame": "Enter the Game",
+      "createAccount": "Create Account"
+    }
+  },
   "errors": {
     "pageNotFound": "404 - Page not found",
     "quizNotAvailable": "Quiz not available",

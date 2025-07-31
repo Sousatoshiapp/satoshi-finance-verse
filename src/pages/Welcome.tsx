@@ -2,9 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Users, Shield } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function Welcome() {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -33,17 +35,17 @@ export default function Welcome() {
               />
             </div>
             <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
-              O futuro das finanças chegou
+              {t('welcome.title')}
             </p>
             <div className="flex justify-center space-x-2 mb-8">
               <Badge variant="outline" className="border-cyan-400 text-cyan-400 text-xs px-3 py-1">
-                Sistema Neural
+                {t('welcome.badges.neuralSystem')}
               </Badge>
               <Badge variant="outline" className="border-purple-400 text-purple-400 text-xs px-3 py-1">
-                7 Distritos
+                {t('welcome.badges.districts')}
               </Badge>
               <Badge variant="outline" className="border-pink-400 text-pink-400 text-xs px-3 py-1">
-                Multiplayer
+                {t('welcome.badges.multiplayer')}
               </Badge>
             </div>
           </div>
@@ -56,7 +58,7 @@ export default function Welcome() {
               style={{ backgroundColor: '#adff2f', color: '#000000' }}
             >
               <Shield className="mr-2 h-5 w-5" />
-              Entrar no Jogo
+              {t('welcome.buttons.enterGame')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
 
@@ -67,7 +69,7 @@ export default function Welcome() {
               style={{ borderColor: '#adff2f', color: '#adff2f' }}
             >
               <Users className="mr-2 h-5 w-5" />
-              Criar Conta
+              {t('welcome.buttons.createAccount')}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
