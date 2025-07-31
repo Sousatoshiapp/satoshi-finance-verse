@@ -106,7 +106,7 @@ export function QuizEngine({
   const { translateQuestions } = useQuizTranslations();
 
   const handleContinue = () => {
-    console.log('🔄 handleContinue chamado');
+    console.log('🔄 handleContinue called');
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setSelectedAnswer(null);
@@ -117,24 +117,24 @@ export function QuizEngine({
     }
   };
 
-  // SIMPLIFICADO - Apenas mostrar modal de timeout
+  // SIMPLIFIED - Just show timeout modal
   const handleTimeUp = async () => {
-    console.log('⏰ handleTimeUp chamado - tempo acabou');
-    console.log('⏰ Estado atual do showTimeoutModal:', showTimeoutModal);
+    console.log('⏰ handleTimeUp called - time up');
+    console.log('⏰ Current showTimeoutModal state:', showTimeoutModal);
     
     const question = questions[currentIndex];
     if (!question) {
-      console.log('⏰ Pergunta não existe, retornando');
+      console.log('⏰ Question does not exist, returning');
       return;
     }
     
-    console.log('⏰ Forçando modal de timeout');
+    console.log('⏰ Forcing timeout modal');
     
     // SIMPLIFICADO - apenas marcar resposta como incorreta e mostrar modal
     setShowAnswer(true); // Para parar o timer
     setShowTimeoutModal(true);
     
-    console.log('⏰ Modal de timeout setado para true');
+    console.log('⏰ Timeout modal set to true');
     
     // Processar no background
     const answeredQuestion = {
@@ -149,9 +149,8 @@ export function QuizEngine({
     await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
   };
 
-  // Debug para rastrear mudanças no showTimeoutModal
   useEffect(() => {
-    console.log('🔍 showTimeoutModal mudou para:', showTimeoutModal);
+    console.log('🔍 showTimeoutModal changed to:', showTimeoutModal);
   }, [showTimeoutModal]);
 
   useEffect(() => {

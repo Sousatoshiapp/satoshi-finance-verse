@@ -96,7 +96,7 @@ export function useQuizGamification() {
     });
     
     if (!user || !state.isLoaded) {
-      console.log("❌ Saindo early - sem user ou não carregado:", { user: !!user, isLoaded: state.isLoaded });
+      console.log("❌ Exiting early - no user or not loaded:", { user: !!user, isLoaded: state.isLoaded });
       return;
     }
 
@@ -172,7 +172,7 @@ export function useQuizGamification() {
             console.log('✅ BTZ atualizado com sucesso (STREAK)! Aguardando realtime...');
           }
         } else {
-          console.log("❌ Profile não encontrado!");
+          console.log("❌ Profile not found!");
         }
       } catch (error) {
         console.error('💥 Error updating points (STREAK):', error);
@@ -227,7 +227,7 @@ export function useQuizGamification() {
             console.log('✅ BTZ atualizado com sucesso (REGULAR)! Aguardando realtime...');
           }
         } else {
-          console.log("❌ Profile não encontrado!");
+          console.log("❌ Profile not found!");
         }
       } catch (error) {
         console.error('💥 Error updating points (REGULAR):', error);
@@ -271,7 +271,7 @@ export function useQuizGamification() {
       console.log('🔊 Tocando som de resposta errada');
       playWrongSound();
     } else {
-      console.log('🚫 Som de resposta errada bloqueado - usuário não está em tela de quiz');
+      console.log('🚫 Wrong answer sound blocked - user not on quiz screen');
     }
 
     // Vibration for wrong answer

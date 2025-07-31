@@ -287,7 +287,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     
     // Guard: Check if user is still on duel screen
     if (!window.location.pathname.includes('/duels') && !window.location.pathname.includes('/duel/')) {
-      console.log('🚫 Usuário não está mais na tela de duelos - ignorando timeout');
+      console.log('🚫 User is no longer on duel screen - ignoring timeout');
       return;
     }
     

@@ -55,31 +55,31 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
     fintech: Cpu,
   };
 
-  // Function to get district logo with fallback system - CORRIGIDA
+  // Function to get district logo with fallback system - CORRECTED
   const getDistrictLogoOrIcon = () => {
-    console.log('🎯 [TRANSIÇÃO] Buscando logo para tema:', toDistrictTheme);
+    console.log('🎯 [TRANSITION] Searching logo for theme:', toDistrictTheme);
     
     // Priority 1: sponsor logo from database
     if (sponsorTheme?.logoUrl) {
-      console.log('✅ [TRANSIÇÃO] Usando sponsor logo:', sponsorTheme.logoUrl);
+      console.log('✅ [TRANSITION] Using sponsor logo:', sponsorTheme.logoUrl);
       return { type: 'image', src: sponsorTheme.logoUrl };
     }
     
     // Priority 2: local theme logo
     if (toDistrictTheme && districtLogos[toDistrictTheme as keyof typeof districtLogos]) {
       const logoSrc = districtLogos[toDistrictTheme as keyof typeof districtLogos];
-      console.log('✅ [TRANSIÇÃO] Usando logo local:', logoSrc);
+      console.log('✅ [TRANSITION] Using local logo:', logoSrc);
       return { type: 'image', src: logoSrc };
     }
     
     // Priority 3: fallback icon
     if (toDistrictTheme && districtIcons[toDistrictTheme as keyof typeof districtIcons]) {
       const IconComponent = districtIcons[toDistrictTheme as keyof typeof districtIcons];
-      console.log('✅ [TRANSIÇÃO] Usando ícone fallback para tema:', toDistrictTheme);
+      console.log('✅ [TRANSITION] Using fallback icon for theme:', toDistrictTheme);
       return { type: 'icon', component: IconComponent };
     }
     
-    console.log('⚠️ [TRANSIÇÃO] Nenhum logo/ícone encontrado para tema:', toDistrictTheme);
+    console.log('⚠️ [TRANSITION] No logo/icon found for theme:', toDistrictTheme);
     return null;
   };
 

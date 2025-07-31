@@ -237,7 +237,7 @@ export default function DistrictDuelPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-400 mx-auto mb-4"></div>
-          <p className="text-gray-300">Carregando duelo...</p>
+          <p className="text-gray-300">{t('admin.loadingDuel')}</p>
         </div>
       </div>
     );
@@ -258,7 +258,7 @@ export default function DistrictDuelPage() {
               className="text-white hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar à Cidade
+              {t('admin.backToCity')}
             </Button>
           </div>
 
@@ -283,7 +283,7 @@ export default function DistrictDuelPage() {
                 {duel.initiator_district.name} vs {duel.challenged_district.name}
               </CardTitle>
               <CardDescription>
-                {isExpired ? "Duelo Finalizado" : hasParticipated ? "Você já participou" : "Duelo Ativo"}
+                {isExpired ? t('admin.duelFinished') : hasParticipated ? t('admin.alreadyParticipated') : t('admin.activeDuel')}
               </CardDescription>
             </CardHeader>
             
@@ -296,7 +296,7 @@ export default function DistrictDuelPage() {
                   </div>
                   <div className="text-sm text-muted-foreground">{duel.initiator_district.name}</div>
                   <div className="text-xs text-muted-foreground">
-                    {duel.participants_count_initiator} participantes
+                    {duel.participants_count_initiator} {t('admin.participants')}
                   </div>
                 </div>
                 <div className="text-center p-4 bg-muted rounded-lg">
@@ -305,7 +305,7 @@ export default function DistrictDuelPage() {
                   </div>
                   <div className="text-sm text-muted-foreground">{duel.challenged_district.name}</div>
                   <div className="text-xs text-muted-foreground">
-                    {duel.participants_count_challenged} participantes
+                    {duel.participants_count_challenged} {t('admin.participants')}
                   </div>
                 </div>
               </div>
@@ -313,10 +313,10 @@ export default function DistrictDuelPage() {
               {hasParticipated && (
                 <div className="text-center p-4 bg-green-500/10 rounded-lg border border-green-500/20">
                   <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
-                  <div className="font-semibold text-green-400">Sua Participação</div>
+                  <div className="font-semibold text-green-400">{t('admin.yourParticipation')}</div>
                   <div className="text-xl font-bold">{score}/{duel.questions.length}</div>
                   <div className="text-sm text-muted-foreground">
-                    {Math.round((score / duel.questions.length) * 100)}% de acertos
+                    {Math.round((score / duel.questions.length) * 100)}% {t('admin.accuracy')}
                   </div>
                 </div>
               )}
@@ -326,7 +326,7 @@ export default function DistrictDuelPage() {
                   onClick={() => navigate('/satoshi-city')}
                   className="w-full"
                 >
-                  Voltar à Cidade
+                  {t('admin.backToCity')}
                 </Button>
               </div>
             </CardContent>
@@ -364,29 +364,29 @@ export default function DistrictDuelPage() {
               {duel.initiator_district.name} vs {duel.challenged_district.name}
             </CardTitle>
             <CardDescription>
-              Duelo entre Distritos - {duel.questions.length} Perguntas
+              Duelo entre Distritos - {duel.questions.length} {t('admin.questions')}
             </CardDescription>
           </CardHeader>
           
           <CardContent className="text-center space-y-4">
             <div className="p-4 bg-orange-500/10 rounded-lg border border-orange-500/20">
               <Timer className="w-6 h-6 text-orange-400 mx-auto mb-2" />
-              <div className="font-semibold text-orange-400">Tempo Restante</div>
+              <div className="font-semibold text-orange-400">{t('admin.timeRemaining')}</div>
               <div className="text-lg">{hoursRemaining}h {minutesRemaining}m</div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="p-3 bg-muted rounded-lg">
                 <div className="font-semibold">{duel.questions.length}</div>
-                <div className="text-muted-foreground">Perguntas</div>
+                <div className="text-muted-foreground">{t('admin.questions')}</div>
               </div>
               <div className="p-3 bg-muted rounded-lg">
                 <div className="font-semibold">30s</div>
-                <div className="text-muted-foreground">Por pergunta</div>
+                <div className="text-muted-foreground">{t('admin.perQuestion')}</div>
               </div>
               <div className="p-3 bg-muted rounded-lg">
                 <div className="font-semibold">{duel.participants_count_initiator + duel.participants_count_challenged}</div>
-                <div className="text-muted-foreground">Participantes</div>
+                <div className="text-muted-foreground">{t('admin.participants')}</div>
               </div>
             </div>
 
@@ -396,7 +396,7 @@ export default function DistrictDuelPage() {
                 className="w-full bg-orange-500 hover:bg-orange-600"
               >
                 <Target className="w-4 h-4 mr-2" />
-                Participar do Duelo
+                {t('admin.participateInDuel')}
               </Button>
               <Button 
                 variant="outline" 
@@ -404,7 +404,7 @@ export default function DistrictDuelPage() {
                 className="w-full"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar à Cidade
+                {t('admin.backToCity')}
               </Button>
             </div>
           </CardContent>
@@ -426,7 +426,7 @@ export default function DistrictDuelPage() {
               <h1 className="text-xl font-bold">
                 {duel.initiator_district.name} vs {duel.challenged_district.name}
               </h1>
-              <p className="text-gray-300">Pergunta {currentQuestion + 1} de {duel.questions.length}</p>
+              <p className="text-gray-300">{t('admin.question')} {currentQuestion + 1} {t('admin.of')} {duel.questions.length}</p>
             </div>
           </div>
           
@@ -483,7 +483,7 @@ export default function DistrictDuelPage() {
             size="lg"
             className="bg-orange-500 hover:bg-orange-600"
           >
-            {currentQuestion + 1 === duel.questions.length ? 'Finalizar' : 'Próxima'}
+            {currentQuestion + 1 === duel.questions.length ? t('admin.finish') : t('admin.next')}
           </Button>
         </div>
       </div>
