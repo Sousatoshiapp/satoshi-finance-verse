@@ -35,10 +35,10 @@ export const withLazyLoading = <P extends object>(
   Component: React.ComponentType<P>,
   fallback?: React.ReactNode
 ) => {
-  const MemoizedComponent = memo(Component);
+  const MemoizedComponent = memo(Component) as React.ComponentType<P>;
   return memo((props: P) => (
     <LazyWrapper fallback={fallback}>
-      <MemoizedComponent {...(props as any)} />
+      <MemoizedComponent {...props} />
     </LazyWrapper>
   ));
 };

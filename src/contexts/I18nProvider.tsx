@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import '../i18n';
 
 interface I18nContextType {

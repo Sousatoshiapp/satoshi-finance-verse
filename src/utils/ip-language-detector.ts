@@ -74,7 +74,6 @@ export const detectLanguageByIP = async (): Promise<string | null> => {
     const countryCode = response.data.country_code;
     const detectedLanguage = COUNTRY_TO_LANGUAGE_MAP[countryCode];
     
-    console.log(`IP Language Detection: Country ${countryCode} -> Language ${detectedLanguage || 'not found'}`);
     
     return detectedLanguage || null;
   } catch (error) {
@@ -86,7 +85,7 @@ export const detectLanguageByIP = async (): Promise<string | null> => {
 export const createIPLanguageDetector = () => {
   return {
     name: 'ipDetector',
-    lookup: (options: any): string | undefined => {
+    lookup: (options?: { caches?: string[] }): string | undefined => {
       detectLanguageByIP().then(language => {
         if (language && options?.caches) {
           localStorage.setItem('i18nextLng', language);
