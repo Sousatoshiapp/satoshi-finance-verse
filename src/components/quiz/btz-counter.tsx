@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
 import { Clock, Shield, TrendingUp, TrendingDown } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface BTZCounterProps {
   className?: string;
@@ -14,6 +15,7 @@ type AnimationState = 'IDLE' | 'ANIMATING' | 'COMPLETE';
 export function BTZCounter({ className = "" }: BTZCounterProps) {
   const { points: currentBTZ, isLoading } = useRealtimePoints();
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
+  const { t } = useI18n();
 
   const [displayBTZ, setDisplayBTZ] = useState(0);
   const [previousBTZ, setPreviousBTZ] = useState(0);
@@ -140,7 +142,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
             {!showDetails && (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 {analytics?.current.yield_applied_today ? (
-                  <span className="text-[#adff2f]">✓ Rendeu hoje</span>
+                  <span className="text-[#adff2f]">✓ {t('btz.yieldedToday')}</span>
                 ) : (
                   <span className="text-orange-500">⏰ Próximo: {analytics ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
                 )}
@@ -154,7 +156,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1">
                     <TrendingUp className="w-3 h-3 text-[#adff2f]" />
-                    <span>Próximo rendimento</span>
+                    <span>{t('btz.nextYield')}</span>
                   </div>
                   <span className="font-mono text-[#adff2f]">
                     +{analytics.current.next_yield_amount.toLocaleString()} BTZ
@@ -165,7 +167,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1">
                     <Shield className="w-3 h-3 text-blue-400" />
-                    <span>BTZ Protegido</span>
+                    <span>{t('btz.protectedBTZ')}</span>
                   </div>
                   <span className="font-mono text-blue-400">
                     {analytics.current.protected_btz.toLocaleString()} ({getProtectionPercentage().toFixed(1)}%)
@@ -176,7 +178,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-1">
                     <span className="text-orange-500">🔥</span>
-                    <span>Streak</span>
+                    <span>{t('btz.streak')}</span>
                   </div>
                   <span className="font-mono text-orange-500">
                     {analytics.current.consecutive_login_days} dias (+{(analytics.bonuses.streak_bonus * 100).toFixed(1)}%)

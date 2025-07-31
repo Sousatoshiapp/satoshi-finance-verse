@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Trophy, Users, Clock } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 // Import trophy images
 import neuralCrown from "@/assets/trophies/neural-crown.jpg";
@@ -43,6 +44,7 @@ export function TournamentCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   useEffect(() => {
     loadTournaments();
@@ -126,7 +128,7 @@ export function TournamentCarousel() {
   if (loading) {
     return (
       <div className="mb-8">
-        <h3 className="text-xl font-bold text-foreground mb-4">Torneios Épicos</h3>
+        <h3 className="text-xl font-bold text-foreground mb-4">{t('tournaments.epicTournaments')}</h3>
         <div className="bg-card rounded-2xl p-6 border border-border shadow-card">
           <div className="animate-pulse">
             <div className="h-4 bg-muted rounded w-1/3 mb-2"></div>
@@ -140,7 +142,7 @@ export function TournamentCarousel() {
   if (tournaments.length === 0) {
     return (
       <div className="mb-8">
-        <h3 className="text-xl font-bold text-foreground mb-4">Torneios Épicos</h3>
+        <h3 className="text-xl font-bold text-foreground mb-4">{t('tournaments.epicTournaments')}</h3>
         <Card className="p-6 text-center">
           <p className="text-muted-foreground">Nenhum torneio disponível no momento</p>
         </Card>
@@ -153,14 +155,14 @@ export function TournamentCarousel() {
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-bold text-foreground">Torneios Épicos</h3>
+        <h3 className="text-xl font-bold text-foreground">{t('tournaments.epicTournaments')}</h3>
         <Button 
           variant="ghost" 
           size="sm"
           onClick={() => navigate('/tournaments')}
           className="text-primary hover:text-primary/80"
         >
-          Ver Todos →
+          {t('common.viewAll')} →
         </Button>
       </div>
 

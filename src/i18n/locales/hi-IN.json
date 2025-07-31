@@ -70,7 +70,8 @@
     "goodAfternoon": "शुभ दोपहर",
     "goodNight": "शुभ रात्रि",
     "student": "छात्र",
-    "goal": "लक्ष्य"
+    "goal": "लक्ष्य",
+    "rankingBeetz": "Beetz रैंकिंग"
   },
   "leaderboard": {
     "weeklyRankings": "साप्ताहिक रैंकिंग",
@@ -508,7 +509,9 @@
     "challenge": "चुनौती",
     "accept": "स्वीकार करें",
     "decline": "अस्वीकार करें",
-    "waiting": "प्रतीक्षा"
+    "waiting": "प्रतीक्षा",
+    "financialDuel": "वित्तीय द्वंद्व",
+    "duelNow": "अभी द्वंद्व करें"
   },
   "levels": {
     "levels": "स्तर",

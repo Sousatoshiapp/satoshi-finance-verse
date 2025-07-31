@@ -48,6 +48,8 @@
     "settings": "Configurações",
     "help": "Ajuda",
     "followers": "seguidores",
+    "playground": "Playground",
+    "explore": "Explorar",
     "following": "Seguindo",
     "publish": "Publicar",
     "publishing": "Publicando...",
@@ -133,7 +135,8 @@
     "todayProgress": "Progresso Hoje",
     "experience": "Experiência",
     "lessons": "Lições",
-    "xpBoost": "XP Boost"
+    "xpBoost": "XP Boost",
+    "rankingBeetz": "Ranking Beetz"
   },
   "leaderboard": {
     "weeklyRankings": "Rankings Semanais",
@@ -388,7 +391,9 @@
     "challenge": "Desafiar",
     "accept": "Aceitar",
     "decline": "Recusar",
-    "waiting": "Aguardando"
+    "waiting": "Aguardando",
+    "financialDuel": "Duelo Financeiro",
+    "duelNow": "Duelar Agora"
   },
   "levels": {
     "levels": "Níveis",
@@ -487,14 +492,11 @@
     "quizCompleted2": "Quiz Concluído!",
     "youGained": "Você ganhou {{xp}} XP! Score: {{score}}/{{total}}"
   },
-  "common": {
-    "loading": "Carregando",
-    "accessDenied": "Acesso Negado",
-    "noSponsorAccess": "Você não possui acesso administrativo a nenhum distrito patrocinado",
-    "configureAccess": "Para configurar acessos de sponsor admin, acesse",
-    "cancel": "Cancelar",
-    "confirm": "Confirmar",
-    "level": "Nível"
+  "btz": {
+    "yieldedToday": "Rendeu hoje",
+    "nextYield": "Próximo rendimento",
+    "protectedBTZ": "BTZ Protegido",
+    "streak": "Streak"
   },
   "satoshiCity": {
     "welcome": "Bem-vindo à cidade do futuro financeiro.",

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { IconSystem } from "@/components/icons/icon-system";
+import { useI18n } from "@/hooks/use-i18n";
 
 // Import cyberpunk images
 import duelCyberpunk from "@/assets/duel-cyberpunk-3d.jpg";
@@ -9,6 +10,7 @@ import playgroundCyberpunk from "@/assets/playground-cyberpunk-3d.jpg";
 
 export function DuelPlaygroundGrid() {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -25,7 +27,7 @@ export function DuelPlaygroundGrid() {
         
         <div className="relative z-10 p-6">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-foreground text-lg">Duelo Financeiro</h4>
+            <h4 className="font-semibold text-foreground text-lg">{t('duels.financialDuel')}</h4>
             <span className="text-xs text-primary font-bold bg-primary/20 px-2 py-1 rounded">
               DISPONÍVEL
             </span>
@@ -54,7 +56,7 @@ export function DuelPlaygroundGrid() {
             className="w-full bg-gradient-to-r from-destructive to-warning text-white rounded-full font-semibold shadow-glow"
             onClick={() => navigate('/find-opponent')}
           >
-            Duelar Agora
+            {t('duels.duelNow')}
           </Button>
         </div>
       </Card>
@@ -72,7 +74,7 @@ export function DuelPlaygroundGrid() {
         
         <div className="relative z-10 p-6">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-foreground text-lg">Playground</h4>
+            <h4 className="font-semibold text-foreground text-lg">{t('common.playground')}</h4>
             <span className="text-xs text-success font-bold bg-success/20 px-2 py-1 rounded">
               NOVO!
             </span>
@@ -101,7 +103,7 @@ export function DuelPlaygroundGrid() {
             className="w-full bg-gradient-to-r from-secondary to-primary text-black rounded-full font-semibold shadow-glow"
             onClick={() => navigate('/playground')}
           >
-            Explorar
+            {t('common.explore')}
           </Button>
         </div>
       </Card>
