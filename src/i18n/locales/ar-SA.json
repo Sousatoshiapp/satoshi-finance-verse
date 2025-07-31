@@ -442,5 +442,14 @@
       "title": "خطأ",
       "message": "تعذر تحميل المتجر"
     }
+  },
+  "btz": {
+    "yieldedToday": "حصل اليوم",
+    "nextYield": "العائد التالي",
+    "protectedBTZ": "BTZ محمي",
+    "streak": "السلسلة",
+    "next": "التالي",
+    "days": "أيام",
+    "nextIn": "التالي في"
   }
 }

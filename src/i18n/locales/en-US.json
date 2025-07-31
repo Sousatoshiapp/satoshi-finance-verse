@@ -541,7 +541,10 @@
     "yieldedToday": "Yielded today",
     "nextYield": "Next yield",
     "protectedBTZ": "Protected BTZ",
-    "streak": "Streak"
+    "streak": "Streak",
+    "next": "Next",
+    "days": "days",
+    "nextIn": "Next in"
   },
   "common": {
     "loading": "Loading",

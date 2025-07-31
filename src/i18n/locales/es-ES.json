@@ -447,6 +447,15 @@
     "found": "¡Oponente encontrado!",
     "cancel": "Cancelar"
   },
+  "btz": {
+    "yieldedToday": "Rendido hoy",
+    "nextYield": "Próximo rendimiento",
+    "protectedBTZ": "BTZ Protegido",
+    "streak": "Racha",
+    "next": "Próximo",
+    "days": "días",
+    "nextIn": "Próximo en"
+  },
   "common": {
     "loading": "Cargando",
     "accessDenied": "Acceso Denegado",

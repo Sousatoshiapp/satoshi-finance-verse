@@ -550,6 +550,15 @@
     "found": "प्रतिद्वंद्वी मिल गया!",
     "cancel": "रद्द करें"
   },
+  "btz": {
+    "yieldedToday": "आज प्राप्त हुआ",
+    "nextYield": "अगली उपज",
+    "protectedBTZ": "संरक्षित BTZ",
+    "streak": "स्ट्रीक",
+    "next": "अगला",
+    "days": "दिन",
+    "nextIn": "अगला में"
+  },
   "common": {
     "loading": "लोड हो रहा है",
     "accessDenied": "पहुंच अस्वीकृत",
