@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/shared/ui/badge";
 import { Star, Crown } from "lucide-react";
 
 interface SubscriptionIndicatorProps {

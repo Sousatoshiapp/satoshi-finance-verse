@@ -1,7 +1,7 @@
 // Streaming Dashboard para carregamento progressivo
 import { memo, Suspense, useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 import { useDashboardData } from '@/hooks/use-dashboard-data';
 import { useRenderPerformance } from '@/hooks/use-performance-monitor';
 
@@ -11,7 +11,7 @@ const DashboardSummaryOptimized = memo(() => {
   const { data: dashboardData } = useDashboardData();
   
   useEffect(() => {
-    import('@/components/dashboard-summary-optimized').then(module => {
+    import('@/components/shared/dashboard-summary-optimized').then(module => {
       setComponent(() => module.DashboardSummaryOptimized);
     });
   }, []);
@@ -44,7 +44,7 @@ const QuickActionsOptimized = memo(() => {
   const [Component, setComponent] = useState<any>(null);
   
   useEffect(() => {
-    import('@/components/quick-actions-optimized').then(module => {
+    import('@/components/shared/quick-actions-optimized').then(module => {
       setComponent(() => module.QuickActionsOptimized);
     });
   }, []);
@@ -60,7 +60,7 @@ const CompactLeaderboard = memo(() => {
   const [Component, setComponent] = useState<any>(null);
   
   useEffect(() => {
-    import('@/components/compact-leaderboard').then(module => {
+    import('@/components/shared/compact-leaderboard').then(module => {
       setComponent(() => module.CompactLeaderboard);
     });
   }, []);
@@ -76,7 +76,7 @@ const CompactDailyRewards = memo(() => {
   const [Component, setComponent] = useState<any>(null);
   
   useEffect(() => {
-    import('@/components/compact-daily-rewards').then(module => {
+    import('@/components/features/gamification/compact-daily-rewards').then(module => {
       setComponent(() => module.CompactDailyRewards);
     });
   }, []);

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Input } from "@/components/shared/ui/input";
 import { TrendingUp, TrendingDown, Bitcoin, DollarSign, Zap, Search } from "lucide-react";
 import { Asset } from "./trading-interface";
 

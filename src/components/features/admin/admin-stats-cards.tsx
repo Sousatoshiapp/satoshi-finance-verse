@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
 import { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 

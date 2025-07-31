@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { UsersList } from "@/components/duels/users-list";
 import { DuelInvites } from "@/components/duels/duel-invites";
 import { EnhancedSimultaneousDuel } from "@/components/duels/enhanced-simultaneous-duel";

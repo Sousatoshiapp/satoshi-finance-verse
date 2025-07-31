@@ -8,9 +8,9 @@ import { I18nProvider } from "@/contexts/I18nProvider";
 import { PointsProvider } from "@/contexts/PointsContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { OnlineStatusProvider } from "@/contexts/OnlineStatusContext";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { generateRoutes } from "@/components/RouteGenerator";
-import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
+import { generateRoutes } from "@/components/shared/RouteGenerator";
+import { GlobalErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
 import { useI18n } from "@/hooks/use-i18n";
 
 function NotFoundPage() {

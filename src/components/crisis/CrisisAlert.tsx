@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/shared/ui/alert";
+import { Button } from "@/components/shared/ui/button";
+import { Progress } from "@/components/shared/ui/progress";
+import { Badge } from "@/components/shared/ui/badge";
 import { AlertTriangle, Clock, Zap, X } from "lucide-react";
 import { CrisisContributionModal } from "./CrisisContributionModal";
 

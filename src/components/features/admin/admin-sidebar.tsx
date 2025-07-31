@@ -6,9 +6,9 @@ import {
   Gift, Calendar, Shield, FileText, Zap, Star, Crown,
   ChevronDown, ChevronRight, LogOut, Building2
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import { cn } from "@/lib/utils";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/shared/ui/collapsible";
 
 interface NavItem {
   title: string;

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Users, Trophy, Clock, Star, Target, Zap } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 

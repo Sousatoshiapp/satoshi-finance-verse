@@ -1,5 +1,5 @@
 import { useI18n } from "@/hooks/use-i18n";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import { Globe } from "lucide-react";
 
 export function LanguageSwitch() {

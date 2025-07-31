@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent } from "@/components/shared/ui/card";
 import { Play, Pause, Volume2, VolumeX, X } from "lucide-react";
 
 interface VideoExplanationProps {

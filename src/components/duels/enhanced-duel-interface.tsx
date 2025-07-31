@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { CircularTimer } from "./circular-timer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";

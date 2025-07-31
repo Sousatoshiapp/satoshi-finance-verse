@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
 import { cn } from "@/lib/utils";
 import { useEnhancedQuiz } from "@/hooks/use-enhanced-quiz";
 import { useDailyMissions } from "@/hooks/use-daily-missions";

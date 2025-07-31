@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
 import { cn } from "@/lib/utils";
 import { EnhancedQuizCard } from "./quiz/enhanced-quiz-card";
 

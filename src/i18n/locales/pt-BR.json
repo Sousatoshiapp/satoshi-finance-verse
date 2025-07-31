@@ -505,7 +505,8 @@
       "error": "Erro",
       "errorDescription": "Não foi possível alterar a senha",
       "changing": "Alterando...",
-      "changePassword": "Alterar Senha"
+      "changePassword": "Alterar Senha",
+      "back": "Voltar"
     }
   },
   "admin": {

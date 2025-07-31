@@ -3,12 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Users, UserPlus, AlertTriangle, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/shared/ui/button';
 import { DistrictBackground } from './DistrictBackground';
 import { DistrictCircleActions } from './DistrictCircleActions';
 import { DistrictStatsCard } from './DistrictStatsCard';
 import { useDistrictStats } from '@/hooks/use-district-stats';
-import { FloatingNavbar } from '@/components/floating-navbar';
+import { FloatingNavbar } from '@/components/shared/floating-navbar';
 import { useCrisisState } from '@/hooks/use-crisis-state';
 import { CrisisEmergencyModal } from '@/components/crisis/CrisisEmergencyModal';
 // Import district logos

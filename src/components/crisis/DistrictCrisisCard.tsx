@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Progress } from "@/components/shared/ui/progress";
+import { Badge } from "@/components/shared/ui/badge";
 import { AlertTriangle, Zap, Target } from "lucide-react";
 import { useCrisisDistrictGoal, useCrisisData } from "@/hooks/use-crisis-data";
 import { CrisisContributionModal } from "./CrisisContributionModal";

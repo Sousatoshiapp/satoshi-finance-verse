@@ -1,6 +1,6 @@
 
-import { Card } from "@/components/ui/card";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
+import { Card } from "@/components/shared/ui/card";
+import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
 import { LightningIcon, BookIcon, StreakIcon } from "@/components/icons/game-icons";
 import { useNavigate } from "react-router-dom";
 

@@ -489,7 +489,8 @@
       "error": "Error",
       "errorDescription": "No se pudo cambiar la contraseña",
       "changing": "Cambiando...",
-      "changePassword": "Cambiar Contraseña"
+      "changePassword": "Cambiar Contraseña",
+      "back": "Atrás"
     }
   },
   "duels": {

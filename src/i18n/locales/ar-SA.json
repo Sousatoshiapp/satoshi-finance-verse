@@ -471,7 +471,8 @@
       "error": "خطأ",
       "errorDescription": "لا يمكن تغيير كلمة المرور",
       "changing": "جاري التغيير...",
-      "changePassword": "تغيير كلمة المرور"
+      "changePassword": "تغيير كلمة المرور",
+      "back": "رجوع"
     }
   },
   "store": {

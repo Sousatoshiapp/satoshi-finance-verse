@@ -1,7 +1,7 @@
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
 import { Settings, ShoppingCart, Trophy, Users, BookOpen, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

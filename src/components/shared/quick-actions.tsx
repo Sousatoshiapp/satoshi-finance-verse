@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Users, Trophy, ShoppingBag, BarChart3 } from "lucide-react";
 

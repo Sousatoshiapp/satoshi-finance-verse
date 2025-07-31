@@ -550,7 +550,8 @@
       "error": "Error",
       "errorDescription": "Could not change password",
       "changing": "Changing...",
-      "changePassword": "Change Password"
+      "changePassword": "Change Password",
+      "back": "Back"
     }
   },
   "admin": {

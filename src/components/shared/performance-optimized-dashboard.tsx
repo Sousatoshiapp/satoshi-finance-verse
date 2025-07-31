@@ -1,10 +1,10 @@
 import { memo, useMemo, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { CompactLeaderboard } from '@/components/compact-leaderboard';
-import { CompactDailyRewards } from '@/components/compact-daily-rewards';
-import { CompactStreakCounter } from '@/components/compact-streak-counter';
-import { QuickActionsOptimized } from '@/components/quick-actions-optimized';
+import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
+import { CompactLeaderboard } from '@/components/shared/compact-leaderboard';
+import { CompactDailyRewards } from '@/components/features/gamification/compact-daily-rewards';
+import { CompactStreakCounter } from '@/components/features/gamification/compact-streak-counter';
+import { QuickActionsOptimized } from '@/components/shared/quick-actions-optimized';
 import { useRenderPerformance } from '@/hooks/use-performance-monitor';
 import { useDashboardData } from '@/hooks/use-dashboard-data';
 

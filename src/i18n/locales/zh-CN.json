@@ -226,7 +226,8 @@
       "error": "错误",
       "errorDescription": "无法更改密码",
       "changing": "更改中...",
-      "changePassword": "更改密码"
+      "changePassword": "更改密码",
+      "back": "返回"
     }
   },
   "profile": {

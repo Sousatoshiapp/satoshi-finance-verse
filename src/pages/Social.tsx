@@ -1,23 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { UserCard } from "@/components/social/user-card";
-import { ConversationsList } from "@/components/social/conversations-list";
-import { ChatWindow } from "@/components/social/chat-window";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Input } from "@/components/shared/ui/input";
+import { Button } from "@/components/shared/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Badge } from "@/components/shared/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
+import { ScrollArea } from "@/components/shared/ui/scroll-area";
+import { UserCard } from "@/components/features/social/user-card";
+import { ConversationsList } from "@/components/features/social/conversations-list";
+import { ChatWindow } from "@/components/features/social/chat-window";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Search, MessageCircle, Send } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { SocialFeed } from "@/components/social/social-feed";
-import { SocialChallenges } from "@/components/social/social-challenges";
-import { SocialLeaderboard } from "@/components/social/social-leaderboard";
+import { Textarea } from "@/components/shared/ui/textarea";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
+import { SocialFeed } from "@/components/features/social/social-feed";
+import { SocialChallenges } from "@/components/features/social/social-challenges";
+import { SocialLeaderboard } from "@/components/features/social/social-leaderboard";
 import { useI18n } from "@/hooks/use-i18n";
 
 interface User {

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
 
 // Import avatar images
 import neoTrader from "@/assets/avatars/neo-trader.jpg";

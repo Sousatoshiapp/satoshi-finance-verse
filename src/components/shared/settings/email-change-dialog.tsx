@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shared/ui/dialog";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -133,7 +133,7 @@ export function EmailChangeDialog({ isOpen, onClose, currentEmail }: EmailChange
 
             <div className="flex gap-2 pt-4">
               <Button variant="outline" onClick={onClose} className="flex-1">
-                Cancelar
+                {t('settings.emailChange.back')}
               </Button>
               <Button 
                 onClick={handleEmailChangeRequest} 

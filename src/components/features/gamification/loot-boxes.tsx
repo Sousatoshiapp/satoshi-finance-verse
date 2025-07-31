@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shared/ui/dialog";
 import { useLootBoxes } from "@/hooks/use-loot-boxes";
 import { Gift, Package, Sparkles, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -177,7 +177,8 @@
       "error": "त्रुटि",
       "errorDescription": "पासवर्ड नहीं बदला जा सका",
       "changing": "बदला जा रहा है...",
-      "changePassword": "पासवर्ड बदलें"
+      "changePassword": "पासवर्ड बदलें",
+      "back": "वापस"
     }
   },
   "profile": {

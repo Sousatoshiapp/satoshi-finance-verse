@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { ProgressBar } from "@/components/ui/progress-bar";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/shared/ui/radio-group";
+import { Label } from "@/components/shared/ui/label";
+import { ProgressBar } from "@/components/shared/ui/progress-bar";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Settings, Zap, Clock, Crown, Star, Trophy, X } from "lucide-react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/shared/ui/alert-dialog";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 import { supabase } from "@/integrations/supabase/client";
-import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/avatar-display-optimized";
+import { AvatarDisplayOptimized as AvatarDisplay } from "@/components/shared/avatar-display-optimized";
 import defeatAnimation from "@/assets/defeat-animation.jpg";
 
 const duelQuestions = [
