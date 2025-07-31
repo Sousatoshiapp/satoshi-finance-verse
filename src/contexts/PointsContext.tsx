@@ -66,7 +66,7 @@ export function PointsProvider({ children }: { children: ReactNode }) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, points]);
+  }, [user, points, refreshPoints]);
 
   return (
     <PointsContext.Provider value={{ points, lastUpdate, refreshPoints }}>
