@@ -36,10 +36,15 @@ export default defineConfig(({ mode }) => ({
           'vendor-supabase': ['@supabase/supabase-js'],
           
           // UI vendor chunks
-          'vendor-ui': [
+          'vendor-ui-core': [
             '@radix-ui/react-dialog',
             '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-toast',
+            '@radix-ui/react-toast'
+          ],
+          'vendor-ui-forms': [
+            '@radix-ui/react-select',
+            '@radix-ui/react-checkbox',
+            '@radix-ui/react-radio-group',
             '@radix-ui/react-avatar',
             '@radix-ui/react-progress'
           ],
@@ -47,31 +52,61 @@ export default defineConfig(({ mode }) => ({
           'vendor-utils': ['date-fns', 'clsx', 'tailwind-merge'],
           'vendor-icons': ['lucide-react'],
           
-          // Feature-based chunks
+          // Feature-based chunks (more granular)
           'chunk-auth': [
             'src/pages/Auth.tsx',
             'src/contexts/AuthContext.tsx'
           ],
-          'chunk-quiz': [
+          'chunk-quiz-core': [
             'src/pages/Quiz.tsx',
-            'src/pages/SoloQuiz.tsx',
+            'src/pages/SoloQuiz.tsx'
+          ],
+          'chunk-quiz-features': [
             'src/pages/EnhancedQuiz.tsx'
           ],
-          'chunk-social': [
-            'src/pages/Social.tsx',
+          'chunk-social-core': [
+            'src/pages/Social.tsx'
+          ],
+          'chunk-social-features': [
             'src/pages/SocialChallenges.tsx'
           ],
           'chunk-trading': [
             'src/pages/SocialTrading.tsx'
           ],
-          'chunk-admin': [
-            'src/pages/AdminDashboard.tsx',
-            'src/pages/AdminUsers.tsx'
+          'chunk-admin-core': [
+            'src/pages/AdminDashboard.tsx'
+          ],
+          'chunk-admin-users': [
+            'src/pages/AdminUsers.tsx',
+            'src/pages/AdminUsersAll.tsx',
+            'src/pages/AdminUsersModeration.tsx'
+          ],
+          'chunk-admin-finance': [
+            'src/pages/AdminFinanceBeetz.tsx',
+            'src/pages/AdminFinanceReports.tsx'
           ],
           'chunk-leaderboard': [
             'src/pages/Leaderboard.tsx',
             'src/components/leaderboards.tsx',
             'src/components/compact-leaderboard.tsx'
+          ],
+          'chunk-gamification': [
+            'src/pages/Achievements.tsx',
+            'src/pages/Leagues.tsx',
+            'src/pages/Powerups.tsx'
+          ],
+          'chunk-learning': [
+            'src/pages/LearningAnalytics.tsx',
+            'src/pages/LearningPath.tsx'
+          ],
+          'chunk-ai': [
+            'src/pages/AITutor.tsx',
+            'src/pages/AISimulator.tsx'
+          ],
+          'chunk-marketplace': [
+            'src/pages/Marketplace.tsx',
+            'src/pages/Store.tsx',
+            'src/pages/VirtualStore.tsx'
           ]
         },
         
