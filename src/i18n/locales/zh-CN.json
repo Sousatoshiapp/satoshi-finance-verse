@@ -795,5 +795,88 @@
       "title": "错误",
       "message": "无法加载商店"
     }
+  },
+  "auth": {
+    "title": {
+      "login": "进入游戏",
+      "signup": "进入游戏"
+    },
+    "description": {
+      "login": "进入中本聪城市，继续您的旅程",
+      "signup": "成为金融未来城市的公民"
+    },
+    "form": {
+      "nickname": "用户名",
+      "nicknamePlaceholder": "您希望如何被称呼？",
+      "email": "邮箱",
+      "emailPlaceholder": "您的@邮箱.com",
+      "password": "密码",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "最少6个字符",
+      "resetEmail": "重置邮箱",
+      "resetEmailPlaceholder": "输入您的注册邮箱"
+    },
+    "buttons": {
+      "back": "返回",
+      "login": "进入游戏",
+      "signup": "成为公民",
+      "processing": "处理中...",
+      "sending": "发送中...",
+      "forgotPassword": "忘记密码",
+      "backToLogin": "← 返回登录",
+      "sendResetLink": "发送重置链接",
+      "resendConfirmation": "重新发送确认邮件",
+      "socialSeparator": "或继续使用",
+      "toggleLogin": "已经是公民？登录",
+      "toggleSignup": "城市新人？创建账户"
+    },
+    "messages": {
+      "loginError": "登录错误",
+      "invalidCredentials": "邮箱或密码错误。请检查您的凭据。",
+      "emailNotConfirmed": "邮箱未确认",
+      "emailNotConfirmedDesc": "请检查您的邮箱并在登录前点击确认链接。",
+      "loginSuccess": "登录成功！",
+      "loginSuccessDesc": "欢迎回到中本聪城市。",
+      "userExists": "用户已存在",
+      "userExistsDesc": "此账户已注册。请登录或使用其他邮箱。",
+      "signupError": "注册错误",
+      "signupSuccess": "注册完成！",
+      "signupSuccessDesc": "请检查您的邮箱以激活账户",
+      "welcomeNew": "欢迎！",
+      "welcomeNewDesc": "账户创建成功",
+      "unexpectedError": "意外错误",
+      "unexpectedErrorDesc": "出现问题。请重试。",
+      "socialLoginError": "社交登录错误",
+      "socialLoginErrorDesc": "社交登录出现问题。请重试。",
+      "emailRequired": "邮箱必填",
+      "emailRequiredDesc": "输入您的邮箱以接收重置链接。",
+      "emailSent": "邮件已发送！",
+      "emailSentDesc": "请检查您的邮箱以重置密码。",
+      "emailRequiredResend": "邮箱必填",
+      "emailRequiredResendDesc": "输入您的邮箱以重新发送确认。",
+      "emailResent": "邮件已重新发送！",
+      "emailResentDesc": "请检查您的邮箱以确认账户。",
+      "resetInstructions": "您将收到一封包含重置密码说明的邮件。",
+      "checkSpam": "也请检查您的垃圾邮件文件夹。"
+    },
+    "narrative": {
+      "loginText": "等待您的归来。",
+      "loginSubtext": "您的区域和成就已保存。",
+      "signupText": "欢迎来到金融未来",
+      "signupSubtext": "探索区域，赚取XP并掌握金融知识。",
+      "satoshiCity": "中本聪城市"
+    }
+  },
+  "welcome": {
+    "title": "金融的未来已经到来",
+    "badges": {
+      "neuralSystem": "神经系统",
+      "districts": "7个区域",
+      "multiplayer": "多人游戏"
+    },
+    "buttons": {
+      "enterGame": "进入游戏",
+      "createAccount": "创建账户"
+    }
   }
 }

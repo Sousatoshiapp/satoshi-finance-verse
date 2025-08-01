@@ -51,19 +51,19 @@ export default function Auth() {
         if (error) {
           if (error.message.includes("Invalid login credentials")) {
             toast({
-              title: t('auth.loginError'),
-              description: t('auth.invalidCredentials'),
+              title: t('auth.messages.loginError'),
+              description: t('auth.messages.invalidCredentials'),
               variant: "destructive",
             });
           } else if (error.message.includes("Email not confirmed")) {
             toast({
-              title: t('auth.emailNotConfirmed'),
-              description: t('auth.emailNotConfirmedDescription'),
+              title: t('auth.messages.emailNotConfirmed'),
+              description: t('auth.messages.emailNotConfirmedDesc'),
               variant: "destructive",
             });
           } else {
             toast({
-              title: t('auth.loginError'),
+              title: t('auth.messages.loginError'),
               description: error.message,
               variant: "destructive",
             });
@@ -72,8 +72,8 @@ export default function Auth() {
         }
 
         toast({
-          title: t('auth.loginSuccess'),
-          description: t('auth.loginSuccessDescription'),
+          title: t('auth.messages.loginSuccess'),
+          description: t('auth.messages.loginSuccessDesc'),
         });
         
         navigate("/dashboard");
@@ -93,13 +93,13 @@ export default function Auth() {
         if (error) {
           if (error.message.includes("User already registered")) {
             toast({
-              title: t('auth.userAlreadyExists'),
-              description: t('auth.userAlreadyExistsDescription'),
+              title: t('auth.messages.userExists'),
+              description: t('auth.messages.userExistsDesc'),
               variant: "destructive",
             });
           } else {
             toast({
-              title: t('auth.signupError'),
+              title: t('auth.messages.signupError'),
               description: error.message,
               variant: "destructive",
             });
@@ -112,22 +112,22 @@ export default function Auth() {
           setRegisteredEmail(email);
           setShowEmailVerification(true);
           toast({
-            title: t('auth.signupSuccess'),
-            description: t('auth.signupSuccessDescription')
+            title: t('auth.messages.signupSuccess'),
+            description: t('auth.messages.signupSuccessDesc')
           });
         } else if (data.session) {
           // User is already confirmed
           toast({
-            title: t('auth.welcomeMessage'),
-            description: t('auth.accountCreatedSuccess')
+            title: t('auth.messages.welcomeNew'),
+            description: t('auth.messages.welcomeNewDesc')
           });
           navigate("/dashboard");
         }
       }
     } catch (error) {
       toast({
-        title: t('auth.unexpectedError'),
-        description: t('auth.unexpectedErrorDescription'),
+        title: t('auth.messages.unexpectedError'),
+        description: t('auth.messages.unexpectedErrorDesc'),
         variant: "destructive",
       });
     } finally {
@@ -146,15 +146,15 @@ export default function Auth() {
 
       if (error) {
         toast({
-          title: "Erro no Login Social",
+          title: t('auth.messages.socialLoginError'),
           description: error.message,
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Erro inesperado",
-        description: "Algo deu errado com o login social. Tente novamente.",
+        title: t('auth.messages.unexpectedError'),
+        description: t('auth.messages.socialLoginErrorDesc'),
         variant: "destructive",
       });
     }
@@ -165,8 +165,8 @@ export default function Auth() {
     
     if (!resetEmail) {
       toast({
-        title: t('auth.emailRequired'),
-        description: t('auth.emailRequiredDescription'),
+        title: t('auth.messages.emailRequired'),
+        description: t('auth.messages.emailRequiredDesc'),
         variant: "destructive",
       });
       return;
@@ -186,16 +186,16 @@ export default function Auth() {
         });
       } else {
         toast({
-          title: t('auth.emailSent'),
-          description: t('auth.emailSentDescription'),
+          title: t('auth.messages.emailSent'),
+          description: t('auth.messages.emailSentDesc'),
         });
         setShowForgotPassword(false);
         setResetEmail("");
       }
     } catch (error) {
       toast({
-        title: t('auth.unexpectedError'),
-        description: t('auth.unexpectedErrorDescription'),
+        title: t('auth.messages.unexpectedError'),
+        description: t('auth.messages.unexpectedErrorDesc'),
         variant: "destructive",
       });
     } finally {
@@ -206,8 +206,8 @@ export default function Auth() {
   const handleResendConfirmation = async () => {
     if (!email) {
       toast({
-        title: t('auth.emailRequiredResend'),
-        description: t('auth.emailRequiredResendDescription'),
+        title: t('auth.messages.emailRequiredResend'),
+        description: t('auth.messages.emailRequiredResendDesc'),
         variant: "destructive",
       });
       return;
@@ -230,14 +230,14 @@ export default function Auth() {
         });
       } else {
         toast({
-          title: t('auth.emailResent'),
-          description: t('auth.emailResentDescription'),
+          title: t('auth.messages.emailResent'),
+          description: t('auth.messages.emailResentDesc'),
         });
       }
     } catch (error) {
       toast({
-        title: t('auth.unexpectedError'),
-        description: t('auth.unexpectedErrorDescription'),
+        title: t('auth.messages.unexpectedError'),
+        description: t('auth.messages.unexpectedErrorDesc'),
         variant: "destructive",
       });
     }
@@ -282,19 +282,19 @@ export default function Auth() {
             className="mb-4 sm:mb-6 text-gray-300 hover:text-white text-sm sm:text-base"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar
+            {t('auth.buttons.back')}
           </Button>
 
           {/* Auth Card - Mobile responsive */}
           <Card className="bg-card/90 backdrop-blur-sm border-2 border-[#adff2f]/30 shadow-2xl mx-auto">
             <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
               <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#adff2f] to-[#32cd32] bg-clip-text text-transparent">
-                {isLogin ? 'Entre no Jogo' : 'Entre no Jogo'}
+                {isLogin ? t('auth.title.login') : t('auth.title.signup')}
               </CardTitle>
               <CardDescription className="text-gray-300 text-sm sm:text-base px-2 sm:px-0">
                 {isLogin 
-                  ? 'Entre na Satoshi City e continue sua jornada'
-                  : 'Torne-se um cidadão da cidade do futuro financeiro'
+                  ? t('auth.description.login')
+                  : t('auth.description.signup')
                 }
               </CardDescription>
             </CardHeader>
@@ -305,12 +305,12 @@ export default function Auth() {
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="resetEmail" className="text-gray-300">
-                      Email para redefinição
+                      {t('auth.form.resetEmail')}
                     </Label>
                     <Input
                       id="resetEmail"
                       type="email"
-                      placeholder="Digite seu email cadastrado"
+                      placeholder={t('auth.form.resetEmailPlaceholder')}
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       required
@@ -326,10 +326,10 @@ export default function Auth() {
                     {loading ? (
                       <div className="flex items-center space-x-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
-                        <span>Enviando...</span>
+                        <span>{t('auth.buttons.sending')}</span>
                       </div>
                     ) : (
-                      'Enviar Link de Redefinição'
+                      t('auth.buttons.sendResetLink')
                     )}
                   </Button>
 
@@ -343,15 +343,15 @@ export default function Auth() {
                       }}
                       className="text-gray-400 hover:text-[#adff2f]"
                     >
-                      ← Voltar ao login
+                      {t('auth.buttons.backToLogin')}
                     </Button>
                   </div>
 
                   <div className="mt-6 p-4 bg-slate-700/30 rounded-lg border border-[#adff2f]/20">
                     <p className="text-sm text-gray-300 text-center leading-relaxed">
-                      Você receberá um email com instruções para redefinir sua senha.
+                      {t('auth.messages.resetInstructions')}
                       <br />
-                      <span className="text-[#adff2f] font-semibold">Verifique também sua caixa de spam.</span>
+                      <span className="text-[#adff2f] font-semibold">{t('auth.messages.checkSpam')}</span>
                     </p>
                   </div>
                 </form>
@@ -361,12 +361,12 @@ export default function Auth() {
                 {!isLogin && (
                   <div className="space-y-2">
                     <Label htmlFor="nickname" className="text-gray-300">
-                      Nome de Usuário
+                      {t('auth.form.nickname')}
                     </Label>
                     <Input
                       id="nickname"
                       type="text"
-                      placeholder="Como você quer ser conhecido?"
+                      placeholder={t('auth.form.nicknamePlaceholder')}
                       value={nickname}
                       onChange={(e) => setNickname(e.target.value)}
                       className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
@@ -376,12 +376,12 @@ export default function Auth() {
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-gray-300">
-                    Email
+                    {t('auth.form.email')}
                   </Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="seu@email.com"
+                    placeholder={t('auth.form.emailPlaceholder')}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -391,13 +391,13 @@ export default function Auth() {
 
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-gray-300">
-                    Senha
+                    {t('auth.form.password')}
                   </Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
+                      placeholder={t('auth.form.passwordPlaceholder')}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -420,7 +420,7 @@ export default function Auth() {
                   </div>
                   {!isLogin && (
                     <p className="text-xs text-gray-400">
-                      Mínimo de 6 caracteres
+                      {t('auth.form.passwordMinLength')}
                     </p>
                   )}
                 </div>
@@ -433,10 +433,10 @@ export default function Auth() {
                   {loading ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
-                      <span>Processando...</span>
+                      <span>{t('auth.buttons.processing')}</span>
                     </div>
                   ) : (
-                    isLogin ? 'Entrar no Jogo' : 'Tornar-se Cidadão'
+                    isLogin ? t('auth.buttons.login') : t('auth.buttons.signup')
                   )}
                 </Button>
 
@@ -449,7 +449,7 @@ export default function Auth() {
                       onClick={() => setShowForgotPassword(true)}
                       className="text-sm text-gray-400 hover:text-[#adff2f]"
                     >
-                      Esqueci minha senha
+                      {t('auth.buttons.forgotPassword')}
                     </Button>
                   </div>
                 )}
@@ -463,7 +463,7 @@ export default function Auth() {
                       onClick={handleResendConfirmation}
                       className="text-sm text-gray-400 hover:text-purple-400"
                     >
-                      Reenviar email de confirmação
+                      {t('auth.buttons.resendConfirmation')}
                     </Button>
                   </div>
                 )}
@@ -474,7 +474,7 @@ export default function Auth() {
                     <Separator className="w-full bg-slate-600" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-slate-800 px-2 text-gray-400">ou continue com</span>
+                    <span className="bg-slate-800 px-2 text-gray-400">{t('auth.buttons.socialSeparator')}</span>
                   </div>
                 </div>
 
@@ -535,11 +535,11 @@ export default function Auth() {
                   >
                     {isLogin ? (
                       <>
-                        Novo na cidade? <span className="underline ml-1">Crie sua conta</span>
+                        {t('auth.buttons.toggleSignup')}
                       </>
                     ) : (
                       <>
-                        Já é cidadão? <span className="underline ml-1">Faça login</span>
+                        {t('auth.buttons.toggleLogin')}
                       </>
                     )}
                   </Button>
@@ -550,15 +550,15 @@ export default function Auth() {
                   <p className="text-sm text-gray-300 text-center leading-relaxed">
                     {isLogin ? (
                       <>
-                        <span className="text-cyan-400 font-semibold">Satoshi City</span> aguarda seu retorno.
+                        <span className="text-cyan-400 font-semibold">{t('auth.narrative.satoshiCity')}</span> {t('auth.narrative.loginText')}
                         <br />
-                        Seus distritos e conquistas estão preservados.
+                        {t('auth.narrative.loginSubtext')}
                       </>
                     ) : (
                       <>
-                        Bem-vindo ao futuro das finanças em <span className="text-purple-400 font-semibold">Satoshi City</span>.
+                        {t('auth.narrative.signupText')} <span className="text-purple-400 font-semibold">{t('auth.narrative.satoshiCity')}</span>.
                         <br />
-                        Explore distritos, ganhe XP e domine o conhecimento financeiro.
+                        {t('auth.narrative.signupSubtext')}
                       </>
                     )}
                   </p>

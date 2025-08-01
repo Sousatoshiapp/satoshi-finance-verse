@@ -746,5 +746,88 @@
       "title": "त्रुटि",
       "message": "स्टोर लोड नहीं हो सका"
     }
+  },
+  "auth": {
+    "title": {
+      "login": "गेम में प्रवेश करें",
+      "signup": "गेम में प्रवेश करें"
+    },
+    "description": {
+      "login": "सतोशी सिटी में प्रवेश करें और अपनी यात्रा जारी रखें",
+      "signup": "वित्तीय भविष्य के शहर का नागरिक बनें"
+    },
+    "form": {
+      "nickname": "उपयोगकर्ता नाम",
+      "nicknamePlaceholder": "आप कैसे जाने जाना चाहते हैं?",
+      "email": "ईमेल",
+      "emailPlaceholder": "आपका@ईमेल.com",
+      "password": "पासवर्ड",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "न्यूनतम 6 अक्षर",
+      "resetEmail": "रीसेट के लिए ईमेल",
+      "resetEmailPlaceholder": "अपना पंजीकृत ईमेल दर्ज करें"
+    },
+    "buttons": {
+      "back": "वापस",
+      "login": "गेम में प्रवेश करें",
+      "signup": "नागरिक बनें",
+      "processing": "प्रसंस्करण...",
+      "sending": "भेजा जा रहा है...",
+      "forgotPassword": "मैं अपना पासवर्ड भूल गया",
+      "backToLogin": "← लॉगिन पर वापस जाएं",
+      "sendResetLink": "रीसेट लिंक भेजें",
+      "resendConfirmation": "पुष्टिकरण ईमेल पुनः भेजें",
+      "socialSeparator": "या जारी रखें",
+      "toggleLogin": "पहले से नागरिक हैं? लॉग इन करें",
+      "toggleSignup": "शहर में नए हैं? अपना खाता बनाएं"
+    },
+    "messages": {
+      "loginError": "लॉगिन त्रुटि",
+      "invalidCredentials": "गलत ईमेल या पासवर्ड। अपनी जानकारी जांचें।",
+      "emailNotConfirmed": "ईमेल की पुष्टि नहीं हुई",
+      "emailNotConfirmedDesc": "लॉग इन करने से पहले अपना ईमेल जांचें और पुष्टिकरण लिंक पर क्लिक करें।",
+      "loginSuccess": "लॉगिन सफल!",
+      "loginSuccessDesc": "सतोशी सिटी में वापस स्वागत है।",
+      "userExists": "उपयोगकर्ता पहले से मौजूद है",
+      "userExistsDesc": "यह खाता पहले से पंजीकृत है। लॉग इन करें या दूसरा ईमेल उपयोग करें।",
+      "signupError": "पंजीकरण त्रुटि",
+      "signupSuccess": "पंजीकरण पूर्ण!",
+      "signupSuccessDesc": "अपना खाता सक्रिय करने के लिए अपना ईमेल जांचें",
+      "welcomeNew": "स्वागत है!",
+      "welcomeNewDesc": "खाता सफलतापूर्वक बनाया गया",
+      "unexpectedError": "अप्रत्याशित त्रुटि",
+      "unexpectedErrorDesc": "कुछ गलत हुआ। फिर से कोशिश करें।",
+      "socialLoginError": "सामाजिक लॉगिन त्रुटि",
+      "socialLoginErrorDesc": "सामाजिक लॉगिन में कुछ गलत हुआ। फिर से कोशिश करें।",
+      "emailRequired": "ईमेल आवश्यक",
+      "emailRequiredDesc": "रीसेट लिंक प्राप्त करने के लिए अपना ईमेल दर्ज करें।",
+      "emailSent": "ईमेल भेजा गया!",
+      "emailSentDesc": "अपना पासवर्ड रीसेट करने के लिए अपना ईमेल जांचें।",
+      "emailRequiredResend": "ईमेल आवश्यक",
+      "emailRequiredResendDesc": "पुष्टिकरण पुनः भेजने के लिए अपना ईमेल दर्ज करें।",
+      "emailResent": "ईमेल पुनः भेजा गया!",
+      "emailResentDesc": "अपने खाते की पुष्टि के लिए अपना ईमेल जांचें।",
+      "resetInstructions": "आपको अपना पासवर्ड रीसेट करने के निर्देशों के साथ एक ईमेल प्राप्त होगा।",
+      "checkSpam": "अपना स्पैम फ़ोल्डर भी जांचें।"
+    },
+    "narrative": {
+      "loginText": "आपकी वापसी का इंतजार कर रहा है।",
+      "loginSubtext": "आपके जिले और उपलब्धियां संरक्षित हैं।",
+      "signupText": "वित्त के भविष्य में आपका स्वागत है",
+      "signupSubtext": "जिलों का अन्वेषण करें, XP अर्जित करें और वित्तीय ज्ञान में महारत हासिल करें।",
+      "satoshiCity": "सतोशी सिटी"
+    }
+  },
+  "welcome": {
+    "title": "वित्त का भविष्य आ गया है",
+    "badges": {
+      "neuralSystem": "न्यूरल सिस्टम",
+      "districts": "7 जिले",
+      "multiplayer": "मल्टीप्लेयर"
+    },
+    "buttons": {
+      "enterGame": "गेम में प्रवेश करें",
+      "createAccount": "खाता बनाएं"
+    }
   }
 }
