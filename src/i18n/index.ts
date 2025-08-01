@@ -40,7 +40,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'pt-BR',
-    debug: true,
+    debug: false,
     preload: ['pt-BR', 'en-US', 'es-ES', 'hi-IN', 'zh-CN', 'ar-SA'],
     
     interpolation: {
