@@ -21,11 +21,28 @@ export default function PasswordReset() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if we have the required tokens
-    const accessToken = searchParams.get('access_token');
+    // Check if we have the required tokens (new format or legacy format)
+    const accessToken = searchParams.get('access_token') || searchParams.get('token');
     const refreshToken = searchParams.get('refresh_token');
+    const type = searchParams.get('type');
     
-    if (!accessToken || !refreshToken) {
+    // For password reset, we might get different URL parameters
+    if (type !== 'recovery' && (!accessToken || !refreshToken)) {
+      // Check if this is a password reset link with different format
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const hashAccessToken = hashParams.get('access_token');
+      const hashRefreshToken = hashParams.get('refresh_token');
+      const hashType = hashParams.get('type');
+      
+      if (hashType === 'recovery' && hashAccessToken && hashRefreshToken) {
+        // Set the session with hash tokens
+        supabase.auth.setSession({
+          access_token: hashAccessToken,
+          refresh_token: hashRefreshToken
+        });
+        return;
+      }
+      
       toast({
         title: "Link inválido",
         description: "Este link de redefinição não é válido ou expirou.",
@@ -35,11 +52,13 @@ export default function PasswordReset() {
       return;
     }
 
-    // Set the session with the tokens
-    supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken
-    });
+    // Set the session with the tokens from URL params
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+    }
   }, [searchParams, navigate, toast]);
 
   const handlePasswordReset = async (e: React.FormEvent) => {
