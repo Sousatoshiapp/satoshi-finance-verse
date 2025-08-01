@@ -15,7 +15,27 @@ import { useI18n } from "@/hooks/use-i18n";
 
 function NotFoundPage() {
   const { t } = useI18n();
-  return <div>{t('errors.pageNotFound')}</div>;
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-2">404</h1>
+        <p>{t('errors.pageNotFound')}</p>
+      </div>
+    </div>
+  );
+}
+
+function AppContent() {
+  return (
+    <div className="min-h-screen bg-background font-sans antialiased">
+      <Suspense fallback={<LoadingSpinner />}>
+        <Routes>
+          {generateRoutes()}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </div>
+  );
 }
 
 function App() {
@@ -29,14 +49,7 @@ function App() {
                 <OnlineStatusProvider>
                   <RealtimeProvider>
                     <SponsorThemeProvider>
-                      <div className="min-h-screen bg-background font-sans antialiased">
-                        <Suspense fallback={<LoadingSpinner />}>
-                          <Routes>
-                            {generateRoutes()}
-                            <Route path="*" element={<NotFoundPage />} />
-                          </Routes>
-                        </Suspense>
-                      </div>
+                      <AppContent />
                     </SponsorThemeProvider>
                   </RealtimeProvider>
                 </OnlineStatusProvider>

@@ -5,15 +5,18 @@ import { Input } from '@/components/shared/ui/input';
 import { Label } from '@/components/shared/ui/label';
 
 interface EmailChangeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open?: boolean;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onClose?: () => void;
+  currentEmail?: string;
 }
 
-export function EmailChangeDialog({ open, onOpenChange }: EmailChangeDialogProps) {
+export function EmailChangeDialog({ open, isOpen, onOpenChange, onClose }: EmailChangeDialogProps) {
   const [newEmail, setNewEmail] = useState('');
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open || isOpen} onOpenChange={onOpenChange || onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Alterar Email</DialogTitle>

@@ -4,14 +4,18 @@ import { Badge } from '@/components/shared/ui/badge';
 import { Brain, Clock, TrendingUp } from 'lucide-react';
 
 interface SRSQuizCardProps {
-  concept: string;
-  mastery: number;
-  nextReview: Date;
-  onStart: () => void;
+  difficulty?: "easy" | "medium" | "hard";
+  moduleId?: string;
+  concept?: string;
+  mastery?: number;
+  nextReview?: Date;
+  onStart?: () => void;
+  onComplete?: (score: number, total: number, conceptsImproved: number) => void;
+  onExit?: () => void;
   className?: string;
 }
 
-export function SRSQuizCard({ concept, mastery, nextReview, onStart, className }: SRSQuizCardProps) {
+export function SRSQuizCard({ concept = "Conceito", mastery = 0, nextReview = new Date(), onStart, className }: SRSQuizCardProps) {
   const masteryColor = mastery >= 0.8 ? 'bg-green-500' : mastery >= 0.5 ? 'bg-yellow-500' : 'bg-red-500';
   
   return (

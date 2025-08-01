@@ -19,6 +19,7 @@ interface LearningModule {
 interface LearningModulesGridProps {
   modules?: LearningModule[];
   onModuleSelect: (moduleId: string) => void;
+  showSponsoredOnly?: boolean;
 }
 
 export function LearningModulesGrid({ 

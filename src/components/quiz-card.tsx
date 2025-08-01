@@ -2,9 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui
 import { Button } from '@/components/shared/ui/button';
 
 interface QuizCardProps {
-  title: string;
+  title?: string;
   description?: string;
-  onStart: () => void;
+  level?: number;
+  question?: any;
+  options?: any;
+  onStart?: () => void;
+  onAnswer?: (isCorrect: boolean) => void;
   className?: string;
 }
 

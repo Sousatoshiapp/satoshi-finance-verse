@@ -5,17 +5,19 @@ import { Input } from '@/components/shared/ui/input';
 import { Label } from '@/components/shared/ui/label';
 
 interface PasswordChangeDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open?: boolean;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onClose?: () => void;
 }
 
-export function PasswordChangeDialog({ open, onOpenChange }: PasswordChangeDialogProps) {
+export function PasswordChangeDialog({ open, isOpen, onOpenChange, onClose }: PasswordChangeDialogProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open || isOpen} onOpenChange={onOpenChange || onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Alterar Senha</DialogTitle>
