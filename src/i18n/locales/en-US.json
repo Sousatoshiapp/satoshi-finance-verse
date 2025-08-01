@@ -773,6 +773,36 @@
     },
     "shareOpinion": "Share your trading experiences and connect with other investors"
   },
+  "district": {
+    "selectDistrict": "Select a district",
+    "enterDistrict": "Enter District",
+    "residents": "Residents",
+    "power": "Power",
+    "ranking": "Ranking",
+    "battles": "Battles",
+    "victories": "Victories",
+    "winRate": "Win Rate",
+    "powers": {
+      "title": "District Powers",
+      "average": "Average",
+      "monetary": "Monetary Power",
+      "tech": "Tech Power",
+      "military": "Military Power",
+      "energy": "Energy Power",
+      "commercial": "Commercial Power",
+      "social": "Social Power",
+      "monetaryDesc": "Represents financial strength and investment capacity of the district",
+      "techDesc": "Level of innovation and technological development",
+      "militaryDesc": "Defense capability and strategy in duels",
+      "energyDesc": "Sustainability and energy efficiency",
+      "commercialDesc": "Market strength and commercial capacity",
+      "socialDesc": "Social cohesion and community engagement",
+      "helpText": "Powers increase through specific actions: quizzes, duels, missions and contributions",
+      "updated": "Power updated!",
+      "updatedDesc": "The district gained power with your action.",
+      "updateError": "Error updating power"
+    }
+  },
   "store": {
     "header": {
       "marketplace": "Marketplace",

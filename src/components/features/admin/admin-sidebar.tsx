@@ -81,6 +81,14 @@ const navigation: NavItem[] = [
     icon: Building2,
   },
   {
+    title: "Gestão de Distritos",
+    icon: Building2,
+    children: [
+      { title: "Poderes dos Distritos", href: "/admin/districts/powers", icon: Zap },
+      { title: "Logs de Poder", href: "/admin/districts/power-logs", icon: FileText },
+    ]
+  },
+  {
     title: "Social & Comunicação",
     icon: MessageSquare,
     children: [
