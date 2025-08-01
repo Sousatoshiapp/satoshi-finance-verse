@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSponsorTheme } from '@/contexts/SponsorThemeProvider';
+import { useI18n } from '@/hooks/use-i18n';
 import { TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from 'lucide-react';
 
 // Import district logos
@@ -30,6 +31,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
 }) => {
   const [stage, setStage] = useState(0);
   const { getTheme } = useSponsorTheme();
+  const { t } = useI18n();
   
   const sponsorTheme = toDistrictTheme ? getTheme(toDistrictTheme) : null;
 
@@ -144,7 +146,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  Saindo de {fromLocation}
+                  {t('satoshiCity.transition.leaving', { location: fromLocation })}
                 </motion.div>
                 <motion.div
                   className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto"
@@ -254,7 +256,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                   ease: "easeInOut"
                 }}
               >
-                Viajando para
+                {t('satoshiCity.transition.traveling')}
               </motion.div>
               
               {(() => {
@@ -340,7 +342,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  Chegando em {toLocation}
+                  {t('satoshiCity.transition.arriving', { location: toLocation })}
                 </motion.div>
               </div>
             </motion.div>

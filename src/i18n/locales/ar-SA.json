@@ -363,6 +363,11 @@
     "modal": {
       "liveIn": "العيش في",
       "confirmResidence": "هل تريد إقامة إقامتك في منطقة {{districtName}}؟ ستتمكن من المشاركة في الأنشطة الحصرية وتمثيل هذه المنطقة."
+    },
+    "transition": {
+      "leaving": "مغادرة {{location}}",
+      "traveling": "السفر إلى",
+      "arriving": "الوصول إلى {{location}}"
     }
   },
   "social": {
