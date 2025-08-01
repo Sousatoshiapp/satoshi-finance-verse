@@ -53,11 +53,11 @@ export default function AdminDistrictPowers() {
 
       if (error) throw error;
       setDistricts(data || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading districts:', error);
       toast({
         title: "Erro ao carregar distritos",
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
     } finally {
@@ -86,11 +86,11 @@ export default function AdminDistrictPowers() {
         title: "Poder atualizado",
         description: "O poder do distrito foi atualizado com sucesso.",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating district power:', error);
       toast({
         title: "Erro ao atualizar poder",
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
     } finally {
@@ -128,11 +128,11 @@ export default function AdminDistrictPowers() {
         title: "Poderes resetados",
         description: "Todos os poderes do distrito foram resetados para 0.",
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error resetting district powers:', error);
       toast({
         title: "Erro ao resetar poderes",
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
     } finally {

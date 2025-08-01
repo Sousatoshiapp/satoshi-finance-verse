@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
-import { Input } from "@/components/shared/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,17 +28,21 @@ interface PowerLog {
   previous_value: number;
   new_value: number;
   created_at: string;
-  districts?: { name: string; color_primary: string };
-  profiles?: { username: string };
+  districts: { name: string; color_primary: string } | null;
+  profiles: { username: string } | null;
+}
+
+interface District {
+  id: string;
+  name: string;
+  color_primary: string;
 }
 
 export default function AdminDistrictPowerLogs() {
   const { t } = useI18n();
   const [logs, setLogs] = useState<PowerLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterDistrict, setFilterDistrict] = useState<string>("");
-  const [filterAction, setFilterAction] = useState<string>("");
-  const [districts, setDistricts] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<District[]>([]);
   const { toast } = useToast();
 
   const actionTypes = [
@@ -63,12 +65,7 @@ export default function AdminDistrictPowerLogs() {
     'social_power': 'Social'
   };
 
-  useEffect(() => {
-    loadLogs();
-    loadDistricts();
-  }, []);
-
-  const loadDistricts = async () => {
+  const loadDistricts = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('districts')
@@ -77,12 +74,12 @@ export default function AdminDistrictPowerLogs() {
 
       if (error) throw error;
       setDistricts(data || []);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading districts:', error);
     }
-  };
+  }, []);
 
-  const loadLogs = async () => {
+  const loadLogs = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -104,20 +101,24 @@ export default function AdminDistrictPowerLogs() {
         .order('created_at', { ascending: false })
         .limit(100);
 
-
       if (error) throw error;
-      setLogs((data as any) || []);
-    } catch (error: any) {
+      setLogs((data as unknown as PowerLog[]) || []);
+    } catch (error) {
       console.error('Error loading logs:', error);
       toast({
         title: "Erro ao carregar logs",
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    loadLogs();
+    loadDistricts();
+  }, [loadLogs, loadDistricts]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('pt-BR');
@@ -145,53 +146,6 @@ export default function AdminDistrictPowerLogs() {
               </Button>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  Filtros
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <Select value={filterDistrict} onValueChange={setFilterDistrict}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filtrar por distrito" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Todos os distritos</SelectItem>
-                        {districts.map((district) => (
-                          <SelectItem key={district.id} value={district.id}>
-                            {district.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <Select value={filterAction} onValueChange={setFilterAction}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Filtrar por ação" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">Todas as ações</SelectItem>
-                        {actionTypes.map((action) => (
-                          <SelectItem key={action} value={action}>
-                            {action.replace('_', ' ').toUpperCase()}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <Button onClick={loadLogs}>
-                    Aplicar Filtros
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
             {loading ? (
               <div className="text-center py-8">Carregando logs...</div>
