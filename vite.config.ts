@@ -87,8 +87,7 @@ export default defineConfig(({ mode }) => ({
           ],
           'chunk-leaderboard': [
             'src/pages/Leaderboard.tsx',
-            'src/components/leaderboards.tsx',
-            'src/components/compact-leaderboard.tsx'
+            'src/components/leaderboards.tsx'
           ],
           'chunk-gamification': [
             'src/pages/Achievements.tsx',

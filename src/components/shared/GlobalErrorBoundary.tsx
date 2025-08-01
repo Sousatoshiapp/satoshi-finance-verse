@@ -2,6 +2,7 @@ import React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
+import { ErrorHandler } from '@/utils/error-handling';
 
 interface ErrorFallbackProps {
   error: Error;
@@ -77,18 +78,47 @@ interface GlobalErrorBoundaryProps {
 }
 
 export const GlobalErrorBoundary: React.FC<GlobalErrorBoundaryProps> = ({ children }) => {
+  const logger = ErrorHandler.createLogger('GlobalErrorBoundary');
+
+  React.useEffect(() => {
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      logger.error('Unhandled promise rejection', {
+        reason: event.reason,
+        promise: event.promise,
+        url: window.location.href
+      });
+      
+      console.error('Unhandled promise rejection:', event.reason);
+    };
+
+    const handleError = (event: ErrorEvent) => {
+      logger.error('Unhandled JavaScript error', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error,
+        url: window.location.href
+      });
+    };
+
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+    window.addEventListener('error', handleError);
+
+    return () => {
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+      window.removeEventListener('error', handleError);
+    };
+  }, [logger]);
+
   const handleError = (error: Error, errorInfo: { componentStack: string }) => {
-    console.error('Global Error Boundary caught error:', {
+    logger.error('React Error Boundary caught error', {
       error: error.message,
       stack: error.stack,
       componentStack: errorInfo.componentStack,
-      timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
       url: window.location.href
     });
-
-    if (!import.meta.env.DEV) {
-    }
   };
 
   return (
