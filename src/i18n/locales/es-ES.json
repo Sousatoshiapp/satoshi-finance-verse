@@ -564,6 +564,11 @@
     "modal": {
       "liveIn": "Vivir en",
       "confirmResidence": "¿Quieres establecer tu residencia en el distrito {{districtName}}? Podrás participar en actividades exclusivas y representar este distrito."
+    },
+    "transition": {
+      "leaving": "Saliendo de {{location}}",
+      "traveling": "Viajando hacia",
+      "arriving": "Llegando a {{location}}"
     }
   },
   "social": {

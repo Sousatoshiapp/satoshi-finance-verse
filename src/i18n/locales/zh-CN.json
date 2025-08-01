@@ -716,6 +716,11 @@
     "modal": {
       "liveIn": "居住在",
       "confirmResidence": "您想在{{districtName}}区域建立您的住所吗？您将能够参与独家活动并代表这个区域。"
+    },
+    "transition": {
+      "leaving": "正在离开{{location}}",
+      "traveling": "正在前往",
+      "arriving": "正在到达{{location}}"
     }
   },
   "social": {

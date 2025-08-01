@@ -739,6 +739,11 @@
     "modal": {
       "liveIn": "Live in",
       "confirmResidence": "Do you want to establish your residence in {{districtName}} district? You will be able to participate in exclusive activities and represent this district."
+    },
+    "transition": {
+      "leaving": "Leaving {{location}}",
+      "traveling": "Traveling to",
+      "arriving": "Arriving at {{location}}"
     }
   },
   "social": {
