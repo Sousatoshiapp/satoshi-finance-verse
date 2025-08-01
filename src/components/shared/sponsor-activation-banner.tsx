@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
 import { ExternalLink, Sparkles, Star, Zap, Gift, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 

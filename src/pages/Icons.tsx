@@ -1,5 +1,5 @@
 import React from "react";
-import { IconShowcase } from "@/components/icon-showcase";
+import { IconShowcase } from "@/components/shared/icon-showcase";
 
 function Icons() {
   return (

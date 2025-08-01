@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
+import { ScrollArea } from "@/components/shared/ui/scroll-area";
+import { Card, CardContent, CardHeader } from "@/components/shared/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { sanitizeText, validateMessageContent, globalRateLimiter, detectSuspiciousContent } from "@/lib/validation";
 
 interface Message {

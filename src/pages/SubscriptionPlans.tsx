@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { Check, Star, Crown, ArrowLeft, Zap, Shield, Trophy, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

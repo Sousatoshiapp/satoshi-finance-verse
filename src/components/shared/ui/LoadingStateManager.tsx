@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 
 interface LoadingSkeletonProps {
   variant?: 'card' | 'list' | 'text' | 'avatar' | 'button';

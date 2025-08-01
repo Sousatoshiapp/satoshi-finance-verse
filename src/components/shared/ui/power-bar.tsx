@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@/components/shared/ui/progress";
 import { Zap } from "lucide-react";
 
 interface PowerBarProps {

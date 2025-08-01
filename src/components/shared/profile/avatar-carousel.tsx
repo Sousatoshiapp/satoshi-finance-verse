@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/shared/ui/carousel";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, Crown, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";

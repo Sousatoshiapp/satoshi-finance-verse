@@ -1,9 +1,9 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/shared/ui/carousel";
 import { supabase } from "@/integrations/supabase/client";
 import { Zap, Clock, Shield, Sparkles, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";

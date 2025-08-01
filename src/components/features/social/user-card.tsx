@@ -1,8 +1,8 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
+import { Badge } from "@/components/shared/ui/badge";
+import { Card, CardContent } from "@/components/shared/ui/card";
 import { SocialButton } from "./social-button";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/shared/ui/button";
 import { Users, TrendingUp, MessageCircle } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Progress } from "@/components/shared/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Play, Pause, RotateCcw, CheckCircle, AlertCircle } from "lucide-react";

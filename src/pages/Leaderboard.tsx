@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { Card } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, TrendingUp, Flame, Crown, Medal, Award } from "lucide-react";

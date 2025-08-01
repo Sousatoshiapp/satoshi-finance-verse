@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/shared/ui/dialog";
+import { Progress } from "@/components/shared/ui/progress";
+import { Separator } from "@/components/shared/ui/separator";
 import { useLoot } from "@/hooks/use-loot";
 import { 
   Package, 

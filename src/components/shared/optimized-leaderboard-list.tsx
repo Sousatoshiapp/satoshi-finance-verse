@@ -1,8 +1,8 @@
 import { memo, useCallback } from 'react';
-import { VirtualList } from '@/components/ui/virtual-list';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { BeetzIcon } from '@/components/ui/beetz-icon';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { VirtualList } from '@/components/shared/ui/virtual-list';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/shared/ui/avatar';
+import { BeetzIcon } from '@/components/shared/ui/beetz-icon';
+import { OptimizedImage } from '@/components/shared/ui/optimized-image';
 import { useNavigate } from 'react-router-dom';
 import { useRenderPerformance } from '@/hooks/use-performance-monitor';
 

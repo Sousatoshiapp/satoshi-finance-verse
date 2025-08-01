@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Progress } from "@/components/shared/ui/progress";
+import { Badge } from "@/components/shared/ui/badge";
+import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { Check, Clock, Trophy, Zap, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";

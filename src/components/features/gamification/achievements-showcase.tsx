@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
 import { Trophy, Star, Crown, Zap, Target, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";

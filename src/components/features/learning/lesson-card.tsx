@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ProgressBar } from "@/components/ui/progress-bar";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { ProgressBar } from "@/components/shared/ui/progress-bar";
 import { cn } from "@/lib/utils";
 
 interface LessonCardProps {

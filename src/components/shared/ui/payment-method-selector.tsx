@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/shared/ui/radio-group";
+import { Label } from "@/components/shared/ui/label";
+import { Badge } from "@/components/shared/ui/badge";
 import { CreditCard, Coins, ArrowRight, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 

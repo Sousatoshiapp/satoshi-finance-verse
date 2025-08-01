@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "@/hooks/use-i18n";
 import { StreakIcon, GiftIcon, TrophyIcon, SwordIcon, StarIcon, IconSystem } from "@/components/icons/icon-system";

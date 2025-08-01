@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Progress } from "@/components/shared/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Play, Pause, RotateCcw } from "lucide-react";

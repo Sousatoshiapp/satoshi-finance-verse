@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Card } from '@/components/shared/ui/card';
+import { Button } from '@/components/shared/ui/button';
+import { Input } from '@/components/shared/ui/input';
+import { ScrollArea } from '@/components/shared/ui/scroll-area';
 import { Brain, Send, Lightbulb, TrendingUp } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/shared/ui/badge';
 
 interface Message {
   id: string;

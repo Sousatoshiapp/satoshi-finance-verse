@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/shared/ui/card';
+import { Button } from '@/components/shared/ui/button';
+import { Progress } from '@/components/shared/ui/progress';
+import { Badge } from '@/components/shared/ui/badge';
 import { AlertTriangle, Clock, Users, Zap, X } from 'lucide-react';
 import { useCityEmergencyData } from '@/hooks/use-city-emergency';
 import { EmergencyContributionDialog } from './emergency-contribution-dialog';

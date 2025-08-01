@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
 import { Heart, ArrowLeft, ShoppingCart, Clock, Zap } from "lucide-react";
 import { useLivesSystem } from "@/hooks/use-lives-system";
 import { supabase } from "@/integrations/supabase/client";

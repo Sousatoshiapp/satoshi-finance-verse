@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { TrendingUp, TrendingDown, DollarSign, Trophy, Activity, BarChart } from "lucide-react";
 

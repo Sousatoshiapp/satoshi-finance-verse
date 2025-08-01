@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { SocialButton } from "@/components/social/social-button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { SocialButton } from "@/components/features/social/social-button";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Trophy, Medal, Star, TrendingUp, Users, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 
 interface UserProfileData {
   id: string;

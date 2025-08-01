@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Crown, Lock, Star, Users, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";

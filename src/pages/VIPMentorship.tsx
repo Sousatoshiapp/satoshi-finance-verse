@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { Crown, Star, Calendar, Clock, Video, MessageCircle, ArrowLeft, Award, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

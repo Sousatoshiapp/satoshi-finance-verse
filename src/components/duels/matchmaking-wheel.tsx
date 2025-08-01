@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
 import { TargetIcon, IconSystem } from "@/components/icons/icon-system";
 import { useI18n } from "@/hooks/use-i18n";

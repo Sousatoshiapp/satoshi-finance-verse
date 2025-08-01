@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Button } from "@/components/shared/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, TrendingUp, Users, Heart, MessageSquare, Award, Crown, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";

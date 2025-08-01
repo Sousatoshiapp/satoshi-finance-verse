@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ProgressBar } from "@/components/ui/progress-bar";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { ProgressBar } from "@/components/shared/ui/progress-bar";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { QuizCard } from "@/components/quiz-card";
 import { lessons } from "@/data/lessons";
 import { ArrowLeft, ArrowRight, CheckCircle } from "lucide-react";

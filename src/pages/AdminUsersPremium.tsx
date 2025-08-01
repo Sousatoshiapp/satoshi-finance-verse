@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Crown, Star, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";

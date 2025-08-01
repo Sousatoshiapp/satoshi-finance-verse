@@ -1,11 +1,11 @@
 import { memo, useMemo, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
 import { TrendingUp } from "@/components/icons/optimized-icons";
 import { useNavigate } from "react-router-dom";
 import { useLeaderboardData } from "@/hooks/use-leaderboard-data";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { useI18n } from "@/hooks/use-i18n";
 
 const CompactLeaderboard = memo(function CompactLeaderboard() {

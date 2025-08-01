@@ -1,8 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
+import { Textarea } from "@/components/shared/ui/textarea";
+import { Switch } from "@/components/shared/ui/switch";
 import { TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { 
   validatePortfolioName, 

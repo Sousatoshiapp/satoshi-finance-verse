@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
 
 import { CircularTimer } from "@/components/duels/circular-timer";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
@@ -19,7 +19,7 @@ import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 // import { LifePurchaseBanner } from "./life-purchase-banner"; // Removido
 import { QuizBTZCard } from "@/components/quiz/quiz-btz-card";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shared/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

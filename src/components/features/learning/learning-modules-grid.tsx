@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Progress } from "@/components/shared/ui/progress";
 import { Clock, BookOpen, Trophy, Lock, Star, Users } from "lucide-react";
 import { useLearningModules } from "@/hooks/use-learning-modules";
 import { cn } from "@/lib/utils";

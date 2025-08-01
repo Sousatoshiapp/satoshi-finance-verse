@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
 import { useI18n } from "@/hooks/use-i18n";
 import { TrendingUp, Shield, Clock, Award, History, BarChart3 } from "lucide-react";

@@ -1,7 +1,7 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
 import { AnalyticsDashboard } from "@/components/learning/analytics-dashboard";
 import { GamificationPanel } from "@/components/learning/gamification-panel";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { BarChart3, Trophy, Brain, Target } from "lucide-react";
 
 export default function LearningAnalytics() {

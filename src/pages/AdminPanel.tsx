@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { QuestionGeneratorPanel } from "@/components/admin/QuestionGeneratorPanel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { QuestionGeneratorPanel } from "@/components/features/admin/QuestionGeneratorPanel";
 import { Database, Brain, Settings } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 

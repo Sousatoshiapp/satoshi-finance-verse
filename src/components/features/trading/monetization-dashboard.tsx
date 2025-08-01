@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shared/ui/tabs';
 import { VirtualStore } from './virtual-store';
 import { NFTMarketplace } from './nft-marketplace';
 import { AffiliateDashboard } from './affiliate-dashboard';

@@ -1,10 +1,10 @@
 import { memo, useMemo, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
 import { Sparkles, Trophy, Target } from "@/components/icons/optimized-icons";
 import { useRenderPerformance } from "@/hooks/use-performance-monitor";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { OptimizedImage } from "@/components/shared/ui/optimized-image";
 import { StreakIcon } from "@/components/icons/game-icons";
 import { useI18n } from "@/hooks/use-i18n";
 

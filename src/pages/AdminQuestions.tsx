@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Textarea } from "@/components/shared/ui/textarea";
+import { Badge } from "@/components/shared/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
 import { 
   HelpCircle, Plus, Search, MoreHorizontal, 
   Trash2, Edit, Eye, FileUp, Download
@@ -20,7 +20,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/shared/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +28,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/shared/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -36,14 +36,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/shared/ui/dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/shared/ui/select";
 
 interface Question {
   id: string;

@@ -1,5 +1,5 @@
 import { lazy, Suspense, memo } from 'react';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 
 // Lazy load heavy components with memoization to prevent re-renders during language changes
 export const LazyQuizCard = memo(lazy(() => import('@/components/quiz-card').then(module => ({ default: module.QuizCard }))));
@@ -8,7 +8,7 @@ export const LazyTradingInterface = memo(lazy(() => import('@/components/trading
 export const LazyPortfolioCharts = memo(lazy(() => import('@/components/portfolio/portfolio-charts').then(module => ({ default: module.PortfolioCharts }))));
 export const LazyAdvancedAnalytics = memo(lazy(() => import('@/components/advanced-analytics-dashboard').then(module => ({ default: module.AdvancedAnalyticsDashboard }))));
 
-export const LazySocialFeed = memo(lazy(() => import('@/components/social/social-feed').then(module => ({ default: module.SocialFeed }))));
+export const LazySocialFeed = memo(lazy(() => import('@/components/features/social/social-feed').then(module => ({ default: module.SocialFeed }))));
 export const LazyLeaderboards = memo(lazy(() => import('@/components/leaderboards').then(module => ({ default: module.Leaderboards }))));
 
 // Detail pages

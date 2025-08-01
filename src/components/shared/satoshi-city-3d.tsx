@@ -1,9 +1,9 @@
 import React, { Suspense, useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
 import { OrbitControls, Text, Environment } from '@react-three/drei';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/shared/ui/button';
+import { Badge } from '@/components/shared/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/shared/ui/card';
 import { ArrowLeft, Eye, Crown, Map } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';

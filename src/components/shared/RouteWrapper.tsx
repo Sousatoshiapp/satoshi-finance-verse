@@ -1,6 +1,6 @@
 import React from 'react';
 import { AuthMiddleware } from '@/middleware/AuthMiddleware';
-import { FloatingNavbar } from '@/components/floating-navbar';
+import { FloatingNavbar } from '@/components/shared/floating-navbar';
 
 interface RouteWrapperProps {
   children: React.ReactNode;

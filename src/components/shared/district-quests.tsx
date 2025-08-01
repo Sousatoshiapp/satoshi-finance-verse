@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Progress } from "@/components/shared/ui/progress";
 import { CheckCircle, Clock, Zap, Trophy, Target, TrendingUp, BookOpen, Bitcoin, Banknote, Home, Globe, Cpu } from "lucide-react";
 
 interface Quest {

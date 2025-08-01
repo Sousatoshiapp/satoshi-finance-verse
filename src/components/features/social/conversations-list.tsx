@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
+import { ScrollArea } from "@/components/shared/ui/scroll-area";
+import { Badge } from "@/components/shared/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";

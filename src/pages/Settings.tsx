@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { Input } from "@/components/shared/ui/input";
+import { Switch } from "@/components/shared/ui/switch";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";

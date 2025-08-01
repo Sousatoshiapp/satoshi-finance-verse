@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Slider } from "@/components/shared/ui/slider";
 import { TrendingUp, TrendingDown, Zap, Clock, DollarSign } from "lucide-react";
 import { Asset } from "./trading-interface";
 import { useToast } from "@/hooks/use-toast";
