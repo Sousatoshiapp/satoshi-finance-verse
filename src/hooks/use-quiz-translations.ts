@@ -1,5 +1,6 @@
 import { useI18n } from "@/hooks/use-i18n";
 import { QuizQuestion } from "@/hooks/use-quiz-shuffle";
+import { createEnhancedTranslationMatcher } from "@/utils/translation-mapper";
 
 // Comprehensive mapping for all quiz questions
 const questionTranslations: Record<string, Record<string, any>> = {
@@ -420,6 +421,162 @@ const questionTranslations: Record<string, Record<string, any>> = {
       correct_answer: "السوق الهابط",
       explanation: "السوق الهابط هو فترة من انخفاض الأسعار."
     }
+  },
+
+  "O que é inflação?": {
+    "en-US": {
+      question: "What is inflation?",
+      options: ["Price increase", "Price decrease", "Currency exchange", "Interest rate"],
+      correct_answer: "Price increase",
+      explanation: "Inflation is the general increase in prices and fall in the purchasing value of money."
+    },
+    "es-ES": {
+      question: "¿Qué es la inflación?",
+      options: ["Aumento de precios", "Disminución de precios", "Cambio de moneda", "Tasa de interés"],
+      correct_answer: "Aumento de precios",
+      explanation: "La inflación es el aumento general de precios y la caída del valor adquisitivo del dinero."
+    },
+    "fr-FR": {
+      question: "Qu'est-ce que l'inflation ?",
+      options: ["Augmentation des prix", "Diminution des prix", "Change de devise", "Taux d'intérêt"],
+      correct_answer: "Augmentation des prix",
+      explanation: "L'inflation est l'augmentation générale des prix et la baisse du pouvoir d'achat de la monnaie."
+    },
+    "de-DE": {
+      question: "Was ist Inflation?",
+      options: ["Preisanstieg", "Preisrückgang", "Währungstausch", "Zinssatz"],
+      correct_answer: "Preisanstieg",
+      explanation: "Inflation ist der allgemeine Preisanstieg und der Rückgang der Kaufkraft des Geldes."
+    },
+    "it-IT": {
+      question: "Cos'è l'inflazione?",
+      options: ["Aumento dei prezzi", "Diminuzione dei prezzi", "Cambio valuta", "Tasso di interesse"],
+      correct_answer: "Aumento dei prezzi",
+      explanation: "L'inflazione è l'aumento generale dei prezzi e la caduta del valore d'acquisto del denaro."
+    },
+    "ja-JP": {
+      question: "インフレーションとは何ですか？",
+      options: ["価格上昇", "価格下落", "通貨交換", "金利"],
+      correct_answer: "価格上昇",
+      explanation: "インフレーションは物価の全般的な上昇とお金の購買力の低下です。"
+    }
+  },
+
+  "O que é diversificação?": {
+    "en-US": {
+      question: "What is diversification?",
+      options: ["Risk spreading", "Risk concentration", "Profit maximization", "Cost reduction"],
+      correct_answer: "Risk spreading",
+      explanation: "Diversification is spreading investments across different assets to reduce risk."
+    },
+    "es-ES": {
+      question: "¿Qué es la diversificación?",
+      options: ["Distribución de riesgo", "Concentración de riesgo", "Maximización de beneficios", "Reducción de costos"],
+      correct_answer: "Distribución de riesgo",
+      explanation: "La diversificación es distribuir inversiones entre diferentes activos para reducir el riesgo."
+    },
+    "fr-FR": {
+      question: "Qu'est-ce que la diversification ?",
+      options: ["Répartition des risques", "Concentration des risques", "Maximisation des profits", "Réduction des coûts"],
+      correct_answer: "Répartition des risques",
+      explanation: "La diversification consiste à répartir les investissements entre différents actifs pour réduire les risques."
+    },
+    "de-DE": {
+      question: "Was ist Diversifikation?",
+      options: ["Risikostreuung", "Risikokonzentration", "Gewinnmaximierung", "Kostenreduzierung"],
+      correct_answer: "Risikostreuung",
+      explanation: "Diversifikation ist die Verteilung von Investitionen auf verschiedene Vermögenswerte zur Risikominderung."
+    },
+    "it-IT": {
+      question: "Cos'è la diversificazione?",
+      options: ["Distribuzione del rischio", "Concentrazione del rischio", "Massimizzazione del profitto", "Riduzione dei costi"],
+      correct_answer: "Distribuzione del rischio",
+      explanation: "La diversificazione è la distribuzione degli investimenti tra diversi asset per ridurre il rischio."
+    },
+    "ja-JP": {
+      question: "分散投資とは何ですか？",
+      options: ["リスク分散", "リスク集中", "利益最大化", "コスト削減"],
+      correct_answer: "リスク分散",
+      explanation: "分散投資はリスクを減らすために異なる資産に投資を分散することです。"
+    }
+  },
+
+  "O que é liquidez?": {
+    "en-US": {
+      question: "What is liquidity?",
+      options: ["Ease of conversion to cash", "Investment return", "Market volatility", "Interest rate"],
+      correct_answer: "Ease of conversion to cash",
+      explanation: "Liquidity refers to how easily an asset can be converted into cash without affecting its market price."
+    },
+    "es-ES": {
+      question: "¿Qué es la liquidez?",
+      options: ["Facilidad de conversión a efectivo", "Retorno de inversión", "Volatilidad del mercado", "Tasa de interés"],
+      correct_answer: "Facilidad de conversión a efectivo",
+      explanation: "La liquidez se refiere a la facilidad con que un activo puede convertirse en efectivo sin afectar su precio de mercado."
+    },
+    "fr-FR": {
+      question: "Qu'est-ce que la liquidité ?",
+      options: ["Facilité de conversion en espèces", "Retour sur investissement", "Volatilité du marché", "Taux d'intérêt"],
+      correct_answer: "Facilité de conversion en espèces",
+      explanation: "La liquidité fait référence à la facilité avec laquelle un actif peut être converti en espèces sans affecter son prix de marché."
+    },
+    "de-DE": {
+      question: "Was ist Liquidität?",
+      options: ["Leichtigkeit der Umwandlung in Bargeld", "Investitionsrendite", "Marktvolatilität", "Zinssatz"],
+      correct_answer: "Leichtigkeit der Umwandlung in Bargeld",
+      explanation: "Liquidität bezieht sich darauf, wie leicht ein Vermögenswert in Bargeld umgewandelt werden kann, ohne seinen Marktpreis zu beeinflussen."
+    },
+    "it-IT": {
+      question: "Cos'è la liquidità?",
+      options: ["Facilità di conversione in contanti", "Ritorno sull'investimento", "Volatilità del mercato", "Tasso di interesse"],
+      correct_answer: "Facilità di conversione in contanti",
+      explanation: "La liquidità si riferisce alla facilità con cui un asset può essere convertito in contanti senza influenzare il suo prezzo di mercato."
+    },
+    "ja-JP": {
+      question: "流動性とは何ですか？",
+      options: ["現金への変換の容易さ", "投資収益", "市場のボラティリティ", "金利"],
+      correct_answer: "現金への変換の容易さ",
+      explanation: "流動性とは、資産が市場価格に影響を与えることなく現金に変換できる容易さを指します。"
+    }
+  },
+
+  "O que são juros compostos?": {
+    "en-US": {
+      question: "What is compound interest?",
+      options: ["Interest on interest", "Simple interest", "Fixed rate", "Variable rate"],
+      correct_answer: "Interest on interest",
+      explanation: "Compound interest is interest calculated on the initial principal and accumulated interest from previous periods."
+    },
+    "es-ES": {
+      question: "¿Qué es el interés compuesto?",
+      options: ["Interés sobre interés", "Interés simple", "Tasa fija", "Tasa variable"],
+      correct_answer: "Interés sobre interés",
+      explanation: "El interés compuesto es el interés calculado sobre el capital inicial y los intereses acumulados de períodos anteriores."
+    },
+    "fr-FR": {
+      question: "Qu'est-ce que l'intérêt composé ?",
+      options: ["Intérêt sur intérêt", "Intérêt simple", "Taux fixe", "Taux variable"],
+      correct_answer: "Intérêt sur intérêt",
+      explanation: "L'intérêt composé est l'intérêt calculé sur le capital initial et les intérêts accumulés des périodes précédentes."
+    },
+    "de-DE": {
+      question: "Was ist Zinseszins?",
+      options: ["Zinsen auf Zinsen", "Einfache Zinsen", "Fester Zinssatz", "Variabler Zinssatz"],
+      correct_answer: "Zinsen auf Zinsen",
+      explanation: "Zinseszins sind Zinsen, die auf das ursprüngliche Kapital und die angesammelten Zinsen aus früheren Perioden berechnet werden."
+    },
+    "it-IT": {
+      question: "Cos'è l'interesse composto?",
+      options: ["Interesse su interesse", "Interesse semplice", "Tasso fisso", "Tasso variabile"],
+      correct_answer: "Interesse su interesse",
+      explanation: "L'interesse composto è l'interesse calcolato sul capitale iniziale e sugli interessi accumulati dei periodi precedenti."
+    },
+    "ja-JP": {
+      question: "複利とは何ですか？",
+      options: ["利息に対する利息", "単利", "固定金利", "変動金利"],
+      correct_answer: "利息に対する利息",
+      explanation: "複利とは、元本と過去の期間から蓄積された利息に対して計算される利息です。"
+    }
   }
 };
 
@@ -430,13 +587,26 @@ export const useQuizTranslations = () => {
     const currentLang = getCurrentLanguage();
     
     console.log('🌍 Translating question:', question.question, 'to language:', currentLang);
+    console.log('🔍 Available translation keys:', Object.keys(questionTranslations));
+    console.log('🎯 Looking for exact match for:', question.question);
     
     // Try to find translation by exact match first
     let translation = questionTranslations[question.question];
+    let matchType = 'exact';
     
-    // If not found, try to find by similarity or key words
     if (!translation) {
-      // Find translation by checking if any translation key contains similar content
+      const matcher = createEnhancedTranslationMatcher();
+      const availableKeys = Object.keys(questionTranslations);
+      const { match, score } = matcher.findBestMatch(question.question, availableKeys, 0.7);
+      
+      if (match && score > 0.7) {
+        translation = questionTranslations[match];
+        matchType = `fuzzy (${(score * 100).toFixed(1)}%)`;
+        console.log(`🎯 Fuzzy match found: "${match}" with ${(score * 100).toFixed(1)}% similarity`);
+      }
+    }
+    
+    if (!translation) {
       const questionKeys = Object.keys(questionTranslations);
       for (const key of questionKeys) {
         const keyTranslations = questionTranslations[key];
@@ -444,13 +614,16 @@ export const useQuizTranslations = () => {
         if (keyTranslations['en-US']?.question === question.question || 
             keyTranslations['pt-BR']?.question === question.question) {
           translation = keyTranslations;
+          matchType = 'cross-language';
           break;
         }
       }
     }
     
     if (translation && translation[currentLang]) {
-      console.log('✅ Translation found for:', currentLang);
+      console.log(`✅ Translation found via ${matchType} match for:`, currentLang);
+      console.log('📝 Original question:', question.question);
+      console.log('🌍 Translated question:', translation[currentLang].question);
       return {
         ...question,
         question: translation[currentLang].question,
@@ -461,6 +634,8 @@ export const useQuizTranslations = () => {
     }
     
     console.log('❌ Translation not found for:', question.question);
+    console.log('🔍 Checked translation object:', translation);
+    console.log('💡 Consider adding this question to translation mappings');
     return question;
   };
 
