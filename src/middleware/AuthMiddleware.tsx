@@ -14,20 +14,26 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
   requiresAuth = true,
   adminOnly = false,
 }) => {
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  if (requiresAuth && !user) {
-    return <Navigate to="/auth" state={{ from: location }} replace />;
+  if (requiresAuth) {
+    const hasValidAuth = (user && session) || localStorage.getItem('satoshi_user');
+    
+    if (!hasValidAuth) {
+      console.log('🚫 AuthMiddleware: No valid authentication found - redirecting to welcome');
+      return <Navigate to="/welcome" state={{ from: location }} replace />;
+    }
   }
 
   if (adminOnly && (!user || user.role !== 'admin')) {
     return <Navigate to="/dashboard" replace />;
   }
 
+  console.log('✅ AuthMiddleware: Authentication valid - rendering protected content');
   return <>{children}</>;
 };

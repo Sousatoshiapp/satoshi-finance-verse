@@ -20,8 +20,8 @@ export const debugNavigation = {
     });
   },
   
-  logProtectedRoute: (path: string, userState: any) => {
-    console.log(`🛡️ ProtectedRoute [${path}]:`, {
+  logAuthMiddleware: (path: string, userState: any) => {
+    console.log(`🛡️ AuthMiddleware [${path}]:`, {
       hasUser: !!userState.user,
       hasSession: !!userState.session,
       loading: userState.loading,
