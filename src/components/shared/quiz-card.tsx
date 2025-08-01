@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { Card } from "@/components/shared/ui/card";
 import { cn } from "@/lib/utils";
-import { EnhancedQuizCard } from "./quiz/enhanced-quiz-card";
+import { EnhancedQuizCard } from "../quiz/enhanced-quiz-card";
 
 interface QuizOption {
   id: string;
@@ -33,8 +33,9 @@ export function QuizCard({ question, options, onAnswer, className, enhanced = fa
     
     return (
       <EnhancedQuizCard 
-        questions={enhancedQuestions}
-        onComplete={(results) => onAnswer(results.score > 0)}
+        title={question}
+        description="Quiz mode"
+        onStart={() => onAnswer(true)}
         className={className}
       />
     );

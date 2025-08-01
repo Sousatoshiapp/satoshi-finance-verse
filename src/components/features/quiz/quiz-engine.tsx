@@ -18,7 +18,7 @@ import { useQuizTranslations } from "@/hooks/use-quiz-translations";
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 // import { LifePurchaseBanner } from "./life-purchase-banner"; // Removido
-import { QuizBTZCard } from "@/components/quiz/quiz-btz-card";
+import { QuizBTZCard } from "./quiz-btz-card";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shared/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";

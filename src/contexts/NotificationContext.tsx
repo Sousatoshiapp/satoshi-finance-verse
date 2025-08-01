@@ -39,7 +39,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ read: true })
+        .update({ is_read: true })
         .eq('id', id);
       
       if (error) throw error;
@@ -56,7 +56,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ read: true })
+        .update({ is_read: true })
         .eq('user_id', user?.id);
       
       if (error) throw error;
@@ -94,7 +94,17 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         
         if (error) throw error;
         
-        setNotifications(data || []);
+        // Map database fields to interface
+        const mappedNotifications = (data || []).map(item => ({
+          id: item.id,
+          title: item.title || '',
+          message: item.message || '',
+          type: (item.type || 'info') as 'info' | 'success' | 'warning' | 'error',
+          read: item.is_read || false,
+          created_at: item.created_at
+        }));
+        
+        setNotifications(mappedNotifications);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -110,11 +120,21 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
         table: 'notifications',
         filter: `user_id=eq.${user.id}`,
       }, (payload) => {
-        setNotifications(prev => [payload.new as Notification, ...prev]);
+        const newNotification = {
+          id: payload.new.id,
+          title: payload.new.title || '',
+          message: payload.new.message || '',
+          type: (payload.new.type || 'info') as 'info' | 'success' | 'warning' | 'error',
+          read: payload.new.is_read || false,
+          created_at: payload.new.created_at
+        };
+        setNotifications(prev => [newNotification, ...prev]);
       })
       .subscribe();
 
-    return () => supabase.removeChannel(channel);
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   return (

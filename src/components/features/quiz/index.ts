@@ -1,9 +1,9 @@
 export { QuizEngine } from './quiz-engine';
-export { QuizBtzCard } from './quiz-btz-card';
+export { QuizBTZCard } from './quiz-btz-card';
 export { LifePurchaseBanner } from './life-purchase-banner';
 export { ProgressiveIntensity } from './progressive-intensity';
 export { VideoExplanationFullscreen } from './video-explanation-fullscreen';
-export { BtzCounter } from './btz-counter';
+export { BTZCounter } from './btz-counter';
 export { VideoExplanation } from './video-explanation';
 export { QuizFeedback } from './quiz-feedback';
 export { EnhancedQuizCard } from './enhanced-quiz-card';
