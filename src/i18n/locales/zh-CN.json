@@ -755,6 +755,36 @@
     },
     "shareOpinion": "分享您的交易经验并与其他投资者建立联系"
   },
+  "district": {
+    "selectDistrict": "选择一个区域",
+    "enterDistrict": "进入区域",
+    "residents": "居民",
+    "power": "力量",
+    "ranking": "排名",
+    "battles": "战斗",
+    "victories": "胜利",
+    "winRate": "胜率",
+    "powers": {
+      "title": "区域力量",
+      "average": "平均",
+      "monetary": "货币力量",
+      "tech": "科技力量",
+      "military": "军事力量",
+      "energy": "能源力量",
+      "commercial": "商业力量",
+      "social": "社会力量",
+      "monetaryDesc": "代表区域的财政实力和投资能力",
+      "techDesc": "创新和技术发展水平",
+      "militaryDesc": "防御能力和决斗策略",
+      "energyDesc": "可持续性和能源效率",
+      "commercialDesc": "市场实力和商业能力",
+      "socialDesc": "社会凝聚力和社区参与度",
+      "helpText": "力量通过特定行动增加：测验、决斗、任务和贡献",
+      "updated": "力量已更新！",
+      "updatedDesc": "区域通过您的行动获得了力量。",
+      "updateError": "更新力量时出错"
+    }
+  },
   "store": {
     "header": {
       "marketplace": "商城",

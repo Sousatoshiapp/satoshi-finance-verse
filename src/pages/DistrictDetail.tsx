@@ -8,6 +8,7 @@ import { Progress } from "@/components/shared/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
 import { PowerBar } from "@/components/shared/ui/power-bar";
+import { DistrictPowerBars } from "@/components/district/DistrictPowerBars";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -621,14 +622,20 @@ export default function DistrictDetail() {
         </div>
       </div>
 
-      {/* District Power Bar */}
+      {/* District Power Bars */}
       <div className="container mx-auto px-4 py-6 relative z-20">
+        <DistrictPowerBars 
+          district={district}
+          className="mb-8"
+        />
+
+        {/* District Stats */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Zap className="w-5 h-5" style={{ color: district.color_primary }} />
-                Poder do Distrito
+                Estatísticas do Distrito
               </span>
               <Badge variant="outline">
                 #{districtRanking} no Ranking

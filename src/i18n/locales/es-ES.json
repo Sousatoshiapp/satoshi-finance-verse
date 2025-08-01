@@ -744,6 +744,36 @@
       "satoshiCity": "Satoshi City"
     }
   },
+  "district": {
+    "selectDistrict": "Selecciona un distrito",
+    "enterDistrict": "Entrar al Distrito",
+    "residents": "Residentes",
+    "power": "Poder",
+    "ranking": "Ranking",
+    "battles": "Batallas",
+    "victories": "Victorias",
+    "winRate": "Tasa de Victoria",
+    "powers": {
+      "title": "Poderes del Distrito",
+      "average": "Promedio",
+      "monetary": "Poder Monetario",
+      "tech": "Poder Tecnológico",
+      "military": "Poder Militar",
+      "energy": "Poder Energético",
+      "commercial": "Poder Comercial",
+      "social": "Poder Social",
+      "monetaryDesc": "Representa la fuerza financiera y capacidad de inversión del distrito",
+      "techDesc": "Nivel de innovación y desarrollo tecnológico",
+      "militaryDesc": "Capacidad de defensa y estrategia en duelos",
+      "energyDesc": "Sostenibilidad y eficiencia energética",
+      "commercialDesc": "Fuerza en el mercado y capacidad comercial",
+      "socialDesc": "Cohesión social y compromiso de la comunidad",
+      "helpText": "Los poderes aumentan a través de acciones específicas: cuestionarios, duelos, misiones y contribuciones",
+      "updated": "¡Poder actualizado!",
+      "updatedDesc": "El distrito ganó poder con tu acción.",
+      "updateError": "Error al actualizar poder"
+    }
+  },
   "welcome": {
     "title": "El futuro de las finanzas ha llegado",
     "badges": {

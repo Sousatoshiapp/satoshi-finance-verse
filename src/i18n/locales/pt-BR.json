@@ -689,6 +689,36 @@
     },
     "shareOpinion": "Compartilhe suas experiências de trading e conecte-se com outros investidores"
   },
+  "district": {
+    "selectDistrict": "Selecione um distrito",
+    "enterDistrict": "Entrar no Distrito",
+    "residents": "Moradores",
+    "power": "Poder",
+    "ranking": "Ranking",
+    "battles": "Batalhas",
+    "victories": "Vitórias",
+    "winRate": "Taxa de Vitória",
+    "powers": {
+      "title": "Poderes do Distrito",
+      "average": "Média",
+      "monetary": "Poder Monetário",
+      "tech": "Poder Tecnológico",
+      "military": "Poder Militar",
+      "energy": "Poder Energético",
+      "commercial": "Poder Comercial",
+      "social": "Poder Social",
+      "monetaryDesc": "Representa a força financeira e capacidade de investimento do distrito",
+      "techDesc": "Nível de inovação e desenvolvimento tecnológico",
+      "militaryDesc": "Capacidade de defesa e estratégia em duelos",
+      "energyDesc": "Sustentabilidade e eficiência energética",
+      "commercialDesc": "Força no mercado e capacidade comercial",
+      "socialDesc": "Coesão social e engajamento da comunidade",
+      "helpText": "Os poderes aumentam através de ações específicas: quizzes, duelos, missões e contribuições",
+      "updated": "Poder atualizado!",
+      "updatedDesc": "O distrito ganhou poder com sua ação.",
+      "updateError": "Erro ao atualizar poder"
+    }
+  },
   "store": {
     "header": {
       "marketplace": "Marketplace",
