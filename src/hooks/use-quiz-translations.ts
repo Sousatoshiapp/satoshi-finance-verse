@@ -129,6 +129,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Bitcoin", "Finanças Descentralizadas", "Tipo de carteira", "Exchange centralizada"],
       correct_answer: "Finanças Descentralizadas",
       explanation: "DeFi são aplicações financeiras descentralizadas."
+    },
+    'es-ES': {
+      question: "¿Qué es DeFi?",
+      options: ["Bitcoin", "Finanzas Descentralizadas", "Tipo de billetera", "Exchange centralizado"],
+      correct_answer: "Finanzas Descentralizadas",
+      explanation: "DeFi son aplicaciones financieras descentralizadas."
+    },
+    'hi-IN': {
+      question: "DeFi क्या है?",
+      options: ["बिटकॉइन", "विकेंद्रीकृत वित्त", "वॉलेट का प्रकार", "केंद्रीकृत एक्सचेंज"],
+      correct_answer: "विकेंद्रीकृत वित्त",
+      explanation: "DeFi विकेंद्रीकृत वित्तीय अनुप्रयोग हैं।"
+    },
+    'zh-CN': {
+      question: "什么是DeFi？",
+      options: ["比特币", "去中心化金融", "钱包类型", "中心化交易所"],
+      correct_answer: "去中心化金融",
+      explanation: "DeFi是去中心化金融应用程序。"
+    },
+    'ar-SA': {
+      question: "ما هو DeFi؟",
+      options: ["بيتكوين", "التمويل اللامركزي", "نوع من المحفظة", "بورصة مركزية"],
+      correct_answer: "التمويل اللامركزي",
+      explanation: "DeFi هي تطبيقات مالية لامركزية."
     }
   },
   "O que é Correlação?": {
@@ -143,6 +167,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Preço de ativos", "Relação entre movimentos", "Taxa de retorno", "Dividendos"],
       correct_answer: "Relação entre movimentos",
       explanation: "Correlacao mede como ativos se movem juntos."
+    },
+    'es-ES': {
+      question: "¿Qué es la Correlación?",
+      options: ["Precio de activos", "Relación entre movimientos", "Tasa de retorno", "Dividendos"],
+      correct_answer: "Relación entre movimientos",
+      explanation: "La correlación mide cómo se mueven los activos juntos."
+    },
+    'hi-IN': {
+      question: "सहसंबंध क्या है?",
+      options: ["संपत्ति की कीमत", "गतिविधियों के बीच संबंध", "रिटर्न दर", "लाभांश"],
+      correct_answer: "गतिविधियों के बीच संबंध",
+      explanation: "सहसंबंध मापता है कि संपत्तियां एक साथ कैसे चलती हैं।"
+    },
+    'zh-CN': {
+      question: "什么是相关性？",
+      options: ["资产价格", "运动之间的关系", "回报率", "股息"],
+      correct_answer: "运动之间的关系",
+      explanation: "相关性衡量资产如何一起移动。"
+    },
+    'ar-SA': {
+      question: "ما هو الارتباط؟",
+      options: ["سعر الأصول", "العلاقة بين الحركات", "معدل العائد", "أرباح الأسهم"],
+      correct_answer: "العلاقة بين الحركات",
+      explanation: "الارتباط يقيس كيف تتحرك الأصول معًا."
     }
   },
   "Quem criou o Bitcoin?": {
@@ -157,6 +205,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"],
       correct_answer: "Satoshi Nakamoto",
       explanation: "Satoshi Nakamoto e o pseudonimo do criador do Bitcoin."
+    },
+    'es-ES': {
+      question: "¿Quién creó Bitcoin?",
+      options: ["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"],
+      correct_answer: "Satoshi Nakamoto",
+      explanation: "Satoshi Nakamoto es el seudónimo del creador de Bitcoin."
+    },
+    'hi-IN': {
+      question: "बिटकॉइन किसने बनाया?",
+      options: ["विटालिक ब्यूटेरिन", "सातोशी नाकामोतो", "चार्ली ली", "गेविन एंड्रेसन"],
+      correct_answer: "सातोशी नाकामोतो",
+      explanation: "सातोशी नाकामोतो बिटकॉइन के निर्माता का छद्म नाम है।"
+    },
+    'zh-CN': {
+      question: "谁创造了比特币？",
+      options: ["维塔利克·布特林", "中本聪", "查理·李", "加文·安德烈森"],
+      correct_answer: "中本聪",
+      explanation: "中本聪是比特币创造者的化名。"
+    },
+    'ar-SA': {
+      question: "من أنشأ البيتكوين؟",
+      options: ["فيتاليك بوتيرين", "ساتوشي ناكاموتو", "تشارلي لي", "جافين أندريسن"],
+      correct_answer: "ساتوشي ناكاموتو",
+      explanation: "ساتوشي ناكاموتو هو الاسم المستعار لمنشئ البيتكوين."
     }
   },
   "O que é Duration?": {
@@ -171,6 +243,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Prazo do investimento", "Sensibilidade a juros", "Taxa de retorno", "Valor presente"],
       correct_answer: "Sensibilidade a juros",
       explanation: "Duration mede sensibilidade a mudanças de juros."
+    },
+    'es-ES': {
+      question: "¿Qué es la Duración?",
+      options: ["Plazo de inversión", "Sensibilidad a tasas de interés", "Tasa de retorno", "Valor presente"],
+      correct_answer: "Sensibilidad a tasas de interés",
+      explanation: "La duración mide la sensibilidad a los cambios en las tasas de interés."
+    },
+    'hi-IN': {
+      question: "अवधि क्या है?",
+      options: ["निवेश अवधि", "ब्याज दर संवेदनशीलता", "रिटर्न दर", "वर्तमान मूल्य"],
+      correct_answer: "ब्याज दर संवेदनशीलता",
+      explanation: "अवधि ब्याज दर परिवर्तनों के प्रति संवेदनशीलता को मापती है।"
+    },
+    'zh-CN': {
+      question: "什么是久期？",
+      options: ["投资期限", "利率敏感性", "回报率", "现值"],
+      correct_answer: "利率敏感性",
+      explanation: "久期衡量对利率变化的敏感性。"
+    },
+    'ar-SA': {
+      question: "ما هي المدة؟",
+      options: ["مدة الاستثمار", "حساسية أسعار الفائدة", "معدل العائد", "القيمة الحالية"],
+      correct_answer: "حساسية أسعار الفائدة",
+      explanation: "المدة تقيس الحساسية لتغيرات أسعار الفائدة."
     }
   },
   "O que significa Bull Market?": {
@@ -185,6 +281,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Mercado em baixa", "Mercado em alta", "Mercado lateral", "Mercado volátil"],
       correct_answer: "Mercado em alta",
       explanation: "Bull Market é período de crescimento contínuo."
+    },
+    'es-ES': {
+      question: "¿Qué significa Mercado Alcista?",
+      options: ["Mercado bajista", "Mercado alcista", "Mercado lateral", "Mercado volátil"],
+      correct_answer: "Mercado alcista",
+      explanation: "El Mercado Alcista es un período de crecimiento continuo."
+    },
+    'hi-IN': {
+      question: "बुल मार्केट का क्या मतलब है?",
+      options: ["बेयर मार्केट", "बुल मार्केट", "साइडवेज मार्केट", "अस्थिर बाजार"],
+      correct_answer: "बुल मार्केट",
+      explanation: "बुल मार्केट निरंतर वृद्धि की अवधि है।"
+    },
+    'zh-CN': {
+      question: "牛市是什么意思？",
+      options: ["熊市", "牛市", "横盘市场", "波动市场"],
+      correct_answer: "牛市",
+      explanation: "牛市是持续增长的时期。"
+    },
+    'ar-SA': {
+      question: "ماذا يعني السوق الصاعد؟",
+      options: ["السوق الهابط", "السوق الصاعد", "السوق الجانبي", "السوق المتقلب"],
+      correct_answer: "السوق الصاعد",
+      explanation: "السوق الصاعد هو فترة من النمو المستمر."
     }
   },
   "O que é ROI?": {
@@ -199,6 +319,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Retorno sobre Investimento", "Taxa de Juros", "Risco do Investimento", "Receita Operacional Real"],
       correct_answer: "Retorno sobre Investimento",
       explanation: "ROI significa Retorno sobre Investimento, medindo rentabilidade."
+    },
+    'es-ES': {
+      question: "¿Qué es ROI?",
+      options: ["Retorno de la Inversión", "Tasa de Interés", "Riesgo de Inversión", "Ingresos Operativos Reales"],
+      correct_answer: "Retorno de la Inversión",
+      explanation: "ROI significa Retorno de la Inversión, midiendo la rentabilidad."
+    },
+    'hi-IN': {
+      question: "ROI क्या है?",
+      options: ["निवेश पर रिटर्न", "ब्याज दर", "निवेश का जोखिम", "वास्तविक परिचालन आय"],
+      correct_answer: "निवेश पर रिटर्न",
+      explanation: "ROI का मतलब निवेश पर रिटर्न है, जो लाभप्रदता को मापता है।"
+    },
+    'zh-CN': {
+      question: "什么是ROI？",
+      options: ["投资回报率", "利率", "投资风险", "实际营业收入"],
+      correct_answer: "投资回报率",
+      explanation: "ROI代表投资回报率，衡量盈利能力。"
+    },
+    'ar-SA': {
+      question: "ما هو ROI؟",
+      options: ["عائد الاستثمار", "معدل الفائدة", "مخاطر الاستثمار", "الدخل التشغيلي الحقيقي"],
+      correct_answer: "عائد الاستثمار",
+      explanation: "ROI يعني عائد الاستثمار، ويقيس الربحية."
     }
   },
   "O que é volatilidade?": {
@@ -213,6 +357,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Estabilidade de preços", "Variação de preços", "Garantia de investimento", "Retorno fixo"],
       correct_answer: "Variação de preços",
       explanation: "Volatilidade mede o quanto o preço de um ativo oscila."
+    },
+    'es-ES': {
+      question: "¿Qué es la volatilidad?",
+      options: ["Estabilidad de precios", "Variación de precios", "Garantía de inversión", "Retorno fijo"],
+      correct_answer: "Variación de precios",
+      explanation: "La volatilidad mide cuánto fluctúa el precio de un activo."
+    },
+    'hi-IN': {
+      question: "अस्थिरता क्या है?",
+      options: ["मूल्य स्थिरता", "मूल्य भिन्नता", "निवेश गारंटी", "निश्चित रिटर्न"],
+      correct_answer: "मूल्य भिन्नता",
+      explanation: "अस्थिरता मापती है कि किसी संपत्ति की कीमत कितनी उतार-चढ़ाव करती है।"
+    },
+    'zh-CN': {
+      question: "什么是波动性？",
+      options: ["价格稳定性", "价格变动", "投资保证", "固定回报"],
+      correct_answer: "价格变动",
+      explanation: "波动性衡量资产价格的波动程度。"
+    },
+    'ar-SA': {
+      question: "ما هو التقلب؟",
+      options: ["استقرار الأسعار", "تغير الأسعار", "ضمان الاستثمار", "عائد ثابت"],
+      correct_answer: "تغير الأسعار",
+      explanation: "التقلب يقيس مدى تذبذب سعر الأصل."
     }
   },
   "O que é Bear Market?": {
@@ -227,6 +395,30 @@ const questionTranslations: Record<string, Record<string, any>> = {
       options: ["Mercado em alta", "Mercado em baixa", "Mercado estável", "Mercado novo"],
       correct_answer: "Mercado em baixa",
       explanation: "Bear Market é período de queda de preços."
+    },
+    'es-ES': {
+      question: "¿Qué es el Mercado Bajista?",
+      options: ["Mercado en alza", "Mercado en baja", "Mercado estable", "Mercado nuevo"],
+      correct_answer: "Mercado en baja",
+      explanation: "El Mercado Bajista es un período de precios en declive."
+    },
+    'hi-IN': {
+      question: "बेयर मार्केट क्या है?",
+      options: ["बढ़ता बाजार", "गिरता बाजार", "स्थिर बाजार", "नया बाजार"],
+      correct_answer: "गिरता बाजार",
+      explanation: "बेयर मार्केट कीमतों में गिरावट की अवधि है।"
+    },
+    'zh-CN': {
+      question: "什么是熊市？",
+      options: ["上涨市场", "下跌市场", "稳定市场", "新市场"],
+      correct_answer: "下跌市场",
+      explanation: "熊市是价格下跌的时期。"
+    },
+    'ar-SA': {
+      question: "ما هو السوق الهابط؟",
+      options: ["السوق الصاعد", "السوق الهابط", "السوق المستقر", "السوق الجديد"],
+      correct_answer: "السوق الهابط",
+      explanation: "السوق الهابط هو فترة من انخفاض الأسعار."
     }
   }
 };
