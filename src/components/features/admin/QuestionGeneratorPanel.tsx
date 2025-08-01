@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Play, BarChart3, Target } from "lucide-react";
 import { BatchGenerationRunner } from "./BatchGenerationRunner";
+import { ErrorHandler } from "@/utils/error-handling";
 
 interface CategoryStatus {
   category: string;
@@ -34,30 +35,49 @@ export function QuestionGeneratorPanel() {
   const [results, setResults] = useState<GenerationResult[]>([]);
 
   const loadStatus = async () => {
+    const logger = ErrorHandler.createLogger('QuestionGeneratorPanel');
     setLoading(true);
-    console.log('🔄 Carregando status...');
+    logger.info('Carregando status...');
     
     try {
-      const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
-        body: { mode: 'status' }
+      const statusData = await ErrorHandler.withRetry(async () => {
+        const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
+          body: { mode: 'status' }
+        });
+
+        if (error) {
+          logger.error('Erro da edge function', { error });
+          throw new Error(error.message || 'Erro na Edge Function');
+        }
+
+        if (!data) {
+          logger.warn('Dados vazios retornados');
+          throw new Error('Nenhum dado retornado do status');
+        }
+
+        if (!data.summary || !Array.isArray(data.categories)) {
+          logger.error('Formato de dados inválido', { data });
+          throw new Error('Formato de resposta inválido do status');
+        }
+
+        return data;
+      }, {
+        maxAttempts: 3,
+        baseDelay: 1000,
+        shouldRetry: (error, attempt) => {
+          return !error.message.includes('Formato de resposta inválido') && attempt < 3;
+        }
       });
 
-      console.log('📊 Resposta do status:', { data, error });
-
-      if (error) {
-        console.error('❌ Erro da edge function:', error);
-        throw error;
-      }
-
-      if (!data) {
-        console.warn('⚠️ Dados vazios retornados');
-        throw new Error('Nenhum dado retornado do status');
-      }
-
-      console.log('✅ Status carregado:', data);
-      setStatus(data);
+      logger.info('Status carregado com sucesso', { 
+        totalCurrent: statusData.summary?.totalCurrent,
+        totalTarget: statusData.summary?.totalTarget,
+        categoriesCount: statusData.categories?.length
+      });
+      
+      setStatus(statusData);
     } catch (error) {
-      console.error('❌ Erro ao carregar status:', error);
+      logger.error('Erro ao carregar status', { error: error.message });
       toast.error(`Erro ao carregar status: ${error.message || 'Erro desconhecido'}`);
     } finally {
       setLoading(false);
@@ -65,8 +85,9 @@ export function QuestionGeneratorPanel() {
   };
 
   const generateQuestions = async () => {
-    console.log('🚀 Starting question generation...');
-    console.log('📋 Status atual:', status);
+    const logger = ErrorHandler.createLogger('QuestionGeneratorPanel');
+    logger.info('Starting question generation...');
+    logger.info('Status atual:', status);
     
     setGenerating(true);
     setResults([]);
@@ -74,28 +95,28 @@ export function QuestionGeneratorPanel() {
     try {
       // Verificar se temos status carregado
       if (!status) {
-        console.warn('⚠️ Status não carregado, tentando carregar...');
+        logger.warn('Status não carregado, tentando carregar...');
         await loadStatus();
         if (!status) {
           throw new Error('Status não disponível');
         }
       }
 
-      console.log('📊 Categorias disponíveis:', status.categories);
+      logger.info('Categorias disponíveis:', { count: status.categories?.length });
 
       // Pegar categorias que mais precisam de perguntas
       const categoriesToGenerate = status.categories
         ?.filter(cat => {
-          console.log(`🔍 Categoria ${cat.category}: needed=${cat.needed}, current=${cat.current}, target=${cat.target}`);
+          logger.debug(`Categoria ${cat.category}`, { needed: cat.needed, current: cat.current, target: cat.target });
           return cat.needed > 0;
         })
         .sort((a, b) => b.needed - a.needed)
         .slice(0, 5); // Processar 5 por vez
 
-      console.log('🎯 Categories selected for generation:', categoriesToGenerate);
+      logger.info('Categories selected for generation:', { count: categoriesToGenerate?.length });
 
       if (!categoriesToGenerate?.length) {
-        console.log('✅ All categories already have sufficient questions!');
+        logger.info('All categories already have sufficient questions!');
         toast.info('Todas as categorias já têm perguntas suficientes!');
         return;
       }
@@ -109,38 +130,50 @@ export function QuestionGeneratorPanel() {
         }))
       };
 
-      console.log('📤 Sending request:', requestBody);
+      logger.info('Sending request:', requestBody);
 
-      const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
-        body: requestBody
+      const generationResult = await ErrorHandler.withRetry(async () => {
+        const { data, error } = await supabase.functions.invoke('batch-generate-questions', {
+          body: requestBody
+        });
+
+        if (error) {
+          logger.error('Erro da edge function', { error });
+          throw new Error(error.message || 'Erro na Edge Function');
+        }
+
+        if (!data) {
+          throw new Error('Nenhum dado retornado da geração');
+        }
+
+        if (!Array.isArray(data.results)) {
+          logger.error('Formato de resposta inválido', { data });
+          throw new Error('Formato de resposta inválido da geração');
+        }
+
+        return data;
+      }, {
+        maxAttempts: 2,
+        baseDelay: 2000,
+        shouldRetry: (error, attempt) => {
+          return !error.message.includes('Formato de resposta inválido') && attempt < 2;
+        }
       });
 
-      console.log('📥 Generation response:', { data, error });
-
-      if (error) {
-        console.error('❌ Erro da edge function:', error);
-        throw error;
-      }
-
-      if (!data) {
-        console.warn('⚠️ Nenhum dado retornado da geração');
-        throw new Error('Nenhum dado retornado da geração');
-      }
-
-      setResults(data.results || []);
+      setResults(generationResult.results || []);
       
-      const totalGenerated = data.totalGenerated || 0;
-      console.log(`✅ Total de perguntas geradas: ${totalGenerated}`);
+      const totalGenerated = generationResult.totalGenerated || 0;
+      logger.info(`Total de perguntas geradas: ${totalGenerated}`);
       
       if (totalGenerated > 0) {
         toast.success(`${totalGenerated} perguntas geradas com sucesso!`);
-        await loadStatus(); // Recarregar status
+        await loadStatus();
       } else {
         toast.warning('Nenhuma pergunta foi gerada');
       }
 
-    } catch (error) {
-      console.error('❌ Erro ao gerar perguntas:', error);
+    } catch (error: any) {
+      logger.error('Erro ao gerar perguntas', { error: error.message });
       toast.error(`Erro ao gerar perguntas: ${error.message || 'Erro desconhecido'}`);
     } finally {
       setGenerating(false);

@@ -2,6 +2,81 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+interface RetryOptions {
+  maxAttempts?: number;
+  baseDelay?: number;
+  maxDelay?: number;
+  backoffFactor?: number;
+}
+
+class EdgeErrorHandler {
+  static async withRetry<T>(
+    operation: () => Promise<T>,
+    options: RetryOptions = {}
+  ): Promise<T> {
+    const {
+      maxAttempts = 3,
+      baseDelay = 1000,
+      maxDelay = 30000,
+      backoffFactor = 2
+    } = options;
+
+    let lastError: any;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error;
+        
+        if (attempt === maxAttempts) {
+          throw error;
+        }
+
+        const delay = Math.min(baseDelay * Math.pow(backoffFactor, attempt - 1), maxDelay);
+        console.warn(`[EdgeErrorHandler] Attempt ${attempt} failed, retrying in ${delay}ms:`, error);
+        
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+
+    throw lastError;
+  }
+
+  static createLogger(context: string) {
+    return {
+      error: (message: string, data?: any) => {
+        console.error(`[${context}] ❌ ${message}`, {
+          timestamp: new Date().toISOString(),
+          context,
+          data,
+          stack: new Error().stack
+        });
+      },
+      warn: (message: string, data?: any) => {
+        console.warn(`[${context}] ⚠️ ${message}`, {
+          timestamp: new Date().toISOString(),
+          context,
+          data
+        });
+      },
+      info: (message: string, data?: any) => {
+        console.log(`[${context}] ℹ️ ${message}`, {
+          timestamp: new Date().toISOString(),
+          context,
+          data
+        });
+      }
+    };
+  }
+}
+
+function createAdaptiveDelay(attempt: number, baseDelay = 3000): number {
+  const jitter = Math.random() * 0.2 * baseDelay;
+  const exponentialDelay = baseDelay * Math.pow(1.5, attempt - 1);
+  return Math.min(exponentialDelay + jitter, 15000);
+}
+
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
@@ -77,7 +152,13 @@ serve(async (req) => {
       console.log('📊 Categorias recebidas:', categories);
       
       // Gerar perguntas em lote
-      const results = [];
+      const results: Array<{
+        category: string;
+        difficulty: string;
+        generated: number;
+        success: boolean;
+        error?: string;
+      }> = [];
       const categoriesToProcess = categories || expansionPlan.slice(0, 5); // Processar 5 categorias por vez
       
       console.log('🎯 Categorias a processar:', categoriesToProcess);
@@ -114,7 +195,7 @@ serve(async (req) => {
         });
 
         // Ajustar para não exceder o necessário
-        let totalPlanned = Object.values(difficultyDistribution).reduce((sum, count) => sum + count, 0);
+        let totalPlanned = Object.values(difficultyDistribution).reduce((sum: number, count: unknown) => sum + (count as number), 0);
         if (totalPlanned > needed) {
           const excess = totalPlanned - needed;
           difficultyDistribution[priorityDifficulties[priorityDifficulties.length - 1]] -= excess;
@@ -122,36 +203,35 @@ serve(async (req) => {
 
         // Gerar perguntas para cada dificuldade
         for (const [difficulty, count] of Object.entries(difficultyDistribution)) {
-          if (count <= 0) continue;
+          const questionCount = count as number;
+          if (questionCount <= 0) continue;
 
           try {
-            console.log(`Gerando ${count} perguntas ${difficulty} para ${categoryPlan.category}`);
-
-            console.log(`🎯 Gerando para ${categoryPlan.category} (${difficulty}) - ${count} perguntas`);
+            const logger = EdgeErrorHandler.createLogger(`batch-${categoryPlan.category}-${difficulty}`);
+            logger.info(`Gerando ${questionCount} perguntas ${difficulty} para ${categoryPlan.category}`);
             
-            const { data: generateResult, error: generateError } = await supabase.functions.invoke('generate-quiz-questions', {
-              body: {
-                category: categoryPlan.category,
-                difficulty,
-                count: Math.min(count, 3) // Reduzido para 3 por chamada
+            const generateResult = await EdgeErrorHandler.withRetry(async () => {
+              const { data, error } = await supabase.functions.invoke('generate-quiz-questions', {
+                body: {
+                  category: categoryPlan.category,
+                  difficulty,
+                  count: Math.min(questionCount, 3)
+                }
+              });
+
+              if (error) {
+                logger.error('Erro na edge function', { error });
+                throw new Error(error.message || 'Erro na Edge Function');
               }
+
+              return data;
+            }, {
+              maxAttempts: 3,
+              baseDelay: 2000,
+              maxDelay: 10000
             });
 
-            console.log(`📋 Resultado completo para ${categoryPlan.category} (${difficulty}):`, { generateResult, generateError });
-
-            if (generateError) {
-              console.error(`❌ Erro ao gerar perguntas para ${categoryPlan.category} (${difficulty}):`, generateError);
-              results.push({
-                category: categoryPlan.category,
-                difficulty,
-                generated: 0,
-                success: false,
-                error: generateError.message || 'Erro na Edge Function'
-              });
-              continue;
-            }
-
-            console.log(`✅ Sucesso para ${categoryPlan.category}: ${generateResult?.generated || 0} perguntas`);
+            logger.info(`Sucesso para ${categoryPlan.category}`, { generated: generateResult?.generated || 0 });
 
             results.push({
               category: categoryPlan.category,
@@ -160,12 +240,13 @@ serve(async (req) => {
               success: generateResult?.success || false
             });
 
-            // Delay maior entre chamadas para evitar rate limiting
-            console.log('⏳ Aguardando 3 segundos antes da próxima geração...');
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            const adaptiveDelay = createAdaptiveDelay(results.length);
+            logger.info(`Aguardando ${adaptiveDelay}ms antes da próxima geração...`);
+            await new Promise(resolve => setTimeout(resolve, adaptiveDelay));
 
           } catch (error) {
-            console.error(`Erro ao processar ${categoryPlan.category} (${difficulty}):`, error);
+            const logger = EdgeErrorHandler.createLogger(`batch-error-${categoryPlan.category}`);
+            logger.error(`Erro ao processar ${categoryPlan.category} (${difficulty})`, { error: error.message });
             results.push({
               category: categoryPlan.category,
               difficulty,
@@ -189,7 +270,13 @@ serve(async (req) => {
     if (mode === 'status') {
       console.log('📊 Verificando status...');
       // Verificar status atual vs. plano
-      const statusResults = [];
+      const statusResults: Array<{
+        category: string;
+        current: number;
+        target: number;
+        progress: number;
+        needed: number;
+      }> = [];
 
       for (const categoryPlan of expansionPlan) {
         console.log(`🔍 Verificando categoria: ${categoryPlan.category}`);
