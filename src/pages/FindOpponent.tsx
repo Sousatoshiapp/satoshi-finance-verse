@@ -168,18 +168,49 @@ export default function FindOpponent() {
 
       if (inviteError) throw inviteError;
 
-      // Send notification
-      await supabase.functions.invoke('send-social-notification', {
-        body: {
-          type: 'duel_invite',
-          targetUserId: opponent.id,
-          data: {
-            challengerName: currentUserProfile.nickname,
-            topic: topics.find(t => t.id === selectedTopic)?.name || selectedTopic,
-            inviteId: invite.id
+      // Send database notification
+      try {
+        await supabase.functions.invoke('send-social-notification', {
+          body: {
+            type: 'duel_invite',
+            targetUserId: opponent.id,
+            data: {
+              challengerName: currentUserProfile.nickname,
+              topic: topics.find(t => t.id === selectedTopic)?.name || selectedTopic,
+              inviteId: invite.id
+            }
           }
-        }
-      });
+        });
+      } catch (error) {
+        console.error('Error sending database notification:', error);
+      }
+
+      // Send push notification
+      try {
+        await supabase.functions.invoke('send-push-notification', {
+          body: {
+            userIds: [opponent.id],
+            notificationData: {
+              title: '🎯 Novo Convite de Duelo!',
+              body: `${currentUserProfile.nickname} te desafiou para um duelo de ${topics.find(t => t.id === selectedTopic)?.name || selectedTopic}`,
+              icon: '/favicon.ico',
+              badge: '/favicon.ico',
+              data: {
+                type: 'duel_invite',
+                challengerName: currentUserProfile.nickname,
+                topic: topics.find(t => t.id === selectedTopic)?.name || selectedTopic,
+                inviteId: invite.id,
+                url: '/duels'
+              },
+              requireInteraction: true,
+              tag: `duel-invite-${invite.id}`
+            },
+            notificationType: 'duel_invite'
+          }
+        });
+      } catch (error) {
+        console.error('Error sending push notification:', error);
+      }
 
       toast({
         title: "🎯 Convite enviado!",
