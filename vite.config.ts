@@ -4,11 +4,39 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
+export default defineConfig(({ mode }) => {
+  const envConfig = {
+    development: {
+      VITE_SUPABASE_URL: "https://uabdmohhzsertxfishoh.supabase.co",
+      VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhYmRtb2hoenNlcnR4ZmlzaG9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MDEyNTIsImV4cCI6MjA2NzA3NzI1Mn0.Dbmi7MvETErWGrvC-lJ_5gIf2lGRxWTKIoAm9N9U9KE",
+      VITE_APP_URL: "http://localhost:8080",
+      VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co"
+    },
+    staging: {
+      VITE_SUPABASE_URL: "https://uabdmohhzsertxfishoh.supabase.co",
+      VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhYmRtb2hoenNlcnR4ZmlzaG9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MDEyNTIsImV4cCI6MjA2NzA3NzI1Mn0.Dbmi7MvETErWGrvC-lJ_5gIf2lGRxWTKIoAm9N9U9KE",
+      VITE_APP_URL: "https://staging.satoshifinance.com",
+      VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co"
+    },
+    production: {
+      VITE_SUPABASE_URL: "https://uabdmohhzsertxfishoh.supabase.co",
+      VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhYmRtb2hoenNlcnR4ZmlzaG9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MDEyNTIsImV4cCI6MjA2NzA3NzI1Mn0.Dbmi7MvETErWGrvC-lJ_5gIf2lGRxWTKIoAm9N9U9KE",
+      VITE_APP_URL: "https://app.satoshifinance.com",
+      VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co"
+    }
+  };
+
+  return {
+    define: {
+      ...Object.entries(envConfig[mode as keyof typeof envConfig] || envConfig.development).reduce((acc, [key, value]) => {
+        acc[`import.meta.env.${key}`] = JSON.stringify(value);
+        return acc;
+      }, {} as Record<string, string>)
+    },
+    server: {
+      host: "::",
+      port: 8080,
+    },
   plugins: [
     react(),
     mode === 'development' &&
@@ -143,4 +171,5 @@ export default defineConfig(({ mode }) => ({
   css: {
     devSourcemap: false
   }
-}));
+  };
+});
