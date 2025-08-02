@@ -53,26 +53,16 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
     
     try {
       if (accepted) {
-        // Update invite status
-        await supabase
-          .from('duel_invites')
-          .update({ status: 'accepted' })
-          .eq('id', invite.id);
-
         const questions = await generateDuelQuestions(invite.quiz_topic);
 
-        const { data: duel } = await supabase
-          .from('duels')
-          .insert({
-            invite_id: invite.id,
-            player1_id: invite.challenger_id,
-            player2_id: invite.challenged_id,
-            quiz_topic: invite.quiz_topic,
-            questions: questions as any,
-            status: 'active'
-          })
-          .select()
-          .single();
+        const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
+          p_challenger_id: invite.challenger_id,
+          p_challenged_id: invite.challenged_id,
+          p_quiz_topic: invite.quiz_topic,
+          p_questions: questions as any
+        });
+
+        if (duelError) throw duelError;
 
         try {
           await supabase.functions.invoke('send-social-notification', {
@@ -81,7 +71,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
               type: 'duel_accepted',
               title: 'Convite Aceito!',
               message: `Seu convite de duelo foi aceito! O duelo começou.`,
-              data: { invite_id: invite.id, duel_id: duel?.id }
+              data: { invite_id: invite.id, duel_id: duelId }
             }
           });
         } catch (notificationError) {
@@ -98,7 +88,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
         }, 1000);
 
       } else {
-        // Reject invite
+        // Reject invite - this can remain as direct update since no duel creation needed
         await supabase
           .from('duel_invites')
           .update({ status: 'rejected' })
