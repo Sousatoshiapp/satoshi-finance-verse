@@ -65,11 +65,19 @@ export function useP2PTransfer() {
 
     setTransferring(true);
     try {
+      console.log('Calling transfer_btz RPC with:', {
+        sender_id: profile.id,
+        receiver_id: receiverId,
+        amount: amount
+      });
+
       const { data, error } = await supabase.rpc('transfer_btz' as any, {
         sender_id: profile.id,
         receiver_id: receiverId,
         amount: amount
       });
+
+      console.log('transfer_btz RPC result:', { data, error });
 
       if (error) throw error;
 

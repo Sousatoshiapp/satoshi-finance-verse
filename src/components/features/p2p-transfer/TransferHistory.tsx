@@ -35,21 +35,26 @@ export function TransferHistory() {
     if (!profile?.id) return;
 
     try {
-      const { data: sentTransfers, error: sentError } = await supabase
+      console.log('Loading P2P transfers for profile:', profile.id, 'user_id:', profile.user_id);
+
+      const { data: sentTransfers, error: sentError } = await (supabase as any)
         .from('transactions')
-        .select('id, amount_cents, created_at, user_id, receiver_id')
+        .select('id, amount_cents, created_at, user_id, receiver_id, transfer_type')
         .eq('user_id', profile.user_id)
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
+      console.log('Sent transfers query result:', { sentTransfers, sentError });
       if (sentError) throw sentError;
 
-      const { data: receivedTransfers, error: receivedError } = await supabase
+      const { data: receivedTransfers, error: receivedError } = await (supabase as any)
         .from('transactions')
-        .select('id, amount_cents, created_at, user_id, receiver_id')
+        .select('id, amount_cents, created_at, user_id, receiver_id, transfer_type')
         .eq('receiver_id', profile.id)
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
+
+      console.log('Received transfers query result:', { receivedTransfers, receivedError });
 
       if (receivedError) throw receivedError;
 
@@ -91,9 +96,17 @@ export function TransferHistory() {
 
       allTransfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       
+      console.log('Final processed transfers:', allTransfers);
       setTransfers(allTransfers);
     } catch (error) {
       console.error('Error loading transfers:', error);
+      
+      if (error && typeof error === 'object' && 'message' in error) {
+        const errorMessage = (error as any).message;
+        if (errorMessage.includes('column') && errorMessage.includes('does not exist')) {
+          console.error('Database schema mismatch detected. P2P migration may not have been applied.');
+        }
+      }
     } finally {
       setLoading(false);
     }
