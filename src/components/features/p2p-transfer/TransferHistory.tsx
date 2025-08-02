@@ -58,6 +58,13 @@ export function TransferHistory() {
 
       if (receivedError) throw receivedError;
 
+      console.log('Profile data for debugging:', {
+        profileId: profile.id,
+        profileUserId: profile.user_id,
+        sentTransfersCount: sentTransfers?.length || 0,
+        receivedTransfersCount: receivedTransfers?.length || 0
+      });
+
       const allUserIds = new Set<string>();
       sentTransfers?.forEach(t => {
         if (t.receiver_id) allUserIds.add(t.receiver_id);
