@@ -12,7 +12,6 @@ import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
 import { useI18n } from "@/hooks/use-i18n";
-import { useQuizTranslations } from "@/hooks/use-quiz-translations";
 // BTZ Counter removido do Quiz Engine para simplificar UI
 // import { LivesCounter } from "./lives-counter"; // Removido
 import { BeetzAnimation } from "./beetz-animation";
@@ -103,7 +102,6 @@ export function QuizEngine({
   const { } = useAdvancedQuizAudio();
   const { shuffleQuestions } = useQuizShuffle();
   const { t } = useI18n();
-  const { translateQuestions } = useQuizTranslations();
 
   const handleContinue = () => {
     console.log('🔄 handleContinue called');
@@ -198,8 +196,24 @@ export function QuizEngine({
       // Embaralhar as opções de cada questão
       const shuffledQuestions = shuffleQuestions(fetchedQuestions);
       
-      // Aplicar traduções
-      const translatedQuestions = translateQuestions(shuffledQuestions);
+      // Aplicar traduções usando o sistema i18n principal
+      const translatedQuestions = shuffledQuestions.map(question => {
+        const questionKey = question.semantic_key || question.id;
+        const translatedQuestion = t(`quiz.questions.${questionKey}.question`, question.question);
+        const translatedOptions = question.options.map((option, index) => 
+          t(`quiz.questions.${questionKey}.options.${index}`, option)
+        );
+        const translatedCorrectAnswer = t(`quiz.questions.${questionKey}.correct`, question.correct_answer);
+        const translatedExplanation = t(`quiz.questions.${questionKey}.explanation`, question.explanation);
+        
+        return {
+          ...question,
+          question: translatedQuestion,
+          options: translatedOptions,
+          correct_answer: translatedCorrectAnswer,
+          explanation: translatedExplanation
+        };
+      });
       
       setQuestions(translatedQuestions);
     } catch (error) {

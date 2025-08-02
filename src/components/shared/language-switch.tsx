@@ -3,7 +3,7 @@ import { Button } from "@/components/shared/ui/button";
 import { Globe } from "lucide-react";
 
 export function LanguageSwitch() {
-  const { getCurrentLanguage, changeLanguage } = useI18n();
+  const { getCurrentLanguage, changeLanguage, t } = useI18n();
   const currentLang = getCurrentLanguage();
   
   const languages = [
@@ -29,7 +29,7 @@ export function LanguageSwitch() {
       size="sm"
       onClick={toggleLanguage}
       className="text-xs p-1 h-7 w-7 rounded-full hover:bg-muted/80"
-      title={`Switch to ${languages[(currentLanguageIndex + 1) % languages.length].name}`}
+      title={`${t('common.switchTo')} ${languages[(currentLanguageIndex + 1) % languages.length].name}`}
     >
       <Globe className="h-3 w-3" />
     </Button>

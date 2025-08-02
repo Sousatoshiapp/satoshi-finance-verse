@@ -14,7 +14,8 @@
     "pro": "Pro",
     "online": "En línea",
     "offline": "Desconectado",
-    "viewAll": "Ver Todo"
+    "viewAll": "Ver Todo",
+    "switchTo": "Cambiar a"
   },
   "quiz": {
     "title": "Quiz",
@@ -29,23 +30,89 @@
     "completed": "¡Quiz Completado!",
     "startQuiz": "Iniciar Quiz",
     "questions": {
-      "q1": {
+      "stockExchange": {
         "question": "¿Cuál es la función principal de una bolsa de valores?",
         "options": ["Prestar dinero a empresas", "Facilitar el comercio de valores", "Establecer tasas de interés", "Imprimir dinero"],
         "correct": "Facilitar el comercio de valores",
         "explanation": "Las bolsas de valores facilitan el comercio de valores entre compradores y vendedores."
       },
-      "q2": {
+      "ipo": {
         "question": "¿Qué significa IPO?",
         "options": ["Oferta Pública Inicial", "Orden de Compra Internacional", "Opciones de Cartera de Inversión", "Optimización Interna de Precios"],
         "correct": "Oferta Pública Inicial",
         "explanation": "IPO significa Oferta Pública Inicial, cuando una empresa vende acciones al público por primera vez."
       },
-      "q3": {
+      "diversification": {
         "question": "¿Qué es la diversificación en inversiones?",
         "options": ["Invertir todo el dinero en una acción", "Distribuir inversiones entre diferentes activos", "Solo comprar acciones", "Vender todas las inversiones"],
         "correct": "Distribuir inversiones entre diferentes activos",
         "explanation": "La diversificación implica distribuir inversiones entre diferentes activos para reducir el riesgo."
+      },
+      "defi": {
+        "question": "¿Qué es DeFi?",
+        "options": ["Bitcoin", "Finanzas Descentralizadas", "Tipo de billetera", "Exchange centralizado"],
+        "correct": "Finanzas Descentralizadas",
+        "explanation": "DeFi son aplicaciones financieras descentralizadas."
+      },
+      "correlation": {
+        "question": "¿Qué es la Correlación?",
+        "options": ["Precio de activos", "Relación entre movimientos", "Tasa de retorno", "Dividendos"],
+        "correct": "Relación entre movimientos",
+        "explanation": "La correlación mide cómo se mueven los activos juntos."
+      },
+      "bitcoin": {
+        "question": "¿Quién creó Bitcoin?",
+        "options": ["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"],
+        "correct": "Satoshi Nakamoto",
+        "explanation": "Satoshi Nakamoto es el seudónimo del creador de Bitcoin."
+      },
+      "duration": {
+        "question": "¿Qué es la Duración?",
+        "options": ["Plazo de inversión", "Sensibilidad a la tasa de interés", "Tasa de retorno", "Valor presente"],
+        "correct": "Sensibilidad a la tasa de interés",
+        "explanation": "La duración mide la sensibilidad a los cambios en las tasas de interés."
+      },
+      "bullMarket": {
+        "question": "¿Qué significa Mercado Alcista?",
+        "options": ["Mercado bajista", "Mercado alcista", "Mercado lateral", "Mercado volátil"],
+        "correct": "Mercado alcista",
+        "explanation": "El Mercado Alcista es un período de crecimiento sostenido."
+      },
+      "roi": {
+        "question": "¿Qué es ROI?",
+        "options": ["Retorno de la Inversión", "Tasa de Interés", "Riesgo de Inversión", "Ingreso Operativo Real"],
+        "correct": "Retorno de la Inversión",
+        "explanation": "ROI significa Retorno de la Inversión, midiendo la rentabilidad."
+      },
+      "volatility": {
+        "question": "¿Qué es la volatilidad?",
+        "options": ["Estabilidad de precios", "Variación de precios", "Garantía de inversión", "Retorno fijo"],
+        "correct": "Variación de precios",
+        "explanation": "La volatilidad mide cuánto fluctúa el precio de un activo."
+      },
+      "bearMarket": {
+        "question": "¿Qué es un Mercado Bajista?",
+        "options": ["Mercado en alza", "Mercado en baja", "Mercado estable", "Mercado nuevo"],
+        "correct": "Mercado en baja",
+        "explanation": "El Mercado Bajista es un período de declive sostenido en los precios."
+      },
+      "inflation": {
+        "question": "¿Qué es la inflación?",
+        "options": ["Aumento de precios", "Disminución de precios", "Cambio de moneda", "Tasa de interés"],
+        "correct": "Aumento de precios",
+        "explanation": "La inflación es el aumento general de precios y la caída del valor adquisitivo del dinero."
+      },
+      "liquidity": {
+        "question": "¿Qué es la liquidez?",
+        "options": ["Facilidad de conversión a efectivo", "Retorno de inversión", "Volatilidad del mercado", "Tasa de interés"],
+        "correct": "Facilidad de conversión a efectivo",
+        "explanation": "La liquidez se refiere a la facilidad con que un activo puede convertirse en efectivo sin afectar su precio de mercado."
+      },
+      "compoundInterest": {
+        "question": "¿Qué es el interés compuesto?",
+        "options": ["Interés sobre interés", "Interés simple", "Tasa fija", "Tasa variable"],
+        "correct": "Interés sobre interés",
+        "explanation": "El interés compuesto es el interés calculado sobre el capital inicial y los intereses acumulados de períodos anteriores."
       }
     }
   },

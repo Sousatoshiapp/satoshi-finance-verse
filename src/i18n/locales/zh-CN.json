@@ -15,6 +15,7 @@
     "online": "在线",
     "offline": "离线",
     "viewAll": "查看全部",
+    "switchTo": "切换到",
     "start": "开始",
     "end": "结束",
     "edit": "编辑",
@@ -63,7 +64,8 @@
     "totalXP": "总经验值",
     "highestStreak": "最高连胜",
     "postsCreated": "创建的帖子",
-    "likesReceived": "收到的点赞"
+    "likesReceived": "收到的点赞",
+    "switchTo": "切换到"
   },
   "quiz": {
     "title": "测验",
@@ -78,23 +80,89 @@
     "completed": "测验完成！",
     "startQuiz": "开始测验",
     "questions": {
-      "q1": {
+      "stockExchange": {
         "question": "证券交易所的主要功能是什么？",
         "options": ["向公司放贷", "促进证券交易", "设定利率", "印刷货币"],
         "correct": "促进证券交易",
         "explanation": "证券交易所促进买卖双方之间的证券交易。"
       },
-      "q2": {
+      "ipo": {
         "question": "IPO代表什么？",
         "options": ["首次公开募股", "国际采购订单", "投资组合选项", "内部价格优化"],
         "correct": "首次公开募股",
         "explanation": "IPO代表首次公开募股，即公司首次向公众出售股票。"
       },
-      "q3": {
+      "diversification": {
         "question": "投资中的多元化是什么？",
         "options": ["将所有资金投入一只股票", "将投资分散到不同资产", "只购买股票", "出售所有投资"],
         "correct": "将投资分散到不同资产",
         "explanation": "多元化涉及将投资分散到不同资产以降低风险。"
+      },
+      "defi": {
+        "question": "什么是DeFi？",
+        "options": ["比特币", "去中心化金融", "钱包类型", "中心化交易所"],
+        "correct": "去中心化金融",
+        "explanation": "DeFi是去中心化金融应用。"
+      },
+      "correlation": {
+        "question": "什么是相关性？",
+        "options": ["资产价格", "运动之间的关系", "回报率", "股息"],
+        "correct": "运动之间的关系",
+        "explanation": "相关性衡量资产如何一起移动。"
+      },
+      "bitcoin": {
+        "question": "谁创造了比特币？",
+        "options": ["维塔利克·布特林", "中本聪", "查理·李", "加文·安德烈森"],
+        "correct": "中本聪",
+        "explanation": "中本聪是比特币创造者的化名。"
+      },
+      "duration": {
+        "question": "什么是久期？",
+        "options": ["投资期限", "利率敏感性", "回报率", "现值"],
+        "correct": "利率敏感性",
+        "explanation": "久期衡量对利率变化的敏感性。"
+      },
+      "bullMarket": {
+        "question": "牛市意味着什么？",
+        "options": ["熊市", "牛市", "横盘市场", "波动市场"],
+        "correct": "牛市",
+        "explanation": "牛市是持续增长的时期。"
+      },
+      "roi": {
+        "question": "什么是ROI？",
+        "options": ["投资回报率", "利率", "投资风险", "实际营业收入"],
+        "correct": "投资回报率",
+        "explanation": "ROI意味着投资回报率，衡量盈利能力。"
+      },
+      "volatility": {
+        "question": "什么是波动性？",
+        "options": ["价格稳定", "价格变化", "投资保证", "固定回报"],
+        "correct": "价格变化",
+        "explanation": "波动性衡量资产价格波动的程度。"
+      },
+      "bearMarket": {
+        "question": "什么是熊市？",
+        "options": ["上涨市场", "下跌市场", "稳定市场", "新市场"],
+        "correct": "下跌市场",
+        "explanation": "熊市是价格持续下跌的时期。"
+      },
+      "inflation": {
+        "question": "什么是通胀？",
+        "options": ["价格上涨", "价格下跌", "货币兑换", "利率"],
+        "correct": "价格上涨",
+        "explanation": "通胀是价格普遍上涨和货币购买力下降。"
+      },
+      "liquidity": {
+        "question": "什么是流动性？",
+        "options": ["易于转换为现金", "投资回报", "市场波动", "利率"],
+        "correct": "易于转换为现金",
+        "explanation": "流动性是指资产在不影响市场价格的情况下易于转换为现金的程度。"
+      },
+      "compoundInterest": {
+        "question": "什么是复利？",
+        "options": ["利息的利息", "单利", "固定利率", "可变利率"],
+        "correct": "利息的利息",
+        "explanation": "复利是根据初始本金和以前期间累积利息计算的利息。"
       }
     }
   },
