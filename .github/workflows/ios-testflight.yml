@@ -25,7 +25,7 @@ jobs:
       - name: Build and upload to TestFlight
         working-directory: ios  # ESSENCIAL: garante que rode na pasta correta
         env:
-          APP_STORE_CONNECT_API_KEY_ID: 4U7CWTXHQ2
+          APP_STORE_CONNECT_API_KEY_KEY_ID: 4U7CWTXHQ2
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: 2b23890c-3caf-4628-a330-573f616db812
           APP_STORE_CONNECT_API_KEY_KEY_CONTENT: |
            -----BEGIN PRIVATE KEY-----
