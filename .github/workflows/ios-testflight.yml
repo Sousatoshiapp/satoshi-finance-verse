@@ -39,6 +39,7 @@ jobs:
            iKR0X2Ft
            -----END PRIVATE KEY-----
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: |
           fastlane match appstore --app_identifier app.lovable.d2e8a7811b9b4d86a9805a42d9bce352 || echo "Provisioning profile creation attempted"
 
@@ -55,5 +56,6 @@ jobs:
            iKR0X2Ft
            -----END PRIVATE KEY-----
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: fastlane ios beta
 
