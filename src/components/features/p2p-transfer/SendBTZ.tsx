@@ -6,6 +6,7 @@ import { Label } from "@/components/shared/ui/label";
 import { Send, Scan } from "lucide-react";
 import { useP2PTransfer } from "@/hooks/use-p2p-transfer";
 import { useProfile } from "@/hooks/use-profile";
+import { useI18n } from "@/hooks/use-i18n";
 import { QRScanner } from "./QRScanner";
 
 export function SendBTZ() {
@@ -14,6 +15,7 @@ export function SendBTZ() {
   const [showScanner, setShowScanner] = useState(false);
   const { transferBTZ, transferring } = useP2PTransfer();
   const { profile } = useProfile();
+  const { t } = useI18n();
 
   const handleTransfer = async () => {
     if (!receiverId || !amount) return;
@@ -42,16 +44,16 @@ export function SendBTZ() {
           <CardHeader className="text-center">
             <CardTitle className="flex items-center justify-center gap-2">
               <Send className="h-5 w-5 text-[#adff2f]" />
-              Enviar BTZ
+              {t('p2p.send.title')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="receiver">ID do Destinatário</Label>
+              <Label htmlFor="receiver">{t('p2p.send.receiverLabel')}</Label>
               <div className="flex gap-2">
                 <Input
                   id="receiver"
-                  placeholder="Cole o ID ou escaneie QR code"
+                  placeholder={t('p2p.send.receiverPlaceholder')}
                   value={receiverId}
                   onChange={(e) => setReceiverId(e.target.value)}
                 />
@@ -66,17 +68,17 @@ export function SendBTZ() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Valor (BTZ)</Label>
+              <Label htmlFor="amount">{t('p2p.send.amountLabel')}</Label>
               <Input
                 id="amount"
                 type="number"
-                placeholder="0"
+                placeholder={t('p2p.send.amountPlaceholder')}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 max={profile?.points || 0}
               />
               <p className="text-xs text-muted-foreground">
-                Saldo disponível: {profile?.points || 0} BTZ
+                {t('p2p.send.availableBalance', { balance: profile?.points || 0 })}
               </p>
             </div>
 
@@ -85,7 +87,7 @@ export function SendBTZ() {
               disabled={!receiverId || !amount || transferring || (amount && parseInt(amount) <= 0)}
               className="w-full"
             >
-              {transferring ? 'Transferindo...' : 'Enviar BTZ'}
+              {transferring ? t('p2p.send.sending') : t('p2p.send.sendButton')}
             </Button>
           </CardContent>
         </Card>

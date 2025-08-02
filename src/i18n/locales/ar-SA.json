@@ -726,5 +726,61 @@
       "updatedDesc": "اكتسبت المنطقة قوة من خلال عملك.",
       "updateError": "خطأ في تحديث القوة"
     }
+  },
+  "p2p": {
+    "title": "تحويلات P2P",
+    "subtitle": "أرسل واستقبل BTZ مع المستخدمين الآخرين",
+    "tabs": {
+      "send": "إرسال",
+      "receive": "استقبال",
+      "history": "التاريخ"
+    },
+    "send": {
+      "title": "إرسال BTZ",
+      "receiverLabel": "معرف المستقبل",
+      "receiverPlaceholder": "الصق المعرف أو امسح رمز QR",
+      "amountLabel": "المبلغ (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "الرصيد المتاح: {{balance}} BTZ",
+      "sendButton": "إرسال BTZ",
+      "sending": "جاري التحويل..."
+    },
+    "receive": {
+      "title": "استقبال BTZ",
+      "qrInstruction": "شارك رمز QR هذا لاستقبال BTZ",
+      "yourId": "معرفك:",
+      "copyId": "تم نسخ المعرف!",
+      "copyIdDesc": "تم نسخ معرف المستخدم إلى الحافظة",
+      "copyError": "لا يمكن نسخ المعرف"
+    },
+    "qrScanner": {
+      "title": "ماسح رمز QR",
+      "instruction": "ضع رمز QR هنا",
+      "startScan": "بدء المسح",
+      "scanning": "جاري المسح...",
+      "cameraError": "خطأ في الوصول للكاميرا. تحقق من الأذونات."
+    },
+    "history": {
+      "title": "تاريخ التحويلات",
+      "noTransfers": "لم يتم العثور على تحويلات P2P",
+      "sentTo": "أرسل إلى {{user}}",
+      "receivedFrom": "استقبل من {{user}}"
+    },
+    "errors": {
+      "insufficientBalance": "BTZ غير كافي",
+      "insufficientBalanceDesc": "تحتاج {{amount}} BTZ لإجراء هذا التحويل",
+      "invalidAmount": "مبلغ غير صالح",
+      "invalidAmountDesc": "يجب أن يكون المبلغ أكبر من الصفر",
+      "receiverNotFound": "المستقبل غير موجود",
+      "receiverNotFoundDesc": "المستخدم بهذا المعرف غير موجود",
+      "selfTransfer": "تحويل غير صالح",
+      "selfTransferDesc": "لا يمكنك التحويل لنفسك",
+      "transferFailed": "فشل التحويل",
+      "transferFailedDesc": "فشل في معالجة التحويل"
+    },
+    "success": {
+      "transferComplete": "اكتمل التحويل!",
+      "transferCompleteDesc": "تم إرسال {{amount}} BTZ إلى {{receiver}}"
+    }
   }
 }

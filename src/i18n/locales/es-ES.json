@@ -864,5 +864,61 @@
       "enterGame": "Entrar al Juego",
       "createAccount": "Crear Cuenta"
     }
+  },
+  "p2p": {
+    "title": "Transferencias P2P",
+    "subtitle": "Envía y recibe BTZ con otros usuarios",
+    "tabs": {
+      "send": "Enviar",
+      "receive": "Recibir",
+      "history": "Historial"
+    },
+    "send": {
+      "title": "Enviar BTZ",
+      "receiverLabel": "ID del Destinatario",
+      "receiverPlaceholder": "Pega el ID o escanea código QR",
+      "amountLabel": "Cantidad (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "Saldo disponible: {{balance}} BTZ",
+      "sendButton": "Enviar BTZ",
+      "sending": "Transfiriendo..."
+    },
+    "receive": {
+      "title": "Recibir BTZ",
+      "qrInstruction": "Comparte este código QR para recibir BTZ",
+      "yourId": "Tu ID:",
+      "copyId": "¡ID copiado!",
+      "copyIdDesc": "ID de usuario copiado al portapapeles",
+      "copyError": "No se pudo copiar el ID"
+    },
+    "qrScanner": {
+      "title": "Escáner de Código QR",
+      "instruction": "Posiciona el código QR aquí",
+      "startScan": "Iniciar Escáner",
+      "scanning": "Escaneando...",
+      "cameraError": "Error al acceder a la cámara. Verifica los permisos."
+    },
+    "history": {
+      "title": "Historial de Transferencias",
+      "noTransfers": "No se encontraron transferencias P2P",
+      "sentTo": "Enviado a {{user}}",
+      "receivedFrom": "Recibido de {{user}}"
+    },
+    "errors": {
+      "insufficientBalance": "BTZ insuficientes",
+      "insufficientBalanceDesc": "Necesitas {{amount}} BTZ para realizar esta transferencia",
+      "invalidAmount": "Cantidad inválida",
+      "invalidAmountDesc": "La cantidad debe ser mayor que cero",
+      "receiverNotFound": "Destinatario no encontrado",
+      "receiverNotFoundDesc": "El usuario con este ID no existe",
+      "selfTransfer": "Transferencia inválida",
+      "selfTransferDesc": "No puedes transferir a ti mismo",
+      "transferFailed": "Error en la transferencia",
+      "transferFailedDesc": "Falló al procesar la transferencia"
+    },
+    "success": {
+      "transferComplete": "¡Transferencia completada!",
+      "transferCompleteDesc": "{{amount}} BTZ enviados a {{receiver}}"
+    }
   }
 }

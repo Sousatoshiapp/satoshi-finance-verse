@@ -993,5 +993,61 @@
       "enterGame": "进入游戏",
       "createAccount": "创建账户"
     }
+  },
+  "p2p": {
+    "title": "P2P转账",
+    "subtitle": "与其他用户发送和接收BTZ",
+    "tabs": {
+      "send": "发送",
+      "receive": "接收",
+      "history": "历史"
+    },
+    "send": {
+      "title": "发送BTZ",
+      "receiverLabel": "接收者ID",
+      "receiverPlaceholder": "粘贴ID或扫描二维码",
+      "amountLabel": "金额 (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "可用余额: {{balance}} BTZ",
+      "sendButton": "发送BTZ",
+      "sending": "转账中..."
+    },
+    "receive": {
+      "title": "接收BTZ",
+      "qrInstruction": "分享此二维码以接收BTZ",
+      "yourId": "您的ID:",
+      "copyId": "ID已复制!",
+      "copyIdDesc": "用户ID已复制到剪贴板",
+      "copyError": "无法复制ID"
+    },
+    "qrScanner": {
+      "title": "二维码扫描器",
+      "instruction": "将二维码放在这里",
+      "startScan": "开始扫描",
+      "scanning": "扫描中...",
+      "cameraError": "访问摄像头出错。请检查权限。"
+    },
+    "history": {
+      "title": "转账历史",
+      "noTransfers": "未找到P2P转账",
+      "sentTo": "发送给 {{user}}",
+      "receivedFrom": "从 {{user}} 接收"
+    },
+    "errors": {
+      "insufficientBalance": "BTZ不足",
+      "insufficientBalanceDesc": "您需要 {{amount}} BTZ 来进行此转账",
+      "invalidAmount": "无效金额",
+      "invalidAmountDesc": "金额必须大于零",
+      "receiverNotFound": "未找到接收者",
+      "receiverNotFoundDesc": "此ID的用户不存在",
+      "selfTransfer": "无效转账",
+      "selfTransferDesc": "您不能转账给自己",
+      "transferFailed": "转账失败",
+      "transferFailedDesc": "处理转账失败"
+    },
+    "success": {
+      "transferComplete": "转账完成!",
+      "transferCompleteDesc": "{{amount}} BTZ 已发送给 {{receiver}}"
+    }
   }
 }

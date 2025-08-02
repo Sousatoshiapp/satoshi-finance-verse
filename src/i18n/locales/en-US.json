@@ -956,5 +956,61 @@
     "popularPackage": "Popular Package",
     "premiumPackage": "Premium Package",
     "supremePackage": "Supreme Package"
+  },
+  "p2p": {
+    "title": "P2P Transfers",
+    "subtitle": "Send and receive BTZ with other users",
+    "tabs": {
+      "send": "Send",
+      "receive": "Receive",
+      "history": "History"
+    },
+    "send": {
+      "title": "Send BTZ",
+      "receiverLabel": "Receiver ID",
+      "receiverPlaceholder": "Paste ID or scan QR code",
+      "amountLabel": "Amount (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "Available balance: {{balance}} BTZ",
+      "sendButton": "Send BTZ",
+      "sending": "Transferring..."
+    },
+    "receive": {
+      "title": "Receive BTZ",
+      "qrInstruction": "Share this QR code to receive BTZ",
+      "yourId": "Your ID:",
+      "copyId": "ID copied!",
+      "copyIdDesc": "User ID copied to clipboard",
+      "copyError": "Could not copy ID"
+    },
+    "qrScanner": {
+      "title": "QR Code Scanner",
+      "instruction": "Position the QR code here",
+      "startScan": "Start Scanner",
+      "scanning": "Scanning...",
+      "cameraError": "Error accessing camera. Check permissions."
+    },
+    "history": {
+      "title": "Transfer History",
+      "noTransfers": "No P2P transfers found",
+      "sentTo": "Sent to {{user}}",
+      "receivedFrom": "Received from {{user}}"
+    },
+    "errors": {
+      "insufficientBalance": "Insufficient BTZ",
+      "insufficientBalanceDesc": "You need {{amount}} BTZ to make this transfer",
+      "invalidAmount": "Invalid amount",
+      "invalidAmountDesc": "Amount must be greater than zero",
+      "receiverNotFound": "Receiver not found",
+      "receiverNotFoundDesc": "User with this ID does not exist",
+      "selfTransfer": "Invalid transfer",
+      "selfTransferDesc": "You cannot transfer to yourself",
+      "transferFailed": "Transfer failed",
+      "transferFailedDesc": "Failed to process transfer"
+    },
+    "success": {
+      "transferComplete": "Transfer completed!",
+      "transferCompleteDesc": "{{amount}} BTZ sent to {{receiver}}"
+    }
   }
 }

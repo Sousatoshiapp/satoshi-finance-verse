@@ -943,5 +943,61 @@
       "enterGame": "गेम में प्रवेश करें",
       "createAccount": "खाता बनाएं"
     }
+  },
+  "p2p": {
+    "title": "P2P ट्रांसफर",
+    "subtitle": "अन्य उपयोगकर्ताओं के साथ BTZ भेजें और प्राप्त करें",
+    "tabs": {
+      "send": "भेजें",
+      "receive": "प्राप्त करें",
+      "history": "इतिहास"
+    },
+    "send": {
+      "title": "BTZ भेजें",
+      "receiverLabel": "प्राप्तकर्ता ID",
+      "receiverPlaceholder": "ID पेस्ट करें या QR कोड स्कैन करें",
+      "amountLabel": "राशि (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "उपलब्ध बैलेंस: {{balance}} BTZ",
+      "sendButton": "BTZ भेजें",
+      "sending": "ट्रांसफर हो रहा है..."
+    },
+    "receive": {
+      "title": "BTZ प्राप्त करें",
+      "qrInstruction": "BTZ प्राप्त करने के लिए इस QR कोड को साझा करें",
+      "yourId": "आपकी ID:",
+      "copyId": "ID कॉपी हो गई!",
+      "copyIdDesc": "उपयोगकर्ता ID क्लिपबोर्ड में कॉपी हो गई",
+      "copyError": "ID कॉपी नहीं हो सकी"
+    },
+    "qrScanner": {
+      "title": "QR कोड स्कैनर",
+      "instruction": "QR कोड को यहाँ रखें",
+      "startScan": "स्कैनर शुरू करें",
+      "scanning": "स्कैन हो रहा है...",
+      "cameraError": "कैमरा एक्सेस करने में त्रुटि। अनुमतियाँ जाँचें।"
+    },
+    "history": {
+      "title": "ट्रांसफर इतिहास",
+      "noTransfers": "कोई P2P ट्रांसफर नहीं मिला",
+      "sentTo": "{{user}} को भेजा गया",
+      "receivedFrom": "{{user}} से प्राप्त"
+    },
+    "errors": {
+      "insufficientBalance": "अपर्याप्त BTZ",
+      "insufficientBalanceDesc": "इस ट्रांसफर के लिए आपको {{amount}} BTZ की आवश्यकता है",
+      "invalidAmount": "अमान्य राशि",
+      "invalidAmountDesc": "राशि शून्य से अधिक होनी चाहिए",
+      "receiverNotFound": "प्राप्तकर्ता नहीं मिला",
+      "receiverNotFoundDesc": "इस ID का उपयोगकर्ता मौजूद नहीं है",
+      "selfTransfer": "अमान्य ट्रांसफर",
+      "selfTransferDesc": "आप खुद को ट्रांसफर नहीं कर सकते",
+      "transferFailed": "ट्रांसफर असफल",
+      "transferFailedDesc": "ट्रांसफर प्रोसेस करने में असफल"
+    },
+    "success": {
+      "transferComplete": "ट्रांसफर पूरा हुआ!",
+      "transferCompleteDesc": "{{amount}} BTZ {{receiver}} को भेजा गया"
+    }
   }
 }
