@@ -1,4 +1,5 @@
 git_url("https://github.com/Sousatoshiapp/ios-certificates")
+git_branch("push-certificates-fix")
 
 storage_mode("git")
 
