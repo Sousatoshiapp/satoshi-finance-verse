@@ -19,9 +19,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
+    const processOAuthCallback = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const hashAccessToken = hashParams.get('access_token');
+      const hashRefreshToken = hashParams.get('refresh_token');
+      
+      if (hashAccessToken && hashRefreshToken) {
+        console.log('🔄 AuthContext: Processing OAuth callback tokens from hash');
+        try {
+          await supabase.auth.setSession({
+            access_token: hashAccessToken,
+            refresh_token: hashRefreshToken
+          });
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          console.log('✅ AuthContext: OAuth callback tokens processed successfully');
+        } catch (error) {
+          console.error('❌ AuthContext: Error processing OAuth callback tokens:', error);
+        }
+      }
+    };
+
     // Get initial session
     const initializeAuth = async () => {
       try {
+        await processOAuthCallback();
+        
         const { data: { session } } = await supabase.auth.getSession();
         
         if (mounted) {
@@ -40,10 +62,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('🔄 AuthContext: Auth state change event:', event, {
+          hasSession: !!session,
+          hasUser: !!session?.user,
+          currentUrl: window.location.href
+        });
+        
         if (mounted) {
           setSession(session);
           setUser(session?.user ?? null);
           setLoading(false);
+          
+          if (event === 'SIGNED_IN' && session?.user) {
+            console.log('✅ AuthContext: User signed in successfully:', session.user.email);
+          }
         }
       }
     );
