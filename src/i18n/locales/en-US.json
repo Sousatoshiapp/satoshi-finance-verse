@@ -65,7 +65,8 @@
     "totalXP": "Total XP",
     "highestStreak": "Highest Streak",
     "postsCreated": "Posts Created",
-    "likesReceived": "Likes Received"
+    "likesReceived": "Likes Received",
+    "switchTo": "Switch to"
   },
   "quiz": {
     "title": "Quiz",
@@ -80,23 +81,89 @@
     "completed": "Quiz Completed!",
     "startQuiz": "Start Quiz",
     "questions": {
-      "q1": {
+      "stockExchange": {
         "question": "What is the main function of a stock exchange?",
         "options": ["Lend money to companies", "Facilitate trading of securities", "Set interest rates", "Print money"],
         "correct": "Facilitate trading of securities",
         "explanation": "Stock exchanges facilitate the trading of securities between buyers and sellers."
       },
-      "q2": {
+      "ipo": {
         "question": "What does IPO stand for?",
         "options": ["Initial Public Offering", "International Purchase Order", "Investment Portfolio Options", "Internal Price Optimization"],
         "correct": "Initial Public Offering",
         "explanation": "IPO stands for Initial Public Offering, when a company first sells shares to the public."
       },
-      "q3": {
+      "diversification": {
         "question": "What is diversification in investing?",
         "options": ["Investing all money in one stock", "Spreading investments across different assets", "Only buying stocks", "Selling all investments"],
         "correct": "Spreading investments across different assets",
         "explanation": "Diversification involves spreading investments across different assets to reduce risk."
+      },
+      "defi": {
+        "question": "What is DeFi?",
+        "options": ["Bitcoin", "Decentralized Finance", "Type of wallet", "Centralized exchange"],
+        "correct": "Decentralized Finance",
+        "explanation": "DeFi are decentralized financial applications."
+      },
+      "correlation": {
+        "question": "What is Correlation?",
+        "options": ["Asset price", "Relationship between movements", "Return rate", "Dividends"],
+        "correct": "Relationship between movements",
+        "explanation": "Correlation measures how assets move together."
+      },
+      "bitcoin": {
+        "question": "Who created Bitcoin?",
+        "options": ["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"],
+        "correct": "Satoshi Nakamoto",
+        "explanation": "Satoshi Nakamoto is the pseudonym of Bitcoin's creator."
+      },
+      "duration": {
+        "question": "What is Duration?",
+        "options": ["Investment term", "Interest rate sensitivity", "Return rate", "Present value"],
+        "correct": "Interest rate sensitivity",
+        "explanation": "Duration measures sensitivity to interest rate changes."
+      },
+      "bullMarket": {
+        "question": "What does Bull Market mean?",
+        "options": ["Bear market", "Bull market", "Sideways market", "Volatile market"],
+        "correct": "Bull market",
+        "explanation": "Bull Market is a period of sustained growth."
+      },
+      "roi": {
+        "question": "What is ROI?",
+        "options": ["Return on Investment", "Rate of Interest", "Risk of Investment", "Real Operating Income"],
+        "correct": "Return on Investment",
+        "explanation": "ROI means Return on Investment, measuring profitability."
+      },
+      "volatility": {
+        "question": "What is volatility?",
+        "options": ["Price stability", "Price variation", "Investment guarantee", "Fixed return"],
+        "correct": "Price variation",
+        "explanation": "Volatility measures how much an asset's price fluctuates."
+      },
+      "bearMarket": {
+        "question": "What is Bear Market?",
+        "options": ["Rising market", "Falling market", "Stable market", "New market"],
+        "correct": "Falling market",
+        "explanation": "Bear Market is a period of sustained decline in prices."
+      },
+      "inflation": {
+        "question": "What is inflation?",
+        "options": ["Price increase", "Price decrease", "Currency exchange", "Interest rate"],
+        "correct": "Price increase",
+        "explanation": "Inflation is the general increase in prices and fall in the purchasing value of money."
+      },
+      "liquidity": {
+        "question": "What is liquidity?",
+        "options": ["Ease of conversion to cash", "Investment return", "Market volatility", "Interest rate"],
+        "correct": "Ease of conversion to cash",
+        "explanation": "Liquidity refers to how easily an asset can be converted into cash without affecting its market price."
+      },
+      "compoundInterest": {
+        "question": "What is compound interest?",
+        "options": ["Interest on interest", "Simple interest", "Fixed rate", "Variable rate"],
+        "correct": "Interest on interest",
+        "explanation": "Compound interest is interest calculated on the initial principal and accumulated interest from previous periods."
       }
     }
   },

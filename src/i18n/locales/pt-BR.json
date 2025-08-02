@@ -48,6 +48,7 @@
     "settings": "Configurações",
     "help": "Ajuda",
     "followers": "seguidores",
+    "switchTo": "Mudar para",
     "playground": "Playground",
     "explore": "Explorar",
     "following": "Seguindo",
@@ -80,23 +81,89 @@
     "completed": "Quiz Concluído!",
     "startQuiz": "Iniciar Quiz",
     "questions": {
-      "q1": {
+      "stockExchange": {
         "question": "Qual é a principal função de uma bolsa de valores?",
         "options": ["Emprestar dinheiro para empresas", "Facilitar a negociação de títulos", "Definir taxas de juros", "Imprimir dinheiro"],
         "correct": "Facilitar a negociação de títulos",
         "explanation": "Bolsas de valores facilitam a negociação de títulos entre compradores e vendedores."
       },
-      "q2": {
+      "ipo": {
         "question": "O que significa IPO?",
         "options": ["Oferta Pública Inicial", "Ordem de Compra Internacional", "Opções de Portfólio de Investimento", "Otimização Interna de Preços"],
         "correct": "Oferta Pública Inicial",
         "explanation": "IPO significa Oferta Pública Inicial, quando uma empresa vende ações ao público pela primeira vez."
       },
-      "q3": {
+      "diversification": {
         "question": "O que é diversificação em investimentos?",
         "options": ["Investir todo o dinheiro em uma ação", "Espalhar investimentos entre diferentes ativos", "Comprar apenas ações", "Vender todos os investimentos"],
         "correct": "Espalhar investimentos entre diferentes ativos",
         "explanation": "Diversificação envolve espalhar investimentos entre diferentes ativos para reduzir riscos."
+      },
+      "defi": {
+        "question": "O que é DeFi?",
+        "options": ["Bitcoin", "Finanças Descentralizadas", "Tipo de carteira", "Exchange centralizada"],
+        "correct": "Finanças Descentralizadas",
+        "explanation": "DeFi são aplicações financeiras descentralizadas."
+      },
+      "correlation": {
+        "question": "O que é Correlação?",
+        "options": ["Preço de ativos", "Relação entre movimentos", "Taxa de retorno", "Dividendos"],
+        "correct": "Relação entre movimentos",
+        "explanation": "Correlacao mede como ativos se movem juntos."
+      },
+      "bitcoin": {
+        "question": "Quem criou o Bitcoin?",
+        "options": ["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"],
+        "correct": "Satoshi Nakamoto",
+        "explanation": "Satoshi Nakamoto e o pseudonimo do criador do Bitcoin."
+      },
+      "duration": {
+        "question": "O que é Duration?",
+        "options": ["Prazo de investimento", "Sensibilidade à taxa de juros", "Taxa de retorno", "Valor presente"],
+        "correct": "Sensibilidade à taxa de juros",
+        "explanation": "Duration mede a sensibilidade a mudanças nas taxas de juros."
+      },
+      "bullMarket": {
+        "question": "O que significa Bull Market?",
+        "options": ["Mercado em baixa", "Mercado em alta", "Mercado lateral", "Mercado volátil"],
+        "correct": "Mercado em alta",
+        "explanation": "Bull Market é um período de crescimento sustentado."
+      },
+      "roi": {
+        "question": "O que é ROI?",
+        "options": ["Retorno sobre Investimento", "Taxa de Juros", "Risco de Investimento", "Receita Operacional Real"],
+        "correct": "Retorno sobre Investimento",
+        "explanation": "ROI significa Retorno sobre Investimento, medindo a rentabilidade."
+      },
+      "volatility": {
+        "question": "O que é volatilidade?",
+        "options": ["Estabilidade de preços", "Variação de preços", "Garantia de investimento", "Retorno fixo"],
+        "correct": "Variação de preços",
+        "explanation": "Volatilidade mede o quanto o preço de um ativo oscila."
+      },
+      "bearMarket": {
+        "question": "O que é Bear Market?",
+        "options": ["Mercado em alta", "Mercado em baixa", "Mercado estável", "Mercado novo"],
+        "correct": "Mercado em baixa",
+        "explanation": "Bear Market é um período de declínio sustentado nos preços."
+      },
+      "inflation": {
+        "question": "O que é inflação?",
+        "options": ["Aumento de preços", "Diminuição de preços", "Câmbio de moeda", "Taxa de juros"],
+        "correct": "Aumento de preços",
+        "explanation": "Inflação é o aumento geral dos preços e queda do valor de compra do dinheiro."
+      },
+      "liquidity": {
+        "question": "O que é liquidez?",
+        "options": ["Facilidade de conversão em dinheiro", "Retorno do investimento", "Volatilidade do mercado", "Taxa de juros"],
+        "correct": "Facilidade de conversão em dinheiro",
+        "explanation": "Liquidez refere-se à facilidade com que um ativo pode ser convertido em dinheiro sem afetar seu preço de mercado."
+      },
+      "compoundInterest": {
+        "question": "O que são juros compostos?",
+        "options": ["Juros sobre juros", "Juros simples", "Taxa fixa", "Taxa variável"],
+        "correct": "Juros sobre juros",
+        "explanation": "Juros compostos são juros calculados sobre o capital inicial e juros acumulados de períodos anteriores."
       }
     }
   },
