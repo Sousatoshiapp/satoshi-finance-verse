@@ -41,7 +41,7 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: |
-          fastlane match appstore --app_identifier app.lovable.d2e8a7811b9b4d86a9805a42d9bce352 || echo "Provisioning profile creation attempted"
+          fastlane match appstore --app_identifier Satoshi.Satoshi-Finance-Game || echo "Provisioning profile creation attempted"
 
       - name: Build and upload to TestFlight
         working-directory: ios  # ESSENCIAL: garante que rode na pasta correta

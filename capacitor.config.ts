@@ -14,7 +14,7 @@ const getServerUrl = () => {
 };
 
 const config: CapacitorConfig = {
-  appId: process.env.CAPACITOR_APP_ID || 'app.lovable.d2e8a7811b9b4d86a9805a42d9bce352',
+  appId: process.env.CAPACITOR_APP_ID || 'Satoshi.Satoshi-Finance-Game',
   appName: process.env.CAPACITOR_APP_NAME || 'satoshi-finance-verse',
   webDir: 'dist',
   server: {

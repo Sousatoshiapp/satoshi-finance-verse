@@ -17,7 +17,7 @@ platform :ios do
       type: "appstore",
       api_key: api_key,
       git_url: "https://github.com/Sousatoshiapp/ios-certificates",
-      app_identifier: "app.lovable.d2e8a7811b9b4d86a9805a42d9bce352",
+      app_identifier: "Satoshi.Satoshi-Finance-Game",
       readonly: false
     )
 
@@ -28,7 +28,7 @@ platform :ios do
         signingStyle: "manual",
         method: "app-store",
         provisioningProfiles: {
-          "app.lovable.d2e8a7811b9b4d86a9805a42d9bce352" => "match AppStore app.lovable.d2e8a7811b9b4d86a9805a42d9bce352"
+          "Satoshi.Satoshi-Finance-Game" => "match AppStore Satoshi.Satoshi-Finance-Game"
         }
       },
       destination: "generic/platform=iOS",
@@ -55,7 +55,7 @@ platform :ios do
       type: "appstore",
       api_key: api_key,
       git_url: "https://github.com/Sousatoshiapp/ios-certificates",
-      app_identifier: "app.lovable.d2e8a7811b9b4d86a9805a42d9bce352"
+      app_identifier: "Satoshi.Satoshi-Finance-Game"
     )
 
     build_app(
@@ -65,7 +65,7 @@ platform :ios do
         signingStyle: "manual",
         method: "app-store",
         provisioningProfiles: {
-          "app.lovable.d2e8a7811b9b4d86a9805a42d9bce352" => "match AppStore app.lovable.d2e8a7811b9b4d86a9805a42d9bce352"
+          "Satoshi.Satoshi-Finance-Game" => "match AppStore Satoshi.Satoshi-Finance-Game"
         }
       },
       destination: "generic/platform=iOS",
