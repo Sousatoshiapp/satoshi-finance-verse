@@ -55,6 +55,18 @@ export function TransferHistory() {
         profileNickname: profile.nickname
       });
 
+      const { data: allP2PTransactions, error: allP2PError } = await (supabase as any)
+        .from('transactions')
+        .select('id, amount_cents, created_at, user_id, receiver_id, transfer_type')
+        .eq('transfer_type', 'p2p')
+        .order('created_at', { ascending: false });
+
+      console.log('All P2P transactions in database:', {
+        allP2PTransactions,
+        allP2PError,
+        totalCount: allP2PTransactions?.length || 0
+      });
+
       const { data: sentTransfers, error: sentError } = await (supabase as any)
         .from('transactions')
         .select('id, amount_cents, created_at, user_id, receiver_id, transfer_type')
