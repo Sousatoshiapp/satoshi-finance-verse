@@ -96,7 +96,7 @@ export function useDuelMatchmaking() {
           }
         }, 3000);
         
-        // Stop polling after 30 seconds
+        // Stop polling after 60 seconds
         setTimeout(() => {
           clearInterval(pollInterval);
           if (isSearching) {
@@ -107,7 +107,7 @@ export function useDuelMatchmaking() {
               variant: "destructive"
             });
           }
-        }, 30000);
+        }, 60000);
       }
     } catch (error) {
       console.error('Matchmaking error:', error);
