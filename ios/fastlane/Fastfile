@@ -30,4 +30,40 @@ platform :ios do
 
     upload_to_testflight(api_key: api_key)
   end
+
+  desc "Build and upload to App Store"
+  lane :release do
+    api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_API_KEY_KEY_CONTENT"],
+      duration: 1200,
+      in_house: false
+    )
+
+    match(
+      type: "appstore",
+      api_key: api_key,
+      git_url: "https://github.com/Sousatoshiapp/ios-certificates"
+    )
+
+    build_app(
+      scheme: "Satoshi_Finance_Game",
+      export_method: "app-store",
+      export_options: {
+        signingStyle: "automatic",
+        method: "app-store"
+      },
+      destination: "generic/platform=iOS",
+      xcargs: "-allowProvisioningUpdates"
+    )
+
+    upload_to_app_store(
+      api_key: api_key,
+      submit_for_review: false,
+      automatic_release: false,
+      skip_metadata: false,
+      skip_screenshots: false
+    )
+  end
 end
