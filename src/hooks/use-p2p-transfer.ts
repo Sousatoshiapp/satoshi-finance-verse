@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/shared/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/use-profile';
 
 export interface P2PTransferResult {

@@ -57,6 +57,7 @@ export const dashboardRoutes = [
     path: "/p2p-transfer",
     element: "P2PTransfer",
     requiresAuth: true,
-    showNavbar: true
+    showNavbar: true,
+    isDirectImport: true
   }
 ];
