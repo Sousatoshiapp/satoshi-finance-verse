@@ -136,6 +136,20 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           .select()
           .single();
 
+        try {
+          await supabase.functions.invoke('send-social-notification', {
+            body: {
+              userId: invite.challenger_id,
+              type: 'duel_accepted',
+              title: 'Convite Aceito!',
+              message: `Seu convite de duelo foi aceito! O duelo começou.`,
+              data: { duel_id: duel.id, invite_id: invite.id }
+            }
+          });
+        } catch (notificationError) {
+          console.error('Error sending acceptance notification:', notificationError);
+        }
+
         toast({
           title: "Duelo aceito!",
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,

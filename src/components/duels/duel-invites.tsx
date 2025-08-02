@@ -107,12 +107,24 @@ export function DuelInvites({ invites, onInviteResponse }: DuelInvitesProps) {
               player2_id: invite.challenged_id,
               quiz_topic: invite.quiz_topic,
               questions: questions,
-              status: 'active',
-              current_turn: invite.challenger_id,
-              turn_started_at: new Date().toISOString()
+              status: 'active'
             });
 
           if (duelError) throw duelError;
+
+          try {
+            await supabase.functions.invoke('send-social-notification', {
+              body: {
+                userId: invite.challenger_id,
+                type: 'duel_accepted',
+                title: 'Convite Aceito!',
+                message: `Seu convite de duelo foi aceito! O duelo começou.`,
+                data: { invite_id: inviteId }
+              }
+            });
+          } catch (notificationError) {
+            console.error('Error sending acceptance notification:', notificationError);
+          }
 
           toast({
             title: "Duelo Aceito!",
@@ -127,6 +139,23 @@ export function DuelInvites({ invites, onInviteResponse }: DuelInvitesProps) {
           .eq('id', inviteId);
 
         if (error) throw error;
+
+        const invite = invites.find(inv => inv.id === inviteId);
+        if (invite) {
+          try {
+            await supabase.functions.invoke('send-social-notification', {
+              body: {
+                userId: invite.challenger_id,
+                type: 'duel_rejected',
+                title: 'Convite Recusado',
+                message: `Seu convite de duelo foi recusado`,
+                data: { invite_id: inviteId }
+              }
+            });
+          } catch (notificationError) {
+            console.error('Error sending rejection notification:', notificationError);
+          }
+        }
 
         toast({
           title: "Convite Recusado",
