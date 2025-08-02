@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
-import { Clock, Shield, TrendingUp, TrendingDown } from "lucide-react";
+import { Clock, Shield, TrendingUp, TrendingDown, Send, Download } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
 interface BTZCounterProps {
@@ -13,6 +14,7 @@ interface BTZCounterProps {
 type AnimationState = 'IDLE' | 'ANIMATING' | 'COMPLETE';
 
 export function BTZCounter({ className = "" }: BTZCounterProps) {
+  const navigate = useNavigate();
   const { points: currentBTZ, isLoading } = useRealtimePoints();
   const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
   const { t } = useI18n();
@@ -125,6 +127,30 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 {displayBTZ.toLocaleString()}
               </span>
               <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
+              
+              {/* P2P Transfer Icons */}
+              <div className="flex items-center gap-1 ml-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/p2p-transfer?tab=send');
+                  }}
+                  className="p-1 rounded-full hover:bg-muted/50 transition-colors"
+                  title="Enviar BTZ"
+                >
+                  <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/p2p-transfer?tab=receive');
+                  }}
+                  className="p-1 rounded-full hover:bg-muted/50 transition-colors"
+                  title="Receber BTZ"
+                >
+                  <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                </button>
+              </div>
               
               {/* Trend Arrow */}
               {showTrend && currentBTZ !== previousBTZ && (
