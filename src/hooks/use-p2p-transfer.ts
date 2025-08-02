@@ -94,6 +94,9 @@ export function useP2PTransfer() {
         
         await loadProfile();
         
+        console.log('Triggering P2P history refresh after successful transfer');
+        window.dispatchEvent(new CustomEvent('refreshP2PHistory'));
+        
         return {
           success: true,
           transaction_id: result.transaction_id,

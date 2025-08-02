@@ -22,6 +22,7 @@ interface Transfer {
 export function TransferHistory() {
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { profile } = useProfile();
   const { t } = useI18n();
 
@@ -29,7 +30,20 @@ export function TransferHistory() {
     if (profile?.id) {
       loadTransfers();
     }
-  }, [profile?.id]);
+  }, [profile?.id, refreshTrigger]);
+
+  useEffect(() => {
+    const handleRefreshHistory = () => {
+      console.log('Refreshing P2P transfer history...');
+      setRefreshTrigger(prev => prev + 1);
+    };
+
+    window.addEventListener('refreshP2PHistory', handleRefreshHistory);
+    
+    return () => {
+      window.removeEventListener('refreshP2PHistory', handleRefreshHistory);
+    };
+  }, []);
 
   const loadTransfers = async () => {
     if (!profile?.id) return;
