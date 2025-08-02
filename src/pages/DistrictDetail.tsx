@@ -76,6 +76,12 @@ interface District {
   sponsor_logo_url: string;
   referral_link: string;
   special_power: string;
+  monetary_power?: number;
+  tech_power?: number;
+  military_power?: number;
+  energy_power?: number;
+  commercial_power?: number;
+  social_power?: number;
 }
 
 interface UserDistrict {
@@ -643,14 +649,7 @@ export default function DistrictDetail() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <PowerBar
-              currentPower={districtPower}
-              maxPower={20000000}
-              label={`${districtPower.toLocaleString()} XP`}
-              color={district.color_primary}
-              showPercentage={false}
-            />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-center text-sm">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
               <div>
                 <div className="font-semibold">{residents.length}</div>
                 <div className="text-muted-foreground">Moradores</div>
