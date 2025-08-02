@@ -722,6 +722,18 @@
     "financialDuel": "金融决斗",
     "duelNow": "立即决斗"
   },
+  "duelInviteNotification": {
+    "title": "新的决斗邀请！",
+    "subtitle": "{{challenger}} 向你发起了挑战",
+    "accept": "接受",
+    "decline": "拒绝",
+    "autoClose": "{{seconds}}秒后自动关闭",
+    "accepted": "决斗已接受！",
+    "startingDuel": "正在开始与{{challenger}}的决斗...",
+    "declined": "❌ 邀请已拒绝",
+    "inviteDeclined": "邀请已被拒绝",
+    "errorResponding": "无法回应邀请"
+  },
   "levels": {
     "levels": "等级",
     "currentLevel": "当前等级",

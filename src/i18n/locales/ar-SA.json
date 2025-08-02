@@ -377,6 +377,18 @@
     "financialDuel": "مبارزة مالية",
     "duelNow": "ابدأ المبارزة الآن"
   },
+  "duelInviteNotification": {
+    "title": "دعوة مبارزة جديدة!",
+    "subtitle": "{{challenger}} تحداك",
+    "accept": "قبول",
+    "decline": "رفض",
+    "autoClose": "إغلاق تلقائي خلال {{seconds}} ثانية",
+    "accepted": "تم قبول المبارزة!",
+    "startingDuel": "بدء المبارزة ضد {{challenger}}...",
+    "declined": "❌ تم رفض الدعوة",
+    "inviteDeclined": "تم رفض الدعوة",
+    "errorResponding": "لا يمكن الرد على الدعوة"
+  },
   "levels": {
     "levels": "المستويات",
     "currentLevel": "المستوى الحالي",

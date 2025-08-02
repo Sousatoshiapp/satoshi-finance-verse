@@ -10,6 +10,7 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { OnlineStatusProvider } from "@/contexts/OnlineStatusContext";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { generateRoutes } from "@/components/shared/RouteGenerator";
+import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
 import { GlobalErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
 import { useI18n } from "@/hooks/use-i18n";
 
@@ -33,6 +34,7 @@ function AppContent() {
           {generateRoutes()}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <GlobalNotifications />
       </Suspense>
     </div>
   );
