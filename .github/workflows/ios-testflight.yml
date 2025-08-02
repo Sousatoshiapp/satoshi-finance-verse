@@ -22,6 +22,10 @@ jobs:
       - name: Install Fastlane
         run: gem install fastlane
 
+      - name: Configure Git authentication
+        run: |
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
       - name: Build and upload to TestFlight
         working-directory: ios  # ESSENCIAL: garante que rode na pasta correta
         env:
