@@ -1865,12 +1865,6 @@ export type Database = {
           sponsor_logo_url: string | null
           theme: string
           updated_at: string
-          monetary_power: number | null
-          tech_power: number | null
-          military_power: number | null
-          energy_power: number | null
-          commercial_power: number | null
-          social_power: number | null
         }
         Insert: {
           battles_lost?: number | null
@@ -1891,12 +1885,6 @@ export type Database = {
           sponsor_logo_url?: string | null
           theme: string
           updated_at?: string
-          monetary_power?: number | null
-          tech_power?: number | null
-          military_power?: number | null
-          energy_power?: number | null
-          commercial_power?: number | null
-          social_power?: number | null
         }
         Update: {
           battles_lost?: number | null
@@ -1917,65 +1905,8 @@ export type Database = {
           sponsor_logo_url?: string | null
           theme?: string
           updated_at?: string
-          monetary_power?: number | null
-          tech_power?: number | null
-          military_power?: number | null
-          energy_power?: number | null
-          commercial_power?: number | null
-          social_power?: number | null
         }
         Relationships: []
-      }
-      district_power_logs: {
-        Row: {
-          id: string
-          district_id: string | null
-          user_id: string | null
-          action_type: string
-          power_type: string
-          power_change: number
-          previous_value: number
-          new_value: number
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          district_id?: string | null
-          user_id?: string | null
-          action_type: string
-          power_type: string
-          power_change: number
-          previous_value: number
-          new_value: number
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          district_id?: string | null
-          user_id?: string | null
-          action_type?: string
-          power_type?: string
-          power_change?: number
-          previous_value?: number
-          new_value?: number
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "district_power_logs_district_id_fkey"
-            columns: ["district_id"]
-            isOneToOne: false
-            referencedRelation: "districts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "district_power_logs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       duel_invites: {
         Row: {
@@ -7289,10 +7220,6 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
-export type District = Database["public"]["Tables"]["districts"]["Row"]
-export type DistrictPowerLog = Database["public"]["Tables"]["district_power_logs"]["Row"]
-
-
 
 export const Constants = {
   public: {
