@@ -1,11 +1,12 @@
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
-import { ReceiveBTZ } from "@/components/features/p2p-transfer/ReceiveBTZ";
 import { SendBTZ } from "@/components/features/p2p-transfer/SendBTZ";
+import { ReceiveBTZ } from "@/components/features/p2p-transfer/ReceiveBTZ";
 import { TransferHistory } from "@/components/features/p2p-transfer/TransferHistory";
 
 export default function P2PTransfer() {
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
   const activeTab = searchParams.get('tab') || 'send';
 
   return (
