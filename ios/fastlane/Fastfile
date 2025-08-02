@@ -22,6 +22,7 @@ platform :ios do
     )
 
     build_app(
+      project: "App/App.xcodeproj",
       scheme: "App",
       export_method: "app-store",
       export_options: {
@@ -59,6 +60,7 @@ platform :ios do
     )
 
     build_app(
+      project: "App/App.xcodeproj",
       scheme: "App",
       export_method: "app-store",
       export_options: {
