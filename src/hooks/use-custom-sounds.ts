@@ -53,7 +53,6 @@ function useCustomSounds() {
       '/quiz',
       '/solo-quiz', 
       '/enhanced-quiz',
-      '/duel-quiz',
       '/tournament-quiz',
       '/district-duel',
     ];

@@ -36,7 +36,6 @@ export const LazyRoutes = {
   DistrictDuelPage: lazy(() => import('@/pages/DistrictDuelPage')),
   DistrictResidentsPage: lazy(() => import('@/pages/DistrictResidentsPage')),
   EnhancedQuiz: lazy(() => import('@/pages/EnhancedQuiz')),
-  DuelQuiz: lazy(() => import('@/pages/DuelQuiz')),
   TournamentDetail: lazy(() => import('@/pages/TournamentDetail')),
   TournamentQuiz: lazy(() => import('@/pages/TournamentQuiz')),
   Playground: lazy(() => import('@/pages/Playground')),

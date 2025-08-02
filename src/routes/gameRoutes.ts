@@ -18,12 +18,6 @@ export const gameRoutes = [
     showNavbar: true
   },
   {
-    path: "/duel-quiz/:opponentId",
-    element: "DuelQuiz",
-    requiresAuth: true,
-    showNavbar: true
-  },
-  {
     path: "/tournaments",
     element: "Tournaments",
     requiresAuth: true,
