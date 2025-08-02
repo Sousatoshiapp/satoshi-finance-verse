@@ -107,9 +107,7 @@ export function DuelInvites({ invites, onInviteResponse }: DuelInvitesProps) {
               player2_id: invite.challenged_id,
               quiz_topic: invite.quiz_topic,
               questions: questions,
-              status: 'active',
-              current_turn: invite.challenger_id,
-              turn_started_at: new Date().toISOString()
+              status: 'active'
             });
 
           if (duelError) throw duelError;
@@ -127,6 +125,25 @@ export function DuelInvites({ invites, onInviteResponse }: DuelInvitesProps) {
           .eq('id', inviteId);
 
         if (error) throw error;
+
+        const invite = invites.find(inv => inv.id === inviteId);
+        if (invite) {
+          try {
+            await supabase.functions.invoke('send-social-notification', {
+              body: {
+                type: 'duel_invite_declined',
+                targetUserId: invite.challenger_id,
+                data: {
+                  challengedName: invite.challenger?.nickname || 'Usuário',
+                  topic: invite.quiz_topic,
+                  inviteId: inviteId
+                }
+              }
+            });
+          } catch (notificationError) {
+            console.error('Error sending decline notification:', notificationError);
+          }
+        }
 
         toast({
           title: "Convite Recusado",

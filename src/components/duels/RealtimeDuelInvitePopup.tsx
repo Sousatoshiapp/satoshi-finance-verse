@@ -86,8 +86,24 @@ export function RealtimeDuelInvitePopup() {
       } else {
         await supabase
           .from('duel_invites')
-          .update({ status: 'rejected' })
+          .update({ status: 'declined' })
           .eq('id', currentInvite.id);
+
+        try {
+          await supabase.functions.invoke('send-social-notification', {
+            body: {
+              type: 'duel_invite_declined',
+              targetUserId: currentInvite.challenger_id,
+              data: {
+                challengedName: currentInvite.challenger?.nickname || 'Usuário',
+                topic: currentInvite.quiz_topic,
+                inviteId: currentInvite.id
+              }
+            }
+          });
+        } catch (notificationError) {
+          console.error('Error sending decline notification:', notificationError);
+        }
 
         toast({
           title: t('duelInviteNotification.declined'),

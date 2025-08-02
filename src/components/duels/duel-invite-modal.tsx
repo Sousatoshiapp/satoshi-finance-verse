@@ -125,7 +125,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           questions.push(...fallbackQuestions.slice(0, 3 - questions.length));
         }
 
-        // Create duel using the same pattern as DuelInvites
+        // Create duel using the correct schema (without removed fields)
         const { error: duelError } = await supabase
           .from('duels')
           .insert({
@@ -134,9 +134,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
             player2_id: invite.challenged_id,
             quiz_topic: invite.quiz_topic,
             questions: questions,
-            status: 'active',
-            current_turn: invite.challenger_id,
-            turn_started_at: new Date().toISOString()
+            status: 'active'
           });
 
         if (duelError) throw duelError;
@@ -154,10 +152,26 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
         // Reject invite
         const { error } = await supabase
           .from('duel_invites')
-          .update({ status: 'rejected' })
+          .update({ status: 'declined' })
           .eq('id', invite.id);
 
         if (error) throw error;
+
+        try {
+          await supabase.functions.invoke('send-social-notification', {
+            body: {
+              type: 'duel_invite_declined',
+              targetUserId: invite.challenger_id,
+              data: {
+                challengedName: invite.challenger?.nickname || 'Usuário',
+                topic: invite.quiz_topic,
+                inviteId: invite.id
+              }
+            }
+          });
+        } catch (notificationError) {
+          console.error('Error sending decline notification:', notificationError);
+        }
 
         toast({
           title: "❌ Convite recusado",
