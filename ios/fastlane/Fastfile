@@ -14,7 +14,8 @@ platform :ios do
     match(
       type: "appstore",
       api_key: api_key,
-      git_url: "https://github.com/Sousatoshiapp/ios-certificates"
+      git_url: "https://github.com/Sousatoshiapp/ios-certificates",
+      app_identifier: "Satoshi.Satoshi-Finance-Game"
     )
 
     build_app(
@@ -44,7 +45,8 @@ platform :ios do
     match(
       type: "appstore",
       api_key: api_key,
-      git_url: "https://github.com/Sousatoshiapp/ios-certificates"
+      git_url: "https://github.com/Sousatoshiapp/ios-certificates",
+      app_identifier: "Satoshi.Satoshi-Finance-Game"
     )
 
     build_app(
