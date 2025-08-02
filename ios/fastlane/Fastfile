@@ -17,7 +17,8 @@ platform :ios do
       type: "appstore",
       api_key: api_key,
       git_url: "https://github.com/Sousatoshiapp/ios-certificates",
-      app_identifier: "app.lovable.d2e8a7811b9b4d86a9805a42d9bce352"
+      app_identifier: "app.lovable.d2e8a7811b9b4d86a9805a42d9bce352",
+      readonly: false
     )
 
     build_app(
