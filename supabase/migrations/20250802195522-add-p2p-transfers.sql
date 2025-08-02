@@ -27,7 +27,7 @@ BEGIN
     receiver_id, processed_at
   ) VALUES (
     sender_user_id,
-    amount, 'BTZ', 'completed', 'p2p',
+    amount, 'BRL', 'completed', 'p2p',
     receiver_id, now()
   ) RETURNING id INTO transaction_id;
   

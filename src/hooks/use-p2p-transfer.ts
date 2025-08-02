@@ -37,13 +37,30 @@ export function useP2PTransfer() {
 
     setTransferring(true);
     try {
+      const { data, error } = await supabase.rpc('transfer_btz', {
+        sender_id: profile.id,
+        receiver_id: receiverId,
+        amount: amount
+      }) as { data: any, error: any };
+
+      if (error) throw error;
+
+      if (!data?.success) {
+        toast({
+          title: "Erro na transferência",
+          description: data?.error || "Falha ao processar transferência",
+          variant: "destructive"
+        });
+        return { success: false, error: data?.error };
+      }
+
       toast({
-        title: "Funcionalidade em desenvolvimento",
-        description: "A transferência P2P será implementada após a migração do banco de dados",
+        title: "Transferência realizada!",
+        description: `${amount} BTZ transferidos com sucesso`,
         variant: "default"
       });
 
-      return { success: true, transaction_id: 'demo-transaction' };
+      return { success: true, transaction_id: data.transaction_id };
 
     } catch (error: any) {
       console.error('Transfer error:', error);
