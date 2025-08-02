@@ -128,6 +128,28 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
     }
   };
 
+  const handleInviteStatusUpdate = async (payload: any) => {
+    console.log('📊 Invite status updated:', payload);
+    
+    try {
+      const updatedInvite = payload.new;
+      
+      if (updatedInvite.status === 'accepted') {
+        toast({
+          title: "✅ Convite Aceito!",
+          description: "Seu convite de duelo foi aceito! O duelo começou.",
+        });
+      } else if (updatedInvite.status === 'rejected') {
+        toast({
+          title: "❌ Convite Recusado",
+          description: "Seu convite de duelo foi recusado.",
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error handling invite status update:', error);
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       setCurrentInvite(null);
@@ -173,6 +195,16 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
               filter: `challenged_id=eq.${profile.id}`,
             },
             handleNewInvite
+          )
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'duel_invites',
+              filter: `challenger_id=eq.${profile.id}`,
+            },
+            handleInviteStatusUpdate
           )
           .subscribe((status) => {
             console.log('📱 Subscription status:', status);
