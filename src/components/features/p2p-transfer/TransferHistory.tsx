@@ -64,8 +64,20 @@ export function TransferHistory() {
       console.log('All P2P transactions in database:', {
         allP2PTransactions,
         allP2PError,
-        totalCount: allP2PTransactions?.length || 0
+        totalCount: allP2PTransactions?.length || 0,
+        sampleTransaction: allP2PTransactions?.[0]
       });
+
+      if (allP2PTransactions && allP2PTransactions.length > 0) {
+        const matchingSent = allP2PTransactions.filter(t => t.user_id === profile.user_id);
+        const matchingReceived = allP2PTransactions.filter(t => t.receiver_id === profile.id);
+        console.log('Matching transactions for current profile:', {
+          sentMatches: matchingSent.length,
+          receivedMatches: matchingReceived.length,
+          profileUserId: profile.user_id,
+          profileId: profile.id
+        });
+      }
 
       const { data: sentTransfers, error: sentError } = await (supabase as any)
         .from('transactions')
