@@ -8,7 +8,7 @@ import { Swords, Clock, Target, User, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
-import { useRealtimeDuelInvites } from "@/hooks/useRealtimeDuelInvites";
+import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
 
 const topicsMap: Record<string, string> = {
   "financas": "Finanças Gerais",
@@ -18,7 +18,7 @@ const topicsMap: Record<string, string> = {
 };
 
 export function RealtimeDuelInvitePopup() {
-  const { currentInvite, queueCount, dismissCurrentInvite } = useRealtimeDuelInvites();
+  const { currentInvite, queueCount, dismissCurrentInvite } = useGlobalDuelInvites();
   const [isResponding, setIsResponding] = useState(false);
   const [countdown, setCountdown] = useState(30);
   const { toast } = useToast();

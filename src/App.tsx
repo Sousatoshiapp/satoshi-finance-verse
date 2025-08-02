@@ -8,6 +8,7 @@ import { I18nProvider } from "@/contexts/I18nProvider";
 import { PointsProvider } from "@/contexts/PointsContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { OnlineStatusProvider } from "@/contexts/OnlineStatusContext";
+import { GlobalDuelInviteProvider } from "@/contexts/GlobalDuelInviteContext";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { generateRoutes } from "@/components/shared/RouteGenerator";
 import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
@@ -50,9 +51,11 @@ function App() {
               <NotificationProvider>
                 <OnlineStatusProvider>
                   <RealtimeProvider>
-                    <SponsorThemeProvider>
-                      <AppContent />
-                    </SponsorThemeProvider>
+                    <GlobalDuelInviteProvider>
+                      <SponsorThemeProvider>
+                        <AppContent />
+                      </SponsorThemeProvider>
+                    </GlobalDuelInviteProvider>
                   </RealtimeProvider>
                 </OnlineStatusProvider>
               </NotificationProvider>
