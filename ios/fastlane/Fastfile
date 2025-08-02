@@ -23,7 +23,10 @@ platform :ios do
       export_method: "app-store",
       export_options: {
         signingStyle: "automatic",
-        method: "app-store"
+        method: "app-store",
+        provisioningProfiles: {
+          "Satoshi.Satoshi-Finance-Game" => "match AppStore Satoshi.Satoshi-Finance-Game"
+        }
       },
       destination: "generic/platform=iOS",
       xcargs: "-allowProvisioningUpdates"
@@ -54,7 +57,10 @@ platform :ios do
       export_method: "app-store",
       export_options: {
         signingStyle: "automatic",
-        method: "app-store"
+        method: "app-store",
+        provisioningProfiles: {
+          "Satoshi.Satoshi-Finance-Game" => "match AppStore Satoshi.Satoshi-Finance-Game"
+        }
       },
       destination: "generic/platform=iOS",
       xcargs: "-allowProvisioningUpdates"
