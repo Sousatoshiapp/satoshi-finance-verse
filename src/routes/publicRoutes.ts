@@ -22,5 +22,12 @@ export const publicRoutes = [
     element: "PasswordReset",
     requiresAuth: false,
     showNavbar: false
+  },
+  {
+    path: "/oauth-callback",
+    element: "OAuthCallback",
+    requiresAuth: false,
+    showNavbar: false,
+    isDirectImport: true
   }
 ];

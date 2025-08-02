@@ -24,6 +24,14 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
   if (requiresAuth) {
     const hasValidAuth = (user && session) || localStorage.getItem('satoshi_user');
     
+    console.log('🔍 AuthMiddleware Check:', { 
+      hasUser: !!user, 
+      hasSession: !!session, 
+      hasLocalStorage: !!localStorage.getItem('satoshi_user'),
+      userEmail: user?.email,
+      currentPath: location.pathname 
+    });
+    
     if (!hasValidAuth) {
       console.log('🚫 AuthMiddleware: No valid authentication found - redirecting to welcome');
       return <Navigate to="/welcome" state={{ from: location }} replace />;

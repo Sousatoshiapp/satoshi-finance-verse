@@ -19,6 +19,7 @@ import Store from '@/pages/Store';
 import SubscriptionPlans from '@/pages/SubscriptionPlans';
 import Icons from '@/pages/Icons';
 import AdminPanel from '@/pages/AdminPanel';
+import OAuthCallback from '@/pages/OAuthCallback';
 
 const directImports: Record<string, React.ComponentType> = {
   Dashboard,
@@ -36,7 +37,8 @@ const directImports: Record<string, React.ComponentType> = {
   SubscriptionPlans,
   Icons,
   AdminPanel,
-  TranslationTestPage
+  TranslationTestPage,
+  OAuthCallback
 };
 
 export function generateRoutes() {
