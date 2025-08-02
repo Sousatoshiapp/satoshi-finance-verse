@@ -4,20 +4,9 @@ platform :ios do
   desc "Build and upload to TestFlight"
   lane :beta do
     setup_ci
-    
-    api_key = app_store_connect_api_key(
-      key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
-      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
-      key_content: ENV["APP_STORE_CONNECT_API_KEY_KEY_CONTENT"],
-      duration: 1200,
-      in_house: false
-    )
 
     match(
       type: "appstore",
-      api_key: api_key,
-      git_url: "https://github.com/Sousatoshiapp/ios-certificates",
-      app_identifier: "Satoshi.Satoshi-Finance-Game",
       readonly: false
     )
 
@@ -26,18 +15,21 @@ platform :ios do
       scheme: "App",
       export_method: "app-store",
       export_options: {
-        signingStyle: "manual",
         method: "app-store",
         provisioningProfiles: {
           "Satoshi.Satoshi-Finance-Game" => "match AppStore Satoshi.Satoshi-Finance-Game"
-        }
+        },
+        signingStyle: "manual",
+        signingCertificate: "Apple Distribution"
       },
-      destination: "generic/platform=iOS",
-      xcargs: "-allowProvisioningUpdates",
-      sdk: "iphoneos"
+      clean: true,
+      skip_profile_detection: true
     )
 
-    upload_to_testflight(api_key: api_key)
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      distribute_external: true
+    )
   end
 
   desc "Build and upload to App Store"
