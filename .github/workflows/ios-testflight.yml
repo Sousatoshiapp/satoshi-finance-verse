@@ -38,6 +38,12 @@ jobs:
         working-directory: ios/App
         run: pod install
 
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor
+        run: npm run capacitor:sync
+
       - name: Configure Git authentication
         run: |
           git config --global url."https://${{ secrets.CERTIFICATES_ACCESS_TOKEN }}@github.com/".insteadOf "https://github.com/"
