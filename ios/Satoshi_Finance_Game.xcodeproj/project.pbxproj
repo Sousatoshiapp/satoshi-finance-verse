@@ -421,7 +421,7 @@
 				CODE_SIGN_STYLE = Manual;
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore Satoshi.Satoshi-Finance-Game";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Satoshi_Finance_Game/Satoshi_Finance_Game/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Satoshi_Finance_Game/Preview Content\"";
 				DEVELOPMENT_TEAM = CMRP32YK4A;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -461,7 +461,7 @@
 				CODE_SIGN_STYLE = Manual;
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore Satoshi.Satoshi-Finance-Game";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Satoshi_Finance_Game/Satoshi_Finance_Game/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Satoshi_Finance_Game/Preview Content\"";
 				DEVELOPMENT_TEAM = CMRP32YK4A;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
