@@ -1,8 +1,5 @@
 ALTER TYPE currency_type ADD VALUE 'BTZ';
 
-ALTER TABLE transactions ADD COLUMN receiver_id UUID REFERENCES profiles(id);
-ALTER TABLE transactions ADD COLUMN transfer_type TEXT DEFAULT 'purchase';
-
 CREATE OR REPLACE FUNCTION public.transfer_btz(
   sender_id UUID,
   receiver_id UUID,
