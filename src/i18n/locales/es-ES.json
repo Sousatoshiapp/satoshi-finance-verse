@@ -569,6 +569,18 @@
     "financialDuel": "Duelo Financiero",
     "duelNow": "Duelar Ahora"
   },
+  "duelInviteNotification": {
+    "title": "¡Nueva Invitación de Duelo!",
+    "subtitle": "{{challenger}} te ha desafiado",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "autoClose": "Se cierra automáticamente en {{seconds}}s",
+    "accepted": "¡Duelo aceptado!",
+    "startingDuel": "Iniciando duelo contra {{challenger}}...",
+    "declined": "❌ Invitación rechazada",
+    "inviteDeclined": "La invitación fue rechazada",
+    "errorResponding": "No se pudo responder a la invitación"
+  },
   "levels": {
     "levels": "Niveles",
     "currentLevel": "Nivel Actual",

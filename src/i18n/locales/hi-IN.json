@@ -672,6 +672,18 @@
     "financialDuel": "वित्तीय द्वंद्व",
     "duelNow": "अभी द्वंद्व करें"
   },
+  "duelInviteNotification": {
+    "title": "नया द्वंद्व निमंत्रण!",
+    "subtitle": "{{challenger}} ने आपको चुनौती दी है",
+    "accept": "स्वीकार करें",
+    "decline": "अस्वीकार करें",
+    "autoClose": "{{seconds}}s में स्वचालित रूप से बंद हो जाएगा",
+    "accepted": "द्वंद्व स्वीकार किया गया!",
+    "startingDuel": "{{challenger}} के विरुद्ध द्वंद्व शुरू हो रहा है...",
+    "declined": "❌ निमंत्रण अस्वीकार किया गया",
+    "inviteDeclined": "निमंत्रण अस्वीकार कर दिया गया",
+    "errorResponding": "निमंत्रण का जवाब नहीं दे सके"
+  },
   "levels": {
     "levels": "स्तर",
     "currentLevel": "वर्तमान स्तर",
