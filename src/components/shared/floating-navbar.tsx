@@ -7,7 +7,8 @@ import { useI18n } from "@/hooks/use-i18n";
 export function FloatingNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
+  const isArabic = language === 'ar-SA';
 
   const navItems = [
     { path: '/dashboard', icon: '🏠' as const, label: t('navigation.dashboard') },
@@ -44,7 +45,10 @@ export function FloatingNavbar() {
                      animated={isActive}
                      variant={isActive ? "glow" : "default"}
                    />
-                   <span className="text-[10px] md:text-xs font-medium leading-none">{item.label}</span>
+                   <span className={cn(
+                     "text-[10px] md:text-xs font-medium leading-none",
+                     isArabic && "hidden md:block"
+                   )}>{item.label}</span>
                  </button>
               );
             })}

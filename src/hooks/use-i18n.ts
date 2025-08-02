@@ -18,6 +18,7 @@ export const useI18n = () => {
     changeLanguage,
     getCurrentLanguage,
     isLanguage,
+    language: i18n.language,
     i18n
   };
 };
