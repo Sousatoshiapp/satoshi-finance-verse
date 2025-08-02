@@ -19,6 +19,7 @@ import Store from '@/pages/Store';
 import SubscriptionPlans from '@/pages/SubscriptionPlans';
 import Icons from '@/pages/Icons';
 import AdminPanel from '@/pages/AdminPanel';
+import P2PTransfer from '@/pages/P2PTransfer';
 import OAuthCallback from '@/pages/OAuthCallback';
 
 const directImports: Record<string, React.ComponentType> = {
@@ -37,6 +38,7 @@ const directImports: Record<string, React.ComponentType> = {
   SubscriptionPlans,
   Icons,
   AdminPanel,
+  P2PTransfer,
   TranslationTestPage,
   OAuthCallback
 };
