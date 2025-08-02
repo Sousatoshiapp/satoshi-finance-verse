@@ -31,7 +31,8 @@ platform :ios do
         }
       },
       destination: "generic/platform=iOS",
-      xcargs: "-allowProvisioningUpdates"
+      xcargs: "-allowProvisioningUpdates",
+      sdk: "iphoneos"
     )
 
     upload_to_testflight(api_key: api_key)
@@ -67,7 +68,8 @@ platform :ios do
         }
       },
       destination: "generic/platform=iOS",
-      xcargs: "-allowProvisioningUpdates"
+      xcargs: "-allowProvisioningUpdates",
+      sdk: "iphoneos"
     )
 
     upload_to_app_store(
