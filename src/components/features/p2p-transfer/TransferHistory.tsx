@@ -49,7 +49,11 @@ export function TransferHistory() {
     if (!profile?.id) return;
 
     try {
-      console.log('Loading P2P transfers for profile:', profile.id, 'user_id:', profile.user_id);
+      console.log('Loading P2P transfers for profile:', {
+        profileId: profile.id,
+        profileUserId: profile.user_id,
+        profileNickname: profile.nickname
+      });
 
       const { data: sentTransfers, error: sentError } = await (supabase as any)
         .from('transactions')
@@ -58,7 +62,12 @@ export function TransferHistory() {
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
-      console.log('Sent transfers query result:', { sentTransfers, sentError });
+      console.log('Sent transfers query result:', { 
+        sentTransfers, 
+        sentError,
+        queryUserId: profile.user_id,
+        transfersCount: sentTransfers?.length || 0
+      });
       if (sentError) throw sentError;
 
       const { data: receivedTransfers, error: receivedError } = await (supabase as any)
@@ -68,7 +77,12 @@ export function TransferHistory() {
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
-      console.log('Received transfers query result:', { receivedTransfers, receivedError });
+      console.log('Received transfers query result:', { 
+        receivedTransfers, 
+        receivedError,
+        queryReceiverId: profile.id,
+        transfersCount: receivedTransfers?.length || 0
+      });
 
       if (receivedError) throw receivedError;
 
