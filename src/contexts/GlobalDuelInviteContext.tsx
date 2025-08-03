@@ -127,8 +127,38 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
       
       if (updatedInvite.status === 'accepted') {
         console.log('✅ Convite aceito:', updatedInvite.id);
+        
+        const { data: duel, error: duelError } = await supabase
+          .from('duels')
+          .select('id')
+          .eq('invite_id', updatedInvite.id)
+          .single();
+
+        if (duelError) {
+          console.error('❌ Error fetching duel for accepted invite:', duelError);
+          return;
+        }
+
+        if (duel) {
+          console.log('🎮 Redirecting challenger to waiting room:', duel.id);
+          
+          toast({
+            title: "🎉 Convite Aceito!",
+            description: "Seu convite foi aceito! Redirecionando para o duelo...",
+          });
+
+          setTimeout(() => {
+            window.location.href = `/duel-waiting/${duel.id}`;
+          }, 2000);
+        }
       } else if (updatedInvite.status === 'rejected') {
         console.log('❌ Convite recusado:', updatedInvite.id);
+        
+        toast({
+          title: "❌ Convite Recusado",
+          description: "Seu convite de duelo foi recusado.",
+          variant: "destructive"
+        });
       }
     } catch (error) {
       console.error('❌ Error handling invite status update:', error);
