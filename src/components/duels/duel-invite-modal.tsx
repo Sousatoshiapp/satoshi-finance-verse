@@ -9,6 +9,7 @@ import { Swords, Clock, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";
+import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
 
 interface DuelInvite {
   id: string;
@@ -47,6 +48,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
   const { createDuel } = useDuelMatchmaking();
+  const { dismissCurrentInvite } = useGlobalDuelInvites();
   const navigate = useNavigate();
 
   if (!invite || !invite.challenger) return null;
@@ -56,10 +58,10 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
     
     try {
       if (accepted) {
-        // Use the unified duel creation logic from the hook
+        dismissCurrentInvite();
+
         const duelResult = await createDuel(invite.challenger_id, invite.quiz_topic);
 
-        // Update invite status to accepted
         await supabase
           .from('duel_invites')
           .update({ status: 'accepted' })
@@ -85,9 +87,12 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
         });
 
         if (duelResult?.id) {
-          setTimeout(() => {
-            navigate('/duels');
-          }, 1000);
+          navigate(`/duel-waiting/${duelResult.id}`, {
+            state: {
+              opponentNickname: invite.challenger.nickname,
+              topic: invite.quiz_topic
+            }
+          });
         }
 
       } else {

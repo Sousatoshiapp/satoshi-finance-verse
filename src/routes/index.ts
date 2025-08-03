@@ -30,5 +30,12 @@ export const routeConfig: RouteConfig[] = [
   ...aiRoutes,
   ...monetizationRoutes,
   ...detailRoutes,
-  ...devRoutes
+  ...devRoutes,
+  {
+    path: '/duel-waiting/:duelId',
+    element: 'DuelWaitingScreen',
+    requiresAuth: true,
+    showNavbar: false,
+    isDirectImport: false
+  }
 ];

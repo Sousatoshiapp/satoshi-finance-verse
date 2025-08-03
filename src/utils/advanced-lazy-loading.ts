@@ -72,5 +72,6 @@ export const LazyRoutes = {
   BoostDetail: lazy(() => import('@/pages/BoostDetail')),
   SkinDetail: lazy(() => import('@/pages/SkinDetail')),
   AccessoryDetail: lazy(() => import('@/pages/AccessoryDetail')),
-  PasswordReset: lazy(() => import('@/pages/PasswordReset'))
+  PasswordReset: lazy(() => import('@/pages/PasswordReset')),
+  DuelWaitingScreen: lazy(() => import('@/components/duels/duel-waiting-screen'))
 };

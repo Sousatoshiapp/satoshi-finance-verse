@@ -670,7 +670,12 @@
     "decline": "अस्वीकार करें",
     "waiting": "प्रतीक्षा",
     "financialDuel": "वित्तीय द्वंद्व",
-    "duelNow": "अभी द्वंद्व करें"
+    "duelNow": "अभी द्वंद्व करें",
+    "waitingForOpponent": "प्रतिद्वंद्वी की प्रतीक्षा",
+    "startDuel": "शुरू करें",
+    "autoRedirectIn": "{{seconds}}s में रीडायरेक्ट हो रहा है",
+    "preparingDuel": "द्वंद्व तैयार कर रहे हैं...",
+    "duelReady": "द्वंद्व तैयार!"
   },
   "duelInviteNotification": {
     "title": "नया द्वंद्व निमंत्रण!",

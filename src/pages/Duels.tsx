@@ -60,7 +60,7 @@ export default function Duels() {
 
       if (!profile) return;
 
-      for (let attempt = 0; attempt < 5; attempt++) {
+      for (let attempt = 0; attempt < 8; attempt++) {
         const { data: duel } = await supabase
           .from('duels')
           .select('*')
@@ -74,8 +74,8 @@ export default function Duels() {
           return;
         }
 
-        if (attempt < 4) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+        if (attempt < 7) {
+          await new Promise(resolve => setTimeout(resolve, 750));
         }
       }
     } catch (error) {
