@@ -1,14 +1,20 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
 import { SendBTZ } from "@/components/features/p2p-transfer/SendBTZ";
 import { ReceiveBTZ } from "@/components/features/p2p-transfer/ReceiveBTZ";
 import { TransferHistory } from "@/components/features/p2p-transfer/TransferHistory";
+import { KYCRequiredOverlay } from "@/components/features/p2p-transfer/KYCRequiredOverlay";
+import { KYCVerification } from "@/components/features/kyc/KYCVerification";
 import { useI18n } from "@/hooks/use-i18n";
+import { useKYCStatus } from "@/hooks/use-kyc-status";
 
 export default function P2PTransfer() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { checkKYCRequired } = useKYCStatus();
+  const [showKYCVerification, setShowKYCVerification] = useState(false);
   const searchParams = new URLSearchParams(location.search);
   const activeTab = searchParams.get('tab') || 'send';
 
@@ -18,6 +24,17 @@ export default function P2PTransfer() {
     navigate(`${location.pathname}?${newSearchParams.toString()}`);
   };
 
+  const isKYCRequired = checkKYCRequired();
+
+  if (showKYCVerification) {
+    return (
+      <KYCVerification 
+        onComplete={() => setShowKYCVerification(false)}
+        onCancel={() => setShowKYCVerification(false)}
+      />
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="text-center mb-6">
@@ -25,25 +42,29 @@ export default function P2PTransfer() {
         <p className="text-muted-foreground">{t('p2p.subtitle')}</p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="send">{t('p2p.tabs.send')}</TabsTrigger>
-          <TabsTrigger value="receive">{t('p2p.tabs.receive')}</TabsTrigger>
-          <TabsTrigger value="history">{t('p2p.tabs.history')}</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="send" className="mt-6">
-          <SendBTZ />
-        </TabsContent>
-        
-        <TabsContent value="receive" className="mt-6">
-          <ReceiveBTZ />
-        </TabsContent>
-        
-        <TabsContent value="history" className="mt-6">
-          <TransferHistory />
-        </TabsContent>
-      </Tabs>
+      {isKYCRequired ? (
+        <KYCRequiredOverlay onStartKYC={() => setShowKYCVerification(true)} />
+      ) : (
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="send">{t('p2p.tabs.send')}</TabsTrigger>
+            <TabsTrigger value="receive">{t('p2p.tabs.receive')}</TabsTrigger>
+            <TabsTrigger value="history">{t('p2p.tabs.history')}</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="send" className="mt-6">
+            <SendBTZ />
+          </TabsContent>
+          
+          <TabsContent value="receive" className="mt-6">
+            <ReceiveBTZ />
+          </TabsContent>
+          
+          <TabsContent value="history" className="mt-6">
+            <TransferHistory />
+          </TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 }

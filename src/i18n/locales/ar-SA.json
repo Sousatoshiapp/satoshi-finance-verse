@@ -787,5 +787,14 @@
       "transferComplete": "اكتمل التحويل!",
       "transferCompleteDesc": "تم إرسال {{amount}} BTZ إلى {{receiver}}"
     }
+  },
+  "kyc": {
+    "title": "التحقق من الهوية",
+    "subtitle": "التحقق مطلوب للتحويلات بين الأشخاص",
+    "verifyIdentity": "التحقق من الهوية",
+    "required": "KYC مطلوب للمتابعة",
+    "pending": "التحقق قيد التقدم...",
+    "approved": "تم التحقق من الهوية",
+    "rejected": "تم رفض التحقق"
   }
 }

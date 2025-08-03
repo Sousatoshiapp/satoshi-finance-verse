@@ -1004,5 +1004,14 @@
       "transferComplete": "ट्रांसफर पूरा हुआ!",
       "transferCompleteDesc": "{{amount}} BTZ {{receiver}} को भेजा गया"
     }
+  },
+  "kyc": {
+    "title": "पहचान सत्यापन",
+    "subtitle": "P2P ट्रांसफर के लिए सत्यापन आवश्यक",
+    "verifyIdentity": "पहचान सत्यापित करें",
+    "required": "जारी रखने के लिए KYC आवश्यक",
+    "pending": "सत्यापन प्रगति में...",
+    "approved": "पहचान सत्यापित",
+    "rejected": "सत्यापन अस्वीकृत"
   }
 }
