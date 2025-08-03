@@ -114,13 +114,6 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
       } else {
         setInviteQueue(prev => [...prev, inviteData]);
       }
-
-      toast({
-        title: t('duelInviteNotification.title'),
-        description: t('duelInviteNotification.subtitle', { 
-          challenger: inviteData.challenger?.nickname || 'Unknown' 
-        }),
-      });
     } catch (error) {
       console.error('❌ Error handling new invite:', error);
     }
