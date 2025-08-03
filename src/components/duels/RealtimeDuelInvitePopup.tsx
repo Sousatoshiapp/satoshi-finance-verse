@@ -68,11 +68,11 @@ export function RealtimeDuelInvitePopup() {
           .update({ status: 'accepted' })
           .eq('id', currentInvite.id);
 
-        console.log('✅ Duel invite accepted, redirecting to /duels');
+        console.log('✅ Duel invite accepted, redirecting to waiting room');
 
         if (duelId) {
           setTimeout(() => {
-            window.location.href = '/duels';
+            window.location.href = `/duel-waiting/${duelId}`;
           }, 1500);
         }
 

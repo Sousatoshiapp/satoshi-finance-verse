@@ -199,9 +199,9 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
         });
 
-        console.log('🎮 Redirecionando para /duels...');
+        console.log('🎮 Redirecionando para sala de espera...');
         setTimeout(() => {
-          window.location.href = '/duels';
+          window.location.href = `/duel-waiting/${duelId}`;
         }, 2000);
         return;
 
