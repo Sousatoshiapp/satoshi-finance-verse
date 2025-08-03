@@ -175,7 +175,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
           score: finalMyScore || 0,
           opponentScore: finalOpponentScore || 0,
           playerAnswers,
-          questions: duel.questions
+          questions: duel?.questions || []
         });
       } else {
         navigate('/duels');
@@ -416,8 +416,8 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     );
   }
 
-  const question = duel.questions[currentQuestion - 1];
-  const progress = (currentQuestion / duel.questions.length) * 100;
+  const question = duel?.questions?.[currentQuestion - 1];
+  const progress = duel?.questions?.length ? (currentQuestion / duel.questions.length) * 100 : 0;
   const isQuestionAnswered = answeredQuestions.has(currentQuestion);
   const answerResult = answerResults.get(currentQuestion);
   
@@ -435,7 +435,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     }
     
     // Show correct answer
-    const correctOption = question.options.find((opt: any) => opt.isCorrect);
+    const correctOption = question?.options?.find((opt: any) => opt.isCorrect);
     if (correctOption?.id === optionId) {
       return "bg-green-500/20 text-green-400 border-green-500";
     }
@@ -501,7 +501,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                 <span>Duelo Simultâneo</span>
               </div>
               <Badge variant="secondary" className="animate-pulse">
-                {currentQuestion} / {duel.questions.length}
+                {currentQuestion} / {duel?.questions?.length || 0}
               </Badge>
             </CardTitle>
           </CardHeader>
