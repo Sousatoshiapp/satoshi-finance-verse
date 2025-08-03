@@ -60,41 +60,7 @@ export function RealtimeDuelInvitePopup() {
 
         if (duelError) {
           console.error('Error creating duel with RPC:', duelError);
-          
-          const { data: directDuel, error: directError } = await supabase
-            .from('duels')
-            .insert({
-              player1_id: currentInvite.challenger_id,
-              player2_id: currentInvite.challenged_id,
-              quiz_topic: currentInvite.quiz_topic,
-              questions: questions as any,
-              status: 'active',
-              current_question: 1,
-              player1_current_question: 1,
-              player2_current_question: 1,
-              invite_id: currentInvite.id
-            })
-            .select()
-            .single();
-
-          if (directError) {
-            throw new Error('Erro ao criar duelo: ' + directError.message);
-          }
-
-          await supabase
-            .from('duel_invites')
-            .update({ status: 'accepted' })
-            .eq('id', currentInvite.id);
-
-          toast({
-            title: t('duelInviteNotification.accepted'),
-            description: t('duelInviteNotification.startingDuel', { challenger: currentInvite.challenger?.nickname }),
-          });
-
-          setTimeout(() => {
-            window.location.href = '/duels';
-          }, 1500);
-          return;
+          throw new Error('Erro ao criar duelo: ' + duelError.message);
         }
 
         await supabase
