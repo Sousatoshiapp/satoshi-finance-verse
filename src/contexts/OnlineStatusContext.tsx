@@ -32,10 +32,21 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     
     try {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('Error fetching profile for online status:', profileError);
+        return;
+      }
+
       const { error } = await supabase
         .from('user_presence')
         .upsert({
-          user_id: user.id,
+          user_id: profile.id,
           last_seen: new Date().toISOString(),
           is_online: true,
         });
