@@ -170,64 +170,44 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   const handleAnswer = async (optionId: string) => {
     if (answeredQuestions.has(currentQuestion) || gamePhase !== 'playing') return;
     
-    // Sistema simultâneo - não esperar oponente
     setSelectedAnswer(optionId);
     setIsTimerActive(false);
     
-    const newAnswer = {
-      question: currentQuestion,
-      selected: optionId,
-      timestamp: new Date().toISOString(),
-      correct: duel.questions[currentQuestion - 1]?.options.find((opt: any) => opt.id === optionId)?.isCorrect || false
-    };
-    
-    const updatedAnswers = [...playerAnswers, newAnswer];
-    setPlayerAnswers(updatedAnswers);
-    
-    // Store result for visual feedback
-    setAnswerResults(prev => new Map(prev.set(currentQuestion, {
-      answerId: optionId,
-      isCorrect: newAnswer.correct
-    })));
-    
-    setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-    
-    // Update score: velocidade + precisão
-    const timeBonus = Math.max(0, 30 - (30 - timeLeft)) * 2; // Bonus por velocidade
-    const scoreIncrement = newAnswer.correct ? (10 + timeBonus) : 0;
-    
-    if (newAnswer.correct) {
-      setMyScore(prev => prev + scoreIncrement);
-    }
-    
     try {
-      const isPlayer1 = currentProfile?.id === duel.player1_id;
-      const playerColumn = isPlayer1 ? 'player1_answers' : 'player2_answers';
-      const questionColumn = isPlayer1 ? 'player1_current_question' : 'player2_current_question';
-      const scoreColumn = isPlayer1 ? 'player1_score' : 'player2_score';
-      
-      await supabase
-        .from('duels')
-        .update({
-          [playerColumn]: updatedAnswers,
-          [questionColumn]: Math.min(currentQuestion + 1, duel.questions.length),
-          [scoreColumn]: newAnswer.correct ? myScore + scoreIncrement : myScore
-        })
-        .eq('id', duel.id);
-      
-      // Avançar imediatamente - sistema simultâneo
-      setTimeout(() => {
-        if (currentQuestion < duel.questions.length) {
-          setCurrentQuestion(prev => prev + 1);
-          setSelectedAnswer(null);
-          setIsTimerActive(true);
-        } else {
-          setGamePhase('finished');
-          setIsFinished(true);
-          setShowResult(true);
-        }
-      }, 1500); // Reduzido para 1.5s
-      
+      const { data, error } = await supabase.rpc('process_duel_answer', {
+        p_duel_id: duel.id,
+        p_player_id: currentProfile.id,
+        p_question_number: currentQuestion,
+        p_answer_id: optionId,
+        p_is_timeout: false
+      });
+
+      if (error) throw error;
+
+      const result = data as any;
+      if (result.success) {
+        // Store result for visual feedback
+        setAnswerResults(prev => new Map(prev.set(currentQuestion, {
+          answerId: optionId,
+          isCorrect: result.isCorrect
+        })));
+        
+        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
+        setMyScore(result.newScore);
+        
+        // Avançar imediatamente - sistema simultâneo
+        setTimeout(() => {
+          if (currentQuestion < duel.questions.length) {
+            setCurrentQuestion(prev => prev + 1);
+            setSelectedAnswer(null);
+            setIsTimerActive(true);
+          } else {
+            setGamePhase('finished');
+            setIsFinished(true);
+            setShowResult(true);
+          }
+        }, 1500);
+      }
     } catch (error) {
       console.error('Error submitting answer:', error);
       toast({
@@ -248,41 +228,50 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     handleAnswer(selectedAnswer);
   };
 
-  const handleSkipQuestion = () => {
+  const handleSkipQuestion = async () => {
     if (answeredQuestions.has(currentQuestion) || isFinished) return;
     
-    const newAnswer = {
-      question: currentQuestion,
-      selected: null,
-      timestamp: new Date().toISOString(),
-      skipped: true,
-      correct: false
-    };
-    
-    setPlayerAnswers(prev => [...prev, newAnswer]);
-    setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-    
-    toast({
-      title: "⏭️ Pergunta pulada",
-      description: "Você pode pular até 2 perguntas por duelo",
-      variant: "default"
-    });
-    
-    // Auto advance after skip
-    setTimeout(() => {
-      if (currentQuestion < duel.questions.length) {
-        setCurrentQuestion(prev => prev + 1);
-        setSelectedAnswer(null);
-        setIsTimerActive(true);
-      } else {
-        setGamePhase('finished');
-        setIsFinished(true);
-        setShowResult(true);
+    try {
+      const { data, error } = await supabase.rpc('process_duel_answer', {
+        p_duel_id: duel.id,
+        p_player_id: currentProfile.id,
+        p_question_number: currentQuestion,
+        p_answer_id: null,
+        p_is_timeout: true
+      });
+
+      if (error) throw error;
+
+      const result = data as any;
+      if (result.success) {
+        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
+        setMyScore(result.newScore);
+        
+        toast({
+          title: "⏭️ Pergunta pulada",
+          description: "Você pode pular até 2 perguntas por duelo",
+          variant: "default"
+        });
+        
+        // Auto advance after skip
+        setTimeout(() => {
+          if (currentQuestion < duel.questions.length) {
+            setCurrentQuestion(prev => prev + 1);
+            setSelectedAnswer(null);
+            setIsTimerActive(true);
+          } else {
+            setGamePhase('finished');
+            setIsFinished(true);
+            setShowResult(true);
+          }
+        }, 1000);
       }
-    }, 1000);
+    } catch (error) {
+      console.error('Error processing skip:', error);
+    }
   };
 
-  const handleTimeUp = () => {
+  const handleTimeUp = async () => {
     console.log('⏰ handleTimeUp chamado em EnhancedSimultaneousDuel');
     
     // Guard: Check if user is still on duel screen
@@ -293,34 +282,43 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     
     if (answeredQuestions.has(currentQuestion)) return;
     
-    const newAnswer = {
-      question: currentQuestion,
-      selected: null,
-      timestamp: new Date().toISOString(),
-      timeout: true,
-      correct: false
-    };
-    
-    setPlayerAnswers(prev => [...prev, newAnswer]);
-    setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-    
-    toast({
-      title: "⏰ Tempo esgotado!",
-      description: "Pergunta marcada como incorreta",
-      variant: "destructive"
-    });
-    
-    // Auto advance after timeout
-    setTimeout(() => {
-      if (currentQuestion < duel.questions.length) {
-        setCurrentQuestion(prev => prev + 1);
-        setIsTimerActive(true);
-      } else {
-        setGamePhase('finished');
-        setIsFinished(true);
-        setShowResult(true);
+    try {
+      const { data, error } = await supabase.rpc('process_duel_answer', {
+        p_duel_id: duel.id,
+        p_player_id: currentProfile.id,
+        p_question_number: currentQuestion,
+        p_answer_id: null,
+        p_is_timeout: true
+      });
+
+      if (error) throw error;
+
+      const result = data as any;
+      if (result.success) {
+        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
+        setMyScore(result.newScore);
+        
+        toast({
+          title: "⏰ Tempo esgotado!",
+          description: "Pergunta marcada como incorreta",
+          variant: "destructive"
+        });
+        
+        // Auto advance after timeout
+        setTimeout(() => {
+          if (currentQuestion < duel.questions.length) {
+            setCurrentQuestion(prev => prev + 1);
+            setIsTimerActive(true);
+          } else {
+            setGamePhase('finished');
+            setIsFinished(true);
+            setShowResult(true);
+          }
+        }, 1500);
       }
-    }, 1500);
+    } catch (error) {
+      console.error('Error processing timeout:', error);
+    }
   };
 
   // Show enhanced interface during gameplay
