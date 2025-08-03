@@ -148,7 +148,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
           });
 
           setTimeout(() => {
-            window.location.href = `/duel-waiting/${duel.id}`;
+            window.location.href = `/duel/${duel.id}`;
           }, 2000);
         }
       } else if (updatedInvite.status === 'rejected') {
