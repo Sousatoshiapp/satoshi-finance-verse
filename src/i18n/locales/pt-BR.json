@@ -907,6 +907,12 @@
       "sentTo": "Enviado para {{user}}",
       "receivedFrom": "Recebido de {{user}}"
     },
+    "notifications": {
+      "received": {
+        "title": "BTZ Recebido! 🎉",
+        "body": "Você recebeu {{amount}} BTZ de {{sender}}"
+      }
+    },
     "errors": {
       "insufficientBalance": "BTZ insuficientes",
       "insufficientBalanceDesc": "Você precisa de {{amount}} BTZ para realizar esta transferência",

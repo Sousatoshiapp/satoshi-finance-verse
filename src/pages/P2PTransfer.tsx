@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
 import { SendBTZ } from "@/components/features/p2p-transfer/SendBTZ";
 import { ReceiveBTZ } from "@/components/features/p2p-transfer/ReceiveBTZ";
+import { TransferHistory } from "@/components/features/p2p-transfer/TransferHistory";
 import { useI18n } from "@/hooks/use-i18n";
 
 export default function P2PTransfer() {
@@ -40,9 +41,7 @@ export default function P2PTransfer() {
         </TabsContent>
         
         <TabsContent value="history" className="mt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Histórico de transferências em desenvolvimento</p>
-          </div>
+          <TransferHistory />
         </TabsContent>
       </Tabs>
     </div>
