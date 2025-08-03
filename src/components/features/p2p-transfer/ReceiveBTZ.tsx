@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useProfile } from "@/hooks/use-profile";
 import { useI18n } from "@/hooks/use-i18n";
 import QRCode from 'qrcode';
+import { useP2PNotifications } from "@/hooks/use-p2p-notifications";
 
 export function ReceiveBTZ() {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
@@ -13,6 +14,7 @@ export function ReceiveBTZ() {
   const { toast } = useToast();
   const { profile } = useProfile();
   const { t } = useI18n();
+  useP2PNotifications();
 
   useEffect(() => {
     if (profile?.id) {
