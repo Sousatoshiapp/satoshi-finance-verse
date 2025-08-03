@@ -47,7 +47,7 @@ export default function Duels() {
     }
   };
 
-  const checkForActiveDuel = async () => {
+  const checkForActiveDuel = async (skipCleanup = false) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -60,13 +60,14 @@ export default function Duels() {
 
       if (!profile) return;
 
-      // Clear any finished duels first
-      await supabase
-        .from('duels')
-        .update({ status: 'finished' })
-        .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
-        .eq('status', 'active')
-        .lt('updated_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // 5 minutes ago
+      if (!skipCleanup) {
+        await supabase
+          .from('duels')
+          .update({ status: 'finished' })
+          .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
+          .eq('status', 'active')
+          .lt('updated_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // 5 minutes ago
+      }
 
       const { data: duel } = await supabase
         .from('duels')
@@ -190,8 +191,7 @@ export default function Duels() {
         setTimeout(() => {
           loadPendingInvites();
           checkForActiveDuel();
-          // Clear any cached data
-          window.location.reload();
+          // Remove forced reload - let React handle state updates
         }, 1000);
       }} 
     />;
@@ -234,7 +234,7 @@ export default function Duels() {
               invites={pendingInvites} 
               onInviteResponse={() => {
                 loadPendingInvites();
-                checkForActiveDuel();
+                setTimeout(() => checkForActiveDuel(true), 500);
               }} 
             />
           </div>

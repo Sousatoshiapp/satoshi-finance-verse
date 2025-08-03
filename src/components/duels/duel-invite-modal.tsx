@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
@@ -46,6 +47,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
   const { createDuel } = useDuelMatchmaking();
+  const navigate = useNavigate();
 
   if (!invite || !invite.challenger) return null;
 
@@ -55,7 +57,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
     try {
       if (accepted) {
         // Use the unified duel creation logic from the hook
-        await createDuel(invite.challenger_id, invite.quiz_topic);
+        const duelResult = await createDuel(invite.challenger_id, invite.quiz_topic);
 
         // Update invite status to accepted
         await supabase
@@ -82,9 +84,11 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
         });
 
-        setTimeout(() => {
-          window.location.href = '/duels';
-        }, 1000);
+        if (duelResult?.id) {
+          setTimeout(() => {
+            navigate('/duels');
+          }, 1000);
+        }
 
       } else {
         // Reject invite

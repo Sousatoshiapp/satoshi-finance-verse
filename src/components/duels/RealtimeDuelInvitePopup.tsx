@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
@@ -23,6 +24,7 @@ export function RealtimeDuelInvitePopup() {
   const [countdown, setCountdown] = useState(30);
   const { toast } = useToast();
   const { t } = useI18n();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentInvite && countdown > 0) {
@@ -72,9 +74,11 @@ export function RealtimeDuelInvitePopup() {
           description: t('duelInviteNotification.startingDuel', { challenger: currentInvite.challenger?.nickname }),
         });
 
-        setTimeout(() => {
-          window.location.href = '/duels';
-        }, 1000);
+        if (duelId) {
+          setTimeout(() => {
+            navigate('/duels');
+          }, 1000);
+        }
 
       } else {
         await supabase
