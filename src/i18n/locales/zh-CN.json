@@ -1054,5 +1054,14 @@
       "transferComplete": "转账完成!",
       "transferCompleteDesc": "{{amount}} BTZ 已发送给 {{receiver}}"
     }
+  },
+  "kyc": {
+    "title": "身份验证",
+    "subtitle": "P2P转账需要验证",
+    "verifyIdentity": "验证身份",
+    "required": "需要KYC才能继续",
+    "pending": "验证进行中...",
+    "approved": "身份已验证",
+    "rejected": "验证被拒绝"
   }
 }

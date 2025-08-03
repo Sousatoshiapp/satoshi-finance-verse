@@ -925,5 +925,14 @@
       "transferComplete": "¡Transferencia completada!",
       "transferCompleteDesc": "{{amount}} BTZ enviados a {{receiver}}"
     }
+  },
+  "kyc": {
+    "title": "Verificación de Identidad",
+    "subtitle": "Verificación requerida para transferencias P2P",
+    "verifyIdentity": "Verificar Identidad",
+    "required": "KYC necesario para continuar",
+    "pending": "Verificación en progreso...",
+    "approved": "Identidad verificada",
+    "rejected": "Verificación rechazada"
   }
 }

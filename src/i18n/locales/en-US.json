@@ -1017,5 +1017,14 @@
       "transferComplete": "Transfer completed!",
       "transferCompleteDesc": "{{amount}} BTZ sent to {{receiver}}"
     }
+  },
+  "kyc": {
+    "title": "Identity Verification",
+    "subtitle": "Verification required for P2P transfers",
+    "verifyIdentity": "Verify Identity",
+    "required": "KYC required to continue",
+    "pending": "Verification in progress...",
+    "approved": "Identity verified",
+    "rejected": "Verification rejected"
   }
 }
