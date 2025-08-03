@@ -133,7 +133,7 @@ function DuelWaitingScreen({
     if (onStart) {
       onStart();
     } else {
-      navigate('/duels');
+      navigate(`/duel/${duelId}`);
     }
   };
 

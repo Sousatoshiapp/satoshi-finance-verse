@@ -7,7 +7,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { UsersList } from "@/components/duels/users-list";
 import { DuelInvites } from "@/components/duels/duel-invites";
-import { EnhancedSimultaneousDuel } from "@/components/duels/enhanced-simultaneous-duel";
+import EnhancedSimultaneousDuel from "@/components/duels/enhanced-simultaneous-duel";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Duels() {

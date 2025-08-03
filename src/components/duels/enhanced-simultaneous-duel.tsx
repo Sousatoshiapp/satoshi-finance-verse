@@ -1,21 +1,21 @@
 import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
 import { Progress } from "@/components/shared/ui/progress";
-import { Trophy, Zap, ArrowRight, Clock } from "lucide-react";
+import { Trophy, Zap, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { CircularTimer } from "./circular-timer";
 import { EnhancedDuelInterface } from "./enhanced-duel-interface";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { IconSystem } from "@/components/icons/icon-system";
-import { useCustomSounds } from "@/hooks/use-custom-sounds";
 
 interface EnhancedSimultaneousDuelProps {
-  duel: any;
-  onDuelEnd: (result: { 
+  duel?: any;
+  onDuelEnd?: (result: { 
     winner: boolean, 
     score: number, 
     opponentScore: number,
@@ -24,7 +24,11 @@ interface EnhancedSimultaneousDuelProps {
   }) => void;
 }
 
-export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneousDuelProps) {
+function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimultaneousDuelProps) {
+  const { duelId: paramDuelId } = useParams();
+  const navigate = useNavigate();
+  const [duel, setDuel] = useState(propDuel);
+  const [isLoadingDuel, setIsLoadingDuel] = useState(!propDuel);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
@@ -39,23 +43,80 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [gamePhase, setGamePhase] = useState<'playing' | 'finished'>('playing');
-  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
-  const [playerAnswers, setPlayerAnswers] = useState<any[]>([]);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [isWaitingForOpponent] = useState(false);
+  const [playerAnswers] = useState<any[]>([]);
   const subscriptionRef = useRef<any>(null);
   const { toast } = useToast();
-  const { playCountdownSound } = useCustomSounds();
+
+  const loadDuelData = async (duelId: string) => {
+    try {
+      const { data: duelData, error } = await supabase
+        .from('duels')
+        .select(`
+          *,
+          player1:profiles!duels_player1_id_fkey(
+            id, nickname, level, xp,
+            avatars(name, image_url)
+          ),
+          player2:profiles!duels_player2_id_fkey(
+            id, nickname, level, xp,
+            avatars(name, image_url)
+          )
+        `)
+        .eq('id', duelId)
+        .eq('status', 'active')
+        .single();
+
+      if (error) {
+        console.error('Error loading duel data:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar o duelo",
+          variant: "destructive"
+        });
+        navigate('/duels');
+        return;
+      }
+
+      if (duelData) {
+        const formattedDuel = {
+          ...duelData,
+          questions: Array.isArray(duelData.questions) ? 
+            duelData.questions : 
+            JSON.parse(duelData.questions as string)
+        };
+        setDuel(formattedDuel);
+        setIsLoadingDuel(false);
+      }
+    } catch (error) {
+      console.error('Error in loadDuelData:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao carregar dados do duelo",
+        variant: "destructive"
+      });
+      navigate('/duels');
+    }
+  };
 
   useEffect(() => {
-    loadProfiles();
-    setupRealtimeSubscription();
+    if (!propDuel && paramDuelId) {
+      loadDuelData(paramDuelId);
+    }
+  }, [paramDuelId, propDuel]);
+
+  useEffect(() => {
+    if (duel) {
+      loadProfiles();
+      setupRealtimeSubscription();
+    }
     
     return () => {
       if (subscriptionRef.current) {
         supabase.removeChannel(subscriptionRef.current);
       }
     };
-  }, [duel.id]);
+  }, [duel]);
 
   useEffect(() => {
     // Start timer for current question if not answered
@@ -75,7 +136,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
           event: 'UPDATE',
           schema: 'public',
           table: 'duels',
-          filter: `id=eq.${duel.id}`
+          filter: `id=eq.${duel?.id}`
         },
         handleDuelUpdate
       )
@@ -108,13 +169,17 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     
     // Show final result and navigate back
     setTimeout(() => {
-      onDuelEnd({
-        winner: isWinner,
-        score: finalMyScore || 0,
-        opponentScore: finalOpponentScore || 0,
-        playerAnswers,
-        questions: duel.questions
-      });
+      if (onDuelEnd) {
+        onDuelEnd({
+          winner: isWinner,
+          score: finalMyScore || 0,
+          opponentScore: finalOpponentScore || 0,
+          playerAnswers,
+          questions: duel.questions
+        });
+      } else {
+        navigate('/duels');
+      }
     }, 3000);
   };
 
@@ -340,7 +405,7 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     );
   }
 
-  if (!duel.questions || !currentProfile) {
+  if (isLoadingDuel || !duel || !duel.questions || !currentProfile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
         <div className="text-center">
@@ -606,3 +671,5 @@ export function EnhancedSimultaneousDuel({ duel, onDuelEnd }: EnhancedSimultaneo
     </div>
   );
 }
+
+export default EnhancedSimultaneousDuel;

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shared/ui/dialog";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
@@ -48,7 +47,6 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
   const { dismissCurrentInvite } = useGlobalDuelInvites();
-  const navigate = useNavigate();
 
   if (!invite || !invite.challenger) return null;
 
@@ -121,14 +119,14 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
 
             if (directError) {
               console.error('❌ Erro na criação direta:', directError);
-              throw new Error('Erro ao criar duelo: ' + directError.message);
+              throw new Error(`Erro ao criar duelo: ${directError.message}`);
             }
 
             console.log('✅ Duelo criado diretamente com sucesso:', directDuel.id);
             duelId = directDuel.id;
           } catch (fallbackError) {
             console.error('❌ Fallback também falhou:', fallbackError);
-            throw new Error('Erro ao criar duelo: ' + duelError.message);
+            throw new Error(`Erro ao criar duelo: ${duelError.message}`);
           }
         }
 
@@ -178,7 +176,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
 
         if (fetchError) {
           console.error('❌ Erro ao buscar duelo criado:', fetchError);
-          throw new Error('Duelo não foi encontrado após criação: ' + fetchError.message);
+          throw new Error(`Duelo não foi encontrado após criação: ${fetchError.message}`);
         }
 
         if (!createdDuel) {
@@ -199,9 +197,9 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
         });
 
-        console.log('🎮 Redirecionando para sala de espera...');
+        console.log('🎮 Redirecionando para duelo...');
         setTimeout(() => {
-          window.location.href = `/duel-waiting/${duelId}`;
+          window.location.href = `/duel/${duelId}`;
         }, 2000);
         return;
 

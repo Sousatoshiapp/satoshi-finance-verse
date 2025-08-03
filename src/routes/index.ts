@@ -37,5 +37,12 @@ export const routeConfig: RouteConfig[] = [
     requiresAuth: true,
     showNavbar: false,
     isDirectImport: false
+  },
+  {
+    path: '/duel/:duelId',
+    element: 'EnhancedSimultaneousDuel',
+    requiresAuth: true,
+    showNavbar: false,
+    isDirectImport: false
   }
 ];
