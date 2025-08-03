@@ -8,7 +8,6 @@ import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-unive
 import { Swords, Clock, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";
 import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
 
 interface DuelInvite {
@@ -47,7 +46,6 @@ const topicsMap: Record<string, string> = {
 export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInviteModalProps) {
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
-  const { createDuel } = useDuelMatchmaking();
   const { dismissCurrentInvite } = useGlobalDuelInvites();
   const navigate = useNavigate();
 
@@ -60,8 +58,122 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
       if (accepted) {
         dismissCurrentInvite();
 
-        const duelResult = await createDuel(invite.challenger_id, invite.quiz_topic);
+        const questions = [
+          {
+            id: '1',
+            question: 'O que é diversificação de investimentos?',
+            options: [
+              { id: 'a', text: 'Investir apenas em ações', isCorrect: false },
+              { id: 'b', text: 'Distribuir investimentos em diferentes ativos', isCorrect: true },
+              { id: 'c', text: 'Investir apenas em renda fixa', isCorrect: false },
+              { id: 'd', text: 'Comprar apenas um tipo de ação', isCorrect: false }
+            ]
+          },
+          {
+            id: '2',
+            question: 'O que é o CDI?',
+            options: [
+              { id: 'a', text: 'Certificado de Depósito Interbancário', isCorrect: true },
+              { id: 'b', text: 'Conta de Depósito Individual', isCorrect: false },
+              { id: 'c', text: 'Central de Dados Internacionais', isCorrect: false },
+              { id: 'd', text: 'Cadastro de Investidores', isCorrect: false }
+            ]
+          },
+          {
+            id: '3',
+            question: 'Qual é a principal característica da renda fixa?',
+            options: [
+              { id: 'a', text: 'Alto risco', isCorrect: false },
+              { id: 'b', text: 'Rentabilidade previsível', isCorrect: true },
+              { id: 'c', text: 'Volatilidade alta', isCorrect: false },
+              { id: 'd', text: 'Liquidez baixa', isCorrect: false }
+            ]
+          },
+          {
+            id: '4',
+            question: 'O que são ações?',
+            options: [
+              { id: 'a', text: 'Títulos de dívida', isCorrect: false },
+              { id: 'b', text: 'Participações no capital de empresas', isCorrect: true },
+              { id: 'c', text: 'Investimentos imobiliários', isCorrect: false },
+              { id: 'd', text: 'Reservas bancárias', isCorrect: false }
+            ]
+          },
+          {
+            id: '5',
+            question: 'Qual é o objetivo da reserva de emergência?',
+            options: [
+              { id: 'a', text: 'Investir em ações', isCorrect: false },
+              { id: 'b', text: 'Cobrir gastos imprevistos', isCorrect: true },
+              { id: 'c', text: 'Pagar impostos', isCorrect: false },
+              { id: 'd', text: 'Comprar bens de luxo', isCorrect: false }
+            ]
+          },
+          {
+            id: '6',
+            question: 'O que é inflação?',
+            options: [
+              { id: 'a', text: 'Aumento geral dos preços', isCorrect: true },
+              { id: 'b', text: 'Diminuição dos juros', isCorrect: false },
+              { id: 'c', text: 'Valorização da moeda', isCorrect: false },
+              { id: 'd', text: 'Crescimento econômico', isCorrect: false }
+            ]
+          },
+          {
+            id: '7',
+            question: 'Qual a vantagem dos fundos de investimento?',
+            options: [
+              { id: 'a', text: 'Garantia de lucro', isCorrect: false },
+              { id: 'b', text: 'Gestão profissional', isCorrect: true },
+              { id: 'c', text: 'Isenção de impostos', isCorrect: false },
+              { id: 'd', text: 'Liquidez zero', isCorrect: false }
+            ]
+          },
+          {
+            id: '8',
+            question: 'O que é Tesouro Direto?',
+            options: [
+              { id: 'a', text: 'Ações do governo', isCorrect: false },
+              { id: 'b', text: 'Títulos públicos federais', isCorrect: true },
+              { id: 'c', text: 'Investimentos privados', isCorrect: false },
+              { id: 'd', text: 'Moedas digitais', isCorrect: false }
+            ]
+          },
+          {
+            id: '9',
+            question: 'Qual é o risco da renda variável?',
+            options: [
+              { id: 'a', text: 'Perda de capital', isCorrect: true },
+              { id: 'b', text: 'Ganho garantido', isCorrect: false },
+              { id: 'c', text: 'Juros baixos', isCorrect: false },
+              { id: 'd', text: 'Liquidez alta', isCorrect: false }
+            ]
+          },
+          {
+            id: '10',
+            question: 'O que significa IPO?',
+            options: [
+              { id: 'a', text: 'Investimento Pessoal Online', isCorrect: false },
+              { id: 'b', text: 'Oferta Pública Inicial', isCorrect: true },
+              { id: 'c', text: 'Índice de Preços Oficial', isCorrect: false },
+              { id: 'd', text: 'Imposto sobre Operações', isCorrect: false }
+            ]
+          }
+        ];
 
+        const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
+          p_challenger_id: invite.challenger_id,
+          p_challenged_id: invite.challenged_id,
+          p_quiz_topic: invite.quiz_topic,
+          p_questions: questions
+        });
+
+        if (duelError) {
+          console.error('Error creating duel:', duelError);
+          throw new Error('Erro ao criar duelo: ' + duelError.message);
+        }
+
+        // Update invite status to accepted
         await supabase
           .from('duel_invites')
           .update({ status: 'accepted' })
@@ -81,18 +193,23 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           console.error('Error sending acceptance notification:', notificationError);
         }
 
-        toast({
-          title: "Duelo aceito!",
-          description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
-        });
-
-        if (duelResult?.id) {
-          navigate(`/duel-waiting/${duelResult.id}`, {
-            state: {
-              opponentNickname: invite.challenger.nickname,
-              topic: invite.quiz_topic
-            }
-          });
+        if (duelId) {
+          const { data: createdDuel } = await supabase
+            .from('duels')
+            .select('*')
+            .eq('id', duelId)
+            .eq('status', 'active')
+            .single();
+          
+          if (createdDuel) {
+            toast({
+              title: "Duelo aceito!",
+              description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
+            });
+            
+            window.location.href = '/duels';
+            return;
+          }
         }
 
       } else {

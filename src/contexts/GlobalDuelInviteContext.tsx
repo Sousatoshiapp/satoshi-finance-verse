@@ -76,7 +76,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
   };
 
   const handleNewInvite = async (payload: any) => {
-    console.log('🎯 Duel invite received:', payload);
+    console.log('🎯 Duel invite received (notification only):', payload);
     
     try {
       const { data: inviteData, error } = await supabase
@@ -107,22 +107,14 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
         return;
       }
 
-      console.log('✅ Complete invite data:', inviteData);
+      console.log('✅ Complete invite data (notification only):', inviteData);
 
-      if (!currentInvite) {
-        setCurrentInvite(inviteData);
-        console.log('📱 Showing invite immediately:', inviteData.id);
-      } else {
-        setInviteQueue(prev => [...prev, inviteData]);
-        console.log('📋 Added invite to queue. Queue size:', inviteQueue.length + 1);
-        
-        toast({
-          title: t('duelInviteNotification.title'),
-          description: t('duelInviteNotification.subtitle', { 
-            challenger: inviteData.challenger?.nickname || 'Unknown' 
-          }),
-        });
-      }
+      toast({
+        title: t('duelInviteNotification.title'),
+        description: t('duelInviteNotification.subtitle', { 
+          challenger: inviteData.challenger?.nickname || 'Unknown' 
+        }),
+      });
     } catch (error) {
       console.error('❌ Error handling new invite:', error);
     }
