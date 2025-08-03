@@ -49,175 +49,75 @@ export function RealtimeDuelInvitePopup() {
     
     try {
       if (accepted) {
-        console.log('🎯 [RealtimePopup] Iniciando processo de aceitação do duelo para:', currentInvite.quiz_topic);
-        console.log('📋 [RealtimePopup] Dados do convite:', {
-          id: currentInvite.id,
-          challenger_id: currentInvite.challenger_id,
-          challenged_id: currentInvite.challenged_id,
-          quiz_topic: currentInvite.quiz_topic,
-          challenger_nickname: currentInvite.challenger?.nickname
-        });
-
-        dismissCurrentInvite();
-
-        console.log('🎯 [RealtimePopup] Gerando perguntas para:', currentInvite.quiz_topic);
         const questions = await generateDuelQuestions(currentInvite.quiz_topic);
-        console.log('✅ [RealtimePopup] Perguntas geradas:', questions.length, 'perguntas', questions);
 
-        console.log('🚀 [RealtimePopup] Chamando RPC create_duel_with_invite...');
-        console.log('📤 [RealtimePopup] Parâmetros da RPC:', {
-          p_challenger_id: currentInvite.challenger_id,
-          p_challenged_id: currentInvite.challenged_id,
-          p_quiz_topic: currentInvite.quiz_topic,
-          questions_count: questions.length
-        });
-
-        const rpcResult = await supabase.rpc('create_duel_with_invite', {
+        const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
           p_challenger_id: currentInvite.challenger_id,
           p_challenged_id: currentInvite.challenged_id,
           p_quiz_topic: currentInvite.quiz_topic,
           p_questions: questions as any
         });
 
-        let duelId = rpcResult.data;
-        const duelError = rpcResult.error;
-
-        console.log('📊 [RealtimePopup] Resultado da RPC:', { duelId, duelError });
-
         if (duelError) {
-          console.error('❌ [RealtimePopup] Erro na RPC create_duel_with_invite:', duelError);
-          console.error('❌ [RealtimePopup] Detalhes do erro:', {
-            message: duelError.message,
-            details: duelError.details,
-            hint: duelError.hint,
-            code: duelError.code
-          });
+          console.error('Error creating duel with RPC:', duelError);
           
-          console.log('🔄 [RealtimePopup] Tentando criação direta na tabela como fallback...');
-          try {
-            const { data: directDuel, error: directError } = await supabase
-              .from('duels')
-              .insert({
-                player1_id: currentInvite.challenger_id,
-                player2_id: currentInvite.challenged_id,
-                quiz_topic: currentInvite.quiz_topic,
-                questions: questions as any,
-                status: 'active',
-                current_question: 1,
-                player1_current_question: 1,
-                player2_current_question: 1,
-                invite_id: currentInvite.id
-              })
-              .select()
-              .single();
+          const { data: directDuel, error: directError } = await supabase
+            .from('duels')
+            .insert({
+              player1_id: currentInvite.challenger_id,
+              player2_id: currentInvite.challenged_id,
+              quiz_topic: currentInvite.quiz_topic,
+              questions: questions as any,
+              status: 'active',
+              current_question: 1,
+              player1_current_question: 1,
+              player2_current_question: 1,
+              invite_id: currentInvite.id
+            })
+            .select()
+            .single();
 
-            if (directError) {
-              console.error('❌ [RealtimePopup] Erro na criação direta:', directError);
-              throw new Error('Erro ao criar duelo: ' + directError.message);
-            }
-
-            console.log('✅ [RealtimePopup] Duelo criado diretamente com sucesso:', directDuel.id);
-            duelId = directDuel.id;
-          } catch (fallbackError) {
-            console.error('❌ [RealtimePopup] Fallback também falhou:', fallbackError);
-            throw new Error('Erro ao criar duelo: ' + duelError.message);
+          if (directError) {
+            throw new Error('Erro ao criar duelo: ' + directError.message);
           }
+
+          await supabase
+            .from('duel_invites')
+            .update({ status: 'accepted' })
+            .eq('id', currentInvite.id);
+
+          toast({
+            title: t('duelInviteNotification.accepted'),
+            description: t('duelInviteNotification.startingDuel', { challenger: currentInvite.challenger?.nickname }),
+          });
+
+          setTimeout(() => {
+            window.location.href = '/duels';
+          }, 1500);
+          return;
         }
 
-        if (!duelId) {
-          console.error('❌ [RealtimePopup] Nenhum ID de duelo foi obtido');
-          throw new Error('Duelo não foi criado - ID não retornado');
-        }
-
-        console.log('✅ [RealtimePopup] Duelo criado com ID:', duelId);
-
-        console.log('🔄 [RealtimePopup] Atualizando status do convite para "accepted"...');
-        const { error: updateError } = await supabase
+        await supabase
           .from('duel_invites')
           .update({ status: 'accepted' })
           .eq('id', currentInvite.id);
-
-        if (updateError) {
-          console.error('❌ [RealtimePopup] Erro ao atualizar status do convite:', updateError);
-        } else {
-          console.log('✅ [RealtimePopup] Status do convite atualizado com sucesso');
-        }
-
-        console.log('📧 [RealtimePopup] Enviando notificação de aceitação...');
-        try {
-          await supabase.functions.invoke('send-social-notification', {
-            body: {
-              userId: currentInvite.challenger_id,
-              type: 'duel_accepted',
-              title: 'Convite Aceito!',
-              message: `Seu convite de duelo foi aceito! O duelo começou.`,
-              data: { invite_id: currentInvite.id }
-            }
-          });
-          console.log('✅ [RealtimePopup] Notificação enviada com sucesso');
-        } catch (notificationError) {
-          console.error('❌ [RealtimePopup] Erro ao enviar notificação:', notificationError);
-        }
-
-        console.log('🔍 [RealtimePopup] Verificando se o duelo foi realmente criado...');
-        const { data: createdDuel, error: fetchError } = await supabase
-          .from('duels')
-          .select('*')
-          .eq('id', duelId)
-          .single();
-
-        console.log('📋 [RealtimePopup] Resultado da verificação:', { createdDuel, fetchError });
-
-        if (fetchError) {
-          console.error('❌ [RealtimePopup] Erro ao buscar duelo criado:', fetchError);
-          throw new Error('Duelo não foi encontrado após criação: ' + fetchError.message);
-        }
-
-        if (!createdDuel) {
-          console.error('❌ [RealtimePopup] Duelo não foi encontrado na base de dados');
-          throw new Error('Duelo não foi encontrado após criação');
-        }
-
-        console.log('✅ [RealtimePopup] Duelo verificado com sucesso:', {
-          id: createdDuel.id,
-          status: createdDuel.status,
-          player1_id: createdDuel.player1_id,
-          player2_id: createdDuel.player2_id,
-          topic: createdDuel.quiz_topic
-        });
 
         toast({
           title: t('duelInviteNotification.accepted'),
           description: t('duelInviteNotification.startingDuel', { challenger: currentInvite.challenger?.nickname }),
         });
 
-        console.log('🎮 [RealtimePopup] Redirecionando para /duels...');
-        setTimeout(() => {
-          window.location.href = '/duels';
-        }, 2000);
-        return;
+        if (duelId) {
+          setTimeout(() => {
+            window.location.href = '/duels';
+          }, 1500);
+        }
 
       } else {
-        console.log('❌ [RealtimePopup] Rejeitando convite:', currentInvite.id);
         await supabase
           .from('duel_invites')
           .update({ status: 'rejected' })
           .eq('id', currentInvite.id);
-
-        try {
-          await supabase.functions.invoke('send-social-notification', {
-            body: {
-              userId: currentInvite.challenger_id,
-              type: 'duel_rejected',
-              title: 'Convite Recusado',
-              message: `Seu convite de duelo foi recusado`,
-              data: { invite_id: currentInvite.id }
-            }
-          });
-          console.log('✅ [RealtimePopup] Notificação de rejeição enviada');
-        } catch (notificationError) {
-          console.error('❌ [RealtimePopup] Erro ao enviar notificação de rejeição:', notificationError);
-        }
 
         toast({
           title: t('duelInviteNotification.declined'),
@@ -228,11 +128,7 @@ export function RealtimeDuelInvitePopup() {
       dismissCurrentInvite();
 
     } catch (error) {
-      console.error('💥 [RealtimePopup] Erro completo ao responder convite:', error);
-      console.error('💥 [RealtimePopup] Stack trace:', error instanceof Error ? error.stack : 'N/A');
-      console.error('💥 [RealtimePopup] Tipo do erro:', typeof error);
-      console.error('💥 [RealtimePopup] Propriedades do erro:', Object.keys(error || {}));
-      
+      console.error('Error responding to invite:', error);
       toast({
         title: t('common.error'),
         description: error instanceof Error ? error.message : t('duelInviteNotification.errorResponding'),
