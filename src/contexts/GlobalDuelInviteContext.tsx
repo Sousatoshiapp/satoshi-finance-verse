@@ -126,15 +126,9 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
       const updatedInvite = payload.new;
       
       if (updatedInvite.status === 'accepted') {
-        toast({
-          title: "✅ Convite Aceito!",
-          description: "Seu convite de duelo foi aceito! O duelo começou.",
-        });
+        console.log('✅ Convite aceito:', updatedInvite.id);
       } else if (updatedInvite.status === 'rejected') {
-        toast({
-          title: "❌ Convite Recusado",
-          description: "Seu convite de duelo foi recusado.",
-        });
+        console.log('❌ Convite recusado:', updatedInvite.id);
       }
     } catch (error) {
       console.error('❌ Error handling invite status update:', error);
