@@ -9,6 +9,7 @@ import { Swords, Clock, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
+import { generateDuelQuestions } from "@/utils/duel-questions";
 
 interface DuelInvite {
   id: string;
@@ -56,129 +57,101 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
     
     try {
       if (accepted) {
+        console.log('🎯 Iniciando processo de aceitação do duelo para:', invite.quiz_topic);
+        console.log('📋 Dados do convite:', {
+          id: invite.id,
+          challenger_id: invite.challenger_id,
+          challenged_id: invite.challenged_id,
+          quiz_topic: invite.quiz_topic,
+          challenger_nickname: invite.challenger?.nickname
+        });
+
         dismissCurrentInvite();
 
-        const questions = [
-          {
-            id: '1',
-            question: 'O que é diversificação de investimentos?',
-            options: [
-              { id: 'a', text: 'Investir apenas em ações', isCorrect: false },
-              { id: 'b', text: 'Distribuir investimentos em diferentes ativos', isCorrect: true },
-              { id: 'c', text: 'Investir apenas em renda fixa', isCorrect: false },
-              { id: 'd', text: 'Comprar apenas um tipo de ação', isCorrect: false }
-            ]
-          },
-          {
-            id: '2',
-            question: 'O que é o CDI?',
-            options: [
-              { id: 'a', text: 'Certificado de Depósito Interbancário', isCorrect: true },
-              { id: 'b', text: 'Conta de Depósito Individual', isCorrect: false },
-              { id: 'c', text: 'Central de Dados Internacionais', isCorrect: false },
-              { id: 'd', text: 'Cadastro de Investidores', isCorrect: false }
-            ]
-          },
-          {
-            id: '3',
-            question: 'Qual é a principal característica da renda fixa?',
-            options: [
-              { id: 'a', text: 'Alto risco', isCorrect: false },
-              { id: 'b', text: 'Rentabilidade previsível', isCorrect: true },
-              { id: 'c', text: 'Volatilidade alta', isCorrect: false },
-              { id: 'd', text: 'Liquidez baixa', isCorrect: false }
-            ]
-          },
-          {
-            id: '4',
-            question: 'O que são ações?',
-            options: [
-              { id: 'a', text: 'Títulos de dívida', isCorrect: false },
-              { id: 'b', text: 'Participações no capital de empresas', isCorrect: true },
-              { id: 'c', text: 'Investimentos imobiliários', isCorrect: false },
-              { id: 'd', text: 'Reservas bancárias', isCorrect: false }
-            ]
-          },
-          {
-            id: '5',
-            question: 'Qual é o objetivo da reserva de emergência?',
-            options: [
-              { id: 'a', text: 'Investir em ações', isCorrect: false },
-              { id: 'b', text: 'Cobrir gastos imprevistos', isCorrect: true },
-              { id: 'c', text: 'Pagar impostos', isCorrect: false },
-              { id: 'd', text: 'Comprar bens de luxo', isCorrect: false }
-            ]
-          },
-          {
-            id: '6',
-            question: 'O que é inflação?',
-            options: [
-              { id: 'a', text: 'Aumento geral dos preços', isCorrect: true },
-              { id: 'b', text: 'Diminuição dos juros', isCorrect: false },
-              { id: 'c', text: 'Valorização da moeda', isCorrect: false },
-              { id: 'd', text: 'Crescimento econômico', isCorrect: false }
-            ]
-          },
-          {
-            id: '7',
-            question: 'Qual a vantagem dos fundos de investimento?',
-            options: [
-              { id: 'a', text: 'Garantia de lucro', isCorrect: false },
-              { id: 'b', text: 'Gestão profissional', isCorrect: true },
-              { id: 'c', text: 'Isenção de impostos', isCorrect: false },
-              { id: 'd', text: 'Liquidez zero', isCorrect: false }
-            ]
-          },
-          {
-            id: '8',
-            question: 'O que é Tesouro Direto?',
-            options: [
-              { id: 'a', text: 'Ações do governo', isCorrect: false },
-              { id: 'b', text: 'Títulos públicos federais', isCorrect: true },
-              { id: 'c', text: 'Investimentos privados', isCorrect: false },
-              { id: 'd', text: 'Moedas digitais', isCorrect: false }
-            ]
-          },
-          {
-            id: '9',
-            question: 'Qual é o risco da renda variável?',
-            options: [
-              { id: 'a', text: 'Perda de capital', isCorrect: true },
-              { id: 'b', text: 'Ganho garantido', isCorrect: false },
-              { id: 'c', text: 'Juros baixos', isCorrect: false },
-              { id: 'd', text: 'Liquidez alta', isCorrect: false }
-            ]
-          },
-          {
-            id: '10',
-            question: 'O que significa IPO?',
-            options: [
-              { id: 'a', text: 'Investimento Pessoal Online', isCorrect: false },
-              { id: 'b', text: 'Oferta Pública Inicial', isCorrect: true },
-              { id: 'c', text: 'Índice de Preços Oficial', isCorrect: false },
-              { id: 'd', text: 'Imposto sobre Operações', isCorrect: false }
-            ]
-          }
-        ];
+        console.log('🎯 Gerando perguntas para:', invite.quiz_topic);
+        const questions = await generateDuelQuestions(invite.quiz_topic);
+        console.log('✅ Perguntas geradas:', questions.length, 'perguntas', questions);
 
-        const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
+        console.log('🚀 Chamando RPC create_duel_with_invite...');
+        console.log('📤 Parâmetros da RPC:', {
           p_challenger_id: invite.challenger_id,
           p_challenged_id: invite.challenged_id,
           p_quiz_topic: invite.quiz_topic,
-          p_questions: questions
+          questions_count: questions.length
         });
 
+        const rpcResult = await supabase.rpc('create_duel_with_invite', {
+          p_challenger_id: invite.challenger_id,
+          p_challenged_id: invite.challenged_id,
+          p_quiz_topic: invite.quiz_topic,
+          p_questions: questions as any
+        });
+
+        let duelId = rpcResult.data;
+        const duelError = rpcResult.error;
+
+        console.log('📊 Resultado da RPC:', { duelId, duelError });
+
         if (duelError) {
-          console.error('Error creating duel:', duelError);
-          throw new Error('Erro ao criar duelo: ' + duelError.message);
+          console.error('❌ Erro na RPC create_duel_with_invite:', duelError);
+          console.error('❌ Detalhes do erro:', {
+            message: duelError.message,
+            details: duelError.details,
+            hint: duelError.hint,
+            code: duelError.code
+          });
+          
+          console.log('🔄 Tentando criação direta na tabela como fallback...');
+          try {
+            const { data: directDuel, error: directError } = await supabase
+              .from('duels')
+              .insert({
+                player1_id: invite.challenger_id,
+                player2_id: invite.challenged_id,
+                quiz_topic: invite.quiz_topic,
+                questions: questions as any,
+                status: 'active',
+                current_question: 1,
+                player1_current_question: 1,
+                player2_current_question: 1,
+                invite_id: invite.id
+              })
+              .select()
+              .single();
+
+            if (directError) {
+              console.error('❌ Erro na criação direta:', directError);
+              throw new Error('Erro ao criar duelo: ' + directError.message);
+            }
+
+            console.log('✅ Duelo criado diretamente com sucesso:', directDuel.id);
+            duelId = directDuel.id;
+          } catch (fallbackError) {
+            console.error('❌ Fallback também falhou:', fallbackError);
+            throw new Error('Erro ao criar duelo: ' + duelError.message);
+          }
         }
 
-        // Update invite status to accepted
-        await supabase
+        if (!duelId) {
+          console.error('❌ Nenhum ID de duelo foi obtido');
+          throw new Error('Duelo não foi criado - ID não retornado');
+        }
+
+        console.log('✅ Duelo criado com ID:', duelId);
+
+        console.log('🔄 Atualizando status do convite para "accepted"...');
+        const { error: updateError } = await supabase
           .from('duel_invites')
           .update({ status: 'accepted' })
           .eq('id', invite.id);
 
+        if (updateError) {
+          console.error('❌ Erro ao atualizar status do convite:', updateError);
+        } else {
+          console.log('✅ Status do convite atualizado com sucesso');
+        }
+
+        console.log('📧 Enviando notificação de aceitação...');
         try {
           await supabase.functions.invoke('send-social-notification', {
             body: {
@@ -189,28 +162,48 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
               data: { invite_id: invite.id }
             }
           });
+          console.log('✅ Notificação enviada com sucesso');
         } catch (notificationError) {
-          console.error('Error sending acceptance notification:', notificationError);
+          console.error('❌ Erro ao enviar notificação:', notificationError);
         }
 
-        if (duelId) {
-          const { data: createdDuel } = await supabase
-            .from('duels')
-            .select('*')
-            .eq('id', duelId)
-            .eq('status', 'active')
-            .single();
-          
-          if (createdDuel) {
-            toast({
-              title: "Duelo aceito!",
-              description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
-            });
-            
-            window.location.href = '/duels';
-            return;
-          }
+        console.log('🔍 Verificando se o duelo foi realmente criado...');
+        const { data: createdDuel, error: fetchError } = await supabase
+          .from('duels')
+          .select('*')
+          .eq('id', duelId)
+          .single();
+
+        console.log('📋 Resultado da verificação:', { createdDuel, fetchError });
+
+        if (fetchError) {
+          console.error('❌ Erro ao buscar duelo criado:', fetchError);
+          throw new Error('Duelo não foi encontrado após criação: ' + fetchError.message);
         }
+
+        if (!createdDuel) {
+          console.error('❌ Duelo não foi encontrado na base de dados');
+          throw new Error('Duelo não foi encontrado após criação');
+        }
+
+        console.log('✅ Duelo verificado com sucesso:', {
+          id: createdDuel.id,
+          status: createdDuel.status,
+          player1_id: createdDuel.player1_id,
+          player2_id: createdDuel.player2_id,
+          topic: createdDuel.quiz_topic
+        });
+
+        toast({
+          title: "Duelo aceito!",
+          description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
+        });
+
+        console.log('🎮 Redirecionando para /duels...');
+        setTimeout(() => {
+          window.location.href = '/duels';
+        }, 2000);
+        return;
 
       } else {
         // Reject invite
@@ -243,10 +236,14 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
       onClose();
 
     } catch (error) {
-      console.error('Error responding to invite:', error);
+      console.error('💥 Erro completo ao responder convite:', error);
+      console.error('💥 Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      console.error('💥 Tipo do erro:', typeof error);
+      console.error('💥 Propriedades do erro:', Object.keys(error || {}));
+      
       toast({
         title: "❌ Erro",
-        description: "Não foi possível responder ao convite",
+        description: error instanceof Error ? error.message : "Não foi possível responder ao convite",
         variant: "destructive"
       });
     } finally {
