@@ -4860,9 +4860,11 @@ export type Database = {
           id: string
           processed_at: string | null
           product_id: string | null
+          receiver_id: string | null
           status: Database["public"]["Enums"]["transaction_status"]
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
+          transfer_type: string | null
           updated_at: string
           user_id: string
           virtual_rewards_data: Json | null
@@ -4874,9 +4876,11 @@ export type Database = {
           id?: string
           processed_at?: string | null
           product_id?: string | null
+          receiver_id?: string | null
           status?: Database["public"]["Enums"]["transaction_status"]
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          transfer_type?: string | null
           updated_at?: string
           user_id: string
           virtual_rewards_data?: Json | null
@@ -4888,9 +4892,11 @@ export type Database = {
           id?: string
           processed_at?: string | null
           product_id?: string | null
+          receiver_id?: string | null
           status?: Database["public"]["Enums"]["transaction_status"]
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          transfer_type?: string | null
           updated_at?: string
           user_id?: string
           virtual_rewards_data?: Json | null
@@ -4901,6 +4907,13 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "store_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -6760,6 +6773,21 @@ export type Database = {
         }
         Returns: string
       }
+      determine_duel_winner: {
+        Args: {
+          p_duel_id: string
+          p_player1_answers: Json
+          p_player2_answers: Json
+          p_player1_time: number
+          p_player2_time: number
+        }
+        Returns: {
+          winner_id: string
+          player1_score: number
+          player2_score: number
+          tie_broken_by: string
+        }[]
+      }
       enhance_bot_realism: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -6948,6 +6976,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      transfer_btz: {
+        Args: { sender_id: string; receiver_id: string; amount: number }
+        Returns: Json
+      }
       update_bot_nicknames: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -7053,7 +7085,7 @@ export type Database = {
         | "speed_demon"
         | "knowledge_master"
         | "quiz_dominator"
-      currency_type: "BRL" | "USD" | "EUR"
+      currency_type: "BRL" | "USD" | "EUR" | "BTZ"
       customization_type:
         | "avatar_skin"
         | "profile_theme"
@@ -7231,7 +7263,7 @@ export const Constants = {
         "knowledge_master",
         "quiz_dominator",
       ],
-      currency_type: ["BRL", "USD", "EUR"],
+      currency_type: ["BRL", "USD", "EUR", "BTZ"],
       customization_type: [
         "avatar_skin",
         "profile_theme",

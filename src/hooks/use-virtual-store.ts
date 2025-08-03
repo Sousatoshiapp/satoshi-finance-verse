@@ -48,7 +48,7 @@ export function useVirtualStore() {
         .order('featured', { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+      setProducts((data || []).filter(product => ['BRL', 'USD', 'EUR'].includes(product.currency)) as StoreProduct[]);
     } catch (error) {
       console.error('Erro ao carregar produtos:', error);
       toast({

@@ -102,9 +102,9 @@ export function QuizBTZCard({ className = "" }: QuizBTZCardProps) {
     <div
       className={cn(
         "bg-transparent backdrop-blur-sm border border-[#adff2f]/20 rounded-lg",
-        "px-4 py-3 transition-all duration-300",
+        "px-2 py-2 transition-all duration-300",
         "hover:border-[#adff2f]/40 hover:backdrop-blur-md",
-        "cursor-pointer select-none min-w-[140px]",
+        "cursor-pointer select-none min-w-[120px]",
         showGlow && "shadow-[0_0_20px_rgba(173,255,47,0.4)]",
         className
       )}
