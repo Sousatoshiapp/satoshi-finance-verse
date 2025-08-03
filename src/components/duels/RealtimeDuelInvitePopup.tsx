@@ -46,33 +46,26 @@ export function RealtimeDuelInvitePopup() {
     
     try {
       if (accepted) {
-        await supabase
-          .from('duel_invites')
-          .update({ status: 'accepted' })
-          .eq('id', currentInvite.id);
-
-        const { data: questionsData } = await supabase.functions.invoke('generate-quiz-questions', {
+        const { data: questionsData, error: questionsError } = await supabase.functions.invoke('generate-quiz-questions', {
           body: { topic: currentInvite.quiz_topic, count: 10 }
         });
 
-        if (!questionsData?.questions) {
+        if (questionsError || !questionsData?.questions) {
+          console.error('Error generating questions:', questionsError);
           throw new Error('Não foi possível gerar perguntas para o duelo');
         }
 
-        const { data: duel } = await supabase
-          .from('duels')
-          .insert({
-            invite_id: currentInvite.id,
-            player1_id: currentInvite.challenger_id,
-            player2_id: currentInvite.challenged_id,
-            quiz_topic: currentInvite.quiz_topic,
-            questions: questionsData.questions,
-            status: 'active',
-            current_turn: currentInvite.challenger_id,
-            turn_started_at: new Date().toISOString()
-          })
-          .select()
-          .single();
+        const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
+          p_challenger_id: currentInvite.challenger_id,
+          p_challenged_id: currentInvite.challenged_id,
+          p_quiz_topic: currentInvite.quiz_topic,
+          p_questions: questionsData.questions
+        });
+
+        if (duelError) {
+          console.error('Error creating duel:', duelError);
+          throw new Error('Erro ao criar duelo: ' + duelError.message);
+        }
 
         toast({
           title: t('duelInviteNotification.accepted'),
