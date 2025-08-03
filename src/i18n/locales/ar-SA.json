@@ -375,7 +375,12 @@
     "decline": "رفض",
     "waiting": "انتظار",
     "financialDuel": "مبارزة مالية",
-    "duelNow": "ابدأ المبارزة الآن"
+    "duelNow": "ابدأ المبارزة الآن",
+    "waitingForOpponent": "في انتظار الخصم",
+    "startDuel": "ابدأ",
+    "autoRedirectIn": "إعادة التوجيه خلال {{seconds}} ثانية",
+    "preparingDuel": "تحضير المبارزة...",
+    "duelReady": "المبارزة جاهزة!"
   },
   "duelInviteNotification": {
     "title": "دعوة مبارزة جديدة!",

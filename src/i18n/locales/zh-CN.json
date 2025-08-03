@@ -720,7 +720,12 @@
     "decline": "拒绝",
     "waiting": "等待中",
     "financialDuel": "金融决斗",
-    "duelNow": "立即决斗"
+    "duelNow": "立即决斗",
+    "waitingForOpponent": "等待对手",
+    "startDuel": "开始",
+    "autoRedirectIn": "{{seconds}}秒后重定向",
+    "preparingDuel": "准备决斗中...",
+    "duelReady": "决斗准备就绪！"
   },
   "duelInviteNotification": {
     "title": "新的决斗邀请！",

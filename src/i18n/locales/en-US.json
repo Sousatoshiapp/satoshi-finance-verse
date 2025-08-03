@@ -505,7 +505,12 @@
     "decline": "Decline",
     "waiting": "Waiting",
     "financialDuel": "Financial Duel",
-    "duelNow": "Duel Now"
+    "duelNow": "Duel Now",
+    "waitingForOpponent": "Waiting for opponent",
+    "startDuel": "Start",
+    "autoRedirectIn": "Redirecting in {{seconds}}s",
+    "preparingDuel": "Preparing duel...",
+    "duelReady": "Duel ready!"
   },
   "duelInviteNotification": {
     "title": "New Duel Invite!",

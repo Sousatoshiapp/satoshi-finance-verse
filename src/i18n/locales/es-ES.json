@@ -567,7 +567,12 @@
     "decline": "Rechazar",
     "waiting": "Esperando",
     "financialDuel": "Duelo Financiero",
-    "duelNow": "Duelar Ahora"
+    "duelNow": "Duelar Ahora",
+    "waitingForOpponent": "Esperando oponente",
+    "startDuel": "Iniciar",
+    "autoRedirectIn": "Redirigiendo en {{seconds}}s",
+    "preparingDuel": "Preparando duelo...",
+    "duelReady": "¡Duelo listo!"
   },
   "duelInviteNotification": {
     "title": "¡Nueva Invitación de Duelo!",
