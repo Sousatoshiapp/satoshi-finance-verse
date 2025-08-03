@@ -68,10 +68,7 @@ export function RealtimeDuelInvitePopup() {
           .update({ status: 'accepted' })
           .eq('id', currentInvite.id);
 
-        toast({
-          title: t('duelInviteNotification.accepted'),
-          description: t('duelInviteNotification.startingDuel', { challenger: currentInvite.challenger?.nickname }),
-        });
+        console.log('✅ Duel invite accepted, redirecting to /duels');
 
         if (duelId) {
           setTimeout(() => {
@@ -85,10 +82,7 @@ export function RealtimeDuelInvitePopup() {
           .update({ status: 'rejected' })
           .eq('id', currentInvite.id);
 
-        toast({
-          title: t('duelInviteNotification.declined'),
-          description: t('duelInviteNotification.inviteDeclined'),
-        });
+        console.log('❌ Duel invite declined');
       }
 
       dismissCurrentInvite();
