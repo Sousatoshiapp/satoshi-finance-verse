@@ -69,16 +69,21 @@ export default function Duels() {
           .lt('updated_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // 5 minutes ago
       }
 
-      const { data: duel } = await supabase
-        .from('duels')
-        .select('*')
-        .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
-        .eq('status', 'active')
-        .single();
+      for (let i = 0; i < 3; i++) {
+        const { data: duel } = await supabase
+          .from('duels')
+          .select('*')
+          .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
+          .eq('status', 'active')
+          .single();
 
-      if (duel) {
-        setActiveDuel(duel);
-        setCurrentView('active');
+        if (duel) {
+          setActiveDuel(duel);
+          setCurrentView('active');
+          return;
+        }
+        
+        if (i < 2) await new Promise(resolve => setTimeout(resolve, 1000));
       }
     } catch (error) {
       console.error('Error checking for active duel:', error);

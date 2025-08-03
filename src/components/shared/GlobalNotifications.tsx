@@ -1,9 +1,9 @@
-import { RealtimeDuelInvitePopup } from "@/components/duels/RealtimeDuelInvitePopup";
+import { GlobalDuelInviteHandler } from "@/components/duels/GlobalDuelInviteHandler";
 
 export function GlobalNotifications() {
   return (
     <>
-      <RealtimeDuelInvitePopup />
+      <GlobalDuelInviteHandler />
     </>
   );
 }
