@@ -103,7 +103,7 @@ BEGIN
   INSERT INTO public.duels (
     player1_id,
     player2_id,
-    topic,
+    quiz_topic,
     questions,
     status
   ) VALUES (
