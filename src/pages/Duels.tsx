@@ -133,10 +133,7 @@ export default function Duels() {
 
               if (fullInvite) {
                 setPendingInvites(prev => [...prev, fullInvite]);
-                toast({
-                  title: "🎯 Novo Convite de Duelo!",
-                  description: `${fullInvite.challenger?.nickname} te desafiou para um duelo!`,
-                });
+                console.log('🎯 New duel invite added to pending list:', fullInvite.id);
               }
             }
           }
