@@ -113,13 +113,13 @@ export function QuizBTZCard({ className = "" }: QuizBTZCardProps) {
         {/* Logo BTZ - Círculo verde com "B" - Maior */}
         <div 
           className={cn(
-            "w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center",
+            "w-6 h-6 rounded-full bg-[#adff2f] flex items-center justify-center",
             "transition-all duration-200",
             logoAnimating && "animate-bounce scale-110",
             showGlow && "shadow-[0_0_8px_rgba(173,255,47,0.6)]"
           )}
         >
-          <span className="text-black font-bold text-lg">B</span>
+          <span className="text-black font-bold text-sm">B</span>
         </div>
         
         {/* Valor BTZ com animação - Maior */}

@@ -7,7 +7,7 @@ import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-unive
 import { Swords, Clock, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { generateDuelQuestions } from "../../utils/duel-questions";
+import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";
 
 interface DuelInvite {
   id: string;
@@ -45,6 +45,7 @@ const topicsMap: Record<string, string> = {
 export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInviteModalProps) {
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
+  const { createDuel } = useDuelMatchmaking();
 
   if (!invite || !invite.challenger) return null;
 
@@ -53,16 +54,14 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
     
     try {
       if (accepted) {
-        const questions = await generateDuelQuestions(invite.quiz_topic);
+        // Use the unified duel creation logic from the hook
+        await createDuel(invite.challenger_id, invite.quiz_topic);
 
-        const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
-          p_challenger_id: invite.challenger_id,
-          p_challenged_id: invite.challenged_id,
-          p_quiz_topic: invite.quiz_topic,
-          p_questions: questions as any
-        });
-
-        if (duelError) throw duelError;
+        // Update invite status to accepted
+        await supabase
+          .from('duel_invites')
+          .update({ status: 'accepted' })
+          .eq('id', invite.id);
 
         try {
           await supabase.functions.invoke('send-social-notification', {
@@ -71,7 +70,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
               type: 'duel_accepted',
               title: 'Convite Aceito!',
               message: `Seu convite de duelo foi aceito! O duelo começou.`,
-              data: { invite_id: invite.id, duel_id: duelId }
+              data: { invite_id: invite.id }
             }
           });
         } catch (notificationError) {
@@ -88,7 +87,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
         }, 1000);
 
       } else {
-        // Reject invite - this can remain as direct update since no duel creation needed
+        // Reject invite
         await supabase
           .from('duel_invites')
           .update({ status: 'rejected' })

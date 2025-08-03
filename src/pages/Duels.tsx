@@ -101,13 +101,69 @@ export default function Duels() {
         .from('duel_invites')
         .select(`
           *,
-          challenger:profiles!challenger_id(nickname),
-          challenged:profiles!challenged_id(nickname)
+          challenger:profiles!challenger_id(nickname, level, xp, avatars(name, image_url))
         `)
         .eq('challenged_id', profile.id)
         .eq('status', 'pending');
 
       setPendingInvites(invites || []);
+
+      // Set up realtime subscription for new invites
+      const channel = supabase
+        .channel(`duel-invites-${profile.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'duel_invites',
+            filter: `challenged_id=eq.${profile.id}`,
+          },
+          async (payload) => {
+            console.log('🎯 New duel invite received:', payload);
+            if (payload.new.status === 'pending') {
+              // Fetch complete invite data with challenger info
+              const { data: fullInvite } = await supabase
+                .from('duel_invites')
+                .select(`
+                  *,
+                  challenger:profiles!challenger_id(nickname, level, xp, avatars(name, image_url))
+                `)
+                .eq('id', payload.new.id)
+                .single();
+
+              if (fullInvite) {
+                setPendingInvites(prev => [...prev, fullInvite]);
+                toast({
+                  title: "🎯 Novo Convite de Duelo!",
+                  description: `${fullInvite.challenger?.nickname} te desafiou para um duelo!`,
+                });
+              }
+            }
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'duel_invites',
+            filter: `challenged_id=eq.${profile.id}`,
+          },
+          (payload) => {
+            console.log('📊 Duel invite updated:', payload);
+            // Remove processed invites from the list
+            if (payload.new.status !== 'pending') {
+              setPendingInvites(prev => prev.filter(invite => invite.id !== payload.new.id));
+            }
+          }
+        )
+        .subscribe();
+
+      // Cleanup function
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } catch (error) {
       console.error('Error loading pending invites:', error);
     }
