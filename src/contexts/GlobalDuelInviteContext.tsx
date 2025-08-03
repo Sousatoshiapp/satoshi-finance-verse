@@ -107,7 +107,13 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
         return;
       }
 
-      console.log('✅ Complete invite data (notification only):', inviteData);
+      console.log('✅ Complete invite data:', inviteData);
+
+      if (!currentInvite) {
+        setCurrentInvite(inviteData);
+      } else {
+        setInviteQueue(prev => [...prev, inviteData]);
+      }
 
       toast({
         title: t('duelInviteNotification.title'),
