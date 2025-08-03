@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
@@ -25,7 +24,6 @@ export function RealtimeDuelInvitePopup() {
   const [countdown, setCountdown] = useState(30);
   const { toast } = useToast();
   const { t } = useI18n();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentInvite && countdown > 0) {
@@ -60,7 +58,7 @@ export function RealtimeDuelInvitePopup() {
 
         if (duelError) {
           console.error('Error creating duel with RPC:', duelError);
-          throw new Error('Erro ao criar duelo: ' + duelError.message);
+          throw new Error(`Erro ao criar duelo: ${duelError.message}`);
         }
 
         await supabase

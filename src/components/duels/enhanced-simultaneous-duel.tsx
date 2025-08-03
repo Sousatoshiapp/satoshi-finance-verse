@@ -5,14 +5,13 @@ import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
 import { Progress } from "@/components/shared/ui/progress";
-import { Trophy, Zap, ArrowRight, Clock } from "lucide-react";
+import { Trophy, Zap, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { CircularTimer } from "./circular-timer";
 import { EnhancedDuelInterface } from "./enhanced-duel-interface";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { IconSystem } from "@/components/icons/icon-system";
-import { useCustomSounds } from "@/hooks/use-custom-sounds";
 
 interface EnhancedSimultaneousDuelProps {
   duel?: any;
@@ -44,12 +43,10 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [gamePhase, setGamePhase] = useState<'playing' | 'finished'>('playing');
-  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
-  const [playerAnswers, setPlayerAnswers] = useState<any[]>([]);
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [isWaitingForOpponent] = useState(false);
+  const [playerAnswers] = useState<any[]>([]);
   const subscriptionRef = useRef<any>(null);
   const { toast } = useToast();
-  const { playCountdownSound } = useCustomSounds();
 
   const loadDuelData = async (duelId: string) => {
     try {
