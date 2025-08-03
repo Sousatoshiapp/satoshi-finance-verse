@@ -7,21 +7,30 @@ import { Send, Scan } from "lucide-react";
 import { useP2PTransfer } from "@/hooks/use-p2p-transfer";
 import { useProfile } from "@/hooks/use-profile";
 import { useI18n } from "@/hooks/use-i18n";
+import { useKYCStatus } from "@/hooks/use-kyc-status";
+import { KYCVerification } from "../kyc/KYCVerification";
 import { QRScanner } from "./QRScanner";
 
 export function SendBTZ() {
   const [receiverId, setReceiverId] = useState('');
   const [amount, setAmount] = useState('');
   const [showScanner, setShowScanner] = useState(false);
+  const [showKYCVerification, setShowKYCVerification] = useState(false);
   const { transferBTZ, transferring } = useP2PTransfer();
   const { profile } = useProfile();
   const { t } = useI18n();
+  const { checkKYCRequired } = useKYCStatus();
 
   const handleTransfer = async () => {
     if (!receiverId || !amount) return;
     
     const numAmount = parseInt(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
+      return;
+    }
+
+    if (checkKYCRequired()) {
+      setShowKYCVerification(true);
       return;
     }
     
@@ -31,6 +40,18 @@ export function SendBTZ() {
       setAmount('');
     }
   };
+
+  if (showKYCVerification) {
+    return (
+      <KYCVerification 
+        onComplete={() => {
+          setShowKYCVerification(false);
+          handleTransfer();
+        }}
+        onCancel={() => setShowKYCVerification(false)}
+      />
+    );
+  }
 
   return (
     <div className="max-w-md mx-auto space-y-6">
