@@ -35,6 +35,8 @@ export function TransferHistory() {
     if (!profile?.id) return;
 
     try {
+      console.log('🔍 Loading transfers for profile:', { id: profile.id, user_id: profile.user_id });
+      
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select('id, amount_cents, created_at, user_id, receiver_id')
@@ -42,6 +44,7 @@ export function TransferHistory() {
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false }) as any;
 
+      console.log('📤 Sent transfers query result:', { data: sentTransfers, error: sentError });
       if (sentError) throw sentError;
 
       const { data: receivedTransfers, error: receivedError } = await supabase
@@ -51,6 +54,7 @@ export function TransferHistory() {
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false }) as any;
 
+      console.log('📥 Received transfers query result:', { data: receivedTransfers, error: receivedError });
       if (receivedError) throw receivedError;
 
       const allUserIds = new Set<string>();
@@ -93,7 +97,13 @@ export function TransferHistory() {
       
       setTransfers(allTransfers);
     } catch (error) {
-      console.error('Error loading transfers:', error);
+      console.error('❌ Error loading transfers:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
     } finally {
       setLoading(false);
     }
