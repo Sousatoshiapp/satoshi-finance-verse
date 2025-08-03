@@ -38,7 +38,7 @@ export function TransferHistory() {
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select('id, amount_cents, created_at, user_id, receiver_id')
-        .eq('user_id', profile.user_id)
+        .eq('user_id', profile.id)
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
