@@ -14,6 +14,9 @@ export interface UserProfile {
   subscription_tier: 'free' | 'pro' | 'elite';
   created_at: string;
   updated_at: string;
+  kyc_status?: 'pending' | 'approved' | 'rejected';
+  persona_inquiry_id?: string;
+  kyc_completed_at?: string;
 }
 
 export function useProfile() {

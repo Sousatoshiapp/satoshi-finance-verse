@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useProfile } from '@/hooks/use-profile';
 import { useI18n } from '@/hooks/use-i18n';
+import { useKYCStatus } from '@/hooks/use-kyc-status';
 
 export interface P2PTransferResult {
   success: boolean;
@@ -17,9 +18,19 @@ export function useP2PTransfer() {
   const { toast } = useToast();
   const { profile, loadProfile } = useProfile();
   const { t } = useI18n();
+  const { checkKYCRequired } = useKYCStatus();
 
   const transferBTZ = async (receiverId: string, amount: number): Promise<P2PTransferResult> => {
     if (!profile?.id) return { success: false, error: 'Profile not found' };
+
+    if (checkKYCRequired()) {
+      toast({
+        title: t('kyc.required'),
+        description: t('kyc.subtitle'),
+        variant: "destructive",
+      });
+      return { success: false, error: 'KYC verification required' };
+    }
 
     if (profile.points < amount) {
       toast({

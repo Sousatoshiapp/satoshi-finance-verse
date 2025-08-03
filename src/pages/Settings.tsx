@@ -3,14 +3,17 @@ import { Button } from "@/components/shared/ui/button";
 import { Card } from "@/components/shared/ui/card";
 import { Input } from "@/components/shared/ui/input";
 import { Switch } from "@/components/shared/ui/switch";
+import { Badge } from "@/components/shared/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
+import { useKYCStatus } from "@/hooks/use-kyc-status";
+import { KYCVerification } from "@/components/features/kyc/KYCVerification";
 import { PasswordChangeDialog } from "@/components/settings/password-change-dialog";
 import { EmailChangeDialog } from "@/components/settings/email-change-dialog";
-import { Edit } from "lucide-react";
+import { Edit, Shield } from "lucide-react";
 
 export default function Settings() {
   const { t } = useI18n();
@@ -30,12 +33,14 @@ export default function Settings() {
 
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [changeEmailOpen, setChangeEmailOpen] = useState(false);
+  const [showKYCVerification, setShowKYCVerification] = useState(false);
 
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const { toast } = useToast();
   const { profile } = useProfile();
+  const { checkKYCRequired } = useKYCStatus();
 
   useEffect(() => {
     loadUserData();
@@ -267,6 +272,41 @@ export default function Settings() {
           </div>
         </Card>
 
+        {/* KYC Verification */}
+        <Card className="p-6">
+          <h3 className="font-bold text-foreground mb-6">{t('kyc.title')}</h3>
+          <div className="space-y-4">
+            <p className="text-muted-foreground">{t('kyc.subtitle')}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span className="text-sm">
+                  {profile?.kyc_status === 'approved' ? t('kyc.approved') : 
+                   profile?.kyc_status === 'pending' ? t('kyc.pending') : 
+                   t('kyc.required')}
+                </span>
+              </div>
+              <Badge variant={
+                profile?.kyc_status === 'approved' ? 'default' : 
+                profile?.kyc_status === 'pending' ? 'secondary' : 
+                'destructive'
+              }>
+                {profile?.kyc_status === 'approved' ? t('kyc.approved') : 
+                 profile?.kyc_status === 'pending' ? t('kyc.pending') : 
+                 t('kyc.required')}
+              </Badge>
+            </div>
+            <Button 
+              onClick={() => setShowKYCVerification(true)}
+              disabled={profile?.kyc_status === 'approved'}
+              className="w-full"
+              variant={profile?.kyc_status === 'approved' ? 'outline' : 'default'}
+            >
+              {profile?.kyc_status === 'approved' ? t('kyc.approved') : t('kyc.verifyIdentity')}
+            </Button>
+          </div>
+        </Card>
+
         {/* Notificações */}
         <Card className="p-6">
           <h3 className="font-bold text-foreground mb-6">{t('settings.notifications')}</h3>
@@ -369,6 +409,14 @@ export default function Settings() {
           onClose={() => setChangeEmailOpen(false)}
           currentEmail={userInfo.email}
         />
+
+        {/* KYC Verification Dialog */}
+        {showKYCVerification && (
+          <KYCVerification 
+            onComplete={() => setShowKYCVerification(false)}
+            onCancel={() => setShowKYCVerification(false)}
+          />
+        )}
       </div>
     </div>
   );
