@@ -115,16 +115,16 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           {/* Left side - Icon and BTZ amount */}
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-bold text-xl font-nunito">B</span>
+              <span className="text-primary-foreground font-bold text-xl">B</span>
             </div>
             
             <div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-3xl font-bold font-nunito text-foreground">
+                  <span className="text-3xl font-bold text-foreground">
                     {displayBTZ.toLocaleString()}
                   </span>
-                  <span className="text-xl text-muted-foreground font-medium font-nunito">BTZ</span>
+                  <span className="text-xl text-muted-foreground font-medium">BTZ</span>
                 </div>
                 
                 {/* Action buttons - moved to same line as BTZ */}
@@ -135,7 +135,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                       navigate('/p2p-transfer?tab=send');
                     }}
                     className="p-2 rounded-full hover:bg-muted/50 transition-colors"
-                    title="Enviar BTZ"
+                    title={t('btz.sendBTZ')}
                   >
                     <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
                   </button>
@@ -145,7 +145,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                       navigate('/p2p-transfer?tab=receive');
                     }}
                     className="p-2 rounded-full hover:bg-muted/50 transition-colors"
-                    title="Receber BTZ"
+                    title={t('btz.receiveBTZ')}
                   >
                     <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
                   </button>
@@ -154,15 +154,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               
               {analytics?.current.yield_applied_today && (
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-primary text-sm font-nunito">✓ Rendeu hoje</span>
+                  <span className="text-primary text-sm">✓ {t('btz.yieldedToday')}</span>
                 </div>
               )}
             </div>
-          </div>
-          
-          {/* Expand indicator */}
-          <div className="flex items-center">
-            <TrendingUp className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${showDetails ? 'rotate-180' : ''}`} />
           </div>
         </div>
 
@@ -175,10 +170,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 {analytics.current.time_until_next_yield_ms > 0 && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-nunito text-muted-foreground">Próximo rendimento</span>
+                      <span className="text-sm">🔥</span>
+                      <span className="text-sm text-muted-foreground">{t('btz.nextYield')}</span>
                     </div>
-                    <span className="text-sm font-nunito font-medium text-foreground">
+                    <span className="text-sm font-medium text-orange-500">
                       {formatTimeUntilYield(analytics.current.time_until_next_yield_ms)}
                     </span>
                   </div>
@@ -188,10 +183,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-nunito text-muted-foreground">BTZ Protegido</span>
+                    <span className="text-sm text-muted-foreground">{t('btz.protectedBTZ')}</span>
                   </div>
-                  <span className="text-sm font-nunito font-medium text-foreground">
-                    {getProtectionPercentage()}%
+                  <span className="text-sm font-medium text-primary">
+                    {getProtectionPercentage().toFixed(3)}%
                   </span>
                 </div>
 
@@ -200,9 +195,9 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-nunito text-muted-foreground">Próximo ganho</span>
+                      <span className="text-sm text-muted-foreground">{t('btz.nextGain')}</span>
                     </div>
-                    <span className="text-sm font-nunito font-medium text-primary">
+                    <span className="text-sm font-medium text-primary">
                       +{analytics.current.next_yield_amount.toLocaleString()} BTZ
                     </span>
                   </div>

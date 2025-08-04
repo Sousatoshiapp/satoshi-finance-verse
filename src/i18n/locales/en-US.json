@@ -638,6 +638,14 @@
       "createAccount": "Create Account"
     }
   },
+  "btz": {
+    "sendBTZ": "Send BTZ",
+    "receiveBTZ": "Receive BTZ", 
+    "yieldedToday": "Yielded today",
+    "nextYield": "Next yield",
+    "protectedBTZ": "Protected BTZ",
+    "nextGain": "Next gain"
+  },
   "errors": {
     "pageNotFound": "404 - Page not found",
     "quizNotAvailable": "Quiz not available",

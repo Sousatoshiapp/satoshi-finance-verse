@@ -613,6 +613,14 @@
       "createAccount": "Criar Conta"
     }
   },
+  "btz": {
+    "sendBTZ": "Enviar BTZ",
+    "receiveBTZ": "Receber BTZ",
+    "yieldedToday": "Rendeu hoje", 
+    "nextYield": "Próximo rendimento",
+    "protectedBTZ": "BTZ Protegido",
+    "nextGain": "Próximo ganho"
+  },
   "errors": {
     "pageNotFound": "404 - Página não encontrada",
     "quizNotAvailable": "Quiz não disponível",

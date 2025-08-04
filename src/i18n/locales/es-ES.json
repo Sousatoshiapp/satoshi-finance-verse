@@ -929,7 +929,15 @@
       "sentTo": "Enviado a {{user}}",
       "receivedFrom": "Recibido de {{user}}"
     },
-    "errors": {
+  "btz": {
+    "sendBTZ": "Enviar BTZ",
+    "receiveBTZ": "Recibir BTZ",
+    "yieldedToday": "Rindió hoy",
+    "nextYield": "Próximo rendimiento", 
+    "protectedBTZ": "BTZ Protegido",
+    "nextGain": "Próxima ganancia"
+  },
+  "errors": {
       "insufficientBalance": "BTZ insuficientes",
       "insufficientBalanceDesc": "Necesitas {{amount}} BTZ para realizar esta transferencia",
       "invalidAmount": "Cantidad inválida",
