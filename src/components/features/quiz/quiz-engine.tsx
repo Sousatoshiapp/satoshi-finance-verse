@@ -117,22 +117,12 @@ export function QuizEngine({
 
   // SIMPLIFIED - Just show timeout modal
   const handleTimeUp = async () => {
-    console.log('⏰ handleTimeUp called - time up');
-    console.log('⏰ Current showTimeoutModal state:', showTimeoutModal);
-    
     const question = questions[currentIndex];
-    if (!question) {
-      console.log('⏰ Question does not exist, returning');
-      return;
-    }
-    
-    console.log('⏰ Forcing timeout modal');
+    if (!question) return;
     
     // SIMPLIFICADO - apenas marcar resposta como incorreta e mostrar modal
     setShowAnswer(true); // Para parar o timer
     setShowTimeoutModal(true);
-    
-    console.log('⏰ Timeout modal set to true');
     
     // Processar no background
     const answeredQuestion = {
@@ -146,10 +136,6 @@ export function QuizEngine({
     await submitAnswer(question.id, false, 30);
     await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
   };
-
-  useEffect(() => {
-    console.log('🔍 showTimeoutModal changed to:', showTimeoutModal);
-  }, [showTimeoutModal]);
 
   useEffect(() => {
     if (user) {
@@ -304,18 +290,15 @@ export function QuizEngine({
     }
   };
 
-  const handleTimeoutContinue = () => {
-    console.log('⏰ Usuário clicou continuar no modal de timeout');
+   const handleTimeoutContinue = () => {
     setShowTimeoutModal(false);
     
     if (currentIndex < questions.length - 1) {
-      console.log('⏰ Avançando para próxima pergunta');
       setCurrentIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setShowAnswer(false);
       setTimeLeft(30);
     } else {
-      console.log('⏰ Quiz finalizado após timeout');
       handleQuizComplete();
     }
   };

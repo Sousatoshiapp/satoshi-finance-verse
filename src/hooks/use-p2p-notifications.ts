@@ -5,8 +5,7 @@ import confetti from 'canvas-confetti';
 import { useI18n } from '@/hooks/use-i18n';
 
 export function useP2PNotifications(
-  onTransferReceived?: (amount: number, senderNickname: string) => void,
-  onDebugEvent?: (message: string, type: 'info' | 'success' | 'error') => void
+  onTransferReceived?: (amount: number, senderNickname: string) => void
 ) {
   const { profile } = useProfile();
   const { t } = useI18n();

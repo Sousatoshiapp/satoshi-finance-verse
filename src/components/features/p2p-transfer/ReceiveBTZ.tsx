@@ -15,48 +15,21 @@ export function ReceiveBTZ() {
   const [copied, setCopied] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [latestTransfer, setLatestTransfer] = useState<{amount: number, senderNickname: string} | null>(null);
-  const [debugAlerts, setDebugAlerts] = useState<Array<{id: string, message: string, type: 'info' | 'success' | 'error', timestamp: Date}>>([]);
   const { toast } = useToast();
   const { profile } = useProfile();
   const { t } = useI18n();
-
-  const addDebugAlert = (message: string, type: 'info' | 'success' | 'error' = 'info') => {
-    const alert = {
-      id: Date.now().toString(),
-      message,
-      type,
-      timestamp: new Date()
-    };
-    setDebugAlerts(prev => [...prev.slice(-4), alert]);
-    
-    toast({
-      title: `🔍 Debug: ${type.toUpperCase()}`,
-      description: message,
-      variant: type === 'error' ? 'destructive' : 'default',
-      duration: 5000
-    });
-    
-    setTimeout(() => {
-      setDebugAlerts(prev => prev.filter(a => a.id !== alert.id));
-    }, 10000);
-  };
   
   useP2PNotifications((amount, senderNickname) => {
-    addDebugAlert(`✅ TRANSFER RECEIVED! From ${senderNickname}: ${amount} BTZ`, 'success');
-    
     setLatestTransfer({ amount, senderNickname });
     setShowNotification(true);
     
     setTimeout(() => {
       setShowNotification(false);
     }, 5000);
-  }, addDebugAlert);
+  });
 
   useEffect(() => {
     if (profile?.id) {
-      addDebugAlert(`🔍 Profile loaded: ${profile.id}`, 'info');
-      addDebugAlert(`📡 P2P subscription should be active for receiver_id: ${profile.id}`, 'info');
-      
       QRCode.toDataURL(profile.id, {
         width: 256,
         margin: 2,
@@ -65,50 +38,6 @@ export function ReceiveBTZ() {
           light: '#FFFFFF'
         }
       }).then(setQrCodeUrl).catch(console.error);
-    } else {
-      addDebugAlert('❌ No profile.id available - subscription cannot be created', 'error');
-    }
-  }, [profile?.id]);
-
-  useEffect(() => {
-    let transferCheckCount = 0;
-    const interval = setInterval(() => {
-      if (profile?.id) {
-        transferCheckCount++;
-        if (transferCheckCount % 2 === 0) {
-          addDebugAlert(`⏰ Still listening... No transfers received yet (${transferCheckCount * 30}s)`, 'info');
-        } else {
-          addDebugAlert(`📡 Subscription active for: ${profile.id.slice(0, 8)}...`, 'info');
-        }
-      }
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [profile?.id]);
-
-  useEffect(() => {
-    if (profile?.id) {
-      const checkForMissedTransfers = async () => {
-        try {
-          const { data: recentTransfers, error } = await supabase
-            .from('transactions')
-            .select('*')
-            .eq('receiver_id', profile.id)
-            .eq('transfer_type', 'p2p')
-            .gte('created_at', new Date(Date.now() - 60000).toISOString())
-            .order('created_at', { ascending: false });
-
-          if (error) {
-            addDebugAlert(`❌ Error checking for missed transfers: ${error.message}`, 'error');
-          } else if (recentTransfers && recentTransfers.length > 0) {
-            addDebugAlert(`🔍 Found ${recentTransfers.length} recent transfer(s) in database`, 'info');
-          }
-        } catch (error) {
-        }
-      };
-
-      const missedTransferInterval = setInterval(checkForMissedTransfers, 15000);
-      return () => clearInterval(missedTransferInterval);
     }
   }, [profile?.id]);
 
@@ -175,35 +104,6 @@ export function ReceiveBTZ() {
         </CardContent>
       </Card>
 
-      {debugAlerts.length > 0 && (
-        <Card className="bg-blue-50 border-blue-200">
-          <CardHeader>
-            <CardTitle className="text-sm text-blue-800 flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
-              Debug Status (Mobile Testing)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {debugAlerts.map((alert) => (
-              <div key={alert.id} className={`p-2 rounded text-xs ${
-                alert.type === 'success' ? 'bg-green-100 text-green-800' :
-                alert.type === 'error' ? 'bg-red-100 text-red-800' :
-                'bg-blue-100 text-blue-800'
-              }`}>
-                <div className="flex items-center gap-2">
-                  {alert.type === 'success' ? <CheckCircle className="h-3 w-3" /> :
-                   alert.type === 'error' ? <AlertCircle className="h-3 w-3" /> :
-                   <Clock className="h-3 w-3" />}
-                  <span className="flex-1">{alert.message}</span>
-                  <span className="text-xs opacity-70">
-                    {alert.timestamp.toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
 
       <AnimatePresence>
         {showNotification && latestTransfer && (

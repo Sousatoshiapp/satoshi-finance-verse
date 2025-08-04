@@ -108,8 +108,19 @@ export const useProximityDetection = () => {
 
   const updateLocationInDatabase = async (lat: number, lng: number) => {
     try {
-      // Temporarily disabled - requires user_locations table
-      console.log('Location update: user_locations table not available');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) return;
+
+      // For now, just log the location update since we don't have user_locations table
+      console.log(`Location updated for user ${profile.id}: ${lat}, ${lng}`);
     } catch (error) {
       console.error('Erro ao atualizar localização:', error);
     }
@@ -117,10 +128,20 @@ export const useProximityDetection = () => {
 
   const findNearbyPlayers = async (userLat: number, userLng: number) => {
     try {
-      // Temporarily disabled - requires user_locations table
-      console.log('Find nearby players: user_locations table not available');
-      setNearbyPlayers([]);
-      return [];
+      // For now, return mock data for testing
+      const mockPlayers: NearbyPlayer[] = [
+        {
+          id: 'mock-1',
+          user_id: 'mock-user-1',
+          nickname: 'Player1',
+          latitude: userLat + 0.001,
+          longitude: userLng + 0.001,
+          distance: 150
+        }
+      ];
+      
+      setNearbyPlayers(mockPlayers);
+      return mockPlayers;
     } catch (error) {
       console.error('Erro ao buscar jogadores próximos:', error);
       return [];
