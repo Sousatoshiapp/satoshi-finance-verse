@@ -106,7 +106,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative w-full ${className}`}>
       <div 
         className={`
           bg-transparent backdrop-blur-sm 
@@ -114,6 +114,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
           ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
           cursor-pointer
+          w-full
         `}
         onClick={() => setShowDetails(!showDetails)}
       >

@@ -343,7 +343,7 @@ export default function Dashboard() {
             </div>
 
             {/* BTZ Counter com trend arrows */}
-            <div className="flex justify-center mb-4">
+            <div className="w-full px-0">
               <BTZCounter />
             </div>
           </div>
