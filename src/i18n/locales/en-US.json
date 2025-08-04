@@ -238,10 +238,6 @@
     "activeAvatar": "Active Avatar",
     "message": "Message",
     "anonymousUser": "Anonymous User",
-    "header": {
-      "profile": "Profile",
-      "settings": "Settings"
-    },
     "stats": {
       "level": "Level",
       "beetz": "Beetz",
@@ -256,13 +252,7 @@
       "satoshiElite": "Satoshi Elite"
     },
     "loading": "Loading profile...",
-    "notFound": "User not found",
-    "achievements": {
-      "tournamentsWon": "Tournaments Won",
-      "quizzesCompleted": "Quizzes Completed",
-      "perfectScore": "Perfect Score",
-      "socialInteractions": "Social Interactions"
-    }
+    "notFound": "User not found"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -482,21 +472,6 @@
     "pending": "Verification in progress...",
     "approved": "Identity verified",
     "rejected": "Verification rejected"
-  }
-    },
-    "buttons": {
-      "saving": "Saving...",
-      "saveSettings": "💾 Save Settings",
-      "logout": "🚪 Logout"
-    },
-    "app": {
-      "version": "version 1.0.0",
-      "description": "A complete educational quiz platform about Bitcoin and cryptocurrencies"
-    },
-    "contact": {
-      "email": "Email: suporte@sousatoshi.com",
-      "telegram": "Telegram: @satoshisupport"
-    }
   },
   "missions": {
     "dailyMissions": "Daily Missions",
@@ -676,325 +651,6 @@
     "noQuestionsAvailable": "This district does not have questions available yet",
     "accessDenied": "Access Denied"
   },
-  "auth": {
-    "loginError": "Login Error",
-    "invalidCredentials": "Invalid email or password. Please check your credentials.",
-    "emailNotConfirmed": "Email not confirmed",
-    "emailNotConfirmedDescription": "Please check your email and click the confirmation link before logging in.",
-    "loginSuccess": "Login successful!",
-    "loginSuccessDescription": "Welcome back to Satoshi City.",
-    "signupError": "Signup Error",
-    "userAlreadyExists": "User already exists",
-    "userAlreadyExistsDescription": "This account is already registered. Please login or use another email.",
-    "signupSuccess": "Registration successful!",
-    "signupSuccessDescription": "Please check your email to activate your account",
-    "welcomeMessage": "Welcome!",
-    "accountCreatedSuccess": "Account created successfully",
-    "emailRequired": "Email required",
-    "emailRequiredDescription": "Please enter your email to receive the reset link.",
-    "emailSent": "Email sent!",
-    "emailSentDescription": "Please check your email to reset your password.",
-    "unexpectedError": "Unexpected error",
-    "unexpectedErrorDescription": "Something went wrong. Please try again.",
-    "emailRequiredResend": "Email required",
-    "emailRequiredResendDescription": "Please enter your email to resend confirmation.",
-    "emailResent": "Email resent!",
-    "emailResentDescription": "Please check your email to confirm your account.",
-    "verifyEmail": "Verify your email",
-    "verificationSent": "We sent a verification link to:",
-    "clickLinkToActivate": "Click the link in the email to activate your account and login to the app.",
-    "resendEmail": "Resend email",
-    "resending": "Resending...",
-    "checkSpamFolder": "Didn't receive the email? Check your spam or junk folder.",
-    "emailResentSuccess": "Email resent",
-    "emailResentSuccessDescription": "Please check your inbox again",
-    "resendError": "Error",
-    "resendErrorDescription": "Could not resend email"
-  },
-  "settings": {
-    "emailChange": {
-      "title": "Change Email",
-      "confirmTitle": "Confirm Change",
-      "currentEmail": "Current Email",
-      "newEmail": "New Email",
-      "confirmEmail": "Confirm New Email",
-      "newEmailPlaceholder": "Enter new email",
-      "confirmEmailPlaceholder": "Confirm new email",
-      "emailMismatch": "Emails do not match",
-      "invalidEmail": "Please enter a valid email",
-      "sameEmail": "New email must be different from current",
-      "success": "Success",
-      "successDescription": "Change request sent! Check email {{email}} to confirm the change.",
-      "error": "Error",
-      "errorDescription": "Could not change email",
-      "confirmQuestion": "Are you sure you want to change your email from:",
-      "to": "to:",
-      "confirmationNote": "A confirmation email will be sent to the new address.",
-      "back": "Back",
-      "continue": "Continue",
-      "confirmChange": "Confirm Change",
-      "sending": "Sending..."
-    },
-    "passwordChange": {
-      "title": "Change Password",
-      "currentPassword": "Current Password",
-      "newPassword": "New Password",
-      "confirmPassword": "Confirm New Password",
-      "currentPasswordPlaceholder": "Enter your current password",
-      "newPasswordPlaceholder": "Enter new password",
-      "confirmPasswordPlaceholder": "Confirm new password",
-      "passwordMismatch": "Passwords do not match",
-      "passwordTooShort": "New password must be at least 6 characters",
-      "success": "Success",
-      "successDescription": "Password changed successfully! A confirmation email has been sent.",
-      "error": "Error",
-      "errorDescription": "Could not change password",
-      "changing": "Changing...",
-      "changePassword": "Change Password",
-      "back": "Back"
-    }
-  },
-  "admin": {
-    "systemSettings": "System Settings",
-    "manageAllSettings": "Manage all platform settings",
-    "saving": "Saving...",
-    "saveAll": "Save All",
-    "systemOnline": "System Online",
-    "activeUsers": "Active Users",
-    "storageUsage": "Storage Usage",
-    "uptime": "Uptime",
-    "now": "Now",
-    "capacity": "Capacity",
-    "adminPanel": "Admin Panel",
-    "questionBank": "Question Bank",
-    "aiGeneration": "AI Generation",
-    "systemConfiguration": "System Settings",
-    "systemAdjustments": "System adjustments and parameters",
-    "systemManagement": "Question system and settings management",
-    "sponsorPanel": "Sponsor Panel",
-    "manageSponsoredDistricts": "Manage your sponsored districts and analyze performance",
-    "fullAdminAccess": "Full Admin Access",
-    "totalUsers": "Total Users",
-    "storeRevenue": "Store Revenue",
-    "events": "Events",
-    "engagement": "Engagement",
-    "userGrowth": "User Growth",
-    "storeManagement": "Store Management",
-    "eventsPromotions": "Events and Promotions",
-    "userManagement": "User Management",
-    "interfaceInDevelopment": "Interface under development",
-    "storeInterfaceInDevelopment": "Store management interface under development",
-    "eventsInterfaceInDevelopment": "Event management interface under development",
-    "userInterfaceInDevelopment": "User management interface under development",
-    "chartInDevelopment": "Chart under development",
-    "revenueChartInDevelopment": "Revenue chart under development",
-    "growthChartInDevelopment": "Growth chart under development",
-    "lookForSection": "Look for the \"Sponsor Access Management\" section",
-    "noSponsorAccess": "You do not have administrative access to any sponsored districts",
-    "configureAccess": "To configure sponsor admin access, go to"
-  },
-  "districtQuiz": {
-    "backToDistrict": "Back to District",
-    "prepareToTest": "Get ready to test your knowledge!",
-    "questions": "questions",
-    "secondsPerQuestion": "seconds per question",
-    "xpPerCorrect": "XP per correct answer",
-    "startQuiz": "Start Quiz",
-    "questionXofY": "Question {{current}} of {{total}}",
-    "next": "Next",
-    "finish": "Finish",
-    "quizCompleted": "Quiz Completed!",
-    "accuracy": "accuracy",
-    "xpGained": "XP Gained",
-    "tryAgain": "Try Again",
-    "testYourKnowledge": "Test your knowledge about {{theme}}",
-    "perQuestion": "Per question",
-    "excellent": "Excellent!",
-    "good": "Good!",
-    "keepPracticing": "Keep practicing!",
-    "correctAnswers": "Correct",
-    "incorrectAnswers": "Incorrect",
-    "quizCompleted2": "Quiz Completed!",
-    "youGained": "You gained {{xp}} XP! Score: {{score}}/{{total}}"
-  },
-  "btz": {
-    "yieldedToday": "Yielded today",
-    "nextYield": "Next yield",
-    "protectedBTZ": "Protected BTZ",
-    "streak": "Streak",
-    "next": "Next",
-    "days": "days",
-    "nextIn": "Next in"
-  },
-  "common": {
-    "loading": "Loading",
-    "accessDenied": "Access Denied",
-    "noSponsorAccess": "You do not have administrative access to any sponsored districts",
-    "configureAccess": "To configure sponsor admin access, go to",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "level": "Level"
-  },
-  "satoshiCity": {
-    "welcome": "Welcome to the city of financial future.",
-    "instructions": {
-      "mobile": "Tap on districts to live or explore.",
-      "desktop": "Click on districts to explore knowledge."
-    },
-    "badges": {
-      "activeDistricts": "7 Active Districts",
-      "neuralSystem": "Neural System Active"
-    },
-    "buttons": {
-      "3dDevelopment": "3D in Development"
-    },
-    "residence": {
-      "home": "Home",
-      "current": "This is your current residence",
-      "liveHere": "Live Here"
-    },
-    "modal": {
-      "liveIn": "Live in",
-      "confirmResidence": "Do you want to establish your residence in {{districtName}} district? You will be able to participate in exclusive activities and represent this district."
-    },
-    "transition": {
-      "leaving": "Leaving {{location}}",
-      "traveling": "Traveling to",
-      "arriving": "Arriving at {{location}}"
-    }
-  },
-  "social": {
-    "tabs": {
-      "feed": "Feed",
-      "search": "Search",
-      "challenges": "Challenges",
-      "ranks": "Ranks",
-      "following": "Following",
-      "chat": "Chat"
-    },
-    "placeholders": {
-      "shareOpinion": "Share your opinion about the market...",
-      "searchUsers": "Search users by nickname..."
-    },
-    "buttons": {
-      "publish": "Publish",
-      "publishing": "Publishing...",
-      "share": "Share"
-    },
-    "messages": {
-      "beFirstToPost": "Be the first to post!",
-      "searchingUsers": "Searching users...",
-      "comingSoon": "Coming soon"
-    },
-    "profile": {
-      "level": "Level",
-      "followers": "followers"
-    },
-    "chat": {
-      "typeMessage": "Add a comment..."
-    },
-    "shareOpinion": "Share your trading experiences and connect with other investors"
-  },
-  "district": {
-    "selectDistrict": "Select a district",
-    "enterDistrict": "Enter District",
-    "residents": "Residents",
-    "power": "Power",
-    "ranking": "Ranking",
-    "battles": "Battles",
-    "victories": "Victories",
-    "winRate": "Win Rate",
-    "powers": {
-      "title": "District Powers",
-      "average": "Average",
-      "monetary": "Monetary Power",
-      "tech": "Tech Power",
-      "military": "Military Power",
-      "energy": "Energy Power",
-      "commercial": "Commercial Power",
-      "social": "Social Power",
-      "monetaryDesc": "Represents financial strength and investment capacity of the district",
-      "techDesc": "Level of innovation and technological development",
-      "militaryDesc": "Defense capability and strategy in duels",
-      "energyDesc": "Sustainability and energy efficiency",
-      "commercialDesc": "Market strength and commercial capacity",
-      "socialDesc": "Social cohesion and community engagement",
-      "helpText": "Powers increase through specific actions: quizzes, duels, missions and contributions",
-      "updated": "Power updated!",
-      "updatedDesc": "The district gained power with your action.",
-      "updateError": "Error updating power"
-    }
-  },
-  "store": {
-    "header": {
-      "marketplace": "Marketplace",
-      "subtitle": "Avatars, boosts and much more"
-    },
-    "premium": {
-      "title": "Premium Plans",
-      "subtitle": "Accelerate your progress",
-      "viewPlans": "View Plans",
-      "duels": "Duels",
-      "xpBoost": "XP Boost",
-      "beetzPerMonth": "Beetz/month"
-    },
-    "tabs": {
-      "avatars": "Avatars",
-      "skins": "Skins",
-      "boosts": "Boosts",
-      "accessories": "Accessories",
-      "lives": "Lives",
-      "beetz": "Beetz"
-    },
-    "buttons": {
-      "owns": "Owns",
-      "buy": "Buy",
-      "noBeetz": "No Beetz",
-      "viewDetails": "View Details"
-    },
-    "lives": {
-      "title": "Lives & Protection",
-      "subtitle": "Keep your streak and continue playing",
-      "marketplace": "Lives Marketplace"
-    },
-    "beetzPackages": {
-      "title": "Beetz Packages",
-      "subtitle": "Buy Beetz with real money via Stripe"
-    },
-    "security": {
-      "title": "Secure Payment",
-      "subtitle": "Processed via Stripe with maximum security"
-    },
-    "loading": "Loading marketplace...",
-    "error": {
-      "title": "Error",
-      "message": "Could not load the store"
-    },
-    "livesProtection": "Lives & Protection",
-    "maintainStreak": "Keep your streak and continue playing",
-    "marketplaceLives": "Lives Marketplace",
-    "buyLivesKeepStreak": "Buy lives to keep your streak",
-    "savesStreak": "Saves Streak",
-    "multipliesBTZ": "Multiplies BTZ",
-    "viewLives": "View Lives",
-    "streakProtection": "Streak Protection",
-    "useLifeKeepStreak": "Use a life to keep your streak active",
-    "keepMultipliers": "Keep Multipliers",
-    "preserveBTZMultipliers": "Preserve your BTZ multipliers",
-    "continueWithoutStop": "Continue Without Stop",
-    "dontLoseMomentum": "Don't lose the momentum of your progress",
-    "beetzPackages": "Beetz Packages",
-    "buyBeetzReal": "Buy Beetz with real money via Stripe",
-    "buy": "Buy",
-    "securePayment": "Secure Payment",
-    "processedStripe": "Processed via Stripe with maximum security",
-    "buyBeetz": "Buy Beetz",
-    "notEnoughBeetz": "You don't have enough Beetz for this purchase",
-    "basicPackage": "Basic Package",
-    "popularPackage": "Popular Package",
-    "premiumPackage": "Premium Package",
-    "supremePackage": "Supreme Package"
-  },
   "p2p": {
     "title": "P2P Transfers",
     "subtitle": "Send and receive BTZ with other users",
@@ -1051,13 +707,12 @@
       "transferCompleteDesc": "{{amount}} BTZ sent to {{receiver}}"
     }
   },
-  "kyc": {
-    "title": "Identity Verification",
-    "subtitle": "Verification required for P2P transfers",
-    "verifyIdentity": "Verify Identity",
-    "required": "KYC required to continue",
-    "pending": "Verification in progress...",
-    "approved": "Identity verified",
-    "rejected": "Verification rejected"
+  "notifications": {
+    "p2p": {
+      "received": {
+        "title": "Wow! BTZ Received! 🎉",
+        "body": "Wow, You just received {{amount}} BTZ from {{sender}}!"
+      }
+    }
   }
 }
