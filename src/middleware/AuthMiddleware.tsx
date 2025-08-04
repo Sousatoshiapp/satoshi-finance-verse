@@ -17,13 +17,31 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
   const { user, session, loading } = useAuth();
   const location = useLocation();
 
+  console.log('🛡️ AuthMiddleware called:', {
+    currentPath: location.pathname,
+    currentHash: location.hash,
+    requiresAuth,
+    adminOnly,
+    hasUser: !!user,
+    hasSession: !!session,
+    loading,
+    fullUrl: window.location.href
+  });
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
+  // Always check for auto-redirect on root path, regardless of requiresAuth
+  const hasValidAuth = (user && session) || localStorage.getItem('satoshi_user');
+  const isOnRootPath = location.pathname === '/' || location.pathname === '' || window.location.hash === '#';
+  
+  if (hasValidAuth && isOnRootPath) {
+    console.log('🚀 AuthMiddleware: Auto-redirecting authenticated user from root to dashboard');
+    return <Navigate to="/dashboard" replace />;
+  }
+
   if (requiresAuth) {
-    const hasValidAuth = (user && session) || localStorage.getItem('satoshi_user');
-    
     console.log('🔍 AuthMiddleware Check:', { 
       hasUser: !!user, 
       hasSession: !!session, 
@@ -41,8 +59,8 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
     }
     
     // If user has valid auth but is on welcome/auth pages, redirect to dashboard
-    const publicPages = ['/welcome', '/auth', '/', '/#'];
-    const isOnPublicPage = publicPages.includes(location.pathname) || location.pathname === '/' || window.location.hash === '#';
+    const publicPages = ['/welcome', '/auth'];
+    const isOnPublicPage = publicPages.includes(location.pathname);
     
     if (hasValidAuth && isOnPublicPage) {
       console.log('✅ AuthMiddleware: Valid auth detected on public page - redirecting to dashboard', {

@@ -15,6 +15,18 @@ export function RouteWrapper({
   showNavbar = true,
   adminOnly = false
 }: RouteWrapperProps) {
+  const currentPath = window.location.pathname;
+  const currentHash = window.location.hash;
+  
+  console.log('🎯 RouteWrapper:', {
+    currentPath,
+    currentHash,
+    requiresAuth,
+    showNavbar,
+    adminOnly,
+    fullUrl: window.location.href
+  });
+
   return (
     <AuthMiddleware requiresAuth={requiresAuth} adminOnly={adminOnly}>
       {children}
