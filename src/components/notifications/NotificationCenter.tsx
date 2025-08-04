@@ -143,18 +143,22 @@ export function NotificationCenter() {
           .single();
 
         if (profile) {
-          await supabase
-            .from('push_notification_settings')
-            .upsert({
-              user_id: profile.id,
-              endpoint: subscription.endpoint,
-              p256dh_key: subscription.getKey('p256dh') ? 
-                btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))) : null,
-              auth_key: subscription.getKey('auth') ? 
-                btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!))) : null,
-              enabled: true,
-              user_agent: navigator.userAgent
-            });
+          try {
+            await supabase
+              .from('push_notification_settings')
+              .upsert({
+                user_id: profile.id,
+                endpoint: subscription.endpoint,
+                p256dh_key: subscription.getKey('p256dh') ? 
+                  btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))) : null,
+                auth_key: subscription.getKey('auth') ? 
+                  btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!))) : null,
+                enabled: true,
+                user_agent: navigator.userAgent
+              });
+          } catch (dbError) {
+            console.warn('Failed to save push subscription to database:', dbError);
+          }
         }
       }
     } catch (error) {
@@ -217,7 +221,14 @@ export function NotificationCenter() {
         .eq('user_id', profile.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) {
+        if (error.code === 'PGRST116') {
+          console.log('No push notification settings found for user');
+        } else {
+          console.warn('Failed to load push notification settings:', error.message, error.code);
+        }
+        return;
+      }
 
       // Update settings based on database preferences
       if (data) {
@@ -225,7 +236,7 @@ export function NotificationCenter() {
         console.log('Loaded notification settings:', data);
       }
     } catch (error) {
-      console.error('Error loading notification settings:', error);
+      console.warn('Error loading notification settings:', error);
     }
   };
 
