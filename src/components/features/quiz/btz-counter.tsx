@@ -107,55 +107,124 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="bg-card/80 backdrop-blur-sm border border-primary/30 rounded-xl p-4 transition-all duration-300 hover:border-primary/50">
+      <div 
+        className="bg-card/80 backdrop-blur-sm border border-primary/30 rounded-xl p-4 transition-all duration-300 hover:border-primary/50 cursor-pointer"
+        onClick={() => setShowDetails(!showDetails)}
+      >
         <div className="flex items-center justify-between">
           {/* Left side - Icon and BTZ amount */}
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-bold text-xl">B</span>
+              <span className="text-primary-foreground font-bold text-xl font-nunito">B</span>
             </div>
             
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold font-nunito text-foreground">
-                  {displayBTZ.toLocaleString()}
-                </span>
-                <span className="text-xl text-muted-foreground font-medium font-nunito">BTZ</span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold font-nunito text-foreground">
+                    {displayBTZ.toLocaleString()}
+                  </span>
+                  <span className="text-xl text-muted-foreground font-medium font-nunito">BTZ</span>
+                </div>
+                
+                {/* Action buttons - moved to same line as BTZ */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate('/p2p-transfer?tab=send');
+                    }}
+                    className="p-2 rounded-full hover:bg-muted/50 transition-colors"
+                    title="Enviar BTZ"
+                  >
+                    <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate('/p2p-transfer?tab=receive');
+                    }}
+                    className="p-2 rounded-full hover:bg-muted/50 transition-colors"
+                    title="Receber BTZ"
+                  >
+                    <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                  </button>
+                </div>
               </div>
               
               {analytics?.current.yield_applied_today && (
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-primary text-sm">✓ Rendeu hoje</span>
+                  <span className="text-primary text-sm font-nunito">✓ Rendeu hoje</span>
                 </div>
               )}
             </div>
           </div>
           
-          {/* Right side - Action buttons */}
-          <div className="flex gap-2">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate('/p2p-transfer?tab=send');
-              }}
-              className="p-2 rounded-full hover:bg-muted/50 transition-colors"
-              title="Enviar BTZ"
-            >
-              <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate('/p2p-transfer?tab=receive');
-              }}
-              className="p-2 rounded-full hover:bg-muted/50 transition-colors"
-              title="Receber BTZ"
-            >
-              <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-            </button>
+          {/* Expand indicator */}
+          <div className="flex items-center">
+            <TrendingUp className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${showDetails ? 'rotate-180' : ''}`} />
+          </div>
+        </div>
+
+        {/* Expanded content */}
+        <div className={`overflow-hidden transition-all duration-300 ${showDetails ? 'max-h-40 mt-4' : 'max-h-0'}`}>
+          <div className="border-t border-border pt-4 space-y-3">
+            {analytics && (
+              <>
+                {/* Next yield info */}
+                {analytics.current.time_until_next_yield_ms > 0 && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-nunito text-muted-foreground">Próximo rendimento</span>
+                    </div>
+                    <span className="text-sm font-nunito font-medium text-foreground">
+                      {formatTimeUntilYield(analytics.current.time_until_next_yield_ms)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Protection percentage */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-nunito text-muted-foreground">BTZ Protegido</span>
+                  </div>
+                  <span className="text-sm font-nunito font-medium text-foreground">
+                    {getProtectionPercentage()}%
+                  </span>
+                </div>
+
+                {/* Next yield amount */}
+                {analytics.current.next_yield_amount > 0 && (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-nunito text-muted-foreground">Próximo ganho</span>
+                    </div>
+                    <span className="text-sm font-nunito font-medium text-primary">
+                      +{analytics.current.next_yield_amount.toLocaleString()} BTZ
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Trend animation - outside card to avoid click conflicts */}
+      {showTrend && (
+        <div className="absolute -top-2 -right-2 pointer-events-none">
+          <div className="animate-bounce">
+            {currentBTZ > previousBTZ ? (
+              <TrendingUp className="w-6 h-6 text-primary" />
+            ) : (
+              <TrendingDown className="w-6 h-6 text-destructive" />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
