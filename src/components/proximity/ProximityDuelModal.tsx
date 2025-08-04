@@ -7,6 +7,7 @@ import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-unive
 import { MapPin, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface NearbyPlayer {
   id: string;
@@ -29,6 +30,7 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
   onChallengeSent
 }) => {
   const { toast } = useToast();
+  const { t } = useI18n();
 
   const handleChallenge = async () => {
     if (!player) return;
@@ -93,8 +95,8 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
     } catch (error) {
       console.error('Erro ao enviar desafio:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível enviar o desafio. Tente novamente.",
+        title: t("proximityDetection.modal.errorTitle"),
+        description: t("proximityDetection.modal.errorDescription"),
         variant: "destructive"
       });
     }
@@ -108,7 +110,7 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-primary" />
-            Jogador Próximo Detectado
+            {t("proximityDetection.modal.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -117,10 +119,10 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
             <div className="flex items-center justify-between">
               <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200">
                 <MapPin className="h-3 w-3 mr-1" />
-                {Math.round(player.distance)}m de distância
+                {t("proximityDetection.modal.distanceAway", { distance: Math.round(player.distance) })}
               </Badge>
               <Badge variant="secondary">
-                Duelo de Proximidade
+                {t("proximityDetection.modal.proximityDuel")}
               </Badge>
             </div>
           </CardHeader>
@@ -139,7 +141,7 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
                   @{player.nickname}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  Jogador próximo a você
+                  {t("proximityDetection.modal.nearbyPlayer")}
                 </div>
               </div>
             </div>
@@ -147,20 +149,20 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
             {/* Challenge Details */}
             <div className="space-y-2 text-center">
               <p className="text-lg font-semibold text-foreground">
-                <span className="text-primary">@{player.nickname}</span> está perto de você! 🎯
+                {t("proximityDetection.modal.challengeText", { nickname: player.nickname })}
               </p>
               
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                 <Target className="h-4 w-4" />
-                <span>Tópico: Finanças Gerais</span>
+                <span>{t("proximityDetection.modal.topicLabel")}</span>
               </div>
               
               <div className="text-sm text-muted-foreground">
-                Desafiar para um duelo valendo BTZ?
+                {t("proximityDetection.modal.challengeQuestion")}
               </div>
               
               <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
-                10 perguntas • 30 segundos cada • Duelo simultâneo
+                {t("proximityDetection.modal.duelDetails")}
               </div>
             </div>
 
@@ -171,13 +173,13 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
                 onClick={onClose}
                 className="border-muted-foreground/50 text-muted-foreground hover:bg-muted/10"
               >
-                ❌ Ignorar
+                {t("proximityDetection.modal.ignoreButton")}
               </Button>
               <Button
                 onClick={handleChallenge}
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
-                ⚔️ Desafiar
+                {t("proximityDetection.modal.challengeButton")}
               </Button>
             </div>
           </CardContent>

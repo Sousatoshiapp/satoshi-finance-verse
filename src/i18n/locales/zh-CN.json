@@ -166,6 +166,40 @@
       }
     }
   },
+  "proximityDetection": {
+    "title": "邻近检测",
+    "location": "位置",
+    "permissionGranted": "已授权",
+    "permissionDenied": "已拒绝",
+    "permissionPending": "待定",
+    "activateDetection": "激活检测",
+    "visibleToOthers": "对他人可见",
+    "detectionStatus": "检测状态",
+    "playersFound": "发现{{count}}名附近玩家",
+    "searchingPlayers": "正在搜索附近玩家...",
+    "additionalPlayers": "+{{count}}名其他玩家",
+    "infoDetectionRange": "• 检测500米半径内的玩家",
+    "infoUpdateFrequency": "• 每30秒自动更新",
+    "infoNotificationLimit": "• 每个玩家每2小时限制一次通知",
+    "permissionDeniedTitle": "权限被拒绝",
+    "permissionDeniedDescription": "要使用邻近检测，请在设备设置中允许位置访问。",
+    "challengeSentTitle": "挑战已发送！🎯",
+    "challengeSentDescription": "您的挑战已发送给@{{nickname}}。等待回应！",
+    "modal": {
+      "title": "检测到附近玩家",
+      "distanceAway": "距离{{distance}}米",
+      "proximityDuel": "邻近决斗",
+      "nearbyPlayer": "您附近的玩家",
+      "challengeText": "@{{nickname}}就在您附近！🎯",
+      "topicLabel": "主题：一般金融",
+      "challengeQuestion": "挑战BTZ决斗？",
+      "duelDetails": "10个问题 • 每个30秒 • 同时决斗",
+      "ignoreButton": "❌ 忽略",
+      "challengeButton": "⚔️ 挑战",
+      "errorTitle": "错误",
+      "errorDescription": "无法发送挑战。请重试。"
+    }
+  },
   "navigation": {
     "dashboard": "仪表板",
     "quiz": "测验",

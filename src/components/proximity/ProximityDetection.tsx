@@ -6,6 +6,7 @@ import { MapPin, Users, Eye, EyeOff, Radar } from "lucide-react";
 import { useProximityDetection } from '@/hooks/useProximityDetection';
 import { ProximityDuelModal } from './ProximityDuelModal';
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export const ProximityDetection: React.FC = () => {
   const {
@@ -23,6 +24,7 @@ export const ProximityDetection: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null);
   const { toast } = useToast();
+  const { t } = useI18n();
 
   useEffect(() => {
     const checkForNewPlayers = async () => {
@@ -50,8 +52,8 @@ export const ProximityDetection: React.FC = () => {
       await startProximityDetection();
       if (permissionStatus === 'denied') {
         toast({
-          title: "Permissão Negada",
-          description: "Para usar a detecção de proximidade, permita o acesso à localização nas configurações do seu dispositivo.",
+          title: t("proximityDetection.permissionDeniedTitle"),
+          description: t("proximityDetection.permissionDeniedDescription"),
           variant: "destructive"
         });
       }
@@ -64,8 +66,8 @@ export const ProximityDetection: React.FC = () => {
 
   const handleChallengeSent = () => {
     toast({
-      title: "Desafio Enviado! 🎯",
-      description: `Seu desafio foi enviado para @${selectedPlayer?.nickname}. Aguarde a resposta!`,
+      title: t("proximityDetection.challengeSentTitle"),
+      description: t("proximityDetection.challengeSentDescription", { nickname: selectedPlayer?.nickname }),
     });
   };
 
@@ -79,9 +81,9 @@ export const ProximityDetection: React.FC = () => {
 
   const getPermissionStatusText = () => {
     switch (permissionStatus) {
-      case 'granted': return 'Permitida';
-      case 'denied': return 'Negada';
-      default: return 'Pendente';
+      case 'granted': return t("proximityDetection.permissionGranted");
+      case 'denied': return t("proximityDetection.permissionDenied");
+      default: return t("proximityDetection.permissionPending");
     }
   };
 
@@ -91,12 +93,12 @@ export const ProximityDetection: React.FC = () => {
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Radar className="h-5 w-5 text-primary" />
-            Detecção de Proximidade
+            {t("proximityDetection.title")}
           </CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className={getPermissionStatusColor()}>
               <MapPin className="h-3 w-3 mr-1" />
-              Localização: {getPermissionStatusText()}
+              {t("proximityDetection.location")}: {getPermissionStatusText()}
             </Badge>
           </div>
         </CardHeader>
@@ -106,7 +108,7 @@ export const ProximityDetection: React.FC = () => {
           <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
             <div className="flex items-center gap-2">
               <Radar className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">Ativar Detecção</span>
+              <span className="font-medium">{t("proximityDetection.activateDetection")}</span>
             </div>
             <Switch
               checked={isLocationEnabled}
@@ -123,7 +125,7 @@ export const ProximityDetection: React.FC = () => {
               ) : (
                 <EyeOff className="h-4 w-4 text-muted-foreground" />
               )}
-              <span className="font-medium">Visível para Outros</span>
+              <span className="font-medium">{t("proximityDetection.visibleToOthers")}</span>
             </div>
             <Switch
               checked={isVisible}
@@ -136,12 +138,12 @@ export const ProximityDetection: React.FC = () => {
             <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
               <div className="flex items-center gap-2 mb-2">
                 <Users className="h-4 w-4 text-primary" />
-                <span className="font-medium text-primary">Status da Detecção</span>
+                <span className="font-medium text-primary">{t("proximityDetection.detectionStatus")}</span>
               </div>
               <div className="text-sm text-muted-foreground">
                 {nearbyPlayers.length > 0 
-                  ? `${nearbyPlayers.length} jogador(es) próximo(s) encontrado(s)`
-                  : 'Procurando jogadores próximos...'
+                  ? t("proximityDetection.playersFound", { count: nearbyPlayers.length })
+                  : t("proximityDetection.searchingPlayers")
                 }
               </div>
               {nearbyPlayers.length > 0 && (
@@ -156,7 +158,7 @@ export const ProximityDetection: React.FC = () => {
                   ))}
                   {nearbyPlayers.length > 3 && (
                     <div className="text-xs text-muted-foreground">
-                      +{nearbyPlayers.length - 3} outros jogadores
+                      {t("proximityDetection.additionalPlayers", { count: nearbyPlayers.length - 3 })}
                     </div>
                   )}
                 </div>
@@ -166,9 +168,9 @@ export const ProximityDetection: React.FC = () => {
 
           {/* Informações */}
           <div className="text-xs text-muted-foreground space-y-1">
-            <p>• Detecta jogadores em um raio de 500 metros</p>
-            <p>• Atualização automática a cada 30 segundos</p>
-            <p>• Notificações limitadas a uma por jogador a cada 2 horas</p>
+            <p>{t("proximityDetection.infoDetectionRange")}</p>
+            <p>{t("proximityDetection.infoUpdateFrequency")}</p>
+            <p>{t("proximityDetection.infoNotificationLimit")}</p>
           </div>
         </CardContent>
       </Card>

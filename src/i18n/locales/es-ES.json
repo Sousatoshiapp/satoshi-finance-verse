@@ -116,6 +116,40 @@
       }
     }
   },
+  "proximityDetection": {
+    "title": "Detección de Proximidad",
+    "location": "Ubicación",
+    "permissionGranted": "Permitida",
+    "permissionDenied": "Denegada",
+    "permissionPending": "Pendiente",
+    "activateDetection": "Activar Detección",
+    "visibleToOthers": "Visible para Otros",
+    "detectionStatus": "Estado de Detección",
+    "playersFound": "{{count}} jugador(es) cercano(s) encontrado(s)",
+    "searchingPlayers": "Buscando jugadores cercanos...",
+    "additionalPlayers": "+{{count}} otros jugadores",
+    "infoDetectionRange": "• Detecta jugadores en un radio de 500 metros",
+    "infoUpdateFrequency": "• Actualización automática cada 30 segundos",
+    "infoNotificationLimit": "• Notificaciones limitadas a una por jugador cada 2 horas",
+    "permissionDeniedTitle": "Permiso Denegado",
+    "permissionDeniedDescription": "Para usar la detección de proximidad, permite el acceso a la ubicación en la configuración de tu dispositivo.",
+    "challengeSentTitle": "¡Desafío Enviado! 🎯",
+    "challengeSentDescription": "Tu desafío fue enviado a @{{nickname}}. ¡Espera la respuesta!",
+    "modal": {
+      "title": "Jugador Cercano Detectado",
+      "distanceAway": "{{distance}}m de distancia",
+      "proximityDuel": "Duelo de Proximidad",
+      "nearbyPlayer": "Jugador cerca de ti",
+      "challengeText": "¡@{{nickname}} está cerca de ti! 🎯",
+      "topicLabel": "Tema: Finanzas Generales",
+      "challengeQuestion": "¿Desafiar a un duelo por BTZ?",
+      "duelDetails": "10 preguntas • 30 segundos cada una • Duelo simultáneo",
+      "ignoreButton": "❌ Ignorar",
+      "challengeButton": "⚔️ Desafiar",
+      "errorTitle": "Error",
+      "errorDescription": "No se pudo enviar el desafío. Inténtalo de nuevo."
+    }
+  },
   "navigation": {
     "dashboard": "Panel",
     "quiz": "Quiz",
