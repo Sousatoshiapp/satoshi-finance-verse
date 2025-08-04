@@ -5,7 +5,10 @@ import { usePushNotifications } from '@/hooks/use-push-notifications';
 import confetti from 'canvas-confetti';
 import { useI18n } from '@/hooks/use-i18n';
 
-export function useP2PNotifications(onTransferReceived?: (amount: number, senderNickname: string) => void) {
+export function useP2PNotifications(
+  onTransferReceived?: (amount: number, senderNickname: string) => void,
+  onDebugEvent?: (message: string, type: 'info' | 'success' | 'error') => void
+) {
   const { profile } = useProfile();
   const { sendLocalNotification } = usePushNotifications();
   const { t } = useI18n();
@@ -47,10 +50,12 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
     
     if (!profile?.id) {
       console.log('❌ useP2PNotifications: No profile.id, skipping subscription setup');
+      onDebugEvent?.('❌ No profile.id available - subscription cannot be created', 'error');
       return;
     }
 
     console.log('✅ useP2PNotifications: Creating subscription channel for receiver_id:', profile.id);
+    onDebugEvent?.(`📡 Creating Supabase subscription for receiver_id: ${profile.id}`, 'info');
     
     const channel = supabase
       .channel(`p2p-transfers-${profile.id}`)
@@ -68,8 +73,11 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
           amount: payload.new.amount_cents
         });
         
+        onDebugEvent?.(`📨 INSERT event received! Type: ${payload.new.transfer_type}, Amount: ${payload.new.amount_cents}`, 'success');
+        
         if (payload.new.transfer_type === 'p2p') {
           console.log('💰 useP2PNotifications: P2P transfer detected, fetching sender profile');
+          onDebugEvent?.(`💰 P2P transfer detected! Fetching sender profile...`, 'info');
           
           const fetchSenderProfile = async () => {
             try {
@@ -89,6 +97,9 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
               
               if (error) {
                 console.error('❌ useP2PNotifications: Error fetching sender profile:', error);
+                onDebugEvent?.(`❌ Error fetching sender profile: ${error.message}`, 'error');
+              } else {
+                onDebugEvent?.(`👤 Sender profile found: ${senderProfile?.nickname || 'Unknown'}`, 'success');
               }
               
               triggerReceiveNotification(
@@ -97,6 +108,7 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
               );
             } catch (error) {
               console.error('❌ useP2PNotifications: Exception in fetchSenderProfile:', error);
+              onDebugEvent?.(`❌ Exception fetching sender: ${error}`, 'error');
               triggerReceiveNotification(
                 payload.new.amount_cents,
                 'Unknown'
@@ -107,14 +119,21 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
           fetchSenderProfile();
         } else {
           console.log('⚠️ useP2PNotifications: Non-P2P transfer, ignoring', payload.new.transfer_type);
+          onDebugEvent?.(`⚠️ Non-P2P transfer ignored: ${payload.new.transfer_type}`, 'info');
         }
       })
       .subscribe((status) => {
         console.log('📡 useP2PNotifications: Subscription status changed:', status);
         if (status === 'SUBSCRIBED') {
           console.log('✅ P2P notifications subscription active for receiver_id:', profile.id);
+          onDebugEvent?.(`✅ Subscription ACTIVE! Listening for transfers to: ${profile.id}`, 'success');
         } else if (status === 'CHANNEL_ERROR') {
           console.error('❌ P2P notifications subscription error');
+          onDebugEvent?.('❌ Subscription ERROR! Real-time notifications may not work', 'error');
+        } else if (status === 'CLOSED') {
+          onDebugEvent?.('🔌 Subscription CLOSED - cleaning up', 'info');
+        } else {
+          onDebugEvent?.(`📡 Subscription status: ${status}`, 'info');
         }
       });
 
