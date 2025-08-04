@@ -366,7 +366,7 @@ export default function Settings() {
         {/* Salvar */}
         <Card className="p-6">
           <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
-            {loading ? t('settings.buttons.saving') : "💾 " + t('settings.buttons.saveSettings')}
+            {loading ? "Salvando..." : "💾 Salvar Configurações"}
           </Button>
         </Card>
 
@@ -379,7 +379,7 @@ export default function Settings() {
               onClick={handleLogout}
               className="w-full"
             >
-              🚪 {t('settings.buttons.logout')}
+              🚪 Sair
             </Button>
           </div>
         </Card>

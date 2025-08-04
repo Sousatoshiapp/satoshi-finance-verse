@@ -124,10 +124,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-2xl sm:text-4xl font-mono font-bold text-foreground">
+              <span className="text-4xl font-mono font-bold text-foreground">
                 {displayBTZ.toLocaleString()}
               </span>
-              <span className="text-xl sm:text-3xl text-muted-foreground font-medium">BTZ</span>
+              <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
               
               {/* P2P Transfer Icons */}
               <div className="flex items-center gap-1 ml-2">
