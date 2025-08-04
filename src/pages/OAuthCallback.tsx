@@ -20,21 +20,32 @@ export default function OAuthCallback() {
           return;
         }
 
-        if (session) {
-          console.log('✅ OAuth Callback: Session found, redirecting to dashboard');
+        if (session?.user) {
+          console.log('✅ OAuth Callback: Session found, user authenticated');
+          
+          // Store user data in localStorage as backup for AuthMiddleware
+          localStorage.setItem('satoshi_user', JSON.stringify({
+            id: session.user.id,
+            email: session.user.email,
+            authenticated_at: new Date().toISOString()
+          }));
+          
+          console.log('✅ OAuth Callback: Redirecting to dashboard');
           navigate('/dashboard', { replace: true });
         } else {
-          console.log('🚫 OAuth Callback: No session found, redirecting to auth');
+          console.log('🚫 OAuth Callback: No valid session found, redirecting to auth');
+          localStorage.removeItem('satoshi_user');
           navigate('/auth?mode=login', { replace: true });
         }
       } catch (error) {
         console.error('🚫 OAuth Callback Exception:', error);
+        localStorage.removeItem('satoshi_user');
         navigate('/auth?mode=login', { replace: true });
       }
     };
 
-    // Small delay to ensure auth state is properly processed
-    const timer = setTimeout(handleAuthCallback, 100);
+    // Increase delay to ensure Supabase auth state is fully processed
+    const timer = setTimeout(handleAuthCallback, 500);
     
     return () => clearTimeout(timer);
   }, [navigate]);

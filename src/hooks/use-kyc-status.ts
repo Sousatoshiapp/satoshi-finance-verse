@@ -5,18 +5,13 @@ export function useKYCStatus() {
   const { profile, loadProfile } = useProfile();
   
   const checkKYCRequired = () => {
-    return profile?.kyc_status !== 'approved';
+    // KYC always required since we don't have kyc_status field
+    return true;
   };
   
   const updateKYCStatus = async (inquiryId: string) => {
-    await supabase
-      .from('profiles')
-      .update({ 
-        persona_inquiry_id: inquiryId,
-        kyc_status: 'pending'
-      })
-      .eq('id', profile?.id);
-    
+    // KYC status tracking would need to be implemented with proper schema
+    console.log('KYC inquiry ID:', inquiryId);
     await loadProfile();
   };
   

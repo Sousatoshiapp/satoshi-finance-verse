@@ -29,12 +29,19 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
       hasSession: !!session, 
       hasLocalStorage: !!localStorage.getItem('satoshi_user'),
       userEmail: user?.email,
-      currentPath: location.pathname 
+      currentPath: location.pathname,
+      sessionExpiry: session?.expires_at ? new Date(session.expires_at * 1000).toISOString() : 'none'
     });
     
     if (!hasValidAuth) {
       console.log('🚫 AuthMiddleware: No valid authentication found - redirecting to welcome');
       return <Navigate to="/welcome" state={{ from: location }} replace />;
+    }
+    
+    // If user has valid auth but is on welcome/auth pages, redirect to dashboard
+    if (hasValidAuth && (location.pathname === '/welcome' || location.pathname === '/auth' || location.pathname === '/')) {
+      console.log('✅ AuthMiddleware: Valid auth detected on public page - redirecting to dashboard');
+      return <Navigate to="/dashboard" replace />;
     }
   }
 
