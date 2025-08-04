@@ -5,7 +5,7 @@ import { usePushNotifications } from '@/hooks/use-push-notifications';
 import confetti from 'canvas-confetti';
 import { useI18n } from '@/hooks/use-i18n';
 
-export function useP2PNotifications() {
+export function useP2PNotifications(onTransferReceived?: (amount: number, senderNickname: string) => void) {
   const { profile } = useProfile();
   const { sendLocalNotification } = usePushNotifications();
   const { t } = useI18n();
@@ -24,6 +24,10 @@ export function useP2PNotifications() {
       icon: '/icon-192.png',
       tag: 'p2p-received'
     });
+
+    if (onTransferReceived) {
+      onTransferReceived(amount, senderNickname);
+    }
   };
 
   useEffect(() => {

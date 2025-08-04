@@ -8,18 +8,23 @@ import { useP2PTransfer } from "@/hooks/use-p2p-transfer";
 import { useProfile } from "@/hooks/use-profile";
 import { useI18n } from "@/hooks/use-i18n";
 import { useKYCStatus } from "@/hooks/use-kyc-status";
+import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { KYCVerification } from "../kyc/KYCVerification";
 import { QRScanner } from "./QRScanner";
+import { BeetzAnimation } from "../quiz/beetz-animation";
 
 export function SendBTZ() {
   const [receiverId, setReceiverId] = useState('');
   const [amount, setAmount] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const [showKYCVerification, setShowKYCVerification] = useState(false);
+  const [showBeetzAnimation, setShowBeetzAnimation] = useState(false);
+  const [transferAmount, setTransferAmount] = useState(0);
   const { transferBTZ, transferring } = useP2PTransfer();
   const { profile } = useProfile();
   const { t } = useI18n();
   const { checkKYCRequired } = useKYCStatus();
+  const { playCashRegisterSound } = useAdvancedQuizAudio();
 
   const handleTransfer = async () => {
     if (!receiverId || !amount) return;
@@ -36,6 +41,10 @@ export function SendBTZ() {
     
     const result = await transferBTZ(receiverId, numAmount);
     if (result.success) {
+      setTransferAmount(numAmount);
+      setShowBeetzAnimation(true);
+      playCashRegisterSound();
+      
       setReceiverId('');
       setAmount('');
     }
@@ -113,6 +122,12 @@ export function SendBTZ() {
           </CardContent>
         </Card>
       )}
+      
+      <BeetzAnimation
+        isVisible={showBeetzAnimation}
+        amount={transferAmount}
+        onComplete={() => setShowBeetzAnimation(false)}
+      />
     </div>
   );
 }
