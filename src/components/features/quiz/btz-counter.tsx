@@ -108,118 +108,127 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   return (
     <div className={`relative w-full ${className}`}>
       <div 
-        className="bg-card/80 backdrop-blur-sm border border-primary/30 rounded-xl p-4 transition-all duration-300 hover:border-primary/50 cursor-pointer"
+        className={`
+          bg-transparent backdrop-blur-sm 
+          border border-[#adff2f]/20 rounded-lg px-8 py-4 
+          transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
+          ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
+          cursor-pointer
+          w-full
+        `}
         onClick={() => setShowDetails(!showDetails)}
       >
-        <div className="flex items-center justify-between">
-          {/* Left side - Icon and BTZ amount */}
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-bold text-xl">B</span>
-            </div>
-            
-            <div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-3xl font-bold text-foreground font-nunito">
-                    {displayBTZ.toLocaleString()}
-                  </span>
-                  <span className="text-xl text-muted-foreground font-medium font-nunito">BTZ</span>
-                </div>
-                
-                {/* Action buttons - moved to same line as BTZ */}
-                <div className="flex gap-2">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate('/p2p-transfer?tab=send');
-                    }}
-                    className="p-2 rounded-full hover:bg-muted/50 transition-colors"
-                    title={t('btz.sendBTZ')}
-                  >
-                    <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate('/p2p-transfer?tab=receive');
-                    }}
-                    className="p-2 rounded-full hover:bg-muted/50 transition-colors"
-                    title={t('btz.receiveBTZ')}
-                  >
-                    <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
-                  </button>
-                </div>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
+            <span className="text-black font-bold text-lg">B</span>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-4xl font-mono font-bold text-foreground">
+                {displayBTZ.toLocaleString()}
+              </span>
+              <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
+              
+              {/* P2P Transfer Icons */}
+              <div className="flex items-center gap-1 ml-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/p2p-transfer?tab=send');
+                  }}
+                  className="p-1 rounded-full hover:bg-muted/50 transition-colors"
+                  title="Enviar BTZ"
+                >
+                  <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/p2p-transfer?tab=receive');
+                  }}
+                  className="p-1 rounded-full hover:bg-muted/50 transition-colors"
+                  title="Receber BTZ"
+                >
+                  <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                </button>
               </div>
               
-              {analytics?.current.yield_applied_today && (
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="text-primary text-sm font-nunito">✓ {t('btz.yieldedToday')}</span>
+              {/* Trend Arrow */}
+              {showTrend && currentBTZ !== previousBTZ && (
+                <div className="transition-all duration-300">
+                  {currentBTZ > previousBTZ ? (
+                    <TrendingUp className="w-4 h-4 text-[#adff2f] animate-bounce" />
+                  ) : (
+                    <TrendingDown className="w-4 h-4 text-red-500 animate-bounce" />
+                  )}
                 </div>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* Expanded content */}
-        <div className={`overflow-hidden transition-all duration-300 ${showDetails ? 'max-h-40 mt-4' : 'max-h-0'}`}>
-          <div className="border-t border-border pt-4 space-y-3">
-            {analytics && (
-              <>
-                {/* Next yield info */}
-                {analytics.current.time_until_next_yield_ms > 0 && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm">🔥</span>
-                      <span className="text-sm text-muted-foreground font-nunito">{t('btz.nextYield')}</span>
+            
+            {/* Compact view */}
+            {!showDetails && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                {analytics?.current.yield_applied_today ? (
+                  <span className="text-[#adff2f]">✓ {t('btz.yieldedToday')}</span>
+                ) : (
+                  <span className="text-orange-500">⏰ {t('btz.next')}: {analytics ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
+                )}
+              </div>
+            )}
+            
+            {/* Expanded view */}
+            {showDetails && analytics && (
+              <div className="mt-3 space-y-2">
+                {/* Daily Yield */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3 text-[#adff2f]" />
+                    <span>{t('btz.nextYield')}</span>
+                  </div>
+                  <span className="font-mono text-[#adff2f]">
+                    +{analytics.current.next_yield_amount.toLocaleString()} BTZ
+                  </span>
+                </div>
+                
+                {/* Protected BTZ */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-blue-400" />
+                    <span>{t('btz.protectedBTZ')}</span>
+                  </div>
+                  <span className="font-mono text-blue-400">
+                    {analytics.current.protected_btz.toLocaleString()} ({getProtectionPercentage().toFixed(1)}%)
+                  </span>
+                </div>
+                
+                {/* Streak */}
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1">
+                    <span className="text-orange-500">🔥</span>
+                    <span>{t('btz.streak')}</span>
+                  </div>
+                  <span className="font-mono text-orange-500">
+                    {analytics.current.consecutive_login_days} {t('btz.days')} (+{(analytics.bonuses.streak_bonus * 100).toFixed(1)}%)
+                  </span>
+                </div>
+                
+                {/* Time until next yield */}
+                {!analytics.current.yield_applied_today && (
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-gray-400" />
+                      <span>{t('btz.nextIn')}</span>
                     </div>
-                    <span className="text-sm font-medium text-orange-500 font-nunito">
+                    <span className="font-mono text-gray-400">
                       {formatTimeUntilYield(analytics.current.time_until_next_yield_ms)}
                     </span>
                   </div>
                 )}
-
-                {/* Protection percentage */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-primary" />
-                    <span className="text-sm text-muted-foreground font-nunito">{t('btz.protectedBTZ')}</span>
-                  </div>
-                  <span className="text-sm font-medium text-primary font-nunito">
-                    {getProtectionPercentage().toFixed(3)}%
-                  </span>
-                </div>
-
-                {/* Next yield amount */}
-                {analytics.current.next_yield_amount > 0 && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-primary" />
-                      <span className="text-sm text-muted-foreground font-nunito">{t('btz.nextGain')}</span>
-                    </div>
-                    <span className="text-sm font-medium text-primary font-nunito">
-                      +{analytics.current.next_yield_amount.toLocaleString()} BTZ
-                    </span>
-                  </div>
-                )}
-              </>
+              </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* Trend animation - outside card to avoid click conflicts */}
-      {showTrend && (
-        <div className="absolute -top-2 -right-2 pointer-events-none">
-          <div className="animate-bounce">
-            {currentBTZ > previousBTZ ? (
-              <TrendingUp className="w-6 h-6 text-primary" />
-            ) : (
-              <TrendingDown className="w-6 h-6 text-destructive" />
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

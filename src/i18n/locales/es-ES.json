@@ -171,10 +171,6 @@
     "pointsPerDuel": "+100 pts por Duelo"
   },
   "profile": {
-    "header": {
-      "profile": "Perfil",
-      "settings": "Configuración"
-    },
     "userProfile": "Perfil de Usuario",
     "achievements": "Logros",
     "statistics": "Estadísticas",
@@ -408,8 +404,6 @@
     "compareBenefits": "Comparar Beneficios"
   },
   "settings": {
-    "title": "Configuración",
-    "personalInfo": "Información Personal",
     "settings": "Configuración",
     "account": "Cuenta",
     "notifications": "Notificaciones",
@@ -432,18 +426,8 @@
     "studyReminder": "Recordatorio para estudiar todos los días",
     "interactionSounds": "Sonidos de interacción y logros",
     "darkInterface": "Interfaz con tema oscuro",
-    "aboutSatoshi": "Satoshi 2025",
+    "aboutSatoshi": "Acerca de Satoshi",
     "gameVersion": "El juego de las finanzas",
-    "header": {
-      "settings": "Configuración"
-    },
-    "sections": {
-      "personalInfo": "Información Personal",
-      "notifications": "Notificaciones",
-      "experience": "Experiencia",
-      "account": "Cuenta",
-      "aboutSatoshi": "Acerca de Satoshi"
-    },
     "header": {
       "profile": "Perfil",
       "settings": "Configuración"
@@ -461,12 +445,8 @@
       "logout": "🚪 Cerrar Sesión"
     },
     "app": {
-      "version": "versión 1.0.0",
-      "description": "Una plataforma completa de cuestionarios educativos sobre Bitcoin y criptomonedas"
-    },
-    "contact": {
-      "email": "Email: suporte@sousatoshi.com",
-      "telegram": "Telegram: @satoshisupport"
+      "version": "Versión 1.0.0",
+      "description": "El juego de las finanzas"
     }
   },
   "missions": {
@@ -929,15 +909,7 @@
       "sentTo": "Enviado a {{user}}",
       "receivedFrom": "Recibido de {{user}}"
     },
-  "btz": {
-    "sendBTZ": "Enviar BTZ",
-    "receiveBTZ": "Recibir BTZ",
-    "yieldedToday": "Rindió hoy",
-    "nextYield": "Próximo rendimiento", 
-    "protectedBTZ": "BTZ Protegido",
-    "nextGain": "Próxima ganancia"
-  },
-  "errors": {
+    "errors": {
       "insufficientBalance": "BTZ insuficientes",
       "insufficientBalanceDesc": "Necesitas {{amount}} BTZ para realizar esta transferencia",
       "invalidAmount": "Cantidad inválida",
