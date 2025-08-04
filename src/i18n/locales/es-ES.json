@@ -171,6 +171,10 @@
     "pointsPerDuel": "+100 pts por Duelo"
   },
   "profile": {
+    "header": {
+      "profile": "Perfil",
+      "settings": "Configuración"
+    },
     "userProfile": "Perfil de Usuario",
     "achievements": "Logros",
     "statistics": "Estadísticas",
@@ -404,6 +408,8 @@
     "compareBenefits": "Comparar Beneficios"
   },
   "settings": {
+    "title": "Configuración",
+    "personalInfo": "Información Personal",
     "settings": "Configuración",
     "account": "Cuenta",
     "notifications": "Notificaciones",
@@ -428,6 +434,16 @@
     "darkInterface": "Interfaz con tema oscuro",
     "aboutSatoshi": "Satoshi 2025",
     "gameVersion": "El juego de las finanzas",
+    "header": {
+      "settings": "Configuración"
+    },
+    "sections": {
+      "personalInfo": "Información Personal",
+      "notifications": "Notificaciones",
+      "experience": "Experiencia",
+      "account": "Cuenta",
+      "aboutSatoshi": "Acerca de Satoshi"
+    },
     "header": {
       "profile": "Perfil",
       "settings": "Configuración"

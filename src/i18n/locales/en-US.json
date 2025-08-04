@@ -222,6 +222,10 @@
     "pointsPerDuel": "+100 pts per Duel"
   },
   "profile": {
+    "header": {
+      "profile": "Profile",
+      "settings": "Settings"
+    },
     "userProfile": "User Profile",
     "achievements": "Achievements",
     "statistics": "Statistics",
@@ -420,7 +424,8 @@
     "compareBenefits": "Compare Benefits"
   },
   "settings": {
-    "settings": "Settings",
+    "title": "Settings",
+    "personalInfo": "Personal Information",
     "account": "Account",
     "notifications": "Notifications",
     "privacy": "Privacy",
@@ -454,6 +459,30 @@
       "experience": "Experience",
       "account": "Account",
       "aboutSatoshi": "About Satoshi"
+    },
+    "buttons": {
+      "saving": "Saving...",
+      "saveSettings": "💾 Save Settings",
+      "logout": "🚪 Logout"
+    },
+    "app": {
+      "version": "version 1.0.0",
+      "description": "A complete educational quiz platform about Bitcoin and cryptocurrencies"
+    },
+    "contact": {
+      "email": "Email: suporte@sousatoshi.com",
+      "telegram": "Telegram: @satoshisupport"
+    }
+  },
+  "kyc": {
+    "title": "Identity Verification",
+    "subtitle": "Verification required for P2P transfers",
+    "verifyIdentity": "Verify Identity",
+    "required": "KYC required to continue",
+    "pending": "Verification in progress...",
+    "approved": "Identity verified",
+    "rejected": "Verification rejected"
+  }
     },
     "buttons": {
       "saving": "Saving...",

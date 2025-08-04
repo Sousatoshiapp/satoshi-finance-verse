@@ -222,6 +222,10 @@
     "pointsPerDuel": "+100 pts por Duelo"
   },
   "profile": {
+    "header": {
+      "profile": "Perfil",
+      "settings": "Configurações"
+    },
     "userProfile": "Perfil do Usuário",
     "achievements": "Conquistas",
     "statistics": "Estatísticas",
@@ -395,7 +399,18 @@
     "compareBenefits": "Compare os Benefícios"
   },
   "settings": {
-    "settings": "Configurações",
+    "title": "Configurações",
+    "header": {
+      "settings": "Configurações"
+    },
+    "sections": {
+      "personalInfo": "Informações Pessoais",
+      "notifications": "Notificações",
+      "experience": "Experiência",
+      "account": "Conta",
+      "aboutSatoshi": "Sobre Satoshi"
+    },
+    "personalInfo": "Informações Pessoais",
     "account": "Conta",
     "notifications": "Notificações",
     "privacy": "Privacidade",
@@ -924,24 +939,6 @@
       "received": {
         "title": "Wow! BTZ Recebido! 🎉",
         "body": "Wow, Você acabou de receber {{amount}} BTZ de {{sender}}!"
-      }
-    },
-    "errors": {
-      "insufficientBalance": "BTZ insuficientes",
-      "insufficientBalanceDesc": "Você precisa de {{amount}} BTZ para realizar esta transferência",
-      "invalidAmount": "Valor inválido",
-      "invalidAmountDesc": "O valor deve ser maior que zero",
-      "receiverNotFound": "Destinatário não encontrado",
-      "receiverNotFoundDesc": "Usuário com este ID não existe",
-      "selfTransfer": "Transferência inválida",
-      "selfTransferDesc": "Você não pode transferir para si mesmo",
-      "transferFailed": "Erro na transferência",
-      "transferFailedDesc": "Falha ao processar transferência"
-    },
-    "success": {
-      "transferComplete": "Transferência realizada!",
-      "transferCompleteDesc": "{{amount}} BTZ enviados para {{receiver}}"
-    }
   },
   "kyc": {
     "title": "Verificação de Identidade",
