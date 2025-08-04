@@ -107,12 +107,12 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="bg-card/80 backdrop-blur-sm border border-green-500/30 rounded-xl p-4 transition-all duration-300 hover:border-green-500/50">
+      <div className="bg-card/80 backdrop-blur-sm border border-primary/30 rounded-xl p-4 transition-all duration-300 hover:border-primary/50">
         <div className="flex items-center justify-between">
           {/* Left side - Icon and BTZ amount */}
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">B</span>
+            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-lg">
+              <span className="text-primary-foreground font-bold text-xl">B</span>
             </div>
             
             <div>
@@ -125,7 +125,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               
               {analytics?.current.yield_applied_today && (
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-green-500 text-sm">✓ Rendeu hoje</span>
+                  <span className="text-primary text-sm">✓ Rendeu hoje</span>
                 </div>
               )}
             </div>
