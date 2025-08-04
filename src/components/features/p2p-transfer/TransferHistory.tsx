@@ -35,59 +35,76 @@ export function TransferHistory() {
     if (!profile?.id) return;
 
     try {
-      // Get sent transfers
+      // Get sent transfers (where current user is sender)
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
-        .select('id, amount_cents, created_at, user_id, receiver_id')
-        .eq('receiver_id', profile.id)  // Changed: looking for transfers TO this profile
+        .select(`
+          id, amount_cents, created_at, user_id, receiver_id,
+          receiver_profile:profiles!transactions_receiver_id_fkey(nickname)
+        `)
+        .eq('user_id', profile.user_id)
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
       if (sentError) throw sentError;
 
-      // Get received transfers using wallet_transactions for better tracking
-      const { data: walletTransactions, error: walletError } = await supabase
-        .from('wallet_transactions')
-        .select('*')
-        .eq('user_id', profile.id)
-        .in('source_type', ['p2p_send', 'p2p_receive'])
+      // Get received transfers (where current user is receiver)
+      const { data: receivedTransfers, error: receivedError } = await supabase
+        .from('transactions')
+        .select(`
+          id, amount_cents, created_at, user_id, receiver_id,
+          sender_profile:profiles!transactions_user_id_fkey(nickname)
+        `)
+        .eq('receiver_id', profile.id)
+        .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
-      if (walletError) throw walletError;
+      if (receivedError) throw receivedError;
 
-      // Convert wallet transactions to transfer format
+      // Combine and format transfers
       const transfers: Transfer[] = [];
       
-      if (walletTransactions) {
-        for (const wt of walletTransactions) {
-          // Extract user info from description
-          const isReceived = wt.source_type === 'p2p_receive';
-          const isSent = wt.source_type === 'p2p_send';
-          
-          if (isReceived || isSent) {
-            // Parse nickname from description like "P2P transfer received from John" or "P2P transfer sent to Jane"
-            const descParts = wt.description.split(isSent ? ' to ' : ' from ');
-            const otherUserNickname = descParts[1] || 'Unknown';
-            
-            transfers.push({
-              id: wt.id,
-              amount_cents: Math.abs(wt.amount), // Make sure it's positive for display
-              created_at: wt.created_at,
-              user_id: profile.id,
-              receiver_id: profile.id,
-              type: isSent ? 'sent' : 'received',
-              otherUser: {
-                id: 'unknown',
-                nickname: otherUserNickname
-              }
-            });
-          }
-        }
+      // Add sent transfers
+      if (sentTransfers) {
+        sentTransfers.forEach(transfer => {
+          transfers.push({
+            id: transfer.id,
+            amount_cents: transfer.amount_cents,
+            created_at: transfer.created_at,
+            user_id: transfer.user_id,
+            receiver_id: transfer.receiver_id,
+            type: 'sent',
+            otherUser: {
+              id: transfer.receiver_id,
+              nickname: (transfer.receiver_profile as any)?.nickname || 'Unknown'
+            }
+          });
+        });
       }
 
+      // Add received transfers
+      if (receivedTransfers) {
+        receivedTransfers.forEach(transfer => {
+          transfers.push({
+            id: transfer.id,
+            amount_cents: transfer.amount_cents,
+            created_at: transfer.created_at,
+            user_id: transfer.user_id,
+            receiver_id: transfer.receiver_id,
+            type: 'received',
+            otherUser: {
+              id: transfer.user_id,
+              nickname: (transfer.sender_profile as any)?.nickname || 'Unknown'
+            }
+          });
+        });
+      }
+
+      // Sort by date (newest first)
       transfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setTransfers(transfers);
     } catch (error) {
+      console.error('Error loading P2P transfers:', error);
     } finally {
       setLoading(false);
     }

@@ -46,6 +46,7 @@ export const ProximityDetection: React.FC = () => {
     if (isLocationEnabled) {
       stopProximityDetection();
     } else {
+      console.log('🔧 Starting proximity detection from button...');
       await startProximityDetection();
       if (permissionStatus === 'denied') {
         toast({

@@ -11,6 +11,7 @@ export function useP2PNotifications(
   const { t } = useI18n();
 
   const triggerReceiveNotification = (amount: number, senderNickname: string) => {
+    // Confetti effect
     confetti({
       particleCount: 100,
       spread: 70,
@@ -18,6 +19,12 @@ export function useP2PNotifications(
       colors: ['#adff2f', '#32cd32', '#00ff00']
     });
 
+    // Vibration for mobile devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200]);
+    }
+
+    // Browser notification
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification(t('p2p.notifications.received.title'), {
         body: t('p2p.notifications.received.body', { amount, sender: senderNickname }),
