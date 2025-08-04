@@ -110,7 +110,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       <div 
         className={`
           bg-transparent backdrop-blur-sm 
-          border border-[#adff2f]/20 rounded-lg px-8 py-4 
+          border border-[#adff2f]/20 rounded-lg px-4 md:px-8 py-3 md:py-4 
           transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
           ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
           cursor-pointer
@@ -118,19 +118,19 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         `}
         onClick={() => setShowDetails(!showDetails)}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#adff2f] flex items-center justify-center flex-shrink-0">
-            <span className="text-black font-bold text-lg">B</span>
+        <div className="flex items-center gap-2 md:gap-3">
+          <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-[#adff2f] flex items-center justify-center flex-shrink-0">
+            <span className="text-black font-bold text-sm md:text-lg">B</span>
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <span className="text-4xl font-mono font-bold text-foreground">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1 md:gap-2 flex-wrap">
+              <span className="text-2xl md:text-4xl font-mono font-bold text-foreground">
                 {displayBTZ.toLocaleString()}
               </span>
-              <span className="text-3xl text-muted-foreground font-medium">BTZ</span>
+              <span className="text-xl md:text-3xl text-muted-foreground font-medium">BTZ</span>
               
               {/* P2P Transfer Icons */}
-              <div className="flex items-center gap-1 ml-1">
+              <div className="flex items-center gap-1 ml-1 md:ml-1">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -139,7 +139,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   className="p-1 rounded-full hover:bg-muted/50 transition-colors"
                   title="Enviar BTZ"
                 >
-                  <Send className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                  <Send className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground hover:text-foreground" />
                 </button>
                 <button
                   onClick={(e) => {
@@ -149,7 +149,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   className="p-1 rounded-full hover:bg-muted/50 transition-colors"
                   title="Receber BTZ"
                 >
-                  <Download className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                  <Download className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground hover:text-foreground" />
                 </button>
               </div>
               
@@ -157,9 +157,9 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               {showTrend && currentBTZ !== previousBTZ && (
                 <div className="transition-all duration-300">
                   {currentBTZ > previousBTZ ? (
-                    <TrendingUp className="w-4 h-4 text-[#adff2f] animate-bounce" />
+                    <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-[#adff2f] animate-bounce" />
                   ) : (
-                    <TrendingDown className="w-4 h-4 text-red-500 animate-bounce" />
+                    <TrendingDown className="w-3 h-3 md:w-4 md:h-4 text-red-500 animate-bounce" />
                   )}
                 </div>
               )}
