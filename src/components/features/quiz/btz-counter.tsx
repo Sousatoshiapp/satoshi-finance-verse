@@ -117,10 +117,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
             
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-3xl font-bold text-foreground">
+                <span className="text-3xl font-bold font-nunito text-foreground">
                   {displayBTZ.toLocaleString()}
                 </span>
-                <span className="text-xl text-muted-foreground font-medium">BTZ</span>
+                <span className="text-xl text-muted-foreground font-medium font-nunito">BTZ</span>
               </div>
               
               {analytics?.current.yield_applied_today && (
