@@ -939,6 +939,8 @@
       "received": {
         "title": "Wow! BTZ Recebido! 🎉",
         "body": "Wow, Você acabou de receber {{amount}} BTZ de {{sender}}!"
+      }
+    }
   },
   "kyc": {
     "title": "Verificação de Identidade",
