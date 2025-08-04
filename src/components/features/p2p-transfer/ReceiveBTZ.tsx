@@ -42,24 +42,12 @@ export function ReceiveBTZ() {
   };
   
   useP2PNotifications((amount, senderNickname) => {
-    console.log('🔔 ReceiveBTZ: Notification callback triggered', { 
-      amount, 
-      senderNickname,
-      timestamp: new Date().toISOString()
-    });
-    
     addDebugAlert(`✅ TRANSFER RECEIVED! From ${senderNickname}: ${amount} BTZ`, 'success');
     
     setLatestTransfer({ amount, senderNickname });
     setShowNotification(true);
     
-    console.log('👁️ ReceiveBTZ: Visual notification state updated', {
-      showNotification: true,
-      latestTransfer: { amount, senderNickname }
-    });
-    
     setTimeout(() => {
-      console.log('⏰ ReceiveBTZ: Auto-hiding notification after 5 seconds');
       setShowNotification(false);
     }, 5000);
   }, addDebugAlert);
@@ -116,7 +104,6 @@ export function ReceiveBTZ() {
             addDebugAlert(`🔍 Found ${recentTransfers.length} recent transfer(s) in database`, 'info');
           }
         } catch (error) {
-          console.error('Error checking for missed transfers:', error);
         }
       };
 
