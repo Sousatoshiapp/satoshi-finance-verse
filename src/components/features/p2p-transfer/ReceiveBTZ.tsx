@@ -21,7 +21,9 @@ export function ReceiveBTZ() {
   useP2PNotifications((amount, senderNickname) => {
     setLatestTransfer({ amount, senderNickname });
     setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 5000);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 5000);
   });
 
   useEffect(() => {

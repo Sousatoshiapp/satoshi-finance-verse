@@ -31,10 +31,12 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
   };
 
   useEffect(() => {
-    if (!profile?.id) return;
+    if (!profile?.id) {
+      return;
+    }
 
     const channel = supabase
-      .channel('p2p-transfers')
+      .channel(`p2p-transfers-${profile.id}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
@@ -42,20 +44,35 @@ export function useP2PNotifications(onTransferReceived?: (amount: number, sender
         filter: `receiver_id=eq.${profile.id}`
       }, (payload) => {
         if (payload.new.transfer_type === 'p2p') {
-          supabase
-            .from('profiles')
-            .select('nickname')
-            .eq('user_id', payload.new.user_id)
-            .single()
-            .then(({ data: senderProfile }) => {
+          const fetchSenderProfile = async () => {
+            try {
+              const { data: senderProfile } = await supabase
+                .from('profiles')
+                .select('nickname')
+                .eq('user_id', payload.new.user_id)
+                .single();
+              
               triggerReceiveNotification(
                 payload.new.amount_cents,
                 senderProfile?.nickname || 'Unknown'
               );
-            });
+            } catch (error) {
+              console.error('Error fetching sender profile:', error);
+              triggerReceiveNotification(
+                payload.new.amount_cents,
+                'Unknown'
+              );
+            }
+          };
+          
+          fetchSenderProfile();
         }
       })
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('P2P notifications subscription active');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
