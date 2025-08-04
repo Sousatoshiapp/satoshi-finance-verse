@@ -128,20 +128,34 @@ export const useProximityDetection = () => {
 
   const findNearbyPlayers = async (userLat: number, userLng: number) => {
     try {
-      // For now, return mock data for testing
+      // Simulate finding a nearby player for testing
       const mockPlayers: NearbyPlayer[] = [
         {
           id: 'mock-1',
           user_id: 'mock-user-1',
-          nickname: 'Player1',
+          nickname: 'Warren Buffet',
           latitude: userLat + 0.001,
           longitude: userLng + 0.001,
           distance: 150
+        },
+        {
+          id: 'mock-2', 
+          user_id: 'mock-user-2',
+          nickname: 'Elon Musk',
+          latitude: userLat + 0.002,
+          longitude: userLng + 0.002,
+          distance: 300
         }
       ];
       
-      setNearbyPlayers(mockPlayers);
-      return mockPlayers;
+      // Only return players if the user is visible and detection is enabled
+      if (isVisible && isLocationEnabled) {
+        setNearbyPlayers(mockPlayers);
+        return mockPlayers;
+      } else {
+        setNearbyPlayers([]);
+        return [];
+      }
     } catch (error) {
       console.error('Erro ao buscar jogadores próximos:', error);
       return [];
@@ -155,9 +169,15 @@ export const useProximityDetection = () => {
 
   const wasPlayerNotified = async (opponentId: string): Promise<boolean> => {
     try {
-      // Temporarily disabled - requires proximity_notifications table
-      console.log('Check notification: proximity_notifications table not available');
-      return false;
+      // Simple localStorage check for demo
+      const notifiedPlayers = JSON.parse(localStorage.getItem('notifiedPlayers') || '{}');
+      const lastNotified = notifiedPlayers[opponentId];
+      
+      if (!lastNotified) return false;
+      
+      // Check if 2 hours have passed since last notification
+      const twoHoursAgo = Date.now() - (2 * 60 * 60 * 1000);
+      return new Date(lastNotified).getTime() > twoHoursAgo;
     } catch {
       return false;
     }
@@ -165,42 +185,65 @@ export const useProximityDetection = () => {
 
   const markPlayerAsNotified = async (opponentId: string) => {
     try {
-      // Temporarily disabled - requires proximity_notifications table
-      console.log('Mark notified: proximity_notifications table not available');
+      // Simple localStorage storage for demo
+      const notifiedPlayers = JSON.parse(localStorage.getItem('notifiedPlayers') || '{}');
+      notifiedPlayers[opponentId] = new Date().toISOString();
+      localStorage.setItem('notifiedPlayers', JSON.stringify(notifiedPlayers));
     } catch (error) {
       console.error('Erro ao marcar notificação:', error);
     }
   };
 
   const detectNearbyPlayers = async () => {
-    if (!isLocationEnabled || !isVisible) return;
+    console.log('🔧 detectNearbyPlayers called, isLocationEnabled:', isLocationEnabled, 'isVisible:', isVisible);
+    
+    if (!isLocationEnabled || !isVisible) {
+      console.log('🔧 Detection not enabled or not visible, returning');
+      return;
+    }
 
     try {
+      console.log('🔧 Getting current location...');
       const location = await getCurrentLocation();
+      console.log('🔧 Location obtained:', location);
       setCurrentLocation(location);
         
       await updateLocationInDatabase(location.lat, location.lng);
+      
+      console.log('🔧 Finding nearby players...');
       const nearby = await findNearbyPlayers(location.lat, location.lng);
+      console.log('🔧 Found players:', nearby);
         
       await cleanOldNotifications();
 
     } catch (error) {
-      console.error('Erro na detecção de proximidade:', error);
+      console.error('🔧 Erro na detecção de proximidade:', error);
     }
   };
 
   const startProximityDetection = async () => {
+    console.log('🔧 startProximityDetection called');
+    
     const hasPermission = await requestLocationPermission();
-    if (!hasPermission) return;
+    console.log('🔧 Permission result:', hasPermission);
+    
+    if (!hasPermission) {
+      console.log('🔧 No permission, returning');
+      return;
+    }
 
+    console.log('🔧 Setting isLocationEnabled to true');
     setIsLocationEnabled(true);
       
+    console.log('🔧 Starting first detection...');
     await detectNearbyPlayers();
       
+    console.log('🔧 Setting up interval');
     intervalRef.current = setInterval(detectNearbyPlayers, 30000);
   };
 
   const stopProximityDetection = () => {
+    console.log('🔧 stopProximityDetection called');
     setIsLocationEnabled(false);
     if (intervalRef.current) {
       clearInterval(intervalRef.current);

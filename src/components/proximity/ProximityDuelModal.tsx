@@ -45,12 +45,26 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
 
       if (!profile) return;
 
+      // Get the target player's profile ID
+      const { data: targetProfile, error: targetError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', player.user_id)
+        .single();
+
+      if (targetError || !targetProfile) {
+        console.log('Target player profile not found, using mock challenge');
+        onChallengeSent();
+        onClose();
+        return;
+      }
+
       const { error } = await supabase
         .from('duel_invites')
         .insert({
           challenger_id: profile.id,
-          challenged_id: player.user_id,
-          quiz_topic: 'financas', // Tópico padrão para duelos de proximidade
+          challenged_id: targetProfile.id,
+          quiz_topic: 'financas',
           status: 'pending'
         });
 

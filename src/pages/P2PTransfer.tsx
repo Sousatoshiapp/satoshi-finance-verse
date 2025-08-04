@@ -6,6 +6,7 @@ import { ReceiveBTZ } from "@/components/features/p2p-transfer/ReceiveBTZ";
 import { TransferHistory } from "@/components/features/p2p-transfer/TransferHistory";
 import { KYCRequiredOverlay } from "@/components/features/p2p-transfer/KYCRequiredOverlay";
 import { KYCVerification } from "@/components/features/kyc/KYCVerification";
+import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useI18n } from "@/hooks/use-i18n";
 import { useKYCStatus } from "@/hooks/use-kyc-status";
 
@@ -52,8 +53,9 @@ export default function P2PTransfer() {
             <TabsTrigger value="history">{t('p2p.tabs.history')}</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="send" className="mt-6">
+          <TabsContent value="send" className="mt-6 space-y-6">
             <SendBTZ />
+            <ProximityDetection />
           </TabsContent>
           
           <TabsContent value="receive" className="mt-6">
