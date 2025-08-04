@@ -15,6 +15,8 @@
     "online": "Online",
     "offline": "Offline",
     "viewAll": "View All",
+    "available": "AVAILABLE",
+    "new": "NEW!",
     "start": "Start",
     "end": "End",
     "edit": "Edit",
@@ -66,7 +68,9 @@
     "highestStreak": "Highest Streak",
     "postsCreated": "Posts Created",
     "likesReceived": "Likes Received",
-    "switchTo": "Switch to"
+    "switchTo": "Switch to",
+    "playground": "Playground",
+    "explore": "Explore"
   },
   "quiz": {
     "title": "Quiz",
@@ -237,7 +241,9 @@
     "experience": "Experience",
     "lessons": "Lessons",
     "xpBoost": "XP Boost",
-    "rankingBeetz": "Beetz Ranking"
+    "rankingBeetz": "Beetz Ranking",
+    "duelDescription": "Challenge other players in epic financial knowledge battles",
+    "playgroundDescription": "Practice investments, follow other players and build your empire"
   },
   "leaderboard": {
     "weeklyRankings": "Weekly Rankings",
@@ -574,7 +580,10 @@
     "noTournamentsAvailable": "No tournaments available at the moment",
     "noActiveTournaments": "No active tournaments at the moment",
     "noUpcomingTournaments": "No upcoming tournaments at the moment",
-    "noFinishedTournaments": "No finished tournaments at the moment"
+    "noFinishedTournaments": "No finished tournaments at the moment",
+    "prize": "Prize",
+    "startTournament": "Start Tournament",
+    "remaining": "Remaining"
   },
   "duels": {
     "duels": "Duels",

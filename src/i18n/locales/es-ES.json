@@ -15,7 +15,11 @@
     "online": "En línea",
     "offline": "Desconectado",
     "viewAll": "Ver Todo",
-    "switchTo": "Cambiar a"
+    "available": "DISPONIBLE",
+    "new": "¡NUEVO!",
+    "switchTo": "Cambiar a",
+    "playground": "Playground",
+    "explore": "Explorar"
   },
   "quiz": {
     "title": "Quiz",
@@ -186,7 +190,9 @@
     "experience": "Experiencia",
     "lessons": "Lecciones",
     "xpBoost": "Impulso XP",
-    "rankingBeetz": "Ranking Beetz"
+    "rankingBeetz": "Ranking Beetz",
+    "duelDescription": "Desafía a otros jugadores en batallas épicas de conocimiento financiero",
+    "playgroundDescription": "Practica inversiones, sigue a otros jugadores y construye tu imperio"
   },
   "leaderboard": {
     "weeklyRankings": "Clasificaciones Semanales",

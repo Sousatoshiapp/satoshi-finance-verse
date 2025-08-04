@@ -15,7 +15,11 @@
     "online": "ऑनलाइन",
     "offline": "ऑफलाइन",
     "viewAll": "सभी देखें",
-    "switchTo": "स्विच करें"
+    "available": "उपलब्ध",
+    "new": "नया!",
+    "switchTo": "स्विच करें",
+    "playground": "प्लेग्राउंड",
+    "explore": "एक्सप्लोर"
   },
   "quiz": {
     "title": "क्विज़",

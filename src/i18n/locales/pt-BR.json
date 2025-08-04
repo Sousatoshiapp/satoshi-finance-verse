@@ -15,6 +15,8 @@
     "online": "Online",
     "offline": "Offline",
     "viewAll": "Ver Todos",
+    "available": "DISPONÍVEL",
+    "new": "NOVO!",
     "start": "Início",
     "end": "Fim",
     "edit": "Editar",
@@ -237,7 +239,9 @@
     "experience": "Experiência",
     "lessons": "Lições",
     "xpBoost": "XP Boost",
-    "rankingBeetz": "Ranking Beetz"
+    "rankingBeetz": "Ranking Beetz",
+    "duelDescription": "Desafie outros jogadores em batalhas épicas de conhecimento financeiro",
+    "playgroundDescription": "Pratique investimentos, siga outros jogadores e construa seu império"
   },
   "leaderboard": {
     "weeklyRankings": "Rankings Semanais",
@@ -538,10 +542,13 @@
     "viewDetails": "Ver Detalhes",
     "viewResults": "Ver Resultados",
     "noTournamentsFound": "Nenhum torneio encontrado",
-    "noTournamentsAvailable": "Não há torneios disponíveis no momento",
+    "noTournamentsAvailable": "Nenhum torneio disponível no momento",
     "noActiveTournaments": "Não há torneios ativos no momento",
     "noUpcomingTournaments": "Não há torneios em breve no momento",
-    "noFinishedTournaments": "Não há torneios finalizados no momento"
+    "noFinishedTournaments": "Não há torneios finalizados no momento",
+    "prize": "Prêmio",
+    "startTournament": "Começar Torneio",
+    "remaining": "Restante"
   },
   "duels": {
     "duels": "Duelos",

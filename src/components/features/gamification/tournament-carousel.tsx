@@ -144,7 +144,7 @@ export function TournamentCarousel() {
       <div className="mb-8">
         <h3 className="text-xl font-bold text-foreground mb-4">{t('tournaments.epicTournaments')}</h3>
         <Card className="p-6 text-center">
-          <p className="text-muted-foreground">Nenhum torneio disponível no momento</p>
+          <p className="text-muted-foreground">{t('tournaments.noTournamentsAvailable')}</p>
         </Card>
       </div>
     );
@@ -206,8 +206,8 @@ export function TournamentCarousel() {
                           color: getStatusColor(tournament.status)
                         }}
                       >
-                        {tournament.status === 'active' ? 'ATIVO' : 
-                         tournament.status === 'upcoming' ? 'EM BREVE' : 'FINALIZADO'}
+                        {tournament.status === 'active' ? t('tournaments.active').toUpperCase() : 
+                         tournament.status === 'upcoming' ? t('tournaments.upcoming').toUpperCase() : t('tournaments.finished').toUpperCase()}
                       </Badge>
                     </div>
                     <h4 className="text-base font-bold text-foreground mb-2 truncate">
@@ -235,7 +235,7 @@ export function TournamentCarousel() {
                         {(tournament.prize_pool || 0).toLocaleString()}
                       </span>
                     </div>
-                    <div className="text-xs text-muted-foreground">Prêmio</div>
+                    <div className="text-xs text-muted-foreground">{t('tournaments.prize')}</div>
                   </div>
                   <div>
                     <div className="flex items-center justify-center gap-1 text-info mb-1">
@@ -244,7 +244,7 @@ export function TournamentCarousel() {
                         {tournament.participants_count || 0}/{tournament.max_participants || 100}
                       </span>
                     </div>
-                    <div className="text-xs text-muted-foreground">Jogadores</div>
+                    <div className="text-xs text-muted-foreground">{t('tournaments.players')}</div>
                   </div>
                   <div>
                     <div className="flex items-center justify-center gap-1 text-warning mb-1">
@@ -253,7 +253,7 @@ export function TournamentCarousel() {
                         {formatTimeRemaining(tournament.end_date)}
                       </span>
                     </div>
-                    <div className="text-xs text-muted-foreground">Restante</div>
+                    <div className="text-xs text-muted-foreground">{t('tournaments.remaining')}</div>
                   </div>
                 </div>
 
@@ -264,7 +264,7 @@ export function TournamentCarousel() {
                     navigate(`/tournament-quiz/${tournament.id}`);
                   }}
                 >
-                  {tournament.status === 'active' ? 'Começar Torneio' : 'Ver Detalhes'}
+                  {tournament.status === 'active' ? t('tournaments.startTournament') : t('tournaments.viewDetails')}
                 </Button>
               </div>
             </Card>

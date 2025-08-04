@@ -29,12 +29,12 @@ export function DuelPlaygroundGrid() {
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold text-foreground text-lg">{t('duels.financialDuel')}</h4>
             <span className="text-xs text-primary font-bold bg-primary/20 px-2 py-1 rounded">
-              DISPONÍVEL
+              {t('common.available')}
             </span>
           </div>
           
           <p className="text-sm text-muted-foreground mb-4">
-            Desafie outros jogadores em batalhas épicas de conhecimento financeiro
+            {t('dashboard.duelDescription')}
           </p>
           
           <div className="grid grid-cols-3 gap-2 text-center text-xs mb-4">
@@ -76,12 +76,12 @@ export function DuelPlaygroundGrid() {
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold text-foreground text-lg">{t('common.playground')}</h4>
             <span className="text-xs text-success font-bold bg-success/20 px-2 py-1 rounded">
-              NOVO!
+              {t('common.new')}
             </span>
           </div>
           
           <p className="text-sm text-muted-foreground mb-4">
-            Pratique investimentos, siga outros jogadores e construa seu império
+            {t('dashboard.playgroundDescription')}
           </p>
           
           <div className="grid grid-cols-3 gap-2 text-center text-xs mb-4">

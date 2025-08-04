@@ -15,7 +15,11 @@
     "online": "متصل",
     "offline": "غير متصل",
     "viewAll": "عرض الكل",
-    "switchTo": "التبديل إلى"
+    "available": "متاح",
+    "new": "جديد!",
+    "switchTo": "التبديل إلى",
+    "playground": "الملعب",
+    "explore": "استكشف"
   },
   "quiz": {
     "title": "اختبار",
