@@ -312,7 +312,7 @@
     "studyReminder": "تذكير للدراسة كل يوم",
     "interactionSounds": "أصوات التفاعل والإنجازات",
     "darkInterface": "واجهة بالمظهر المظلم",
-    "aboutSatoshi": "حول ساتوشي",
+    "aboutSatoshi": "Satoshi 2025",
     "gameVersion": "لعبة المالية",
     "header": {
       "profile": "الملف الشخصي",
@@ -332,7 +332,11 @@
     },
     "app": {
       "version": "الإصدار 1.0.0",
-      "description": "لعبة المالية"
+      "description": "منصة تعليمية شاملة للاختبارات حول البيتكوين والعملات المشفرة"
+    },
+    "contact": {
+      "email": "البريد الإلكتروني: suporte@sousatoshi.com",
+      "telegram": "تيليجرام: @satoshisupport"
     }
   },
   "missions": {

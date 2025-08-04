@@ -417,8 +417,16 @@
     "studyReminder": "Lembrete para estudar todos os dias",
     "interactionSounds": "Sons de interação e conquistas",
     "darkInterface": "Interface com tema escuro",
-    "aboutSatoshi": "Sobre o Satoshi",
-    "gameVersion": "O game das finanças"
+    "aboutSatoshi": "Satoshi 2025",
+    "gameVersion": "O game das finanças",
+    "app": {
+      "version": "versão 1.0.0",
+      "description": "Uma plataforma completa de quiz educacional sobre Bitcoin e criptomoedas"
+    },
+    "contact": {
+      "email": "Email: suporte@sousatoshi.com",
+      "telegram": "Telegram: @satoshisupport"
+    }
   },
   "missions": {
     "dailyMissions": "Missões Diárias",

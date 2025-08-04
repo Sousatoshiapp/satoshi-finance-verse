@@ -607,7 +607,7 @@
     "studyReminder": "हर दिन अध्ययन करने की अनुस्मारक",
     "interactionSounds": "इंटरैक्शन और उपलब्धि ध्वनियां",
     "darkInterface": "डार्क थीम इंटरफेस",
-    "aboutSatoshi": "सातोशी के बारे में",
+    "aboutSatoshi": "Satoshi 2025",
     "gameVersion": "वित्त का खेल",
     "header": {
       "profile": "प्रोफ़ाइल",
@@ -627,7 +627,11 @@
     },
     "app": {
       "version": "संस्करण 1.0.0",
-      "description": "वित्त का खेल"
+      "description": "बिटकॉइन और क्रिप्टोकरेंसी के बारे में एक पूर्ण शैक्षिक क्विज प्लेटफॉर्म"
+    },
+    "contact": {
+      "email": "ईमेल: suporte@sousatoshi.com",
+      "telegram": "टेलीग्राम: @satoshisupport"
     }
   },
   "missions": {

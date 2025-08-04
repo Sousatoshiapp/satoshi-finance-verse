@@ -366,7 +366,7 @@ export default function Settings() {
         {/* Salvar */}
         <Card className="p-6">
           <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
-            {loading ? "Salvando..." : "💾 Salvar Configurações"}
+            {loading ? t('settings.buttons.saving') : t('settings.buttons.saveSettings')}
           </Button>
         </Card>
 
@@ -379,7 +379,7 @@ export default function Settings() {
               onClick={handleLogout}
               className="w-full"
             >
-              🚪 Sair
+              {t('settings.buttons.logout')}
             </Button>
           </div>
         </Card>
@@ -392,8 +392,8 @@ export default function Settings() {
             {t('settings.app.description')}
           </p>
           <div className="text-sm text-muted-foreground">
-            <p>Email: suporte@satoshi.app</p>
-            <p>Telegram: @satoshisupport</p>
+            <p>{t('settings.contact.email')}</p>
+            <p>{t('settings.contact.telegram')}</p>
           </div>
         </Card>
 

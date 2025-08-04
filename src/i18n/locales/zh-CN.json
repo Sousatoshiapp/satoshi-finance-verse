@@ -657,7 +657,7 @@
     "studyReminder": "每天学习提醒",
     "interactionSounds": "交互和成就音效",
     "darkInterface": "暗黑主题界面",
-    "aboutSatoshi": "关于中本聪",
+    "aboutSatoshi": "Satoshi 2025",
     "gameVersion": "金融游戏",
     "header": {
       "profile": "资料",
@@ -677,7 +677,11 @@
     },
     "app": {
       "version": "版本 1.0.0",
-      "description": "金融游戏"
+      "description": "关于比特币和加密货币的完整教育测验平台"
+    },
+    "contact": {
+      "email": "邮箱: suporte@sousatoshi.com",
+      "telegram": "电报: @satoshisupport"
     }
   },
   "missions": {
