@@ -108,28 +108,8 @@ export const useProximityDetection = () => {
 
   const updateLocationInDatabase = async (lat: number, lng: number) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, nickname')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!profile) return;
-
-      await supabase
-        .from('user_locations')
-        .upsert({
-          user_id: profile.id,
-          nickname: profile.nickname,
-          latitude: lat,
-          longitude: lng,
-          is_visible: isVisible,
-          updated_at: new Date().toISOString()
-        });
-
+      // Temporarily disabled - requires user_locations table
+      console.log('Location update: user_locations table not available');
     } catch (error) {
       console.error('Erro ao atualizar localização:', error);
     }
@@ -137,39 +117,10 @@ export const useProximityDetection = () => {
 
   const findNearbyPlayers = async (userLat: number, userLng: number) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!profile) return;
-
-      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-
-      const { data: locations } = await supabase
-        .from('user_locations')
-        .select('*')
-        .eq('is_visible', true)
-        .neq('user_id', profile.id)
-        .gte('updated_at', fiveMinutesAgo);
-
-      if (!locations) return;
-
-      const nearby = locations
-        .map(location => ({
-          ...location,
-          distance: calculateDistance(userLat, userLng, location.latitude, location.longitude)
-        }))
-        .filter(player => player.distance <= 500)
-        .sort((a, b) => a.distance - b.distance);
-
-      setNearbyPlayers(nearby);
-      return nearby;
-
+      // Temporarily disabled - requires user_locations table
+      console.log('Find nearby players: user_locations table not available');
+      setNearbyPlayers([]);
+      return [];
     } catch (error) {
       console.error('Erro ao buscar jogadores próximos:', error);
       return [];
@@ -177,37 +128,15 @@ export const useProximityDetection = () => {
   };
 
   const cleanOldNotifications = async () => {
-    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-    await supabase
-      .from('proximity_notifications')
-      .delete()
-      .lt('notified_at', twoHoursAgo);
+    // Temporarily disabled - requires proximity_notifications table
+    console.log('Clean notifications: proximity_notifications table not available');
   };
 
   const wasPlayerNotified = async (opponentId: string): Promise<boolean> => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return true;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!profile) return true;
-
-      const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-
-      const { data } = await supabase
-        .from('proximity_notifications')
-        .select('id')
-        .eq('challenger_id', profile.id)
-        .eq('opponent_id', opponentId)
-        .gte('notified_at', twoHoursAgo)
-        .single();
-
-      return !!data;
+      // Temporarily disabled - requires proximity_notifications table
+      console.log('Check notification: proximity_notifications table not available');
+      return false;
     } catch {
       return false;
     }
@@ -215,24 +144,8 @@ export const useProximityDetection = () => {
 
   const markPlayerAsNotified = async (opponentId: string) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!profile) return;
-
-      await supabase
-        .from('proximity_notifications')
-        .upsert({
-          challenger_id: profile.id,
-          opponent_id: opponentId,
-          notified_at: new Date().toISOString()
-        });
+      // Temporarily disabled - requires proximity_notifications table
+      console.log('Mark notified: proximity_notifications table not available');
     } catch (error) {
       console.error('Erro ao marcar notificação:', error);
     }

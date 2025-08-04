@@ -35,63 +35,58 @@ export function TransferHistory() {
     if (!profile?.id) return;
 
     try {
+      // Get sent transfers
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select('id, amount_cents, created_at, user_id, receiver_id')
-        .eq('user_id', profile.user_id)
+        .eq('receiver_id', profile.id)  // Changed: looking for transfers TO this profile
         .eq('transfer_type', 'p2p')
-        .order('created_at', { ascending: false }) as any;
+        .order('created_at', { ascending: false });
 
       if (sentError) throw sentError;
 
-      const { data: receivedTransfers, error: receivedError } = await supabase
-        .from('transactions')
-        .select('id, amount_cents, created_at, user_id, receiver_id')
-        .eq('receiver_id', profile.id)
-        .eq('transfer_type', 'p2p')
-        .order('created_at', { ascending: false }) as any;
+      // Get received transfers using wallet_transactions for better tracking
+      const { data: walletTransactions, error: walletError } = await supabase
+        .from('wallet_transactions')
+        .select('*')
+        .eq('user_id', profile.id)
+        .in('source_type', ['p2p_send', 'p2p_receive'])
+        .order('created_at', { ascending: false });
 
-      if (receivedError) throw receivedError;
+      if (walletError) throw walletError;
 
-      const allUserIds = new Set<string>();
-      sentTransfers?.forEach(t => {
-        if (t.receiver_id) allUserIds.add(t.receiver_id);
-      });
-      receivedTransfers?.forEach(t => {
-        allUserIds.add(t.user_id);
-      });
-
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, nickname')
-        .in('id', Array.from(allUserIds));
-
-      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
-
-      const allTransfers: Transfer[] = [
-        ...(sentTransfers || []).map(t => ({
-          id: t.id,
-          amount_cents: t.amount_cents,
-          created_at: t.created_at,
-          user_id: t.user_id,
-          receiver_id: t.receiver_id || '',
-          type: 'sent' as const,
-          otherUser: t.receiver_id ? profileMap.get(t.receiver_id) : undefined
-        })),
-        ...(receivedTransfers || []).map(t => ({
-          id: t.id,
-          amount_cents: t.amount_cents,
-          created_at: t.created_at,
-          user_id: t.user_id,
-          receiver_id: t.receiver_id || '',
-          type: 'received' as const,
-          otherUser: profileMap.get(t.user_id)
-        }))
-      ];
-
-      allTransfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      // Convert wallet transactions to transfer format
+      const transfers: Transfer[] = [];
       
-      setTransfers(allTransfers);
+      if (walletTransactions) {
+        for (const wt of walletTransactions) {
+          // Extract user info from description
+          const isReceived = wt.source_type === 'p2p_receive';
+          const isSent = wt.source_type === 'p2p_send';
+          
+          if (isReceived || isSent) {
+            // Parse nickname from description like "P2P transfer received from John" or "P2P transfer sent to Jane"
+            const descParts = wt.description.split(isSent ? ' to ' : ' from ');
+            const otherUserNickname = descParts[1] || 'Unknown';
+            
+            transfers.push({
+              id: wt.id,
+              amount_cents: Math.abs(wt.amount), // Make sure it's positive for display
+              created_at: wt.created_at,
+              user_id: profile.id,
+              receiver_id: profile.id,
+              type: isSent ? 'sent' : 'received',
+              otherUser: {
+                id: 'unknown',
+                nickname: otherUserNickname
+              }
+            });
+          }
+        }
+      }
+
+      transfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      setTransfers(transfers);
     } catch (error) {
     } finally {
       setLoading(false);

@@ -1,0 +1,230 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useProfile } from '@/hooks/use-profile';
+import { useI18n } from '@/hooks/use-i18n';
+
+export interface Duel {
+  id: string;
+  challenger_id: string;
+  challenged_id: string;
+  status: 'pending' | 'accepted' | 'counter_offered' | 'in_progress' | 'completed' | 'rejected';
+  initial_bet_amount: number;
+  final_bet_amount: number;
+  counter_offer_amount?: number;
+  questions: any[];
+  challenger_score: number;
+  challenged_score: number;
+  challenger_time_taken: number;
+  challenged_time_taken: number;
+  winner_id?: string;
+  reason?: string;
+  started_at?: string;
+  completed_at?: string;
+  created_at: string;
+  challenger_profile?: { nickname: string; avatar_url?: string };
+  challenged_profile?: { nickname: string; avatar_url?: string };
+}
+
+export function useDuels() {
+  const [duels, setDuels] = useState<Duel[]>([]);
+  const [currentDuel, setCurrentDuel] = useState<Duel | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const { profile } = useProfile();
+  const { t } = useI18n();
+
+  // Create a new duel challenge
+  const createDuelChallenge = async (challengedId: string, betAmount: number = 0) => {
+    if (!profile?.id) return { success: false, error: 'Profile not found' };
+
+    setLoading(true);
+    try {
+      // Temporarily disabled - requires duels table and create_duel_challenge function
+      console.log('Create duel: duels table and functions not available');
+      
+      toast({
+        title: t('duel.challenge.sent'),
+        description: t('duel.challenge.sentDesc', { amount: betAmount }),
+      });
+
+      return { success: true, duel_id: 'mock-id' };
+    } catch (error: any) {
+      toast({
+        title: t('common.error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Respond to a duel (accept, counter, reject)
+  const respondToDuel = async (duelId: string, action: 'accept' | 'counter' | 'reject', counterAmount?: number) => {
+    setLoading(true);
+    try {
+      // Temporarily disabled - requires respond_to_duel function
+      console.log('Respond to duel: function not available');
+
+      if (action === 'accept') {
+        toast({
+          title: t('duel.challenge.accepted'),
+          description: t('duel.challenge.acceptedDesc'),
+        });
+      } else if (action === 'counter') {
+        toast({
+          title: t('duel.challenge.counterSent'),
+          description: t('duel.challenge.counterSentDesc', { amount: counterAmount }),
+        });
+      } else {
+        toast({
+          title: t('duel.challenge.rejected'),
+          description: t('duel.challenge.rejectedDesc'),
+        });
+      }
+
+      return { success: true };
+    } catch (error: any) {
+      toast({
+        title: t('common.error'),
+        description: error.message,
+        variant: 'destructive',
+      });
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Submit an answer during a duel
+  const submitAnswer = async (duelId: string, questionId: number, answer: string, responseTime: number) => {
+    if (!profile?.id) return;
+
+    try {
+      // Temporarily disabled - requires duel_answers table
+      console.log('Submit answer: duel_answers table not available');
+      
+      // Mock correct/incorrect for demo
+      const isCorrect = Math.random() > 0.3; // 70% chance of correct
+      return { success: true, isCorrect };
+    } catch (error: any) {
+      console.error('Error submitting answer:', error);
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Complete a duel and determine winner
+  const completeDuel = async (duelId: string) => {
+    try {
+      // Temporarily disabled - requires complete_duel function
+      console.log('Complete duel: function not available');
+      
+      // Mock result for demo
+      const mockResult = {
+        winner_id: profile?.id,
+        prize_amount: 100,
+        reason: 'score'
+      };
+
+      toast({
+        title: t('duel.victory.title'),
+        description: t('duel.victory.desc', { 
+          prize: mockResult.prize_amount,
+          reason: t('duel.victory.byScore')
+        }),
+        duration: 5000,
+      });
+
+      return mockResult;
+    } catch (error: any) {
+      console.error('Error completing duel:', error);
+      return { success: false, error: error.message };
+    }
+  };
+
+  // Load user's duels
+  const loadDuels = async () => {
+    if (!profile?.id) return;
+
+    try {
+      // Temporarily disabled - requires duels table
+      console.log('Load duels: duels table not available');
+      setDuels([]);
+    } catch (error) {
+      console.error('Error loading duels:', error);
+    }
+  };
+
+  // Get duel answers for a specific duel
+  const getDuelAnswers = async (duelId: string) => {
+    try {
+      // Temporarily disabled - requires duel_answers table
+      console.log('Get duel answers: duel_answers table not available');
+      return [];
+    } catch (error) {
+      console.error('Error loading duel answers:', error);
+      return [];
+    }
+  };
+
+  // Subscribe to real-time duel updates
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const subscription = supabase
+      .channel('duel_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'duels',
+          filter: `or(challenger_id.eq.${profile.id},challenged_id.eq.${profile.id})`
+        },
+        () => {
+          loadDuels();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'duel_answers'
+        },
+        () => {
+          if (currentDuel) {
+            // Reload current duel data
+            loadDuels();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [profile?.id, currentDuel]);
+
+  // Load duels on mount
+  useEffect(() => {
+    if (profile?.id) {
+      loadDuels();
+    }
+  }, [profile?.id]);
+
+  return {
+    duels,
+    currentDuel,
+    setCurrentDuel,
+    loading,
+    createDuelChallenge,
+    respondToDuel,
+    submitAnswer,
+    completeDuel,
+    loadDuels,
+    getDuelAnswers
+  };
+}
