@@ -43,15 +43,44 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      const { error } = await supabase
+      // Primeiro tenta atualizar um registro existente
+      const { error: updateError } = await supabase
         .from('user_presence')
-        .upsert({
+        .update({
+          last_seen: new Date().toISOString(),
+          is_online: true,
+        })
+        .eq('user_id', profile.id);
+
+      // Se não houver erro no update, significa que o registro foi atualizado
+      if (!updateError) {
+        return;
+      }
+
+      // Se o update falhou (provavelmente porque não existe registro), tenta inserir
+      const { error: insertError } = await supabase
+        .from('user_presence')
+        .insert({
           user_id: profile.id,
           last_seen: new Date().toISOString(),
           is_online: true,
         });
-      
-      if (error) throw error;
+
+      // Se o insert também falhar (porque outro processo criou o registro), 
+      // tenta update novamente
+      if (insertError && insertError.code === '23505') {
+        const { error: secondUpdateError } = await supabase
+          .from('user_presence')
+          .update({
+            last_seen: new Date().toISOString(),
+            is_online: true,
+          })
+          .eq('user_id', profile.id);
+          
+        if (secondUpdateError) throw secondUpdateError;
+      } else if (insertError) {
+        throw insertError;
+      }
     } catch (error) {
       console.error('Error updating online status:', error);
     }
