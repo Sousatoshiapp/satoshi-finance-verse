@@ -26,6 +26,7 @@ import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import { useCrisisState } from "@/hooks/use-crisis-state";
 import { LanguageSwitch } from "@/components/shared/language-switch";
 import { useI18n } from "@/hooks/use-i18n";
+import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 
 
 const getGreeting = (t: any) => {
@@ -368,6 +369,11 @@ export default function Dashboard() {
           
           <div className="mb-6">
             <DuelPlaygroundGrid />
+          </div>
+
+          {/* Proximity Detection */}
+          <div className="mb-6">
+            <ProximityDetection />
           </div>
 
         </div>
