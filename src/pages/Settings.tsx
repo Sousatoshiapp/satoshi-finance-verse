@@ -392,7 +392,7 @@ export default function Settings() {
             {t('settings.app.description')}
           </p>
           <div className="text-sm text-muted-foreground">
-            <p>Email: suporte@satoshi.app</p>
+            <p>Email: suporte@sousatoshi.com</p>
             <p>Telegram: @satoshisupport</p>
           </div>
         </Card>

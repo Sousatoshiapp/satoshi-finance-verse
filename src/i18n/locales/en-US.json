@@ -256,6 +256,9 @@
     "pointsPerDuel": "+100 pts per Duel"
   },
   "profile": {
+    "header": {
+      "profile": "Profile"
+    },
     "userProfile": "User Profile",
     "achievements": "Achievements",
     "statistics": "Statistics",
@@ -495,7 +498,7 @@
       "logout": "Logout"
     },
     "app": {
-      "version": "App Version",
+      "version": "App Version 1.0.0",
       "description": "FinGame - Learn finance by playing"
     },
     "emailChange": {

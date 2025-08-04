@@ -333,6 +333,9 @@
     }
   },
   "profile": {
+    "header": {
+      "profile": "资料"
+    },
     "userProfile": "用户资料",
     "achievements": "成就",
     "statistics": "统计",
@@ -710,8 +713,8 @@
       "logout": "🚪 登出"
     },
     "app": {
-      "version": "版本 1.0.0",
-      "description": "金融游戏"
+      "version": "应用版本 1.0.0",
+      "description": "FinGame - 游戏化学习金融"
     }
   },
   "missions": {
