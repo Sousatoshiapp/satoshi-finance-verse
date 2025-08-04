@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
       VITE_APP_URL: "http://localhost:8080",
       VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co",
       VITE_PERSONA_ENVIRONMENT_ID: "env_wi6mxC93nGVwXz8AtNkt4oCwegMj",
-      VITE_PERSONA_TEMPLATE_ID: "TEMPLATE_ID_NEEDED"
+      VITE_PERSONA_TEMPLATE_ID: "vtmpl_48WRTb1itWfoT1jmXSHLtpuLoUC5"
     },
     staging: {
       VITE_SUPABASE_URL: "https://uabdmohhzsertxfishoh.supabase.co",
@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
       VITE_APP_URL: "https://staging.satoshifinance.com",
       VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co",
       VITE_PERSONA_ENVIRONMENT_ID: "env_wi6mxC93nGVwXz8AtNkt4oCwegMj",
-      VITE_PERSONA_TEMPLATE_ID: "TEMPLATE_ID_NEEDED"
+      VITE_PERSONA_TEMPLATE_ID: "vtmpl_48WRTb1itWfoT1jmXSHLtpuLoUC5"
     },
     production: {
       VITE_SUPABASE_URL: "https://uabdmohhzsertxfishoh.supabase.co",
@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
       VITE_APP_URL: "https://app.satoshifinance.com",
       VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co",
       VITE_PERSONA_ENVIRONMENT_ID: "env_wi6mxC93nGVwXz8AtNkt4oCwegMj",
-      VITE_PERSONA_TEMPLATE_ID: "TEMPLATE_ID_NEEDED"
+      VITE_PERSONA_TEMPLATE_ID: "vtmpl_48WRTb1itWfoT1jmXSHLtpuLoUC5"
     }
   };
 
