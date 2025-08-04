@@ -19,9 +19,14 @@ export function ReceiveBTZ() {
   const { t } = useI18n();
   
   useP2PNotifications((amount, senderNickname) => {
+    console.log('🔔 ReceiveBTZ: Callback triggered', { amount, senderNickname });
     setLatestTransfer({ amount, senderNickname });
     setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 5000);
+    console.log('👁️ ReceiveBTZ: Visual notification state set to true');
+    setTimeout(() => {
+      console.log('⏰ ReceiveBTZ: Auto-hiding notification after 5 seconds');
+      setShowNotification(false);
+    }, 5000);
   });
 
   useEffect(() => {
