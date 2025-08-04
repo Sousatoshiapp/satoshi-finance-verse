@@ -441,12 +441,53 @@
     },
     "buttons": {
       "saving": "Guardando...",
-      "saveSettings": "💾 Guardar Configuración",
-      "logout": "🚪 Cerrar Sesión"
+      "saveSettings": "Guardar Configuración",
+      "logout": "Cerrar Sesión"
     },
     "app": {
-      "version": "Versión 1.0.0",
-      "description": "El juego de las finanzas"
+      "version": "Versión de la App",
+      "description": "FinGame - Aprende finanzas jugando"
+    },
+    "emailChange": {
+      "title": "Cambiar Email",
+      "confirmTitle": "Confirmar Cambio",
+      "currentEmail": "Email Actual",
+      "newEmail": "Nuevo Email",
+      "confirmEmail": "Confirmar Nuevo Email",
+      "newEmailPlaceholder": "Ingrese el nuevo email",
+      "confirmEmailPlaceholder": "Confirme el nuevo email",
+      "emailMismatch": "Los emails no coinciden",
+      "invalidEmail": "Ingrese un email válido",
+      "sameEmail": "El nuevo email debe ser diferente al actual",
+      "success": "Éxito",
+      "successDescription": "¡Solicitud de cambio enviada! Verifique el email {{email}} para confirmar el cambio.",
+      "error": "Error",
+      "errorDescription": "No se pudo cambiar el email",
+      "confirmQuestion": "¿Está seguro de que desea cambiar su email de:",
+      "to": "a:",
+      "confirmationNote": "Se enviará un email de confirmación a la nueva dirección.",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "confirmChange": "Confirmar Cambio",
+      "sending": "Enviando..."
+    },
+    "passwordChange": {
+      "title": "Cambiar Contraseña",
+      "currentPassword": "Contraseña Actual",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Nueva Contraseña",
+      "currentPasswordPlaceholder": "Ingrese su contraseña actual",
+      "newPasswordPlaceholder": "Ingrese la nueva contraseña",
+      "confirmPasswordPlaceholder": "Confirme la nueva contraseña",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La nueva contraseña debe tener al menos 6 caracteres",
+      "success": "Éxito",
+      "successDescription": "¡Contraseña cambiada exitosamente! Se ha enviado un email de confirmación.",
+      "error": "Error",
+      "errorDescription": "No se pudo cambiar la contraseña",
+      "changing": "Cambiando...",
+      "changePassword": "Cambiar Contraseña",
+      "back": "Atrás"
     }
   },
   "missions": {
@@ -516,49 +557,6 @@
     "emailResentSuccessDescription": "Verifique su bandeja de entrada nuevamente",
     "resendError": "Error",
     "resendErrorDescription": "No se pudo reenviar el email"
-  },
-  "settings": {
-    "emailChange": {
-      "title": "Cambiar Email",
-      "confirmTitle": "Confirmar Cambio",
-      "currentEmail": "Email Actual",
-      "newEmail": "Nuevo Email",
-      "confirmEmail": "Confirmar Nuevo Email",
-      "newEmailPlaceholder": "Ingrese el nuevo email",
-      "confirmEmailPlaceholder": "Confirme el nuevo email",
-      "emailMismatch": "Los emails no coinciden",
-      "invalidEmail": "Ingrese un email válido",
-      "sameEmail": "El nuevo email debe ser diferente al actual",
-      "success": "Éxito",
-      "successDescription": "¡Solicitud de cambio enviada! Verifique el email {{email}} para confirmar el cambio.",
-      "error": "Error",
-      "errorDescription": "No se pudo cambiar el email",
-      "confirmQuestion": "¿Está seguro de que desea cambiar su email de:",
-      "to": "a:",
-      "confirmationNote": "Se enviará un email de confirmación a la nueva dirección.",
-      "back": "Atrás",
-      "continue": "Continuar",
-      "confirmChange": "Confirmar Cambio",
-      "sending": "Enviando..."
-    },
-    "passwordChange": {
-      "title": "Cambiar Contraseña",
-      "currentPassword": "Contraseña Actual",
-      "newPassword": "Nueva Contraseña",
-      "confirmPassword": "Confirmar Nueva Contraseña",
-      "currentPasswordPlaceholder": "Ingrese su contraseña actual",
-      "newPasswordPlaceholder": "Ingrese la nueva contraseña",
-      "confirmPasswordPlaceholder": "Confirme la nueva contraseña",
-      "passwordMismatch": "Las contraseñas no coinciden",
-      "passwordTooShort": "La nueva contraseña debe tener al menos 6 caracteres",
-      "success": "Éxito",
-      "successDescription": "¡Contraseña cambiada exitosamente! Se ha enviado un email de confirmación.",
-      "error": "Error",
-      "errorDescription": "No se pudo cambiar la contraseña",
-      "changing": "Cambiando...",
-      "changePassword": "Cambiar Contraseña",
-      "back": "Atrás"
-    }
   },
   "duels": {
     "duels": "Duelos",

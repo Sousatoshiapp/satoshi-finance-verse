@@ -457,12 +457,53 @@
     },
     "buttons": {
       "saving": "Saving...",
-      "saveSettings": "💾 Save Settings",
-      "logout": "🚪 Logout"
+      "saveSettings": "Save Settings",
+      "logout": "Logout"
     },
     "app": {
-      "version": "Version 1.0.0",
-      "description": "The finance game"
+      "version": "App Version",
+      "description": "FinGame - Learn finance by playing"
+    },
+    "emailChange": {
+      "title": "Change Email",
+      "confirmTitle": "Confirm Change",
+      "currentEmail": "Current Email",
+      "newEmail": "New Email",
+      "confirmEmail": "Confirm New Email",
+      "newEmailPlaceholder": "Enter new email",
+      "confirmEmailPlaceholder": "Confirm new email",
+      "emailMismatch": "Emails do not match",
+      "invalidEmail": "Please enter a valid email",
+      "sameEmail": "New email must be different from current",
+      "success": "Success",
+      "successDescription": "Change request sent! Check email {{email}} to confirm the change.",
+      "error": "Error",
+      "errorDescription": "Could not change email",
+      "confirmQuestion": "Are you sure you want to change your email from:",
+      "to": "to:",
+      "confirmationNote": "A confirmation email will be sent to the new address.",
+      "back": "Back",
+      "continue": "Continue",
+      "confirmChange": "Confirm Change",
+      "sending": "Sending..."
+    },
+    "passwordChange": {
+      "title": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "currentPasswordPlaceholder": "Enter your current password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "New password must be at least 6 characters",
+      "success": "Success",
+      "successDescription": "Password changed successfully! A confirmation email has been sent.",
+      "error": "Error",
+      "errorDescription": "Could not change password",
+      "changing": "Changing...",
+      "changePassword": "Change Password",
+      "back": "Back"
     }
   },
   "missions": {
@@ -677,49 +718,6 @@
     "emailResentSuccessDescription": "Please check your inbox again",
     "resendError": "Error",
     "resendErrorDescription": "Could not resend email"
-  },
-  "settings": {
-    "emailChange": {
-      "title": "Change Email",
-      "confirmTitle": "Confirm Change",
-      "currentEmail": "Current Email",
-      "newEmail": "New Email",
-      "confirmEmail": "Confirm New Email",
-      "newEmailPlaceholder": "Enter new email",
-      "confirmEmailPlaceholder": "Confirm new email",
-      "emailMismatch": "Emails do not match",
-      "invalidEmail": "Please enter a valid email",
-      "sameEmail": "New email must be different from current",
-      "success": "Success",
-      "successDescription": "Change request sent! Check email {{email}} to confirm the change.",
-      "error": "Error",
-      "errorDescription": "Could not change email",
-      "confirmQuestion": "Are you sure you want to change your email from:",
-      "to": "to:",
-      "confirmationNote": "A confirmation email will be sent to the new address.",
-      "back": "Back",
-      "continue": "Continue",
-      "confirmChange": "Confirm Change",
-      "sending": "Sending..."
-    },
-    "passwordChange": {
-      "title": "Change Password",
-      "currentPassword": "Current Password",
-      "newPassword": "New Password",
-      "confirmPassword": "Confirm New Password",
-      "currentPasswordPlaceholder": "Enter your current password",
-      "newPasswordPlaceholder": "Enter new password",
-      "confirmPasswordPlaceholder": "Confirm new password",
-      "passwordMismatch": "Passwords do not match",
-      "passwordTooShort": "New password must be at least 6 characters",
-      "success": "Success",
-      "successDescription": "Password changed successfully! A confirmation email has been sent.",
-      "error": "Error",
-      "errorDescription": "Could not change password",
-      "changing": "Changing...",
-      "changePassword": "Change Password",
-      "back": "Back"
-    }
   },
   "admin": {
     "systemSettings": "System Settings",
