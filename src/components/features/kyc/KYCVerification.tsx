@@ -40,13 +40,26 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
       return;
     }
 
+    const templateId = import.meta.env.VITE_PERSONA_TEMPLATE_ID;
+    const environmentId = import.meta.env.VITE_PERSONA_ENVIRONMENT_ID;
+
+    if (!templateId || templateId === 'TEMPLATE_ID_NEEDED') {
+      setError('Persona template ID not configured. Please contact support.');
+      return;
+    }
+
+    if (!environmentId) {
+      setError('Persona environment ID not configured. Please contact support.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
       const client = new (window as any).Persona.Client({
-        templateId: import.meta.env.VITE_PERSONA_TEMPLATE_ID,
-        environmentId: import.meta.env.VITE_PERSONA_ENVIRONMENT_ID,
+        templateId,
+        environmentId,
         referenceId: profile?.id,
         onComplete: async ({ inquiryId }: { inquiryId: string }) => {
           try {
