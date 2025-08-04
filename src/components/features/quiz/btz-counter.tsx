@@ -125,10 +125,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               <span className="text-black font-bold text-sm md:text-lg">B</span>
             </div>
             <div className="flex items-center gap-1 md:gap-2">
-              <span className="text-2xl md:text-4xl font-mono font-bold text-foreground">
+              <span className="text-3xl md:text-5xl font-mono font-bold text-foreground">
                 {displayBTZ.toLocaleString()}
               </span>
-              <span className="text-xl md:text-3xl text-muted-foreground font-medium">BTZ</span>
+              <span className="text-2xl md:text-4xl text-muted-foreground font-medium">BTZ</span>
               
               {/* Trend Arrow */}
               {showTrend && currentBTZ !== previousBTZ && (
