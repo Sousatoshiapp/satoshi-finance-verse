@@ -64,7 +64,7 @@ export function useBluetoothProximityTransfer(options: BluetoothProximityOptions
       // Simulate finding nearby users for demo
       setTimeout(() => {
         const mockUser: NearbyUser = {
-          id: 'demo-user-123',
+          id: '9d54e409-69b1-4f2f-8f0c-6ba8d62e5ff4', // Using real user ID
           nickname: 'Demo User',
           deviceId: 'mock-device-123',
           rssi: -45
@@ -102,7 +102,7 @@ export function useBluetoothProximityTransfer(options: BluetoothProximityOptions
   const readUserDataFromDevice = async (deviceId: string) => {
     // Mock implementation - in production would use BleClient to read device data
     return {
-      id: 'demo-user-123',
+      id: '9d54e409-69b1-4f2f-8f0c-6ba8d62e5ff4', // Using real user ID
       nickname: 'Demo User',
       avatar_url: null,
       app_id: 'satoshi_finance_verse'

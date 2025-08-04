@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
@@ -33,14 +33,7 @@ export default function ProximityTransferBluetooth() {
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  const {
-    isScanning,
-    isAdvertising,
-    startProximityDetection,
-    stopProximityDetection,
-    sendTransferRequest,
-    error: proximityError
-  } = useBluetoothProximityTransfer({
+  const bluetoothOptions = useMemo(() => ({
     onUserDetected: (user: NearbyUser) => {
       setNearbyUsers(prev => {
         const exists = prev.find(u => u.id === user.id);
@@ -53,10 +46,23 @@ export default function ProximityTransferBluetooth() {
     onUserLost: (userId: string) => {
       setNearbyUsers(prev => prev.filter(u => u.id !== userId));
     }
-  });
+  }), []);
+
+  const {
+    isScanning,
+    isAdvertising,
+    startProximityDetection,
+    stopProximityDetection,
+    sendTransferRequest,
+    error: proximityError
+  } = useBluetoothProximityTransfer(bluetoothOptions);
+
+  const initializeProximity = useCallback(async () => {
+    await startProximityDetection();
+  }, [startProximityDetection]);
 
   useEffect(() => {
-    startProximityDetection();
+    initializeProximity();
     
     const timer = setInterval(() => {
       setDetectionTimeout(prev => {
@@ -71,7 +77,7 @@ export default function ProximityTransferBluetooth() {
       clearInterval(timer);
       stopProximityDetection();
     };
-  }, [startProximityDetection, stopProximityDetection]);
+  }, []);
 
   const handleSendBTZ = async () => {
     if (!selectedUser || !transferAmount) return;
