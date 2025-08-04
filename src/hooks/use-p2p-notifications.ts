@@ -11,23 +11,49 @@ export function useP2PNotifications(
   const { t } = useI18n();
 
   const triggerReceiveNotification = (amount: number, senderNickname: string) => {
-    // Confetti effect
+    // Enhanced confetti effect - multiple bursts
+    const colors = ['#adff2f', '#32cd32', '#00ff00', '#90EE90', '#98FB98'];
+    
+    // First burst
     confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#adff2f', '#32cd32', '#00ff00']
+      particleCount: 150,
+      spread: 90,
+      origin: { y: 0.5 },
+      colors: colors,
+      scalar: 1.2
     });
+    
+    // Second burst with delay
+    setTimeout(() => {
+      confetti({
+        particleCount: 100,
+        spread: 60,
+        origin: { y: 0.7 },
+        colors: colors,
+        scalar: 0.8
+      });
+    }, 250);
+    
+    // Third burst
+    setTimeout(() => {
+      confetti({
+        particleCount: 50,
+        spread: 45,
+        origin: { y: 0.4 },
+        colors: colors,
+        scalar: 1.5
+      });
+    }, 500);
 
-    // Vibration for mobile devices
+    // Vibration for mobile devices - enhanced pattern
     if ('vibrate' in navigator) {
-      navigator.vibrate([200, 100, 200]);
+      navigator.vibrate([200, 100, 200, 100, 300]);
     }
 
     // Browser notification
     if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(t('p2p.notifications.received.title'), {
-        body: t('p2p.notifications.received.body', { amount, sender: senderNickname }),
+      new Notification(t('p2p.notifications.received.title', { amount }), {
+        body: t('p2p.notifications.received.body', { amount }),
         icon: '/icon-192.png',
         tag: 'p2p-received'
       });

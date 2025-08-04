@@ -1079,6 +1079,12 @@
       "sentTo": "发送给 {{user}}",
       "receivedFrom": "从 {{user}} 接收"
     },
+    "notifications": {
+      "received": {
+        "title": "哇！您刚收到{{amount}} BTZ",
+        "body": "哇！您刚收到{{amount}} BTZ"
+      }
+    },
     "errors": {
       "insufficientBalance": "BTZ不足",
       "insufficientBalanceDesc": "您需要 {{amount}} BTZ 来进行此转账",

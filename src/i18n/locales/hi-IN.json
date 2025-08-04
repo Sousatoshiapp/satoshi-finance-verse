@@ -1029,6 +1029,12 @@
       "sentTo": "{{user}} को भेजा गया",
       "receivedFrom": "{{user}} से प्राप्त"
     },
+    "notifications": {
+      "received": {
+        "title": "वाह! आपको {{amount}} BTZ मिला है",
+        "body": "वाह! आपको {{amount}} BTZ मिला है"
+      }
+    },
     "errors": {
       "insufficientBalance": "अपर्याप्त BTZ",
       "insufficientBalanceDesc": "इस ट्रांसफर के लिए आपको {{amount}} BTZ की आवश्यकता है",

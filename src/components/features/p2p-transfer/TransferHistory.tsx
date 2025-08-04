@@ -91,7 +91,7 @@ export function TransferHistory() {
         for (const transfer of receivedTransfers) {
           const { data: senderProfile } = await supabase
             .from('profiles')
-            .select('nickname')
+            .select('nickname, id')
             .eq('user_id', transfer.user_id)
             .single();
 
@@ -154,7 +154,7 @@ export function TransferHistory() {
                         }
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {new Date(transfer.created_at).toLocaleDateString()}
+                        {new Date(transfer.created_at).toLocaleString()}
                       </p>
                     </div>
                   </div>

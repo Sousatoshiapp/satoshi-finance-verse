@@ -13,20 +13,9 @@ import { supabase } from "@/integrations/supabase/client";
 export function ReceiveBTZ() {
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [latestTransfer, setLatestTransfer] = useState<{amount: number, senderNickname: string} | null>(null);
   const { toast } = useToast();
   const { profile } = useProfile();
   const { t } = useI18n();
-  
-  useP2PNotifications((amount, senderNickname) => {
-    setLatestTransfer({ amount, senderNickname });
-    setShowNotification(true);
-    
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 5000);
-  });
 
   useEffect(() => {
     if (profile?.id) {
@@ -105,46 +94,6 @@ export function ReceiveBTZ() {
       </Card>
 
 
-      <AnimatePresence>
-        {showNotification && latestTransfer && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -50, scale: 0.9 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
-          >
-            <Card className="bg-green-50 border-green-200 shadow-lg">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-green-800">
-                      {t('p2p.notifications.received.title')}
-                    </h3>
-                    <p className="text-sm text-green-700">
-                      {t('p2p.notifications.received.body', { 
-                        amount: latestTransfer.amount, 
-                        sender: latestTransfer.senderNickname 
-                      })}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowNotification(false)}
-                    className="text-green-600 hover:text-green-800"
-                  >
-                    ×
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

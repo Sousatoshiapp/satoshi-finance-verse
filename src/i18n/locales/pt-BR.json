@@ -968,8 +968,8 @@
     },
     "notifications": {
       "received": {
-        "title": "Wow! BTZ Recebido! 🎉",
-        "body": "Wow, Você acabou de receber {{amount}} BTZ de {{sender}}!"
+        "title": "WOW! Você acabou de receber {{amount}} BTZ",
+        "body": "WOW! Você acabou de receber {{amount}} BTZ"
       }
     },
     "errors": {

@@ -809,6 +809,12 @@
       "sentTo": "أرسل إلى {{user}}",
       "receivedFrom": "استقبل من {{user}}"
     },
+    "notifications": {
+      "received": {
+        "title": "رائع! لقد استلمت {{amount}} BTZ",
+        "body": "رائع! لقد استلمت {{amount}} BTZ"
+      }
+    },
     "errors": {
       "insufficientBalance": "BTZ غير كافي",
       "insufficientBalanceDesc": "تحتاج {{amount}} BTZ لإجراء هذا التحويل",

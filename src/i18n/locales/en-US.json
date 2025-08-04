@@ -1045,6 +1045,12 @@
       "sentTo": "Sent to {{user}}",
       "receivedFrom": "Received from {{user}}"
     },
+    "notifications": {
+      "received": {
+        "title": "WOW! You just received {{amount}} BTZ",
+        "body": "WOW! You just received {{amount}} BTZ"
+      }
+    },
     "errors": {
       "insufficientBalance": "Insufficient BTZ",
       "insufficientBalanceDesc": "You need {{amount}} BTZ to make this transfer",
