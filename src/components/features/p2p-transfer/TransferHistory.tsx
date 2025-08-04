@@ -39,8 +39,7 @@ export function TransferHistory() {
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select(`
-          id, amount_cents, created_at, user_id, receiver_id,
-          receiver_profile:profiles!transactions_receiver_id_fkey(nickname)
+          id, amount_cents, created_at, user_id, receiver_id
         `)
         .eq('user_id', profile.user_id)
         .eq('transfer_type', 'p2p')
@@ -52,8 +51,7 @@ export function TransferHistory() {
       const { data: receivedTransfers, error: receivedError } = await supabase
         .from('transactions')
         .select(`
-          id, amount_cents, created_at, user_id, receiver_id,
-          sender_profile:profiles!transactions_user_id_fkey(nickname)
+          id, amount_cents, created_at, user_id, receiver_id
         `)
         .eq('receiver_id', profile.id)
         .eq('transfer_type', 'p2p')
@@ -64,9 +62,15 @@ export function TransferHistory() {
       // Combine and format transfers
       const transfers: Transfer[] = [];
       
-      // Add sent transfers
+      // Add sent transfers - need to get receiver nickname
       if (sentTransfers) {
-        sentTransfers.forEach(transfer => {
+        for (const transfer of sentTransfers) {
+          const { data: receiverProfile } = await supabase
+            .from('profiles')
+            .select('nickname')
+            .eq('id', transfer.receiver_id)
+            .single();
+
           transfers.push({
             id: transfer.id,
             amount_cents: transfer.amount_cents,
@@ -76,15 +80,21 @@ export function TransferHistory() {
             type: 'sent',
             otherUser: {
               id: transfer.receiver_id,
-              nickname: (transfer.receiver_profile as any)?.nickname || 'Unknown'
+              nickname: receiverProfile?.nickname || 'Unknown'
             }
           });
-        });
+        }
       }
 
-      // Add received transfers
+      // Add received transfers - need to get sender nickname  
       if (receivedTransfers) {
-        receivedTransfers.forEach(transfer => {
+        for (const transfer of receivedTransfers) {
+          const { data: senderProfile } = await supabase
+            .from('profiles')
+            .select('nickname')
+            .eq('user_id', transfer.user_id)
+            .single();
+
           transfers.push({
             id: transfer.id,
             amount_cents: transfer.amount_cents,
@@ -94,10 +104,10 @@ export function TransferHistory() {
             type: 'received',
             otherUser: {
               id: transfer.user_id,
-              nickname: (transfer.sender_profile as any)?.nickname || 'Unknown'
+              nickname: senderProfile?.nickname || 'Unknown'
             }
           });
-        });
+        }
       }
 
       // Sort by date (newest first)

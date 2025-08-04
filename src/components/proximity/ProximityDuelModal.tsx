@@ -59,16 +59,33 @@ export const ProximityDuelModal: React.FC<ProximityDuelModalProps> = ({
         return;
       }
 
-      const { error } = await supabase
+      // Criar convite de duelo
+      const { data: inviteData, error: inviteError } = await supabase
         .from('duel_invites')
         .insert({
           challenger_id: profile.id,
           challenged_id: targetProfile.id,
           quiz_topic: 'financas',
           status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (inviteError) throw inviteError;
+
+      // Agora criar o duelo com o invite_id
+      const { error: duelError } = await supabase
+        .from('duels')
+        .insert({
+          invite_id: inviteData.id,
+          player1_id: profile.id,
+          player2_id: targetProfile.id,
+          quiz_topic: 'financas',
+          questions: [],
+          status: 'waiting'
         });
 
-      if (error) throw error;
+      if (duelError) throw duelError;
 
       onChallengeSent();
       onClose();
