@@ -386,6 +386,17 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     }
   };
 
+  if (isLoadingDuel || !duel || !duel.questions || !Array.isArray(duel.questions) || duel.questions.length === 0 || !currentProfile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-lg">Carregando duelo...</p>
+        </div>
+      </div>
+    );
+  }
+
   // Show enhanced interface during gameplay
   if (gamePhase === 'playing' && duel.questions && currentProfile) {
     return (
@@ -405,21 +416,21 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     );
   }
 
-  if (isLoadingDuel || !duel || !duel.questions || !currentProfile) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-lg">Carregando duelo...</p>
-        </div>
-      </div>
-    );
-  }
-
   const question = duel?.questions?.[currentQuestion - 1];
   const progress = duel?.questions?.length ? (currentQuestion / duel.questions.length) * 100 : 0;
   const isQuestionAnswered = answeredQuestions.has(currentQuestion);
   const answerResult = answerResults.get(currentQuestion);
+
+  if (!question || !question.options || !Array.isArray(question.options) || question.options.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-lg">Carregando pergunta...</p>
+        </div>
+      </div>
+    );
+  }
   
   const getAnswerButtonClass = (optionId: string) => {
     if (!isQuestionAnswered) {
@@ -599,7 +610,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
           </CardHeader>
           <CardContent>
             <div className="grid gap-2 mb-4">
-              {question?.options.map((option: any) => (
+              {question?.options?.map((option: any) => (
                 <motion.div
                   key={option.id}
                   whileHover={{ scale: isQuestionAnswered ? 1 : 1.02 }}
