@@ -40,15 +40,25 @@ export function useDuels() {
 
     setLoading(true);
     try {
-      // Temporarily disabled - requires duels table and create_duel_challenge function
-      console.log('Create duel: duels table and functions not available');
+      // First create a duel invite
+      const { data: inviteData, error: inviteError } = await supabase
+        .from('duel_invites')
+        .insert({
+          challenger_id: profile.id,
+          challenged_id: challengedId,
+          quiz_topic: 'general'
+        })
+        .select()
+        .single();
+
+      if (inviteError) throw inviteError;
       
       toast({
         title: t('duel.challenge.sent'),
         description: t('duel.challenge.sentDesc', { amount: betAmount }),
       });
 
-      return { success: true, duel_id: 'mock-id' };
+      return { success: true, invite_id: inviteData.id };
     } catch (error: any) {
       toast({
         title: t('common.error'),
@@ -62,23 +72,56 @@ export function useDuels() {
   };
 
   // Respond to a duel (accept, counter, reject)
-  const respondToDuel = async (duelId: string, action: 'accept' | 'counter' | 'reject', counterAmount?: number) => {
+  const respondToDuel = async (inviteId: string, action: 'accept' | 'counter' | 'reject', counterAmount?: number) => {
+    if (!profile?.id) return { success: false, error: 'Profile not found' };
+    
     setLoading(true);
     try {
-      // Temporarily disabled - requires respond_to_duel function
-      console.log('Respond to duel: function not available');
-
       if (action === 'accept') {
+        // Update invite status
+        const { error: updateError } = await supabase
+          .from('duel_invites')
+          .update({ status: 'accepted' })
+          .eq('id', inviteId);
+
+        if (updateError) throw updateError;
+
+        // Get invite details to create duel
+        const { data: inviteDetails } = await supabase
+          .from('duel_invites')
+          .select('challenger_id, challenged_id, quiz_topic')
+          .eq('id', inviteId)
+          .single();
+
+        // Create the actual duel
+        const { data: duelData, error: duelError } = await supabase
+          .from('duels')
+          .insert({
+            invite_id: inviteId,
+            player1_id: inviteDetails?.challenger_id,
+            player2_id: inviteDetails?.challenged_id,
+            quiz_topic: inviteDetails?.quiz_topic || 'general',
+            questions: []
+          })
+          .select()
+          .single();
+
+        if (duelError) throw duelError;
+
         toast({
           title: t('duel.challenge.accepted'),
           description: t('duel.challenge.acceptedDesc'),
         });
-      } else if (action === 'counter') {
-        toast({
-          title: t('duel.challenge.counterSent'),
-          description: t('duel.challenge.counterSentDesc', { amount: counterAmount }),
-        });
-      } else {
+
+        return { success: true, duel_id: duelData.id };
+      } else if (action === 'reject') {
+        const { error } = await supabase
+          .from('duel_invites')
+          .update({ status: 'rejected' })
+          .eq('id', inviteId);
+
+        if (error) throw error;
+
         toast({
           title: t('duel.challenge.rejected'),
           description: t('duel.challenge.rejectedDesc'),
@@ -149,11 +192,26 @@ export function useDuels() {
     if (!profile?.id) return;
 
     try {
-      // Temporarily disabled - requires duels table
-      console.log('Load duels: duels table not available');
+      const { data, error } = await supabase
+        .from('duels')
+        .select(`
+          *,
+          duel_invites!invite_id (
+            challenger_id,
+            challenged_id,
+            status
+          )
+        `)
+        .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      // Transform data to match Duel interface (for now just set empty array)
       setDuels([]);
     } catch (error) {
       console.error('Error loading duels:', error);
+      setDuels([]);
     }
   };
 
