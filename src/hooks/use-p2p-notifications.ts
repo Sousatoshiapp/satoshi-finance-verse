@@ -66,8 +66,11 @@ export function useP2PNotifications(
 
   useEffect(() => {
     if (!profile?.id) {
+      console.log('P2P Notifications: No profile ID found');
       return;
     }
+    
+    console.log('P2P Notifications: Setting up channel for profile:', profile.id);
     
     const channel = supabase
       .channel(`p2p-transfers-${profile.id}`)
@@ -77,20 +80,31 @@ export function useP2PNotifications(
         table: 'transactions',
         filter: `receiver_id=eq.${profile.id}`
       }, (payload) => {
+        console.log('P2P Notifications: Received transaction:', payload);
+        
         if (payload.new.transfer_type === 'p2p') {
           const fetchSenderProfile = async () => {
             try {
+              console.log('P2P Notifications: Fetching sender profile for user_id:', payload.new.user_id);
+              
               const { data: senderProfile, error } = await supabase
                 .from('profiles')
                 .select('nickname, id, user_id')
                 .eq('user_id', payload.new.user_id)
                 .single();
               
+              if (error) {
+                console.error('P2P Notifications: Error fetching sender profile:', error);
+              }
+              
+              console.log('P2P Notifications: Sender profile found:', senderProfile);
+              
               triggerReceiveNotification(
                 payload.new.amount_cents,
                 senderProfile?.nickname || 'Unknown'
               );
             } catch (error) {
+              console.error('P2P Notifications: Exception fetching sender profile:', error);
               triggerReceiveNotification(
                 payload.new.amount_cents,
                 'Unknown'

@@ -12,6 +12,8 @@ export function GlobalBTZNotification() {
   const { t } = useI18n();
 
   useP2PNotifications((amount, senderNickname) => {
+    console.log('GlobalBTZNotification: Received transfer notification', { amount, senderNickname });
+    
     setLatestTransfer({ amount, senderNickname });
     setShowNotification(true);
     

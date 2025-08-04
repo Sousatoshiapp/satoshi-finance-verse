@@ -33,13 +33,17 @@ export function TransferHistory() {
 
   const loadTransfers = async () => {
     if (!profile?.id) return;
+    
+    setLoading(true);
 
     try {
+      console.log('Loading transfers for profile:', profile.id, 'user_id:', profile.user_id);
+      
       // Get sent transfers (where current user is sender)
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select(`
-          id, amount_cents, created_at, user_id, receiver_id
+          id, amount_cents, created_at, user_id, receiver_id, transfer_type
         `)
         .eq('user_id', profile.user_id)
         .eq('transfer_type', 'p2p')
@@ -51,13 +55,16 @@ export function TransferHistory() {
       const { data: receivedTransfers, error: receivedError } = await supabase
         .from('transactions')
         .select(`
-          id, amount_cents, created_at, user_id, receiver_id
+          id, amount_cents, created_at, user_id, receiver_id, transfer_type
         `)
         .eq('receiver_id', profile.id)
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
       if (receivedError) throw receivedError;
+      
+      console.log('Sent transfers:', sentTransfers);
+      console.log('Received transfers:', receivedTransfers);
 
       // Combine and format transfers
       const transfers: Transfer[] = [];
