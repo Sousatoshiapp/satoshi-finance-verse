@@ -119,8 +119,8 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
         onClick={() => setShowDetails(!showDetails)}
       >
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[#adff2f] flex items-center justify-center flex-shrink-0">
-            <span className="text-black font-bold text-xl">B</span>
+          <div className="w-10 h-10 rounded-full bg-[#adff2f] flex items-center justify-center flex-shrink-0">
+            <span className="text-black font-bold text-lg">B</span>
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
