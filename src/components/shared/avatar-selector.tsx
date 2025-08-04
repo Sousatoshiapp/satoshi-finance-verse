@@ -171,10 +171,13 @@ export function AvatarSelector({ userProfileId, currentAvatarId, onAvatarChanged
         .eq('user_id', userProfileId)
         .eq('avatar_id', avatarId);
 
-      // Update profile avatar_id
+      // Update profile avatar_id and clear profile_image_url
       await supabase
         .from('profiles')
-        .update({ avatar_id: avatarId })
+        .update({ 
+          avatar_id: avatarId, 
+          profile_image_url: null 
+        })
         .eq('id', userProfileId);
 
       // Update local state

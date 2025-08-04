@@ -191,7 +191,8 @@ export default function Profile() {
 
   const handleAvatarChanged = async (avatarId: string) => {
     if (user) {
-      setUser({ ...user, avatar_id: avatarId });
+      // Clear profile image when selecting an avatar
+      setUser({ ...user, avatar_id: avatarId, profile_image_url: null });
       
       // Load the new avatar data
       if (avatarId) {
