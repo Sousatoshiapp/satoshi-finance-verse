@@ -5,6 +5,7 @@ import { useProfile } from '@/hooks/use-profile';
 import { useKYCStatus } from '@/hooks/use-kyc-status';
 import { useI18n } from '@/hooks/use-i18n';
 import { Loader2, Shield } from 'lucide-react';
+import { Client } from 'persona';
 
 interface KYCVerificationProps {
   onComplete: () => void;
@@ -19,37 +20,31 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.withpersona.com/dist/persona-v4.js';
-    script.onload = () => {
-      console.log('Persona SDK loaded');
-    };
-    script.onerror = () => {
-      setError('Failed to load Persona SDK');
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      document.head.removeChild(script);
-    };
+    const templateId = import.meta.env.VITE_PERSONA_TEMPLATE_ID;
+    const environmentId = import.meta.env.VITE_PERSONA_ENVIRONMENT_ID;
+    
+    if (!templateId || templateId === 'TEMPLATE_ID_NEEDED') {
+      setError('Persona template ID not configured. Please set VITE_PERSONA_TEMPLATE_ID environment variable.');
+      return;
+    }
+    
+    if (!environmentId) {
+      setError('Persona environment ID not configured. Please set VITE_PERSONA_ENVIRONMENT_ID environment variable.');
+      return;
+    }
   }, []);
 
   const initializePersona = () => {
-    if (!(window as any).Persona) {
-      setError('Persona SDK not loaded');
-      return;
-    }
-
     const templateId = import.meta.env.VITE_PERSONA_TEMPLATE_ID;
     const environmentId = import.meta.env.VITE_PERSONA_ENVIRONMENT_ID;
 
     if (!templateId || templateId === 'TEMPLATE_ID_NEEDED') {
-      setError('Persona template ID not configured. Please contact support.');
+      setError('Persona template ID not configured. Please set VITE_PERSONA_TEMPLATE_ID environment variable.');
       return;
     }
 
     if (!environmentId) {
-      setError('Persona environment ID not configured. Please contact support.');
+      setError('Persona environment ID not configured. Please set VITE_PERSONA_ENVIRONMENT_ID environment variable.');
       return;
     }
 
@@ -57,7 +52,7 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
     setError(null);
 
     try {
-      const client = new (window as any).Persona.Client({
+      const client = new Client({
         templateId,
         environmentId,
         referenceId: profile?.id,
@@ -67,7 +62,7 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
             onComplete();
           } catch (error) {
             console.error('Error updating KYC status:', error);
-            setError('Failed to update KYC status');
+            setError('Failed to update KYC status. Please try again.');
           } finally {
             setIsLoading(false);
           }
@@ -80,7 +75,7 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
         },
         onError: (error: any) => {
           console.error('Persona error:', error);
-          setError('Verification failed. Please try again.');
+          setError('Verification failed. Please try again or contact support if the issue persists.');
           setIsLoading(false);
         }
       });
@@ -88,7 +83,7 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
       client.open();
     } catch (error) {
       console.error('Error initializing Persona:', error);
-      setError('Failed to initialize verification');
+      setError('Failed to initialize verification. Please check your internet connection and try again.');
       setIsLoading(false);
     }
   };
@@ -109,7 +104,11 @@ export function KYCVerification({ onComplete, onCancel }: KYCVerificationProps) 
           
           {error && (
             <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
-              {error}
+              <p className="font-medium">Verification Error</p>
+              <p>{error}</p>
+              {error.includes('environment variable') && (
+                <p className="mt-2 text-xs">Contact your administrator to configure the Persona integration.</p>
+              )}
             </div>
           )}
           
