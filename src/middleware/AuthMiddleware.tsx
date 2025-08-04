@@ -30,6 +30,8 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
       hasLocalStorage: !!localStorage.getItem('satoshi_user'),
       userEmail: user?.email,
       currentPath: location.pathname,
+      currentHash: location.hash,
+      fullLocation: window.location.href,
       sessionExpiry: session?.expires_at ? new Date(session.expires_at * 1000).toISOString() : 'none'
     });
     
@@ -39,8 +41,15 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
     }
     
     // If user has valid auth but is on welcome/auth pages, redirect to dashboard
-    if (hasValidAuth && (location.pathname === '/welcome' || location.pathname === '/auth' || location.pathname === '/')) {
-      console.log('✅ AuthMiddleware: Valid auth detected on public page - redirecting to dashboard');
+    const publicPages = ['/welcome', '/auth', '/', '/#'];
+    const isOnPublicPage = publicPages.includes(location.pathname) || location.pathname === '/' || window.location.hash === '#';
+    
+    if (hasValidAuth && isOnPublicPage) {
+      console.log('✅ AuthMiddleware: Valid auth detected on public page - redirecting to dashboard', {
+        pathname: location.pathname,
+        hash: location.hash,
+        redirectingTo: '/dashboard'
+      });
       return <Navigate to="/dashboard" replace />;
     }
   }
