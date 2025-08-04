@@ -121,10 +121,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
             <div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-3xl font-bold text-foreground">
+                  <span className="text-3xl font-bold text-foreground font-nunito">
                     {displayBTZ.toLocaleString()}
                   </span>
-                  <span className="text-xl text-muted-foreground font-medium">BTZ</span>
+                  <span className="text-xl text-muted-foreground font-medium font-nunito">BTZ</span>
                 </div>
                 
                 {/* Action buttons - moved to same line as BTZ */}
@@ -154,7 +154,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               
               {analytics?.current.yield_applied_today && (
                 <div className="flex items-center gap-1 mt-1">
-                  <span className="text-primary text-sm">✓ {t('btz.yieldedToday')}</span>
+                  <span className="text-primary text-sm font-nunito">✓ {t('btz.yieldedToday')}</span>
                 </div>
               )}
             </div>
@@ -171,9 +171,9 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-sm">🔥</span>
-                      <span className="text-sm text-muted-foreground">{t('btz.nextYield')}</span>
+                      <span className="text-sm text-muted-foreground font-nunito">{t('btz.nextYield')}</span>
                     </div>
-                    <span className="text-sm font-medium text-orange-500">
+                    <span className="text-sm font-medium text-orange-500 font-nunito">
                       {formatTimeUntilYield(analytics.current.time_until_next_yield_ms)}
                     </span>
                   </div>
@@ -183,9 +183,9 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Shield className="w-4 h-4 text-primary" />
-                    <span className="text-sm text-muted-foreground">{t('btz.protectedBTZ')}</span>
+                    <span className="text-sm text-muted-foreground font-nunito">{t('btz.protectedBTZ')}</span>
                   </div>
-                  <span className="text-sm font-medium text-primary">
+                  <span className="text-sm font-medium text-primary font-nunito">
                     {getProtectionPercentage().toFixed(3)}%
                   </span>
                 </div>
@@ -195,9 +195,9 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-primary" />
-                      <span className="text-sm text-muted-foreground">{t('btz.nextGain')}</span>
+                      <span className="text-sm text-muted-foreground font-nunito">{t('btz.nextGain')}</span>
                     </div>
-                    <span className="text-sm font-medium text-primary">
+                    <span className="text-sm font-medium text-primary font-nunito">
                       +{analytics.current.next_yield_amount.toLocaleString()} BTZ
                     </span>
                   </div>
