@@ -154,6 +154,27 @@
       "errorDescription": "لا يمكن إرسال التحدي. حاول مرة أخرى."
     }
   },
+  "bluetooth": {
+    "title": "النقل بالقرب",
+    "subtitle": "انقل BTZ للمستخدمين القريبين عبر البلوتوث",
+    "proximityTransfer": "النقل بالقرب",
+    "scanning": "المسح",
+    "advertising": "البث",
+    "nearbyUsers": "المستخدمون القريبون",
+    "send": "إرسال",
+    "sendTo": "إرسال إلى {{user}}",
+    "searchingTimeout": "البحث عن مستخدمين قريبين... {{seconds}}ث",
+    "noUsersFound": "لم يتم العثور على مستخدمين",
+    "fallbackMessage": "لم نتمكن من العثور على مستخدمين قريبين. استخدم رمز QR كبديل.",
+    "useQRCode": "استخدام رمز QR",
+    "permissionDenied": "تم رفض إذن البلوتوث",
+    "scanningFailed": "فشل في مسح الأجهزة",
+    "advertisingFailed": "فشل في بث الوجود",
+    "transferRequestSent": "تم إرسال الطلب",
+    "transferRequestSentDesc": "تم إرسال طلب النقل عبر البلوتوث",
+    "transferRequestFailed": "فشل في إرسال الطلب",
+    "tryAgain": "حاول مرة أخرى"
+  },
   "navigation": {
     "dashboard": "لوحة التحكم",
     "quiz": "اختبار",

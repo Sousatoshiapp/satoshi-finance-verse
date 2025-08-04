@@ -59,5 +59,11 @@ export const dashboardRoutes = [
     requiresAuth: true,
     showNavbar: true,
     isDirectImport: true
+  },
+  {
+    path: "/proximity-transfer-bluetooth",
+    element: "ProximityTransferBluetooth",
+    requiresAuth: true,
+    showNavbar: true
   }
 ];

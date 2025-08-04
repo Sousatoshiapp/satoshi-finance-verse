@@ -203,6 +203,27 @@
       "errorDescription": "Não foi possível enviar o desafio. Tente novamente."
     }
   },
+  "bluetooth": {
+    "title": "Transferência por Proximidade",
+    "subtitle": "Transfira BTZ para usuários próximos via Bluetooth",
+    "proximityTransfer": "Transferência por Proximidade",
+    "scanning": "Detectando",
+    "advertising": "Transmitindo",
+    "nearbyUsers": "Usuários Próximos",
+    "send": "Enviar",
+    "sendTo": "Enviar para {{user}}",
+    "searchingTimeout": "Buscando usuários próximos... {{seconds}}s",
+    "noUsersFound": "Nenhum usuário encontrado",
+    "fallbackMessage": "Não conseguimos encontrar usuários próximos. Use o QR Code como alternativa.",
+    "useQRCode": "Usar QR Code",
+    "permissionDenied": "Permissão Bluetooth negada",
+    "scanningFailed": "Falha ao escanear dispositivos",
+    "advertisingFailed": "Falha ao transmitir presença",
+    "transferRequestSent": "Solicitação enviada",
+    "transferRequestSentDesc": "Solicitação de transferência enviada via Bluetooth",
+    "transferRequestFailed": "Falha ao enviar solicitação",
+    "tryAgain": "Tentar Novamente"
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "quiz": "Quiz",

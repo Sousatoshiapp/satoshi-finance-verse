@@ -204,6 +204,27 @@
       "errorDescription": "无法发送挑战。请重试。"
     }
   },
+  "bluetooth": {
+    "title": "邻近传输",
+    "subtitle": "通过蓝牙向附近用户传输BTZ",
+    "proximityTransfer": "邻近传输",
+    "scanning": "扫描中",
+    "advertising": "广播中",
+    "nearbyUsers": "附近用户",
+    "send": "发送",
+    "sendTo": "发送给{{user}}",
+    "searchingTimeout": "搜索附近用户中...{{seconds}}秒",
+    "noUsersFound": "未找到用户",
+    "fallbackMessage": "我们找不到附近的用户。请使用二维码作为替代方案。",
+    "useQRCode": "使用二维码",
+    "permissionDenied": "蓝牙权限被拒绝",
+    "scanningFailed": "设备扫描失败",
+    "advertisingFailed": "广播存在失败",
+    "transferRequestSent": "请求已发送",
+    "transferRequestSentDesc": "通过蓝牙发送传输请求",
+    "transferRequestFailed": "发送请求失败",
+    "tryAgain": "重试"
+  },
   "navigation": {
     "dashboard": "仪表板",
     "quiz": "测验",
