@@ -24,7 +24,7 @@ export default function P2PTransfer() {
     navigate(`${location.pathname}?${newSearchParams.toString()}`);
   };
 
-  const isKYCRequired = checkKYCRequired();
+  const isKYCRequired = false; // checkKYCRequired();
 
   if (showKYCVerification) {
     return (

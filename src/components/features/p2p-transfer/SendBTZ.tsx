@@ -29,10 +29,10 @@ export function SendBTZ() {
       return;
     }
 
-    if (checkKYCRequired()) {
-      setShowKYCVerification(true);
-      return;
-    }
+    // if (checkKYCRequired()) {
+    //   setShowKYCVerification(true);
+    //   return;
+    // }
     
     const result = await transferBTZ(receiverId, numAmount);
     if (result.success) {

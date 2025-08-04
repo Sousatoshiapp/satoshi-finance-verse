@@ -6,7 +6,7 @@ export function useKYCStatus() {
   
   const checkKYCRequired = () => {
     // KYC always required since we don't have kyc_status field
-    return true;
+    return false; // Changed from true to false
   };
   
   const updateKYCStatus = async (inquiryId: string) => {

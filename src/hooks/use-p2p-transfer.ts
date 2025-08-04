@@ -23,14 +23,14 @@ export function useP2PTransfer() {
   const transferBTZ = async (receiverId: string, amount: number): Promise<P2PTransferResult> => {
     if (!profile?.id) return { success: false, error: 'Profile not found' };
 
-    if (checkKYCRequired()) {
-      toast({
-        title: t('kyc.required'),
-        description: t('kyc.subtitle'),
-        variant: "destructive",
-      });
-      return { success: false, error: 'KYC verification required' };
-    }
+    // if (checkKYCRequired()) {
+    //   toast({
+    //     title: t('kyc.required'),
+    //     description: t('kyc.subtitle'),
+    //     variant: "destructive",
+    //   });
+    //   return { success: false, error: 'KYC verification required' };
+    // }
 
     if (profile.points < amount) {
       toast({
