@@ -76,16 +76,41 @@ export function useP2PTransfer() {
 
     setTransferring(true);
     try {
+      console.log('💸 useP2PTransfer: Starting transfer_btz RPC call', {
+        sender_id: profile.id,
+        receiver_id: receiverId,
+        amount: amount,
+        sender_profile: profile
+      });
+
       const { data, error } = await supabase.rpc('transfer_btz' as any, {
         sender_id: profile.id,
         receiver_id: receiverId,
         amount: amount
       });
 
-      if (error) throw error;
+      console.log('💸 useP2PTransfer: transfer_btz RPC result', {
+        data,
+        error,
+        success: data?.success,
+        transaction_id: data?.transaction_id
+      });
+
+      if (error) {
+        console.error('❌ useP2PTransfer: RPC error:', error);
+        throw error;
+      }
 
       const result = data as any;
+      console.log('💸 useP2PTransfer: Processing RPC result', {
+        result,
+        success: result?.success,
+        error: result?.error
+      });
+
       if (result.success) {
+        console.log('✅ useP2PTransfer: Transfer successful, showing success toast');
+        
         toast({
           title: t('p2p.success.transferComplete'),
           description: t('p2p.success.transferCompleteDesc', { 
@@ -95,7 +120,15 @@ export function useP2PTransfer() {
           variant: "default"
         });
         
+        console.log('🔄 useP2PTransfer: Reloading profile after successful transfer');
         await loadProfile();
+        
+        console.log('✅ useP2PTransfer: Transfer completed successfully', {
+          amount,
+          receiver: receiverId,
+          transaction_id: result.transaction_id,
+          timestamp: new Date().toISOString()
+        });
         
         return {
           success: true,
@@ -104,11 +137,19 @@ export function useP2PTransfer() {
           receiver_new_balance: result.receiver_new_balance
         };
       } else {
+        console.error('❌ useP2PTransfer: Transfer failed with result error:', result.error);
         throw new Error(result.error || 'Transfer failed');
       }
 
     } catch (error: any) {
-      console.error('Transfer error:', error);
+      console.error('❌ useP2PTransfer: Transfer exception:', error);
+      console.error('❌ useP2PTransfer: Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
+      
       toast({
         title: t('p2p.errors.transferFailed'),
         description: error.message || t('p2p.errors.transferFailedDesc'),
