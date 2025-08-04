@@ -48,15 +48,22 @@ export function usePushNotifications() {
 
       if (!profile) return;
 
-      const { data: settings } = await supabase
+      const { data: settings, error } = await supabase
         .from('push_notification_settings')
         .select('enabled, endpoint')
         .eq('user_id', profile.id)
         .single();
 
+      if (error) {
+        console.warn('Push notification settings not available:', error.message, error.code);
+        setIsSubscribed(false);
+        return;
+      }
+
       setIsSubscribed(settings?.enabled && !!settings?.endpoint);
     } catch (error) {
-      console.error('Error loading subscription status:', error);
+      console.warn('Error loading subscription status:', error);
+      setIsSubscribed(false);
     }
   };
 
@@ -141,7 +148,9 @@ export function usePushNotifications() {
           user_agent: navigator.userAgent
         });
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to save push notification settings:', error.message, error.code);
+      }
 
       setIsSubscribed(true);
       toast({
@@ -184,7 +193,9 @@ export function usePushNotifications() {
         })
         .eq('user_id', profile.id);
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Failed to update push notification settings:', error.message, error.code);
+      }
 
       setIsSubscribed(false);
       toast({
