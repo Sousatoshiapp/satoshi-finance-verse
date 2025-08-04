@@ -40,28 +40,25 @@ export const useProximityDetection = () => {
         setPermissionStatus(granted ? 'granted' : 'denied');
         return granted;
       } else {
-        if ('geolocation' in navigator) {
-          try {
-            const permission = await navigator.permissions.query({name: 'geolocation'});
-            setPermissionStatus(permission.state as 'prompt' | 'granted' | 'denied');
-            return permission.state === 'granted';
-          } catch {
-            return new Promise((resolve) => {
-              navigator.geolocation.getCurrentPosition(
-                () => {
-                  setPermissionStatus('granted');
-                  resolve(true);
-                },
-                () => {
-                  setPermissionStatus('denied');
-                  resolve(false);
-                },
-                { timeout: 5000 }
-              );
-            });
-          }
-        }
-        return false;
+        // Para web, sempre tentar obter permissão via getCurrentPosition
+        return new Promise((resolve) => {
+          navigator.geolocation.getCurrentPosition(
+            () => {
+              setPermissionStatus('granted');
+              resolve(true);
+            },
+            (error) => {
+              console.log('Geolocation error:', error);
+              setPermissionStatus('denied');
+              resolve(false);
+            },
+            { 
+              timeout: 10000,
+              enableHighAccuracy: false, // Menos restritivo para primeira tentativa
+              maximumAge: 60000
+            }
+          );
+        });
       }
     } catch (error) {
       console.error('Erro ao solicitar permissão de localização:', error);
@@ -224,17 +221,18 @@ export const useProximityDetection = () => {
   const startProximityDetection = async () => {
     console.log('🔧 startProximityDetection called');
     
+    // Primeiro, mostrar feedback visual imediato
+    setIsLocationEnabled(true);
+    
     const hasPermission = await requestLocationPermission();
     console.log('🔧 Permission result:', hasPermission);
     
     if (!hasPermission) {
-      console.log('🔧 No permission, returning');
+      console.log('🔧 No permission, reverting state');
+      setIsLocationEnabled(false);
       return;
     }
 
-    console.log('🔧 Setting isLocationEnabled to true');
-    setIsLocationEnabled(true);
-      
     console.log('🔧 Starting first detection...');
     await detectNearbyPlayers();
       
