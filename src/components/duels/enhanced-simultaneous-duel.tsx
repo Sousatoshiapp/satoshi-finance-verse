@@ -5,7 +5,7 @@ import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
 import { Progress } from "@/components/shared/ui/progress";
-import { Trophy, Zap, ArrowRight } from "lucide-react";
+import { Trophy, Zap, ArrowRight, Flag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { CircularTimer } from "./circular-timer";
@@ -332,16 +332,17 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         }, 1000);
       }
     } catch (error) {
-      console.error('Error processing skip:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível pular a pergunta",
+        variant: "destructive"
+      });
     }
   };
 
   const handleTimeUp = async () => {
-    console.log('⏰ handleTimeUp chamado em EnhancedSimultaneousDuel');
-    
     // Guard: Check if user is still on duel screen
     if (!window.location.pathname.includes('/duels') && !window.location.pathname.includes('/duel/')) {
-      console.log('🚫 User is no longer on duel screen - ignoring timeout');
       return;
     }
     
@@ -382,7 +383,46 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         }, 1500);
       }
     } catch (error) {
-      console.error('Error processing timeout:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível processar o timeout",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleSurrender = async () => {
+    if (isFinished) return;
+    
+    try {
+      const { data, error } = await supabase.rpc('process_duel_answer', {
+        p_duel_id: duel.id,
+        p_player_id: currentProfile.id,
+        p_question_number: currentQuestion,
+        p_answer_id: null,
+        p_is_timeout: true
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "🏳️ Duelo encerrado",
+        description: "Você entregou os pontos ao oponente",
+        variant: "destructive"
+      });
+      
+      setGamePhase('finished');
+      setIsFinished(true);
+      setShowResult(true);
+      
+      setOpponentScore(duel.questions.length * 100);
+      
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível processar a desistência",
+        variant: "destructive"
+      });
     }
   };
 
@@ -502,9 +542,9 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Header com Jogadores */}
-        <Card className="mb-6 border-primary/20 shadow-xl">
+        <Card className="mb-4 sm:mb-6 border-primary/20 shadow-xl">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -517,7 +557,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-6 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4">
               {/* Meu Perfil */}
               <motion.div 
                 className="flex items-center gap-3 p-4 rounded-lg bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20"
@@ -528,7 +568,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                   avatarUrl={currentProfile?.avatar_url}
                   profileImageUrl={currentProfile?.profile_image_url}
                   nickname={currentProfile?.nickname || "Você"}
-                  size="md"
+                  size="sm"
                 />
                 <div className="flex-1">
                   <div className="font-semibold text-primary">
@@ -538,7 +578,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                     key={myScore}
                     initial={{ scale: 1.2 }}
                     animate={{ scale: 1 }}
-                    className="text-2xl font-bold text-primary"
+                    className="text-xl sm:text-2xl font-bold text-primary"
                   >
                     {myScore}
                   </motion.div>
@@ -566,7 +606,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                   nickname={
                     (currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.nickname || "Oponente"
                   }
-                  size="md"
+                  size="sm"
                 />
                 <div className="flex-1">
                   <div className="font-semibold">
@@ -576,7 +616,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                     key={opponentScore}
                     initial={{ scale: 1.2 }}
                     animate={{ scale: 1 }}
-                    className="text-2xl font-bold text-secondary"
+                    className="text-xl sm:text-2xl font-bold text-secondary"
                   >
                     {opponentScore}
                   </motion.div>
@@ -592,23 +632,23 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         </Card>
 
         {/* Timer Central */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4 sm:mb-6">
           <CircularTimer
             duration={30}
             isActive={isTimerActive}
             onTimeUp={handleTimeUp}
             enableCountdownSound={false}
-            size={120}
+            size={window.innerWidth < 640 ? 80 : 120}
             className="shadow-lg"
           />
         </div>
 
         {/* Pergunta */}
-        <Card className="mb-6 border-primary/20 shadow-lg max-w-2xl mx-auto">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg text-center leading-relaxed">{question?.question}</CardTitle>
+        <Card className="mb-4 sm:mb-6 border-primary/20 shadow-lg max-w-2xl mx-auto">
+          <CardHeader className="pb-3 sm:pb-4 px-4 sm:px-6">
+            <CardTitle className="text-base sm:text-lg text-center leading-relaxed">{question?.question}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-4 sm:px-6">
             <div className="grid gap-2 mb-4">
               {question?.options?.map((option: any) => (
                 <motion.div
@@ -618,7 +658,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                 >
                   <Button
                     variant="outline"
-                    className={`justify-start h-auto p-3 text-left transition-all duration-300 w-full text-sm ${getAnswerButtonClass(option.id)}`}
+                    className={`justify-start h-auto p-3 sm:p-3 text-left transition-all duration-300 w-full text-sm min-h-[48px] ${getAnswerButtonClass(option.id)}`}
                     onClick={() => handleAnswerSelect(option.id)}
                     disabled={isQuestionAnswered}
                   >
@@ -638,11 +678,11 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
             
             {/* Botões de Ação */}
             {!isQuestionAnswered && !isFinished && (
-              <div className="flex gap-2 justify-center">
+              <div className="flex flex-col sm:flex-row gap-2 justify-center px-0 sm:px-0">
                 <Button
                   onClick={handleAnswerSubmit}
                   disabled={!selectedAnswer || isWaitingForOpponent}
-                  className="flex-1 bg-primary hover:bg-primary/80"
+                  className="flex-1 bg-primary hover:bg-primary/80 h-12 sm:h-auto"
                   size="sm"
                 >
                   {isWaitingForOpponent ? (
@@ -653,16 +693,26 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                   ) : (
                     <>
                       <Zap className="mr-2 h-3 w-3" />
-                      Responder
+                      Confirmar Resposta
                     </>
                   )}
+                </Button>
+                
+                <Button
+                  onClick={handleSurrender}
+                  variant="destructive"
+                  className="flex-1 sm:flex-none h-12 sm:h-auto px-6"
+                  size="sm"
+                >
+                  <Flag className="mr-2 h-3 w-3" />
+                  Entregar os pontos
                 </Button>
                 
                 <Button
                   onClick={handleSkipQuestion}
                   variant="outline"
                   disabled={isWaitingForOpponent}
-                  className="border-muted-foreground/30 hover:bg-muted/50 px-3"
+                  className="border-muted-foreground/30 hover:bg-muted/50 px-3 h-12 sm:h-auto"
                   size="sm"
                 >
                   <ArrowRight className="h-3 w-3" />

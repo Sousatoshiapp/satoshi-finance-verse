@@ -3,8 +3,6 @@ import { useRef, useCallback } from "react";
 export function useAdvancedQuizAudio() {
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  console.log('🔊 useAdvancedQuizAudio hook inicializado');
-
   const initAudioContext = useCallback(() => {
     if (typeof window === 'undefined') return null;
     
@@ -15,7 +13,6 @@ export function useAdvancedQuizAudio() {
   }, []);
 
   const playCorrectSound = useCallback((intensity: number = 1) => {
-    console.log('🎵 playCorrectSound called with intensity:', intensity);
     const audioContext = initAudioContext();
     if (!audioContext) return;
 
@@ -43,7 +40,6 @@ export function useAdvancedQuizAudio() {
   }, [initAudioContext]);
 
   const playWrongSound = useCallback(() => {
-    console.log('❌ playWrongSound called');
     const audioContext = initAudioContext();
     if (!audioContext) return;
 
@@ -66,7 +62,6 @@ export function useAdvancedQuizAudio() {
   }, [initAudioContext]);
 
   const playStreakSound = useCallback((streakLevel: number) => {
-    console.log('🔥 playStreakSound called with streak level:', streakLevel);
     const audioContext = initAudioContext();
     if (!audioContext) return;
 
@@ -94,7 +89,6 @@ export function useAdvancedQuizAudio() {
 
   // Som de BTZ usando arquivo MP3
   const playCashRegisterSound = useCallback(() => {
-    console.log('💰 playCashRegisterSound called');
     try {
       const audio = new Audio('/audio/btz-earn.mp3');
       audio.volume = 0.3;
