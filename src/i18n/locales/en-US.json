@@ -167,6 +167,40 @@
       }
     }
   },
+  "proximityDetection": {
+    "title": "Proximity Detection",
+    "location": "Location",
+    "permissionGranted": "Granted",
+    "permissionDenied": "Denied",
+    "permissionPending": "Pending",
+    "activateDetection": "Activate Detection",
+    "visibleToOthers": "Visible to Others",
+    "detectionStatus": "Detection Status",
+    "playersFound": "{{count}} nearby player(s) found",
+    "searchingPlayers": "Searching for nearby players...",
+    "additionalPlayers": "+{{count}} other players",
+    "infoDetectionRange": "• Detects players within a 500-meter radius",
+    "infoUpdateFrequency": "• Automatic updates every 30 seconds",
+    "infoNotificationLimit": "• Notifications limited to one per player every 2 hours",
+    "permissionDeniedTitle": "Permission Denied",
+    "permissionDeniedDescription": "To use proximity detection, allow location access in your device settings.",
+    "challengeSentTitle": "Challenge Sent! 🎯",
+    "challengeSentDescription": "Your challenge was sent to @{{nickname}}. Wait for the response!",
+    "modal": {
+      "title": "Nearby Player Detected",
+      "distanceAway": "{{distance}}m away",
+      "proximityDuel": "Proximity Duel",
+      "nearbyPlayer": "Player near you",
+      "challengeText": "@{{nickname}} is close to you! 🎯",
+      "topicLabel": "Topic: General Finance",
+      "challengeQuestion": "Challenge to a duel for BTZ?",
+      "duelDetails": "10 questions • 30 seconds each • Simultaneous duel",
+      "ignoreButton": "❌ Ignore",
+      "challengeButton": "⚔️ Challenge",
+      "errorTitle": "Error",
+      "errorDescription": "Could not send the challenge. Please try again."
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "quiz": "Quiz",
