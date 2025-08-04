@@ -19,9 +19,22 @@ export function ReceiveBTZ() {
   const { t } = useI18n();
   
   useP2PNotifications((amount, senderNickname) => {
+    console.log('🔔 ReceiveBTZ: Notification callback triggered', { 
+      amount, 
+      senderNickname,
+      timestamp: new Date().toISOString()
+    });
+    
     setLatestTransfer({ amount, senderNickname });
     setShowNotification(true);
+    
+    console.log('👁️ ReceiveBTZ: Visual notification state updated', {
+      showNotification: true,
+      latestTransfer: { amount, senderNickname }
+    });
+    
     setTimeout(() => {
+      console.log('⏰ ReceiveBTZ: Auto-hiding notification after 5 seconds');
       setShowNotification(false);
     }, 5000);
   });
