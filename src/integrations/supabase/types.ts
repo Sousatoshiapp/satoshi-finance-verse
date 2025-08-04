@@ -1910,8 +1910,11 @@ export type Database = {
       }
       duel_invites: {
         Row: {
+          bet_amount: number | null
+          bet_status: string | null
           challenged_id: string
           challenger_id: string
+          counter_bet_amount: number | null
           created_at: string
           expires_at: string
           id: string
@@ -1919,8 +1922,11 @@ export type Database = {
           status: string
         }
         Insert: {
+          bet_amount?: number | null
+          bet_status?: string | null
           challenged_id: string
           challenger_id: string
+          counter_bet_amount?: number | null
           created_at?: string
           expires_at?: string
           id?: string
@@ -1928,8 +1934,11 @@ export type Database = {
           status?: string
         }
         Update: {
+          bet_amount?: number | null
+          bet_status?: string | null
           challenged_id?: string
           challenger_id?: string
+          counter_bet_amount?: number | null
           created_at?: string
           expires_at?: string
           id?: string
@@ -1988,6 +1997,7 @@ export type Database = {
       }
       duels: {
         Row: {
+          bet_amount: number | null
           created_at: string
           current_question: number | null
           finished_at: string | null
@@ -2011,8 +2021,10 @@ export type Database = {
           quiz_topic: string
           status: string
           winner_id: string | null
+          winner_prize: number | null
         }
         Insert: {
+          bet_amount?: number | null
           created_at?: string
           current_question?: number | null
           finished_at?: string | null
@@ -2036,8 +2048,10 @@ export type Database = {
           quiz_topic: string
           status?: string
           winner_id?: string | null
+          winner_prize?: number | null
         }
         Update: {
+          bet_amount?: number | null
           created_at?: string
           current_question?: number | null
           finished_at?: string | null
@@ -2061,6 +2075,7 @@ export type Database = {
           quiz_topic?: string
           status?: string
           winner_id?: string | null
+          winner_prize?: number | null
         }
         Relationships: [
           {
@@ -3568,6 +3583,7 @@ export type Database = {
           current_streak_multiplier: number | null
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
+          financial_goal: string | null
           id: string
           is_bot: boolean | null
           last_login_date: string | null
@@ -3598,6 +3614,7 @@ export type Database = {
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
+          financial_goal?: string | null
           id?: string
           is_bot?: boolean | null
           last_login_date?: string | null
@@ -3628,6 +3645,7 @@ export type Database = {
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
+          financial_goal?: string | null
           id?: string
           is_bot?: boolean | null
           last_login_date?: string | null
@@ -6700,6 +6718,10 @@ export type Database = {
       award_daily_loot_box: {
         Args: { profile_id: string }
         Returns: string
+      }
+      award_duel_prize: {
+        Args: { duel_id: string; winner_id: string; prize_amount: number }
+        Returns: boolean
       }
       award_xp: {
         Args: { profile_id: string; xp_amount: number; activity_type?: string }
