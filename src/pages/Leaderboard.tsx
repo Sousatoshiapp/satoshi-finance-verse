@@ -18,6 +18,7 @@ interface LeaderboardUser {
   streak: number;
   points: number;
   profile_image_url?: string;
+  current_avatar_id?: string | null;
   avatars?: {
     name: string;
     image_url: string;
@@ -70,14 +71,19 @@ export default function Leaderboard() {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       
       if (authUser) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select(`
-            *,
-            avatars(id, name, image_url)
-          `)
-          .eq('user_id', authUser.id)
-          .single();
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select(`
+          *,
+          profile_image_url,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
+          )
+        `)
+        .eq('user_id', authUser.id)
+        .single();
         
         if (profile) {
           setCurrentUser(profile);
@@ -94,9 +100,12 @@ export default function Leaderboard() {
       const { data: xpData } = await supabase
         .from('profiles')
         .select(`
-          id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars (
-            avatars(name, image_url)
+          id, nickname, level, xp, streak, points, 
+          profile_image_url,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
           )
         `)
         .order('xp', { ascending: false })
@@ -106,9 +115,12 @@ export default function Leaderboard() {
       const { data: streakData } = await supabase
         .from('profiles')
         .select(`
-          id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars (
-            avatars(name, image_url)
+          id, nickname, level, xp, streak, points, 
+          profile_image_url,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
           )
         `)
         .order('streak', { ascending: false })
@@ -118,9 +130,12 @@ export default function Leaderboard() {
       const { data: levelData } = await supabase
         .from('profiles')
         .select(`
-          id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars (
-            avatars(name, image_url)
+          id, nickname, level, xp, streak, points, 
+          profile_image_url,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
           )
         `)
         .order('level', { ascending: false })
@@ -130,9 +145,12 @@ export default function Leaderboard() {
       const { data: pointsData } = await supabase
         .from('profiles')
         .select(`
-          id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars (
-            avatars(name, image_url)
+          id, nickname, level, xp, streak, points, 
+          profile_image_url,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
           )
         `)
         .order('points', { ascending: false })
@@ -292,9 +310,11 @@ export default function Leaderboard() {
                       >
                         <div className="text-2xl sm:text-4xl mb-1 sm:mb-2">{getRankIcon(index + 1)}</div>
                         <AvatarDisplayUniversal
-                          avatarName={user.avatars?.name}
-                          avatarUrl={user.avatars?.image_url}
-                          profileImageUrl={user.profile_image_url}
+                          avatarData={{
+                            profile_image_url: user.profile_image_url,
+                            current_avatar_id: user.current_avatar_id,
+                            avatars: user.avatars
+                          }}
                           nickname={user.nickname}
                           size="sm"
                           className="mx-auto mb-2 sm:mb-3 w-8 h-8 sm:w-12 sm:h-12"
@@ -335,9 +355,11 @@ export default function Leaderboard() {
                           </div>
                           
                           <AvatarDisplayUniversal
-                            avatarName={user.avatars?.name}
-                            avatarUrl={user.avatars?.image_url}
-                            profileImageUrl={user.profile_image_url}
+                            avatarData={{
+                              profile_image_url: user.profile_image_url,
+                              current_avatar_id: user.current_avatar_id,
+                              avatars: user.avatars
+                            }}
                             nickname={user.nickname}
                             size="sm"
                           />

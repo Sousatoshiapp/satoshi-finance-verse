@@ -53,7 +53,9 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
     .from('profiles')
     .select(`
       *,
-      avatars (
+      profile_image_url,
+      current_avatar_id,
+      avatars!current_avatar_id (
         id, name, description, image_url, avatar_class, 
         district_theme, rarity, evolution_level
       )

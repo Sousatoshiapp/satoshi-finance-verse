@@ -36,6 +36,7 @@ interface UserProfile {
   streak: number;
   is_bot: boolean;
   profile_image_url?: string;
+  current_avatar_id?: string | null;
   avatars?: {
     name: string;
     image_url: string;
@@ -106,7 +107,15 @@ export default function FindOpponent() {
       
       const { data: profiles, error } = await supabase
         .from('profiles')
-        .select('id, nickname, level, xp, streak, is_bot, profile_image_url')
+        .select(`
+          id, nickname, level, xp, streak, is_bot, 
+          profile_image_url,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
+          )
+        `)
         .ilike('nickname', `%${query}%`)
         .neq('id', currentUserProfile?.id || '')
         .limit(10);
@@ -143,7 +152,13 @@ export default function FindOpponent() {
         .select(`
           following_id,
           profiles!following_id (
-            id, nickname, level, xp, streak, is_bot, profile_image_url
+            id, nickname, level, xp, streak, is_bot, 
+            profile_image_url,
+            current_avatar_id,
+            avatars!current_avatar_id (
+              name,
+              image_url
+            )
           )
         `)
         .eq('follower_id', profile.id);
@@ -273,7 +288,11 @@ export default function FindOpponent() {
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <AvatarDisplayUniversal
-              profileImageUrl={user.profile_image_url}
+              avatarData={{
+                profile_image_url: user.profile_image_url,
+                current_avatar_id: user.current_avatar_id,
+                avatars: user.avatars
+              }}
               nickname={user.nickname}
               size="sm"
             />

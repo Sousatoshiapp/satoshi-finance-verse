@@ -68,9 +68,9 @@ export default function Social() {
         .select(`
           id, 
           nickname, 
-          profile_image_url, 
           level, 
           xp, 
+          profile_image_url,
           current_avatar_id,
           avatars!current_avatar_id (
             name,
@@ -82,7 +82,6 @@ export default function Social() {
 
       if (error) throw error;
 
-      // Data is already normalized with avatars joined
       setSearchResults(data || []);
     } catch (error) {
       console.error('Error searching users:', error);
@@ -118,9 +117,9 @@ export default function Social() {
         .select(`
           id,
           nickname,
-          profile_image_url,
           level,
           xp,
+          profile_image_url,
           current_avatar_id,
           avatars!current_avatar_id (
             name,
