@@ -152,6 +152,8 @@ export default function Profile() {
           `)
           .eq('user_id', authUser.id)
           .single();
+        
+        console.log('🔍 DASHBOARD Profile Query Result:', supabaseProfile);
         profile = supabaseProfile;
       }
 
