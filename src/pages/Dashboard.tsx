@@ -3,8 +3,7 @@ import { Button } from "@/components/shared/ui/button";
 import { BTZCounter } from "@/components/features/quiz/btz-counter";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { AvatarSelection } from "@/components/shared/avatar-selection";
-import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
-import { normalizeAvatarData } from "@/lib/avatar-utils";
+import { AvatarDisplayOptimized } from "@/components/shared/avatar-display-optimized";
 import { TournamentCarousel } from "@/components/features/gamification/tournament-carousel";
 import { DuelPlaygroundGrid } from "@/components/shared/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/shared/subscription-indicator";
@@ -269,14 +268,11 @@ export default function Dashboard() {
                     className="relative cursor-pointer hover:scale-105 transition-transform duration-200"
                     onClick={handleNavigateToProfile}
                   >
-                    <AvatarDisplayUniversal
-                      avatarData={normalizeAvatarData({
-                        profile_image_url: dashboardData?.profile?.profile_image_url,
-                        current_avatar_id: dashboardData?.profile?.current_avatar_id,
-                        avatars: userAvatar
-                      })}
-                      nickname={userNickname}
+                    <AvatarDisplayOptimized 
+                      avatar={userAvatar} 
                       size="lg"
+                      showBadge={true}
+                      evolutionLevel={userAvatar.evolution_level || 1}
                     />
                     {/* Level Badge - Positioned Right Side */}
                     <div className="absolute -bottom-0.5 right-2">
