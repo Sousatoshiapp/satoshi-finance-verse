@@ -38,9 +38,10 @@ export const AvatarDisplayUniversal = memo(({
       return resolveAvatarImage(avatarData, nickname);
     }
 
-    // Legacy support for existing props
+    // Legacy support for existing props - PRIORIZE profile_image_url first!
     const legacyData: AvatarData = {
-      profile_image_url: profileImageUrl,
+      profile_image_url: profileImageUrl, // This should come FIRST
+      current_avatar_id: null,
       avatars: avatarName ? {
         name: avatarName,
         image_url: avatarUrl || ''

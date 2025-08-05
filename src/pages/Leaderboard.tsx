@@ -248,9 +248,11 @@ export default function Leaderboard() {
                         <div className="flex items-center gap-4">
                           <div className="text-2xl font-bold text-primary">#{getCurrentUserRank()}</div>
                           <AvatarDisplayUniversal
-                            avatarName={currentUser.avatars?.name}
-                            avatarUrl={currentUser.avatars?.image_url}
-                            profileImageUrl={currentUser.profile_image_url}
+                            avatarData={{
+                              profile_image_url: currentUser.profile_image_url,
+                              current_avatar_id: currentUser.current_avatar_id,
+                              avatars: currentUser.avatars
+                            }}
                             nickname={currentUser.nickname}
                             size="md"
                           />
