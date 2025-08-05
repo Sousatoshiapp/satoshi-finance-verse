@@ -7,43 +7,171 @@ const corsHeaders = {
 
 const BOT_POSTS = [
   'Acabei de descobrir uma nova estratégia de investimento! 🚀 Alguém quer discutir sobre diversificação?',
-  'Dica do dia: nunca invista mais do que pode perder! 💰 Sempre tenha uma reserva de emergência.',
-  'Quem mais está acompanhando o mercado hoje? Os índices estão interessantes! 📈',
-  'Aprendi sobre análise fundamentalista hoje. É incrível como os números contam histórias! 📊',
-  'Alguém tem experiência com fundos imobiliários? Estou estudando essa modalidade. 🏢',
   'Meu portfólio está mais diversificado agora. Renda fixa + variável = equilíbrio! ⚖️',
-  'Quem quer um duelo rápido sobre finanças? Estou confiante hoje! ⚔️',
+  'Descobri o poder do dollar-cost averaging. Investir todo mês é a chave! 📅',
+  'Análise técnica vs fundamentalista: qual vocês preferem? Eu uso as duas! 📊📈',
+  'Rebalanceamento de carteira: fiz o meu hoje e já vejo a diferença! ⚖️',
+  'Buy and hold ou trading? Cada estratégia tem seu momento! 🎯',
+  'Aprendi sobre value investing. Warren Buffett estava certo o tempo todo! 💎',
+  'Diversificação geográfica: investir só no Brasil limita muito! 🌍',
+  'Descobri os ETFs internacionais. Mundo de possibilidades! 🌐',
+  'Análise setorial me ajudou a escolher melhores ações hoje! 🏭',
+  
+  'Dica do dia: nunca invista mais do que pode perder! 💰 Sempre tenha uma reserva de emergência.',
   'Descobri que educação financeira deveria ser matéria obrigatória nas escolas! 🎓',
-  'Beetz acumulando! Próxima meta: 15.000! Quem vem comigo nessa jornada? 💎',
-  'Inflação, juros, câmbio... como tudo está interligado na economia! 🌐',
-  'Acabei de ler sobre crypto e blockchain. Tecnologia fascinante! ₿',
   'Planejamento financeiro é como um GPS para seus sonhos! 🗺️',
-  'Quem mais ama estudar sobre o mercado financeiro? É viciante! 🧠',
   'Dica: sempre leia o prospecto antes de investir. Conhecimento é poder! 📚',
-  'Minha sequência de estudos chegou a 15 dias! Consistência é tudo! 🔥',
-  'Trading emocional é o maior inimigo do investidor. Frieza é fundamental! 🧊',
-  'Alguém sabe explicar sobre juros compostos? Quero testar meu conhecimento! 🤔',
+  'Aprendi sobre análise fundamentalista hoje. É incrível como os números contam histórias! 📊',
+  'Livro "Pai Rico, Pai Pobre" mudou minha mentalidade financeira! 📖',
+  'Curso de finanças pessoais foi o melhor investimento que fiz! 🎓',
+  'Planilha de controle financeiro: organização é fundamental! 📊',
+  'Aprendi sobre fluxo de caixa pessoal. Game changer! 💰',
+  'Educação financeira é investimento que ninguém pode tirar de você! 🧠',
+  
+  'Quem mais está acompanhando o mercado hoje? Os índices estão interessantes! 📈',
+  'Inflação, juros, câmbio... como tudo está interligado na economia! 🌐',
   'Mercado volátil hoje! Ótima oportunidade para quem tem estratégia! 📉📈',
+  'IPCA saiu hoje: como isso afeta nossos investimentos? 📊',
+  'Taxa Selic mudou: hora de revisar a estratégia! 📈',
+  'Dólar oscilando muito. Oportunidade para quem entende! 💵',
+  'Bolsa americana influencia muito a nossa. Globalização! 🌍',
+  'Commodities em alta: agronegócio brasileiro se beneficia! 🌾',
+  'Mercado emergente tem suas peculiaridades. Estudando! 📚',
+  'Análise macroeconômica ajuda a entender tendências! 🌐',
+  
+  'Acabei de ler sobre crypto e blockchain. Tecnologia fascinante! ₿',
+  'Bitcoin como reserva de valor: será o ouro digital? 🪙',
+  'DeFi está revolucionando o sistema financeiro! 🔗',
+  'Smart contracts: contratos que se executam sozinhos! 🤖',
+  'Ethereum e suas aplicações descentralizadas impressionam! ⚡',
+  'NFTs além da arte: utilidade real em diversos setores! 🎨',
+  'Staking de criptomoedas: renda passiva interessante! 💰',
+  'Web3 vai mudar como interagimos com dinheiro! 🌐',
+  'Carteiras digitais: segurança é prioridade número 1! 🔐',
+  'Regulamentação crypto: mercado amadurecendo! ⚖️',
+  
+  'Alguém tem experiência com fundos imobiliários? Estou estudando essa modalidade. 🏢',
+  'CDBs com liquidez diária: segurança e flexibilidade! 🏦',
+  'Tesouro Direto: porta de entrada para renda fixa! 🏛️',
+  'Ações de dividendos: renda passiva todo mês! 💰',
+  'Fundos multimercado: diversificação em um só produto! 📊',
+  'LCIs e LCAs: isenção de IR é atrativa! 🏠',
+  'Debêntures incentivadas: conhecem essa modalidade? 🏭',
+  'Previdência privada: planejando a aposentadoria! 👴',
+  'COE: produto estruturado interessante para diversificar! 📈',
+  'Fundos de investimento: gestão profissional vale a pena! 👔',
+  
+  'Beetz acumulando! Próxima meta: 15.000! Quem vem comigo nessa jornada? 💎',
+  'Minha sequência de estudos chegou a 15 dias! Consistência é tudo! 🔥',
+  'Quem quer um duelo rápido sobre finanças? Estou confiante hoje! ⚔️',
+  'Level up! Conhecimento financeiro é o melhor power-up! ⬆️',
+  'Streak de 30 dias estudando! Hábito formado! 🎯',
+  'Conquistei mais um badge hoje! Motivação total! 🏆',
+  'Ranking subindo: estudo + prática = resultados! 📈',
+  'Desafio aceito! Vamos ver quem sabe mais sobre FIIs! 🏢',
+  'XP acumulando: cada quiz me deixa mais esperto! 🧠',
+  'Meta batida: 1000 pontos esta semana! 🎉',
+  
   'Lembro quando comecei: não sabia nem o que era CDB. Como evoluímos! 📈',
-  'Weekend chegando! Hora de estudar mais sobre investimentos! 📖'
+  'Trading emocional é o maior inimigo do investidor. Frieza é fundamental! 🧊',
+  'Primeiro investimento: R$ 100 no Tesouro. Hoje tenho carteira diversificada! 💪',
+  'Erro do passado: seguir dicas de WhatsApp. Hoje faço minha análise! 🤦‍♂️',
+  'Aprendi na prática: timing do mercado é quase impossível! ⏰',
+  'Paciência é virtude do investidor. Resultados vêm com tempo! ⏳',
+  'Primeira perda me ensinou mais que qualquer livro! 📚',
+  'Disciplina financeira mudou minha vida completamente! 💪',
+  'Investir jovem: juros compostos são mágicos! ✨',
+  'Reserva de emergência me salvou na pandemia! 🛡️',
+  
+  'Weekend chegando! Hora de estudar mais sobre investimentos! 📖',
+  'Quem mais ama estudar sobre o mercado financeiro? É viciante! 🧠',
+  'Alguém sabe explicar sobre juros compostos? Quero testar meu conhecimento! 🤔',
+  'Tempo é o melhor amigo do investidor de longo prazo! ⏰',
+  'Diversificação: não colocar todos os ovos na mesma cesta! 🥚',
+  'Risco e retorno sempre andam juntos. Equilíbrio é chave! ⚖️',
+  'Investir é maratona, não sprint. Foco no longo prazo! 🏃‍♂️',
+  'Conhecimento é o único investimento que sempre dá retorno! 🎓',
+  'Mercado premia quem se prepara e estuda! 🏆',
+  'Paciência + disciplina + conhecimento = sucesso financeiro! 🎯'
 ];
 
 const BOT_COMMENTS = [
   'Concordo totalmente! Excelente perspectiva! 👍',
   'Muito boa essa dica, obrigado por compartilhar! 🙏',
-  'Isso me lembra quando comecei a investir... nostalgia! 😊',
+  'Parabéns pelo resultado! Inspirador! 🎉',
+  'Esse é o tipo de mentalidade que gera resultados! 🎯',
+  'Perfeita análise! Pensamento alinhado! 💯',
+  'Exato! Você captou a essência do investimento! ✨',
+  'Concordo 100%! Estratégia sólida! 🎯',
+  'Falou tudo! Não poderia concordar mais! 👏',
+  'Pensamento certeiro! Parabéns pela clareza! 💡',
+  'Isso aí! Mentalidade de investidor de sucesso! 🏆',
+  
+  'Perspectiva interessante, não tinha pensado nisso! 💭',
   'Alguém tem mais informações sobre esse assunto? 🤓',
   'Post muito útil! Salvando para consultar depois! 📌',
-  'Vou tentar implementar essa estratégia também! 💪',
-  'Parabéns pelo resultado! Inspirador! 🎉',
-  'Perspectiva interessante, não tinha pensado nisso! 💭',
   'Adoro esse tipo de conteúdo educativo! ❤️',
+  'Aprendi algo novo hoje! Obrigado! 🎓',
+  'Que insight valioso! Me fez refletir! 🤔',
+  'Nunca havia visto por esse ângulo! Interessante! 👀',
+  'Conteúdo de qualidade! Sempre aprendendo! 📚',
+  'Explicação clara e didática! Parabéns! 👨‍🏫',
+  'Informação valiosa! Compartilhando com amigos! 📤',
+  
+  'Isso me lembra quando comecei a investir... nostalgia! 😊',
+  'Passei pela mesma situação! Experiência similar! 🤝',
+  'Vivi isso também! Aprendizado constante! 📈',
+  'Minha jornada foi parecida! Evolução contínua! 🚀',
+  'Já cometi esse erro antes! Lição aprendida! 🎯',
+  'Experiência parecida aqui! Mercado ensina muito! 📊',
+  'Também pensei assim no início! Como mudamos! 🔄',
+  'Lembro da minha primeira vez... que nervoso! 😅',
+  'Já estive nessa situação! Tempo cura tudo! ⏰',
+  'História similar à minha! Identificação total! 🎭',
+  
+  'Vou tentar implementar essa estratégia também! 💪',
+  'Ótima ideia! Vou pesquisar mais sobre isso! 🔍',
+  'Inspirou-me a revisar minha carteira! 📊',
+  'Vou aplicar essa dica imediatamente! ⚡',
+  'Motivou-me a estudar mais esse tema! 📖',
+  'Vou testar essa abordagem! Obrigado! 🧪',
+  'Ideia genial! Já estou planejando! 📝',
+  'Vou incorporar isso na minha estratégia! 🎯',
+  'Inspiração para meu próximo movimento! 🚀',
+  'Dica anotada! Vou colocar em prática! ✍️',
+  
   'Compartilhando conhecimento = compartilhando riqueza! 💰',
-  'Esse é o tipo de mentalidade que gera resultados! 🎯',
   'Estudo + prática = sucesso nos investimentos! 📚💼',
   'Mercado recompensa quem se prepara! 🏆',
   'Diversificação é realmente a chave! 🔑',
-  'Conhecimento financeiro transforma vidas! ✨'
+  'Conhecimento financeiro transforma vidas! ✨',
+  'Paciência é virtude do investidor! ⏳',
+  'Disciplina sempre vence emoção! 🧘‍♂️',
+  'Tempo é nosso maior aliado! ⏰',
+  'Educação financeira é libertação! 🗽',
+  'Investir é plantar para colher depois! 🌱',
+  
+  'E sobre os riscos? Como você mitiga? 🛡️',
+  'Qual sua opinião sobre timing de mercado? ⏰',
+  'Como você escolhe seus investimentos? 🤔',
+  'Já considerou diversificação internacional? 🌍',
+  'Qual percentual você destina para renda variável? 📊',
+  'Como equilibra risco e retorno? ⚖️',
+  'Qual sua estratégia para bear market? 🐻',
+  'Você rebalanceia com que frequência? 🔄',
+  'Como analisa a qualidade de uma empresa? 🏢',
+  'Qual indicador você considera mais importante? 📈',
+  
+  'Continue assim! Caminho certo! 🛤️',
+  'Persistência é fundamental! Não desista! 💪',
+  'Você está no caminho certo! Parabéns! 🎉',
+  'Mentalidade de vencedor! Continue! 🏆',
+  'Evolução constante! Inspirador! 📈',
+  'Foco e determinação! Admiro! 🎯',
+  'Jornada de crescimento! Parabéns! 🌱',
+  'Disciplina exemplar! Continue assim! 👏',
+  'Mindset de investidor! Perfeito! 🧠',
+  'Trajetória de sucesso! Inspiração! ⭐'
 ];
 
 Deno.serve(async (req) => {
@@ -84,9 +212,23 @@ Deno.serve(async (req) => {
 
     // Criar posts para bots (30% dos bots fazem um post)
     const botsToPost = bots.filter(() => Math.random() < 0.3);
+    const usedPosts = new Set();
+
+    const getUniquePost = () => {
+      let attempts = 0;
+      let selectedPost;
+      
+      do {
+        selectedPost = BOT_POSTS[Math.floor(Math.random() * BOT_POSTS.length)];
+        attempts++;
+      } while (usedPosts.has(selectedPost) && attempts < 10);
+      
+      usedPosts.add(selectedPost);
+      return selectedPost;
+    };
     
     for (const bot of botsToPost) {
-      const randomPost = BOT_POSTS[Math.floor(Math.random() * BOT_POSTS.length)];
+      const randomPost = getUniquePost();
       const hoursAgo = Math.floor(Math.random() * 48); // Posts das últimas 48 horas
       
       const { error: postError } = await supabaseClient
@@ -114,6 +256,21 @@ Deno.serve(async (req) => {
       console.error('Erro ao buscar posts:', postsError);
     } else if (recentPosts) {
       // Adicionar comentários (20% chance por bot por post)
+      const usedComments = new Set();
+
+      const getUniqueComment = () => {
+        let attempts = 0;
+        let selectedComment;
+        
+        do {
+          selectedComment = BOT_COMMENTS[Math.floor(Math.random() * BOT_COMMENTS.length)];
+          attempts++;
+        } while (usedComments.has(selectedComment) && attempts < 10);
+        
+        usedComments.add(selectedComment);
+        return selectedComment;
+      };
+
       for (const post of recentPosts) {
         const botsToComment = bots.filter(() => Math.random() < 0.15); // 15% chance
         
@@ -121,7 +278,7 @@ Deno.serve(async (req) => {
           // Não comentar no próprio post
           if (bot.id === post.user_id) continue;
           
-          const randomComment = BOT_COMMENTS[Math.floor(Math.random() * BOT_COMMENTS.length)];
+          const randomComment = getUniqueComment();
           const hoursAfterPost = Math.floor(Math.random() * 24); // Comentário até 24h depois
           
           const { error: commentError } = await supabaseClient
