@@ -66,15 +66,11 @@ export default function Social() {
       const { data, error } = await supabase
         .from('profiles')
         .select(`
-          id, 
-          nickname, 
-          level, 
-          xp, 
+          *,
           profile_image_url,
           current_avatar_id,
           avatars!current_avatar_id (
-            name,
-            image_url
+            id, name, image_url
           )
         `)
         .ilike('nickname', `%${query}%`)
@@ -115,19 +111,17 @@ export default function Social() {
       const { data: profile } = await supabase
         .from('profiles')
         .select(`
-          id,
-          nickname,
-          level,
-          xp,
+          *,
           profile_image_url,
           current_avatar_id,
           avatars!current_avatar_id (
-            name,
-            image_url
+            id, name, image_url
           )
         `)
         .eq('user_id', user.id)
         .single();
+
+      console.log('🔍 Social currentUser query result:', profile);
 
       if (profile) {
         setCurrentUserId(profile.id);
