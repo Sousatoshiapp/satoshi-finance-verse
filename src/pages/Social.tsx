@@ -203,10 +203,10 @@ export default function Social() {
     <div className="min-h-screen bg-background">
       <FloatingNavbar />
       
-      {/* Layout estilo Twitter */}
-      <div className="max-w-6xl mx-auto flex">
+      {/* Layout responsivo estilo Twitter */}
+      <div className="max-w-6xl mx-auto flex min-h-screen">
         {/* Sidebar esquerda - Desktop */}
-        <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen">
+        <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto">
           <div className="space-y-2">
             <Button 
               variant="ghost" 
@@ -270,15 +270,15 @@ export default function Social() {
           )}
         </div>
 
-        {/* Feed central */}
-        <div className="flex-1 max-w-2xl border-x border-border/50">
+        {/* Feed central - Responsivo */}
+        <div className="flex-1 max-w-2xl border-x border-border/50 lg:border-x lg:border-border/50 min-h-screen">
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-4">
-            <h1 className="text-xl font-bold">{t('social.tabs.feed')}</h1>
+          <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-3 lg:p-4">
+            <h1 className="text-lg lg:text-xl font-bold">{t('social.tabs.feed')}</h1>
           </div>
 
           {/* Create Post */}
-          <div className="border-b border-border/50 p-4">
+          <div className="border-b border-border/50 p-3 lg:p-4">
             <div className="flex space-x-3">
               {currentUser && (
                 <Avatar className="w-12 h-12">
@@ -318,7 +318,7 @@ export default function Social() {
         </div>
 
         {/* Sidebar direita - Desktop */}
-        <div className="hidden lg:flex w-80 p-4 space-y-4">
+        <div className="hidden xl:flex w-80 p-4 space-y-4 overflow-y-auto">
           {/* Search */}
           <div className="sticky top-4 space-y-4">
             <div className="relative">
@@ -387,30 +387,69 @@ export default function Social() {
       </div>
 
       {/* Mobile Tabs */}
-      <div className="lg:hidden">
+      <div className="lg:hidden pb-32">
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-t border-border/50 rounded-none h-16">
-            <TabsTrigger value="feed" className="flex-1 h-12">
-              <Home className="h-5 w-5" />
+          <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-14 grid grid-cols-5">
+            <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-12 text-xs">
+              <Home className="h-4 w-4 mb-1" />
+              <span>Feed</span>
             </TabsTrigger>
-            <TabsTrigger value="search" className="flex-1 h-12">
-              <Search className="h-5 w-5" />
+            <TabsTrigger value="search" className="flex flex-col items-center justify-center h-12 text-xs">
+              <Search className="h-4 w-4 mb-1" />
+              <span>Buscar</span>
             </TabsTrigger>
-            <TabsTrigger value="challenges" className="flex-1 h-12">
-              <Hash className="h-5 w-5" />
+            <TabsTrigger value="challenges" className="flex flex-col items-center justify-center h-12 text-xs">
+              <Hash className="h-4 w-4 mb-1" />
+              <span>Desafios</span>
             </TabsTrigger>
-            <TabsTrigger value="rankings" className="flex-1 h-12">
-              <Bell className="h-5 w-5" />
+            <TabsTrigger value="rankings" className="flex flex-col items-center justify-center h-12 text-xs">
+              <Bell className="h-4 w-4 mb-1" />
+              <span>Ranking</span>
             </TabsTrigger>
-            <TabsTrigger value="messages" className="flex-1 h-12">
-              <Mail className="h-5 w-5" />
+            <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-12 text-xs">
+              <Mail className="h-4 w-4 mb-1" />
+              <span>Chat</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="feed" className="pb-32">
-            <div className="p-4">
-              <TwitterSocialFeed />
+          <TabsContent value="feed" className="pb-32 min-h-screen">
+            {/* Mobile Create Post */}
+            <div className="border-b border-border/50 p-3">
+              <div className="flex space-x-3">
+                {currentUser && (
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage 
+                      src={currentUser.avatar?.image_url || currentUser.profile_image_url || '/avatars/default-avatar.jpg'} 
+                      alt={currentUser.nickname} 
+                    />
+                    <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                )}
+                <div className="flex-1">
+                  <Textarea
+                    placeholder={t('social.placeholders.shareOpinion')}
+                    value={newPost}
+                    onChange={(e) => setNewPost(e.target.value)}
+                    className="min-h-[60px] resize-none border-none shadow-none text-base placeholder:text-base focus-visible:ring-0"
+                    maxLength={500}
+                  />
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="text-xs text-muted-foreground">
+                      {newPost.length}/500
+                    </span>
+                    <Button 
+                      onClick={handleCreatePost}
+                      disabled={!newPost.trim() || posting}
+                      size="sm"
+                      className="rounded-full"
+                    >
+                      {posting ? t('social.buttons.publishing') : t('social.buttons.publish')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
+            <TwitterSocialFeed />
           </TabsContent>
 
           <TabsContent value="search" className="pb-32">

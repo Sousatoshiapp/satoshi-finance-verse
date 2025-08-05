@@ -6871,6 +6871,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      auto_accept_bot_duels: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       award_daily_loot_box: {
         Args: { profile_id: string }
         Returns: string
@@ -7004,11 +7008,8 @@ export type Database = {
               topic_param?: string
               max_level_diff?: number
             }
-        Returns: {
-          opponent_id: string
-          opponent_type: string
-          match_found: boolean
-        }[]
+          | { user_profile_id: string }
+        Returns: string
       }
       generate_ai_recommendations: {
         Args: { p_user_id: string }
