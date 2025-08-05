@@ -30,6 +30,7 @@ interface SocialPost {
     id: string;
     nickname: string;
     profile_image_url?: string;
+    current_avatar_id?: string | null;
     level?: number;
     xp?: number;
     avatars?: {
@@ -48,6 +49,11 @@ interface PostComment {
   profiles: {
     nickname: string;
     profile_image_url?: string;
+    current_avatar_id?: string | null;
+    avatars?: {
+      name: string;
+      image_url: string;
+    };
   };
 }
 
@@ -245,7 +251,12 @@ export function TwitterSocialFeed() {
           *,
           profiles:user_id (
             nickname,
-            profile_image_url
+            profile_image_url,
+            current_avatar_id,
+            avatars!current_avatar_id (
+              name,
+              image_url
+            )
           )
         `)
         .eq('post_id', postId)
@@ -471,9 +482,11 @@ export function TwitterSocialFeed() {
                   
                   {/* Add Comment */}
                   <div className="flex space-x-3">
-                    <Avatar className="w-8 h-8">
-                      <AvatarFallback className="text-xs">U</AvatarFallback>
-                    </Avatar>
+                    <AvatarDisplayUniversal
+                      avatarData={{ profile_image_url: null, current_avatar_id: null, avatars: null }}
+                      nickname="U"
+                      size="sm"
+                    />
                     <div className="flex-1 flex space-x-2">
                       <Textarea
                         placeholder={t('social.placeholders.addComment')}
@@ -498,12 +511,11 @@ export function TwitterSocialFeed() {
                   {/* Comments List */}
                   {comments[post.id] && comments[post.id].map((comment) => (
                     <div key={comment.id} className="flex space-x-3">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={comment.profiles.profile_image_url || '/avatars/default-avatar.jpg'} />
-                        <AvatarFallback className="text-xs">
-                          {comment.profiles.nickname.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
+                      <AvatarDisplayUniversal
+                        avatarData={normalizeAvatarData(comment.profiles)}
+                        nickname={comment.profiles.nickname}
+                        size="sm"
+                      />
                       <div className="flex-1">
                         <div className="bg-muted rounded-lg p-3">
                           <div className="font-medium text-xs mb-1">

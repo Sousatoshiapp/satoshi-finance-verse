@@ -1,22 +1,23 @@
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
 import { Badge } from "@/components/shared/ui/badge";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { SocialButton } from "./social-button";
 import { Button } from "@/components/shared/ui/button";
 import { Users, TrendingUp, MessageCircle } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
+import { normalizeAvatarData } from "@/lib/avatar-utils";
 
 interface UserCardProps {
   user: {
     id: string;
     nickname: string;
     profile_image_url?: string;
+    current_avatar_id?: string | null;
     level?: number;
     xp?: number;
     follower_count?: number;
     following_count?: number;
-    avatar?: {
-      id: string;
+    avatars?: {
       name: string;
       image_url: string;
     };
@@ -35,10 +36,11 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
         className="flex items-center gap-3 p-2 cursor-pointer hover:bg-muted/50 rounded-lg transition-colors"
         onClick={() => onClick?.(user.id)}
       >
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={user.avatar?.image_url || user.profile_image_url} />
-          <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-        </Avatar>
+        <AvatarDisplayUniversal
+          avatarData={normalizeAvatarData(user)}
+          nickname={user.nickname}
+          size="sm"
+        />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{user.nickname}</p>
           <div className="flex items-center gap-2">
@@ -48,9 +50,9 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
             >
               {t('social.profile.level')} {user.level || 1}
             </Badge>
-            {user.avatar && (
+            {user.avatars && (
               <span className="text-xs text-muted-foreground truncate">
-                {user.avatar.name}
+                {user.avatars.name}
               </span>
             )}
           </div>
@@ -73,10 +75,11 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
     >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={user.avatar?.image_url || user.profile_image_url} />
-            <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <AvatarDisplayUniversal
+            avatarData={normalizeAvatarData(user)}
+            nickname={user.nickname}
+            size="md"
+          />
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
@@ -89,9 +92,9 @@ export function UserCard({ user, showSocialStats = true, compact = false, onStar
               </Badge>
             </div>
             
-            {user.avatar && (
+            {user.avatars && (
               <p className="text-xs text-muted-foreground mb-2">
-                {user.avatar.name}
+                {user.avatars.name}
               </p>
             )}
             
