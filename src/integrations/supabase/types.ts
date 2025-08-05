@@ -589,6 +589,50 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_presence_simulation: {
+        Row: {
+          bot_id: string
+          created_at: string
+          id: string
+          is_online: boolean
+          last_activity_at: string
+          online_probability: number
+          peak_hours: number[]
+          personality_type: string
+          updated_at: string
+        }
+        Insert: {
+          bot_id: string
+          created_at?: string
+          id?: string
+          is_online?: boolean
+          last_activity_at?: string
+          online_probability?: number
+          peak_hours?: number[]
+          personality_type?: string
+          updated_at?: string
+        }
+        Update: {
+          bot_id?: string
+          created_at?: string
+          id?: string
+          is_online?: boolean
+          last_activity_at?: string
+          online_probability?: number
+          peak_hours?: number[]
+          personality_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_presence_simulation_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       btz_penalty_history: {
         Row: {
           btz_after: number
@@ -6833,7 +6877,13 @@ export type Database = {
         Returns: undefined
       }
       find_automatic_opponent: {
-        Args: { p_user_id: string; p_topic?: string }
+        Args:
+          | { p_user_id: string; p_topic?: string }
+          | {
+              user_id_param: string
+              topic_param?: string
+              max_level_diff?: number
+            }
         Returns: {
           opponent_id: string
           opponent_type: string
@@ -6981,6 +7031,10 @@ export type Database = {
       request_guild_membership: {
         Args: { p_guild_id: string; p_user_id: string; p_message?: string }
         Returns: boolean
+      }
+      simulate_bot_presence: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       start_district_duel: {
         Args: {
