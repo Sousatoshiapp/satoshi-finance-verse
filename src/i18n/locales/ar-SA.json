@@ -21,6 +21,13 @@
     "playground": "الملعب",
     "explore": "استكشف"
   },
+  "duels": {
+    "activeArena": "الساحة",
+    "online": "لاعبين متصلين",
+    "searching": "البحث عن خصم...",
+    "moreBotsAvailable": "المزيد من الروبوتات متاحة",
+    "lastUpdate": "آخر تحديث"
+  },
   "quiz": {
     "title": "اختبار",
     "question": "السؤال {{number}} من {{total}}",
@@ -427,6 +434,42 @@
     "noUpcomingTournaments": "لا توجد بطولات قادمة في الوقت الحالي",
     "noFinishedTournaments": "لا توجد بطولات منتهية في الوقت الحالي"
   },
+  "social": {
+    "tabs": {
+      "feed": "التحديثات",
+      "search": "البحث",
+      "challenges": "التحديات",
+      "ranks": "التصنيفات",
+      "following": "المتابعون",
+      "chat": "الدردشة"
+    },
+    "placeholders": {
+      "shareOpinion": "ما الذي يحدث؟",
+      "searchUsers": "البحث عن المستخدمين...",
+      "addComment": "أضف تعليقاً..."
+    },
+    "buttons": {
+      "publish": "نشر",
+      "publishing": "جاري النشر...",
+      "comment": "تعليق"
+    },
+    "messages": {
+      "searchingUsers": "البحث عن المستخدمين...",
+      "noResults": "لم يتم العثور على نتائج",
+      "comingSoon": "قريباً",
+      "postCreated": "تم إنشاء المنشور بنجاح!",
+      "commentAdded": "تم إضافة التعليق!",
+      "errorPost": "لم يتمكن من إنشاء المنشور",
+      "errorComment": "لم يتمكن من إضافة التعليق"
+    },
+    "stats": {
+      "likes": "الإعجابات",
+      "comments": "التعليقات", 
+      "shares": "المشاركات",
+      "ago": "منذ",
+      "now": "الآن"
+    }
+  },
   "duels": {
     "duels": "المبارزات",
     "challenge": "تحدي",
@@ -474,7 +517,35 @@
     "title": "البحث عن خصم",
     "searching": "جاري البحث عن خصم...",
     "found": "تم العثور على خصم!",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "preferences": "التفضيلات",
+    "quickMatch": "مباراة سريعة",
+    "searchPlayers": "البحث عن اللاعبين",
+    "friendsList": "قائمة الأصدقاء",
+    "quickStart": "بداية سريعة",
+    "topicSelection": "اختيار الموضوع",
+    "selectTopic": "اختر موضوعاً",
+    "searchUsers": "البحث عن المستخدمين...",
+    "invitePlayer": "دعوة لاعب",
+    "levelRange": "نطاق المستوى",
+    "onlineNow": "متصل الآن",
+    "recentlyActive": "نشط مؤخراً",
+    "noResults": "لم يتم العثور على نتائج",
+    "searchForPlayers": "ابحث عن لاعبين للتحدي",
+    "yourFriends": "أصدقاؤك",
+    "noFriends": "لم تضف أي أصدقاء بعد",
+    "addFriends": "أضف أصدقاء للمبارزة بسهولة",
+    "matchmakingPreferences": "تفضيلات المطابقة",
+    "smartQueue": "طابور ذكي",
+    "priorityInvites": "دعوات أولوية",
+    "filteredInvites": "دعوات مفلترة",
+    "allInvites": "جميع الدعوات",
+    "acceptAll": "قبول الكل",
+    "declineAll": "رفض الكل",
+    "noPendingInvites": "لا توجد دعوات معلقة",
+    "inviteQueueDescription": "عندما تستقبل دعوات مبارزة، ستظهر هنا",
+    "queueManager": "طابور الدعوات",
+    "clickToRespond": "انقر على دعوة للرد فوراً"
   },
   "common": {
     "loading": "جاري التحميل",

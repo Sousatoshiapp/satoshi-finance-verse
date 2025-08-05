@@ -21,6 +21,13 @@
     "playground": "Playground",
     "explore": "Explorar"
   },
+  "duels": {
+    "activeArena": "Arena",
+    "online": "jugadores en línea",
+    "searching": "Buscando Oponente...",
+    "moreBotsAvailable": "Más bots disponibles",
+    "lastUpdate": "Última actualización"
+  },
   "quiz": {
     "title": "Quiz",
     "question": "Pregunta {{number}} de {{total}}",
@@ -314,7 +321,41 @@
     "post": "Publicar",
     "like": "Me gusta",
     "comment": "Comentar",
-    "share": "Compartir"
+    "share": "Compartir",
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafíos",
+      "ranks": "Rankings",
+      "following": "Siguiendo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "¿Qué está pasando?",
+      "searchUsers": "Buscar usuarios...",
+      "addComment": "Añade un comentario..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "comment": "Comentar"
+    },
+    "messages": {
+      "searchingUsers": "Buscando usuarios...",
+      "noResults": "No se encontraron resultados",
+      "comingSoon": "Próximamente",
+      "postCreated": "¡Post creado con éxito!",
+      "commentAdded": "¡Comentario añadido!",
+      "errorPost": "No se pudo crear el post",
+      "errorComment": "No se pudo añadir el comentario"
+    },
+    "stats": {
+      "likes": "me gusta",
+      "comments": "comentarios",
+      "shares": "compartir",
+      "ago": "hace",
+      "now": "ahora"
+    }
   },
   "satoshiCity": {
     "welcome": "Bienvenido a la ciudad del futuro financiero",
@@ -669,7 +710,35 @@
     "title": "Encontrar Oponente",
     "searching": "Buscando oponente...",
     "found": "¡Oponente encontrado!",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "preferences": "Preferencias",
+    "quickMatch": "Partida Rápida",
+    "searchPlayers": "Buscar Jugadores",
+    "friendsList": "Lista de Amigos",
+    "quickStart": "Inicio Rápido",
+    "topicSelection": "Selección de Tema",
+    "selectTopic": "Selecciona un tema",
+    "searchUsers": "Buscar usuarios...",
+    "invitePlayer": "Invitar Jugador",
+    "levelRange": "Rango de Nivel",
+    "onlineNow": "En Línea Ahora",
+    "recentlyActive": "Activo Recientemente",
+    "noResults": "No se encontraron resultados",
+    "searchForPlayers": "Busca jugadores para desafiar",
+    "yourFriends": "Tus Amigos",
+    "noFriends": "Aún no tienes amigos agregados",
+    "addFriends": "Añade amigos para duelar fácilmente",
+    "matchmakingPreferences": "Preferencias de Emparejamiento",
+    "smartQueue": "Cola Inteligente",
+    "priorityInvites": "Invitaciones Prioritarias",
+    "filteredInvites": "Invitaciones Filtradas",
+    "allInvites": "Todas las Invitaciones",
+    "acceptAll": "Aceptar Todas",
+    "declineAll": "Rechazar Todas",
+    "noPendingInvites": "No hay invitaciones pendientes",
+    "inviteQueueDescription": "Cuando recibas invitaciones de duelo, aparecerán aquí",
+    "queueManager": "Cola de Invitaciones",
+    "clickToRespond": "Haz clic en una invitación para responder inmediatamente"
   },
   "btz": {
     "yieldedToday": "Rendido hoy",

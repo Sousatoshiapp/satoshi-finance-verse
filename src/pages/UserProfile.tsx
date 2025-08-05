@@ -66,7 +66,9 @@ export default function UserProfile() {
           completed_lessons,
           streak,
           created_at,
-          avatar:avatars(id, name, image_url, description, rarity)
+          avatar:user_avatars (
+            avatars(id, name, image_url, description, rarity)
+          )
         `)
         .eq('id', profileId)
         .single();
@@ -106,8 +108,12 @@ export default function UserProfile() {
         social_interactions: (followerCount || 0) + (followingCount || 0)
       };
 
+      // Transform the nested avatar data
+      const transformedAvatar = profile.avatar?.[0]?.avatars || null;
+      
       setUser({
         ...profile,
+        avatar: transformedAvatar,
         follower_count: followerCount || 0,
         following_count: followingCount || 0,
         portfolio_count: portfolioCount || 0,

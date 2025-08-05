@@ -12,12 +12,16 @@ interface MatchmakingResult {
 export function useEnhancedDuelMatchmaking() {
   const [isSearching, setIsSearching] = useState(false);
   const [matchResult, setMatchResult] = useState<MatchmakingResult | null>(null);
+  const [searchPhase, setSearchPhase] = useState<'searching' | 'found' | 'creating' | null>(null);
+  const [searchTimeout, setSearchTimeout] = useState<number>(15);
   const { toast } = useToast();
 
   const startMatchmaking = async (topic: string = 'financas') => {
     try {
       setIsSearching(true);
       setMatchResult(null);
+      setSearchPhase('searching');
+      setSearchTimeout(15);
       
       // Get current user profile
       const { data: { user } } = await supabase.auth.getUser();
@@ -31,105 +35,149 @@ export function useEnhancedDuelMatchmaking() {
 
       if (!profile) throw new Error('Profile not found');
 
-      // Call the automatic opponent finding function
+      // Add to duel queue
+      await supabase
+        .from('duel_queue')
+        .insert({
+          user_id: profile.id,
+          topic,
+          is_active: true,
+          expires_at: new Date(Date.now() + 15000).toISOString()
+        });
+
+      // Countdown timer
+      const countdownInterval = setInterval(() => {
+        setSearchTimeout(prev => {
+          if (prev <= 1) {
+            clearInterval(countdownInterval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      // Call the new enhanced matchmaking function
       const { data: result, error } = await supabase.rpc('find_automatic_opponent', {
-        p_user_id: profile.id,
-        p_topic: topic
+        user_id_param: profile.id,
+        topic_param: topic
       });
 
       if (error) throw error;
 
-      const matchData = result[0];
+      // Handle the result properly - it should be an object or array
+      const matchData = Array.isArray(result) ? result[0] : result;
       
-      if (matchData.match_found) {
+      if (matchData && typeof matchData === 'object' && matchData.opponent_id) {
+        clearInterval(countdownInterval);
+        setSearchPhase('found');
+        
         // Get opponent data
         const { data: opponentData } = await supabase
           .from('profiles')
           .select(`
-            id, nickname, level, avatar_id, is_bot,
-            avatars (name, image_url, avatar_class)
+            id, nickname, level, profile_image_url, is_bot
           `)
           .eq('id', matchData.opponent_id)
           .single();
 
-        setMatchResult({
-          opponentId: matchData.opponent_id,
-          opponentType: matchData.opponent_type as 'human' | 'bot',
-          matchFound: true,
-          opponentData
-        });
+        setTimeout(() => {
+          setMatchResult({
+            opponentId: matchData.opponent_id,
+            opponentType: matchData.opponent_type as 'human' | 'bot',
+            matchFound: true,
+            opponentData: {
+              ...opponentData,
+              nickname: opponentData?.nickname || 'Oponente',
+              level: opponentData?.level || 1
+            }
+          });
+          setIsSearching(false);
+          setSearchPhase(null);
+        }, 1000);
         
-        toast({
-          title: "🎯 Oponente encontrado!",
-          description: `Preparando duelo contra ${opponentData?.nickname || 'oponente'}...`,
-        });
-      } else {
-        setMatchResult({
-          opponentId: null,
-          opponentType: 'waiting',
-          matchFound: false
-        });
-        
-        // Poll for matches every 2 seconds
-        const pollInterval = setInterval(async () => {
-          try {
-            const { data: pollResult } = await supabase.rpc('find_automatic_opponent', {
-              p_user_id: profile.id,
-              p_topic: topic
-            });
-            
-            const pollData = pollResult[0];
-            if (pollData.match_found) {
-              clearInterval(pollInterval);
-              
-              // Get opponent data
-              const { data: opponentData } = await supabase
-                .from('profiles')
-                .select(`
-                  id, nickname, level, avatar_id, is_bot,
-                  avatars (name, image_url, avatar_class)
-                `)
-                .eq('id', pollData.opponent_id)
-                .single();
+        // Remove from queue
+        await supabase
+          .from('duel_queue')
+          .delete()
+          .eq('user_id', profile.id);
 
+        return;
+      }
+
+      // Poll for matches if no immediate match
+      const pollInterval = setInterval(async () => {
+        try {
+          const { data: pollResult } = await supabase.rpc('find_automatic_opponent', {
+            user_id_param: profile.id,
+            topic_param: topic
+          });
+          
+          const pollData = Array.isArray(pollResult) ? pollResult[0] : pollResult;
+          if (pollData && typeof pollData === 'object' && pollData.opponent_id) {
+            clearInterval(pollInterval);
+            clearInterval(countdownInterval);
+            setSearchPhase('found');
+            
+            // Get opponent data
+            const { data: opponentData } = await supabase
+              .from('profiles')
+              .select(`
+                id, nickname, level, profile_image_url, is_bot
+              `)
+              .eq('id', pollData.opponent_id)
+              .single();
+
+            setTimeout(() => {
               setMatchResult({
                 opponentId: pollData.opponent_id,
                 opponentType: pollData.opponent_type as 'human' | 'bot',
                 matchFound: true,
-                opponentData
+                opponentData: {
+                  ...opponentData,
+                  nickname: opponentData?.nickname || 'Oponente',
+                  level: opponentData?.level || 1
+                }
               });
-              
-              toast({
-                title: "🎉 Match encontrado!",
-                description: `Duelo iniciado contra ${opponentData?.nickname || 'oponente'}!`,
-              });
-            }
-          } catch (error) {
-            console.error('Error polling for matches:', error);
+              setIsSearching(false);
+              setSearchPhase(null);
+            }, 1000);
+            
+            // Remove from queue
+            await supabase
+              .from('duel_queue')
+              .delete()
+              .eq('user_id', profile.id);
           }
-        }, 2000);
-        
-        // Stop polling after 30 seconds
-        setTimeout(() => {
-          clearInterval(pollInterval);
-          if (isSearching) {
-            setIsSearching(false);
-            toast({
-              title: "⏰ Tempo esgotado",
-              description: "Nenhum oponente encontrado. Tente novamente.",
-              variant: "destructive"
-            });
-          }
-        }, 30000);
-      }
+        } catch (error) {
+          console.error('Error polling for matches:', error);
+        }
+      }, 1500);
+      
+      // Stop polling after 15 seconds
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        clearInterval(countdownInterval);
+        if (isSearching) {
+          setIsSearching(false);
+          setSearchPhase(null);
+          setMatchResult({
+            opponentId: null,
+            opponentType: 'waiting',
+            matchFound: false
+          });
+          
+          // Remove from queue
+          supabase
+            .from('duel_queue')
+            .delete()
+            .eq('user_id', profile.id);
+        }
+      }, 15000);
+      
     } catch (error) {
       console.error('Matchmaking error:', error);
-      toast({
-        title: "❌ Erro no matchmaking",
-        description: "Não foi possível encontrar oponente",
-        variant: "destructive"
-      });
       setIsSearching(false);
+      setSearchPhase(null);
     }
   };
 
@@ -195,6 +243,8 @@ export function useEnhancedDuelMatchmaking() {
   return {
     isSearching,
     matchResult,
+    searchPhase,
+    searchTimeout,
     startMatchmaking,
     cancelMatchmaking,
     createDuel,

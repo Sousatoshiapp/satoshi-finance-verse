@@ -589,6 +589,50 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_presence_simulation: {
+        Row: {
+          bot_id: string
+          created_at: string
+          id: string
+          is_online: boolean
+          last_activity_at: string
+          online_probability: number
+          peak_hours: number[]
+          personality_type: string
+          updated_at: string
+        }
+        Insert: {
+          bot_id: string
+          created_at?: string
+          id?: string
+          is_online?: boolean
+          last_activity_at?: string
+          online_probability?: number
+          peak_hours?: number[]
+          personality_type?: string
+          updated_at?: string
+        }
+        Update: {
+          bot_id?: string
+          created_at?: string
+          id?: string
+          is_online?: boolean
+          last_activity_at?: string
+          online_probability?: number
+          peak_hours?: number[]
+          personality_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_presence_simulation_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       btz_penalty_history: {
         Row: {
           btz_after: number
@@ -2534,6 +2578,57 @@ export type Database = {
           },
         ]
       }
+      invite_queue_sessions: {
+        Row: {
+          auto_dismiss_at: string | null
+          created_at: string | null
+          id: string
+          interaction_type: string | null
+          invite_id: string
+          priority_score: number | null
+          processed_at: string | null
+          queue_position: number
+          user_id: string
+        }
+        Insert: {
+          auto_dismiss_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string | null
+          invite_id: string
+          priority_score?: number | null
+          processed_at?: string | null
+          queue_position: number
+          user_id: string
+        }
+        Update: {
+          auto_dismiss_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string | null
+          invite_id?: string
+          priority_score?: number | null
+          processed_at?: string | null
+          queue_position?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invite_queue_sessions_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "duel_invites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invite_queue_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       league_seasons: {
         Row: {
           created_at: string
@@ -3580,6 +3675,7 @@ export type Database = {
           completed_lessons: number | null
           consecutive_login_days: number | null
           created_at: string
+          current_avatar_id: string | null
           current_streak_multiplier: number | null
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
@@ -3611,6 +3707,7 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_avatar_id?: string | null
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
@@ -3642,6 +3739,7 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_avatar_id?: string | null
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
@@ -3672,6 +3770,13 @@ export type Database = {
           {
             foreignKeyName: "profiles_avatar_id_fkey"
             columns: ["avatar_id"]
+            isOneToOne: false
+            referencedRelation: "avatars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_current_avatar_id_fkey"
+            columns: ["current_avatar_id"]
             isOneToOne: false
             referencedRelation: "avatars"
             referencedColumns: ["id"]
@@ -5717,6 +5822,53 @@ export type Database = {
           },
         ]
       }
+      user_matchmaking_preferences: {
+        Row: {
+          allow_bots: boolean | null
+          auto_accept_from_friends: boolean | null
+          availability_status: string | null
+          created_at: string | null
+          id: string
+          max_concurrent_invites: number | null
+          preferred_topics: string[] | null
+          skill_level_range: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          allow_bots?: boolean | null
+          auto_accept_from_friends?: boolean | null
+          availability_status?: string | null
+          created_at?: string | null
+          id?: string
+          max_concurrent_invites?: number | null
+          preferred_topics?: string[] | null
+          skill_level_range?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          allow_bots?: boolean | null
+          auto_accept_from_friends?: boolean | null
+          availability_status?: string | null
+          created_at?: string | null
+          id?: string
+          max_concurrent_invites?: number | null
+          preferred_topics?: string[] | null
+          skill_level_range?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_matchmaking_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_mission_progress: {
         Row: {
           completed: boolean
@@ -6703,6 +6855,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_to_smart_queue: {
+        Args: { p_invite_id: string }
+        Returns: string
+      }
       apply_btz_penalty: {
         Args: { profile_id: string }
         Returns: {
@@ -6714,6 +6870,10 @@ export type Database = {
       assign_bot_achievements: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      auto_accept_bot_duels: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       award_daily_loot_box: {
         Args: { profile_id: string }
@@ -6740,6 +6900,14 @@ export type Database = {
           new_total: number
           streak_bonus: number
         }[]
+      }
+      calculate_invite_priority: {
+        Args: {
+          p_challenger_id: string
+          p_challenged_id: string
+          p_quiz_topic: string
+        }
+        Returns: number
       }
       calculate_league_points: {
         Args: {
@@ -6833,12 +7001,15 @@ export type Database = {
         Returns: undefined
       }
       find_automatic_opponent: {
-        Args: { p_user_id: string; p_topic?: string }
-        Returns: {
-          opponent_id: string
-          opponent_type: string
-          match_found: boolean
-        }[]
+        Args:
+          | { p_user_id: string; p_topic?: string }
+          | {
+              user_id_param: string
+              topic_param?: string
+              max_level_diff?: number
+            }
+          | { user_profile_id: string }
+        Returns: string
       }
       generate_ai_recommendations: {
         Args: { p_user_id: string }
@@ -6909,6 +7080,20 @@ export type Database = {
       get_or_create_weekly_entry: {
         Args: { profile_id: string }
         Returns: string
+      }
+      get_profile_with_avatar: {
+        Args: { profile_id: string }
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          xp: number
+          points: number
+          profile_image_url: string
+          avatar_name: string
+          avatar_image_url: string
+          is_bot: boolean
+        }[]
       }
       get_user_profile_id: {
         Args: Record<PropertyKey, never>
@@ -6981,6 +7166,10 @@ export type Database = {
       request_guild_membership: {
         Args: { p_guild_id: string; p_user_id: string; p_message?: string }
         Returns: boolean
+      }
+      simulate_bot_presence: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       start_district_duel: {
         Args: {
