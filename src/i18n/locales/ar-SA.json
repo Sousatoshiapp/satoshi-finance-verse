@@ -434,6 +434,42 @@
     "noUpcomingTournaments": "لا توجد بطولات قادمة في الوقت الحالي",
     "noFinishedTournaments": "لا توجد بطولات منتهية في الوقت الحالي"
   },
+  "social": {
+    "tabs": {
+      "feed": "التحديثات",
+      "search": "البحث",
+      "challenges": "التحديات",
+      "ranks": "التصنيفات",
+      "following": "المتابعون",
+      "chat": "الدردشة"
+    },
+    "placeholders": {
+      "shareOpinion": "ما الذي يحدث؟",
+      "searchUsers": "البحث عن المستخدمين...",
+      "addComment": "أضف تعليقاً..."
+    },
+    "buttons": {
+      "publish": "نشر",
+      "publishing": "جاري النشر...",
+      "comment": "تعليق"
+    },
+    "messages": {
+      "searchingUsers": "البحث عن المستخدمين...",
+      "noResults": "لم يتم العثور على نتائج",
+      "comingSoon": "قريباً",
+      "postCreated": "تم إنشاء المنشور بنجاح!",
+      "commentAdded": "تم إضافة التعليق!",
+      "errorPost": "لم يتمكن من إنشاء المنشور",
+      "errorComment": "لم يتمكن من إضافة التعليق"
+    },
+    "stats": {
+      "likes": "الإعجابات",
+      "comments": "التعليقات", 
+      "shares": "المشاركات",
+      "ago": "منذ",
+      "now": "الآن"
+    }
+  },
   "duels": {
     "duels": "المبارزات",
     "challenge": "تحدي",

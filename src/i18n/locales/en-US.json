@@ -426,7 +426,43 @@
     "post": "Post",
     "like": "Like",
     "comment": "Comment",
-    "share": "Share"
+    "share": "Share",
+    "tabs": {
+      "feed": "Feed",
+      "search": "Search",
+      "challenges": "Challenges",
+      "ranks": "Rankings",
+      "following": "Following",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "What's happening?",
+      "searchUsers": "Search users...",
+      "addComment": "Add a comment..."
+    },
+    "buttons": {
+      "publish": "Post",
+      "publishing": "Posting...",
+      "comment": "Comment",
+      "viewComments": "View comments",
+      "hideComments": "Hide comments"
+    },
+    "messages": {
+      "searchingUsers": "Searching users...",
+      "noResults": "No results found",
+      "comingSoon": "Coming soon",
+      "postCreated": "Post created successfully!",
+      "commentAdded": "Comment added!",
+      "errorPost": "Could not create post",
+      "errorComment": "Could not add comment"
+    },
+    "stats": {
+      "likes": "likes",
+      "comments": "comments",
+      "shares": "shares",
+      "ago": "ago",
+      "now": "now"
+    }
   },
   "store": {
     "store": "Store",

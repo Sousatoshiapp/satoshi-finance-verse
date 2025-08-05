@@ -399,7 +399,43 @@
     "post": "Postar",
     "like": "Curtir",
     "comment": "Comentar",
-    "share": "Compartilhar"
+    "share": "Compartilhar",
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafios",
+      "ranks": "Rankings",
+      "following": "Seguindo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "O que está acontecendo?",
+      "searchUsers": "Buscar usuários...",
+      "addComment": "Adicione um comentário..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "comment": "Comentar",
+      "viewComments": "Ver comentários",
+      "hideComments": "Ocultar comentários"
+    },
+    "messages": {
+      "searchingUsers": "Buscando usuários...",
+      "noResults": "Nenhum resultado encontrado",
+      "comingSoon": "Em breve",
+      "postCreated": "Post criado com sucesso!",
+      "commentAdded": "Comentário adicionado!",
+      "errorPost": "Não foi possível criar o post",
+      "errorComment": "Não foi possível adicionar o comentário"
+    },
+    "stats": {
+      "likes": "curtidas",
+      "comments": "comentários",
+      "shares": "compartilhamentos",
+      "ago": "atrás",
+      "now": "agora"
+    }
   },
   "store": {
     "store": "Loja",

@@ -425,18 +425,30 @@
       "chat": "聊天"
     },
     "placeholders": {
-      "shareOpinion": "分享您对市场的看法...",
-      "searchUsers": "通过昵称搜索用户..."
+      "shareOpinion": "有什么新鲜事？",
+      "searchUsers": "搜索用户...",
+      "addComment": "添加评论..."
     },
     "buttons": {
       "publish": "发布",
       "publishing": "发布中...",
-      "share": "分享"
+      "comment": "评论"
     },
     "messages": {
       "searchingUsers": "搜索用户中...",
+      "noResults": "未找到结果",
       "comingSoon": "即将推出",
-      "beFirstToPost": "成为第一个发帖的人！"
+      "postCreated": "帖子创建成功！",
+      "commentAdded": "评论已添加！",
+      "errorPost": "无法创建帖子",
+      "errorComment": "无法添加评论"
+    },
+    "stats": {
+      "likes": "赞",
+      "comments": "评论",
+      "shares": "分享",
+      "ago": "前",
+      "now": "现在"
     },
     "profile": {
       "level": "等级",

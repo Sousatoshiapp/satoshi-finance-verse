@@ -321,7 +321,41 @@
     "post": "Publicar",
     "like": "Me gusta",
     "comment": "Comentar",
-    "share": "Compartir"
+    "share": "Compartir",
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafíos",
+      "ranks": "Rankings",
+      "following": "Siguiendo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "¿Qué está pasando?",
+      "searchUsers": "Buscar usuarios...",
+      "addComment": "Añade un comentario..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "comment": "Comentar"
+    },
+    "messages": {
+      "searchingUsers": "Buscando usuarios...",
+      "noResults": "No se encontraron resultados",
+      "comingSoon": "Próximamente",
+      "postCreated": "¡Post creado con éxito!",
+      "commentAdded": "¡Comentario añadido!",
+      "errorPost": "No se pudo crear el post",
+      "errorComment": "No se pudo añadir el comentario"
+    },
+    "stats": {
+      "likes": "me gusta",
+      "comments": "comentarios",
+      "shares": "compartir",
+      "ago": "hace",
+      "now": "ahora"
+    }
   },
   "satoshiCity": {
     "welcome": "Bienvenido a la ciudad del futuro financiero",
