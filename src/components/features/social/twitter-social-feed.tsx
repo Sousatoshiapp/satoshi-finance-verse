@@ -380,7 +380,7 @@ export function TwitterSocialFeed() {
               onClick={() => handleUserClick(post.profiles.id)}
             >
               <AvatarImage 
-                src={post.profiles.avatars?.image_url || post.profiles.profile_image_url || '/avatars/default-avatar.jpg'} 
+                src={post.profiles.profile_image_url || post.profiles.avatars?.image_url || '/avatars/default-avatar.jpg'} 
                 alt={post.profiles.nickname} 
               />
               <AvatarFallback>
@@ -392,10 +392,10 @@ export function TwitterSocialFeed() {
               {/* Header */}
               <div className="flex items-center space-x-2 mb-1">
                 <span 
-                  className="font-bold hover:underline cursor-pointer"
+                  className="font-bold hover:underline cursor-pointer text-sm"
                   onClick={() => handleUserClick(post.profiles.id)}
                 >
-                  {post.profiles.nickname}
+                  @{post.profiles.nickname}
                 </span>
                 <Badge variant="secondary" className="text-xs">
                   Nv.{post.profiles.level}
@@ -510,8 +510,8 @@ export function TwitterSocialFeed() {
                       </Avatar>
                       <div className="flex-1">
                         <div className="bg-muted rounded-lg p-3">
-                          <div className="font-medium text-sm mb-1">
-                            {comment.profiles.nickname}
+                          <div className="font-medium text-xs mb-1">
+                            @{comment.profiles.nickname}
                           </div>
                           <p className="text-sm">{comment.content}</p>
                         </div>

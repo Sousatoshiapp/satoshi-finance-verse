@@ -256,13 +256,13 @@ export default function Social() {
               <div className="flex items-center space-x-3">
                 <Avatar className="w-10 h-10">
                   <AvatarImage 
-                    src={currentUser.avatar?.image_url || currentUser.profile_image_url} 
+                    src={currentUser.profile_image_url || currentUser.avatar?.image_url} 
                     alt={currentUser.nickname} 
                   />
                   <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 overflow-hidden">
-                  <p className="font-medium text-sm truncate">{currentUser.nickname}</p>
+                  <p className="font-medium text-sm truncate">@{currentUser.nickname}</p>
                   <p className="text-xs text-muted-foreground">Nível {currentUser.level}</p>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function Social() {
               {currentUser && (
                 <Avatar className="w-12 h-12">
                   <AvatarImage 
-                    src={currentUser.avatar?.image_url || currentUser.profile_image_url} 
+                    src={currentUser.profile_image_url || currentUser.avatar?.image_url} 
                     alt={currentUser.nickname} 
                   />
                   <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
@@ -291,7 +291,7 @@ export default function Social() {
               )}
               <div className="flex-1">
                 <Textarea
-                  placeholder={t('social.placeholders.shareOpinion')}
+                  placeholder="O que está pensando?"
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
                   className="min-h-[80px] resize-none border-none shadow-none text-xl placeholder:text-xl focus-visible:ring-0"
@@ -351,13 +351,13 @@ export default function Social() {
                       >
                         <Avatar className="w-10 h-10">
                           <AvatarImage 
-                            src={user.avatar?.image_url || user.profile_image_url} 
+                            src={user.profile_image_url || user.avatar?.image_url} 
                             alt={user.nickname} 
                           />
                           <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 overflow-hidden">
-                          <p className="font-medium text-sm truncate">{user.nickname}</p>
+                          <p className="font-medium text-sm truncate">@{user.nickname}</p>
                           <p className="text-xs text-muted-foreground">Nível {user.level}</p>
                         </div>
                       </div>
@@ -419,7 +419,7 @@ export default function Social() {
                 {currentUser && (
                   <Avatar className="w-10 h-10">
                     <AvatarImage 
-                      src={currentUser.avatar?.image_url || currentUser.profile_image_url || '/avatars/default-avatar.jpg'} 
+                      src={currentUser.profile_image_url || currentUser.avatar?.image_url || '/avatars/default-avatar.jpg'} 
                       alt={currentUser.nickname} 
                     />
                     <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
@@ -427,7 +427,7 @@ export default function Social() {
                 )}
                 <div className="flex-1">
                   <Textarea
-                    placeholder={t('social.placeholders.shareOpinion')}
+                    placeholder="O que está pensando?"
                     value={newPost}
                     onChange={(e) => setNewPost(e.target.value)}
                     className="min-h-[60px] resize-none border-none shadow-none text-base placeholder:text-base focus-visible:ring-0"
