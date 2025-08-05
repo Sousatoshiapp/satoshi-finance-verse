@@ -27,6 +27,7 @@ import { useCrisisState } from "@/hooks/use-crisis-state";
 import { LanguageSwitch } from "@/components/shared/language-switch";
 import { useI18n } from "@/hooks/use-i18n";
 import { ProximityDetection } from "@/components/proximity/ProximityDetection";
+import { useAvatarContext } from "@/contexts/AvatarContext";
 
 
 const getGreeting = (t: any) => {
@@ -48,6 +49,7 @@ export default function Dashboard() {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
   const { data: dashboardData, isLoading, error } = useDashboardData();
@@ -147,8 +149,9 @@ export default function Dashboard() {
 
   // Memoize avatar selection handler
   const handleAvatarSelected = useCallback(() => {
-    window.location.reload();
-  }, []);
+    // Invalidate all avatar-related caches for real-time updates
+    invalidateAvatarCaches();
+  }, [invalidateAvatarCaches]);
 
   // Memoize loading state
   const loadingComponent = useMemo(() => (
