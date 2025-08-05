@@ -270,7 +270,7 @@ export default function Social() {
               )}
               <div className="flex-1">
                 <Textarea
-                  placeholder={t('social.placeholders.whatThinking')}
+                  placeholder={t('social.placeholders.shareOpinion')}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
                   className="min-h-[80px] resize-none border-none shadow-none text-xl placeholder:text-xl focus-visible:ring-0"
