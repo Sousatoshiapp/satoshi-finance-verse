@@ -187,9 +187,9 @@ export default function Social() {
       <FloatingNavbar />
       
       {/* Layout responsivo estilo Twitter */}
-      <div className="max-w-6xl mx-auto flex min-h-screen">
+      <div className="max-w-7xl mx-auto flex min-h-screen justify-center">
         {/* Sidebar esquerda - Desktop */}
-        <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto">
+        <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
           <div className="space-y-1">
             <Button 
               variant="ghost" 
@@ -244,7 +244,7 @@ export default function Social() {
                 />
                 <div className="flex-1 overflow-hidden">
                   <p className="font-medium text-sm truncate">@{currentUser.nickname}</p>
-                  <p className="text-xs text-muted-foreground">Nível {currentUser.level}</p>
+                  <p className="text-xs text-muted-foreground">{t('common.level')} {currentUser.level}</p>
                 </div>
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function Social() {
         </div>
 
         {/* Feed central - Responsivo */}
-        <div className="flex-1 max-w-2xl border-x border-border/50 lg:border-x lg:border-border/50 min-h-screen">
+        <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 lg:border-x lg:border-border/50 min-h-screen mx-4 lg:mx-0">
           {/* Header */}
           <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-3 lg:p-4">
             <h1 className="text-lg lg:text-xl font-bold">{t('social.tabs.feed')}</h1>
@@ -270,7 +270,7 @@ export default function Social() {
               )}
               <div className="flex-1">
                 <Textarea
-                  placeholder="O que está pensando?"
+                  placeholder={t('social.placeholders.whatThinking')}
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
                   className="min-h-[80px] resize-none border-none shadow-none text-xl placeholder:text-xl focus-visible:ring-0"
@@ -297,7 +297,7 @@ export default function Social() {
         </div>
 
         {/* Sidebar direita - Desktop */}
-        <div className="hidden xl:flex w-80 p-4 space-y-4 overflow-y-auto">
+        <div className="hidden xl:flex w-80 p-4 space-y-4 overflow-y-auto flex-shrink-0 sticky top-0 h-screen">
           {/* Search */}
           <div className="sticky top-4 space-y-4">
             <div className="relative">
@@ -335,7 +335,7 @@ export default function Social() {
                         />
                         <div className="flex-1 overflow-hidden">
                           <p className="font-medium text-sm truncate">@{user.nickname}</p>
-                          <p className="text-xs text-muted-foreground">Nível {user.level}</p>
+                          <p className="text-xs text-muted-foreground">{t('common.level')} {user.level}</p>
                         </div>
                       </div>
                     ))
@@ -351,7 +351,7 @@ export default function Social() {
             {/* Trending/Suggestions */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Sugestões para você</CardTitle>
+                <CardTitle className="text-lg">{t('social.suggestions.title')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-sm text-muted-foreground">
@@ -369,23 +369,23 @@ export default function Social() {
           <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-12 grid grid-cols-5">
             <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Home className="h-4 w-4 mb-1" />
-              <span>Feed</span>
+              <span>{t('social.tabs.feed')}</span>
             </TabsTrigger>
             <TabsTrigger value="search" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Search className="h-4 w-4 mb-1" />
-              <span>Buscar</span>
+              <span>{t('social.tabs.search')}</span>
             </TabsTrigger>
             <TabsTrigger value="challenges" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Hash className="h-4 w-4 mb-1" />
-              <span>Desafios</span>
+              <span>{t('social.tabs.challenges')}</span>
             </TabsTrigger>
             <TabsTrigger value="rankings" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Bell className="h-4 w-4 mb-1" />
-              <span>Ranking</span>
+              <span>{t('social.tabs.ranks')}</span>
             </TabsTrigger>
             <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Mail className="h-4 w-4 mb-1" />
-              <span>Chat</span>
+              <span>{t('social.tabs.chat')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -402,7 +402,7 @@ export default function Social() {
                 )}
                 <div className="flex-1">
                   <Textarea
-                    placeholder="O que está pensando?"
+                    placeholder={t('social.placeholders.whatThinking')}
                     value={newPost}
                     onChange={(e) => setNewPost(e.target.value)}
                     className="min-h-[60px] resize-none border-none shadow-none text-base placeholder:text-base focus-visible:ring-0"
