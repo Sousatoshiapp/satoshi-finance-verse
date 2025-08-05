@@ -366,16 +366,6 @@ export default function Profile() {
                   className="w-20 h-20 md:w-24 md:h-24"
                 />
                
-               {/* Debug info */}
-               {(() => {
-                 console.log('🔍 Dashboard Avatar Data:', {
-                   profile_image_url: user.profile_image_url,
-                   current_avatar_id: user.current_avatar_id,
-                   userAvatar: userAvatar,
-                   userId: user.id
-                 });
-                 return null;
-               })()}
               
               <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">
                 <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">

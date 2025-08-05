@@ -265,15 +265,6 @@ export default function Dashboard() {
               {userAvatar ? (
                 <div className="flex justify-center">
                   <div className="relative">
-                    {(() => {
-                      console.log('🔍 Dashboard Avatar Data:', {
-                        profile_image_url: dashboardData?.profile?.profile_image_url,
-                        current_avatar_id: dashboardData?.profile?.current_avatar_id,
-                        userAvatar: userAvatar,
-                        fullProfile: dashboardData?.profile
-                      });
-                      return null;
-                    })()}
                     <AvatarDisplayUniversal
                       avatarData={{
                         profile_image_url: dashboardData?.profile?.profile_image_url,
