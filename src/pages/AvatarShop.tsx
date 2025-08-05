@@ -66,7 +66,7 @@ export default function AvatarShop() {
       const avatarsWithOwnership = allAvatars?.map(avatar => ({
         ...avatar,
         is_owned: ownedAvatarIds.includes(avatar.id),
-        is_active: avatar.id === profile?.avatar_id
+        is_active: avatar.id === profile?.current_avatar_id
       })) || [];
 
       setAvatars(avatarsWithOwnership);
@@ -136,7 +136,7 @@ export default function AvatarShop() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ avatar_id: avatarId })
+        .update({ current_avatar_id: avatarId })
         .eq('id', userProfile.id);
 
       if (error) throw error;

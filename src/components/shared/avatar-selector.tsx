@@ -171,11 +171,11 @@ export function AvatarSelector({ userProfileId, currentAvatarId, onAvatarChanged
         .eq('user_id', userProfileId)
         .eq('avatar_id', avatarId);
 
-      // Update profile avatar_id and clear profile_image_url
+      // Update profile current_avatar_id and clear profile_image_url
       await supabase
         .from('profiles')
         .update({ 
-          avatar_id: avatarId, 
+          current_avatar_id: avatarId, 
           profile_image_url: null 
         })
         .eq('id', userProfileId);
