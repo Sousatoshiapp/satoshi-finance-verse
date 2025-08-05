@@ -91,8 +91,13 @@ interface UserProfile {
   completed_lessons: number;
   points: number;
   profile_image_url?: string;
-  avatar_id?: string;
+  current_avatar_id?: string;
   subscription_tier?: 'free' | 'pro' | 'elite';
+  avatars?: {
+    id: string;
+    name: string;
+    image_url: string;
+  };
 }
 
 interface UserAvatar {
@@ -133,7 +138,14 @@ export default function Profile() {
       if (authUser) {
         const { data: supabaseProfile } = await supabase
           .from('profiles')
-          .select('*')
+          .select(`
+            *,
+            profile_image_url,
+            current_avatar_id,
+            avatars!current_avatar_id (
+              id, name, image_url
+            )
+          `)
           .eq('user_id', authUser.id)
           .single();
         profile = supabaseProfile;
@@ -160,21 +172,8 @@ export default function Profile() {
 
       if (profile) {
         setUser(profile);
-        
-        // Load user avatar if they have one
-        if (profile.avatar_id) {
-          console.log('Loading avatar for ID:', profile.avatar_id);
-          const { data: avatarData } = await supabase
-            .from('avatars')
-            .select('id, name, image_url')
-            .eq('id', profile.avatar_id)
-            .single();
-          
-          console.log('Avatar data loaded:', avatarData);
-          if (avatarData) {
-            setUserAvatar(avatarData);
-          }
-        }
+        // Avatar data is already included in the profile query
+        setUserAvatar(profile.avatars || null);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -191,8 +190,8 @@ export default function Profile() {
 
   const handleAvatarChanged = async (avatarId: string) => {
     if (user) {
-      // Clear profile image when selecting an avatar
-      setUser({ ...user, avatar_id: avatarId, profile_image_url: null });
+      // Update the user's current_avatar_id
+      setUser({ ...user, current_avatar_id: avatarId, profile_image_url: null });
       
       // Load the new avatar data
       if (avatarId) {
@@ -351,9 +350,11 @@ export default function Profile() {
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
             <div className="relative self-center md:self-auto">
               <AvatarDisplayUniversal
-                avatarName={userAvatar?.name}
-                avatarUrl={userAvatar?.image_url}
-                profileImageUrl={user.profile_image_url}
+                avatarData={{
+                  profile_image_url: user.profile_image_url,
+                  current_avatar_id: user.current_avatar_id,
+                  avatars: userAvatar
+                }}
                 nickname={user.nickname}
                 size="xl"
                 className="w-20 h-20 md:w-24 md:h-24"
@@ -434,7 +435,7 @@ export default function Profile() {
           {/* Avatar Carousel */}
           <AvatarCarousel
             userProfileId={user.id}
-            currentAvatarId={user.avatar_id}
+            currentAvatarId={user.current_avatar_id}
             onAvatarChanged={handleAvatarChanged}
           />
 

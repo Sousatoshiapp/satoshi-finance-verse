@@ -33,16 +33,14 @@ export const AvatarDisplayUniversal = memo(({
   onClick
 }: AvatarDisplayUniversalProps) => {
   const getResolvedAvatar = () => {
-    console.log('🎭 AvatarDisplayUniversal props:', { avatarData, profileImageUrl, avatarName, avatarUrl, nickname });
-    
     // If avatarData is provided, use the new resolution logic
     if (avatarData) {
       return resolveAvatarImage(avatarData, nickname);
     }
 
-    // Legacy support for existing props - PRIORIZE profile_image_url first!
+    // Legacy support for existing props - PRIORITIZE profile_image_url first!
     const legacyData: AvatarData = {
-      profile_image_url: profileImageUrl, // This should come FIRST
+      profile_image_url: profileImageUrl,
       current_avatar_id: null,
       avatars: avatarName ? {
         name: avatarName,
@@ -50,7 +48,6 @@ export const AvatarDisplayUniversal = memo(({
       } : undefined
     };
 
-    console.log('📱 Using legacy data:', legacyData);
     return resolveAvatarImage(legacyData, nickname);
   };
 
