@@ -77,6 +77,35 @@ export function useAvatarData({
 
   useEffect(() => {
     fetchAvatarData();
+    
+    // Listen for real-time updates to profiles table
+    const channel = supabase
+      .channel('profile-avatar-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'profiles',
+          filter: userId ? `user_id=eq.${userId}` : profileId ? `id=eq.${profileId}` : ''
+        },
+        () => {
+          fetchAvatarData();
+        }
+      )
+      .subscribe();
+
+    // Listen for custom avatar change events
+    const handleAvatarChanged = () => {
+      fetchAvatarData();
+    };
+    
+    window.addEventListener('avatar-changed', handleAvatarChanged);
+
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener('avatar-changed', handleAvatarChanged);
+    };
   }, [userId, profileId, enabled]);
 
   return {

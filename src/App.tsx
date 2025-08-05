@@ -9,6 +9,7 @@ import { PointsProvider } from "@/contexts/PointsContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { OnlineStatusProvider } from "@/contexts/OnlineStatusContext";
 import { GlobalDuelInviteProvider } from "@/contexts/GlobalDuelInviteContext";
+import { AvatarProvider } from "@/contexts/AvatarContext";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { generateRoutes } from "@/components/shared/RouteGenerator";
 import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
@@ -52,9 +53,11 @@ function App() {
                 <OnlineStatusProvider>
                   <RealtimeProvider>
                     <GlobalDuelInviteProvider>
-                      <SponsorThemeProvider>
-                        <AppContent />
-                      </SponsorThemeProvider>
+                      <AvatarProvider>
+                        <SponsorThemeProvider>
+                          <AppContent />
+                        </SponsorThemeProvider>
+                      </AvatarProvider>
                     </GlobalDuelInviteProvider>
                   </RealtimeProvider>
                 </OnlineStatusProvider>

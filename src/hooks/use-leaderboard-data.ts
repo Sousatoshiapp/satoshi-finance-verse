@@ -8,6 +8,7 @@ export interface LeaderboardUser {
   avatar_url?: string;
   avatarName?: string;
   profileImageUrl?: string;
+  current_avatar_id?: string;
   level: number;
   xp: number;
   rank: number;
@@ -56,6 +57,7 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
           avatar_url: profile.avatars?.image_url,
           avatarName: profile.avatars?.name,
           profileImageUrl: profile.profile_image_url,
+          current_avatar_id: profile.current_avatar_id,
           level: profile.level || 1,
           xp: profile.xp || 0,
           rank: index + 1,
@@ -97,6 +99,7 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
       avatar_url: (profile as any).avatars?.image_url,
       avatarName: (profile as any).avatars?.name,
       profileImageUrl: profile.profile_image_url,
+      current_avatar_id: profile.current_avatar_id,
       level: profile.level || 1,
       xp: profile.xp || 0,
       rank: index + 1,
@@ -125,8 +128,10 @@ export const useLeaderboardData = () => {
           table: 'profiles',
         },
         (payload) => {
-          // Only invalidate if points changed to reduce unnecessary updates
-          if (payload.old.points !== payload.new.points) {
+          // Invalidate if points, avatar, or other relevant data changed
+          if (payload.old.points !== payload.new.points || 
+              payload.old.current_avatar_id !== payload.new.current_avatar_id ||
+              payload.old.profile_image_url !== payload.new.profile_image_url) {
             queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
           }
         }

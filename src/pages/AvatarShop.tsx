@@ -8,6 +8,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Crown, Lock, Star, Users, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAvatarContext } from "@/contexts/AvatarContext";
 
 interface Avatar {
   id: string;
@@ -24,6 +26,8 @@ interface Avatar {
 }
 
 export default function AvatarShop() {
+  const queryClient = useQueryClient();
+  const { invalidateAvatarCaches } = useAvatarContext();
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -145,6 +149,9 @@ export default function AvatarShop() {
         title: "Avatar equipado! ✨",
         description: "Seu avatar foi alterado com sucesso.",
       });
+      
+      // Invalidate all avatar-related caches
+      invalidateAvatarCaches();
       
       loadAvatarsAndProfile();
     } catch (error) {

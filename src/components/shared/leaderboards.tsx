@@ -183,9 +183,11 @@ export function Leaderboards() {
 
               {/* Avatar */}
               <AvatarDisplayUniversal
-                avatarName={(entry.profiles as any)?.avatars?.name}
-                avatarUrl={(entry.profiles as any)?.avatars?.image_url}
-                profileImageUrl={(entry.profiles as any)?.profile_image_url}
+                avatarData={{
+                  profile_image_url: (entry.profiles as any)?.profile_image_url,
+                  current_avatar_id: (entry.profiles as any)?.current_avatar_id,
+                  avatars: (entry.profiles as any)?.avatars
+                }}
                 nickname={(entry.profiles as any)?.nickname || 'User'}
                 size="md"
               />
