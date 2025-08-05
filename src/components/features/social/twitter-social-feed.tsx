@@ -115,8 +115,10 @@ export function TwitterSocialFeed() {
             profile_image_url,
             level,
             xp,
-            user_avatars (
-              avatars (name, image_url)
+            current_avatar_id,
+            avatars:current_avatar_id (
+              name, 
+              image_url
             )
           )
         `)
@@ -380,7 +382,7 @@ export function TwitterSocialFeed() {
               onClick={() => handleUserClick(post.profiles.id)}
             >
               <AvatarImage 
-                src={post.profiles.user_avatars?.[0]?.avatars?.image_url || post.profiles.profile_image_url} 
+                src={post.profiles.avatars?.image_url || post.profiles.profile_image_url} 
                 alt={post.profiles.nickname} 
               />
               <AvatarFallback>

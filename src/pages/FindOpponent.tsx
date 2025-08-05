@@ -107,29 +107,18 @@ export default function FindOpponent() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, is_bot, current_avatar_id,
-          profile_image_url
+          profile_image_url,
+          avatars:current_avatar_id (
+            name,
+            image_url
+          )
         `)
         .ilike('nickname', `%${query}%`)
         .neq('id', currentUserProfile?.id || '')
         .limit(10);
 
       if (error) throw error;
-
-      // Get avatars for profiles that have current_avatar_id
-      const profilesWithAvatars = await Promise.all(
-        (profiles || []).map(async (profile) => {
-          if (profile.current_avatar_id) {
-            const { data: avatarData } = await supabase
-              .from('avatars')
-              .select('name, image_url')
-              .eq('id', profile.current_avatar_id)
-              .single();
-            return { ...profile, avatars: avatarData };
-          }
-          return { ...profile, avatars: null };
-        })
-      );
-      setSearchResults(profilesWithAvatars as UserProfile[]);
+      setSearchResults((profiles || []) as UserProfile[]);
     } catch (error) {
       console.error('Error searching users:', error);
       toast({
@@ -161,29 +150,19 @@ export default function FindOpponent() {
           following_id,
           profiles!following_id (
             id, nickname, level, xp, streak, is_bot, current_avatar_id,
-            profile_image_url
+            profile_image_url,
+            avatars:current_avatar_id (
+              name,
+              image_url
+            )
           )
         `)
         .eq('follower_id', profile.id);
 
       if (error) throw error;
       
-      // Get avatars for friends
-      const friendsWithAvatars = await Promise.all(
-        (follows || []).map(async (follow: any) => {
-          if (follow.profiles?.current_avatar_id) {
-            const { data: avatarData } = await supabase
-              .from('avatars')
-              .select('name, image_url')
-              .eq('id', follow.profiles.current_avatar_id)
-              .single();
-            return { ...follow.profiles, avatars: avatarData };
-          }
-          return { ...follow.profiles, avatars: null };
-        })
-      );
-      
-      setFriends(friendsWithAvatars.filter(Boolean) as UserProfile[]);
+      const friendProfiles = (follows || []).map((follow: any) => follow.profiles).filter(Boolean);
+      setFriends(friendProfiles as UserProfile[]);
     } catch (error) {
       console.error('Error loading friends:', error);
     }

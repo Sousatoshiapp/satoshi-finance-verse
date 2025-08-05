@@ -7080,6 +7080,20 @@ export type Database = {
         Args: { profile_id: string }
         Returns: string
       }
+      get_profile_with_avatar: {
+        Args: { profile_id: string }
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          xp: number
+          points: number
+          profile_image_url: string
+          avatar_name: string
+          avatar_image_url: string
+          is_bot: boolean
+        }[]
+      }
       get_user_profile_id: {
         Args: Record<PropertyKey, never>
         Returns: string

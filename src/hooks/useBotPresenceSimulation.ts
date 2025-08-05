@@ -29,16 +29,21 @@ export function useBotPresenceSimulation() {
   const fetchOnlineBots = useCallback(async () => {
     setLoading(true);
     try {
-      // Buscar bots da simulação
+      // Buscar bots da simulação com avatares otimizado
       const { data: botData, error: botError } = await supabase
         .from('bot_presence_simulation')
         .select(`
           *,
           bot_profile:profiles!bot_id (
+            id,
             nickname,
             level,
             profile_image_url,
-            current_avatar_id
+            current_avatar_id,
+            avatars:current_avatar_id (
+              name,
+              image_url
+            )
           )
         `)
         .eq('is_online', true)
@@ -56,7 +61,11 @@ export function useBotPresenceSimulation() {
           level,
           profile_image_url,
           updated_at,
-          current_avatar_id
+          current_avatar_id,
+          avatars:current_avatar_id (
+            name,
+            image_url
+          )
         `)
         .eq('is_bot', false)
         .gte('updated_at', tenMinutesAgo)
@@ -64,56 +73,31 @@ export function useBotPresenceSimulation() {
 
       if (realError) throw realError;
 
-      // Get avatars for both bots and real users
-      const botsWithAvatars = await Promise.all(
-        (botData || []).map(async (bot) => {
-          let avatarData = null;
-          if (bot.bot_profile?.[0]?.current_avatar_id) {
-            const { data } = await supabase
-              .from('avatars')
-              .select('name, image_url')
-              .eq('id', bot.bot_profile[0].current_avatar_id)
-              .single();
-            avatarData = data;
-          }
-          return {
-            ...bot,
-            bot_profile: bot.bot_profile?.[0] ? {
-              ...bot.bot_profile[0],
-              avatars: avatarData
-            } : undefined
-          };
-        })
-      );
+      // Mapear bots com avatares
+      const botsWithAvatars = (botData || []).map((bot) => ({
+        ...bot,
+        bot_profile: bot.bot_profile?.[0] ? {
+          ...bot.bot_profile[0],
+          avatars: bot.bot_profile[0].avatars
+        } : undefined
+      }));
 
-      const realUsersWithAvatars = await Promise.all(
-        (realUsers || []).map(async (user) => {
-          let avatarData = null;
-          if (user.current_avatar_id) {
-            const { data } = await supabase
-              .from('avatars')
-              .select('name, image_url')
-              .eq('id', user.current_avatar_id)
-              .single();
-            avatarData = data;
-          }
-          return {
-            id: `real_${user.id}`,
-            bot_id: user.id,
-            personality_type: 'active',
-            is_online: true,
-            online_probability: 1.0,
-            peak_hours: [],
-            last_activity_at: user.updated_at,
-            bot_profile: {
-              nickname: user.nickname,
-              level: user.level,
-              profile_image_url: user.profile_image_url,
-              avatars: avatarData
-            }
-          };
-        })
-      );
+      // Mapear usuários reais com avatares  
+      const realUsersWithAvatars = (realUsers || []).map((user) => ({
+        id: `real_${user.id}`,
+        bot_id: user.id,
+        personality_type: 'active',
+        is_online: true,
+        online_probability: 1.0,
+        peak_hours: [],
+        last_activity_at: user.updated_at,
+        bot_profile: {
+          nickname: user.nickname,
+          level: user.level,
+          profile_image_url: user.profile_image_url,
+          avatars: user.avatars
+        }
+      }));
 
       // Combine bots and real users
       const combinedData = [...botsWithAvatars, ...realUsersWithAvatars];
