@@ -125,10 +125,20 @@ export function useCurrentUserAvatar(): UseAvatarDataReturn {
   useEffect(() => {
     const getCurrentUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      setCurrentUserId(user?.id || null);
+      if (user) {
+        // Get profile ID from auth user ID  
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+        setCurrentUserId(profile?.id || null);
+      } else {
+        setCurrentUserId(null);
+      }
     };
     getCurrentUser();
   }, []);
 
-  return useAvatarData({ userId: currentUserId, enabled: !!currentUserId });
+  return useAvatarData({ profileId: currentUserId, enabled: !!currentUserId });
 }

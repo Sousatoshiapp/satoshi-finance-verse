@@ -21,6 +21,7 @@ import { SocialLeaderboard } from "@/components/features/social/social-leaderboa
 import { useI18n } from "@/hooks/use-i18n";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
+import { useCurrentUserAvatar } from "@/hooks/useAvatarData";
 
 interface User {
   id: string;
@@ -54,6 +55,9 @@ export default function Social() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { toast } = useToast();
+  
+  // Use centralized avatar hook
+  const { avatarData } = useCurrentUserAvatar();
 
   const handleSearch = async (query: string) => {
     if (!query.trim()) {
@@ -238,7 +242,11 @@ export default function Social() {
             <div className="mt-auto p-3 rounded-lg border border-border/50 bg-card/50">
               <div className="flex items-center space-x-3">
                 <AvatarDisplayUniversal
-                  avatarData={normalizeAvatarData(currentUser)}
+                  avatarData={avatarData ? { 
+                    profile_image_url: avatarData.imageUrl.startsWith('http') ? avatarData.imageUrl : null,
+                    current_avatar_id: null,
+                    avatars: null 
+                  } : normalizeAvatarData(currentUser)}
                   nickname={currentUser.nickname}
                   size="md"
                 />
@@ -263,7 +271,11 @@ export default function Social() {
             <div className="flex space-x-3">
               {currentUser && (
                 <AvatarDisplayUniversal
-                  avatarData={normalizeAvatarData(currentUser)}
+                  avatarData={avatarData ? { 
+                    profile_image_url: avatarData.imageUrl.startsWith('http') ? avatarData.imageUrl : null,
+                    current_avatar_id: null,
+                    avatars: null 
+                  } : normalizeAvatarData(currentUser)}
                   nickname={currentUser.nickname}
                   size="lg"
                 />
@@ -395,7 +407,11 @@ export default function Social() {
               <div className="flex space-x-3">
                 {currentUser && (
                   <AvatarDisplayUniversal
-                    avatarData={normalizeAvatarData(currentUser)}
+                    avatarData={avatarData ? { 
+                      profile_image_url: avatarData.imageUrl.startsWith('http') ? avatarData.imageUrl : null,
+                      current_avatar_id: null,
+                      avatars: null 
+                    } : normalizeAvatarData(currentUser)}
                     nickname={currentUser.nickname}
                     size="md"
                   />

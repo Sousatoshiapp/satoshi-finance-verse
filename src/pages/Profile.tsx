@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useI18n } from "@/hooks/use-i18n";
 import { useCurrentUserAvatar } from "@/hooks/use-user-avatar";
+import { useCurrentUserAvatar as useCentralizedAvatar } from "@/hooks/useAvatarData";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
 import { getLevelInfo } from "@/data/levels";
@@ -119,6 +120,9 @@ export default function Profile() {
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription } = useSubscription();
   const { t } = useI18n();
+  
+  // Use centralized avatar hook
+  const { avatarData: centralizedAvatarData } = useCentralizedAvatar();
   
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
@@ -354,17 +358,21 @@ export default function Profile() {
         {/* Profile Header - Enhanced Mobile Design */}
         <Card className="p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-             <div className="relative self-center md:self-auto">
-               <AvatarDisplayUniversal
-                 avatarData={{
-                   profile_image_url: user.profile_image_url,
-                   current_avatar_id: user.current_avatar_id,
-                   avatars: userAvatar
-                 }}
-                 nickname={user.nickname}
-                 size="xl"
-                 className="w-20 h-20 md:w-24 md:h-24"
-               />
+              <div className="relative self-center md:self-auto">
+                <AvatarDisplayUniversal
+                  avatarData={centralizedAvatarData ? { 
+                    profile_image_url: centralizedAvatarData.imageUrl.startsWith('http') ? centralizedAvatarData.imageUrl : null,
+                    current_avatar_id: null,
+                    avatars: null 
+                  } : {
+                    profile_image_url: user.profile_image_url,
+                    current_avatar_id: user.current_avatar_id,
+                    avatars: userAvatar
+                  }}
+                  nickname={user.nickname}
+                  size="xl"
+                  className="w-20 h-20 md:w-24 md:h-24"
+                />
                
                {/* Debug info */}
                {(() => {
