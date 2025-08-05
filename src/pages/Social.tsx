@@ -190,10 +190,10 @@ export default function Social() {
       <div className="max-w-6xl mx-auto flex min-h-screen">
         {/* Sidebar esquerda - Desktop */}
         <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto">
-          <div className="space-y-2">
+          <div className="space-y-1">
             <Button 
               variant="ghost" 
-              className="justify-start w-full h-12 text-lg"
+              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
               onClick={() => navigate('/social')}
             >
               <Home className="mr-3 h-6 w-6" />
@@ -201,7 +201,7 @@ export default function Social() {
             </Button>
             <Button 
               variant="ghost" 
-              className="justify-start w-full h-12 text-lg"
+              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
               onClick={() => navigate('/social?tab=search')}
             >
               <Search className="mr-3 h-6 w-6" />
@@ -209,7 +209,7 @@ export default function Social() {
             </Button>
             <Button 
               variant="ghost" 
-              className="justify-start w-full h-12 text-lg"
+              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
               onClick={() => navigate('/social?tab=challenges')}
             >
               <Hash className="mr-3 h-6 w-6" />
@@ -217,7 +217,7 @@ export default function Social() {
             </Button>
             <Button 
               variant="ghost" 
-              className="justify-start w-full h-12 text-lg"
+              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
               onClick={() => navigate('/social?tab=rankings')}
             >
               <Bell className="mr-3 h-6 w-6" />
@@ -225,7 +225,7 @@ export default function Social() {
             </Button>
             <Button 
               variant="ghost" 
-              className="justify-start w-full h-12 text-lg"
+              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
               onClick={() => navigate('/social?tab=messages')}
             >
               <Mail className="mr-3 h-6 w-6" />
@@ -235,7 +235,7 @@ export default function Social() {
 
           {/* User Profile Mini Card */}
           {currentUser && (
-            <div className="mt-auto p-3 rounded-lg border border-border/50 bg-card/50">
+            <div className="mt-auto p-2.5 rounded-xl border border-border/50 bg-card/50 hover:bg-card/70 transition-colors">
               <div className="flex items-center space-x-3">
                 <AvatarDisplayUniversal
                   avatarData={normalizeAvatarData(currentUser)}
@@ -306,7 +306,7 @@ export default function Social() {
                 placeholder={t('social.placeholders.searchUsers')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-muted/50"
+                className="pl-9 bg-muted/30"
               />
             </div>
 
@@ -325,7 +325,7 @@ export default function Social() {
                     searchResults.map((user) => (
                       <div 
                         key={user.id}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
+                        className="flex items-center space-x-3 p-1.5 rounded-lg hover:bg-muted/50 cursor-pointer"
                         onClick={() => navigate(`/user/${user.id}`)}
                       >
                         <AvatarDisplayUniversal
@@ -351,7 +351,7 @@ export default function Social() {
             {/* Trending/Suggestions */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Trending</CardTitle>
+                <CardTitle className="text-lg">Sugestões para você</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-sm text-muted-foreground">
@@ -366,24 +366,24 @@ export default function Social() {
       {/* Mobile Tabs */}
       <div className="lg:hidden pb-32">
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-14 grid grid-cols-5">
-            <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-12 text-xs">
+          <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-12 grid grid-cols-5">
+            <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Home className="h-4 w-4 mb-1" />
               <span>Feed</span>
             </TabsTrigger>
-            <TabsTrigger value="search" className="flex flex-col items-center justify-center h-12 text-xs">
+            <TabsTrigger value="search" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Search className="h-4 w-4 mb-1" />
               <span>Buscar</span>
             </TabsTrigger>
-            <TabsTrigger value="challenges" className="flex flex-col items-center justify-center h-12 text-xs">
+            <TabsTrigger value="challenges" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Hash className="h-4 w-4 mb-1" />
               <span>Desafios</span>
             </TabsTrigger>
-            <TabsTrigger value="rankings" className="flex flex-col items-center justify-center h-12 text-xs">
+            <TabsTrigger value="rankings" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Bell className="h-4 w-4 mb-1" />
               <span>Ranking</span>
             </TabsTrigger>
-            <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-12 text-xs">
+            <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
               <Mail className="h-4 w-4 mb-1" />
               <span>Chat</span>
             </TabsTrigger>

@@ -385,8 +385,8 @@ export function TwitterSocialFeed() {
   return (
     <div className="divide-y divide-border/50">
       {posts.map((post) => (
-        <article key={post.id} className="p-4 hover:bg-muted/30 transition-colors">
-          <div className="flex space-x-3">
+        <article key={post.id} className="p-3 hover:bg-muted/30 transition-colors duration-200">
+          <div className="flex space-x-2">
             {/* Avatar */}
             <AvatarDisplayUniversal
               avatarData={normalizeAvatarData(post.profiles)}
@@ -399,21 +399,21 @@ export function TwitterSocialFeed() {
               {/* Header */}
               <div className="flex items-center space-x-2 mb-1">
                 <span 
-                  className="font-bold hover:underline cursor-pointer text-sm"
+                  className="font-bold hover:underline cursor-pointer text-[13px]"
                   onClick={() => handleUserClick(post.profiles.id)}
                 >
                   @{post.profiles.nickname}
                 </span>
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                   Nv.{post.profiles.level}
                 </Badge>
                 {post.is_following && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs px-1.5 py-0.5">
                     Seguindo
                   </Badge>
                 )}
-                <span className="text-sm text-muted-foreground">·</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-[13px] text-muted-foreground">·</span>
+                <span className="text-[13px] text-muted-foreground">
                   {formatPostDate(post.created_at)}
                 </span>
                 <Button variant="ghost" size="sm" className="ml-auto p-1 h-auto">
@@ -422,8 +422,8 @@ export function TwitterSocialFeed() {
               </div>
 
               {/* Content */}
-              <div className="mb-3">
-                <p className="text-base leading-normal whitespace-pre-wrap">
+              <div className="mb-2">
+                <p className="text-[15px] leading-[20px] whitespace-pre-wrap">
                   {post.content}
                 </p>
                 
@@ -446,7 +446,7 @@ export function TwitterSocialFeed() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:text-primary p-2 h-auto"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
                   onClick={() => toggleComments(post.id)}
                 >
                   <MessageCircle className="h-5 w-5 mr-2" />
@@ -457,7 +457,7 @@ export function TwitterSocialFeed() {
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-muted-foreground hover:text-red-500 p-2 h-auto",
+                    "text-muted-foreground hover:bg-muted/50 hover:text-red-500 p-2 h-auto transition-colors duration-150",
                     post.user_liked && "text-red-500"
                   )}
                   onClick={() => handleLikePost(post.id, !!post.user_liked)}
@@ -469,7 +469,7 @@ export function TwitterSocialFeed() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:text-primary p-2 h-auto"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
                 >
                   <Share2 className="h-5 w-5" />
                 </Button>
@@ -477,11 +477,11 @@ export function TwitterSocialFeed() {
 
               {/* Comments Section */}
               {expandedPost === post.id && (
-                <div className="mt-4 space-y-3">
+                <div className="mt-4 space-y-2">
                   <Separator />
                   
                   {/* Add Comment */}
-                  <div className="flex space-x-3">
+                  <div className="flex space-x-2">
                     <AvatarDisplayUniversal
                       avatarData={{ profile_image_url: null, current_avatar_id: null, avatars: null }}
                       nickname="U"
@@ -510,20 +510,20 @@ export function TwitterSocialFeed() {
 
                   {/* Comments List */}
                   {comments[post.id] && comments[post.id].map((comment) => (
-                    <div key={comment.id} className="flex space-x-3">
+                    <div key={comment.id} className="flex space-x-2">
                       <AvatarDisplayUniversal
                         avatarData={normalizeAvatarData(comment.profiles)}
                         nickname={comment.profiles.nickname}
                         size="sm"
                       />
                       <div className="flex-1">
-                        <div className="bg-muted rounded-lg p-3">
+                        <div className="bg-muted/50 rounded-lg p-2.5">
                           <div className="font-medium text-xs mb-1">
                             @{comment.profiles.nickname}
                           </div>
                           <p className="text-sm">{comment.content}</p>
                         </div>
-                        <div className="text-xs text-muted-foreground mt-1 px-3">
+                        <div className="text-xs text-muted-foreground mt-1 px-2.5">
                           {formatPostDate(comment.created_at)}
                         </div>
                       </div>
