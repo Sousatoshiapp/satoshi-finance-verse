@@ -30,12 +30,10 @@ interface SocialPost {
     profile_image_url?: string;
     level?: number;
     xp?: number;
-    user_avatars?: {
-      avatars: {
-        name: string;
-        image_url: string;
-      };
-    }[];
+    avatars?: {
+      name: string;
+      image_url: string;
+    };
   };
   user_liked?: boolean;
   is_following?: boolean;
@@ -116,10 +114,10 @@ export function TwitterSocialFeed() {
             level,
             xp,
             current_avatar_id,
-          avatars:current_avatar_id (
-            name, 
-            image_url
-          )
+            avatars:current_avatar_id (
+              name, 
+              image_url
+            )
           )
         `)
         .order('created_at', { ascending: false })
