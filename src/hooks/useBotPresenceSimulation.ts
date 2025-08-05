@@ -27,82 +27,55 @@ export function useBotPresenceSimulation() {
 
   // Buscar bots e usuários reais online
   const fetchOnlineBots = useCallback(async () => {
+    if (loading) return; // Prevent concurrent calls
+    
     setLoading(true);
     try {
-      // Buscar bots da simulação com avatares otimizado
+      // Buscar apenas bots online sem queries aninhadas
       const { data: botData, error: botError } = await supabase
         .from('bot_presence_simulation')
         .select(`
-          *,
-          bot_profile:profiles!bot_id (
-            id,
-            nickname,
-            level,
-            profile_image_url,
-            current_avatar_id,
-            avatars:current_avatar_id (
-              name,
-              image_url
-            )
-          )
+          id,
+          bot_id,
+          personality_type,
+          is_online,
+          online_probability,
+          peak_hours,
+          last_activity_at
         `)
         .eq('is_online', true)
-        .order('last_activity_at', { ascending: false });
+        .limit(50);
 
       if (botError) throw botError;
 
-      // Buscar usuários reais ativos (últimos 10 minutos)
-      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-      const { data: realUsers, error: realError } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          nickname,
-          level,
-          profile_image_url,
-          updated_at,
-          current_avatar_id,
-          avatars:current_avatar_id (
-            name,
-            image_url
-          )
-        `)
-        .eq('is_bot', false)
-        .gte('updated_at', tenMinutesAgo)
-        .limit(10);
+      // Buscar perfis dos bots separadamente
+      if (botData && botData.length > 0) {
+        const botIds = botData.map(bot => bot.bot_id);
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, nickname, level, profile_image_url')
+          .in('id', botIds)
+          .eq('is_bot', true);
 
-      if (realError) throw realError;
+        // Mapear bots com perfis
+        const botsWithProfiles = botData.map((bot) => {
+          const profile = profiles?.find(p => p.id === bot.bot_id);
+          return {
+            ...bot,
+            bot_profile: profile ? {
+              nickname: profile.nickname,
+              level: profile.level,
+              profile_image_url: profile.profile_image_url,
+              avatars: undefined // Simplificar, não carregar avatares
+            } : undefined
+          };
+        });
 
-      // Mapear bots com avatares
-      const botsWithAvatars = (botData || []).map((bot) => ({
-        ...bot,
-        bot_profile: bot.bot_profile?.[0] ? {
-          ...bot.bot_profile[0],
-          avatars: bot.bot_profile[0].avatars
-        } : undefined
-      }));
+        setOnlineBots(botsWithProfiles as BotPresence[]);
+      } else {
+        setOnlineBots([]);
+      }
 
-      // Mapear usuários reais com avatares  
-      const realUsersWithAvatars = (realUsers || []).map((user) => ({
-        id: `real_${user.id}`,
-        bot_id: user.id,
-        personality_type: 'active',
-        is_online: true,
-        online_probability: 1.0,
-        peak_hours: [],
-        last_activity_at: user.updated_at,
-        bot_profile: {
-          nickname: user.nickname,
-          level: user.level,
-          profile_image_url: user.profile_image_url,
-          avatars: user.avatars
-        }
-      }));
-
-      // Combine bots and real users
-      const combinedData = [...botsWithAvatars, ...realUsersWithAvatars];
-
-      setOnlineBots(combinedData as BotPresence[]);
       setLastUpdate(new Date());
     } catch (error) {
       console.error('Erro ao buscar usuários online:', error);
@@ -110,7 +83,7 @@ export function useBotPresenceSimulation() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loading]);
 
   // Atualizar presença dos bots
   const updateBotPresence = useCallback(async () => {
@@ -146,21 +119,15 @@ export function useBotPresenceSimulation() {
   useEffect(() => {
     fetchOnlineBots();
 
-    // Atualizar presença a cada 15 minutos
-    const updateInterval = setInterval(() => {
-      updateBotPresence();
-    }, 15 * 60 * 1000);
-
-    // Buscar bots online a cada 5 minutos
+    // Buscar bots online a cada 30 segundos (reduzido para resolver mais rápido)
     const fetchInterval = setInterval(() => {
       fetchOnlineBots();
-    }, 5 * 60 * 1000);
+    }, 30 * 1000);
 
     return () => {
-      clearInterval(updateInterval);
       clearInterval(fetchInterval);
     };
-  }, [fetchOnlineBots, updateBotPresence]);
+  }, []); // Dependências removidas para evitar loops
 
   return {
     onlineBots,
