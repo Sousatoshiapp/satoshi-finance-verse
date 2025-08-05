@@ -96,7 +96,7 @@ const AvatarDisplayOptimized = memo(function AvatarDisplayOptimized({
   // Convert avatar name to kebab-case for image lookup
   const getAvatarImage = (avatar: Avatar) => {
     const key = avatar.name.toLowerCase().replace(/\s+/g, '-');
-    return avatarImages[key] || avatarImages['finance-hacker']; // Default fallback
+    return avatarImages[key] || avatarImages['the-satoshi']; // Default fallback - matches unified system
   };
 
   const [avatarImage, setAvatarImage] = useState<string>(getAvatarImage(avatar));
