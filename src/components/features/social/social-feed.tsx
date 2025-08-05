@@ -31,12 +31,6 @@ interface SocialPost {
     profile_image_url?: string;
     level?: number;
     xp?: number;
-    user_avatars?: {
-      avatars: {
-        name: string;
-        image_url: string;
-      };
-    }[];
   };
   user_liked?: boolean;
 }
@@ -106,13 +100,7 @@ export function SocialFeed() {
             nickname,
             profile_image_url,
             level,
-            xp,
-            user_avatars!inner (
-              avatars (
-                name,
-                image_url
-              )
-            )
+            xp
           )
         `)
         .order('created_at', { ascending: false })
@@ -404,7 +392,7 @@ export function SocialFeed() {
                 {/* Post Header */}
                 <div className="flex items-center gap-3 mb-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={post.profiles?.user_avatars?.[0]?.avatars?.image_url || post.profiles?.profile_image_url} />
+                    <AvatarImage src={post.profiles?.profile_image_url} />
                     <AvatarFallback>
                       {post.profiles?.nickname.charAt(0).toUpperCase()}
                     </AvatarFallback>
