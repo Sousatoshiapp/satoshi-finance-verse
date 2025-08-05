@@ -12,7 +12,13 @@ export interface BotPresence {
   bot_profile?: {
     nickname: string;
     level: number;
-    avatar_url?: string;
+    profile_image_url?: string;
+    user_avatars?: {
+      avatars: {
+        name: string;
+        image_url: string;
+      };
+    }[];
   };
 }
 
@@ -32,7 +38,13 @@ export function useBotPresenceSimulation() {
           bot_profile:profiles!bot_id (
             nickname,
             level,
-            profile_image_url
+            profile_image_url,
+            user_avatars (
+              avatars (
+                name,
+                image_url
+              )
+            )
           )
         `)
         .eq('is_online', true)

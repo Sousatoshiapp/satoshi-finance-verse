@@ -70,6 +70,13 @@
     "postsCreated": "Posts Criados",
     "likesReceived": "Curtidas Recebidas"
   },
+  "duels": {
+    "activeArena": "Arena",
+    "online": "jogadores online",
+    "searching": "Buscando Oponente...",
+    "moreBotsAvailable": "Mais bots disponíveis",
+    "lastUpdate": "Última atualização"
+  },
   "quiz": {
     "title": "Quiz",
     "question": "Questão {{number}} de {{total}}",

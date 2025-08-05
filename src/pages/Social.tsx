@@ -65,7 +65,7 @@ export default function Social() {
           profile_image_url, 
           level, 
           xp,
-          avatar:user_avatars!inner (
+          avatar:user_avatars (
             avatars(id, name, image_url)
           )
         `)
@@ -122,7 +122,7 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp,
-            avatar:user_avatars!inner (
+            avatar:user_avatars (
               avatars(id, name, image_url)
             )
           `)
@@ -174,7 +174,7 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp,
-            avatar:user_avatars!inner (
+            avatar:user_avatars (
               avatars(id, name, image_url)
             )
           `)

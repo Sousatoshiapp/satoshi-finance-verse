@@ -71,6 +71,13 @@
     "playground": "游乐场",
     "explore": "探索"
   },
+  "duels": {
+    "activeArena": "竞技场",
+    "online": "玩家在线",
+    "searching": "寻找对手...",
+    "moreBotsAvailable": "更多机器人可用",
+    "lastUpdate": "最后更新"
+  },
   "quiz": {
     "title": "测验",
     "question": "第{{number}}题，共{{total}}题",

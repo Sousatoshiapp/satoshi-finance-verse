@@ -133,7 +133,7 @@ export function SocialLeaderboard() {
           xp,
           points,
           streak,
-          user_avatars!inner (
+          user_avatars (
             avatars (
               name,
               image_url
@@ -162,7 +162,7 @@ export function SocialLeaderboard() {
           xp,
           points,
           streak,
-          user_avatars!inner (
+          user_avatars (
             avatars (
               name,
               image_url
@@ -191,7 +191,7 @@ export function SocialLeaderboard() {
           xp,
           points,
           streak,
-          user_avatars!inner (
+          user_avatars (
             avatars (
               name,
               image_url

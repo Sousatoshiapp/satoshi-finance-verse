@@ -10,6 +10,7 @@ import { Separator } from "@/components/shared/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, MessageCircle, Share2, Send, TrendingUp, Award, Plus } from "lucide-react";
+import { SocialButton } from "./social-button";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -411,12 +412,23 @@ export function SocialFeed() {
                       })}
                     </p>
                   </div>
-                  {post.profiles?.xp && (
-                    <div className="flex items-center gap-1 text-orange-500">
-                      <TrendingUp className="h-3 w-3" />
-                      <span className="text-xs font-medium">{post.profiles.xp} XP</span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {post.profiles?.xp && (
+                      <div className="flex items-center gap-1 text-orange-500">
+                        <TrendingUp className="h-3 w-3" />
+                        <span className="text-xs font-medium">{post.profiles.xp} XP</span>
+                      </div>
+                    )}
+                    <SocialButton
+                      targetType="profile"
+                      targetId={post.profiles?.id || post.user_id}
+                      targetUserId={post.profiles?.id || post.user_id}
+                      actionType="follow"
+                      size="sm"
+                      variant="outline"
+                      className="h-7 text-xs"
+                    />
+                  </div>
                 </div>
 
                 {/* Post Content */}

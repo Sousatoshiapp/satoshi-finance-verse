@@ -108,7 +108,7 @@ export default function FindOpponent() {
         .select(`
           id, nickname, level, xp, streak, is_bot,
           current_avatar_id,
-          user_avatars!inner (
+          user_avatars (
             avatars (name, image_url)
           )
         `)
@@ -117,7 +117,12 @@ export default function FindOpponent() {
         .limit(10);
 
       if (error) throw error;
-      setSearchResults(profiles || []);
+      // Transform the avatar data to match UserProfile interface
+      const transformedProfiles = profiles?.map(profile => ({
+        ...profile,
+        avatars: profile.user_avatars?.[0]?.avatars || null
+      })) || [];
+      setSearchResults(transformedProfiles);
     } catch (error) {
       console.error('Error searching users:', error);
       toast({
@@ -149,7 +154,7 @@ export default function FindOpponent() {
           following_id,
           profiles!following_id (
             id, nickname, level, xp, streak, is_bot, current_avatar_id,
-            user_avatars!inner (
+            user_avatars (
               avatars (name, image_url)
             )
           )
@@ -158,7 +163,11 @@ export default function FindOpponent() {
 
       if (error) throw error;
       
-      const friendsList = follows?.map(f => f.profiles).filter(Boolean) || [];
+      // Transform the avatar data for friends
+      const friendsList = follows?.map(f => ({
+        ...f.profiles,
+        avatars: f.profiles?.user_avatars?.[0]?.avatars || null
+      })).filter(Boolean) || [];
       setFriends(friendsList);
     } catch (error) {
       console.error('Error loading friends:', error);

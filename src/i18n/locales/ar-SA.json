@@ -21,6 +21,13 @@
     "playground": "الملعب",
     "explore": "استكشف"
   },
+  "duels": {
+    "activeArena": "الساحة",
+    "online": "لاعبين متصلين",
+    "searching": "البحث عن خصم...",
+    "moreBotsAvailable": "المزيد من الروبوتات متاحة",
+    "lastUpdate": "آخر تحديث"
+  },
   "quiz": {
     "title": "اختبار",
     "question": "السؤال {{number}} من {{total}}",

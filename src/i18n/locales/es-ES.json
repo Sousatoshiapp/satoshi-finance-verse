@@ -21,6 +21,13 @@
     "playground": "Playground",
     "explore": "Explorar"
   },
+  "duels": {
+    "activeArena": "Arena",
+    "online": "jugadores en línea",
+    "searching": "Buscando Oponente...",
+    "moreBotsAvailable": "Más bots disponibles",
+    "lastUpdate": "Última actualización"
+  },
   "quiz": {
     "title": "Quiz",
     "question": "Pregunta {{number}} de {{total}}",

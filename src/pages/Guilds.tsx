@@ -108,7 +108,7 @@ export default function Guilds() {
           *,
           profiles!guilds_leader_id_fkey(
             nickname,
-            user_avatars!inner (
+            user_avatars (
               avatars(name, image_url)
             )
           ),

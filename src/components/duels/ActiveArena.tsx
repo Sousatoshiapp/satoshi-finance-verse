@@ -57,7 +57,7 @@ export function ActiveArena({
             {t('duels.activeArena')}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs">
+            <Badge variant="secondary" className="text-xs text-green-600 bg-green-100">
               {totalOnline} {t('duels.online')}
             </Badge>
             <Button
@@ -95,7 +95,7 @@ export function ActiveArena({
               >
                 <div className="relative">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={bot.bot_profile?.avatar_url} />
+                    <AvatarImage src={bot.bot_profile?.user_avatars?.[0]?.avatars?.image_url || bot.bot_profile?.profile_image_url} />
                     <AvatarFallback className="bg-purple-500 text-white">
                       {bot.bot_profile?.nickname?.substring(0, 2) || 'AI'}
                     </AvatarFallback>
@@ -137,21 +137,6 @@ export function ActiveArena({
           </div>
         )}
 
-        {totalOnline > maxDisplayed && (
-          <div className="text-center pt-2 border-t">
-            <p className="text-xs text-muted-foreground">
-              {t('duels.moreBotsAvailable', { count: totalOnline - maxDisplayed })}
-            </p>
-          </div>
-        )}
-
-        {lastUpdate && (
-          <div className="text-center pt-2 border-t">
-            <p className="text-xs text-muted-foreground">
-              {t('duels.lastUpdate')}: {lastUpdate.toLocaleTimeString()}
-            </p>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

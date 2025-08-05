@@ -21,6 +21,13 @@
     "playground": "प्लेग्राउंड",
     "explore": "एक्सप्लोर"
   },
+  "duels": {
+    "activeArena": "अरीना",
+    "online": "खिलाड़ी ऑनलाइन",
+    "searching": "प्रतिद्वंद्वी खोज रहे...",
+    "moreBotsAvailable": "अधिक बॉट उपलब्ध",
+    "lastUpdate": "अंतिम अपडेट"
+  },
   "quiz": {
     "title": "क्विज़",
     "question": "प्रश्न {{number}} का {{total}}",

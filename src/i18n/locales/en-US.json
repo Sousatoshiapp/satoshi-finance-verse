@@ -72,6 +72,13 @@
     "playground": "Playground",
     "explore": "Explore"
   },
+  "duels": {
+    "activeArena": "Arena",
+    "online": "players online",
+    "searching": "Finding Opponent...",
+    "moreBotsAvailable": "More bots available",
+    "lastUpdate": "Last update"
+  },
   "quiz": {
     "title": "Quiz",
     "question": "Question {{number}} of {{total}}",

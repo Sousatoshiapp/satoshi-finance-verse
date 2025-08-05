@@ -95,7 +95,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars!inner (
+          user_avatars (
             avatars(name, image_url)
           )
         `)
@@ -107,7 +107,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars!inner (
+          user_avatars (
             avatars(name, image_url)
           )
         `)
@@ -119,7 +119,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars!inner (
+          user_avatars (
             avatars(name, image_url)
           )
         `)
@@ -131,7 +131,7 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          user_avatars!inner (
+          user_avatars (
             avatars(name, image_url)
           )
         `)

@@ -62,7 +62,7 @@ export function useRealtimeDuelInvites() {
               nickname,
               level,
               xp,
-              user_avatars!inner (
+              user_avatars (
                 avatars(name, image_url)
               )
             )
@@ -105,7 +105,7 @@ export function useRealtimeDuelInvites() {
                   nickname,
                   level,
                   xp,
-                  user_avatars!inner (
+                  user_avatars (
                     avatars(name, image_url)
                   )
                 )

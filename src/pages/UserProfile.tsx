@@ -66,7 +66,7 @@ export default function UserProfile() {
           completed_lessons,
           streak,
           created_at,
-          avatar:user_avatars!inner (
+          avatar:user_avatars (
             avatars(id, name, image_url, description, rarity)
           )
         `)
