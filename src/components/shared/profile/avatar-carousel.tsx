@@ -6,6 +6,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/shared/ui/carousel";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { supabase } from "@/integrations/supabase/client";
+import { useAvatarContext } from "@/contexts/AvatarContext";
 import { ArrowRight, Crown, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -31,6 +32,7 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { invalidateAvatarCaches } = useAvatarContext();
 
   useEffect(() => {
     loadAvatars();
@@ -91,10 +93,13 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ avatar_id: avatarId })
+        .update({ current_avatar_id: avatarId })
         .eq('id', userProfileId);
 
       if (error) throw error;
+      
+      // Invalidate all avatar-related caches
+      invalidateAvatarCaches();
       
       onAvatarChanged?.(avatarId);
       loadAvatars();

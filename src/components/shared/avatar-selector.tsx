@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avat
 import { Badge } from "@/components/shared/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAvatarContext } from "@/contexts/AvatarContext";
 import { Check } from "lucide-react";
 
 // Import avatar images
@@ -86,6 +87,7 @@ export function AvatarSelector({ userProfileId, currentAvatarId, onAvatarChanged
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
   const { toast } = useToast();
+  const { invalidateAvatarCaches } = useAvatarContext();
 
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
@@ -188,6 +190,9 @@ export function AvatarSelector({ userProfileId, currentAvatarId, onAvatarChanged
         }))
       );
 
+      // Invalidate all avatar-related caches
+      invalidateAvatarCaches();
+      
       onAvatarChanged(avatarId);
 
       toast({

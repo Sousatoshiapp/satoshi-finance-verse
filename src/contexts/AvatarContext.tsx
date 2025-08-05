@@ -16,6 +16,10 @@ export function AvatarProvider({ children }: { children: React.ReactNode }) {
     queryClient.invalidateQueries({ queryKey: ['avatar-data'] });
     queryClient.invalidateQueries({ queryKey: ['user-profile'] });
     queryClient.invalidateQueries({ queryKey: ['social-feed'] });
+    queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
+    queryClient.invalidateQueries({ queryKey: ['current-user-avatar'] });
+    queryClient.invalidateQueries({ queryKey: ['user-avatar'] });
+    queryClient.invalidateQueries({ queryKey: ['current-user'] });
     
     // Dispatch custom event for components not using react-query
     window.dispatchEvent(new CustomEvent('avatar-changed'));
