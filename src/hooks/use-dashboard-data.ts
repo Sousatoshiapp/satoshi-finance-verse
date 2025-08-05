@@ -48,7 +48,7 @@ const fetchDashboardDataOptimized = async (): Promise<DashboardData | null> => {
 
 // Fallback to individual queries if optimized function fails
 const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData | null> => {
-  // Get profile with avatar
+  // Get profile with avatar - using same query structure as Profile page
   const { data: profile } = await supabase
     .from('profiles')
     .select(`
@@ -56,8 +56,7 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
       profile_image_url,
       current_avatar_id,
       avatars!current_avatar_id (
-        id, name, description, image_url, avatar_class, 
-        district_theme, rarity, evolution_level
+        id, name, image_url
       )
     `)
     .eq('user_id', userId)

@@ -43,20 +43,15 @@ DECLARE
   team_data RECORD;
   next_level_xp INTEGER;
 BEGIN
-  -- Single query for profile with avatar
+  -- Single query for profile with avatar - using same join as Profile page
   SELECT 
     p.*,
     a.id as avatar_id,
     a.name as avatar_name,
-    a.description as avatar_description,
-    a.image_url as avatar_image_url,
-    a.avatar_class,
-    a.district_theme,
-    a.rarity,
-    a.evolution_level
+    a.image_url as avatar_image_url
   INTO profile_data
   FROM profiles p
-  LEFT JOIN avatars a ON p.avatar_id = a.id
+  LEFT JOIN avatars a ON p.current_avatar_id = a.id
   WHERE p.user_id = target_user_id;
 
   -- Get district info
@@ -96,12 +91,7 @@ BEGIN
         json_build_object(
           'id', profile_data.avatar_id,
           'name', profile_data.avatar_name,
-          'description', profile_data.avatar_description,
-          'image_url', profile_data.avatar_image_url,
-          'avatar_class', profile_data.avatar_class,
-          'district_theme', profile_data.district_theme,
-          'rarity', profile_data.rarity,
-          'evolution_level', profile_data.evolution_level
+          'image_url', profile_data.avatar_image_url
         )
       ELSE NULL
     END,
