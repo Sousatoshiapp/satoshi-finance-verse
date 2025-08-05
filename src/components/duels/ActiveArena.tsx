@@ -54,12 +54,12 @@ export function ActiveArena({
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <Target className="w-5 h-5 text-primary" />
-            {t('duels.activeArena')}
+            Arena
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="text-xs text-green-600 bg-green-100">
-              {totalOnline} {t('duels.online')}
-            </Badge>
+            <span className="text-xs text-green-600 font-medium">
+              {totalOnline} online
+            </span>
             <Button
               variant="ghost"
               size="sm"
@@ -117,8 +117,6 @@ export function ActiveArena({
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span>{t('common.level')} {bot.bot_profile?.level || 1}</span>
-                    <span>•</span>
-                    <span>{t(`duels.personality.${bot.personality_type}`)}</span>
                   </div>
                 </div>
 

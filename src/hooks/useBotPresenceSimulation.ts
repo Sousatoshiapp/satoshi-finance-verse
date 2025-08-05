@@ -27,11 +27,12 @@ export function useBotPresenceSimulation() {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  // Buscar bots online atuais
+  // Buscar bots e usuários reais online
   const fetchOnlineBots = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // Buscar bots da simulação
+      const { data: botData, error: botError } = await supabase
         .from('bot_presence_simulation')
         .select(`
           *,
@@ -50,15 +51,58 @@ export function useBotPresenceSimulation() {
         .eq('is_online', true)
         .order('last_activity_at', { ascending: false });
 
-      if (error) throw error;
+      if (botError) throw botError;
 
-      setOnlineBots(data?.map(bot => ({
-        ...bot,
-        bot_profile: bot.bot_profile?.[0]
-      })) || []);
+      // Buscar usuários reais ativos (últimos 10 minutos)
+      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      const { data: realUsers, error: realError } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          nickname,
+          level,
+          profile_image_url,
+          updated_at,
+          user_avatars (
+            avatars (
+              name,
+              image_url
+            )
+          )
+        `)
+        .eq('is_bot', false)
+        .gte('updated_at', tenMinutesAgo)
+        .limit(10);
+
+      if (realError) throw realError;
+
+      // Combinar bots e usuários reais
+      const combinedData = [
+        ...(botData?.map(bot => ({
+          ...bot,
+          bot_profile: bot.bot_profile?.[0]
+        })) || []),
+        ...(realUsers?.map(user => ({
+          id: `real_${user.id}`,
+          bot_id: user.id,
+          personality_type: 'active',
+          is_online: true,
+          online_probability: 1.0,
+          peak_hours: [],
+          last_activity_at: user.updated_at,
+          bot_profile: {
+            nickname: user.nickname,
+            level: user.level,
+            profile_image_url: user.profile_image_url,
+            user_avatars: user.user_avatars
+          }
+        })) || [])
+      ];
+
+      setOnlineBots(combinedData);
       setLastUpdate(new Date());
     } catch (error) {
-      console.error('Erro ao buscar bots online:', error);
+      console.error('Erro ao buscar usuários online:', error);
       setOnlineBots([]);
     } finally {
       setLoading(false);

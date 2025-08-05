@@ -32,6 +32,12 @@ interface SocialPost {
     profile_image_url?: string;
     level?: number;
     xp?: number;
+    user_avatars?: {
+      avatars: {
+        name: string;
+        image_url: string;
+      };
+    }[];
   };
   user_liked?: boolean;
 }
@@ -101,7 +107,10 @@ export function SocialFeed() {
             nickname,
             profile_image_url,
             level,
-            xp
+            xp,
+            user_avatars (
+              avatars (name, image_url)
+            )
           )
         `)
         .order('created_at', { ascending: false })
@@ -123,11 +132,11 @@ export function SocialFeed() {
         const postsWithLikes = postsData.map(post => ({
           ...post,
           user_liked: likedPostIds.has(post.id)
-        }));
+        })) as unknown as SocialPost[];
 
         setPosts(postsWithLikes);
       } else {
-        setPosts(postsData || []);
+        setPosts((postsData || []) as unknown as SocialPost[]);
       }
     } catch (error) {
       console.error('Error loading posts:', error);
@@ -393,7 +402,7 @@ export function SocialFeed() {
                 {/* Post Header */}
                 <div className="flex items-center gap-3 mb-3">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={post.profiles?.profile_image_url} />
+                    <AvatarImage src={post.profiles?.user_avatars?.[0]?.avatars?.image_url || post.profiles?.profile_image_url} />
                     <AvatarFallback>
                       {post.profiles?.nickname.charAt(0).toUpperCase()}
                     </AvatarFallback>
@@ -454,8 +463,8 @@ export function SocialFeed() {
                     variant="ghost"
                     size="sm"
                     className={cn(
-                      "gap-2 hover:bg-red-50 hover:text-red-600",
-                      post.user_liked && "text-red-600 bg-red-50"
+                      "gap-2 hover:text-red-600",
+                      post.user_liked && "text-red-600"
                     )}
                     onClick={() => handleLikePost(post.id, post.user_liked || false)}
                   >
@@ -465,13 +474,13 @@ export function SocialFeed() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-2 hover:bg-blue-50 hover:text-blue-600"
+                    className="gap-2 hover:text-blue-600"
                     onClick={() => toggleComments(post.id)}
                   >
                     <MessageCircle className="h-4 w-4" />
                     {post.comments_count}
                   </Button>
-                  <Button variant="ghost" size="sm" className="gap-2 hover:bg-green-50 hover:text-green-600">
+                  <Button variant="ghost" size="sm" className="gap-2 hover:text-green-600">
                     <Share2 className="h-4 w-4" />
                     {t('social.buttons.share')}
                   </Button>

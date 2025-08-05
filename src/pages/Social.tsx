@@ -65,7 +65,7 @@ export default function Social() {
           profile_image_url, 
           level, 
           xp,
-          avatar:user_avatars (
+          user_avatars (
             avatars(id, name, image_url)
           )
         `)
@@ -76,7 +76,7 @@ export default function Social() {
       // Transform the nested avatar data
       const transformedData = data?.map(user => ({
         ...user,
-        avatar: user.avatar?.[0]?.avatars || null
+        avatar: user.user_avatars?.[0]?.avatars || null
       })) || [];
       setSearchResults(transformedData);
     } catch (error) {
@@ -122,7 +122,7 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp,
-            avatar:user_avatars (
+            user_avatars (
               avatars(id, name, image_url)
             )
           `)
@@ -132,7 +132,7 @@ export default function Social() {
         // Transform the nested avatar data
         const transformedData = followingUsers?.map(user => ({
           ...user,
-          avatar: user.avatar?.[0]?.avatars || null
+          avatar: user.user_avatars?.[0]?.avatars || null
         })) || [];
         setFollowing(transformedData);
       } else {
@@ -174,7 +174,7 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp,
-            avatar:user_avatars (
+            user_avatars (
               avatars(id, name, image_url)
             )
           `)
@@ -184,7 +184,7 @@ export default function Social() {
         // Transform the nested avatar data
         const transformedData = followerUsers?.map(user => ({
           ...user,
-          avatar: user.avatar?.[0]?.avatars || null
+          avatar: user.user_avatars?.[0]?.avatars || null
         })) || [];
         setFollowers(transformedData);
       } else {
