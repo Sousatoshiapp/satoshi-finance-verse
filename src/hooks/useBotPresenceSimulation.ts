@@ -38,11 +38,7 @@ export function useBotPresenceSimulation() {
             nickname,
             level,
             profile_image_url,
-            current_avatar_id,
-            current_avatar:current_avatar_id (
-              name,
-              image_url
-            )
+            current_avatar_id
           )
         `)
         .eq('is_online', true)
@@ -60,11 +56,7 @@ export function useBotPresenceSimulation() {
           level,
           profile_image_url,
           updated_at,
-          current_avatar_id,
-          current_avatar:current_avatar_id (
-            name,
-            image_url
-          )
+          current_avatar_id
         `)
         .eq('is_bot', false)
         .gte('updated_at', tenMinutesAgo)
@@ -72,33 +64,61 @@ export function useBotPresenceSimulation() {
 
       if (realError) throw realError;
 
-      // Combinar bots e usuários reais
-      const combinedData = [
-        ...(botData?.map(bot => ({
-          ...bot,
-          bot_profile: bot.bot_profile?.[0] ? {
-            ...bot.bot_profile[0],
-            avatars: bot.bot_profile[0].current_avatar
-          } : undefined
-        })) || []),
-        ...(realUsers?.map(user => ({
-          id: `real_${user.id}`,
-          bot_id: user.id,
-          personality_type: 'active',
-          is_online: true,
-          online_probability: 1.0,
-          peak_hours: [],
-          last_activity_at: user.updated_at,
-          bot_profile: {
-            nickname: user.nickname,
-            level: user.level,
-            profile_image_url: user.profile_image_url,
-            avatars: user.current_avatar
+      // Get avatars for both bots and real users
+      const botsWithAvatars = await Promise.all(
+        (botData || []).map(async (bot) => {
+          let avatarData = null;
+          if (bot.bot_profile?.[0]?.current_avatar_id) {
+            const { data } = await supabase
+              .from('avatars')
+              .select('name, image_url')
+              .eq('id', bot.bot_profile[0].current_avatar_id)
+              .single();
+            avatarData = data;
           }
-        })) || [])
-      ];
+          return {
+            ...bot,
+            bot_profile: bot.bot_profile?.[0] ? {
+              ...bot.bot_profile[0],
+              avatars: avatarData
+            } : undefined
+          };
+        })
+      );
 
-      setOnlineBots(combinedData);
+      const realUsersWithAvatars = await Promise.all(
+        (realUsers || []).map(async (user) => {
+          let avatarData = null;
+          if (user.current_avatar_id) {
+            const { data } = await supabase
+              .from('avatars')
+              .select('name, image_url')
+              .eq('id', user.current_avatar_id)
+              .single();
+            avatarData = data;
+          }
+          return {
+            id: `real_${user.id}`,
+            bot_id: user.id,
+            personality_type: 'active',
+            is_online: true,
+            online_probability: 1.0,
+            peak_hours: [],
+            last_activity_at: user.updated_at,
+            bot_profile: {
+              nickname: user.nickname,
+              level: user.level,
+              profile_image_url: user.profile_image_url,
+              avatars: avatarData
+            }
+          };
+        })
+      );
+
+      // Combine bots and real users
+      const combinedData = [...botsWithAvatars, ...realUsersWithAvatars];
+
+      setOnlineBots(combinedData as BotPresence[]);
       setLastUpdate(new Date());
     } catch (error) {
       console.error('Erro ao buscar usuários online:', error);

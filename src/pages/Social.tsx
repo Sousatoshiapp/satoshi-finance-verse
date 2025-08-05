@@ -65,19 +65,29 @@ export default function Social() {
           profile_image_url, 
           level, 
           xp, 
-          current_avatar_id,
-          current_avatar:current_avatar_id (id, name, image_url)
+          current_avatar_id
         `)
         .ilike('nickname', `%${query}%`)
         .limit(10);
 
       if (error) throw error;
-      // Transform the nested avatar data
-      const transformedData = data?.map(user => ({
-        ...user,
-        avatar: user.current_avatar || null
-      })) || [];
-      setSearchResults(transformedData);
+
+      // Get avatars for users
+      const usersWithAvatars = await Promise.all(
+        (data || []).map(async (user) => {
+          if (user.current_avatar_id) {
+            const { data: avatarData } = await supabase
+              .from('avatars')
+              .select('id, name, image_url')
+              .eq('id', user.current_avatar_id)
+              .single();
+            return { ...user, avatar: avatarData };
+          }
+          return { ...user, avatar: null };
+        })
+      );
+      
+      setSearchResults(usersWithAvatars);
     } catch (error) {
       console.error('Error searching users:', error);
       toast({
@@ -121,18 +131,28 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp, 
-            current_avatar_id,
-            current_avatar:current_avatar_id (id, name, image_url)
+            current_avatar_id
           `)
           .in('id', followingIds);
 
         if (usersError) throw usersError;
-        // Transform the nested avatar data
-        const transformedData = followingUsers?.map(user => ({
-          ...user,
-          avatar: user.current_avatar || null
-        })) || [];
-        setFollowing(transformedData);
+
+        // Get avatars for following users
+        const followingWithAvatars = await Promise.all(
+          (followingUsers || []).map(async (user) => {
+            if (user.current_avatar_id) {
+              const { data: avatarData } = await supabase
+                .from('avatars')
+                .select('id, name, image_url')
+                .eq('id', user.current_avatar_id)
+                .single();
+              return { ...user, avatar: avatarData };
+            }
+            return { ...user, avatar: null };
+          })
+        );
+        
+        setFollowing(followingWithAvatars);
       } else {
         setFollowing([]);
       }
@@ -172,18 +192,28 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp, 
-            current_avatar_id,
-            current_avatar:current_avatar_id (id, name, image_url)
+            current_avatar_id
           `)
           .in('id', followerIds);
 
         if (usersError) throw usersError;
-        // Transform the nested avatar data
-        const transformedData = followerUsers?.map(user => ({
-          ...user,
-          avatar: user.current_avatar || null
-        })) || [];
-        setFollowers(transformedData);
+
+        // Get avatars for followers
+        const followersWithAvatars = await Promise.all(
+          (followerUsers || []).map(async (user) => {
+            if (user.current_avatar_id) {
+              const { data: avatarData } = await supabase
+                .from('avatars')
+                .select('id, name, image_url')
+                .eq('id', user.current_avatar_id)
+                .single();
+              return { ...user, avatar: avatarData };
+            }
+            return { ...user, avatar: null };
+          })
+        );
+        
+        setFollowers(followersWithAvatars);
       } else {
         setFollowers([]);
       }
