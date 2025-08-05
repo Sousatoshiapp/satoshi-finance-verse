@@ -106,11 +106,8 @@ export default function FindOpponent() {
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select(`
-          id, nickname, level, xp, streak, is_bot,
-          current_avatar_id,
-          user_avatars (
-            avatars (name, image_url)
-          )
+          id, nickname, level, xp, streak, is_bot, current_avatar_id,
+          current_avatar:current_avatar_id (name, image_url)
         `)
         .ilike('nickname', `%${query}%`)
         .neq('id', currentUserProfile?.id || '')
@@ -120,7 +117,7 @@ export default function FindOpponent() {
       // Transform the avatar data to match UserProfile interface
       const transformedProfiles = profiles?.map(profile => ({
         ...profile,
-        avatars: profile.user_avatars?.[0]?.avatars || null
+        avatars: profile.current_avatar || null
       })) || [];
       setSearchResults(transformedProfiles);
     } catch (error) {
@@ -154,9 +151,7 @@ export default function FindOpponent() {
           following_id,
           profiles!following_id (
             id, nickname, level, xp, streak, is_bot, current_avatar_id,
-            user_avatars (
-              avatars (name, image_url)
-            )
+            current_avatar:current_avatar_id (name, image_url)
           )
         `)
         .eq('follower_id', profile.id);
@@ -166,7 +161,7 @@ export default function FindOpponent() {
       // Transform the avatar data for friends
       const friendsList = follows?.map(f => ({
         ...f.profiles,
-        avatars: f.profiles?.user_avatars?.[0]?.avatars || null
+        avatars: f.profiles?.current_avatar || null
       })).filter(Boolean) || [];
       setFriends(friendsList);
     } catch (error) {

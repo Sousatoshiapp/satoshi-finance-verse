@@ -95,7 +95,7 @@ export function ActiveArena({
               >
                 <div className="relative">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={bot.bot_profile?.user_avatars?.[0]?.avatars?.image_url || bot.bot_profile?.profile_image_url} />
+                    <AvatarImage src={bot.bot_profile?.avatars?.image_url || bot.bot_profile?.profile_image_url} />
                     <AvatarFallback className="bg-purple-500 text-white">
                       {bot.bot_profile?.nickname?.substring(0, 2) || 'AI'}
                     </AvatarFallback>

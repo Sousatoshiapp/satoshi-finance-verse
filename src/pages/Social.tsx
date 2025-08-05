@@ -64,10 +64,9 @@ export default function Social() {
           nickname, 
           profile_image_url, 
           level, 
-          xp,
-          user_avatars (
-            avatars(id, name, image_url)
-          )
+          xp, 
+          current_avatar_id,
+          current_avatar:current_avatar_id (id, name, image_url)
         `)
         .ilike('nickname', `%${query}%`)
         .limit(10);
@@ -76,7 +75,7 @@ export default function Social() {
       // Transform the nested avatar data
       const transformedData = data?.map(user => ({
         ...user,
-        avatar: user.user_avatars?.[0]?.avatars || null
+        avatar: user.current_avatar || null
       })) || [];
       setSearchResults(transformedData);
     } catch (error) {
@@ -121,10 +120,9 @@ export default function Social() {
             nickname, 
             profile_image_url, 
             level, 
-            xp,
-            user_avatars (
-              avatars(id, name, image_url)
-            )
+            xp, 
+            current_avatar_id,
+            current_avatar:current_avatar_id (id, name, image_url)
           `)
           .in('id', followingIds);
 
@@ -132,7 +130,7 @@ export default function Social() {
         // Transform the nested avatar data
         const transformedData = followingUsers?.map(user => ({
           ...user,
-          avatar: user.user_avatars?.[0]?.avatars || null
+          avatar: user.current_avatar || null
         })) || [];
         setFollowing(transformedData);
       } else {
@@ -173,10 +171,9 @@ export default function Social() {
             nickname, 
             profile_image_url, 
             level, 
-            xp,
-            user_avatars (
-              avatars(id, name, image_url)
-            )
+            xp, 
+            current_avatar_id,
+            current_avatar:current_avatar_id (id, name, image_url)
           `)
           .in('id', followerIds);
 
@@ -184,7 +181,7 @@ export default function Social() {
         // Transform the nested avatar data
         const transformedData = followerUsers?.map(user => ({
           ...user,
-          avatar: user.user_avatars?.[0]?.avatars || null
+          avatar: user.current_avatar || null
         })) || [];
         setFollowers(transformedData);
       } else {

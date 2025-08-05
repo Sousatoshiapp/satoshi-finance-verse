@@ -13,12 +13,10 @@ export interface BotPresence {
     nickname: string;
     level: number;
     profile_image_url?: string;
-    user_avatars?: {
-      avatars: {
-        name: string;
-        image_url: string;
-      };
-    }[];
+    avatars?: {
+      name: string;
+      image_url: string;
+    };
   };
 }
 
@@ -40,11 +38,10 @@ export function useBotPresenceSimulation() {
             nickname,
             level,
             profile_image_url,
-            user_avatars (
-              avatars (
-                name,
-                image_url
-              )
+            current_avatar_id,
+            current_avatar:current_avatar_id (
+              name,
+              image_url
             )
           )
         `)
@@ -63,11 +60,10 @@ export function useBotPresenceSimulation() {
           level,
           profile_image_url,
           updated_at,
-          user_avatars (
-            avatars (
-              name,
-              image_url
-            )
+          current_avatar_id,
+          current_avatar:current_avatar_id (
+            name,
+            image_url
           )
         `)
         .eq('is_bot', false)
@@ -80,7 +76,10 @@ export function useBotPresenceSimulation() {
       const combinedData = [
         ...(botData?.map(bot => ({
           ...bot,
-          bot_profile: bot.bot_profile?.[0]
+          bot_profile: bot.bot_profile?.[0] ? {
+            ...bot.bot_profile[0],
+            avatars: bot.bot_profile[0].current_avatar
+          } : undefined
         })) || []),
         ...(realUsers?.map(user => ({
           id: `real_${user.id}`,
@@ -94,7 +93,7 @@ export function useBotPresenceSimulation() {
             nickname: user.nickname,
             level: user.level,
             profile_image_url: user.profile_image_url,
-            user_avatars: user.user_avatars
+            avatars: user.current_avatar
           }
         })) || [])
       ];
