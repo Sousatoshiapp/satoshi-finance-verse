@@ -52,9 +52,10 @@ export function resolveAvatarImage(data: AvatarData, nickname: string = 'U'): Re
     };
   }
   
-  // Priority 3: Default avatar
+  // Priority 3: UNIVERSAL DEFAULT - sempre usar o mesmo avatar para todos os usuários sem current_avatar_id
+  // Usando 'the-satoshi' como padrão universal
   return {
-    imageUrl: '/avatars/default-avatar.jpg',
+    imageUrl: '/avatars/the-satoshi.jpg',
     fallbackText,
     source: 'default'
   };

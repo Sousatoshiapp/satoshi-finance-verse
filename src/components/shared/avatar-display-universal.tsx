@@ -146,7 +146,8 @@ export const AvatarDisplayUniversal = memo(({
         src={resolved.imageUrl} 
         alt={nickname}
         onError={(e) => {
-          e.currentTarget.src = avatarImages['the-satoshi'] || '/avatars/default-avatar.jpg';
+          // UNIVERSAL fallback - sempre o mesmo avatar para todos
+          e.currentTarget.src = avatarImages['the-satoshi'] || '/avatars/the-satoshi.jpg';
         }}
       />
       <AvatarFallback>
