@@ -272,8 +272,8 @@ export default function Dashboard() {
                         avatars: userAvatar
                       }}
                       nickname={dashboardData?.profile?.nickname || 'User'}
-                      size="lg"
-                      className="w-32 h-32 cursor-pointer hover:scale-105 transition-transform duration-200"
+                      size="xl"
+                      className="cursor-pointer hover:scale-105 transition-transform duration-200"
                       onClick={handleNavigateToProfile}
                     />
                     {/* Level Badge - Positioned Right Side */}
