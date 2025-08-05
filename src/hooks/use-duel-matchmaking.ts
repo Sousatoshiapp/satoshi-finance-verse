@@ -37,9 +37,10 @@ export function useDuelMatchmaking() {
 
       if (error) throw error;
 
-      const matchData = result[0];
+      // Handle the result properly - it should be an object or array
+      const matchData = Array.isArray(result) ? result[0] : result;
       
-      if (matchData.match_found) {
+      if (matchData && typeof matchData === 'object' && matchData.match_found) {
         setMatchResult({
           opponentId: matchData.opponent_id,
           opponentType: matchData.opponent_type as 'human' | 'bot',
@@ -77,8 +78,8 @@ export function useDuelMatchmaking() {
               p_topic: topic
             });
             
-            const pollData = pollResult[0];
-            if (pollData.match_found) {
+            const pollData = Array.isArray(pollResult) ? pollResult[0] : pollResult;
+            if (pollData && typeof pollData === 'object' && pollData.match_found) {
               clearInterval(pollInterval);
               setMatchResult({
                 opponentId: pollData.opponent_id,

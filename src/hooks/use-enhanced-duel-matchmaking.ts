@@ -64,8 +64,10 @@ export function useEnhancedDuelMatchmaking() {
 
       if (error) throw error;
 
-      if (result && result.length > 0) {
-        const matchData = result[0];
+      // Handle the result properly - it should be an object or array
+      const matchData = Array.isArray(result) ? result[0] : result;
+      
+      if (matchData && typeof matchData === 'object' && matchData.opponent_id) {
         clearInterval(countdownInterval);
         setSearchPhase('found');
         
@@ -110,8 +112,8 @@ export function useEnhancedDuelMatchmaking() {
             topic_param: topic
           });
           
-          if (pollResult && pollResult.length > 0) {
-            const pollData = pollResult[0];
+          const pollData = Array.isArray(pollResult) ? pollResult[0] : pollResult;
+          if (pollData && typeof pollData === 'object' && pollData.opponent_id) {
             clearInterval(pollInterval);
             clearInterval(countdownInterval);
             setSearchPhase('found');
