@@ -34,8 +34,11 @@ export const AVATAR_QUERY_FRAGMENT = `
 export function resolveAvatarImage(data: AvatarData, nickname: string = 'U'): ResolvedAvatar {
   const fallbackText = nickname.charAt(0).toUpperCase();
   
+  console.log('🖼️ Resolving avatar for:', nickname, 'Data:', data);
+  
   // Priority 1: User uploaded profile image
   if (data.profile_image_url) {
+    console.log('✅ Using profile image:', data.profile_image_url);
     return {
       imageUrl: data.profile_image_url,
       fallbackText,
@@ -45,6 +48,7 @@ export function resolveAvatarImage(data: AvatarData, nickname: string = 'U'): Re
   
   // Priority 2: Selected game avatar
   if (data.avatars?.image_url) {
+    console.log('✅ Using game avatar:', data.avatars.image_url);
     return {
       imageUrl: data.avatars.image_url,
       fallbackText,
@@ -53,6 +57,7 @@ export function resolveAvatarImage(data: AvatarData, nickname: string = 'U'): Re
   }
   
   // Priority 3: Default avatar
+  console.log('⚠️ Using default avatar for:', nickname);
   return {
     imageUrl: '/avatars/default-avatar.jpg',
     fallbackText,

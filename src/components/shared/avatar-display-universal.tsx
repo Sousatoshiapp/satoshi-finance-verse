@@ -33,6 +33,8 @@ export const AvatarDisplayUniversal = memo(({
   onClick
 }: AvatarDisplayUniversalProps) => {
   const getResolvedAvatar = () => {
+    console.log('🎭 AvatarDisplayUniversal props:', { avatarData, profileImageUrl, avatarName, avatarUrl, nickname });
+    
     // If avatarData is provided, use the new resolution logic
     if (avatarData) {
       return resolveAvatarImage(avatarData, nickname);
@@ -48,6 +50,7 @@ export const AvatarDisplayUniversal = memo(({
       } : undefined
     };
 
+    console.log('📱 Using legacy data:', legacyData);
     return resolveAvatarImage(legacyData, nickname);
   };
 
