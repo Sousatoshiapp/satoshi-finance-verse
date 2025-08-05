@@ -108,7 +108,9 @@ export default function FindOpponent() {
         .select(`
           id, nickname, level, xp, streak, is_bot,
           current_avatar_id,
-          avatars (name, image_url)
+          user_avatars!inner (
+            avatars (name, image_url)
+          )
         `)
         .ilike('nickname', `%${query}%`)
         .neq('id', currentUserProfile?.id || '')
@@ -147,7 +149,9 @@ export default function FindOpponent() {
           following_id,
           profiles!following_id (
             id, nickname, level, xp, streak, is_bot, current_avatar_id,
-            avatars:current_avatar_id (name, image_url)
+            user_avatars!inner (
+              avatars (name, image_url)
+            )
           )
         `)
         .eq('follower_id', profile.id);

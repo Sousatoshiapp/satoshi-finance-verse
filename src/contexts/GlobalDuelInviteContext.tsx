@@ -111,9 +111,11 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
             nickname,
             level,
             xp,
-            avatars (
-              name,
-              image_url
+            user_avatars!inner (
+              avatars (
+                name,
+                image_url
+              )
             )
           )
         `)

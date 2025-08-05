@@ -62,7 +62,9 @@ export function useRealtimeDuelInvites() {
               nickname,
               level,
               xp,
-              avatars(name, image_url)
+              user_avatars!inner (
+                avatars(name, image_url)
+              )
             )
           `)
           .eq('challenged_id', user.id)
@@ -103,7 +105,9 @@ export function useRealtimeDuelInvites() {
                   nickname,
                   level,
                   xp,
-                  avatars(name, image_url)
+                  user_avatars!inner (
+                    avatars(name, image_url)
+                  )
                 )
               `)
               .eq('id', payload.new.id)

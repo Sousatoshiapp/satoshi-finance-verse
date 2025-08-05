@@ -65,13 +65,20 @@ export default function Social() {
           profile_image_url, 
           level, 
           xp,
-          avatar:avatars(id, name, image_url)
+          avatar:user_avatars!inner (
+            avatars(id, name, image_url)
+          )
         `)
         .ilike('nickname', `%${query}%`)
         .limit(10);
 
       if (error) throw error;
-      setSearchResults(data || []);
+      // Transform the nested avatar data
+      const transformedData = data?.map(user => ({
+        ...user,
+        avatar: user.avatar?.[0]?.avatars || null
+      })) || [];
+      setSearchResults(transformedData);
     } catch (error) {
       console.error('Error searching users:', error);
       toast({
@@ -115,12 +122,19 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp,
-            avatar:avatars(id, name, image_url)
+            avatar:user_avatars!inner (
+              avatars(id, name, image_url)
+            )
           `)
           .in('id', followingIds);
 
         if (usersError) throw usersError;
-        setFollowing(followingUsers || []);
+        // Transform the nested avatar data
+        const transformedData = followingUsers?.map(user => ({
+          ...user,
+          avatar: user.avatar?.[0]?.avatars || null
+        })) || [];
+        setFollowing(transformedData);
       } else {
         setFollowing([]);
       }
@@ -160,12 +174,19 @@ export default function Social() {
             profile_image_url, 
             level, 
             xp,
-            avatar:avatars(id, name, image_url)
+            avatar:user_avatars!inner (
+              avatars(id, name, image_url)
+            )
           `)
           .in('id', followerIds);
 
         if (usersError) throw usersError;
-        setFollowers(followerUsers || []);
+        // Transform the nested avatar data
+        const transformedData = followerUsers?.map(user => ({
+          ...user,
+          avatar: user.avatar?.[0]?.avatars || null
+        })) || [];
+        setFollowers(transformedData);
       } else {
         setFollowers([]);
       }

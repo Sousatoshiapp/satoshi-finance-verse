@@ -95,7 +95,9 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatars(name, image_url)
+          user_avatars!inner (
+            avatars(name, image_url)
+          )
         `)
         .order('xp', { ascending: false })
         .limit(displayLimit);
@@ -105,7 +107,9 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatars(name, image_url)
+          user_avatars!inner (
+            avatars(name, image_url)
+          )
         `)
         .order('streak', { ascending: false })
         .limit(displayLimit);
@@ -115,7 +119,9 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatars(name, image_url)
+          user_avatars!inner (
+            avatars(name, image_url)
+          )
         `)
         .order('level', { ascending: false })
         .limit(displayLimit);
@@ -125,7 +131,9 @@ export default function Leaderboard() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, points, profile_image_url,
-          avatars(name, image_url)
+          user_avatars!inner (
+            avatars(name, image_url)
+          )
         `)
         .order('points', { ascending: false })
         .limit(displayLimit);

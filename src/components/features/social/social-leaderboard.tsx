@@ -133,9 +133,11 @@ export function SocialLeaderboard() {
           xp,
           points,
           streak,
-          avatars:avatar_id (
-            name,
-            image_url
+          user_avatars!inner (
+            avatars (
+              name,
+              image_url
+            )
           )
         `)
         .order('xp', { ascending: false })
@@ -160,9 +162,11 @@ export function SocialLeaderboard() {
           xp,
           points,
           streak,
-          avatars:avatar_id (
-            name,
-            image_url
+          user_avatars!inner (
+            avatars (
+              name,
+              image_url
+            )
           )
         `)
         .order('streak', { ascending: false })
@@ -187,9 +191,11 @@ export function SocialLeaderboard() {
           xp,
           points,
           streak,
-          avatars:avatar_id (
-            name,
-            image_url
+          user_avatars!inner (
+            avatars (
+              name,
+              image_url
+            )
           )
         `)
         .limit(50)
