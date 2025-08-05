@@ -66,22 +66,13 @@ export default function Dashboard() {
   const handleNavigateToSubscription = useCallback(() => navigate('/subscription-plans'), [navigate]);
 
   useEffect(() => {
-    // Preload critical resources in background - with throttling
     const loadOptimizations = async () => {
-      // Only run optimizations every 10 seconds to prevent spam
-      const lastOptimization = localStorage.getItem('last-optimization');
-      const now = Date.now();
-      
-      if (!lastOptimization || (now - parseInt(lastOptimization)) > 10000) {
-        try {
-          const { preloadCriticalResources, optimizeMemoryUsage } = await import('@/utils/bundle-optimizer');
-          preloadCriticalResources();
-          optimizeMemoryUsage();
-          localStorage.setItem('last-optimization', now.toString());
-        } catch (error) {
-          // Silent fail for non-critical optimization
-          console.debug('Bundle optimization failed:', error);
-        }
+      try {
+        const { preloadCriticalResources, optimizeMemoryUsage } = await import('@/utils/bundle-optimizer');
+        preloadCriticalResources();
+        optimizeMemoryUsage();
+      } catch (error) {
+        console.debug('Bundle optimization failed:', error);
       }
     };
     
@@ -105,7 +96,7 @@ export default function Dashboard() {
     }, 60000);
     
     return () => clearInterval(interval);
-  }, [markDailyLogin]);
+  }, [markDailyLogin, t]);
 
   // Show avatar selection for new users without avatar
   useEffect(() => {

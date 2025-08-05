@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { RealtimeProvider } from "@/contexts/RealtimeContext";
+import { RealtimeManagerProvider } from "@/contexts/RealtimeManager";
 import { SponsorThemeProvider } from "@/contexts/SponsorThemeProvider";
 import { LoadingProvider } from "@/contexts/LoadingContext";
 import { I18nProvider } from "@/contexts/I18nProvider";
@@ -48,11 +49,12 @@ function App() {
       <I18nProvider>
         <LoadingProvider>
           <AuthProvider>
-            <PointsProvider>
-              <NotificationProvider>
-                <OnlineStatusProvider>
-                  <RealtimeProvider>
-                    <GlobalDuelInviteProvider>
+            <RealtimeManagerProvider>
+              <PointsProvider>
+                <NotificationProvider>
+                  <OnlineStatusProvider>
+                    <RealtimeProvider>
+                      <GlobalDuelInviteProvider>
                       <AvatarProvider>
                         <SponsorThemeProvider>
                           <AppContent />
@@ -63,6 +65,7 @@ function App() {
                 </OnlineStatusProvider>
               </NotificationProvider>
             </PointsProvider>
+            </RealtimeManagerProvider>
           </AuthProvider>
         </LoadingProvider>
       </I18nProvider>

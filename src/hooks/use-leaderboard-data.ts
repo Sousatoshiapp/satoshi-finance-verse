@@ -116,43 +116,6 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
 export const useLeaderboardData = () => {
   const queryClient = useQueryClient();
 
-  // Set up realtime subscription for leaderboard updates
-  useEffect(() => {
-    const channel = supabase
-      .channel('leaderboard-realtime-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public', 
-          table: 'profiles',
-        },
-        (payload) => {
-          // Invalidate if points, avatar, or other relevant data changed
-          if (payload.old.points !== payload.new.points || 
-              payload.old.current_avatar_id !== payload.new.current_avatar_id ||
-              payload.old.profile_image_url !== payload.new.profile_image_url) {
-            queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
-          }
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'weekly_leaderboards',
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
 
   return useQuery({
     queryKey: ['leaderboard-data'],

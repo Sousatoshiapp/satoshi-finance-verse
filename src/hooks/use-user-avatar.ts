@@ -65,36 +65,9 @@ export function useUserAvatar({ userId, enabled = true }: UseUserAvatarOptions =
     gcTime: 1000 * 60 * 10, // 10 minutes (renamed from cacheTime in newer versions)
   });
 
-  // Set up real-time subscription for avatar changes
   useEffect(() => {
     if (!userId || !enabled) return;
 
-    const channel = supabase
-      .channel(`user-avatar-${userId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `user_id=eq.${userId}`
-        },
-        (payload) => {
-          // Invalidate and refetch when avatar-related fields change
-          if (
-            payload.old.current_avatar_id !== payload.new.current_avatar_id ||
-            payload.old.profile_image_url !== payload.new.profile_image_url
-          ) {
-            queryClient.invalidateQueries({ queryKey: ['user-avatar', userId] });
-            // Also invalidate related caches
-            queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
-            queryClient.invalidateQueries({ queryKey: ['social-feed'] });
-          }
-        }
-      )
-      .subscribe();
-
-    // Listen for custom avatar change events
     const handleAvatarChanged = () => {
       queryClient.invalidateQueries({ queryKey: ['user-avatar', userId] });
     };
@@ -102,7 +75,6 @@ export function useUserAvatar({ userId, enabled = true }: UseUserAvatarOptions =
     window.addEventListener('avatar-changed', handleAvatarChanged);
 
     return () => {
-      supabase.removeChannel(channel);
       window.removeEventListener('avatar-changed', handleAvatarChanged);
     };
   }, [userId, enabled, queryClient]);

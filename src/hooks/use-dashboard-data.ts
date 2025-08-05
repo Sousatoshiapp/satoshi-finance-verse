@@ -103,31 +103,6 @@ export const useDashboardData = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   
-  // Set up realtime subscription for profile updates
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('dashboard-realtime-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'profiles',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          // Invalidate dashboard data when profile is updated
-          queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, queryClient]);
   
   return useQuery({
     queryKey: ['dashboard-data'],
