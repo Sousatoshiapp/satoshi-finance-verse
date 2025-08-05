@@ -341,7 +341,7 @@ export default function Social() {
                     ))
                   ) : (
                     <div className="text-center text-muted-foreground text-sm">
-                      {t('social.messages.noResults')}
+                      {t('social.messages.comingSoon')}
                     </div>
                   )}
                 </CardContent>
@@ -351,7 +351,7 @@ export default function Social() {
             {/* Trending/Suggestions */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{t('social.suggestions.title')}</CardTitle>
+                <CardTitle className="text-lg">{t('social.messages.comingSoon')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="text-sm text-muted-foreground">
@@ -402,7 +402,7 @@ export default function Social() {
                 )}
                 <div className="flex-1">
                   <Textarea
-                    placeholder={t('social.placeholders.whatThinking')}
+                    placeholder={t('social.placeholders.shareOpinion')}
                     value={newPost}
                     onChange={(e) => setNewPost(e.target.value)}
                     className="min-h-[60px] resize-none border-none shadow-none text-base placeholder:text-base focus-visible:ring-0"
