@@ -32,13 +32,18 @@ export function useUserAvatar({ userId, enabled = true }: UseUserAvatarOptions =
     queryFn: async () => {
       if (!userId) return null;
 
+      console.log('🔍 Fetching avatar for userId:', userId);
+
       const { data, error: queryError } = await supabase
         .from('profiles')
         .select(`nickname, ${AVATAR_QUERY_FRAGMENT}`)
         .eq('user_id', userId)
         .single();
 
+      console.log('🔍 Avatar query result:', { data, error: queryError });
+
       if (queryError) {
+        console.error('❌ Avatar query error:', queryError);
         throw queryError;
       }
 
@@ -49,6 +54,7 @@ export function useUserAvatar({ userId, enabled = true }: UseUserAvatarOptions =
           avatars: data.avatars || null
         }, data.nickname);
         
+        console.log('🎯 Resolved avatar:', resolved);
         return resolved;
       }
 
