@@ -27,20 +27,14 @@ interface GlobalDuelInviteContextType {
   currentInvite: DuelInvite | null;
   queueCount: number;
   isOnline: boolean;
-  inviteQueue: DuelInvite[];
   dismissCurrentInvite: () => void;
-  selectInviteFromQueue: (inviteId: string) => void;
-  dismissAllInvites: () => void;
 }
 
 const GlobalDuelInviteContext = createContext<GlobalDuelInviteContextType>({
   currentInvite: null,
   queueCount: 0,
   isOnline: false,
-  inviteQueue: [],
   dismissCurrentInvite: () => {},
-  selectInviteFromQueue: () => {},
-  dismissAllInvites: () => {},
 });
 
 export const useGlobalDuelInvites = () => useContext(GlobalDuelInviteContext);
@@ -81,23 +75,6 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
     }
   };
 
-  const selectInviteFromQueue = (inviteId: string) => {
-    const selectedInvite = inviteQueue.find(invite => invite.id === inviteId);
-    if (selectedInvite) {
-      // Move selected invite to current
-      setCurrentInvite(selectedInvite);
-      // Remove from queue
-      setInviteQueue(prev => prev.filter(invite => invite.id !== inviteId));
-      console.log('🎯 Selected invite from queue:', inviteId);
-    }
-  };
-
-  const dismissAllInvites = () => {
-    console.log('🧹 Dismissing all invites');
-    setCurrentInvite(null);
-    setInviteQueue([]);
-  };
-
   const handleNewInvite = async (payload: any) => {
     console.log('🎯 Duel invite received (notification only):', payload);
     
@@ -111,11 +88,9 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
             nickname,
             level,
             xp,
-            user_avatars (
-              avatars (
-                name,
-                image_url
-              )
+            avatars (
+              name,
+              image_url
             )
           )
         `)
@@ -275,11 +250,8 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
       value={{ 
         currentInvite, 
         queueCount, 
-        isOnline,
-        inviteQueue,
-        dismissCurrentInvite,
-        selectInviteFromQueue,
-        dismissAllInvites
+        isOnline, 
+        dismissCurrentInvite 
       }}
     >
       {children}

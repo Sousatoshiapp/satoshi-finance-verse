@@ -71,13 +71,6 @@
     "playground": "游乐场",
     "explore": "探索"
   },
-  "duels": {
-    "activeArena": "竞技场",
-    "online": "玩家在线",
-    "searching": "寻找对手...",
-    "moreBotsAvailable": "更多机器人可用",
-    "lastUpdate": "最后更新"
-  },
   "quiz": {
     "title": "测验",
     "question": "第{{number}}题，共{{total}}题",
@@ -425,30 +418,18 @@
       "chat": "聊天"
     },
     "placeholders": {
-      "shareOpinion": "有什么新鲜事？",
-      "searchUsers": "搜索用户...",
-      "addComment": "添加评论..."
+      "shareOpinion": "分享您对市场的看法...",
+      "searchUsers": "通过昵称搜索用户..."
     },
     "buttons": {
       "publish": "发布",
       "publishing": "发布中...",
-      "comment": "评论"
+      "share": "分享"
     },
     "messages": {
       "searchingUsers": "搜索用户中...",
-      "noResults": "未找到结果",
       "comingSoon": "即将推出",
-      "postCreated": "帖子创建成功！",
-      "commentAdded": "评论已添加！",
-      "errorPost": "无法创建帖子",
-      "errorComment": "无法添加评论"
-    },
-    "stats": {
-      "likes": "赞",
-      "comments": "评论",
-      "shares": "分享",
-      "ago": "前",
-      "now": "现在"
+      "beFirstToPost": "成为第一个发帖的人！"
     },
     "profile": {
       "level": "等级",
@@ -841,35 +822,7 @@
     "title": "寻找对手",
     "searching": "正在寻找对手...",
     "found": "找到对手！",
-    "cancel": "取消",
-    "preferences": "偏好设置",
-    "quickMatch": "快速匹配",
-    "searchPlayers": "搜索玩家",
-    "friendsList": "好友列表",
-    "quickStart": "快速开始",
-    "topicSelection": "主题选择",
-    "selectTopic": "选择一个主题",
-    "searchUsers": "搜索用户...",
-    "invitePlayer": "邀请玩家",
-    "levelRange": "等级范围",
-    "onlineNow": "现在在线",
-    "recentlyActive": "最近活跃",
-    "noResults": "未找到结果",
-    "searchForPlayers": "搜索要挑战的玩家",
-    "yourFriends": "您的好友",
-    "noFriends": "您还没有添加任何好友",
-    "addFriends": "添加好友以便轻松决斗",
-    "matchmakingPreferences": "匹配偏好",
-    "smartQueue": "智能队列",
-    "priorityInvites": "优先邀请",
-    "filteredInvites": "已筛选邀请",
-    "allInvites": "所有邀请",
-    "acceptAll": "全部接受",
-    "declineAll": "全部拒绝",
-    "noPendingInvites": "没有待处理的邀请",
-    "inviteQueueDescription": "当您收到决斗邀请时，它们将在此处显示",
-    "queueManager": "邀请队列",
-    "clickToRespond": "点击邀请立即回应"
+    "cancel": "取消"
   },
   "btz": {
     "yieldedToday": "今日收益",

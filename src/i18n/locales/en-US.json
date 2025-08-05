@@ -72,13 +72,6 @@
     "playground": "Playground",
     "explore": "Explore"
   },
-  "duels": {
-    "activeArena": "Arena",
-    "online": "players online",
-    "searching": "Finding Opponent...",
-    "moreBotsAvailable": "More bots available",
-    "lastUpdate": "Last update"
-  },
   "quiz": {
     "title": "Quiz",
     "question": "Question {{number}} of {{total}}",
@@ -426,43 +419,7 @@
     "post": "Post",
     "like": "Like",
     "comment": "Comment",
-    "share": "Share",
-    "tabs": {
-      "feed": "Feed",
-      "search": "Search",
-      "challenges": "Challenges",
-      "ranks": "Rankings",
-      "following": "Following",
-      "chat": "Chat"
-    },
-    "placeholders": {
-      "shareOpinion": "What's happening?",
-      "searchUsers": "Search users...",
-      "addComment": "Add a comment..."
-    },
-    "buttons": {
-      "publish": "Post",
-      "publishing": "Posting...",
-      "comment": "Comment",
-      "viewComments": "View comments",
-      "hideComments": "Hide comments"
-    },
-    "messages": {
-      "searchingUsers": "Searching users...",
-      "noResults": "No results found",
-      "comingSoon": "Coming soon",
-      "postCreated": "Post created successfully!",
-      "commentAdded": "Comment added!",
-      "errorPost": "Could not create post",
-      "errorComment": "Could not add comment"
-    },
-    "stats": {
-      "likes": "likes",
-      "comments": "comments",
-      "shares": "shares",
-      "ago": "ago",
-      "now": "now"
-    }
+    "share": "Share"
   },
   "store": {
     "store": "Store",
@@ -696,35 +653,7 @@
     "title": "Find Opponent",
     "searching": "Searching for opponent...",
     "found": "Opponent found!",
-    "cancel": "Cancel",
-    "preferences": "Preferences",
-    "quickMatch": "Quick Match",
-    "searchPlayers": "Search Players",
-    "friendsList": "Friends List",
-    "quickStart": "Quick Start",
-    "topicSelection": "Topic Selection",
-    "selectTopic": "Select a topic",
-    "searchUsers": "Search users...",
-    "invitePlayer": "Invite Player",
-    "levelRange": "Level Range",
-    "onlineNow": "Online Now",
-    "recentlyActive": "Recently Active",
-    "noResults": "No results found",
-    "searchForPlayers": "Search for players to challenge",
-    "yourFriends": "Your Friends",
-    "noFriends": "You don't have any friends added yet",
-    "addFriends": "Add friends to duel easily",
-    "matchmakingPreferences": "Matchmaking Preferences",
-    "smartQueue": "Smart Queue",
-    "priorityInvites": "Priority Invites",
-    "filteredInvites": "Filtered Invites",
-    "allInvites": "All Invites",
-    "acceptAll": "Accept All",
-    "declineAll": "Decline All",
-    "noPendingInvites": "No pending invites",
-    "inviteQueueDescription": "When you receive duel invites, they will appear here",
-    "queueManager": "Invite Queue",
-    "clickToRespond": "Click on an invite to respond immediately"
+    "cancel": "Cancel"
   },
   "auth": {
     "title": {

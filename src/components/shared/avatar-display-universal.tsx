@@ -1,6 +1,92 @@
 import { memo } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
-import { resolveAvatarImage, type AvatarData } from "@/lib/avatar-utils";
+
+// Import avatar images
+import neoTrader from "@/assets/avatars/neo-trader.jpg";
+import cryptoAnalyst from "@/assets/avatars/crypto-analyst.jpg";
+import financeHacker from "@/assets/avatars/finance-hacker.jpg";
+import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
+import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
+import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
+import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
+import neuralArchitect from "@/assets/avatars/neural-architect.jpg";
+import dataMiner from "@/assets/avatars/data-miner.jpg";
+import blockchainGuardian from "@/assets/avatars/blockchain-guardian.jpg";
+import quantumPhysician from "@/assets/avatars/quantum-physician.jpg";
+import virtualRealtor from "@/assets/avatars/virtual-realtor.jpg";
+import codeAssassin from "@/assets/avatars/code-assassin.jpg";
+import cryptoShaman from "@/assets/avatars/crypto-shaman.jpg";
+import marketProphet from "@/assets/avatars/market-prophet.jpg";
+import digitalNomad from "@/assets/avatars/digital-nomad.jpg";
+import neonDetective from "@/assets/avatars/neon-detective.jpg";
+import hologramDancer from "@/assets/avatars/hologram-dancer.jpg";
+import cyberMechanic from "@/assets/avatars/cyber-mechanic.jpg";
+import ghostTrader from "@/assets/avatars/ghost-trader.jpg";
+import binaryMonk from "@/assets/avatars/binary-monk.jpg";
+import pixelArtist from "@/assets/avatars/pixel-artist.jpg";
+import quantumThief from "@/assets/avatars/quantum-thief.jpg";
+import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
+import stormHacker from "@/assets/avatars/storm-hacker.jpg";
+import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
+import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+
+const avatarImages = {
+  'neo-trader': neoTrader,
+  'crypto-analyst': cryptoAnalyst,
+  'finance-hacker': financeHacker,
+  'investment-scholar': investmentScholar,
+  'quantum-broker': quantumBroker,
+  'defi-samurai': defiSamurai,
+  'the-satoshi': theSatoshi,
+  'neural-architect': neuralArchitect,
+  'data-miner': dataMiner,
+  'blockchain-guardian': blockchainGuardian,
+  'quantum-physician': quantumPhysician,
+  'virtual-realtor': virtualRealtor,
+  'code-assassin': codeAssassin,
+  'crypto-shaman': cryptoShaman,
+  'market-prophet': marketProphet,
+  'digital-nomad': digitalNomad,
+  'neon-detective': neonDetective,
+  'hologram-dancer': hologramDancer,
+  'cyber-mechanic': cyberMechanic,
+  'ghost-trader': ghostTrader,
+  'binary-monk': binaryMonk,
+  'pixel-artist': pixelArtist,
+  'quantum-thief': quantumThief,
+  'memory-keeper': memoryKeeper,
+  'storm-hacker': stormHacker,
+  'dream-architect': dreamArchitect,
+  'chrome-gladiator': chromeGladiator,
+  // Also map common name variations
+  'Neo Trader': neoTrader,
+  'Crypto Analyst': cryptoAnalyst,
+  'Finance Hacker': financeHacker,
+  'Investment Scholar': investmentScholar,
+  'Quantum Broker': quantumBroker,
+  'DeFi Samurai': defiSamurai,
+  'The Satoshi': theSatoshi,
+  'Neural Architect': neuralArchitect,
+  'Data Miner': dataMiner,
+  'Blockchain Guardian': blockchainGuardian,
+  'Quantum Physician': quantumPhysician,
+  'Virtual Realtor': virtualRealtor,
+  'Code Assassin': codeAssassin,
+  'Crypto Shaman': cryptoShaman,
+  'Market Prophet': marketProphet,
+  'Digital Nomad': digitalNomad,
+  'Neon Detective': neonDetective,
+  'Hologram Dancer': hologramDancer,
+  'Cyber Mechanic': cyberMechanic,
+  'Ghost Trader': ghostTrader,
+  'Binary Monk': binaryMonk,
+  'Pixel Artist': pixelArtist,
+  'Quantum Thief': quantumThief,
+  'Memory Keeper': memoryKeeper,
+  'Storm Hacker': stormHacker,
+  'Dream Architect': dreamArchitect,
+  'Chrome Gladiator': chromeGladiator,
+};
 
 interface AvatarDisplayUniversalProps {
   avatarName?: string;
@@ -9,10 +95,6 @@ interface AvatarDisplayUniversalProps {
   nickname: string;
   className?: string;
   size?: "sm" | "md" | "lg" | "xl";
-  // New prop to accept normalized avatar data
-  avatarData?: AvatarData;
-  // Add onClick support
-  onClick?: () => void;
 }
 
 const sizeClasses = {
@@ -28,49 +110,51 @@ export const AvatarDisplayUniversal = memo(({
   profileImageUrl, 
   nickname,
   className = "",
-  size = "md",
-  avatarData,
-  onClick
+  size = "md"
 }: AvatarDisplayUniversalProps) => {
-  const getResolvedAvatar = () => {
-    console.log('🎭 AvatarDisplayUniversal props:', { avatarData, profileImageUrl, avatarName, avatarUrl, nickname });
+  const getAvatarImage = () => {
+    // Try profile image URL first (uploaded images)
+    if (profileImageUrl) return profileImageUrl;
     
-    // If avatarData is provided, use the new resolution logic
-    if (avatarData) {
-      return resolveAvatarImage(avatarData, nickname);
+    // Try to map avatar name to local image first
+    if (avatarName) {
+      // Try exact match first
+      let normalizedName = avatarName.toLowerCase().replace(/\s+/g, '-');
+      let avatarImage = avatarImages[normalizedName as keyof typeof avatarImages];
+      
+      // If no exact match, try variations
+      if (!avatarImage) {
+        // Try with different normalizations
+        normalizedName = avatarName.toLowerCase().replace(/[\s_]+/g, '-');
+        avatarImage = avatarImages[normalizedName as keyof typeof avatarImages];
+      }
+      
+      if (avatarImage) {
+        return avatarImage;
+      }
     }
-
-    // Legacy support for existing props - PRIORIZE profile_image_url first!
-    const legacyData: AvatarData = {
-      profile_image_url: profileImageUrl, // This should come FIRST
-      current_avatar_id: null,
-      avatars: avatarName ? {
-        name: avatarName,
-        image_url: avatarUrl || ''
-      } : undefined
-    };
-
-    console.log('📱 Using legacy data:', legacyData);
-    return resolveAvatarImage(legacyData, nickname);
+    
+    // Try avatar URL only if it's a proper external URL (not /src/assets)
+    if (avatarUrl && avatarUrl.startsWith('http')) {
+      return avatarUrl;
+    }
+    
+    // Fallback to default
+    return theSatoshi;
   };
 
-  const resolved = getResolvedAvatar();
-
   return (
-    <Avatar 
-      className={`${sizeClasses[size]} ${className} ${onClick ? 'cursor-pointer hover:opacity-80' : ''}`}
-      onClick={onClick}
-    >
+    <Avatar className={`${sizeClasses[size]} ${className}`}>
       <AvatarImage 
-        src={resolved.imageUrl} 
+        src={getAvatarImage()} 
         alt={nickname}
         onError={(e) => {
           console.log('Avatar image failed to load:', e.currentTarget.src);
-          e.currentTarget.src = '/avatars/default-avatar.jpg';
+          e.currentTarget.src = theSatoshi;
         }}
       />
       <AvatarFallback>
-        {resolved.fallbackText}
+        {nickname.charAt(0).toUpperCase()}
       </AvatarFallback>
     </Avatar>
   );

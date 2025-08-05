@@ -70,13 +70,6 @@
     "postsCreated": "Posts Criados",
     "likesReceived": "Curtidas Recebidas"
   },
-  "duels": {
-    "activeArena": "Arena",
-    "online": "jogadores online",
-    "searching": "Buscando Oponente...",
-    "moreBotsAvailable": "Mais bots disponíveis",
-    "lastUpdate": "Última atualização"
-  },
   "quiz": {
     "title": "Quiz",
     "question": "Questão {{number}} de {{total}}",
@@ -399,43 +392,7 @@
     "post": "Postar",
     "like": "Curtir",
     "comment": "Comentar",
-    "share": "Compartilhar",
-    "tabs": {
-      "feed": "Feed",
-      "search": "Buscar",
-      "challenges": "Desafios",
-      "ranks": "Rankings",
-      "following": "Seguindo",
-      "chat": "Chat"
-    },
-    "placeholders": {
-      "shareOpinion": "O que está acontecendo?",
-      "searchUsers": "Buscar usuários...",
-      "addComment": "Adicione um comentário..."
-    },
-    "buttons": {
-      "publish": "Publicar",
-      "publishing": "Publicando...",
-      "comment": "Comentar",
-      "viewComments": "Ver comentários",
-      "hideComments": "Ocultar comentários"
-    },
-    "messages": {
-      "searchingUsers": "Buscando usuários...",
-      "noResults": "Nenhum resultado encontrado",
-      "comingSoon": "Em breve",
-      "postCreated": "Post criado com sucesso!",
-      "commentAdded": "Comentário adicionado!",
-      "errorPost": "Não foi possível criar o post",
-      "errorComment": "Não foi possível adicionar o comentário"
-    },
-    "stats": {
-      "likes": "curtidas",
-      "comments": "comentários",
-      "shares": "compartilhamentos",
-      "ago": "atrás",
-      "now": "agora"
-    }
+    "share": "Compartilhar"
   },
   "store": {
     "store": "Loja",
@@ -661,35 +618,7 @@
     "title": "Encontrar Oponente",
     "searching": "Procurando oponente...",
     "found": "Oponente encontrado!",
-    "cancel": "Cancelar",
-    "preferences": "Preferências",
-    "quickMatch": "Partida Rápida",
-    "searchPlayers": "Buscar Jogadores",
-    "friendsList": "Lista de Amigos",
-    "quickStart": "Início Rápido",
-    "topicSelection": "Seleção de Tópico",
-    "selectTopic": "Selecione um tópico",
-    "searchUsers": "Buscar usuários...",
-    "invitePlayer": "Convidar Jogador",
-    "levelRange": "Faixa de Nível",
-    "onlineNow": "Online Agora",
-    "recentlyActive": "Ativo Recentemente",
-    "noResults": "Nenhum resultado encontrado",
-    "searchForPlayers": "Busque por jogadores para desafiar",
-    "yourFriends": "Seus Amigos",
-    "noFriends": "Você ainda não tem amigos adicionados",
-    "addFriends": "Adicione amigos para duelar facilmente",
-    "matchmakingPreferences": "Preferências de Matchmaking",
-    "smartQueue": "Fila Inteligente",
-    "priorityInvites": "Convites Prioritários",
-    "filteredInvites": "Convites Filtrados",
-    "allInvites": "Todos os Convites",
-    "acceptAll": "Aceitar Todos",
-    "declineAll": "Recusar Todos",
-    "noPendingInvites": "Nenhum convite pendente",
-    "inviteQueueDescription": "Quando receber convites de duelo, eles aparecerão aqui",
-    "queueManager": "Fila de Convites",
-    "clickToRespond": "Clique em um convite para responder imediatamente"
+    "cancel": "Cancelar"
   },
   "auth": {
     "title": {

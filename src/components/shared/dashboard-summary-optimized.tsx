@@ -29,7 +29,8 @@ interface DashboardSummaryProps {
 }
 
 const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ userStats, subscription }: DashboardSummaryProps) {
-  const { t } = useI18n(); // Removido performance monitor que estava causando logs
+  useRenderPerformance('DashboardSummaryOptimized');
+  const { t } = useI18n();
   
   // Verificações de segurança para dados não definidos
   if (!userStats || !subscription) {
