@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui
 import { Badge } from "@/components/shared/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
 import { Input } from "@/components/shared/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
+import { Label } from "@/components/shared/ui/label";
 import { ArrowLeft, Users, Zap, Target, Search, Heart, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
@@ -116,7 +118,7 @@ export default function FindOpponent() {
     } catch (error) {
       console.error('Error searching users:', error);
       toast({
-        title: "❌ Erro na busca",
+        title: `❌ ${t('common.error')}`,
         description: "Não foi possível buscar usuários",
         variant: "destructive"
       });
@@ -191,44 +193,15 @@ export default function FindOpponent() {
         console.error('Error sending database notification:', error);
       }
 
-      // Send push notification
-      try {
-        await supabase.functions.invoke('send-push-notification', {
-          body: {
-            userIds: [opponent.id],
-            notificationData: {
-              title: '🎯 Novo Convite de Duelo!',
-              body: `${currentUserProfile.nickname} te desafiou para um duelo de ${topics.find(t => t.id === selectedTopic)?.name || selectedTopic}`,
-              icon: '/favicon.ico',
-              badge: '/favicon.ico',
-              data: {
-                type: 'duel_invite',
-                challengerName: currentUserProfile.nickname,
-                topic: topics.find(t => t.id === selectedTopic)?.name || selectedTopic,
-                inviteId: invite.id,
-                url: '/duels'
-              },
-              requireInteraction: true,
-              tag: `duel-invite-${invite.id}`
-            },
-            notificationType: 'duel_invite'
-          }
-        });
-      } catch (error) {
-        console.error('Error sending push notification:', error);
-      }
-
       toast({
         title: "🎯 Convite enviado!",
         description: `Convite de duelo enviado para ${opponent.nickname}. Aguarde a resposta.`,
       });
 
-      // Não redirecionar automaticamente - aguardar resposta do oponente
-
     } catch (error) {
       console.error('Error challenging user:', error);
       toast({
-        title: `❌ ${t('errors.error')} ao enviar convite`,
+        title: `❌ ${t('common.error')} ao enviar convite`,
         description: "Tente novamente",
         variant: "destructive"
       });
@@ -253,7 +226,7 @@ export default function FindOpponent() {
     } catch (error) {
       console.error('Error handling match:', error);
       toast({
-        title: `❌ ${t('errors.error')} ao criar duelo`,
+        title: `❌ ${t('common.error')} ao criar duelo`,
         description: "Tente novamente",
         variant: "destructive"
       });
@@ -269,7 +242,7 @@ export default function FindOpponent() {
     } catch (error) {
       console.error('Error starting search:', error);
       toast({
-        title: `❌ ${t('errors.error')} ao iniciar busca`,
+        title: `❌ ${t('common.error')} ao iniciar busca`,
         description: "Tente novamente",
         variant: "destructive"
       });
@@ -303,7 +276,7 @@ export default function FindOpponent() {
                 {user.is_bot && <Badge variant="secondary" className="text-xs">Bot</Badge>}
               </div>
               <div className="text-sm text-muted-foreground">
-                Nível {user.level} • {user.xp} XP • {user.streak} sequência
+                {t('common.level')} {user.level} • {user.xp} XP • {user.streak} sequência
               </div>
             </div>
           </div>
@@ -312,7 +285,7 @@ export default function FindOpponent() {
             size="sm"
             className="bg-primary hover:bg-primary/90"
           >
-            Desafiar
+            {t('findOpponent.invitePlayer')}
           </Button>
         </div>
       </CardContent>
@@ -343,7 +316,7 @@ export default function FindOpponent() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-xl font-bold text-foreground">
-            Encontrar Oponente
+            {t('findOpponent.title')}
           </h1>
           <Button
             variant="outline"
@@ -359,83 +332,66 @@ export default function FindOpponent() {
           <CardHeader className="pb-3">
             <CardTitle className="text-foreground flex items-center gap-2">
               <Target className="h-5 w-5" />
-              Escolha o Tópico
+              {t('findOpponent.topicSelection')}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {topics.map((topic) => (
-              <div
-                key={topic.id}
-                onClick={() => setSelectedTopic(topic.id)}
-                className={`p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
-                  selectedTopic === topic.id
-                    ? 'border-primary bg-primary/10 text-primary shadow-lg'
-                    : 'border-border hover:border-primary/50 text-muted-foreground hover:text-foreground hover:shadow-md'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-semibold text-sm">{topic.name}</div>
-                    <div className="text-xs text-muted-foreground">{topic.description}</div>
-                  </div>
-                  {selectedTopic === topic.id && (
-                    <div className="text-primary">✓</div>
-                  )}
-                </div>
-              </div>
-            ))}
+          <CardContent>
+            <Label className="text-sm font-medium">{t('findOpponent.selectTopic')}</Label>
+            <Select value={selectedTopic} onValueChange={setSelectedTopic}>
+              <SelectTrigger className="mt-2">
+                <SelectValue placeholder={t('findOpponent.selectTopic')} />
+              </SelectTrigger>
+              <SelectContent>
+                {topics.map((topic) => (
+                  <SelectItem key={topic.id} value={topic.id}>
+                    <div>
+                      <div className="font-medium">{topic.name}</div>
+                      <div className="text-xs text-muted-foreground">{topic.description}</div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </CardContent>
         </Card>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="quick" className="text-xs">
-              🎯 Busca Rápida
-            </TabsTrigger>
-            <TabsTrigger value="search" className="text-xs">
-              🔍 Buscar
-            </TabsTrigger>
-            <TabsTrigger value="friends" className="text-xs">
-              👥 Amigos
-            </TabsTrigger>
+            <TabsTrigger value="quick">{t('findOpponent.quickMatch')}</TabsTrigger>
+            <TabsTrigger value="search">{t('findOpponent.searchPlayers')}</TabsTrigger>
+            <TabsTrigger value="friends">{t('findOpponent.friendsList')}</TabsTrigger>
           </TabsList>
 
           {/* Quick Match Tab */}
           <TabsContent value="quick" className="space-y-4">
-            <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20 shadow-xl">
+            <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
               <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <Zap className="h-8 w-8 text-primary animate-pulse" />
-                    <h2 className="text-2xl font-bold text-primary">Arena de Duelos</h2>
-                    <Zap className="h-8 w-8 text-primary animate-pulse" />
-                  </div>
-                  
-                  <p className="text-muted-foreground">
-                    10 perguntas • 30 segundos cada • Duelo simultâneo
-                  </p>
-                  
+                <h3 className="text-lg font-semibold mb-4">{t('findOpponent.quickStart')}</h3>
+                
+                <div className="space-y-4">
                   <Button
                     onClick={handleStartSearch}
                     disabled={isMatchmaking || showWheel}
                     size="lg"
-                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold py-6 text-lg shadow-lg transform transition-transform hover:scale-105"
+                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold"
                   >
                     <Users className="mr-2 h-5 w-5" />
-                    🎯 Encontrar Oponente
+                    {t('findOpponent.searching')}
                   </Button>
                   
-                  <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Online
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                      Buscando
-                    </div>
-                  </div>
+                  {/* Active Arena */}
+                  <ActiveArena />
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setShowPreferencesModal(true)}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    {t('findOpponent.preferences')}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -445,14 +401,14 @@ export default function FindOpponent() {
           <TabsContent value="search" className="space-y-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-foreground flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-4">
                   <Search className="h-5 w-5" />
-                  Buscar Usuário
-                </CardTitle>
+                  <h3 className="text-lg font-semibold">{t('findOpponent.searchPlayers')}</h3>
+                </div>
               </CardHeader>
               <CardContent>
                 <Input
-                  placeholder="Digite o nickname do usuário..."
+                  placeholder={t('findOpponent.searchUsers')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="mb-4"
@@ -461,7 +417,7 @@ export default function FindOpponent() {
                 {isSearchingUsers && (
                   <div className="text-center py-4">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-                    <p className="text-sm text-muted-foreground mt-2">Buscando...</p>
+                    <p className="text-sm text-muted-foreground mt-2">{t('common.loading')}</p>
                   </div>
                 )}
 
@@ -475,10 +431,10 @@ export default function FindOpponent() {
                   ))}
                   
                   {searchQuery.length >= 2 && !isSearchingUsers && searchResults.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p>Nenhum usuário encontrado</p>
-                      <p className="text-sm">Tente outro termo de busca</p>
+                    <div className="text-center py-8">
+                      <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">{t('findOpponent.noResults')}</h3>
+                      <p className="text-muted-foreground">{t('findOpponent.searchForPlayers')}</p>
                     </div>
                   )}
                 </div>
@@ -490,10 +446,10 @@ export default function FindOpponent() {
           <TabsContent value="friends" className="space-y-4">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-foreground flex items-center gap-2">
-                  <Heart className="h-5 w-5" />
-                  Seus Amigos ({friends.length})
-                </CardTitle>
+                <div className="flex items-center gap-2 mb-4">
+                  <Users className="h-5 w-5" />
+                  <h3 className="text-lg font-semibold">{t('findOpponent.yourFriends')}</h3>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -506,18 +462,10 @@ export default function FindOpponent() {
                   ))}
                   
                   {friends.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <UserPlus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p>Você ainda não segue ninguém</p>
-                      <p className="text-sm">Vá para a aba Social para encontrar pessoas para seguir</p>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mt-3"
-                        onClick={() => navigate('/social')}
-                      >
-                        Ir para Social
-                      </Button>
+                    <div className="text-center py-8">
+                      <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">{t('findOpponent.noFriends')}</h3>
+                      <p className="text-muted-foreground">{t('findOpponent.addFriends')}</p>
                     </div>
                   )}
                 </div>

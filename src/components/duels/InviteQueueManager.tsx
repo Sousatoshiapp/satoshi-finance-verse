@@ -6,6 +6,7 @@ import { Button } from '@/components/shared/ui/button';
 import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
 import { Users, Clock, X, ArrowRight } from 'lucide-react';
 import { useGlobalDuelInvites } from '@/contexts/GlobalDuelInviteContext';
+import { useI18n } from '@/hooks/use-i18n';
 
 interface QueuedInvite {
   id: string;
@@ -41,6 +42,7 @@ export function InviteQueueManager({
   onSelectInvite 
 }: InviteQueueManagerProps) {
   const { queueCount } = useGlobalDuelInvites();
+  const { t } = useI18n();
 
   if (queueCount === 0) return null;
 
@@ -57,7 +59,7 @@ export function InviteQueueManager({
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-orange-600" />
               <span className="font-semibold text-orange-800">
-                Fila de Convites
+                {t('findOpponent.queueManager')}
               </span>
               <Badge variant="secondary" className="bg-orange-100 text-orange-700">
                 {queueCount}
@@ -123,7 +125,7 @@ export function InviteQueueManager({
 
           <div className="mt-3 pt-2 border-t border-orange-200">
             <p className="text-xs text-orange-700 text-center">
-              Clique em um convite para responder imediatamente
+              {t('findOpponent.clickToRespond')}
             </p>
           </div>
         </CardContent>
