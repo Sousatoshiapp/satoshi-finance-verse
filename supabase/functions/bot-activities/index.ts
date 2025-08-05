@@ -155,17 +155,79 @@ Deno.serve(async (req) => {
         if (Math.random() < 0.05) { // 5% chance
           const socialPosts = [
             "Acabei de completar um quiz difícil! 💪",
-            "Bora para mais um duelo! Quem aceita? ⚔️",
-            "Subindo de nível no Satoshi Finance! 🚀",
+            "Quiz sobre análise técnica foi desafiador! 📊",
             "Que quiz interessante sobre DeFi! 📈",
-            "Conquistando novos achievements! 🏆"
+            "Aprendi muito com esse quiz de economia! 🎓",
+            "Quiz de criptomoedas testou meu conhecimento! ₿",
+            "Desafio de finanças pessoais concluído! 💰",
+            "Quiz sobre fundos imobiliários foi educativo! 🏢",
+            "Teste de conhecimento em renda fixa superado! 📈",
+            "Quiz de mercado de ações foi intenso! 📊",
+            "Aprendizado sobre inflação no último quiz! 📉",
+            
+            "Bora para mais um duelo! Quem aceita? ⚔️",
+            "Duelo de finanças: quem topa o desafio? 🎯",
+            "Procurando adversário para duelo de crypto! ₿",
+            "Duelo sobre investimentos: aceito desafios! 💪",
+            "Quem quer duelar sobre análise fundamentalista? 📊",
+            "Desafio aberto: duelo de economia brasileira! 🇧🇷",
+            "Duelo de conhecimento em FIIs! Quem vem? 🏢",
+            "Batalha de sabedoria financeira! Aceito! ⚔️",
+            "Duelo sobre Tesouro Direto: quem topa? 🏛️",
+            "Desafio de conhecimento em DeFi! Vamos? 🔗",
+            
+            "Subindo de nível no Satoshi Finance! 🚀",
+            "Conquistando novos achievements! 🏆",
+            "Level up! Mais conhecimento desbloqueado! ⬆️",
+            "Nova conquista: especialista em renda fixa! 📈",
+            "Badge de crypto expert conquistado! ₿",
+            "Milestone atingido: 1000 pontos! 🎉",
+            "Ranking subindo: dedicação compensando! 📊",
+            "Streak de 15 dias mantido! Consistência! 🔥",
+            "Novo recorde pessoal em quiz! 🏆",
+            "Evoluindo constantemente no app! 📈",
+            
+            "Descobri uma estratégia nova de investimento! 💡",
+            "Insight valioso sobre diversificação hoje! 🌐",
+            "Aprendi sobre rebalanceamento de carteira! ⚖️",
+            "Conceito de juros compostos ficou claro! ✨",
+            "Entendi melhor sobre análise setorial! 🏭",
+            "Descoberta: importância da reserva de emergência! 🛡️",
+            "Aprendi sobre correlação entre ativos! 🔗",
+            "Insight sobre timing de mercado! ⏰",
+            "Compreendi melhor sobre volatilidade! 📉📈",
+            "Descobri novos indicadores técnicos! 📊",
+            
+            "Estudar finanças é viciante! Mais um dia! 🧠",
+            "Conhecimento financeiro transformando vida! ✨",
+            "Cada dia aprendendo algo novo aqui! 📚",
+            "Motivado para mais estudos financeiros! 💪",
+            "Jornada de educação financeira continua! 🛤️",
+            "Investindo em conhecimento todos os dias! 🎓",
+            "Crescimento pessoal através das finanças! 🌱",
+            "Disciplina nos estudos gerando resultados! 📈",
+            "Foco total na educação financeira! 🎯",
+            "Transformação através do conhecimento! 🔄"
           ];
+
+          const usedPostsKey = `used_posts_${bot.id}`;
+          let usedPosts = new Set();
+          
+          let attempts = 0;
+          let selectedPost;
+          
+          do {
+            selectedPost = socialPosts[Math.floor(Math.random() * socialPosts.length)];
+            attempts++;
+          } while (usedPosts.has(selectedPost) && attempts < 10);
+          
+          usedPosts.add(selectedPost);
 
           await supabase
             .from('social_posts')
             .insert({
               user_id: bot.id,
-              content: socialPosts[Math.floor(Math.random() * socialPosts.length)],
+              content: selectedPost,
               post_type: 'text'
             });
 
