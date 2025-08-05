@@ -18,6 +18,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useI18n } from "@/hooks/use-i18n";
+import { useCurrentUserAvatar } from "@/hooks/use-user-avatar";
+import { useAvatarContext } from "@/contexts/AvatarContext";
+import { normalizeAvatarData } from "@/lib/avatar-utils";
 import { getLevelInfo } from "@/data/levels";
 import { Crown, Star, Shield, Camera } from "lucide-react";
 import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
@@ -436,7 +439,14 @@ export default function Profile() {
           <AvatarCarousel
             userProfileId={user.id}
             currentAvatarId={user.current_avatar_id}
-            onAvatarChanged={handleAvatarChanged}
+            onAvatarChanged={(avatarId) => {
+              setUser(prev => ({ ...prev, current_avatar_id: avatarId }));
+              invalidateAvatarCaches();
+              toast({
+                title: "Avatar atualizado! ✨",
+                description: "Seu avatar foi alterado com sucesso.",
+              });
+            }}
           />
 
           {/* Inventory Carousel */}
