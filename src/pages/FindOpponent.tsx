@@ -261,21 +261,21 @@ export default function FindOpponent() {
 
   const UserCard = ({ user, onChallenge }: { user: UserProfile; onChallenge: () => void }) => (
     <Card className="hover:shadow-md transition-shadow border-border">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+      <CardContent className="p-2 sm:p-4">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <AvatarDisplayUniversal
               avatarName={user.avatars?.name}
               avatarUrl={user.avatars?.image_url}
               nickname={user.nickname}
               size="sm"
             />
-            <div>
-              <div className="font-semibold text-foreground flex items-center gap-2">
-                {user.nickname}
-                {user.is_bot && <Badge variant="secondary" className="text-xs">Bot</Badge>}
+            <div className="min-w-0 flex-1">
+              <div className="font-semibold text-foreground flex items-center gap-1 sm:gap-2 text-sm sm:text-base">
+                <span className="truncate">{user.nickname}</span>
+                {user.is_bot && <Badge variant="secondary" className="text-xs shrink-0">Bot</Badge>}
               </div>
-              <div className="text-sm text-muted-foreground">
+              <div className="text-xs sm:text-sm text-muted-foreground truncate">
                 {t('common.level')} {user.level} • {user.xp} XP • {user.streak} sequência
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function FindOpponent() {
           <Button
             onClick={onChallenge}
             size="sm"
-            className="bg-primary hover:bg-primary/90"
+            className="bg-primary hover:bg-primary/90 shrink-0 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
           >
             {t('findOpponent.invitePlayer')}
           </Button>
@@ -304,48 +304,49 @@ export default function FindOpponent() {
         }} />
       </div>
 
-      <div className="max-w-md mx-auto px-4 py-6 relative z-10">
+      <div className="max-w-lg mx-auto px-3 sm:px-4 py-4 sm:py-6 relative z-10">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground p-1 sm:p-2"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className="text-lg sm:text-xl font-bold text-foreground">
             {t('findOpponent.title')}
           </h1>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowPreferencesModal(true)}
+            className="p-1 sm:p-2"
           >
             <Users className="h-4 w-4" />
           </Button>
         </div>
 
         {/* Topic Selection */}
-        <Card className="mb-6 bg-card border-border">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-foreground flex items-center gap-2">
-              <Target className="h-5 w-5" />
+        <Card className="mb-4 sm:mb-6 bg-card border-border">
+          <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6 pt-3 sm:pt-6">
+            <CardTitle className="text-foreground flex items-center gap-2 text-base sm:text-lg">
+              <Target className="h-4 w-4 sm:h-5 sm:w-5" />
               {t('findOpponent.topicSelection')}
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <Label className="text-sm font-medium">{t('findOpponent.selectTopic')}</Label>
+          <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+            <Label className="text-xs sm:text-sm font-medium">{t('findOpponent.selectTopic')}</Label>
             <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-              <SelectTrigger className="mt-2">
+              <SelectTrigger className="mt-2 h-10 sm:h-11">
                 <SelectValue placeholder={t('findOpponent.selectTopic')} />
               </SelectTrigger>
               <SelectContent>
                 {topics.map((topic) => (
                   <SelectItem key={topic.id} value={topic.id}>
                     <div>
-                      <div className="font-medium">{topic.name}</div>
+                      <div className="font-medium text-sm sm:text-base">{topic.name}</div>
                       <div className="text-xs text-muted-foreground">{topic.description}</div>
                     </div>
                   </SelectItem>
@@ -357,26 +358,26 @@ export default function FindOpponent() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="quick">{t('findOpponent.quickMatch')}</TabsTrigger>
-            <TabsTrigger value="search">{t('findOpponent.searchPlayers')}</TabsTrigger>
-            <TabsTrigger value="friends">{t('findOpponent.friendsList')}</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 h-9 sm:h-10">
+            <TabsTrigger value="quick" className="text-xs sm:text-sm px-1 sm:px-3">{t('findOpponent.quickMatch')}</TabsTrigger>
+            <TabsTrigger value="search" className="text-xs sm:text-sm px-1 sm:px-3">{t('findOpponent.searchPlayers')}</TabsTrigger>
+            <TabsTrigger value="friends" className="text-xs sm:text-sm px-1 sm:px-3">{t('findOpponent.friendsList')}</TabsTrigger>
           </TabsList>
 
           {/* Quick Match Tab */}
-          <TabsContent value="quick" className="space-y-4">
+          <TabsContent value="quick" className="space-y-3 sm:space-y-4">
             <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-4">{t('findOpponent.quickStart')}</h3>
+              <CardContent className="p-3 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t('findOpponent.quickStart')}</h3>
                 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Button
                     onClick={handleStartSearch}
                     disabled={isMatchmaking || showWheel}
                     size="lg"
-                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold"
+                    className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold h-11 sm:h-12 text-sm sm:text-base"
                   >
-                    <Users className="mr-2 h-5 w-5" />
+                    <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     {t('findOpponent.searching')}
                   </Button>
                   
@@ -386,10 +387,10 @@ export default function FindOpponent() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full"
+                    className="w-full h-9 sm:h-10 text-xs sm:text-sm"
                     onClick={() => setShowPreferencesModal(true)}
                   >
-                    <Users className="h-4 w-4 mr-2" />
+                    <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                     {t('findOpponent.preferences')}
                   </Button>
                 </div>
@@ -398,30 +399,30 @@ export default function FindOpponent() {
           </TabsContent>
 
           {/* Search Users Tab */}
-          <TabsContent value="search" className="space-y-4">
+          <TabsContent value="search" className="space-y-3 sm:space-y-4">
             <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2 mb-4">
-                  <Search className="h-5 w-5" />
-                  <h3 className="text-lg font-semibold">{t('findOpponent.searchPlayers')}</h3>
+              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6 pt-3 sm:pt-6">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <Search className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <h3 className="text-base sm:text-lg font-semibold">{t('findOpponent.searchPlayers')}</h3>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
                 <Input
                   placeholder={t('findOpponent.searchUsers')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="mb-4"
+                  className="mb-3 sm:mb-4 h-10 sm:h-11 text-sm sm:text-base"
                 />
                 
                 {isSearchingUsers && (
                   <div className="text-center py-4">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto"></div>
-                    <p className="text-sm text-muted-foreground mt-2">{t('common.loading')}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-2">{t('common.loading')}</p>
                   </div>
                 )}
 
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {searchResults.map((user) => (
                     <UserCard
                       key={user.id}
@@ -431,10 +432,10 @@ export default function FindOpponent() {
                   ))}
                   
                   {searchQuery.length >= 2 && !isSearchingUsers && searchResults.length === 0 && (
-                    <div className="text-center py-8">
-                      <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">{t('findOpponent.noResults')}</h3>
-                      <p className="text-muted-foreground">{t('findOpponent.searchForPlayers')}</p>
+                    <div className="text-center py-6 sm:py-8">
+                      <Search className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+                      <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">{t('findOpponent.noResults')}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{t('findOpponent.searchForPlayers')}</p>
                     </div>
                   )}
                 </div>
@@ -443,16 +444,16 @@ export default function FindOpponent() {
           </TabsContent>
 
           {/* Friends Tab */}
-          <TabsContent value="friends" className="space-y-4">
+          <TabsContent value="friends" className="space-y-3 sm:space-y-4">
             <Card>
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2 mb-4">
-                  <Users className="h-5 w-5" />
-                  <h3 className="text-lg font-semibold">{t('findOpponent.yourFriends')}</h3>
+              <CardHeader className="pb-2 sm:pb-3 px-3 sm:px-6 pt-3 sm:pt-6">
+                <div className="flex items-center gap-2 mb-2 sm:mb-4">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <h3 className="text-base sm:text-lg font-semibold">{t('findOpponent.yourFriends')}</h3>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
+                <div className="space-y-2 sm:space-y-3">
                   {friends.map((friend) => (
                     <UserCard
                       key={friend.id}
@@ -462,10 +463,10 @@ export default function FindOpponent() {
                   ))}
                   
                   {friends.length === 0 && (
-                    <div className="text-center py-8">
-                      <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">{t('findOpponent.noFriends')}</h3>
-                      <p className="text-muted-foreground">{t('findOpponent.addFriends')}</p>
+                    <div className="text-center py-6 sm:py-8">
+                      <Users className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+                      <h3 className="text-base sm:text-lg font-semibold mb-1 sm:mb-2">{t('findOpponent.noFriends')}</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{t('findOpponent.addFriends')}</p>
                     </div>
                   )}
                 </div>
