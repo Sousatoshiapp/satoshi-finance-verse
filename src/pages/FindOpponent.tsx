@@ -107,6 +107,7 @@ export default function FindOpponent() {
         .from('profiles')
         .select(`
           id, nickname, level, xp, streak, is_bot,
+          current_avatar_id,
           avatars (name, image_url)
         `)
         .ilike('nickname', `%${query}%`)
@@ -145,8 +146,8 @@ export default function FindOpponent() {
         .select(`
           following_id,
           profiles!following_id (
-            id, nickname, level, xp, streak, is_bot,
-            avatars (name, image_url)
+            id, nickname, level, xp, streak, is_bot, current_avatar_id,
+            avatars:current_avatar_id (name, image_url)
           )
         `)
         .eq('follower_id', profile.id);
@@ -191,6 +192,17 @@ export default function FindOpponent() {
         });
       } catch (error) {
         console.error('Error sending database notification:', error);
+      }
+
+      // Se for um bot, disparar a edge function para resposta automática
+      if (opponent.is_bot) {
+        setTimeout(async () => {
+          try {
+            await supabase.functions.invoke('bot-duel-responder');
+          } catch (error) {
+            console.error('Error calling bot responder:', error);
+          }
+        }, 2000); // Delay de 2 segundos para parecer mais realista
       }
 
       toast({
@@ -273,7 +285,6 @@ export default function FindOpponent() {
             <div className="min-w-0 flex-1">
               <div className="font-semibold text-foreground flex items-center gap-1 sm:gap-2 text-sm sm:text-base">
                 <span className="truncate">{user.nickname}</span>
-                {user.is_bot && <Badge variant="secondary" className="text-xs shrink-0">Bot</Badge>}
               </div>
               <div className="text-xs sm:text-sm text-muted-foreground truncate">
                 {t('common.level')} {user.level} • {user.xp} XP • {user.streak} sequência

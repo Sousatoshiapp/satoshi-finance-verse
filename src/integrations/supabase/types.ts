@@ -3675,6 +3675,7 @@ export type Database = {
           completed_lessons: number | null
           consecutive_login_days: number | null
           created_at: string
+          current_avatar_id: string | null
           current_streak_multiplier: number | null
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
@@ -3706,6 +3707,7 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_avatar_id?: string | null
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
@@ -3737,6 +3739,7 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_avatar_id?: string | null
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
@@ -3767,6 +3770,13 @@ export type Database = {
           {
             foreignKeyName: "profiles_avatar_id_fkey"
             columns: ["avatar_id"]
+            isOneToOne: false
+            referencedRelation: "avatars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_current_avatar_id_fkey"
+            columns: ["current_avatar_id"]
             isOneToOne: false
             referencedRelation: "avatars"
             referencedColumns: ["id"]
