@@ -30,8 +30,8 @@ export const LeaderboardUserAvatar = memo(({
   // Try to get fresh avatar data first
   const { avatarData } = useUserAvatar({ userId, enabled: !!userId });
 
-  // Use fresh data if available, otherwise fallback to props
-  const finalAvatarData = avatarData || {
+  // Create AvatarData object - use fresh data if available, otherwise fallback to props
+  const finalAvatarData = {
     profile_image_url: profileImageUrl,
     current_avatar_id: currentAvatarId,
     avatars: avatarName && avatarUrl ? {

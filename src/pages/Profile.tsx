@@ -116,6 +116,7 @@ export default function Profile() {
   const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription } = useSubscription();
   const { t } = useI18n();
   
