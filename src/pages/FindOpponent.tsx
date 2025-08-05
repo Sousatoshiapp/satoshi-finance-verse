@@ -12,9 +12,12 @@ import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { useEnhancedDuelMatchmaking } from "@/hooks/use-enhanced-duel-matchmaking";
 import { MatchmakingWheel } from "@/components/duels/matchmaking-wheel";
 import { ActiveArena } from "@/components/duels/ActiveArena";
+import { InviteQueueManager } from "@/components/duels/InviteQueueManager";
+import { MatchmakingPreferencesModal } from "@/components/duels/MatchmakingPreferencesModal";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { supabase } from "@/integrations/supabase/client";
 import { useDebounce } from "@/hooks/use-debounced-callback";
+import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
 
 const topics = [
   { id: "financas", name: "Finanças Gerais", description: "Conceitos básicos de educação financeira" },
@@ -40,6 +43,7 @@ export default function FindOpponent() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useI18n();
+  const { inviteQueue, selectInviteFromQueue, dismissAllInvites } = useGlobalDuelInvites();
   const [selectedTopic, setSelectedTopic] = useState("financas");
   const [activeTab, setActiveTab] = useState("quick");
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,6 +51,7 @@ export default function FindOpponent() {
   const [friends, setFriends] = useState<UserProfile[]>([]);
   const [isSearchingUsers, setIsSearchingUsers] = useState(false);
   const [currentUserProfile, setCurrentUserProfile] = useState<any>(null);
+  const [showPreferencesModal, setShowPreferencesModal] = useState(false);
   
   const { isSearching: isMatchmaking, startMatchmaking, cancelMatchmaking, createDuel, setIsSearching } = useEnhancedDuelMatchmaking();
   const [showWheel, setShowWheel] = useState(false);
@@ -340,7 +345,13 @@ export default function FindOpponent() {
           <h1 className="text-xl font-bold text-foreground">
             Encontrar Oponente
           </h1>
-          <div className="w-10"></div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowPreferencesModal(true)}
+          >
+            <Users className="h-4 w-4" />
+          </Button>
         </div>
 
         {/* Topic Selection */}
@@ -521,6 +532,29 @@ export default function FindOpponent() {
           onMatchFound={handleMatchFound}
           onCancel={handleCancelSearch}
           topic={selectedTopic}
+        />
+
+        {/* Queue Manager */}
+        <InviteQueueManager
+          queuedInvites={inviteQueue.map(invite => ({
+            id: invite.id,
+            challenger: {
+              nickname: invite.challenger?.nickname || 'Desconhecido',
+              level: invite.challenger?.level || 1,
+              avatars: invite.challenger?.avatars
+            },
+            quiz_topic: invite.quiz_topic,
+            created_at: invite.created_at,
+            timeLeft: Math.max(0, 30 - Math.floor((Date.now() - new Date(invite.created_at).getTime()) / 1000))
+          }))}
+          onDismissAll={dismissAllInvites}
+          onSelectInvite={selectInviteFromQueue}
+        />
+
+        {/* Preferences Modal */}
+        <MatchmakingPreferencesModal
+          isOpen={showPreferencesModal}
+          onClose={() => setShowPreferencesModal(false)}
         />
       </div>
 

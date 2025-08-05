@@ -34,7 +34,7 @@ export function useMatchmakingPreferences() {
   const loadPreferences = async () => {
     try {
       const { data, error } = await supabase
-        .from('user_matchmaking_preferences')
+        .from('user_matchmaking_preferences' as any)
         .select('*')
         .eq('user_id', profile?.id)
         .single();
@@ -46,12 +46,12 @@ export function useMatchmakingPreferences() {
 
       if (data) {
         setPreferences({
-          preferredTopics: data.preferred_topics || defaultPreferences.preferredTopics,
-          allowBots: data.allow_bots ?? defaultPreferences.allowBots,
-          skillLevelRange: data.skill_level_range || defaultPreferences.skillLevelRange,
-          autoAcceptFromFriends: data.auto_accept_from_friends ?? defaultPreferences.autoAcceptFromFriends,
-          maxConcurrentInvites: data.max_concurrent_invites || defaultPreferences.maxConcurrentInvites,
-          availabilityStatus: data.availability_status || defaultPreferences.availabilityStatus
+          preferredTopics: (data as any).preferred_topics || defaultPreferences.preferredTopics,
+          allowBots: (data as any).allow_bots ?? defaultPreferences.allowBots,
+          skillLevelRange: (data as any).skill_level_range || defaultPreferences.skillLevelRange,
+          autoAcceptFromFriends: (data as any).auto_accept_from_friends ?? defaultPreferences.autoAcceptFromFriends,
+          maxConcurrentInvites: (data as any).max_concurrent_invites || defaultPreferences.maxConcurrentInvites,
+          availabilityStatus: (data as any).availability_status || defaultPreferences.availabilityStatus
         });
       }
     } catch (error) {
@@ -68,7 +68,7 @@ export function useMatchmakingPreferences() {
       const updatedPreferences = { ...preferences, ...newPreferences };
       
       const { error } = await supabase
-        .from('user_matchmaking_preferences')
+        .from('user_matchmaking_preferences' as any)
         .upsert({
           user_id: profile.id,
           preferred_topics: updatedPreferences.preferredTopics,

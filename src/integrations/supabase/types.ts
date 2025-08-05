@@ -2578,6 +2578,57 @@ export type Database = {
           },
         ]
       }
+      invite_queue_sessions: {
+        Row: {
+          auto_dismiss_at: string | null
+          created_at: string | null
+          id: string
+          interaction_type: string | null
+          invite_id: string
+          priority_score: number | null
+          processed_at: string | null
+          queue_position: number
+          user_id: string
+        }
+        Insert: {
+          auto_dismiss_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string | null
+          invite_id: string
+          priority_score?: number | null
+          processed_at?: string | null
+          queue_position: number
+          user_id: string
+        }
+        Update: {
+          auto_dismiss_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string | null
+          invite_id?: string
+          priority_score?: number | null
+          processed_at?: string | null
+          queue_position?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invite_queue_sessions_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "duel_invites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invite_queue_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       league_seasons: {
         Row: {
           created_at: string
@@ -5761,6 +5812,53 @@ export type Database = {
           },
         ]
       }
+      user_matchmaking_preferences: {
+        Row: {
+          allow_bots: boolean | null
+          auto_accept_from_friends: boolean | null
+          availability_status: string | null
+          created_at: string | null
+          id: string
+          max_concurrent_invites: number | null
+          preferred_topics: string[] | null
+          skill_level_range: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          allow_bots?: boolean | null
+          auto_accept_from_friends?: boolean | null
+          availability_status?: string | null
+          created_at?: string | null
+          id?: string
+          max_concurrent_invites?: number | null
+          preferred_topics?: string[] | null
+          skill_level_range?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          allow_bots?: boolean | null
+          auto_accept_from_friends?: boolean | null
+          availability_status?: string | null
+          created_at?: string | null
+          id?: string
+          max_concurrent_invites?: number | null
+          preferred_topics?: string[] | null
+          skill_level_range?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_matchmaking_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_mission_progress: {
         Row: {
           completed: boolean
@@ -6747,6 +6845,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_to_smart_queue: {
+        Args: { p_invite_id: string }
+        Returns: string
+      }
       apply_btz_penalty: {
         Args: { profile_id: string }
         Returns: {
@@ -6784,6 +6886,14 @@ export type Database = {
           new_total: number
           streak_bonus: number
         }[]
+      }
+      calculate_invite_priority: {
+        Args: {
+          p_challenger_id: string
+          p_challenged_id: string
+          p_quiz_topic: string
+        }
+        Returns: number
       }
       calculate_league_points: {
         Args: {
