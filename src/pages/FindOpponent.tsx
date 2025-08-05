@@ -11,6 +11,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { useEnhancedDuelMatchmaking } from "@/hooks/use-enhanced-duel-matchmaking";
 import { MatchmakingWheel } from "@/components/duels/matchmaking-wheel";
+import { ActiveArena } from "@/components/duels/ActiveArena";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { supabase } from "@/integrations/supabase/client";
 import { useDebounce } from "@/hooks/use-debounced-callback";
