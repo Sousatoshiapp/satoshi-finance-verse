@@ -13,6 +13,8 @@ import { ptBR, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/hooks/use-i18n";
 import { useNavigate } from "react-router-dom";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
+import { normalizeAvatarData } from "@/lib/avatar-utils";
 
 interface SocialPost {
   id: string;
@@ -114,7 +116,7 @@ export function TwitterSocialFeed() {
             level,
             xp,
             current_avatar_id,
-            avatars:current_avatar_id (
+            avatars!current_avatar_id (
               name, 
               image_url
             )
@@ -375,18 +377,12 @@ export function TwitterSocialFeed() {
         <article key={post.id} className="p-4 hover:bg-muted/30 transition-colors">
           <div className="flex space-x-3">
             {/* Avatar */}
-            <Avatar 
-              className="w-12 h-12 cursor-pointer hover:opacity-80"
+            <AvatarDisplayUniversal
+              avatarData={normalizeAvatarData(post.profiles)}
+              nickname={post.profiles.nickname}
+              size="md"
               onClick={() => handleUserClick(post.profiles.id)}
-            >
-              <AvatarImage 
-                src={post.profiles.profile_image_url || post.profiles.avatars?.image_url || '/avatars/default-avatar.jpg'} 
-                alt={post.profiles.nickname} 
-              />
-              <AvatarFallback>
-                {post.profiles.nickname.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            />
 
             <div className="flex-1 min-w-0">
               {/* Header */}
@@ -503,7 +499,7 @@ export function TwitterSocialFeed() {
                   {comments[post.id] && comments[post.id].map((comment) => (
                     <div key={comment.id} className="flex space-x-3">
                       <Avatar className="w-8 h-8">
-                        <AvatarImage src={comment.profiles.profile_image_url} />
+                        <AvatarImage src={comment.profiles.profile_image_url || '/avatars/default-avatar.jpg'} />
                         <AvatarFallback className="text-xs">
                           {comment.profiles.nickname.charAt(0).toUpperCase()}
                         </AvatarFallback>

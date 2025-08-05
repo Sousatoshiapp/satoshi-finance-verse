@@ -19,20 +19,27 @@ import { TwitterSocialFeed } from "@/components/features/social/twitter-social-f
 import { SocialChallenges } from "@/components/features/social/social-challenges";
 import { SocialLeaderboard } from "@/components/features/social/social-leaderboard";
 import { useI18n } from "@/hooks/use-i18n";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
+import { normalizeAvatarData } from "@/lib/avatar-utils";
 
 interface User {
   id: string;
   nickname: string;
-  profile_image_url?: string;
+  profile_image_url?: string | null;
   level?: number;
   xp?: number;
   follower_count?: number;
   following_count?: number;
+  current_avatar_id?: string | null;
   avatar?: {
     id: string;
     name: string;
     image_url: string;
-  };
+  } | null;
+  avatars?: {
+    name: string;
+    image_url: string;
+  } | null;
 }
 
 export default function Social() {
@@ -64,29 +71,19 @@ export default function Social() {
           profile_image_url, 
           level, 
           xp, 
-          current_avatar_id
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
+          )
         `)
         .ilike('nickname', `%${query}%`)
         .limit(10);
 
       if (error) throw error;
 
-      // Get avatars for users
-      const usersWithAvatars = await Promise.all(
-        (data || []).map(async (user) => {
-          if (user.current_avatar_id) {
-            const { data: avatarData } = await supabase
-              .from('avatars')
-              .select('id, name, image_url')
-              .eq('id', user.current_avatar_id)
-              .single();
-            return { ...user, avatar: avatarData };
-          }
-          return { ...user, avatar: null };
-        })
-      );
-      
-      setSearchResults(usersWithAvatars);
+      // Data is already normalized with avatars joined
+      setSearchResults(data || []);
     } catch (error) {
       console.error('Error searching users:', error);
       toast({
@@ -124,25 +121,18 @@ export default function Social() {
           profile_image_url,
           level,
           xp,
-          current_avatar_id
+          current_avatar_id,
+          avatars!current_avatar_id (
+            name,
+            image_url
+          )
         `)
         .eq('user_id', user.id)
         .single();
 
       if (profile) {
         setCurrentUserId(profile.id);
-        
-        // Get avatar if available
-        if (profile.current_avatar_id) {
-          const { data: avatarData } = await supabase
-            .from('avatars')
-            .select('id, name, image_url')
-            .eq('id', profile.current_avatar_id)
-            .single();
-          setCurrentUser({ ...profile, avatar: avatarData });
-        } else {
-          setCurrentUser(profile);
-        }
+        setCurrentUser(profile);
       }
     } catch (error) {
       console.error('Error loading current user:', error);
@@ -254,13 +244,11 @@ export default function Social() {
           {currentUser && (
             <div className="mt-auto p-3 rounded-lg border border-border/50 bg-card/50">
               <div className="flex items-center space-x-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage 
-                    src={currentUser.profile_image_url || currentUser.avatar?.image_url} 
-                    alt={currentUser.nickname} 
-                  />
-                  <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                </Avatar>
+                <AvatarDisplayUniversal
+                  avatarData={normalizeAvatarData(currentUser)}
+                  nickname={currentUser.nickname}
+                  size="md"
+                />
                 <div className="flex-1 overflow-hidden">
                   <p className="font-medium text-sm truncate">@{currentUser.nickname}</p>
                   <p className="text-xs text-muted-foreground">Nível {currentUser.level}</p>
@@ -281,13 +269,11 @@ export default function Social() {
           <div className="border-b border-border/50 p-3 lg:p-4">
             <div className="flex space-x-3">
               {currentUser && (
-                <Avatar className="w-12 h-12">
-                  <AvatarImage 
-                    src={currentUser.profile_image_url || currentUser.avatar?.image_url} 
-                    alt={currentUser.nickname} 
-                  />
-                  <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                </Avatar>
+                <AvatarDisplayUniversal
+                  avatarData={normalizeAvatarData(currentUser)}
+                  nickname={currentUser.nickname}
+                  size="lg"
+                />
               )}
               <div className="flex-1">
                 <Textarea
@@ -349,13 +335,11 @@ export default function Social() {
                         className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
                         onClick={() => navigate(`/user/${user.id}`)}
                       >
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage 
-                            src={user.profile_image_url || user.avatar?.image_url} 
-                            alt={user.nickname} 
-                          />
-                          <AvatarFallback>{user.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
+                        <AvatarDisplayUniversal
+                          avatarData={normalizeAvatarData(user)}
+                          nickname={user.nickname}
+                          size="md"
+                        />
                         <div className="flex-1 overflow-hidden">
                           <p className="font-medium text-sm truncate">@{user.nickname}</p>
                           <p className="text-xs text-muted-foreground">Nível {user.level}</p>
@@ -417,13 +401,11 @@ export default function Social() {
             <div className="border-b border-border/50 p-3">
               <div className="flex space-x-3">
                 {currentUser && (
-                  <Avatar className="w-10 h-10">
-                    <AvatarImage 
-                      src={currentUser.profile_image_url || currentUser.avatar?.image_url || '/avatars/default-avatar.jpg'} 
-                      alt={currentUser.nickname} 
-                    />
-                    <AvatarFallback>{currentUser.nickname.charAt(0).toUpperCase()}</AvatarFallback>
-                  </Avatar>
+                  <AvatarDisplayUniversal
+                    avatarData={normalizeAvatarData(currentUser)}
+                    nickname={currentUser.nickname}
+                    size="md"
+                  />
                 )}
                 <div className="flex-1">
                   <Textarea
