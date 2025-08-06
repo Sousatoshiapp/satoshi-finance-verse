@@ -516,6 +516,7 @@
   "findOpponent": {
     "title": "البحث عن خصم",
     "searching": "جاري البحث عن خصم...",
+    "findPlayer": "البحث عن لاعب",
     "found": "تم العثور على خصم!",
     "cancel": "إلغاء",
     "preferences": "التفضيلات",

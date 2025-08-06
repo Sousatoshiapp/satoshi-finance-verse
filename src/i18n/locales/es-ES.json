@@ -724,6 +724,7 @@
   "findOpponent": {
     "title": "Encontrar Oponente",
     "searching": "Buscando oponente...",
+    "findPlayer": "Buscar Jugador",
     "found": "¡Oponente encontrado!",
     "cancel": "Cancelar",
     "preferences": "Preferencias",

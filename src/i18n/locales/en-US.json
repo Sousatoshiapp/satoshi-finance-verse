@@ -710,6 +710,7 @@
   "findOpponent": {
     "title": "Find Opponent",
     "searching": "Searching for opponent...",
+    "findPlayer": "Find Player",
     "found": "Opponent found!",
     "cancel": "Cancel",
     "preferences": "Preferences",

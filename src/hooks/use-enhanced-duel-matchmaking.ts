@@ -40,7 +40,7 @@ export function useEnhancedDuelMatchmaking() {
         .from('duel_queue')
         .insert({
           user_id: profile.id,
-          topic,
+          preferred_topic: topic,
           is_active: true,
           expires_at: new Date(Date.now() + 15000).toISOString()
         });

@@ -403,7 +403,7 @@ export default function FindOpponent() {
                     className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold h-11 sm:h-12 text-sm sm:text-base"
                   >
                     <Users className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                    {t('findOpponent.searching')}
+                    {t('findOpponent.findPlayer')}
                   </Button>
                   
                   {/* Active Arena */}

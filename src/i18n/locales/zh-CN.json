@@ -855,6 +855,7 @@
   "findOpponent": {
     "title": "寻找对手",
     "searching": "正在寻找对手...",
+    "findPlayer": "寻找玩家",
     "found": "找到对手！",
     "cancel": "取消",
     "preferences": "偏好设置",
