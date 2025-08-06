@@ -13,7 +13,7 @@ export function useEnhancedDuelMatchmaking() {
   const [isSearching, setIsSearching] = useState(false);
   const [matchResult, setMatchResult] = useState<MatchmakingResult | null>(null);
   const [searchPhase, setSearchPhase] = useState<'searching' | 'found' | 'creating' | null>(null);
-  const [searchTimeout, setSearchTimeout] = useState<number>(15);
+  const [searchTimeout, setSearchTimeout] = useState<number>(30);
   const { toast } = useToast();
 
   const startMatchmaking = async (topic: string = 'financas') => {
@@ -21,7 +21,7 @@ export function useEnhancedDuelMatchmaking() {
       setIsSearching(true);
       setMatchResult(null);
       setSearchPhase('searching');
-      setSearchTimeout(15);
+      setSearchTimeout(30);
       
       // Get current user profile
       const { data: { user } } = await supabase.auth.getUser();
@@ -42,7 +42,7 @@ export function useEnhancedDuelMatchmaking() {
           user_id: profile.id,
           preferred_topic: topic,
           is_active: true,
-          expires_at: new Date(Date.now() + 15000).toISOString()
+          expires_at: new Date(Date.now() + 30000).toISOString()
         });
 
       // Countdown timer
@@ -153,7 +153,7 @@ export function useEnhancedDuelMatchmaking() {
         }
       }, 1500);
       
-      // Stop polling after 15 seconds
+      // Stop polling after 30 seconds
       setTimeout(() => {
         clearInterval(pollInterval);
         clearInterval(countdownInterval);
@@ -172,7 +172,7 @@ export function useEnhancedDuelMatchmaking() {
             .delete()
             .eq('user_id', profile.id);
         }
-      }, 15000);
+      }, 30000);
       
     } catch (error) {
       console.error('Matchmaking error:', error);
