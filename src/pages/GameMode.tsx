@@ -103,15 +103,13 @@ export default function GameMode() {
               {/* Torneio */}
               <Button
                 variant="outline"
-                className="w-full py-4 text-base font-medium opacity-60 cursor-not-allowed"
+                className="w-full py-4 text-base font-medium relative opacity-75 cursor-not-allowed border-dashed"
                 disabled={true}
               >
-                <div className="flex flex-col items-center justify-center gap-1">
-                  <div className="flex items-center gap-3">
-                    <Trophy className="h-5 w-5 opacity-50" />
-                    {t('gameMode.tournament')}
-                  </div>
-                  <span className="text-xs text-muted-foreground">
+                <div className="flex items-center justify-center gap-3">
+                  <Trophy className="h-5 w-5 opacity-60" />
+                  {t('gameMode.tournament')}
+                  <span className="ml-2 px-2 py-1 text-xs bg-muted text-muted-foreground rounded-full">
                     {t('common.comingSoon')}
                   </span>
                 </div>
