@@ -77,7 +77,16 @@
     "online": "players online",
     "searching": "Finding Opponent...",
     "moreBotsAvailable": "More bots available",
-    "lastUpdate": "Last update"
+    "lastUpdate": "Last update",
+    "matchmaking": {
+      "searchingFor": "Searching for",
+      "finalizingSearch": "Finalizing search...",
+      "timeRemaining": "Time",
+      "matchFound": "MATCH!",
+      "noPlayersFound": "No Players in Arena available, try again",
+      "tryAgain": "Try Again",
+      "cancel": "Cancel"
+    }
   },
   "quiz": {
     "title": "Quiz",

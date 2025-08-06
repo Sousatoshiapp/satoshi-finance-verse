@@ -3,10 +3,14 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface MatchmakingResult {
-  opponentId: string | null;
-  opponentType: 'human' | 'bot' | 'waiting';
-  matchFound: boolean;
-  opponentData?: any;
+  opponent: {
+    id: string;
+    nickname: string;
+    level: number;
+    profile_image_url?: string;
+    is_bot: boolean;
+  };
+  status: 'found';
 }
 
 export function useEnhancedDuelMatchmaking() {
@@ -68,14 +72,14 @@ export function useEnhancedDuelMatchmaking() {
 
         setTimeout(() => {
           setMatchResult({
-            opponentId: matchData.opponent_id,
-            opponentType: matchData.opponent_type as 'human' | 'bot',
-            matchFound: true,
-            opponentData: {
-              ...opponentData,
+            opponent: {
+              id: opponentData?.id || matchData.opponent_id,
               nickname: opponentData?.nickname || 'Oponente',
-              level: opponentData?.level || 1
-            }
+              level: opponentData?.level || 1,
+              profile_image_url: opponentData?.profile_image_url,
+              is_bot: opponentData?.is_bot || false
+            },
+            status: 'found'
           });
           setIsSearching(false);
           setSearchPhase(null);
@@ -116,14 +120,14 @@ export function useEnhancedDuelMatchmaking() {
 
             setTimeout(() => {
               setMatchResult({
-                opponentId: pollData.opponent_id,
-                opponentType: pollData.opponent_type as 'human' | 'bot',
-                matchFound: true,
-                opponentData: {
-                  ...opponentData,
+                opponent: {
+                  id: opponentData?.id || pollData.opponent_id,
                   nickname: opponentData?.nickname || 'Oponente',
-                  level: opponentData?.level || 1
-                }
+                  level: opponentData?.level || 1,
+                  profile_image_url: opponentData?.profile_image_url,
+                  is_bot: opponentData?.is_bot || false
+                },
+                status: 'found'
               });
               setIsSearching(false);
               setSearchPhase(null);

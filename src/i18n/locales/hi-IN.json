@@ -26,7 +26,16 @@
     "online": "खिलाड़ी ऑनलाइन",
     "searching": "प्रतिद्वंद्वी खोज रहे...",
     "moreBotsAvailable": "अधिक बॉट उपलब्ध",
-    "lastUpdate": "अंतिम अपडेट"
+    "lastUpdate": "अंतिम अपडेट",
+    "matchmaking": {
+      "searchingFor": "खोज रहे हैं",
+      "finalizingSearch": "खोज को अंतिम रूप दे रहे...",
+      "timeRemaining": "समय",
+      "matchFound": "मैच मिला!",
+      "noPlayersFound": "अरीना में कोई खिलाड़ी उपलब्ध नहीं, फिर से कोशिश करें",
+      "tryAgain": "फिर से कोशिश करें",
+      "cancel": "रद्द करें"
+    }
   },
   "quiz": {
     "title": "क्विज़",

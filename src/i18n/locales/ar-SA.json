@@ -26,7 +26,16 @@
     "online": "لاعبين متصلين",
     "searching": "البحث عن خصم...",
     "moreBotsAvailable": "المزيد من الروبوتات متاحة",
-    "lastUpdate": "آخر تحديث"
+    "lastUpdate": "آخر تحديث",
+    "matchmaking": {
+      "searchingFor": "البحث عن",
+      "finalizingSearch": "إنهاء البحث...",
+      "timeRemaining": "الوقت",
+      "matchFound": "تم العثور على مباراة!",
+      "noPlayersFound": "لا يوجد لاعبون متاحون في الساحة، حاول مرة أخرى",
+      "tryAgain": "حاول مرة أخرى",
+      "cancel": "إلغاء"
+    }
   },
   "quiz": {
     "title": "اختبار",
