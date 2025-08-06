@@ -39,12 +39,12 @@ export function StreakCounter({ currentStreak, className, showActions = false }:
   }, []);
 
   const getStreakLevel = () => {
-    if (currentStreak >= 100) return { level: "Legendary", color: "text-purple-500", bg: "bg-purple-100" };
-    if (currentStreak >= 30) return { level: "Master", color: "text-yellow-500", bg: "bg-yellow-100" };
-    if (currentStreak >= 14) return { level: "Pro", color: "text-blue-500", bg: "bg-blue-100" };
-    if (currentStreak >= 7) return { level: "Advanced", color: "text-green-500", bg: "bg-green-100" };
-    if (currentStreak >= 3) return { level: "Beginner", color: "text-orange-500", bg: "bg-orange-100" };
-    return { level: "Newbie", color: "text-gray-500", bg: "bg-gray-100" };
+    if (currentStreak >= 100) return { level: "Legendary", color: "text-purple-500", bg: "bg-purple-100", multiplier: "3x" };
+    if (currentStreak >= 30) return { level: "Master", color: "text-yellow-500", bg: "bg-yellow-100", multiplier: "3x" };
+    if (currentStreak >= 14) return { level: "Pro", color: "text-blue-500", bg: "bg-blue-100", multiplier: "2x" };
+    if (currentStreak >= 7) return { level: "Advanced", color: "text-green-500", bg: "bg-green-100", multiplier: "1.5x" };
+    if (currentStreak >= 3) return { level: "Beginner", color: "text-orange-500", bg: "bg-orange-100", multiplier: "1.2x" };
+    return { level: "Newbie", color: "text-gray-500", bg: "bg-gray-100", multiplier: "1x" };
   };
 
   const getNextMilestone = () => {
@@ -98,7 +98,7 @@ export function StreakCounter({ currentStreak, className, showActions = false }:
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground">
-              {currentStreak === 0 ? "Comece sua sequência hoje!" : `${currentStreak} dias consecutivos`}
+              {currentStreak === 0 ? "Comece sua sequência hoje!" : `${currentStreak} dias consecutivos • ${streakLevel.multiplier} multiplicador`}
             </p>
           </div>
         </div>
