@@ -84,8 +84,7 @@
       "matchFound": "匹配成功!",
       "noPlayersFound": "竞技场中没有可用玩家，请重试",
       "tryAgain": "重试",
-      "cancel": "取消",
-      "arenaUsers": "竞技场用户"
+      "cancel": "取消"
     }
   },
   "quiz": {

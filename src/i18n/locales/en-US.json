@@ -85,8 +85,7 @@
       "matchFound": "MATCH!",
       "noPlayersFound": "No Players in Arena available, try again",
       "tryAgain": "Try Again",
-      "cancel": "Cancel",
-      "arenaUsers": "Arena Users"
+      "cancel": "Cancel"
     }
   },
   "quiz": {
