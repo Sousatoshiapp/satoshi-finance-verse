@@ -56,14 +56,14 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
             <TrendingUp className="w-5 h-5" />
             {t('profile.evolution.title')}
           </CardTitle>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1 sm:gap-2">
             {timeRangeButtons.map((button) => (
               <Button
                 key={button.key}
                 variant={timeRange === button.key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onTimeRangeChange(button.key)}
-                className="flex-1 md:flex-none min-w-0"
+                className="text-xs sm:text-sm px-3 py-1 h-8 flex-1 sm:flex-none min-w-16"
               >
                 {button.label}
               </Button>
@@ -72,13 +72,21 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-48 md:h-64">
-          <LineChart data={data}>
+        <ChartContainer config={chartConfig} className="h-40 sm:h-48 md:h-64">
+          <LineChart data={data} margin={{ top: 5, right: 15, left: 10, bottom: 5 }}>
             <XAxis 
               dataKey="date" 
-              tickFormatter={(value) => new Date(value).toLocaleDateString()}
+              tickFormatter={(value) => new Date(value).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+              className="text-xs"
+              axisLine={false}
+              tickLine={false}
             />
-            <YAxis />
+            <YAxis 
+              className="text-xs" 
+              axisLine={false}
+              tickLine={false}
+              width={30}
+            />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Line 
               type="monotone" 
@@ -87,7 +95,7 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
               strokeWidth={3}
               strokeDasharray="0"
               dot={{ fill: 'var(--color-xp)', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, strokeWidth: 2 }}
+              activeDot={{ r: 6, strokeWidth: 2, fill: 'var(--color-xp)' }}
               name={t('profile.evolution.xpProgress')}
             />
           </LineChart>

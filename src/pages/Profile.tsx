@@ -14,10 +14,7 @@ import { AchievementsCarousel } from "@/components/shared/profile/achievements-c
 import { StatsGrid } from "@/components/shared/profile/stats-grid";
 
 import { UserEvolutionChart } from "@/components/shared/profile/user-evolution-chart";
-import { GamificationUnifiedPanel } from "@/components/shared/profile/gamification-unified-panel";
-import { DailyMissionsCarousel } from "@/components/shared/profile/daily-missions-carousel";
 import { ActiveRewardsPanel } from "@/components/shared/profile/active-rewards-panel";
-import { AchievementsTimeline } from "@/components/shared/profile/achievements-timeline";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
