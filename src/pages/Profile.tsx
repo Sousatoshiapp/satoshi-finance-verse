@@ -14,6 +14,8 @@ import { AchievementsCarousel } from "@/components/shared/profile/achievements-c
 import { StatsGrid } from "@/components/shared/profile/stats-grid";
 
 import { UserEvolutionChart } from "@/components/shared/profile/user-evolution-chart";
+import { GamificationUnifiedPanel } from "@/components/shared/profile/gamification-unified-panel";
+import { DailyMissionsCarousel } from "@/components/shared/profile/daily-missions-carousel";
 import { ActiveRewardsPanel } from "@/components/shared/profile/active-rewards-panel";
 import { AchievementsTimeline } from "@/components/shared/profile/achievements-timeline";
 import { useNavigate } from "react-router-dom";
@@ -451,6 +453,16 @@ export default function Profile() {
           onTimeRangeChange={setTimeRange}
         />
 
+        {/* Gamification Unified Panel - Nova Seção */}
+        <GamificationUnifiedPanel 
+          userId={user.id}
+          userStats={{
+            level: user.level,
+            xp: user.xp,
+            streak: user.streak,
+            points: user.points
+          }}
+        />
 
         {/* Stats Grid */}
         <StatsGrid
@@ -482,6 +494,8 @@ export default function Profile() {
           </Card>
         </div>
 
+        {/* Daily Missions Carousel - Nova Seção */}
+        <DailyMissionsCarousel userId={user.id} />
 
         {/* Carousels Section */}
         <div className="space-y-6">
