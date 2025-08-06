@@ -373,7 +373,7 @@ export default function Profile() {
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
                 ← {t('navigation.dashboard')}
               </Button>
-              <h1 className="text-xl font-bold text-foreground">{t('profile.userProfile')}</h1>
+              <div></div>
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate('/settings')}>
               {t('navigation.settings')}

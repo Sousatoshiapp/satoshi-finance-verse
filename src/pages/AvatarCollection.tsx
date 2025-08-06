@@ -1,161 +1,211 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/shared/ui/card";
-import { Button } from "@/components/shared/ui/button";
-import { Badge } from "@/components/shared/ui/badge";
-import { Input } from "@/components/shared/ui/input";
-import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
-import { supabase } from "@/integrations/supabase/client";
-import { useAvatarContext } from "@/contexts/AvatarContext";
-import { useNavigate } from "react-router-dom";
-import { useI18n } from "@/hooks/use-i18n";
-import { useProfile } from "@/hooks/use-profile";
-import { ArrowLeft, Crown, Lock, Search, Filter } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/shared/ui/button';
+import { Input } from '@/components/shared/ui/input';
+import { Card, CardContent } from '@/components/shared/ui/card';
+import { ArrowLeft, Search, Filter } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useI18n } from '@/hooks/use-i18n';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
+import { useProfile } from '@/hooks/use-profile';
+import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
 
 interface Avatar {
   id: string;
   name: string;
   image_url: string;
-  description?: string;
   rarity: string;
   price: number;
-  level_required: number;
-  is_owned?: boolean;
-  is_active?: boolean;
-  category?: string;
+  owned: boolean;
+  active?: boolean;
 }
 
 type FilterType = 'all' | 'avatars' | 'skins' | 'boosts';
 
-export default function AvatarCollection() {
-  const [avatars, setAvatars] = useState<Avatar[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+export function AvatarCollection() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const { profile } = useProfile();
-  const { invalidateAvatarCaches } = useAvatarContext();
+  const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   useEffect(() => {
     loadAvatars();
-  }, [profile?.id]);
+  }, [profile]);
 
   const loadAvatars = async () => {
-    if (!profile?.id) return;
-    
     try {
-      const { data: availableAvatars, error } = await supabase
+      setLoading(true);
+      
+      // Load available avatars
+      const { data: avatarData, error: avatarError } = await supabase
         .from('avatars')
-        .select('*')
-        .order('rarity', { ascending: false });
+        .select('id, name, image_url, rarity, price')
+        .eq('is_available', true);
 
-      if (error) throw error;
-
-      const { data: userAvatars, error: userAvatarsError } = await supabase
-        .from('user_avatars')
-        .select('avatar_id')
-        .eq('user_id', profile.id);
-
-      if (userAvatarsError) {
-        console.error('Error loading user avatars:', userAvatarsError);
+      if (avatarError) {
+        console.error('Error loading avatars:', avatarError);
+        return;
       }
 
-      const ownedAvatarIds = userAvatars?.map(ua => ua.avatar_id) || [];
+      // Load user owned avatars
+      let userAvatars: any[] = [];
+      if (profile?.id) {
+        const { data: userAvatarData, error: userAvatarError } = await supabase
+          .from('user_avatars')
+          .select('avatar_id')
+          .eq('user_id', profile.id);
 
-      const avatarsWithOwnership = availableAvatars?.map(avatar => ({
+        if (!userAvatarError) {
+          userAvatars = userAvatarData || [];
+        }
+      }
+
+      // Combine data
+      const combinedData: Avatar[] = (avatarData || []).map(avatar => ({
         ...avatar,
-        is_owned: ownedAvatarIds.includes(avatar.id),
-        is_active: avatar.id === profile.avatar_id,
-        category: avatar.rarity === 'legendary' ? 'avatars' : 
-                 avatar.rarity === 'epic' ? 'skins' : 'boosts'
-      })) || [];
+        owned: userAvatars.some(ua => ua.avatar_id === avatar.id),
+        active: (profile as any)?.current_avatar_id === avatar.id
+      }));
 
-      setAvatars(avatarsWithOwnership);
+      setAvatars(combinedData);
     } catch (error) {
       console.error('Error loading avatars:', error);
+      toast.error(t('common.error'));
     } finally {
       setLoading(false);
     }
   };
 
   const selectAvatar = async (avatarId: string) => {
-    if (!profile?.id) return;
-    
+    if (!profile?.user_id) return;
+
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ 
-          current_avatar_id: avatarId,
-          profile_image_url: null
-        })
-        .eq('id', profile.id);
+        .update({ current_avatar_id: avatarId })
+        .eq('user_id', profile.user_id);
 
-      if (error) throw error;
-      
-      invalidateAvatarCaches();
-      loadAvatars();
+      if (error) {
+        console.error('Error updating avatar:', error);
+        toast.error(t('common.error'));
+        return;
+      }
+
+      setAvatars(prev => prev.map(avatar => ({
+        ...avatar,
+        active: avatar.id === avatarId
+      })));
+
+      toast.success(t('common.success'));
     } catch (error) {
-      console.error('Error selecting avatar:', error);
+      console.error('Error updating avatar:', error);
+      toast.error(t('common.error'));
     }
   };
 
   const getRarityColor = (rarity: string) => {
-    switch (rarity) {
-      case 'legendary': return 'bg-gradient-to-r from-yellow-400 to-yellow-600';
-      case 'epic': return 'bg-gradient-to-r from-purple-400 to-purple-600';
-      case 'rare': return 'bg-gradient-to-r from-blue-400 to-blue-600';
-      default: return 'bg-gradient-to-r from-gray-400 to-gray-600';
+    switch (rarity.toLowerCase()) {
+      case 'legendary':
+        return 'border-yellow-500 bg-yellow-500/10';
+      case 'epic':
+        return 'border-purple-500 bg-purple-500/10';
+      case 'rare':
+        return 'border-blue-500 bg-blue-500/10';
+      default:
+        return 'border-muted bg-muted/10';
     }
   };
 
   const filteredAvatars = avatars.filter(avatar => {
     const matchesSearch = avatar.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = activeFilter === 'all' || avatar.category === activeFilter;
+    const matchesFilter = activeFilter === 'all' || 
+      (activeFilter === 'avatars' && avatar.rarity) ||
+      (activeFilter === 'skins' && false) || // Placeholder logic
+      (activeFilter === 'boosts' && false); // Placeholder logic
+    
     return matchesSearch && matchesFilter;
   });
 
   const filterButtons = [
-    { key: 'all' as const, label: t('avatarCollection.filters.all'), count: avatars.length },
-    { key: 'avatars' as const, label: t('avatarCollection.filters.avatars'), count: avatars.filter(a => a.category === 'avatars').length },
-    { key: 'skins' as const, label: t('avatarCollection.filters.skins'), count: avatars.filter(a => a.category === 'skins').length },
-    { key: 'boosts' as const, label: t('avatarCollection.filters.boosts'), count: avatars.filter(a => a.category === 'boosts').length }
+    { key: 'all' as const, label: t('avatarCollection.filters.all') },
+    { key: 'avatars' as const, label: t('avatarCollection.filters.avatars') },
+    { key: 'skins' as const, label: t('avatarCollection.filters.skins') },
+    { key: 'boosts' as const, label: t('avatarCollection.filters.boosts') }
   ];
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/profile')}>
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <h1 className="text-2xl font-bold">{t('avatarCollection.title')}</h1>
+      <div className="min-h-screen bg-background">
+        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
+          <div className="flex items-center justify-between p-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/profile')}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {t('common.back')}
+            </Button>
+            
+            <h1 className="text-xl font-bold text-primary">
+              {t('avatarCollection.title')}
+            </h1>
+            
+            <div></div>
+          </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse"></div>
-          ))}
+        
+        <div className="p-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+            {[...Array(12)].map((_, i) => (
+              <Card key={i} className="aspect-square">
+                <CardContent className="p-4 h-full flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/profile')}>
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold">{t('avatarCollection.title')}</h1>
-          <p className="text-muted-foreground">{t('avatarCollection.subtitle')}</p>
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b">
+        <div className="flex items-center justify-between p-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/profile')}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('common.back')}
+          </Button>
+          
+          <h1 className="text-xl font-bold text-primary">
+            {t('avatarCollection.title')}
+          </h1>
+          
+          <div></div>
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <div className="space-y-4">
+      <div className="p-4 space-y-4">
+        {/* Subtitle */}
+        <p className="text-sm text-muted-foreground text-center">
+          {t('avatarCollection.subtitle')}
+        </p>
+
+        {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
             placeholder={t('avatarCollection.searchPlaceholder')}
             value={searchTerm}
@@ -164,107 +214,99 @@ export default function AvatarCollection() {
           />
         </div>
 
+        {/* Filters */}
         <div className="flex flex-wrap gap-2">
-          {filterButtons.map((filter) => (
+          {filterButtons.map((button) => (
             <Button
-              key={filter.key}
-              variant={activeFilter === filter.key ? 'default' : 'outline'}
+              key={button.key}
+              variant={activeFilter === button.key ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setActiveFilter(filter.key)}
-              className="flex items-center gap-2"
+              onClick={() => setActiveFilter(button.key)}
+              className="flex-1 sm:flex-none"
             >
-              <Filter className="w-3 h-3" />
-              {filter.label}
-              <Badge variant="secondary" className="ml-1">
-                {filter.count}
-              </Badge>
+              <Filter className="w-4 h-4 mr-2" />
+              {button.label}
             </Button>
           ))}
         </div>
+
+        {/* Avatar Grid */}
+        {filteredAvatars.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              {t('avatarCollection.noResults')}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {filteredAvatars.map((avatar) => (
+              <Card 
+                key={avatar.id} 
+                className={`relative overflow-hidden transition-all duration-200 hover:scale-105 ${
+                  avatar.active ? 'ring-2 ring-primary' : ''
+                } ${getRarityColor(avatar.rarity)}`}
+              >
+                <CardContent className="p-4 aspect-square">
+                  <div className="h-full flex flex-col">
+                    {/* Avatar Image */}
+                    <div className="flex-1 flex items-center justify-center mb-3">
+                      <AvatarDisplayUniversal
+                        avatarData={{
+                          profile_image_url: avatar.image_url,
+                          current_avatar_id: avatar.id,
+                          avatars: { name: avatar.name, image_url: avatar.image_url }
+                        }}
+                        nickname={avatar.name}
+                        className="w-16 h-16"
+                      />
+                    </div>
+                    
+                    {/* Avatar Info */}
+                    <div className="text-center space-y-2">
+                      <h3 className="font-medium text-sm line-clamp-1">
+                        {avatar.name}
+                      </h3>
+                      
+                      <div className="flex items-center justify-center gap-1">
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          avatar.rarity === 'legendary' ? 'bg-yellow-500/20 text-yellow-700' :
+                          avatar.rarity === 'epic' ? 'bg-purple-500/20 text-purple-700' :
+                          avatar.rarity === 'rare' ? 'bg-blue-500/20 text-blue-700' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {t(`common.rarity.${avatar.rarity.toLowerCase()}`)}
+                        </span>
+                      </div>
+
+                      {/* Action Button */}
+                      {avatar.owned ? (
+                        <Button
+                          size="sm"
+                          variant={avatar.active ? "default" : "outline"}
+                          onClick={() => !avatar.active && selectAvatar(avatar.id)}
+                          disabled={avatar.active}
+                          className="w-full text-xs h-8"
+                        >
+                          {avatar.active ? t('avatarCollection.active') : t('avatarCollection.use')}
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled
+                          className="w-full text-xs h-8"
+                        >
+                          {t('avatarCollection.locked')}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Avatar Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        {filteredAvatars.map((avatar) => (
-          <Card 
-            key={avatar.id} 
-            className={`cursor-pointer transition-all hover:scale-105 ${
-              avatar.is_active ? 'border-primary bg-primary/5 ring-2 ring-primary' : 
-              avatar.is_owned ? 'border-green-500/50 bg-green-500/5' : 
-              'opacity-60'
-            }`}
-          >
-            <CardContent className="p-3">
-              <div className="space-y-3">
-                {/* Avatar Image */}
-                <div className="relative aspect-square">
-                  <AvatarDisplayUniversal
-                    avatarName={avatar.name}
-                    avatarUrl={avatar.image_url}
-                    nickname={avatar.name}
-                    size="lg"
-                  />
-                  
-                  {/* Status Icons */}
-                  {avatar.is_active && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                      <Crown className="w-3 h-3 text-primary-foreground" />
-                    </div>
-                  )}
-                  
-                  {!avatar.is_owned && (
-                    <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                      <Lock className="w-6 h-6 text-white" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Avatar Info */}
-                <div className="space-y-2">
-                  <h3 className="font-medium text-sm truncate">{avatar.name}</h3>
-                  
-                  <Badge 
-                    variant="secondary" 
-                    className={`text-xs text-white ${getRarityColor(avatar.rarity)}`}
-                  >
-                    {t(`common.rarity.${avatar.rarity}`)}
-                  </Badge>
-
-                  {/* Action Button */}
-                  {avatar.is_owned && !avatar.is_active && (
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => selectAvatar(avatar.id)}
-                      className="w-full text-xs"
-                    >
-                      {t('avatarCollection.use')}
-                    </Button>
-                  )}
-
-                  {avatar.is_active && (
-                    <div className="text-xs text-center text-primary font-medium">
-                      {t('avatarCollection.active')}
-                    </div>
-                  )}
-
-                  {!avatar.is_owned && (
-                    <div className="text-xs text-center text-muted-foreground">
-                      {avatar.price > 0 ? `${avatar.price} BTZ` : t('avatarCollection.locked')}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {filteredAvatars.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">{t('avatarCollection.noResults')}</p>
-        </div>
-      )}
     </div>
   );
 }

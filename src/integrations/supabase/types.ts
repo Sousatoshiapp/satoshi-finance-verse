@@ -7107,6 +7107,17 @@ export type Database = {
           is_bot: boolean
         }[]
       }
+      get_user_evolution_data: {
+        Args: { user_id_param: string; start_date: string; end_date: string }
+        Returns: {
+          date: string
+          xp: number
+          level: number
+          btz: number
+          streak: number
+          quizzes_completed: number
+        }[]
+      }
       get_user_profile_id: {
         Args: Record<PropertyKey, never>
         Returns: string
