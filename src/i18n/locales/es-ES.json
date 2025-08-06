@@ -1071,5 +1071,61 @@
     "pending": "Verificación en progreso...",
     "approved": "Identidad verificada",
     "rejected": "Verificación rechazada"
+  },
+  "profile": {
+    "header": {
+      "profile": "Perfil"
+    },
+    "userProfile": "Perfil de Usuario",
+    "achievements": "Logros",
+    "statistics": "Estadísticas",
+    "followersCount": "Seguidores",
+    "followingCount": "Siguiendo",
+    "postsCount": "Publicaciones",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir",
+    "message": "Mensaje",
+    "anonymousUser": "Usuario Anónimo",
+    "evolution": {
+      "title": "Evolución del Usuario",
+      "7days": "7 días",
+      "30days": "30 días",
+      "90days": "90 días",
+      "1year": "1 año",
+      "xpProgress": "Progreso XP",
+      "btzEarned": "BTZ Ganados",
+      "streakHistory": "Historial de Rachas",
+      "quizzesCompleted": "Quizzes Completados"
+    },
+    "gamification": {
+      "title": "Sistema de Gamificación",
+      "currentLevel": "Nivel Actual",
+      "nextLevel": "Próximo Nivel",
+      "activeStreak": "Racha Activa",
+      "todaysBtz": "BTZ de Hoy",
+      "availableRewards": "Recompensas Disponibles",
+      "dailyMissions": "Misiones Diarias",
+      "activeRewards": "Recompensas Activas",
+      "recentAchievements": "Logros Recientes",
+      "multiplier": "Multiplicador",
+      "rewards": "Recompensas"
+    },
+    "rewards": {
+      "btzMultiplier": "Multiplicador BTZ",
+      "xpBoost": "Impulso XP",
+      "streakProtection": "Protección de Racha",
+      "dailyBonus": "Bono Diario",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "timeRemaining": "Tiempo Restante"
+    },
+    "stats": {
+      "xp": "XP",
+      "level": "Nivel",
+      "streak": "Racha",
+      "lessons": "Lecciones",
+      "of": "de",
+      "lessonsCompleted": "lecciones completadas"
+    }
   }
 }
