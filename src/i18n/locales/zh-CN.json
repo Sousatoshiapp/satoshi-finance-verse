@@ -771,7 +771,22 @@
     "comboCompleted": "连击完成！+500经验值+1000 Beetz+稀有战利品箱！",
     "special": "特殊",
     "noMissionsAvailable": "目前没有可用任务",
-    "newMissionsSoon": "新任务即将出现！"
+    "newMissionsSoon": "新任务即将出现！",
+    "adaptiveMissions": "自适应任务",
+    "personalizedFor": "为您个性化定制",
+    "focusArea": "重点领域",
+    "weaknessImprovement": "弱点改进",
+    "difficultyAdjusted": "难度已调整",
+    "streakBonus": "连击奖励",
+    "adaptiveRewards": "自适应奖励",
+    "intelligentNavigation": "智能导航",
+    "contextualHints": "上下文提示",
+    "performanceAnalytics": "性能分析",
+    "missionInsights": "任务洞察",
+    "optimalTiming": "最佳时机",
+    "categoryPreferences": "类别偏好",
+    "completionPatterns": "完成模式",
+    "suggestedFocusAreas": "建议重点领域"
   },
   "tournaments": {
     "tournaments": "锦标赛",

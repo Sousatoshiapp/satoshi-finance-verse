@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
 
-interface DailyMission {
+export interface DailyMission {
   id: string;
   title: string;
   description: string;
@@ -17,9 +17,41 @@ interface DailyMission {
   progress?: number;
   completed?: boolean;
   completed_at?: string;
+  expires_at?: string;
 }
 
-interface MissionProgress {
+export interface AdaptiveMission extends DailyMission {
+  personalizedFor: string;
+  difficultyAdjusted: boolean;
+  basedOnWeakness: boolean;
+  contextualHints: string[];
+  adaptiveRewards: {
+    baseReward: number;
+    bonusMultiplier: number;
+    streakBonus: number;
+  };
+}
+
+export interface UserProfile {
+  level: number;
+  weakAreas: string[];
+  preferredCategories: string[];
+  averageSessionTime: number;
+  lastActiveDistricts: string[];
+  currentStreak: number;
+  xp: number;
+  points: number;
+  completedLessons: number;
+}
+
+export interface UserPerformance {
+  completionRate: number;
+  averageTime: number;
+  streakLength: number;
+  recentScores: number[];
+}
+
+export interface MissionProgress {
   mission_id: string;
   progress: number;
   completed: boolean;
@@ -28,6 +60,8 @@ interface MissionProgress {
 
 export function useDailyMissions() {
   const [missions, setMissions] = useState<DailyMission[]>([]);
+  const [adaptiveMissions, setAdaptiveMissions] = useState<AdaptiveMission[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [completedToday, setCompletedToday] = useState(0);
   const { toast } = useToast();
@@ -39,6 +73,128 @@ export function useDailyMissions() {
     return () => clearInterval(interval);
   }, []);
 
+  const getUserAnalytics = async (profileId: string) => {
+    try {
+      const { data: quizSessions } = await supabase
+        .from('quiz_sessions')
+        .select('*')
+        .eq('user_id', profileId)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      const weakAreas: string[] = [];
+      const categoryPerformance: Record<string, { correct: number; total: number }> = {};
+      
+      quizSessions?.forEach(session => {
+        if (session.questions_data) {
+          const questions = Array.isArray(session.questions_data) ? session.questions_data : [];
+          questions.forEach((q: any) => {
+            if (q.category) {
+              if (!categoryPerformance[q.category]) {
+                categoryPerformance[q.category] = { correct: 0, total: 0 };
+              }
+              categoryPerformance[q.category].total++;
+              if (q.correct) {
+                categoryPerformance[q.category].correct++;
+              }
+            }
+          });
+        }
+      });
+
+      Object.entries(categoryPerformance).forEach(([category, perf]) => {
+        const accuracy = perf.total > 0 ? (perf.correct / perf.total) * 100 : 0;
+        if (accuracy < 60 && perf.total >= 3) {
+          weakAreas.push(category);
+        }
+      });
+
+      const avgSessionTime = quizSessions?.length > 0 
+        ? quizSessions.reduce((sum, s) => sum + (s.time_spent || 0), 0) / quizSessions.length / 60
+        : 15;
+
+      return {
+        weakAreas,
+        preferredCategories: Object.keys(categoryPerformance).slice(0, 3),
+        averageSessionTime: Math.round(avgSessionTime),
+        lastActiveDistricts: []
+      };
+    } catch (error) {
+      console.error('Error getting user analytics:', error);
+      return {
+        weakAreas: [],
+        preferredCategories: ['quiz'],
+        averageSessionTime: 15,
+        lastActiveDistricts: []
+      };
+    }
+  };
+
+  const generatePersonalizedMissions = async (profileId: string, userProfile: UserProfile) => {
+    try {
+      const { error } = await supabase.rpc('generate_daily_missions');
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error generating missions:', error);
+    }
+  };
+
+  const createAdaptiveMission = (mission: DailyMission, userProfile: UserProfile): AdaptiveMission => {
+    const isBasedOnWeakness = userProfile.weakAreas.includes(mission.category);
+    const difficultyAdjusted = shouldAdjustDifficulty(mission, userProfile);
+    
+    const adaptiveRewards = calculateAdaptiveRewards(mission, userProfile, isBasedOnWeakness);
+    
+    return {
+      ...mission,
+      personalizedFor: userProfile.level.toString(),
+      difficultyAdjusted,
+      basedOnWeakness: isBasedOnWeakness,
+      contextualHints: isBasedOnWeakness ? [mission.category] : [],
+      adaptiveRewards
+    };
+  };
+
+  const shouldAdjustDifficulty = (mission: DailyMission, userProfile: UserProfile): boolean => {
+    if (userProfile.level > 10 && mission.difficulty === 'easy') return true;
+    if (userProfile.level < 5 && mission.difficulty === 'hard') return true;
+    return false;
+  };
+
+  const calculateAdaptiveRewards = (mission: DailyMission, userProfile: UserProfile, basedOnWeakness: boolean) => {
+    let baseXP = mission.xp_reward;
+    let baseBTZ = mission.beetz_reward;
+    
+    if (basedOnWeakness) {
+      baseXP *= 1.5;
+      baseBTZ *= 1.3;
+    }
+    
+    const streakMultiplier = Math.min(1 + (userProfile.currentStreak * 0.1), 2.0);
+    
+    return {
+      baseReward: baseXP,
+      bonusMultiplier: basedOnWeakness ? 1.5 : 1.0,
+      streakBonus: streakMultiplier
+    };
+  };
+
+  const adjustDifficulty = async (performance: UserPerformance) => {
+    if (!userProfile) return;
+    
+    let difficultyModifier = 0;
+    
+    if (performance.completionRate > 0.8 && performance.streakLength > 7) {
+      difficultyModifier = 1;
+    }
+    
+    if (performance.completionRate < 0.4 || performance.streakLength < 3) {
+      difficultyModifier = -1;
+    }
+    
+    console.log('Difficulty adjustment:', difficultyModifier);
+  };
+
   const loadDailyMissions = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -49,7 +205,10 @@ export function useDailyMissions() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id')
+        .select(`
+          id, level, xp, points, streak, completed_lessons,
+          consecutive_login_days, financial_goal
+        `)
         .eq('user_id', user.id)
         .single();
 
@@ -57,6 +216,20 @@ export function useDailyMissions() {
         console.log('No profile found for daily missions');
         return;
       }
+
+      const userAnalytics = await getUserAnalytics(profile.id);
+      const userProfileData: UserProfile = {
+        level: profile.level || 1,
+        weakAreas: userAnalytics.weakAreas || [],
+        preferredCategories: userAnalytics.preferredCategories || ['quiz'],
+        averageSessionTime: userAnalytics.averageSessionTime || 15,
+        lastActiveDistricts: userAnalytics.lastActiveDistricts || [],
+        currentStreak: profile.streak || 0,
+        xp: profile.xp || 0,
+        points: profile.points || 0,
+        completedLessons: profile.completed_lessons || 0
+      };
+      setUserProfile(userProfileData);
 
       // First, check if missions already exist for today
       const today = new Date().toISOString().split('T')[0];
@@ -67,14 +240,9 @@ export function useDailyMissions() {
         .gte('expires_at', new Date().toISOString())
         .limit(1);
 
-      // Only generate missions if none exist for today
       if (!existingMissions || existingMissions.length === 0) {
-        console.log('Generating daily missions for profile:', profile.id);
-        const { error: generateError } = await supabase.rpc('generate_daily_missions');
-        if (generateError) {
-          console.error('Error generating daily missions:', generateError);
-          throw generateError;
-        }
+        console.log('Generating personalized missions for profile:', profile.id);
+        await generatePersonalizedMissions(profile.id, userProfileData);
       }
 
       // Get missions with user progress
@@ -96,7 +264,7 @@ export function useDailyMissions() {
 
       if (progressError) throw progressError;
 
-      // Combine missions with progress
+      // Combine missions with progress and create adaptive missions
       const missionsWithProgress = missionsData?.map(mission => {
         const progress = progressData?.find(p => p.mission_id === mission.id);
         return {
@@ -107,7 +275,12 @@ export function useDailyMissions() {
         };
       }) || [];
 
+      const adaptiveMissionsData = missionsWithProgress.map(mission => 
+        createAdaptiveMission(mission, userProfileData)
+      );
+
       setMissions(missionsWithProgress);
+      setAdaptiveMissions(adaptiveMissionsData);
       setCompletedToday(missionsWithProgress.filter(m => m.completed).length);
     } catch (error) {
       console.error('Error loading daily missions:', error);
@@ -231,6 +404,8 @@ export function useDailyMissions() {
 
   return {
     missions,
+    adaptiveMissions,
+    userProfile,
     loading,
     completedToday,
     completionRate: getCompletionRate(),
@@ -242,6 +417,8 @@ export function useDailyMissions() {
     completeQuizMission,
     markDailyLogin,
     completeDuelMission,
-    completeSocialMission
+    completeSocialMission,
+    adjustDifficulty,
+    generatePersonalizedMissions: () => userProfile ? generatePersonalizedMissions(userProfile.level.toString(), userProfile) : Promise.resolve()
   };
 }

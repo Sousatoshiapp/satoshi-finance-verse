@@ -584,6 +584,33 @@
       "arriving": "الوصول إلى {{location}}"
     }
   },
+  "missions": {
+    "dailyMissions": "المهام اليومية",
+    "completed": "مكتملة",
+    "inProgress": "قيد التنفيذ",
+    "reward": "مكافأة",
+    "claim": "استلام",
+    "dailyProgress": "التقدم اليومي",
+    "comboCompleted": "تم إكمال الكومبو! +500 نقطة خبرة + 1000 بيتز + صندوق غنائم نادر!",
+    "special": "خاص",
+    "noMissionsAvailable": "لا توجد مهام متاحة في الوقت الحالي",
+    "newMissionsSoon": "ستظهر مهام جديدة قريباً!",
+    "adaptiveMissions": "المهام التكيفية",
+    "personalizedFor": "مخصص لك",
+    "focusArea": "منطقة التركيز",
+    "weaknessImprovement": "تحسين نقاط الضعف",
+    "difficultyAdjusted": "تم تعديل الصعوبة",
+    "streakBonus": "مكافأة السلسلة",
+    "adaptiveRewards": "المكافآت التكيفية",
+    "intelligentNavigation": "التنقل الذكي",
+    "contextualHints": "تلميحات سياقية",
+    "performanceAnalytics": "تحليلات الأداء",
+    "missionInsights": "رؤى المهام",
+    "optimalTiming": "التوقيت الأمثل",
+    "categoryPreferences": "تفضيلات الفئة",
+    "completionPatterns": "أنماط الإكمال",
+    "suggestedFocusAreas": "مناطق التركيز المقترحة"
+  },
   "social": {
     "tabs": {
       "feed": "الخلاصة",
