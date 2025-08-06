@@ -1193,5 +1193,45 @@
       "of": "का",
       "lessonsCompleted": "पाठ पूर्ण"
     }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "BTZ मिला!",
+      "xpGained": "XP मिला!",
+      "streakMilestone": "स्ट्रीक मील का पत्थर!",
+      "levelUp": "लेवल अप!",
+      "achievement": "उपलब्धि अनलॉक!",
+      "perfectQuiz": "परफेक्ट क्विज़!",
+      "multiplierActive": "गुणक सक्रिय",
+      "timeBonus": "समय बोनस"
+    },
+    "celebrations": {
+      "streak7": "7 दिन की स्ट्रीक!",
+      "streak14": "2 सप्ताह की स्ट्रीक!",
+      "streak30": "1 महीने की समर्पणा!",
+      "firstAchievement": "पहली उपलब्धि!",
+      "levelMilestone": "स्तर {{level}} पहुंचा!",
+      "perfectScore": "परफेक्ट स्कोर!",
+      "rankingUp": "रैंकिंग में वृद्धि!"
+    },
+    "notifications": {
+      "streakProtected": "स्ट्रीक सुरक्षित!",
+      "powerUpActivated": "पावर-अप सक्रिय!",
+      "missionComplete": "मिशन पूरा!",
+      "dailyGoalReached": "दैनिक लक्ष्य पहुंचा!",
+      "weeklyRankingUp": "रैंकिंग स्थिति: {{position}}",
+      "multiplierExpiring": "गुणक {{time}} में समाप्त",
+      "achievementUnlocked": "उपलब्धि अनलॉक!",
+      "nextMilestone": "अगला मील का पत्थर: {{milestone}} दिन"
+    },
+    "settings": {
+      "title": "फीडबैक सेटिंग्स",
+      "animations": "एनिमेशन",
+      "sound": "ध्वनि",
+      "haptics": "स्पर्श प्रतिक्रिया",
+      "celebrations": "उत्सव",
+      "particleQuality": "इफेक्ट्स गुणवत्ता",
+      "reducedMotion": "कम गति"
+    }
   }
 }

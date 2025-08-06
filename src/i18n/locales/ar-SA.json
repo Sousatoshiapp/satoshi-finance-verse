@@ -1015,5 +1015,45 @@
       "of": "من",
       "lessonsCompleted": "الدروس المكتملة"
     }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "تم كسب BTZ!",
+      "xpGained": "تم كسب XP!",
+      "streakMilestone": "معلم السلسلة!",
+      "levelUp": "ارتقاء المستوى!",
+      "achievement": "تم فتح الإنجاز!",
+      "perfectQuiz": "اختبار مثالي!",
+      "multiplierActive": "المضاعف نشط",
+      "timeBonus": "مكافأة الوقت"
+    },
+    "celebrations": {
+      "streak7": "سلسلة 7 أيام!",
+      "streak14": "سلسلة أسبوعين!",
+      "streak30": "شهر من التفاني!",
+      "firstAchievement": "الإنجاز الأول!",
+      "levelMilestone": "تم الوصول للمستوى {{level}}!",
+      "perfectScore": "نتيجة مثالية!",
+      "rankingUp": "الصعود في الترتيب!"
+    },
+    "notifications": {
+      "streakProtected": "السلسلة محمية!",
+      "powerUpActivated": "تم تفعيل القوة!",
+      "missionComplete": "اكتملت المهمة!",
+      "dailyGoalReached": "تم الوصول للهدف اليومي!",
+      "weeklyRankingUp": "موقع الترتيب: {{position}}",
+      "multiplierExpiring": "المضاعف ينتهي في {{time}}",
+      "achievementUnlocked": "تم فتح الإنجاز!",
+      "nextMilestone": "المعلم التالي: {{milestone}} أيام"
+    },
+    "settings": {
+      "title": "إعدادات التغذية الراجعة",
+      "animations": "الرسوم المتحركة",
+      "sound": "الصوت",
+      "haptics": "اللمس",
+      "celebrations": "الاحتفالات",
+      "particleQuality": "جودة التأثيرات",
+      "reducedMotion": "حركة مقللة"
+    }
   }
 }

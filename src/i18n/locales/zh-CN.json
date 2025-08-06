@@ -1249,5 +1249,45 @@
       "of": "的",
       "lessonsCompleted": "课程完成"
     }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "获得BTZ！",
+      "xpGained": "获得经验值！",
+      "streakMilestone": "连击里程碑！",
+      "levelUp": "升级！",
+      "achievement": "成就解锁！",
+      "perfectQuiz": "完美测验！",
+      "multiplierActive": "倍数激活",
+      "timeBonus": "时间奖励"
+    },
+    "celebrations": {
+      "streak7": "7天连击！",
+      "streak14": "2周连击！",
+      "streak30": "1个月坚持！",
+      "firstAchievement": "首个成就！",
+      "levelMilestone": "达到{{level}}级！",
+      "perfectScore": "完美分数！",
+      "rankingUp": "排名上升！"
+    },
+    "notifications": {
+      "streakProtected": "连击受保护！",
+      "powerUpActivated": "道具激活！",
+      "missionComplete": "任务完成！",
+      "dailyGoalReached": "每日目标达成！",
+      "weeklyRankingUp": "排名位置：{{position}}",
+      "multiplierExpiring": "倍数将在{{time}}后过期",
+      "achievementUnlocked": "成就解锁！",
+      "nextMilestone": "下个里程碑：{{milestone}}天"
+    },
+    "settings": {
+      "title": "反馈设置",
+      "animations": "动画",
+      "sound": "声音",
+      "haptics": "触觉反馈",
+      "celebrations": "庆祝效果",
+      "particleQuality": "特效质量",
+      "reducedMotion": "减少动画"
+    }
   }
 }

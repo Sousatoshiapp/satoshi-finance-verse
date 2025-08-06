@@ -1239,5 +1239,45 @@
       "of": "of",
       "lessonsCompleted": "lessons completed"
     }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "BTZ Earned!",
+      "xpGained": "XP Gained!",
+      "streakMilestone": "Streak Milestone!",
+      "levelUp": "Level Up!",
+      "achievement": "Achievement Unlocked!",
+      "perfectQuiz": "Perfect Quiz!",
+      "multiplierActive": "Multiplier Active",
+      "timeBonus": "Time Bonus"
+    },
+    "celebrations": {
+      "streak7": "7 Days Streak!",
+      "streak14": "2 Weeks Streak!",
+      "streak30": "1 Month Dedication!",
+      "firstAchievement": "First Achievement!",
+      "levelMilestone": "Level {{level}} Reached!",
+      "perfectScore": "Perfect Score!",
+      "rankingUp": "Ranking Up!"
+    },
+    "notifications": {
+      "streakProtected": "Streak Protected!",
+      "powerUpActivated": "Power-up Activated!",
+      "missionComplete": "Mission Complete!",
+      "dailyGoalReached": "Daily Goal Reached!",
+      "weeklyRankingUp": "Ranking Position: {{position}}",
+      "multiplierExpiring": "Multiplier expires in {{time}}",
+      "achievementUnlocked": "Achievement Unlocked!",
+      "nextMilestone": "Next milestone: {{milestone}} days"
+    },
+    "settings": {
+      "title": "Feedback Settings",
+      "animations": "Animations",
+      "sound": "Sound",
+      "haptics": "Haptics",
+      "celebrations": "Celebrations",
+      "particleQuality": "Effects Quality",
+      "reducedMotion": "Reduced Motion"
+    }
   }
 }

@@ -1142,5 +1142,45 @@
       "of": "de",
       "lessonsCompleted": "lecciones completadas"
     }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "¡BTZ Ganados!",
+      "xpGained": "¡XP Ganado!",
+      "streakMilestone": "¡Hito de Racha!",
+      "levelUp": "¡Subiste de Nivel!",
+      "achievement": "¡Logro Desbloqueado!",
+      "perfectQuiz": "¡Quiz Perfecto!",
+      "multiplierActive": "Multiplicador Activo",
+      "timeBonus": "Bono de Tiempo"
+    },
+    "celebrations": {
+      "streak7": "¡7 Días de Racha!",
+      "streak14": "¡2 Semanas de Racha!",
+      "streak30": "¡1 Mes de Dedicación!",
+      "firstAchievement": "¡Primer Logro!",
+      "levelMilestone": "¡Nivel {{level}} Alcanzado!",
+      "perfectScore": "¡Puntuación Perfecta!",
+      "rankingUp": "¡Subiendo en el Ranking!"
+    },
+    "notifications": {
+      "streakProtected": "¡Racha Protegida!",
+      "powerUpActivated": "¡Power-up Activado!",
+      "missionComplete": "¡Misión Completada!",
+      "dailyGoalReached": "¡Meta Diaria Alcanzada!",
+      "weeklyRankingUp": "Posición en Ranking: {{position}}",
+      "multiplierExpiring": "Multiplicador expira en {{time}}",
+      "achievementUnlocked": "¡Logro Desbloqueado!",
+      "nextMilestone": "Próximo hito: {{milestone}} días"
+    },
+    "settings": {
+      "title": "Configuraciones de Feedback",
+      "animations": "Animaciones",
+      "sound": "Sonido",
+      "haptics": "Vibración",
+      "celebrations": "Celebraciones",
+      "particleQuality": "Calidad de Efectos",
+      "reducedMotion": "Movimiento Reducido"
+    }
   }
 }

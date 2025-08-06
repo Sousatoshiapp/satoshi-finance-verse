@@ -58,6 +58,7 @@
     "publishing": "Publicando...",
     "searchUsers": "Buscar usuários...",
     "comingSoon": "Em breve",
+    "viewFeatures": "Ver Recursos",
     "beFirstToPost": "Seja o primeiro a postar!",
     "removed": "Removido",
     "added": "Adicionado",
@@ -1177,6 +1178,46 @@
       "lessons": "Lições",
       "of": "de",
       "lessonsCompleted": "lições completadas"
+    }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "BTZ Ganhos!",
+      "xpGained": "XP Ganho!",
+      "streakMilestone": "Marco de Streak!",
+      "levelUp": "Subiu de Nível!",
+      "achievement": "Conquista Desbloqueada!",
+      "perfectQuiz": "Quiz Perfeito!",
+      "multiplierActive": "Multiplicador Ativo",
+      "timeBonus": "Bônus de Tempo"
+    },
+    "celebrations": {
+      "streak7": "7 Dias Consecutivos!",
+      "streak14": "2 Semanas de Streak!",
+      "streak30": "1 Mês de Dedicação!",
+      "firstAchievement": "Primeira Conquista!",
+      "levelMilestone": "Nível {{level}} Alcançado!",
+      "perfectScore": "Pontuação Perfeita!",
+      "rankingUp": "Subindo no Ranking!"
+    },
+    "notifications": {
+      "streakProtected": "Streak Protegido!",
+      "powerUpActivated": "Power-up Ativado!",
+      "missionComplete": "Missão Completada!",
+      "dailyGoalReached": "Meta Diária Alcançada!",
+      "weeklyRankingUp": "Posição no Ranking: {{position}}",
+      "multiplierExpiring": "Multiplicador expira em {{time}}",
+      "achievementUnlocked": "Conquista Desbloqueada!",
+      "nextMilestone": "Próximo marco: {{milestone}} dias"
+    },
+    "settings": {
+      "title": "Configurações de Feedback",
+      "animations": "Animações",
+      "sound": "Som",
+      "haptics": "Vibração",
+      "celebrations": "Celebrações",
+      "particleQuality": "Qualidade dos Efeitos",
+      "reducedMotion": "Movimento Reduzido"
     }
   }
 }
