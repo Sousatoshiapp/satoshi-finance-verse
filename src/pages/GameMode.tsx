@@ -102,14 +102,18 @@ export default function GameMode() {
 
               {/* Torneio */}
               <Button
-                onClick={() => handleModeSelect('torneio')}
-                variant={selectedMode === 'torneio' ? 'default' : 'outline'}
-                className="w-full py-4 text-base font-medium"
-                disabled={selectedMode !== null}
+                variant="outline"
+                className="w-full py-4 text-base font-medium opacity-60 cursor-not-allowed"
+                disabled={true}
               >
-                <div className="flex items-center justify-center gap-3">
-                  <Trophy className="h-5 w-5" />
-                  {t('gameMode.tournament')}
+                <div className="flex flex-col items-center justify-center gap-1">
+                  <div className="flex items-center gap-3">
+                    <Trophy className="h-5 w-5 opacity-50" />
+                    {t('gameMode.tournament')}
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {t('common.comingSoon')}
+                  </span>
                 </div>
               </Button>
             </div>
