@@ -22,7 +22,11 @@ export default function Settings() {
     dailyReminder: true,
     soundEffects: true,
     darkMode: true,
-    language: 'pt-BR'
+    language: 'pt-BR',
+    animationsEnabled: true,
+    celebrationsEnabled: true,
+    hapticsEnabled: true,
+    particleQuality: 'medium' as 'low' | 'medium' | 'high'
   });
   
   const [userInfo, setUserInfo] = useState({
@@ -359,6 +363,61 @@ export default function Settings() {
                 checked={settings.darkMode}
                 onCheckedChange={(checked) => setSettings({...settings, darkMode: checked})}
               />
+            </div>
+          </div>
+        </Card>
+
+        {/* Feedback Visual */}
+        <Card className="p-6">
+          <h3 className="font-bold text-foreground mb-6">{t('feedback.settings.title')}</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.animations')}</h4>
+                <p className="text-sm text-muted-foreground">Animações de recompensas e conquistas</p>
+              </div>
+              <Switch
+                checked={settings.animationsEnabled}
+                onCheckedChange={(checked) => setSettings({...settings, animationsEnabled: checked})}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.celebrations')}</h4>
+                <p className="text-sm text-muted-foreground">Celebrações visuais para marcos importantes</p>
+              </div>
+              <Switch
+                checked={settings.celebrationsEnabled}
+                onCheckedChange={(checked) => setSettings({...settings, celebrationsEnabled: checked})}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.haptics')}</h4>
+                <p className="text-sm text-muted-foreground">Vibração para feedback tátil</p>
+              </div>
+              <Switch
+                checked={settings.hapticsEnabled}
+                onCheckedChange={(checked) => setSettings({...settings, hapticsEnabled: checked})}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.particleQuality')}</h4>
+                <p className="text-sm text-muted-foreground">Qualidade dos efeitos visuais</p>
+              </div>
+              <select 
+                value={settings.particleQuality} 
+                onChange={(e) => setSettings({...settings, particleQuality: e.target.value as 'low' | 'medium' | 'high'})}
+                className="px-3 py-2 border rounded-md bg-background text-foreground"
+              >
+                <option value="low">Baixa</option>
+                <option value="medium">Média</option>
+                <option value="high">Alta</option>
+              </select>
             </div>
           </div>
         </Card>

@@ -5,6 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useAdvancedQuizAudio } from "./use-advanced-quiz-audio";
 import { useBTZAnalytics } from "./use-btz-analytics";
 import { useUnifiedRewards } from "./use-unified-rewards";
+import { useRewardAnimationSystem } from "./use-reward-animation-system";
+import { useSmartNotifications } from "./use-smart-notifications";
 import confetti from 'canvas-confetti';
 
 const MAX_BTZ_PER_HOUR = 10;
@@ -29,6 +31,18 @@ export function useQuizGamification() {
   const { playCorrectSound, playWrongSound, playStreakSound, playCashRegisterSound } = useAdvancedQuizAudio();
   const { checkDailyLimit, logBTZTransaction } = useBTZAnalytics();
   const unifiedRewards = useUnifiedRewards();
+  const { 
+    showBTZGain, 
+    showXPGain, 
+    showStreakMilestone, 
+    showCorrectAnswer,
+    showLevelUp,
+    showPerfectQuiz 
+  } = useRewardAnimationSystem();
+  const { 
+    showStreakNotification, 
+    showLevelUpNotification 
+  } = useSmartNotifications();
   
   const [animationState, setAnimationState] = useState({
     showBeetzAnimation: false,
@@ -66,9 +80,15 @@ export function useQuizGamification() {
     const baseBTZ = 0.1;
     const earnedBTZ = baseBTZ * unifiedRewards.currentMultiplier;
     
+    showCorrectAnswer({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    
     await unifiedRewards.earnBTZ(earnedBTZ, 'quiz');
     await unifiedRewards.awardXP(10, 'quiz_correct');
-    await unifiedRewards.updateStreak(true);
+    const streakResult = await unifiedRewards.updateStreak(true);
+    
+    showBTZGain(earnedBTZ, { x: window.innerWidth / 2, y: window.innerHeight / 2 }, unifiedRewards.currentMultiplier);
+    
+    showXPGain(10, false);
     
     setAnimationState(prev => ({
       ...prev,
@@ -76,7 +96,12 @@ export function useQuizGamification() {
       showStreakAnimation: unifiedRewards.currentStreak > 0
     }));
 
-    if (unifiedRewards.currentStreak >= 7) {
+    const currentStreak = unifiedRewards.currentStreak;
+    if (currentStreak % 7 === 0 && currentStreak > 0) {
+      const newMultiplier = Math.min(1 + Math.floor(currentStreak / 7) * 0.5, 5);
+      showStreakMilestone(currentStreak, newMultiplier);
+      showStreakNotification(currentStreak, currentStreak + 7);
+      
       confetti({
         particleCount: 100,
         spread: 70,
@@ -84,7 +109,7 @@ export function useQuizGamification() {
         colors: ['#FFD700', '#FFA500', '#FF6B6B']
       });
     }
-  }, [unifiedRewards, user, checkDailyLimit, toast]);
+  }, [unifiedRewards, user, checkDailyLimit, toast, showBTZGain, showXPGain, showStreakMilestone, showCorrectAnswer, showStreakNotification]);
 
   const handleWrongAnswer = useCallback(async (question?: string, correctAnswer?: string, explanation?: string) => {
     console.log('❌ handleWrongAnswer chamado - UNIFIED REWARDS');
