@@ -24,14 +24,14 @@ export function BTZAchievements() {
   if (!analytics) return null;
 
   const achievements: Achievement[] = [
-    // Yield Achievements
+    // Yield Achievements - REBALANCEADO (redução de 90-99%)
     {
       id: 'first_yield',
       name: 'Primeiro Rendimento',
       description: 'Ganhe seu primeiro BTZ de rendimento diário',
       icon: <TrendingUp className="w-5 h-5 text-[#adff2f]" />,
       requirement: 1,
-      reward: '50 BTZ Bonus',
+      reward: '0.1 BTZ Bonus',
       category: 'yield',
       rarity: 'common',
       unlocked: analytics.historical.total_yield_earned >= 1,
@@ -39,43 +39,43 @@ export function BTZAchievements() {
       maxProgress: 1
     },
     {
-      id: 'yield_1k',
+      id: 'yield_100',
       name: 'Investidor Iniciante',
-      description: 'Acumule 1.000 BTZ em rendimentos',
+      description: 'Acumule 100 BTZ em rendimentos',
       icon: <Trophy className="w-5 h-5 text-yellow-500" />,
-      requirement: 1000,
-      reward: '200 BTZ Bonus',
+      requirement: 100,
+      reward: '0.5 BTZ Bonus',
       category: 'yield',
       rarity: 'rare',
+      unlocked: analytics.historical.total_yield_earned >= 100,
+      progress: Math.min(analytics.historical.total_yield_earned, 100),
+      maxProgress: 100
+    },
+    {
+      id: 'yield_1k',
+      name: 'Trader Experiente',
+      description: 'Acumule 1.000 BTZ em rendimentos',
+      icon: <Star className="w-5 h-5 text-purple-500" />,
+      requirement: 1000,
+      reward: '0.8 BTZ Bonus',
+      category: 'yield',
+      rarity: 'epic',
       unlocked: analytics.historical.total_yield_earned >= 1000,
       progress: Math.min(analytics.historical.total_yield_earned, 1000),
       maxProgress: 1000
     },
     {
       id: 'yield_10k',
-      name: 'Trader Experiente',
+      name: 'Magnata Digital',
       description: 'Acumule 10.000 BTZ em rendimentos',
-      icon: <Star className="w-5 h-5 text-purple-500" />,
+      icon: <Award className="w-5 h-5 text-orange-500" />,
       requirement: 10000,
-      reward: '500 BTZ Bonus',
+      reward: '1 BTZ Bonus',
       category: 'yield',
-      rarity: 'epic',
+      rarity: 'legendary',
       unlocked: analytics.historical.total_yield_earned >= 10000,
       progress: Math.min(analytics.historical.total_yield_earned, 10000),
       maxProgress: 10000
-    },
-    {
-      id: 'yield_100k',
-      name: 'Magnata Digital',
-      description: 'Acumule 100.000 BTZ em rendimentos',
-      icon: <Award className="w-5 h-5 text-orange-500" />,
-      requirement: 100000,
-      reward: '2000 BTZ Bonus',
-      category: 'yield',
-      rarity: 'legendary',
-      unlocked: analytics.historical.total_yield_earned >= 100000,
-      progress: Math.min(analytics.historical.total_yield_earned, 100000),
-      maxProgress: 100000
     },
 
     // Streak Achievements
@@ -147,45 +147,45 @@ export function BTZAchievements() {
       maxProgress: 100000
     },
 
-    // Total BTZ Achievements
+    // Total BTZ Achievements - REBALANCEADO (redução de 95-99%)
     {
-      id: 'total_50k',
+      id: 'total_100',
       name: 'Primeiro Milestone',
-      description: 'Alcance 50.000 BTZ total',
+      description: 'Alcance 100 BTZ total',
       icon: <TrendingUp className="w-5 h-5 text-[#adff2f]" />,
-      requirement: 50000,
-      reward: '1000 BTZ Bonus',
+      requirement: 100,
+      reward: '0.5 BTZ Bonus',
       category: 'total',
       rarity: 'rare',
-      unlocked: analytics.current.total_btz >= 50000,
-      progress: Math.min(analytics.current.total_btz, 50000),
-      maxProgress: 50000
+      unlocked: analytics.current.total_btz >= 100,
+      progress: Math.min(analytics.current.total_btz, 100),
+      maxProgress: 100
     },
     {
-      id: 'total_500k',
-      name: 'Meio Milhão',
-      description: 'Alcance 500.000 BTZ total',
+      id: 'total_1k',
+      name: 'Colecionador',
+      description: 'Alcance 1.000 BTZ total',
       icon: <Star className="w-5 h-5 text-purple-500" />,
-      requirement: 500000,
-      reward: '5000 BTZ Bonus',
+      requirement: 1000,
+      reward: '1 BTZ Bonus',
       category: 'total',
       rarity: 'epic',
-      unlocked: analytics.current.total_btz >= 500000,
-      progress: Math.min(analytics.current.total_btz, 500000),
-      maxProgress: 500000
+      unlocked: analytics.current.total_btz >= 1000,
+      progress: Math.min(analytics.current.total_btz, 1000),
+      maxProgress: 1000
     },
     {
-      id: 'total_1m',
+      id: 'total_10k',
       name: 'Milionário BTZ',
-      description: 'Alcance 1.000.000 BTZ total',
+      description: 'Alcance 10.000 BTZ total',
       icon: <Award className="w-5 h-5 text-orange-500" />,
-      requirement: 1000000,
-      reward: 'Título Exclusivo + 10.000 BTZ',
+      requirement: 10000,
+      reward: 'Título Exclusivo + 5 BTZ',
       category: 'total',
       rarity: 'legendary',
-      unlocked: analytics.current.total_btz >= 1000000,
-      progress: Math.min(analytics.current.total_btz, 1000000),
-      maxProgress: 1000000
+      unlocked: analytics.current.total_btz >= 10000,
+      progress: Math.min(analytics.current.total_btz, 10000),
+      maxProgress: 10000
     }
   ];
 

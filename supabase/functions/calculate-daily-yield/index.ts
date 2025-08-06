@@ -19,6 +19,9 @@ serve(async (req) => {
     );
 
     const { user_id } = await req.json();
+    
+    // REBALANCEAMENTO: Cap absoluto de 5 BTZ por dia para yield
+    const DAILY_YIELD_CAP = 5;
 
     if (!user_id) {
       return new Response(
@@ -47,9 +50,25 @@ serve(async (req) => {
 
     console.log('Streak updated:', streakData);
 
-    // Calculate and apply daily yield
+    // Calculate and apply daily yield with cap
     const { data: yieldData, error: yieldError } = await supabaseClient
       .rpc('calculate_daily_yield', { profile_id: profile.id });
+    
+    // Apply yield cap
+    if (yieldData?.[0]?.yield_amount > DAILY_YIELD_CAP) {
+      console.log(`Yield capped from ${yieldData[0].yield_amount} to ${DAILY_YIELD_CAP} BTZ`);
+      
+      // Update with capped amount
+      await supabaseClient
+        .from('profiles')
+        .update({ 
+          points: yieldData[0].new_total - yieldData[0].yield_amount + DAILY_YIELD_CAP 
+        })
+        .eq('id', profile.id);
+      
+      yieldData[0].yield_amount = DAILY_YIELD_CAP;
+      yieldData[0].new_total = yieldData[0].new_total - yieldData[0].yield_amount + DAILY_YIELD_CAP;
+    }
 
     if (yieldError) {
       console.error('Yield calculation error:', yieldError);

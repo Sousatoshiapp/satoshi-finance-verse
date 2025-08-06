@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAdvancedQuizAudio } from "./use-advanced-quiz-audio";
-import { useLivesSystem } from "./use-lives-system";
+import { useBTZAnalytics } from "./use-btz-analytics";
 
 interface QuizGamificationState {
   streak: number;
@@ -14,7 +14,6 @@ interface QuizGamificationState {
   currentQuestion: string;
   currentCorrectAnswer: string;
   currentExplanation?: string;
-  hasShownLifeBanner: boolean;
   isLoaded: boolean;
 }
 
@@ -23,7 +22,7 @@ export function useQuizGamification() {
   const { user } = useAuth();
   const { toast } = useToast();
   const { playCorrectSound, playWrongSound, playStreakSound, playCashRegisterSound } = useAdvancedQuizAudio();
-  const { hasLives, useLife } = useLivesSystem();
+  const { checkDailyLimit, logBTZTransaction } = useBTZAnalytics();
   
   const [state, setState] = useState<QuizGamificationState>({
     streak: 0,
@@ -34,7 +33,6 @@ export function useQuizGamification() {
     currentQuestion: "",
     currentCorrectAnswer: "",
     currentExplanation: undefined,
-    hasShownLifeBanner: false,
     isLoaded: false
   });
 
@@ -103,7 +101,7 @@ export function useQuizGamification() {
     // NOVA LÓGICA: Streak só incrementa com acertos consecutivos
     const newStreak = state.streak + 1;
     let newMultiplier = state.currentMultiplier;
-    const baseBTZ = 1; // 1 BTZ base por resposta correta
+    const baseBTZ = 0.1; // 0.1 BTZ base por resposta correta (REBALANCEADO)
     
     console.log("📊 NOVA LÓGICA - Calculando recompensa:", {
       newStreak,
@@ -112,11 +110,21 @@ export function useQuizGamification() {
       timestamp: Date.now()
     });
     
-    // CORRIGIDO: Multiplicador só dobra com streak REAL de 7 acertos consecutivos
-    if (newStreak === 7 || newStreak === 14 || newStreak === 21) {
-      newMultiplier = newStreak === 7 ? 2 : newStreak === 14 ? 4 : 8;
+    // REBALANCEADO: Multiplicador limitado a 2x máximo
+    if (newStreak === 5 || newStreak === 10 || newStreak === 15) {
+      newMultiplier = Math.min(2, newStreak >= 5 ? 1.5 : newStreak >= 10 ? 2 : 2);
       
       const earnedBTZ = baseBTZ * newMultiplier;
+      
+      // Verificar limite diário antes de conceder BTZ
+      if (!checkDailyLimit('streak', earnedBTZ)) {
+        toast({
+          title: "⚠️ Limite Diário Atingido",
+          description: "Você já atingiu o limite de 10 BTZ por dia",
+          variant: "destructive"
+        });
+        return;
+      }
       
       console.log("🔥 STREAK MILESTONE ATINGIDO!", {
         newStreak,
@@ -170,6 +178,11 @@ export function useQuizGamification() {
             console.error('❌ Erro ao atualizar BTZ (STREAK):', error);
           } else {
             console.log('✅ BTZ atualizado com sucesso (STREAK)! Aguardando realtime...');
+            // Log da transação para analytics
+            await logBTZTransaction('streak', earnedBTZ, { 
+              streak: newStreak, 
+              multiplier: newMultiplier 
+            });
           }
         } else {
           console.log("❌ Profile not found!");
@@ -180,6 +193,23 @@ export function useQuizGamification() {
     } else {
       // Regular correct answer com multiplicador atual
       const earnedBTZ = baseBTZ * newMultiplier;
+      
+      // Verificar limite diário antes de conceder BTZ
+      if (!checkDailyLimit('quiz', earnedBTZ)) {
+        // Ainda incrementa streak mas não dá BTZ
+        setState(prev => ({ 
+          ...prev, 
+          streak: newStreak
+        }));
+        await persistState(newStreak, newMultiplier, true);
+        
+        toast({
+          title: "⚠️ Limite Diário Atingido",
+          description: "Streak mantido, mas limite de 10 BTZ/dia atingido",
+          variant: "destructive"
+        });
+        return;
+      }
       
       console.log("💰 RESPOSTA CORRETA REGULAR:", {
         newStreak,
@@ -225,6 +255,11 @@ export function useQuizGamification() {
             console.error('❌ Erro ao atualizar BTZ (REGULAR):', error);
           } else {
             console.log('✅ BTZ atualizado com sucesso (REGULAR)! Aguardando realtime...');
+            // Log da transação para analytics
+            await logBTZTransaction('quiz', earnedBTZ, { 
+              streak: newStreak, 
+              multiplier: newMultiplier 
+            });
           }
         } else {
           console.log("❌ Profile not found!");
@@ -255,8 +290,7 @@ export function useQuizGamification() {
       currentMultiplier: 1,
       currentQuestion: question || "",
       currentCorrectAnswer: correctAnswer || "",
-      currentExplanation: explanation,
-      hasShownLifeBanner: false // Reset para próxima sessão
+      currentExplanation: explanation
     }));
 
     // Persistir reset no banco
@@ -280,24 +314,9 @@ export function useQuizGamification() {
     }
 
     return { canUseLife: false };
-  }, [playWrongSound, state.streak, state.currentMultiplier, hasLives, state.hasShownLifeBanner, state.isLoaded, persistState]);
+  }, [playWrongSound, state.streak, state.currentMultiplier, state.isLoaded, persistState]);
 
-  const handleUseLife = useCallback(async () => {
-    const success = await useLife();
-    if (success) {
-      // Manter o estado atual (não resetar streak e multiplicador)
-      toast({
-        title: "💖 Streak salvo!",
-        description: `Você manteve sua sequência de ${state.streak} e multiplicador ${state.currentMultiplier}x`
-      });
-      
-      // Persistir que a vida foi usada mantendo o estado
-      await persistState(state.streak, state.currentMultiplier, true);
-      
-      return true;
-    }
-    return false;
-  }, [useLife, state.streak, state.currentMultiplier, toast, persistState]);
+  // Sistema de vidas removido - FASE 3 REBALANCEAMENTO
 
   const hideBeetzAnimation = useCallback(() => {
     setState(prev => ({ ...prev, showBeetzAnimation: false }));
@@ -318,7 +337,6 @@ export function useQuizGamification() {
       currentQuestion: "",
       currentCorrectAnswer: "",
       currentExplanation: undefined,
-      hasShownLifeBanner: false,
       isLoaded: true
     });
   }, []);
@@ -327,39 +345,20 @@ export function useQuizGamification() {
     if (!user || total !== 7) return;
 
     const percentage = (score / total) * 100;
-    let bonusReward = 0;
     
-    // Bonus for completing all 7 questions with 100% score
-    if (percentage === 100) {
-      bonusReward = state.totalBTZ; // Double the total earned
-      
-      try {
-        await supabase.from('profiles').update({
-          points: state.totalBTZ + bonusReward
-        }).eq('user_id', user.id);
-        
-        toast({
-          title: "🏆 Pontuação Perfeita!",
-          description: `Você ganhou ${bonusReward} BTZ extras por acertar todas as 7 perguntas!`
-        });
-      } catch (error) {
-        console.error('Error updating bonus points:', error);
-      }
-    }
-    
+    // REMOVIDO: Bônus de quiz perfeito removido para rebalanceamento
     return {
-      totalBTZ: state.totalBTZ + bonusReward,
+      totalBTZ: state.totalBTZ,
       streak: state.streak,
-      bonusReward,
+      bonusReward: 0,
       percentage
     };
-  }, [state, user, toast]);
+  }, [state, user]);
 
   return {
     ...state,
     handleCorrectAnswer,
     handleWrongAnswer,
-    handleUseLife,
     hideBeetzAnimation,
     hideStreakAnimation,
     resetGamification,

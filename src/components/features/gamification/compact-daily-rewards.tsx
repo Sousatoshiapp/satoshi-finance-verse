@@ -77,9 +77,9 @@ export function CompactDailyRewards({ className }: CompactDailyRewardsProps) {
 
       if (!profile) return;
 
-      // Award reward based on day
-      const rewards = [50, 25, 75, 100, 100, 50, 200]; // Beetz amounts for each day
-      const rewardAmount = rewards[currentDay - 1] || 50;
+      // Award reward based on day - REBALANCEADO (redução de 90%)
+      const rewards = [0.1, 0.2, 0.5, 0.5, 0.5, 0.2, 1]; // Beetz amounts for each day
+      const rewardAmount = rewards[currentDay - 1] || 0.1;
 
       await supabase
         .from('profiles')
