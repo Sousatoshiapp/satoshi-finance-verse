@@ -375,7 +375,7 @@ export default function Profile() {
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
                 ← {t('navigation.dashboard')}
               </Button>
-              <h1 className="text-xl font-bold text-foreground">{t('profile.userProfile')}</h1>
+              
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate('/settings')}>
               {t('navigation.settings')}
@@ -453,16 +453,6 @@ export default function Profile() {
           onTimeRangeChange={setTimeRange}
         />
 
-        {/* Gamification Unified Panel - Nova Seção */}
-        <GamificationUnifiedPanel 
-          userId={user.id}
-          userStats={{
-            level: user.level,
-            xp: user.xp,
-            streak: user.streak,
-            points: user.points
-          }}
-        />
 
         {/* Stats Grid */}
         <StatsGrid
@@ -494,8 +484,6 @@ export default function Profile() {
           </Card>
         </div>
 
-        {/* Daily Missions Carousel - Nova Seção */}
-        <DailyMissionsCarousel userId={user.id} />
 
         {/* Carousels Section */}
         <div className="space-y-6">
@@ -523,8 +511,6 @@ export default function Profile() {
         {/* Active Rewards Panel - Nova Seção */}
         <ActiveRewardsPanel userId={user.id} showHistory={true} />
 
-        {/* Achievements Timeline - Nova Seção */}
-        <AchievementsTimeline userId={user.id} limit={10} />
 
         {/* Subscription Plan Card - Compact Design */}
         <Card className="p-4 md:p-6">

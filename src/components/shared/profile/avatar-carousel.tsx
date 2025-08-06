@@ -150,10 +150,10 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate('/avatar-shop')}
+            onClick={() => navigate('/avatar-collection')}
             className="text-primary hover:text-primary/80"
           >
-            Explorar <ArrowRight className="w-4 h-4 ml-1" />
+            Ver Todos <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </div>
 
@@ -190,12 +190,6 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
                         
                         <div className="text-center">
                           <p className="text-xs font-medium truncate w-full">{avatar.name}</p>
-                          <Badge 
-                            variant="secondary" 
-                            className={`text-xs ${getRarityColor(avatar.rarity)} text-white`}
-                          >
-                            {avatar.rarity}
-                          </Badge>
                         </div>
                         
                         {avatar.is_owned && !avatar.is_active && (

@@ -17,18 +17,6 @@ const chartConfig = {
     label: 'XP',
     color: 'hsl(var(--chart-1))',
   },
-  btz: {
-    label: 'BTZ',
-    color: 'hsl(var(--chart-2))',
-  },
-  streak: {
-    label: 'Streak',
-    color: 'hsl(var(--chart-3))',
-  },
-  quizzes_completed: {
-    label: 'Quizzes',
-    color: 'hsl(var(--chart-4))',
-  },
 };
 
 export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: UserEvolutionChartProps) {
@@ -63,18 +51,19 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
             {t('profile.evolution.title')}
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {timeRangeButtons.map((button) => (
               <Button
                 key={button.key}
                 variant={timeRange === button.key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onTimeRangeChange(button.key)}
+                className="flex-1 md:flex-none min-w-0"
               >
                 {button.label}
               </Button>
@@ -83,7 +72,7 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-64">
+        <ChartContainer config={chartConfig} className="h-48 md:h-64">
           <LineChart data={data}>
             <XAxis 
               dataKey="date" 
@@ -91,34 +80,15 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
             />
             <YAxis />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Legend />
             <Line 
               type="monotone" 
               dataKey="xp" 
               stroke="var(--color-xp)" 
-              strokeWidth={2}
+              strokeWidth={3}
+              strokeDasharray="0"
+              dot={{ fill: 'var(--color-xp)', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, strokeWidth: 2 }}
               name={t('profile.evolution.xpProgress')}
-            />
-            <Line 
-              type="monotone" 
-              dataKey="btz" 
-              stroke="var(--color-btz)" 
-              strokeWidth={2}
-              name={t('profile.evolution.btzEarned')}
-            />
-            <Line 
-              type="monotone" 
-              dataKey="streak" 
-              stroke="var(--color-streak)" 
-              strokeWidth={2}
-              name={t('profile.evolution.streakHistory')}
-            />
-            <Line 
-              type="monotone" 
-              dataKey="quizzes_completed" 
-              stroke="var(--color-quizzes_completed)" 
-              strokeWidth={2}
-              name={t('profile.evolution.quizzesCompleted')}
             />
           </LineChart>
         </ChartContainer>
