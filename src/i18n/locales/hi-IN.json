@@ -953,20 +953,7 @@
       "searchingUsers": "उपयोगकर्ता खोज रहे हैं...",
       "comingSoon": "जल्द आ रहा है"
     },
-  "navigation": {
-    "dashboard": "डैशबोर्ड",
-    "settings": "सेटिंग्स"
-  },
-  "profile": {
-    "userProfile": "उपयोगकर्ता प्रोफ़ाइल",
-    "gamification": {
-      "recentAchievements": "हाल की उपलब्धियां",
-      "viewAll": "सभी देखें"
-    },
-    "avatarCollection": {
-      "title": "मेरा संग्रह",
-      "viewAll": "सभी देखें"
-    },
+    "profile": {
       "level": "स्तर",
       "followers": "फॉलोअर्स"
     },

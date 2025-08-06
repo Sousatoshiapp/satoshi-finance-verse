@@ -112,7 +112,6 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
               fill="url(#levelGradient)"
               dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
               activeDot={{ r: 6, stroke: 'hsl(var(--primary))', strokeWidth: 2, fill: 'hsl(var(--background))' }}
-              className="transition-all duration-500 ease-in-out"
             />
           </AreaChart>
         </ChartContainer>

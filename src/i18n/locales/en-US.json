@@ -55,13 +55,8 @@
       "legendary": "Legendary"
     }
   },
-  "navigation": {
-    "dashboard": "Dashboard",
-    "settings": "Settings"
-  },
   "profile": {
     "title": "Profile",
-    "userProfile": "User Profile",
     "level": "Level {level}",
     "points": "{points} Points",
     "experience": "Experience",
@@ -74,10 +69,6 @@
     "cancel": "Cancel",
     "uploadImage": "Upload Image",
     "changeAvatar": "Change Avatar",
-    "gamification": {
-      "recentAchievements": "Recent Achievements",
-      "viewAll": "View All"
-    },
     "stats": {
       "totalGames": "Total Games",
       "winRate": "Win Rate",
@@ -93,10 +84,6 @@
       "30days": "30d",
       "90days": "90d",
       "1year": "1y"
-    },
-    "avatarCollection": {
-      "title": "My Collection",
-      "viewAll": "View All"
     }
   },
   "avatarCollection": {

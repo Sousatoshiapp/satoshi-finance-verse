@@ -1141,20 +1141,7 @@
     "approved": "Identidad verificada",
     "rejected": "Verificación rechazada"
   },
-  "navigation": {
-    "dashboard": "Panel",
-    "settings": "Configuración"
-  },
   "profile": {
-    "userProfile": "Perfil de Usuario",
-    "gamification": {
-      "recentAchievements": "Logros Recientes",
-      "viewAll": "Ver Todos"
-    },
-    "avatarCollection": {
-      "title": "Mi Colección",
-      "viewAll": "Ver Todos"
-    },
     "header": {
       "profile": "Perfil"
     },

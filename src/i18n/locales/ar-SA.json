@@ -1014,20 +1014,7 @@
     "approved": "تم التحقق من الهوية",
     "rejected": "تم رفض التحقق"
   },
-  "navigation": {
-    "dashboard": "لوحة القيادة",
-    "settings": "الإعدادات"
-  },
   "profile": {
-    "userProfile": "ملف المستخدم",
-    "gamification": {
-      "recentAchievements": "الإنجازات الأخيرة",
-      "viewAll": "عرض الكل"
-    },
-    "avatarCollection": {
-      "title": "مجموعتي",
-      "viewAll": "عرض الكل"
-    },
     "header": {
       "profile": "الملف الشخصي"
     },
