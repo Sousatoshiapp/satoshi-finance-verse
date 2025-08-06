@@ -1,24 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Input } from "@/components/shared/ui/input";
 import { Button } from "@/components/shared/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
-import { Badge } from "@/components/shared/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
-import { ScrollArea } from "@/components/shared/ui/scroll-area";
-import { UserCard } from "@/components/features/social/user-card";
 import { ConversationsList } from "@/components/features/social/conversations-list";
 import { ChatWindow } from "@/components/features/social/chat-window";
+import { CreatePostCard } from "@/components/features/social/create-post-card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MessageCircle, Send, Home, Compass, Hash, Bell, Mail, Bookmark, User, MoreHorizontal } from "lucide-react";
-import { Textarea } from "@/components/shared/ui/textarea";
+import { Search, MessageCircle, Home, Hash, Bell, Mail } from "lucide-react";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { TwitterSocialFeed } from "@/components/features/social/twitter-social-feed";
 import { SocialChallenges } from "@/components/features/social/social-challenges";
 import { SocialLeaderboard } from "@/components/features/social/social-leaderboard";
 import { useI18n } from "@/hooks/use-i18n";
+import { useSocialNavigation } from "@/hooks/use-social-navigation";
+import { useSocialLoadingState } from "@/hooks/use-social-loading-state";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
 
@@ -45,23 +43,25 @@ interface User {
 export default function Social() {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { activeTab, navigateToTab } = useSocialNavigation();
+  const { loading, setLoading, isMainLoading } = useSocialLoadingState();
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [newPost, setNewPost] = useState("");
-  const [posting, setPosting] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { toast } = useToast();
 
-  const handleSearch = async (query: string) => {
+  // Optimized search with better debouncing
+  const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
+      setLoading('search', false);
       return;
     }
 
-    setLoading(true);
+    setLoading('search', true);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -77,7 +77,6 @@ export default function Social() {
         .limit(10);
 
       if (error) throw error;
-
       setSearchResults(data || []);
     } catch (error) {
       console.error('Error searching users:', error);
@@ -87,23 +86,25 @@ export default function Social() {
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setLoading('search', false);
     }
-  };
+  }, [setLoading, toast, t]);
 
+  // Debounced search effect - optimized to 500ms
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       handleSearch(searchQuery);
-    }, 300);
+    }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [searchQuery]);
+  }, [searchQuery, handleSearch]);
 
   useEffect(() => {
     loadCurrentUser();
   }, []);
 
   const loadCurrentUser = async () => {
+    setLoading('userProfile', true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -121,57 +122,23 @@ export default function Social() {
         .eq('user_id', user.id)
         .single();
 
-      console.log('🔍 Social currentUser query result:', profile);
-
       if (profile) {
         setCurrentUserId(profile.id);
         setCurrentUser(profile);
       }
     } catch (error) {
       console.error('Error loading current user:', error);
-    }
-  };
-
-  const handleCreatePost = async () => {
-    if (!newPost.trim() || posting || !currentUserId) return;
-
-    setPosting(true);
-    try {
-      const { error } = await supabase
-        .from('social_posts')
-        .insert({
-          user_id: currentUserId,
-          content: newPost.trim(),
-          post_type: 'text'
-        });
-
-      if (error) throw error;
-
-      setNewPost("");
-      toast({
-        title: t('common.success'),
-        description: t('social.messages.postCreated')
-      });
-
-      // Award challenge progress
-      await supabase.functions.invoke('process-social-activity', {
-        body: {
-          userId: currentUserId,
-          activityType: 'create_post'
-        }
-      });
-
-    } catch (error) {
-      console.error('Error creating post:', error);
-      toast({
-        title: t('common.error'),
-        description: t('social.messages.errorPost'),
-        variant: "destructive"
-      });
     } finally {
-      setPosting(false);
+      setLoading('userProfile', false);
+      setLoading('main', false);
     }
   };
+
+  // Handle post creation callback
+  const handlePostCreated = useCallback(() => {
+    // This will trigger a refresh of the social feed
+    // The TwitterSocialFeed component handles its own real-time subscriptions
+  }, []);
 
   if (selectedConversationId) {
     return (
@@ -182,60 +149,89 @@ export default function Social() {
     );
   }
 
+  // Show loading skeleton while main data loads
+  if (isMainLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <FloatingNavbar />
+        <div className="max-w-7xl mx-auto flex min-h-screen justify-center">
+          <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 min-h-screen">
+            <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-4">
+              <div className="h-6 bg-muted rounded w-32 animate-pulse" />
+            </div>
+            <div className="p-4 space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="border-b border-border/50 pb-4 animate-pulse">
+                  <div className="flex space-x-3">
+                    <div className="w-12 h-12 bg-muted rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-muted rounded w-32" />
+                      <div className="h-4 bg-muted rounded w-full" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <FloatingNavbar />
       
-      {/* Layout responsivo estilo Twitter */}
-      <div className="max-w-7xl mx-auto flex min-h-screen justify-center">
-        {/* Sidebar esquerda - Desktop */}
-        <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto flex-shrink-0">
-          <div className="space-y-1">
+      {/* Simplified responsive layout */}
+      <div className="max-w-7xl mx-auto flex min-h-screen">
+        {/* Left Sidebar - Desktop only */}
+        <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto">
+          <nav className="space-y-1">
             <Button 
-              variant="ghost" 
-              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
-              onClick={() => navigate('/social')}
+              variant={activeTab === 'feed' ? 'secondary' : 'ghost'}
+              className="justify-start w-full h-12 text-lg"
+              onClick={() => navigateToTab('feed')}
             >
               <Home className="mr-3 h-6 w-6" />
               {t('social.tabs.feed')}
             </Button>
             <Button 
-              variant="ghost" 
-              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
-              onClick={() => navigate('/social?tab=search')}
+              variant={activeTab === 'search' ? 'secondary' : 'ghost'}
+              className="justify-start w-full h-12 text-lg"
+              onClick={() => navigateToTab('search')}
             >
               <Search className="mr-3 h-6 w-6" />
               {t('social.tabs.search')}
             </Button>
             <Button 
-              variant="ghost" 
-              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
-              onClick={() => navigate('/social?tab=challenges')}
+              variant={activeTab === 'challenges' ? 'secondary' : 'ghost'}
+              className="justify-start w-full h-12 text-lg"
+              onClick={() => navigateToTab('challenges')}
             >
               <Hash className="mr-3 h-6 w-6" />
               {t('social.tabs.challenges')}
             </Button>
             <Button 
-              variant="ghost" 
-              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
-              onClick={() => navigate('/social?tab=rankings')}
+              variant={activeTab === 'rankings' ? 'secondary' : 'ghost'}
+              className="justify-start w-full h-12 text-lg"
+              onClick={() => navigateToTab('rankings')}
             >
               <Bell className="mr-3 h-6 w-6" />
               {t('social.tabs.ranks')}
             </Button>
             <Button 
-              variant="ghost" 
-              className="justify-start w-full h-12 text-lg hover:bg-muted/40 transition-colors duration-200"
-              onClick={() => navigate('/social?tab=messages')}
+              variant={activeTab === 'messages' ? 'secondary' : 'ghost'}
+              className="justify-start w-full h-12 text-lg"
+              onClick={() => navigateToTab('messages')}
             >
               <Mail className="mr-3 h-6 w-6" />
               {t('social.tabs.chat')}
             </Button>
-          </div>
+          </nav>
 
-          {/* User Profile Mini Card */}
+          {/* User Profile Card */}
           {currentUser && (
-            <div className="mt-auto p-2.5 rounded-xl border border-border/50 bg-card/50 hover:bg-card/70 transition-colors">
+            <div className="mt-auto p-3 rounded-xl border bg-card/50">
               <div className="flex items-center space-x-3">
                 <AvatarDisplayUniversal
                   avatarData={normalizeAvatarData(currentUser)}
@@ -251,73 +247,47 @@ export default function Social() {
           )}
         </div>
 
-        {/* Feed central - Responsivo */}
-        <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 lg:border-x lg:border-border/50 min-h-screen mx-4 lg:mx-0">
-          {/* Header */}
-          <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-3 lg:p-4">
-            <h1 className="text-lg lg:text-xl font-bold">{t('social.tabs.feed')}</h1>
-          </div>
+        {/* Main Content - Responsive */}
+        <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 min-h-screen mx-auto lg:mx-0">
+          {/* Desktop Content */}
+          <div className="hidden lg:block">
+            {/* Header */}
+            <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-4">
+              <h1 className="text-xl font-bold">
+                {activeTab === 'feed' && t('social.tabs.feed')}
+                {activeTab === 'search' && t('social.tabs.search')}
+                {activeTab === 'challenges' && t('social.tabs.challenges')}
+                {activeTab === 'rankings' && t('social.tabs.ranks')}
+                {activeTab === 'messages' && t('social.tabs.chat')}
+              </h1>
+            </div>
 
-          {/* Create Post */}
-          <div className="border-b border-border/50 p-3 lg:p-4">
-            <div className="flex space-x-3">
-              {currentUser && (
-                <AvatarDisplayUniversal
-                  avatarData={normalizeAvatarData(currentUser)}
-                  nickname={currentUser.nickname}
-                  size="lg"
+            {/* Content based on active tab */}
+            {activeTab === 'feed' && (
+              <>
+                <CreatePostCard 
+                  variant="desktop"
+                  currentUser={currentUser}
+                  currentUserId={currentUserId}
+                  onPostCreated={handlePostCreated}
                 />
-              )}
-              <div className="flex-1">
-                <Textarea
-                  placeholder={t('social.placeholders.shareOpinion')}
-                  value={newPost}
-                  onChange={(e) => setNewPost(e.target.value)}
-                  className="min-h-[80px] resize-none border-none shadow-none text-xl placeholder:text-xl focus-visible:ring-0"
-                  maxLength={500}
-                />
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-sm text-muted-foreground">
-                    {newPost.length}/500
-                  </span>
-                  <Button 
-                    onClick={handleCreatePost}
-                    disabled={!newPost.trim() || posting}
-                    className="rounded-full px-6"
-                  >
-                    {posting ? t('social.buttons.publishing') : t('social.buttons.publish')}
-                  </Button>
+                <TwitterSocialFeed />
+              </>
+            )}
+
+            {activeTab === 'search' && (
+              <div className="p-4 space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder={t('social.placeholders.searchUsers')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9"
+                  />
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Feed de posts */}
-          <TwitterSocialFeed />
-        </div>
-
-        {/* Sidebar direita - Desktop */}
-        <div className="hidden xl:flex w-80 p-4 space-y-4 overflow-y-auto flex-shrink-0 sticky top-0 h-screen">
-          {/* Search */}
-          <div className="sticky top-4 space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder={t('social.placeholders.searchUsers')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 bg-muted/30"
-              />
-            </div>
-
-            {/* Search Results */}
-            {searchQuery && (
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">{t('social.tabs.search')}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {loading ? (
+                <div className="space-y-3">
+                  {loading.search ? (
                     <div className="text-center text-muted-foreground">
                       {t('social.messages.searchingUsers')}
                     </div>
@@ -325,7 +295,7 @@ export default function Social() {
                     searchResults.map((user) => (
                       <div 
                         key={user.id}
-                        className="flex items-center space-x-3 p-1.5 rounded-lg hover:bg-muted/50 cursor-pointer"
+                        className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer border"
                         onClick={() => navigate(`/user/${user.id}`)}
                       >
                         <AvatarDisplayUniversal
@@ -339,21 +309,201 @@ export default function Social() {
                         </div>
                       </div>
                     ))
+                  ) : searchQuery ? (
+                    <div className="text-center text-muted-foreground">
+                      {t('social.messages.noResults')}
+                    </div>
                   ) : (
-                    <div className="text-center text-muted-foreground text-sm">
-                      {t('social.messages.comingSoon')}
+                    <div className="text-center text-muted-foreground">
+                      {t('social.placeholders.searchUsers')}
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
-            {/* Trending/Suggestions */}
+            {activeTab === 'challenges' && (
+              <div className="p-4">
+                <SocialChallenges />
+              </div>
+            )}
+
+            {activeTab === 'rankings' && (
+              <div className="p-4">
+                <SocialLeaderboard />
+              </div>
+            )}
+
+            {activeTab === 'messages' && (
+              <div className="p-4">
+                <ConversationsList onSelectConversation={setSelectedConversationId} />
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Content with Tabs */}
+          <div className="lg:hidden">
+            <Tabs value={activeTab} onValueChange={(value) => navigateToTab(value as any)} className="w-full">
+              <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-12 grid grid-cols-5">
+                <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-10 text-xs">
+                  <Home className="h-4 w-4 mb-1" />
+                  <span>{t('social.tabs.feed')}</span>
+                </TabsTrigger>
+                <TabsTrigger value="search" className="flex flex-col items-center justify-center h-10 text-xs">
+                  <Search className="h-4 w-4 mb-1" />
+                  <span>{t('social.tabs.search')}</span>
+                </TabsTrigger>
+                <TabsTrigger value="challenges" className="flex flex-col items-center justify-center h-10 text-xs">
+                  <Hash className="h-4 w-4 mb-1" />
+                  <span>{t('social.tabs.challenges')}</span>
+                </TabsTrigger>
+                <TabsTrigger value="rankings" className="flex flex-col items-center justify-center h-10 text-xs">
+                  <Bell className="h-4 w-4 mb-1" />
+                  <span>{t('social.tabs.ranks')}</span>
+                </TabsTrigger>
+                <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-10 text-xs">
+                  <Mail className="h-4 w-4 mb-1" />
+                  <span>{t('social.tabs.chat')}</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="feed" className="pb-32 min-h-screen">
+                <CreatePostCard 
+                  variant="mobile"
+                  currentUser={currentUser}
+                  currentUserId={currentUserId}
+                  onPostCreated={handlePostCreated}
+                />
+                <TwitterSocialFeed />
+              </TabsContent>
+
+              <TabsContent value="search" className="pb-32">
+                <div className="p-4 space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder={t('social.placeholders.searchUsers')}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    {loading.search ? (
+                      <div className="text-center text-muted-foreground">
+                        {t('social.messages.searchingUsers')}
+                      </div>
+                    ) : searchResults.length > 0 ? (
+                      searchResults.map((user) => (
+                        <div 
+                          key={user.id}
+                          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer border"
+                          onClick={() => navigate(`/user/${user.id}`)}
+                        >
+                          <AvatarDisplayUniversal
+                            avatarData={normalizeAvatarData(user)}
+                            nickname={user.nickname}
+                            size="md"
+                          />
+                          <div className="flex-1 overflow-hidden">
+                            <p className="font-medium text-sm truncate">@{user.nickname}</p>
+                            <p className="text-xs text-muted-foreground">{t('common.level')} {user.level}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : searchQuery ? (
+                      <div className="text-center text-muted-foreground">
+                        {t('social.messages.noResults')}
+                      </div>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        {t('social.placeholders.searchUsers')}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="challenges" className="pb-32">
+                <div className="p-4">
+                  <SocialChallenges />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="rankings" className="pb-32">
+                <div className="p-4">
+                  <SocialLeaderboard />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="messages" className="pb-32">
+                <div className="p-4">
+                  <ConversationsList onSelectConversation={setSelectedConversationId} />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
+
+        {/* Right Sidebar - Desktop only */}
+        <div className="hidden xl:flex w-80 p-4 space-y-4 overflow-y-auto sticky top-0 h-screen">
+          <div className="space-y-4">
+            {/* Quick Search Widget */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">{t('social.tabs.search')}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder={t('social.placeholders.searchUsers')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 bg-muted/30"
+                  />
+                </div>
+
+                {searchQuery && (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {loading.search ? (
+                      <div className="text-center text-muted-foreground text-sm">
+                        {t('social.messages.searchingUsers')}
+                      </div>
+                    ) : searchResults.length > 0 ? (
+                      searchResults.slice(0, 5).map((user) => (
+                        <div 
+                          key={user.id}
+                          className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
+                          onClick={() => navigate(`/user/${user.id}`)}
+                        >
+                          <AvatarDisplayUniversal
+                            avatarData={normalizeAvatarData(user)}
+                            nickname={user.nickname}
+                            size="sm"
+                          />
+                          <div className="flex-1 overflow-hidden">
+                            <p className="font-medium text-xs truncate">@{user.nickname}</p>
+                            <p className="text-xs text-muted-foreground">{t('common.level')} {user.level}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center text-muted-foreground text-sm">
+                        {t('social.messages.noResults')}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Trending/Suggestions placeholder */}
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">{t('social.messages.comingSoon')}</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent>
                 <div className="text-sm text-muted-foreground">
                   {t('social.messages.comingSoon')}
                 </div>
@@ -361,131 +511,6 @@ export default function Social() {
             </Card>
           </div>
         </div>
-      </div>
-
-      {/* Mobile Tabs */}
-      <div className="lg:hidden pb-32">
-        <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-12 grid grid-cols-5">
-            <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
-              <Home className="h-4 w-4 mb-1" />
-              <span>{t('social.tabs.feed')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="search" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
-              <Search className="h-4 w-4 mb-1" />
-              <span>{t('social.tabs.search')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="challenges" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
-              <Hash className="h-4 w-4 mb-1" />
-              <span>{t('social.tabs.challenges')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="rankings" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
-              <Bell className="h-4 w-4 mb-1" />
-              <span>{t('social.tabs.ranks')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-10 text-xs transition-all duration-200">
-              <Mail className="h-4 w-4 mb-1" />
-              <span>{t('social.tabs.chat')}</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="feed" className="pb-32 min-h-screen">
-            {/* Mobile Create Post */}
-            <div className="border-b border-border/50 p-3">
-              <div className="flex space-x-3">
-                {currentUser && (
-                  <AvatarDisplayUniversal
-                    avatarData={normalizeAvatarData(currentUser)}
-                    nickname={currentUser.nickname}
-                    size="md"
-                  />
-                )}
-                <div className="flex-1">
-                  <Textarea
-                    placeholder={t('social.placeholders.shareOpinion')}
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                    className="min-h-[60px] resize-none border-none shadow-none text-base placeholder:text-base focus-visible:ring-0"
-                    maxLength={500}
-                  />
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-muted-foreground">
-                      {newPost.length}/500
-                    </span>
-                    <Button 
-                      onClick={handleCreatePost}
-                      disabled={!newPost.trim() || posting}
-                      size="sm"
-                      className="rounded-full"
-                    >
-                      {posting ? t('social.buttons.publishing') : t('social.buttons.publish')}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <TwitterSocialFeed />
-          </TabsContent>
-
-          <TabsContent value="search" className="pb-32">
-            <div className="p-4 space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={t('social.placeholders.searchUsers')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-
-              <div className="space-y-3">
-                {loading ? (
-                  <div className="text-center text-muted-foreground">
-                    {t('social.messages.searchingUsers')}
-                  </div>
-                ) : searchResults.length > 0 ? (
-                  searchResults.map((user) => (
-                    <UserCard 
-                      key={user.id} 
-                      user={user}
-                      showSocialStats={false}
-                      onClick={(userId) => navigate(`/user/${userId}`)}
-                    />
-                  ))
-                ) : searchQuery ? (
-                  <div className="text-center text-muted-foreground">
-                    {t('social.messages.noResults')}
-                  </div>
-                ) : (
-                  <div className="text-center text-muted-foreground">
-                    {t('social.placeholders.searchUsers')}
-                  </div>
-                )}
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="challenges" className="pb-32">
-            <div className="p-4">
-              <SocialChallenges />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="rankings" className="pb-32">
-            <div className="p-4">
-              <SocialLeaderboard />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="messages" className="pb-32">
-            <div className="p-4">
-              <ConversationsList 
-                onSelectConversation={setSelectedConversationId}
-              />
-            </div>
-          </TabsContent>
-        </Tabs>
       </div>
     </div>
   );

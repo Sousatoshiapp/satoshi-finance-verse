@@ -374,10 +374,15 @@ export function TwitterSocialFeed() {
 
   if (posts.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        <MessageCircle className="mx-auto h-12 w-12 mb-4 opacity-50" />
-        <p className="text-lg font-medium">{t('common.beFirstToPost')}</p>
-        <p className="text-sm mt-2">Comece seguindo outros usuários para ver posts no seu feed</p>
+      <div className="text-center py-12 text-muted-foreground">
+        <MessageCircle className="mx-auto h-16 w-16 mb-6 opacity-30" />
+        <h3 className="text-xl font-medium mb-2">{t('social.messages.emptyFeed')}</h3>
+        <p className="text-sm mb-4">
+          {t('social.messages.emptyFeedDescription')}
+        </p>
+        <p className="text-xs opacity-75">
+          {t('social.messages.followUsersToSeeContent')}
+        </p>
       </div>
     );
   }
