@@ -34,7 +34,8 @@
       "matchFound": "¡PARTIDA!",
       "noPlayersFound": "Sin Jugadores en Arena disponibles, inténtalo de nuevo",
       "tryAgain": "Intentar de Nuevo",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "arenaUsers": "Jugadores en Arena"
     }
   },
   "quiz": {

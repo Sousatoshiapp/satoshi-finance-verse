@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
-import { TargetIcon, IconSystem } from "@/components/icons/icon-system";
+import { TargetIcon, IconSystem, UserIcon } from "@/components/icons/icon-system";
 import { useI18n } from "@/hooks/use-i18n";
+import { useNavigate } from "react-router-dom";
 
 
 interface MatchmakingWheelProps {
@@ -13,39 +14,41 @@ interface MatchmakingWheelProps {
   topic: string;
 }
 
-interface LocalBot {
+interface ArenaUser {
   id: string;
   nickname: string;
   level: number;
   avatar_id?: string;
   is_bot: boolean;
+  is_online: boolean;
   profile_image_url?: string;
 }
 
 export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }: MatchmakingWheelProps) {
   const { t } = useI18n();
-  const [potentialOpponents, setPotentialOpponents] = useState<LocalBot[]>([]);
+  const navigate = useNavigate();
+  const [arenaUsers, setArenaUsers] = useState<ArenaUser[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTime, setSearchTime] = useState(30);
   const [isMatched, setIsMatched] = useState(false);
-  const [matchedOpponent, setMatchedOpponent] = useState<LocalBot | null>(null);
-  const [animationSpeed, setAnimationSpeed] = useState(50);
+  const [matchedOpponent, setMatchedOpponent] = useState<ArenaUser | null>(null);
+  const [animationSpeed, setAnimationSpeed] = useState(80);
   const [isSlowingDown, setIsSlowingDown] = useState(false);
   const [noMatchFound, setNoMatchFound] = useState(false);
 
-  // Fallback bots for when no real opponents are available
-  const fallbackBots: LocalBot[] = [
-    { id: 'bot-1', nickname: 'Amanda Nascimento', level: 19, is_bot: true },
-    { id: 'bot-2', nickname: 'Bruno Dias', level: 22, is_bot: true },
-    { id: 'bot-3', nickname: 'Victor Hugo', level: 9, is_bot: true },
-    { id: 'bot-4', nickname: 'Rafael Souza', level: 9, is_bot: true },
-    { id: 'bot-5', nickname: 'Mariana Santos', level: 21, is_bot: true },
-    { id: 'bot-6', nickname: 'Beatriz Carvalho', level: 8, is_bot: true },
-    { id: 'bot-7', nickname: 'Otavio Borges', level: 27, is_bot: true },
+  // Fallback bots for when no arena users are available
+  const fallbackBots: ArenaUser[] = [
+    { id: 'bot-1', nickname: 'Amanda Nascimento', level: 19, is_bot: true, is_online: true },
+    { id: 'bot-2', nickname: 'Bruno Dias', level: 22, is_bot: true, is_online: true },
+    { id: 'bot-3', nickname: 'Victor Hugo', level: 15, is_bot: true, is_online: true },
+    { id: 'bot-4', nickname: 'Rafael Souza', level: 12, is_bot: true, is_online: true },
+    { id: 'bot-5', nickname: 'Mariana Santos', level: 21, is_bot: true, is_online: true },
+    { id: 'bot-6', nickname: 'Beatriz Carvalho', level: 18, is_bot: true, is_online: true },
+    { id: 'bot-7', nickname: 'Otavio Borges', level: 27, is_bot: true, is_online: true },
   ];
 
   useEffect(() => {
-    loadPotentialOpponents();
+    loadArenaUsers();
   }, []);
 
   useEffect(() => {
@@ -59,11 +62,11 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
       return;
     }
 
-    // Dynamic roulette animation
+    // Dynamic roulette animation for the wheel
     let interval: NodeJS.Timeout;
     const updateInterval = () => {
       interval = setInterval(() => {
-        setCurrentIndex(prev => (prev + 1) % potentialOpponents.length);
+        setCurrentIndex(prev => (prev + 1) % Math.max(arenaUsers.length, 1));
       }, animationSpeed);
     };
     updateInterval();
@@ -78,23 +81,25 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
           setIsSlowingDown(true);
         }
         
-        // Adjust animation speed based on time remaining
+        // Adjust animation speed based on time remaining - wheel slows down gradually
         if (newTime > 25) {
-          setAnimationSpeed(50);
+          setAnimationSpeed(80);
+        } else if (newTime > 15) {
+          setAnimationSpeed(120);
         } else if (newTime > 10) {
-          setAnimationSpeed(100);
+          setAnimationSpeed(180);
         } else if (newTime > 5) {
-          setAnimationSpeed(150);
+          setAnimationSpeed(250);
         } else if (newTime > 0) {
-          setAnimationSpeed(300);
+          setAnimationSpeed(400);
         }
         
         if (newTime <= 0) {
           clearInterval(interval);
-          // Check if we have any valid opponents
-          if (potentialOpponents.length > 0) {
+          // Check if we have any valid opponents in the arena
+          if (arenaUsers.length > 0) {
             setIsMatched(true);
-            const randomOpponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
+            const randomOpponent = arenaUsers[Math.floor(Math.random() * arenaUsers.length)];
             setMatchedOpponent(randomOpponent);
             setTimeout(() => {
               onMatchFound(randomOpponent);
@@ -113,44 +118,43 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
       clearInterval(interval);
       clearInterval(timer);
     };
-  }, [isSearching, potentialOpponents, animationSpeed, isSlowingDown, onMatchFound]);
+  }, [isSearching, arenaUsers, animationSpeed, isSlowingDown, onMatchFound]);
 
-  const loadPotentialOpponents = async () => {
+  const loadArenaUsers = async () => {
     try {
-      // Try to get real opponents from database first
-      const { data: profiles } = await supabase
-        .from('profiles')
-        .select('id, nickname, level, avatar_id, is_bot')
-        .eq('is_bot', true)
-        .limit(10);
-
-      let opponents: LocalBot[] = [];
+      // Get arena users using our new RPC function
+      const { data: users, error } = await supabase.rpc('get_arena_users');
       
-      if (profiles && profiles.length > 0) {
-        opponents = profiles.map(profile => ({
-          id: profile.id,
-          nickname: profile.nickname || 'Bot Player',
-          level: profile.level || 1,
-          avatar_id: profile.avatar_id,
-          is_bot: profile.is_bot,
-          profile_image_url: null
+      if (error) throw error;
+
+      let arenaList: ArenaUser[] = [];
+      
+      if (users && users.length > 0) {
+        arenaList = users.map(user => ({
+          id: user.id,
+          nickname: user.nickname || 'User',
+          level: user.level || 1,
+          avatar_id: user.avatar_id,
+          is_bot: user.is_bot,
+          is_online: user.is_online,
+          profile_image_url: user.profile_image_url
         }));
       }
 
-      // If we have fewer than 3 opponents, add fallback bots
-      if (opponents.length < 3) {
-        const remainingSlots = 7 - opponents.length;
+      // Always ensure we have at least 8 users for a good wheel experience
+      if (arenaList.length < 8) {
+        const remainingSlots = 8 - arenaList.length;
         const additionalBots = fallbackBots
-          .filter(bot => !opponents.find(op => op.nickname === bot.nickname))
+          .filter(bot => !arenaList.find(user => user.nickname === bot.nickname))
           .slice(0, remainingSlots);
-        opponents = [...opponents, ...additionalBots];
+        arenaList = [...arenaList, ...additionalBots];
       }
 
-      setPotentialOpponents(opponents);
+      setArenaUsers(arenaList);
     } catch (error) {
-      console.error('Error loading opponents:', error);
+      console.error('Error loading arena users:', error);
       // Use fallback bots if database fails
-      setPotentialOpponents(fallbackBots);
+      setArenaUsers(fallbackBots);
     }
   };
 
@@ -159,15 +163,19 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
     setSearchTime(30);
     setIsMatched(false);
     setMatchedOpponent(null);
-    setAnimationSpeed(50);
+    setAnimationSpeed(80);
     setIsSlowingDown(false);
-    loadPotentialOpponents();
+    loadArenaUsers();
     // Don't restart search automatically - let parent component handle this
+  };
+
+  const handleUserClick = (user: ArenaUser) => {
+    navigate(`/profile/${user.id}`);
   };
 
   if (!isSearching) return null;
 
-  const currentOpponent = potentialOpponents[currentIndex] || fallbackBots[0];
+  const currentHighlighted = arenaUsers[currentIndex] || fallbackBots[0];
 
   return (
     <AnimatePresence>
@@ -180,46 +188,14 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="bg-background border border-border rounded-2xl p-6 md:p-8 max-w-md w-full mx-auto text-center space-y-6"
+          className="bg-background border border-border rounded-2xl p-4 md:p-6 max-w-2xl w-full mx-auto text-center space-y-6"
         >
-          {/* Timer and Progress Circle */}
-          <div className="relative">
-            <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto">
-              <svg
-                className="w-full h-full transform -rotate-90"
-                viewBox="0 0 100 100"
-              >
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="transparent"
-                  className="text-muted"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="transparent"
-                  strokeDasharray={`${2 * Math.PI * 45}`}
-                  strokeDashoffset={`${2 * Math.PI * 45 * (1 - searchTime / 30)}`}
-                  className={`transition-all duration-1000 ${
-                    isSlowingDown ? 'text-yellow-400' : 'text-primary'
-                  }`}
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className={`text-2xl md:text-3xl font-bold ${
-                  isSlowingDown ? 'text-yellow-400' : 'text-primary'
-                }`}>
-                  {searchTime}
-                </span>
-              </div>
-            </div>
+          {/* Header with Arena Count */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <UserIcon className="w-6 h-6 text-primary" />
+            <h2 className="text-lg md:text-xl font-bold text-foreground">
+              {t('duels.matchmaking.arenaUsers')}: {arenaUsers.length}
+            </h2>
           </div>
 
           {/* Match Found State */}
@@ -233,9 +209,13 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
                 {t('duels.matchmaking.matchFound')}
               </div>
               <div className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full border-4 border-green-400 overflow-hidden bg-green-400/20">
-                 <div className="w-full h-full bg-muted rounded-full flex items-center justify-center text-2xl font-bold">
-                   {matchedOpponent.nickname?.charAt(0) || '?'}
-                 </div>
+                <AvatarDisplayUniversal
+                  avatarName={matchedOpponent.avatar_id}
+                  profileImageUrl={matchedOpponent.profile_image_url}
+                  nickname={matchedOpponent.nickname}
+                  size="lg"
+                  className="w-full h-full"
+                />
               </div>
               <div className="space-y-1">
                 <p className="text-lg font-semibold text-green-400">
@@ -272,53 +252,120 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
               </div>
             </motion.div>
           ) : (
-            /* Searching State */
-            <motion.div className="space-y-4">
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
+            /* Searching State with Wheel */
+            <motion.div className="space-y-6">
+              <h3 className="text-lg md:text-xl font-bold text-foreground">
                 {t('duels.matchmaking.searchingFor')} {topic}
-              </h2>
+              </h3>
               
-              {/* Current Opponent Display */}
+              {/* Arena Users Wheel */}
+              <div className="relative">
+                {/* Central Timer */}
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                  <div className="bg-background border border-border rounded-full w-20 h-20 md:w-24 md:h-24 flex items-center justify-center shadow-lg">
+                    <span className={`text-xl md:text-2xl font-bold ${
+                      isSlowingDown ? 'text-yellow-400' : 'text-primary'
+                    }`}>
+                      {searchTime}
+                    </span>
+                  </div>
+                </div>
+
+                {/* User Cards in Circle */}
+                <div className="relative w-80 h-80 md:w-96 md:h-96 mx-auto">
+                  {arenaUsers.slice(0, 8).map((user, index) => {
+                    const angle = (index * 360) / 8;
+                    const radius = 140; // Distance from center
+                    const x = Math.cos((angle - 90) * Math.PI / 180) * radius;
+                    const y = Math.sin((angle - 90) * Math.PI / 180) * radius;
+                    const isHighlighted = index === currentIndex;
+                    
+                    return (
+                      <motion.div
+                        key={`${user.id}-${index}`}
+                        className={`absolute w-16 h-16 md:w-20 md:h-20 cursor-pointer transition-all duration-300 ${
+                          isHighlighted 
+                            ? 'scale-125 z-20 ring-4 ring-primary ring-opacity-60' 
+                            : 'scale-100 z-10 hover:scale-110'
+                        }`}
+                        style={{
+                          left: `calc(50% + ${x}px - 2rem)`,
+                          top: `calc(50% + ${y}px - 2rem)`,
+                        }}
+                        onClick={() => handleUserClick(user)}
+                        animate={{
+                          rotate: isHighlighted ? 360 : 0,
+                        }}
+                        transition={{ 
+                          duration: isHighlighted ? 0.6 : 0.3,
+                          ease: "easeInOut"
+                        }}
+                      >
+                        <div className={`w-full h-full rounded-full border-2 overflow-hidden ${
+                          isHighlighted 
+                            ? 'border-primary shadow-lg shadow-primary/50' 
+                            : user.is_online 
+                              ? 'border-green-400' 
+                              : 'border-muted'
+                        }`}>
+                          <AvatarDisplayUniversal
+                            avatarName={user.avatar_id}
+                            profileImageUrl={user.profile_image_url}
+                            nickname={user.nickname}
+                            size="md"
+                            className="w-full h-full"
+                          />
+                        </div>
+                        {/* Online Status Indicator */}
+                        {user.is_online && (
+                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-background"></div>
+                        )}
+                        {/* Level Badge */}
+                        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full font-semibold min-w-6 text-center">
+                          {user.level}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Highlighted User Info */}
               <motion.div
                 key={currentIndex}
-                initial={{ rotateY: -90, opacity: 0 }}
-                animate={{ rotateY: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-3"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-2"
               >
-                <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full border-2 border-primary overflow-hidden">
-                   <div className="w-full h-full bg-muted rounded-full flex items-center justify-center text-lg font-bold">
-                     {currentOpponent?.nickname?.charAt(0) || '?'}
-                   </div>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-base md:text-lg font-semibold text-foreground">
-                    {currentOpponent?.nickname || 'Loading...'}
-                    {isSlowingDown && <span className="text-yellow-400 ml-2">🎯</span>}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t('common.level')} {currentOpponent?.level || 1}
-                  </p>
-                </div>
+                <p className="text-lg font-semibold text-foreground">
+                  {currentHighlighted?.nickname || 'Loading...'}
+                  {isSlowingDown && <span className="text-yellow-400 ml-2">🎯</span>}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t('common.level')} {currentHighlighted?.level || 1}
+                  {currentHighlighted?.is_online && (
+                    <span className="text-green-400 ml-2">● {t('common.online')}</span>
+                  )}
+                </p>
               </motion.div>
 
-              <div className="text-sm text-muted-foreground space-y-1">
+              <div className="text-sm text-muted-foreground">
                 <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
                   {t('duels.matchmaking.timeRemaining')}: {searchTime}s / 30s
                 </span>
                 {isSlowingDown && (
-                  <div className="text-yellow-400 text-xs animate-pulse">
+                  <div className="text-yellow-400 text-xs animate-pulse mt-1">
                     {t('duels.matchmaking.finalizingSearch')}
                   </div>
                 )}
               </div>
 
-               <button
-                 onClick={onCancel}
-                 className="w-full mt-4 border border-border bg-background hover:bg-accent text-foreground px-4 py-2 rounded-lg font-medium transition-colors"
-               >
-                 {t('duels.matchmaking.cancel')}
-               </button>
+              <button
+                onClick={onCancel}
+                className="w-full mt-4 border border-border bg-background hover:bg-accent text-foreground px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                {t('duels.matchmaking.cancel')}
+              </button>
             </motion.div>
           )}
         </motion.div>
