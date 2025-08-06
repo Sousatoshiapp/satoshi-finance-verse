@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { TargetIcon, IconSystem } from "@/components/icons/icon-system";
 import { useI18n } from "@/hooks/use-i18n";
 
-
 interface MatchmakingWheelProps {
   isSearching: boolean;
   onMatchFound: (opponent: any) => void;
@@ -13,36 +12,15 @@ interface MatchmakingWheelProps {
   topic: string;
 }
 
-interface LocalBot {
-  id: string;
-  nickname: string;
-  level: number;
-  avatar_id?: string;
-  is_bot: boolean;
-  profile_image_url?: string;
-}
-
 export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }: MatchmakingWheelProps) {
   const { t } = useI18n();
-  const [potentialOpponents, setPotentialOpponents] = useState<LocalBot[]>([]);
+  const [potentialOpponents, setPotentialOpponents] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [searchTime, setSearchTime] = useState(30);
+  const [searchTime, setSearchTime] = useState(30); // Start from 30 seconds
   const [isMatched, setIsMatched] = useState(false);
-  const [matchedOpponent, setMatchedOpponent] = useState<LocalBot | null>(null);
-  const [animationSpeed, setAnimationSpeed] = useState(50);
+  const [matchedOpponent, setMatchedOpponent] = useState<any>(null);
+  const [animationSpeed, setAnimationSpeed] = useState(50); // Dynamic speed
   const [isSlowingDown, setIsSlowingDown] = useState(false);
-  const [noMatchFound, setNoMatchFound] = useState(false);
-
-  // Fallback bots for when no real opponents are available
-  const fallbackBots: LocalBot[] = [
-    { id: 'bot-1', nickname: 'Amanda Nascimento', level: 19, is_bot: true },
-    { id: 'bot-2', nickname: 'Bruno Dias', level: 22, is_bot: true },
-    { id: 'bot-3', nickname: 'Victor Hugo', level: 9, is_bot: true },
-    { id: 'bot-4', nickname: 'Rafael Souza', level: 9, is_bot: true },
-    { id: 'bot-5', nickname: 'Mariana Santos', level: 21, is_bot: true },
-    { id: 'bot-6', nickname: 'Beatriz Carvalho', level: 8, is_bot: true },
-    { id: 'bot-7', nickname: 'Otavio Borges', level: 27, is_bot: true },
-  ];
 
   useEffect(() => {
     loadPotentialOpponents();
@@ -50,16 +28,15 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
 
   useEffect(() => {
     if (!isSearching) {
-      setSearchTime(30);
+      setSearchTime(30); // Reset to 30 seconds
       setIsMatched(false);
       setMatchedOpponent(null);
       setAnimationSpeed(50);
       setIsSlowingDown(false);
-      setNoMatchFound(false);
       return;
     }
 
-    // Dynamic roulette animation
+    // Dynamic roulette animation with acceleration/deceleration
     let interval: NodeJS.Timeout;
     const updateInterval = () => {
       interval = setInterval(() => {
@@ -71,7 +48,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
     // Timer for search - counting down from 30 to 0
     const timer = setInterval(() => {
       setSearchTime(prev => {
-        const newTime = prev - 1;
+        const newTime = prev - 1; // Count down
         
         // Start slowing down in the last 5 seconds
         if (newTime <= 5 && !isSlowingDown) {
@@ -80,29 +57,28 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
         
         // Adjust animation speed based on time remaining
         if (newTime > 25) {
+          // Fast in the beginning
           setAnimationSpeed(50);
         } else if (newTime > 10) {
+          // Medium speed
           setAnimationSpeed(100);
         } else if (newTime > 5) {
+          // Slightly slower
           setAnimationSpeed(150);
         } else if (newTime > 0) {
+          // Very slow at the end (dramatic effect)
           setAnimationSpeed(300);
         }
         
-        if (newTime <= 0) {
+        if (newTime <= 0) { // Match found when timer reaches 0
+          setIsMatched(true);
+          // Pick a random opponent for variety
+          const randomOpponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
+          setMatchedOpponent(randomOpponent);
           clearInterval(interval);
-          // Check if we have any valid opponents
-          if (potentialOpponents.length > 0) {
-            setIsMatched(true);
-            const randomOpponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
-            setMatchedOpponent(randomOpponent);
-            setTimeout(() => {
-              onMatchFound(randomOpponent);
-            }, 2000);
-          } else {
-            // No opponents found - show "no players" message
-            setNoMatchFound(true);
-          }
+          setTimeout(() => {
+            onMatchFound(randomOpponent);
+          }, 2000); // Give time to see the match
           return 0;
         }
         return newTime;
@@ -117,212 +93,210 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
 
   const loadPotentialOpponents = async () => {
     try {
-      // Try to get real opponents from database first
+      // Get a diverse set of opponents with variety in levels and avatars
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, nickname, level, avatar_id, is_bot')
+        .select(`
+          id, nickname, level, avatar_id, is_bot,
+          avatars (name, image_url, avatar_class)
+        `)
         .eq('is_bot', true)
-        .limit(10);
+        .order('RANDOM()')
+        .limit(50); // More opponents for better variety
 
-      let opponents: LocalBot[] = [];
-      
       if (profiles && profiles.length > 0) {
-        opponents = profiles.map(profile => ({
-          id: profile.id,
-          nickname: profile.nickname || 'Bot Player',
-          level: profile.level || 1,
-          avatar_id: profile.avatar_id,
-          is_bot: profile.is_bot,
-          profile_image_url: null
-        }));
+        // Ensure we have a good mix by shuffling multiple times
+        const shuffled = [...profiles]
+          .sort(() => Math.random() - 0.5)
+          .sort(() => Math.random() - 0.5);
+        setPotentialOpponents(shuffled);
+      } else {
+        // Enhanced fallback with more diverse bots
+        setPotentialOpponents([
+          { id: '1', nickname: 'Rafael Souza', level: 15, avatars: { name: 'Trader Bot', image_url: null } },
+          { id: '2', nickname: 'Carla Lima', level: 22, avatars: { name: 'Finance Pro', image_url: null } },
+          { id: '3', nickname: 'Bruno Dias', level: 18, avatars: { name: 'Crypto Master', image_url: null } },
+          { id: '4', nickname: 'Patricia Ramos', level: 8, avatars: { name: 'Beginner', image_url: null } },
+          { id: '5', nickname: 'Sabrina Campos', level: 25, avatars: { name: 'Expert', image_url: null } },
+          { id: '6', nickname: 'Vinicius Lopes', level: 12, avatars: { name: 'Intermediate', image_url: null } },
+          { id: '7', nickname: 'Eduardo Barros', level: 30, avatars: { name: 'Master', image_url: null } },
+          { id: '8', nickname: 'Fernanda Ribeiro', level: 7, avatars: { name: 'Novice', image_url: null } },
+          { id: '9', nickname: 'Pedro Costa', level: 20, avatars: { name: 'Advanced', image_url: null } },
+          { id: '10', nickname: 'Leticia Barbosa', level: 16, avatars: { name: 'Professional', image_url: null } },
+          { id: '11', nickname: 'Gustavo Freitas', level: 28, avatars: { name: 'Veteran', image_url: null } },
+          { id: '12', nickname: 'Larissa Duarte', level: 11, avatars: { name: 'Student', image_url: null } },
+        ]);
       }
-
-      // If we have fewer than 3 opponents, add fallback bots
-      if (opponents.length < 3) {
-        const remainingSlots = 7 - opponents.length;
-        const additionalBots = fallbackBots
-          .filter(bot => !opponents.find(op => op.nickname === bot.nickname))
-          .slice(0, remainingSlots);
-        opponents = [...opponents, ...additionalBots];
-      }
-
-      setPotentialOpponents(opponents);
     } catch (error) {
       console.error('Error loading opponents:', error);
-      // Use fallback bots if database fails
-      setPotentialOpponents(fallbackBots);
+      // Enhanced fallback with more diverse bots
+      setPotentialOpponents([
+        { id: '1', nickname: 'Rafael Souza', level: 15, avatars: { name: 'Trader Bot', image_url: null } },
+        { id: '2', nickname: 'Carla Lima', level: 22, avatars: { name: 'Finance Pro', image_url: null } },
+        { id: '3', nickname: 'Bruno Dias', level: 18, avatars: { name: 'Crypto Master', image_url: null } },
+        { id: '4', nickname: 'Patricia Ramos', level: 8, avatars: { name: 'Beginner', image_url: null } },
+        { id: '5', nickname: 'Sabrina Campos', level: 25, avatars: { name: 'Expert', image_url: null } },
+        { id: '6', nickname: 'Vinicius Lopes', level: 12, avatars: { name: 'Intermediate', image_url: null } },
+        { id: '7', nickname: 'Eduardo Barros', level: 30, avatars: { name: 'Master', image_url: null } },
+        { id: '8', nickname: 'Fernanda Ribeiro', level: 7, avatars: { name: 'Novice', image_url: null } },
+        { id: '9', nickname: 'Pedro Costa', level: 20, avatars: { name: 'Advanced', image_url: null } },
+        { id: '10', nickname: 'Leticia Barbosa', level: 16, avatars: { name: 'Professional', image_url: null } },
+        { id: '11', nickname: 'Gustavo Freitas', level: 28, avatars: { name: 'Veteran', image_url: null } },
+        { id: '12', nickname: 'Larissa Duarte', level: 11, avatars: { name: 'Student', image_url: null } },
+      ]);
     }
   };
 
-  const handleTryAgain = () => {
-    setNoMatchFound(false);
-    setSearchTime(30);
-    setIsMatched(false);
-    setMatchedOpponent(null);
-    setAnimationSpeed(50);
-    setIsSlowingDown(false);
-    loadPotentialOpponents();
-    // Don't restart search automatically - let parent component handle this
-  };
+  const currentOpponent = potentialOpponents[currentIndex];
+  const progress = ((30 - searchTime) / 30) * 100; // Progress based on time elapsed
 
   if (!isSearching) return null;
 
-  const currentOpponent = potentialOpponents[currentIndex] || fallbackBots[0];
-
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="bg-background border border-border rounded-2xl p-6 md:p-8 max-w-md w-full mx-auto text-center space-y-6"
-        >
-          {/* Timer and Progress Circle */}
-          <div className="relative">
-            <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto">
-              <svg
-                className="w-full h-full transform -rotate-90"
-                viewBox="0 0 100 100"
-              >
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="transparent"
-                  className="text-muted"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="transparent"
-                  strokeDasharray={`${2 * Math.PI * 45}`}
-                  strokeDashoffset={`${2 * Math.PI * 45 * (1 - searchTime / 30)}`}
-                  className={`transition-all duration-1000 ${
-                    isSlowingDown ? 'text-yellow-400' : 'text-primary'
-                  }`}
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className={`text-2xl md:text-3xl font-bold ${
-                  isSlowingDown ? 'text-yellow-400' : 'text-primary'
-                }`}>
-                  {searchTime}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Match Found State */}
-          {isMatched && matchedOpponent ? (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="space-y-4"
-            >
-              <div className="text-2xl font-bold text-green-400">
-                {t('duels.matchmaking.matchFound')}
-              </div>
-              <div className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full border-4 border-green-400 overflow-hidden bg-green-400/20">
-                 <div className="w-full h-full bg-muted rounded-full flex items-center justify-center text-2xl font-bold">
-                   {matchedOpponent.nickname?.charAt(0) || '?'}
-                 </div>
-              </div>
-              <div className="space-y-1">
-                <p className="text-lg font-semibold text-green-400">
-                  {matchedOpponent.nickname}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {t('common.level')} {matchedOpponent.level}
-                </p>
-              </div>
-            </motion.div>
-          ) : noMatchFound ? (
-            /* No Match Found State */
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="space-y-4"
-            >
-              <div className="text-xl font-bold text-orange-400">
-                {t('duels.matchmaking.noPlayersFound')}
-              </div>
-              <div className="space-y-3">
-                 <button
-                   onClick={handleTryAgain}
-                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors"
-                 >
-                   {t('duels.matchmaking.tryAgain')}
-                 </button>
-                 <button
-                   onClick={onCancel}
-                   className="w-full border border-border bg-background hover:bg-accent text-foreground px-4 py-2 rounded-lg font-medium transition-colors"
-                 >
-                   {t('duels.matchmaking.cancel')}
-                 </button>
-              </div>
-            </motion.div>
-          ) : (
-            /* Searching State */
-            <motion.div className="space-y-4">
-              <h2 className="text-xl md:text-2xl font-bold text-foreground">
-                {t('duels.matchmaking.searchingFor')} {topic}
-              </h2>
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+      <div className="text-center">
+        {/* Circular Progress */}
+        <div className="relative w-48 h-48 mx-auto mb-8">
+          <svg className="w-48 h-48 transform -rotate-90">
+            <circle
+              cx="96"
+              cy="96"
+              r="88"
+              stroke="hsl(var(--muted))"
+              strokeWidth="8"
+              fill="none"
+              className="opacity-20"
+            />
+            <circle
+              cx="96"
+              cy="96"
+              r="88"
+              stroke="hsl(var(--primary))"
+              strokeWidth="8"
+              fill="none"
+              strokeDasharray={`${2 * Math.PI * 88}`}
+              strokeDashoffset={`${2 * Math.PI * 88 * (1 - progress / 100)}`}
+              className="transition-all duration-1000 ease-linear"
+              style={{
+                filter: `drop-shadow(0 0 20px hsl(var(--primary) / 0.5))`
+              }}
+            />
+          </svg>
+          
+          {/* Avatar in center */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              {currentOpponent && !isMatched && (
+                <motion.div
+                  key={currentIndex}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ 
+                    scale: 1, 
+                    opacity: 1,
+                    rotateY: isSlowingDown ? [0, 10, -10, 0] : 0
+                  }}
+                  exit={{ scale: 1.2, opacity: 0 }}
+                  transition={{ 
+                    duration: animationSpeed / 1000,
+                    rotateY: { duration: 0.5, ease: "easeInOut" }
+                  }}
+                  className="relative"
+                >
+                  <AvatarDisplayUniversal
+                    avatarName={currentOpponent.avatars?.name}
+                    avatarUrl={currentOpponent.avatars?.image_url}
+                    nickname={currentOpponent.nickname}
+                    size="xl"
+                    className={`border-4 rounded-full bg-background transition-all duration-300 ${
+                      isSlowingDown 
+                        ? 'border-yellow-400/60 shadow-lg shadow-yellow-400/30' 
+                        : 'border-primary/20'
+                    }`}
+                  />
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-bold">
+                    {currentOpponent.level}
+                  </div>
+                </motion.div>
+              )}
               
-              {/* Current Opponent Display */}
-              <motion.div
-                key={currentIndex}
-                initial={{ rotateY: -90, opacity: 0 }}
-                animate={{ rotateY: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-3"
-              >
-                <div className="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full border-2 border-primary overflow-hidden">
-                   <div className="w-full h-full bg-muted rounded-full flex items-center justify-center text-lg font-bold">
-                     {currentOpponent?.nickname?.charAt(0) || '?'}
-                   </div>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-base md:text-lg font-semibold text-foreground">
-                    {currentOpponent?.nickname || 'Loading...'}
-                    {isSlowingDown && <span className="text-yellow-400 ml-2">🎯</span>}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t('common.level')} {currentOpponent?.level || 1}
-                  </p>
-                </div>
-              </motion.div>
+              {isMatched && matchedOpponent && (
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1, rotateY: 360 }}
+                  transition={{ duration: 1, type: "spring" }}
+                  className="relative"
+                >
+                  <AvatarDisplayUniversal
+                    avatarName={matchedOpponent.avatars?.name}
+                    avatarUrl={matchedOpponent.avatars?.image_url}
+                    nickname={matchedOpponent.nickname}
+                    size="xl"
+                    className="border-4 border-green-500 rounded-full bg-background shadow-lg shadow-green-500/50"
+                  />
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-green-500 font-bold text-lg animate-pulse">
+                    ✓ MATCH!
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                    {matchedOpponent.level}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
-              <div className="text-sm text-muted-foreground space-y-1">
-                <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
-                  {t('duels.matchmaking.timeRemaining')}: {searchTime}s / 30s
+        {/* Status Text */}
+        <div className="space-y-4">
+          {!isMatched ? (
+            <>
+              <h2 className="text-2xl font-bold text-white">
+                <span className="flex items-center gap-2">
+                  <TargetIcon size="sm" animated variant="glow" /> Procurando Oponente...
                 </span>
+              </h2>
+              <p className="text-muted-foreground">
+                {currentOpponent?.nickname || t('common.loading') + "..."} 
+                {isSlowingDown && <span className="text-yellow-400 ml-2">🎯</span>}
+              </p>
+              <div className="text-sm text-muted-foreground">
+                 <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
+                   Tempo: {searchTime}s / 30s
+                 </span>
                 {isSlowingDown && (
-                  <div className="text-yellow-400 text-xs animate-pulse">
-                    {t('duels.matchmaking.finalizingSearch')}
+                  <div className="text-yellow-400 text-xs mt-1 animate-pulse">
+                    Finalizando busca...
                   </div>
                 )}
               </div>
-
-               <button
-                 onClick={onCancel}
-                 className="w-full mt-4 border border-border bg-background hover:bg-accent text-foreground px-4 py-2 rounded-lg font-medium transition-colors"
-               >
-                 {t('duels.matchmaking.cancel')}
-               </button>
-            </motion.div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold text-green-500">
+                <span className="flex items-center gap-2">
+                  <IconSystem emoji="🎉" size="lg" animated variant="glow" />
+                  Oponente Encontrado!
+                </span>
+              </h2>
+              <p className="text-white text-lg font-semibold">
+                {matchedOpponent?.nickname}
+              </p>
+              <div className="text-sm text-green-400">
+                Preparando duelo...
+              </div>
+            </>
           )}
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        </div>
+
+        {/* Cancel Button */}
+        {!isMatched && (
+          <button
+            onClick={onCancel}
+            className="mt-8 px-6 py-2 bg-red-500/20 text-red-400 border border-red-500/50 rounded-lg hover:bg-red-500/30 transition-colors"
+          >
+            Cancelar
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

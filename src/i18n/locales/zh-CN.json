@@ -76,16 +76,7 @@
     "online": "玩家在线",
     "searching": "寻找对手...",
     "moreBotsAvailable": "更多机器人可用",
-    "lastUpdate": "最后更新",
-    "matchmaking": {
-      "searchingFor": "正在寻找",
-      "finalizingSearch": "完成搜索中...",
-      "timeRemaining": "时间",
-      "matchFound": "匹配成功!",
-      "noPlayersFound": "竞技场中没有可用玩家，请重试",
-      "tryAgain": "重试",
-      "cancel": "取消"
-    }
+    "lastUpdate": "最后更新"
   },
   "quiz": {
     "title": "测验",

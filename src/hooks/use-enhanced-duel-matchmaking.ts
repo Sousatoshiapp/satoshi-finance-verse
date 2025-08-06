@@ -3,14 +3,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface MatchmakingResult {
-  opponent: {
-    id: string;
-    nickname: string;
-    level: number;
-    profile_image_url?: string;
-    is_bot: boolean;
-  };
-  status: 'found';
+  opponentId: string | null;
+  opponentType: 'human' | 'bot' | 'waiting';
+  matchFound: boolean;
+  opponentData?: any;
 }
 
 export function useEnhancedDuelMatchmaking() {
@@ -72,14 +68,14 @@ export function useEnhancedDuelMatchmaking() {
 
         setTimeout(() => {
           setMatchResult({
-            opponent: {
-              id: opponentData?.id || matchData.opponent_id,
+            opponentId: matchData.opponent_id,
+            opponentType: matchData.opponent_type as 'human' | 'bot',
+            matchFound: true,
+            opponentData: {
+              ...opponentData,
               nickname: opponentData?.nickname || 'Oponente',
-              level: opponentData?.level || 1,
-              profile_image_url: opponentData?.profile_image_url,
-              is_bot: opponentData?.is_bot || false
-            },
-            status: 'found'
+              level: opponentData?.level || 1
+            }
           });
           setIsSearching(false);
           setSearchPhase(null);
@@ -120,14 +116,14 @@ export function useEnhancedDuelMatchmaking() {
 
             setTimeout(() => {
               setMatchResult({
-                opponent: {
-                  id: opponentData?.id || pollData.opponent_id,
+                opponentId: pollData.opponent_id,
+                opponentType: pollData.opponent_type as 'human' | 'bot',
+                matchFound: true,
+                opponentData: {
+                  ...opponentData,
                   nickname: opponentData?.nickname || 'Oponente',
-                  level: opponentData?.level || 1,
-                  profile_image_url: opponentData?.profile_image_url,
-                  is_bot: opponentData?.is_bot || false
-                },
-                status: 'found'
+                  level: opponentData?.level || 1
+                }
               });
               setIsSearching(false);
               setSearchPhase(null);

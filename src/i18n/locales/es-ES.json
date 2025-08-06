@@ -26,16 +26,7 @@
     "online": "jugadores en línea",
     "searching": "Buscando Oponente...",
     "moreBotsAvailable": "Más bots disponibles",
-    "lastUpdate": "Última actualización",
-    "matchmaking": {
-      "searchingFor": "Buscando por",
-      "finalizingSearch": "Finalizando búsqueda...",
-      "timeRemaining": "Tiempo",
-      "matchFound": "¡PARTIDA!",
-      "noPlayersFound": "Sin Jugadores en Arena disponibles, inténtalo de nuevo",
-      "tryAgain": "Intentar de Nuevo",
-      "cancel": "Cancelar"
-    }
+    "lastUpdate": "Última actualización"
   },
   "quiz": {
     "title": "Quiz",
