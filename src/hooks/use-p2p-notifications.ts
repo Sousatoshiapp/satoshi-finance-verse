@@ -4,13 +4,11 @@ import { useProfile } from '@/hooks/use-profile';
 import confetti from 'canvas-confetti';
 import { useI18n } from '@/hooks/use-i18n';
 
-export function useP2PNotifications(
-  onTransferReceived?: (amount: number, senderNickname: string) => void
-) {
+export function useP2PNotifications() {
   const { profile } = useProfile();
   const { t } = useI18n();
 
-  const triggerReceiveNotification = (amount: number, senderNickname: string) => {
+  const triggerReceiveNotification = async (amount: number, senderNickname: string) => {
     // Enhanced confetti effect - multiple bursts
     const colors = ['#adff2f', '#32cd32', '#00ff00', '#90EE90', '#98FB98'];
     
@@ -59,8 +57,20 @@ export function useP2PNotifications(
       });
     }
 
-    if (onTransferReceived) {
-      onTransferReceived(amount, senderNickname);
+    if (profile?.id) {
+      try {
+        await supabase
+          .from('notifications')
+          .insert({
+            user_id: profile.id,
+            type: 'p2p_received',
+            title: t('p2p.notifications.received.title', { amount }),
+            message: t('p2p.notifications.received.body', { amount, senderNickname }),
+            is_read: false
+          });
+      } catch (error) {
+        console.error('Error saving P2P notification to database:', error);
+      }
     }
   };
 
@@ -99,13 +109,13 @@ export function useP2PNotifications(
               
               console.log('P2P Notifications: Sender profile found:', senderProfile);
               
-              triggerReceiveNotification(
+              await triggerReceiveNotification(
                 payload.new.amount_cents,
                 senderProfile?.nickname || 'Unknown'
               );
             } catch (error) {
               console.error('P2P Notifications: Exception fetching sender profile:', error);
-              triggerReceiveNotification(
+              await triggerReceiveNotification(
                 payload.new.amount_cents,
                 'Unknown'
               );
