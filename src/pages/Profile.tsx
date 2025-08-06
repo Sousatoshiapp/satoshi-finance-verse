@@ -13,6 +13,11 @@ import { AvatarCarousel } from "@/components/shared/profile/avatar-carousel";
 import { AchievementsCarousel } from "@/components/shared/profile/achievements-carousel";
 import { StatsGrid } from "@/components/shared/profile/stats-grid";
 import { QuickActions } from "@/components/shared/profile/quick-actions";
+import { UserEvolutionChart } from "@/components/shared/profile/user-evolution-chart";
+import { GamificationUnifiedPanel } from "@/components/shared/profile/gamification-unified-panel";
+import { DailyMissionsCarousel } from "@/components/shared/profile/daily-missions-carousel";
+import { ActiveRewardsPanel } from "@/components/shared/profile/active-rewards-panel";
+import { AchievementsTimeline } from "@/components/shared/profile/achievements-timeline";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -22,7 +27,7 @@ import { useCurrentUserAvatar } from "@/hooks/use-user-avatar";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
 import { getLevelInfo } from "@/data/levels";
-import { Crown, Star, Shield, Camera } from "lucide-react";
+import { Crown, Star, Shield, Camera, TrendingUp } from "lucide-react";
 import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
@@ -114,6 +119,7 @@ export default function Profile() {
   const [userAvatar, setUserAvatar] = useState<UserAvatar | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   const navigate = useNavigate();
   const { toast } = useToast();
   const { invalidateAvatarCaches } = useAvatarContext();
@@ -414,6 +420,24 @@ export default function Profile() {
         {/* Quick Actions */}
         <QuickActions subscription={subscription} />
 
+        {/* User Evolution Chart - Nova Seção */}
+        <UserEvolutionChart 
+          userId={user.id} 
+          timeRange={timeRange}
+          onTimeRangeChange={setTimeRange}
+        />
+
+        {/* Gamification Unified Panel - Nova Seção */}
+        <GamificationUnifiedPanel 
+          userId={user.id}
+          userStats={{
+            level: user.level,
+            xp: user.xp,
+            streak: user.streak,
+            points: user.points
+          }}
+        />
+
         {/* Stats Grid */}
         <StatsGrid
           xp={user.xp}
@@ -444,6 +468,9 @@ export default function Profile() {
           </Card>
         </div>
 
+        {/* Daily Missions Carousel - Nova Seção */}
+        <DailyMissionsCarousel userId={user.id} />
+
         {/* Carousels Section */}
         <div className="space-y-6">
           {/* Achievements Carousel */}
@@ -466,6 +493,12 @@ export default function Profile() {
           {/* Inventory Carousel */}
           <InventoryCarousel />
         </div>
+
+        {/* Active Rewards Panel - Nova Seção */}
+        <ActiveRewardsPanel userId={user.id} showHistory={true} />
+
+        {/* Achievements Timeline - Nova Seção */}
+        <AchievementsTimeline userId={user.id} limit={10} />
 
         {/* Subscription Plan Card - Compact Design */}
         <Card className="p-4 md:p-6">

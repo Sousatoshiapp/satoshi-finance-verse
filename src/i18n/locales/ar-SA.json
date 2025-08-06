@@ -932,5 +932,61 @@
     "pending": "التحقق قيد التقدم...",
     "approved": "تم التحقق من الهوية",
     "rejected": "تم رفض التحقق"
+  },
+  "profile": {
+    "header": {
+      "profile": "الملف الشخصي"
+    },
+    "userProfile": "ملف المستخدم",
+    "achievements": "الإنجازات",
+    "statistics": "الإحصائيات",
+    "followersCount": "المتابعون",
+    "followingCount": "يتابع",
+    "postsCount": "المنشورات",
+    "follow": "متابعة",
+    "unfollow": "إلغاء المتابعة",
+    "message": "رسالة",
+    "anonymousUser": "مستخدم مجهول",
+    "evolution": {
+      "title": "تطور المستخدم",
+      "7days": "7 أيام",
+      "30days": "30 يوم",
+      "90days": "90 يوم",
+      "1year": "سنة واحدة",
+      "xpProgress": "تقدم الخبرة",
+      "btzEarned": "BTZ المكتسبة",
+      "streakHistory": "تاريخ السلسلة",
+      "quizzesCompleted": "الاختبارات المكتملة"
+    },
+    "gamification": {
+      "title": "نظام التلعيب",
+      "currentLevel": "المستوى الحالي",
+      "nextLevel": "المستوى التالي",
+      "activeStreak": "السلسلة النشطة",
+      "todaysBtz": "BTZ اليوم",
+      "availableRewards": "المكافآت المتاحة",
+      "dailyMissions": "المهام اليومية",
+      "activeRewards": "المكافآت النشطة",
+      "recentAchievements": "الإنجازات الأخيرة",
+      "multiplier": "المضاعف",
+      "rewards": "المكافآت"
+    },
+    "rewards": {
+      "btzMultiplier": "مضاعف BTZ",
+      "xpBoost": "تعزيز الخبرة",
+      "streakProtection": "حماية السلسلة",
+      "dailyBonus": "المكافأة اليومية",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "timeRemaining": "الوقت المتبقي"
+    },
+    "stats": {
+      "xp": "الخبرة",
+      "level": "المستوى",
+      "streak": "السلسلة",
+      "lessons": "الدروس",
+      "of": "من",
+      "lessonsCompleted": "الدروس المكتملة"
+    }
   }
 }

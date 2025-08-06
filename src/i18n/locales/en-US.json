@@ -1168,5 +1168,61 @@
     "pending": "Verification in progress...",
     "approved": "Identity verified",
     "rejected": "Verification rejected"
+  },
+  "profile": {
+    "header": {
+      "profile": "Profile"
+    },
+    "userProfile": "User Profile",
+    "achievements": "Achievements",
+    "statistics": "Statistics",
+    "followersCount": "Followers",
+    "followingCount": "Following",
+    "postsCount": "Posts",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "message": "Message",
+    "anonymousUser": "Anonymous User",
+    "evolution": {
+      "title": "User Evolution",
+      "7days": "7 days",
+      "30days": "30 days",
+      "90days": "90 days",
+      "1year": "1 year",
+      "xpProgress": "XP Progress",
+      "btzEarned": "BTZ Earned",
+      "streakHistory": "Streak History",
+      "quizzesCompleted": "Quizzes Completed"
+    },
+    "gamification": {
+      "title": "Gamification System",
+      "currentLevel": "Current Level",
+      "nextLevel": "Next Level",
+      "activeStreak": "Active Streak",
+      "todaysBtz": "Today's BTZ",
+      "availableRewards": "Available Rewards",
+      "dailyMissions": "Daily Missions",
+      "activeRewards": "Active Rewards",
+      "recentAchievements": "Recent Achievements",
+      "multiplier": "Multiplier",
+      "rewards": "Rewards"
+    },
+    "rewards": {
+      "btzMultiplier": "BTZ Multiplier",
+      "xpBoost": "XP Boost",
+      "streakProtection": "Streak Protection",
+      "dailyBonus": "Daily Bonus",
+      "active": "Active",
+      "inactive": "Inactive",
+      "timeRemaining": "Time Remaining"
+    },
+    "stats": {
+      "xp": "XP",
+      "level": "Level",
+      "streak": "Streak",
+      "lessons": "Lessons",
+      "of": "of",
+      "lessonsCompleted": "lessons completed"
+    }
   }
 }

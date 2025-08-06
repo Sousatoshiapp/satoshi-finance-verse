@@ -1095,5 +1095,61 @@
     "pending": "सत्यापन प्रगति में...",
     "approved": "पहचान सत्यापित",
     "rejected": "सत्यापन अस्वीकृत"
+  },
+  "profile": {
+    "header": {
+      "profile": "प्रोफ़ाइल"
+    },
+    "userProfile": "उपयोगकर्ता प्रोफ़ाइल",
+    "achievements": "उपलब्धियां",
+    "statistics": "आंकड़े",
+    "followersCount": "फॉलोअर्स",
+    "followingCount": "फॉलो कर रहे",
+    "postsCount": "पोस्ट",
+    "follow": "फॉलो करें",
+    "unfollow": "अनफॉलो करें",
+    "message": "संदेश",
+    "anonymousUser": "अज्ञात उपयोगकर्ता",
+    "evolution": {
+      "title": "उपयोगकर्ता विकास",
+      "7days": "7 दिन",
+      "30days": "30 दिन",
+      "90days": "90 दिन",
+      "1year": "1 साल",
+      "xpProgress": "XP प्रगति",
+      "btzEarned": "BTZ अर्जित",
+      "streakHistory": "स्ट्रीक इतिहास",
+      "quizzesCompleted": "पूर्ण क्विज़"
+    },
+    "gamification": {
+      "title": "गेमिफिकेशन सिस्टम",
+      "currentLevel": "वर्तमान स्तर",
+      "nextLevel": "अगला स्तर",
+      "activeStreak": "सक्रिय स्ट्रीक",
+      "todaysBtz": "आज का BTZ",
+      "availableRewards": "उपलब्ध पुरस्कार",
+      "dailyMissions": "दैनिक मिशन",
+      "activeRewards": "सक्रिय पुरस्कार",
+      "recentAchievements": "हाल की उपलब्धियां",
+      "multiplier": "गुणक",
+      "rewards": "पुरस्कार"
+    },
+    "rewards": {
+      "btzMultiplier": "BTZ गुणक",
+      "xpBoost": "XP बूस्ट",
+      "streakProtection": "स्ट्रीक सुरक्षा",
+      "dailyBonus": "दैनिक बोनस",
+      "active": "सक्रिय",
+      "inactive": "निष्क्रिय",
+      "timeRemaining": "शेष समय"
+    },
+    "stats": {
+      "xp": "XP",
+      "level": "स्तर",
+      "streak": "स्ट्रीक",
+      "lessons": "पाठ",
+      "of": "का",
+      "lessonsCompleted": "पाठ पूर्ण"
+    }
   }
 }

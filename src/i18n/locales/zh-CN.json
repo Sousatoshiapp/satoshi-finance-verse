@@ -1178,5 +1178,61 @@
     "pending": "验证进行中...",
     "approved": "身份已验证",
     "rejected": "验证被拒绝"
+  },
+  "profile": {
+    "header": {
+      "profile": "个人资料"
+    },
+    "userProfile": "用户资料",
+    "achievements": "成就",
+    "statistics": "统计",
+    "followersCount": "关注者",
+    "followingCount": "正在关注",
+    "postsCount": "帖子",
+    "follow": "关注",
+    "unfollow": "取消关注",
+    "message": "消息",
+    "anonymousUser": "匿名用户",
+    "evolution": {
+      "title": "用户进化",
+      "7days": "7天",
+      "30days": "30天",
+      "90days": "90天",
+      "1year": "1年",
+      "xpProgress": "经验进度",
+      "btzEarned": "获得的BTZ",
+      "streakHistory": "连击历史",
+      "quizzesCompleted": "完成的测验"
+    },
+    "gamification": {
+      "title": "游戏化系统",
+      "currentLevel": "当前等级",
+      "nextLevel": "下一等级",
+      "activeStreak": "活跃连击",
+      "todaysBtz": "今日BTZ",
+      "availableRewards": "可用奖励",
+      "dailyMissions": "每日任务",
+      "activeRewards": "活跃奖励",
+      "recentAchievements": "最近成就",
+      "multiplier": "倍数",
+      "rewards": "奖励"
+    },
+    "rewards": {
+      "btzMultiplier": "BTZ倍数",
+      "xpBoost": "经验加成",
+      "streakProtection": "连击保护",
+      "dailyBonus": "每日奖励",
+      "active": "活跃",
+      "inactive": "非活跃",
+      "timeRemaining": "剩余时间"
+    },
+    "stats": {
+      "xp": "经验",
+      "level": "等级",
+      "streak": "连击",
+      "lessons": "课程",
+      "of": "的",
+      "lessonsCompleted": "课程完成"
+    }
   }
 }
