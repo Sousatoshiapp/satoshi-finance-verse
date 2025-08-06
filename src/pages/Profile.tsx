@@ -12,7 +12,7 @@ import { InventoryCarousel } from "@/components/shared/profile/inventory-carouse
 import { AvatarCarousel } from "@/components/shared/profile/avatar-carousel";
 import { AchievementsCarousel } from "@/components/shared/profile/achievements-carousel";
 import { StatsGrid } from "@/components/shared/profile/stats-grid";
-import { QuickActions } from "@/components/shared/profile/quick-actions";
+
 import { UserEvolutionChart } from "@/components/shared/profile/user-evolution-chart";
 import { GamificationUnifiedPanel } from "@/components/shared/profile/gamification-unified-panel";
 import { DailyMissionsCarousel } from "@/components/shared/profile/daily-missions-carousel";
@@ -445,8 +445,6 @@ export default function Profile() {
           </div>
         </Card>
 
-        {/* Quick Actions */}
-        <QuickActions subscription={subscription} />
 
         {/* User Evolution Chart - Nova Seção */}
         <UserEvolutionChart 
