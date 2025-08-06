@@ -91,9 +91,13 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
 
   const selectAvatar = async (avatarId: string) => {
     try {
+      // CORREÇÃO 3: Limpar profile_image_url quando avatar é selecionado
       const { error } = await supabase
         .from('profiles')
-        .update({ current_avatar_id: avatarId })
+        .update({ 
+          current_avatar_id: avatarId,
+          profile_image_url: null // Limpar foto para mostrar avatar
+        })
         .eq('id', userProfileId);
 
       if (error) throw error;

@@ -5,6 +5,7 @@ import { Card } from "@/components/shared/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSecurity } from "@/hooks/use-security";
+import { useAvatarContext } from "@/contexts/AvatarContext";
 import { Camera, Upload, X } from "lucide-react";
 
 interface ProfileImageUploadProps {
@@ -24,6 +25,7 @@ export function ProfileImageUpload({
   const [dragActive, setDragActive] = useState(false);
   const { toast } = useToast();
   const { logSecurityEvent, checkRateLimit } = useSecurity();
+  const { invalidateAvatarCaches } = useAvatarContext();
 
   const uploadImage = async (file: File) => {
     try {
@@ -113,6 +115,9 @@ export function ProfileImageUpload({
 
       onImageUpdated(imageUrl);
       
+      // CORREÇÃO 4: Invalidar caches quando foto é atualizada
+      invalidateAvatarCaches();
+      
       toast({
         title: "✅ Imagem atualizada!",
         description: "Sua foto de perfil foi atualizada com sucesso"
@@ -167,6 +172,9 @@ export function ProfileImageUpload({
       if (error) throw error;
 
       onImageUpdated('');
+      
+      // CORREÇÃO 5: Invalidar caches quando foto é removida
+      invalidateAvatarCaches();
       
       toast({
         title: "Imagem removida",

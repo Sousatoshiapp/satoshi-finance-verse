@@ -197,27 +197,55 @@ export default function Profile() {
   const handleImageUpdated = (newImageUrl: string) => {
     if (user) {
       setUser({ ...user, profile_image_url: newImageUrl });
+      // CORREÇÃO 1: Invalidar caches quando foto é atualizada
+      invalidateAvatarCaches();
     }
   };
 
   const handleAvatarChanged = async (avatarId: string) => {
     if (user) {
-      // Update the user's current_avatar_id
-      setUser({ ...user, current_avatar_id: avatarId, profile_image_url: null });
-      
-      // Load the new avatar data
-      if (avatarId) {
-        const { data: avatarData } = await supabase
-          .from('avatars')
-          .select('id, name, image_url')
-          .eq('id', avatarId)
-          .single();
-        
-        if (avatarData) {
-          setUserAvatar(avatarData);
+      try {
+        // CORREÇÃO 2: Limpar profile_image_url no BANCO também
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          const { error } = await supabase
+            .from('profiles')
+            .update({ 
+              current_avatar_id: avatarId, 
+              profile_image_url: null // Limpar foto quando avatar é selecionado
+            })
+            .eq('user_id', authUser.id);
+
+          if (error) throw error;
         }
-      } else {
-        setUserAvatar(null);
+        
+        // Update local state
+        setUser({ ...user, current_avatar_id: avatarId, profile_image_url: null });
+        
+        // Load the new avatar data
+        if (avatarId) {
+          const { data: avatarData } = await supabase
+            .from('avatars')
+            .select('id, name, image_url')
+            .eq('id', avatarId)
+            .single();
+          
+          if (avatarData) {
+            setUserAvatar(avatarData);
+          }
+        } else {
+          setUserAvatar(null);
+        }
+        
+        // CORREÇÃO 2: Invalidar caches quando avatar é selecionado
+        invalidateAvatarCaches();
+      } catch (error) {
+        console.error('Error updating avatar:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível atualizar o avatar",
+          variant: "destructive"
+        });
       }
     }
   };
