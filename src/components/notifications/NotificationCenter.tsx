@@ -13,7 +13,8 @@ import {
   BookOpen, 
   Target,
   Clock,
-  MessageSquare
+  MessageSquare,
+  Coins
 } from "lucide-react";
 
 interface NotificationSetting {
@@ -69,6 +70,14 @@ export function NotificationCenter() {
       description: 'Alertas quando sua sequência estiver em risco',
       enabled: true,
       icon: <Clock className="h-4 w-4" />
+    },
+    {
+      id: 'p2p_transfers',
+      type: 'p2p_transfers',
+      title: 'Transferências P2P',
+      description: 'Notificações quando receber BTZ de outros usuários',
+      enabled: true,
+      icon: <Coins className="h-4 w-4" />
     },
     {
       id: 'social_updates',
@@ -328,6 +337,7 @@ export function NotificationCenter() {
       case 'mission': return <Target className="h-4 w-4 text-green-500" />;
       case 'streak_warning': return <Clock className="h-4 w-4 text-red-500" />;
       case 'social': return <MessageSquare className="h-4 w-4 text-purple-500" />;
+      case 'p2p_received': return <Coins className="h-4 w-4 text-green-600" />;
       default: return <Bell className="h-4 w-4 text-muted-foreground" />;
     }
   };
