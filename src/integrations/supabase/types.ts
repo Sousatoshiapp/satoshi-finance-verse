@@ -7061,6 +7061,18 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: string
       }
+      get_arena_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          avatar_id: string
+          is_bot: boolean
+          is_online: boolean
+          profile_image_url: string
+        }[]
+      }
       get_current_season: {
         Args: Record<PropertyKey, never>
         Returns: string
