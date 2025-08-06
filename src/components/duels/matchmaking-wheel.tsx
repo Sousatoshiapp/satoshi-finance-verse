@@ -16,7 +16,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
   const { t } = useI18n();
   const [potentialOpponents, setPotentialOpponents] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [searchTime, setSearchTime] = useState(0);
+  const [searchTime, setSearchTime] = useState(30); // Start from 30 seconds
   const [isMatched, setIsMatched] = useState(false);
   const [matchedOpponent, setMatchedOpponent] = useState<any>(null);
   const [animationSpeed, setAnimationSpeed] = useState(50); // Dynamic speed
@@ -28,7 +28,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
 
   useEffect(() => {
     if (!isSearching) {
-      setSearchTime(0);
+      setSearchTime(30); // Reset to 30 seconds
       setIsMatched(false);
       setMatchedOpponent(null);
       setAnimationSpeed(50);
@@ -45,32 +45,32 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
     };
     updateInterval();
 
-    // Timer for search - 30 seconds with dynamic animation
+    // Timer for search - counting down from 30 to 0
     const timer = setInterval(() => {
       setSearchTime(prev => {
-        const newTime = prev + 1;
+        const newTime = prev - 1; // Count down
         
         // Start slowing down in the last 5 seconds
-        if (newTime >= 25 && !isSlowingDown) {
+        if (newTime <= 5 && !isSlowingDown) {
           setIsSlowingDown(true);
         }
         
-        // Adjust animation speed based on time
-        if (newTime < 5) {
+        // Adjust animation speed based on time remaining
+        if (newTime > 25) {
           // Fast in the beginning
           setAnimationSpeed(50);
-        } else if (newTime < 20) {
+        } else if (newTime > 10) {
           // Medium speed
           setAnimationSpeed(100);
-        } else if (newTime < 25) {
+        } else if (newTime > 5) {
           // Slightly slower
           setAnimationSpeed(150);
-        } else {
+        } else if (newTime > 0) {
           // Very slow at the end (dramatic effect)
           setAnimationSpeed(300);
         }
         
-        if (newTime >= 30) { // Match found after 30 seconds
+        if (newTime <= 0) { // Match found when timer reaches 0
           setIsMatched(true);
           // Pick a random opponent for variety
           const randomOpponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
@@ -79,7 +79,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
           setTimeout(() => {
             onMatchFound(randomOpponent);
           }, 2000); // Give time to see the match
-          return newTime;
+          return 0;
         }
         return newTime;
       });
@@ -148,7 +148,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
   };
 
   const currentOpponent = potentialOpponents[currentIndex];
-  const progress = (searchTime / 30) * 100; // Updated for 30 second search
+  const progress = ((30 - searchTime) / 30) * 100; // Progress based on time elapsed
 
   if (!isSearching) return null;
 
@@ -260,7 +260,7 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
               </p>
               <div className="text-sm text-muted-foreground">
                 <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
-                  Tempo: {searchTime}s / 30s
+                  Tempo: {30 - searchTime}s / 30s
                 </span>
                 {isSlowingDown && (
                   <div className="text-yellow-400 text-xs mt-1 animate-pulse">

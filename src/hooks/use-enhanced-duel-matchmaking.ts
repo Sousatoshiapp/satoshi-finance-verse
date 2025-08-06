@@ -13,7 +13,6 @@ export function useEnhancedDuelMatchmaking() {
   const [isSearching, setIsSearching] = useState(false);
   const [matchResult, setMatchResult] = useState<MatchmakingResult | null>(null);
   const [searchPhase, setSearchPhase] = useState<'searching' | 'found' | 'creating' | null>(null);
-  const [searchTimeout, setSearchTimeout] = useState<number>(30);
   const { toast } = useToast();
 
   const startMatchmaking = async (topic: string = 'financas') => {
@@ -21,7 +20,6 @@ export function useEnhancedDuelMatchmaking() {
       setIsSearching(true);
       setMatchResult(null);
       setSearchPhase('searching');
-      setSearchTimeout(30);
       
       // Get current user profile
       const { data: { user } } = await supabase.auth.getUser();
@@ -45,17 +43,6 @@ export function useEnhancedDuelMatchmaking() {
           expires_at: new Date(Date.now() + 30000).toISOString()
         });
 
-      // Countdown timer
-      const countdownInterval = setInterval(() => {
-        setSearchTimeout(prev => {
-          if (prev <= 1) {
-            clearInterval(countdownInterval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
       // Call the new enhanced matchmaking function
       const { data: result, error } = await supabase.rpc('find_automatic_opponent', {
         user_id_param: profile.id,
@@ -68,7 +55,6 @@ export function useEnhancedDuelMatchmaking() {
       const matchData = Array.isArray(result) ? result[0] : result;
       
       if (matchData && typeof matchData === 'object' && matchData.opponent_id) {
-        clearInterval(countdownInterval);
         setSearchPhase('found');
         
         // Get opponent data
@@ -115,7 +101,6 @@ export function useEnhancedDuelMatchmaking() {
           const pollData = Array.isArray(pollResult) ? pollResult[0] : pollResult;
           if (pollData && typeof pollData === 'object' && pollData.opponent_id) {
             clearInterval(pollInterval);
-            clearInterval(countdownInterval);
             setSearchPhase('found');
             
             // Get opponent data
@@ -153,26 +138,8 @@ export function useEnhancedDuelMatchmaking() {
         }
       }, 1500);
       
-      // Stop polling after 30 seconds
-      setTimeout(() => {
-        clearInterval(pollInterval);
-        clearInterval(countdownInterval);
-        if (isSearching) {
-          setIsSearching(false);
-          setSearchPhase(null);
-          setMatchResult({
-            opponentId: null,
-            opponentType: 'waiting',
-            matchFound: false
-          });
-          
-          // Remove from queue
-          supabase
-            .from('duel_queue')
-            .delete()
-            .eq('user_id', profile.id);
-        }
-      }, 30000);
+      // The wheel will handle the timeout now
+      // Remove this timeout logic and let wheel control timing
       
     } catch (error) {
       console.error('Matchmaking error:', error);
@@ -244,7 +211,6 @@ export function useEnhancedDuelMatchmaking() {
     isSearching,
     matchResult,
     searchPhase,
-    searchTimeout,
     startMatchmaking,
     cancelMatchmaking,
     createDuel,
