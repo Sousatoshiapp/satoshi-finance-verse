@@ -605,7 +605,22 @@
     "comboCompleted": "¡Combo Completado! +500 XP + 1000 Beetz + ¡Caja de Botín Rara!",
     "special": "Especial",
     "noMissionsAvailable": "No hay misiones disponibles en este momento",
-    "newMissionsSoon": "¡Nuevas misiones aparecerán pronto!"
+    "newMissionsSoon": "¡Nuevas misiones aparecerán pronto!",
+    "adaptiveMissions": "Misiones Adaptativas",
+    "personalizedFor": "Personalizada para ti",
+    "focusArea": "Área de Enfoque",
+    "weaknessImprovement": "Mejora de Debilidades",
+    "difficultyAdjusted": "Dificultad Ajustada",
+    "streakBonus": "Bonificación de Racha",
+    "adaptiveRewards": "Recompensas Adaptativas",
+    "intelligentNavigation": "Navegación Inteligente",
+    "contextualHints": "Pistas Contextuales",
+    "performanceAnalytics": "Análisis de Rendimiento",
+    "missionInsights": "Perspectivas de Misiones",
+    "optimalTiming": "Tiempo Óptimo",
+    "categoryPreferences": "Preferencias de Categoría",
+    "completionPatterns": "Patrones de Finalización",
+    "suggestedFocusAreas": "Áreas de Enfoque Sugeridas"
   },
   "tournaments": {
     "tournaments": "Torneos",

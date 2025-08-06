@@ -606,7 +606,22 @@
     "comboCompleted": "Combo Completado! +500 XP + 1000 Beetz + Loot Box Rara!",
     "special": "Especial",
     "noMissionsAvailable": "Nenhuma missão disponível no momento",
-    "newMissionsSoon": "Novas missões aparecerão em breve!"
+    "newMissionsSoon": "Novas missões aparecerão em breve!",
+    "adaptiveMissions": "Missões Adaptativas",
+    "personalizedFor": "Personalizada para você",
+    "focusArea": "Área de Foco",
+    "weaknessImprovement": "Melhoria de Fraqueza",
+    "difficultyAdjusted": "Dificuldade Ajustada",
+    "streakBonus": "Bônus de Sequência",
+    "adaptiveRewards": "Recompensas Adaptativas",
+    "intelligentNavigation": "Navegação Inteligente",
+    "contextualHints": "Dicas Contextuais",
+    "performanceAnalytics": "Análise de Performance",
+    "missionInsights": "Insights de Missões",
+    "optimalTiming": "Horário Ideal",
+    "categoryPreferences": "Preferências de Categoria",
+    "completionPatterns": "Padrões de Conclusão",
+    "suggestedFocusAreas": "Áreas de Foco Sugeridas"
   },
   "tournaments": {
     "tournaments": "Torneios",
