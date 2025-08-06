@@ -150,64 +150,43 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
           <Button 
             variant="ghost" 
             size="sm"
-            onClick={() => navigate('/avatar-shop')}
+            onClick={() => navigate('/avatar-collection')}
             className="text-primary hover:text-primary/80"
           >
-            Explorar <ArrowRight className="w-4 h-4 ml-1" />
+            Ver Todos <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </div>
 
         <Carousel className="w-full">
           <CarouselContent>
             {avatars.map((avatar) => (
-              <CarouselItem key={avatar.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4">
+              <CarouselItem key={avatar.id} className="basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6">
                 <div className="relative">
-                  <Card className={`cursor-pointer transition-all ${
+                  <Card className={`cursor-pointer transition-all hover:scale-105 ${
                     avatar.is_active ? 'border-primary bg-primary/5' : 
                     avatar.is_owned ? 'border-green-500/50 bg-green-500/5' : 
                     'opacity-60'
                   }`}>
-                    <CardContent className="p-3">
-                      <div className="flex flex-col items-center gap-2">
+                    <CardContent className="p-2">
+                      <div className="flex flex-col items-center">
                         <div className="relative">
                           <AvatarDisplayUniversal
                             avatarName={avatar.name}
                             avatarUrl={avatar.image_url}
                             nickname={avatar.name}
-                            size="md"
+                            size="sm"
                           />
                           {avatar.is_active && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-                              <Crown className="w-2 h-2 text-primary-foreground" />
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full flex items-center justify-center">
+                              <Crown className="w-1.5 h-1.5 text-primary-foreground" />
                             </div>
                           )}
                           {!avatar.is_owned && (
                             <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
-                              <Lock className="w-4 h-4 text-white" />
+                              <Lock className="w-3 h-3 text-white" />
                             </div>
                           )}
                         </div>
-                        
-                        <div className="text-center">
-                          <p className="text-xs font-medium truncate w-full">{avatar.name}</p>
-                          <Badge 
-                            variant="secondary" 
-                            className={`text-xs ${getRarityColor(avatar.rarity)} text-white`}
-                          >
-                            {avatar.rarity}
-                          </Badge>
-                        </div>
-                        
-                        {avatar.is_owned && !avatar.is_active && (
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => selectAvatar(avatar.id)}
-                            className="w-full text-xs"
-                          >
-                            Usar
-                          </Button>
-                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -215,8 +194,8 @@ export function AvatarCarousel({ userProfileId, currentAvatarId, onAvatarChanged
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="left-2" />
-          <CarouselNext className="right-2" />
+          <CarouselPrevious className="left-1" />
+          <CarouselNext className="right-1" />
         </Carousel>
       </CardContent>
     </Card>

@@ -54,6 +54,12 @@ export const gamificationRoutes = [
     showNavbar: true
   },
   {
+    path: "/avatar-collection",
+    element: "AvatarCollection",
+    requiresAuth: true,
+    showNavbar: true
+  },
+  {
     path: "/leagues",
     element: "Leagues",
     requiresAuth: true,

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card';
 import { Button } from '@/components/shared/ui/button';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/shared/ui/chart';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp } from 'lucide-react';
 import { useUserEvolution } from '@/hooks/use-user-evolution';
 import { useI18n } from '@/hooks/use-i18n';
@@ -13,21 +13,9 @@ interface UserEvolutionChartProps {
 }
 
 const chartConfig = {
-  xp: {
-    label: 'XP',
-    color: 'hsl(var(--chart-1))',
-  },
-  btz: {
-    label: 'BTZ',
-    color: 'hsl(var(--chart-2))',
-  },
-  streak: {
-    label: 'Streak',
-    color: 'hsl(var(--chart-3))',
-  },
-  quizzes_completed: {
-    label: 'Quizzes',
-    color: 'hsl(var(--chart-4))',
+  level: {
+    label: 'Level',
+    color: 'hsl(var(--primary))',
   },
 };
 
@@ -36,23 +24,23 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
   const { t } = useI18n();
 
   const timeRangeButtons = [
-    { key: '7d' as const, label: t('profile.evolution.7days') },
-    { key: '30d' as const, label: t('profile.evolution.30days') },
-    { key: '90d' as const, label: t('profile.evolution.90days') },
-    { key: '1y' as const, label: t('profile.evolution.1year') }
+    { key: '7d' as const, label: t('profile.levelEvolution.7days') },
+    { key: '30d' as const, label: t('profile.levelEvolution.30days') },
+    { key: '90d' as const, label: t('profile.levelEvolution.90days') },
+    { key: '1y' as const, label: t('profile.levelEvolution.1year') }
   ];
 
   if (loading) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            {t('profile.evolution.title')}
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            {t('profile.levelEvolution.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64 flex items-center justify-center">
+          <div className="h-48 sm:h-64 flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         </CardContent>
@@ -61,20 +49,21 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            {t('profile.evolution.title')}
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            {t('profile.levelEvolution.title')}
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-1 sm:gap-2">
             {timeRangeButtons.map((button) => (
               <Button
                 key={button.key}
                 variant={timeRange === button.key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onTimeRangeChange(button.key)}
+                className="text-xs px-2 py-1 h-7"
               >
                 {button.label}
               </Button>
@@ -82,45 +71,49 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-64">
-          <LineChart data={data}>
+      <CardContent className="pt-0">
+        <ChartContainer config={chartConfig} className="h-48 sm:h-64 w-full">
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="levelGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.05}/>
+              </linearGradient>
+            </defs>
             <XAxis 
               dataKey="date" 
-              tickFormatter={(value) => new Date(value).toLocaleDateString()}
+              tickFormatter={(value) => {
+                const date = new Date(value);
+                return timeRange === '7d' ? 
+                  date.toLocaleDateString('pt-BR', { weekday: 'short' }) :
+                  date.toLocaleDateString('pt-BR', { month: 'short', day: 'numeric' });
+              }}
+              axisLine={false}
+              tickLine={false}
+              className="text-xs text-muted-foreground"
             />
-            <YAxis />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="xp" 
-              stroke="var(--color-xp)" 
-              strokeWidth={2}
-              name={t('profile.evolution.xpProgress')}
+            <YAxis 
+              axisLine={false}
+              tickLine={false}
+              className="text-xs text-muted-foreground"
+              tickFormatter={(value) => `Nv ${value}`}
             />
-            <Line 
-              type="monotone" 
-              dataKey="btz" 
-              stroke="var(--color-btz)" 
-              strokeWidth={2}
-              name={t('profile.evolution.btzEarned')}
+            <ChartTooltip 
+              content={<ChartTooltipContent 
+                labelFormatter={(value) => new Date(value).toLocaleDateString('pt-BR')}
+                formatter={(value) => [`Nível ${value}`, t('profile.levelEvolution.level')]}
+              />} 
             />
-            <Line 
-              type="monotone" 
-              dataKey="streak" 
-              stroke="var(--color-streak)" 
-              strokeWidth={2}
-              name={t('profile.evolution.streakHistory')}
+            <Area
+              type="monotone"
+              dataKey="level"
+              stroke="hsl(var(--primary))"
+              strokeWidth={3}
+              fill="url(#levelGradient)"
+              dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, stroke: 'hsl(var(--primary))', strokeWidth: 2, fill: 'hsl(var(--background))' }}
             />
-            <Line 
-              type="monotone" 
-              dataKey="quizzes_completed" 
-              stroke="var(--color-quizzes_completed)" 
-              strokeWidth={2}
-              name={t('profile.evolution.quizzesCompleted')}
-            />
-          </LineChart>
+          </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>
