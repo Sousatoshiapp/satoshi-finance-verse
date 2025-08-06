@@ -91,7 +91,9 @@ export function useEnhancedDuelMatchmaking() {
       }
 
       // Poll for matches if no immediate match
-      const pollInterval = setInterval(async () => {
+      let pollInterval: NodeJS.Timeout | null = null;
+      
+      pollInterval = setInterval(async () => {
         try {
           const { data: pollResult } = await supabase.rpc('find_automatic_opponent', {
             user_id_param: profile.id,
@@ -100,7 +102,7 @@ export function useEnhancedDuelMatchmaking() {
           
           const pollData = Array.isArray(pollResult) ? pollResult[0] : pollResult;
           if (pollData && typeof pollData === 'object' && pollData.opponent_id) {
-            clearInterval(pollInterval);
+            if (pollInterval) clearInterval(pollInterval);
             setSearchPhase('found');
             
             // Get opponent data
@@ -138,8 +140,8 @@ export function useEnhancedDuelMatchmaking() {
         }
       }, 1500);
       
-      // The wheel will handle the timeout now
-      // Remove this timeout logic and let wheel control timing
+      // Store interval for cleanup
+      const currentPollInterval = pollInterval;
       
     } catch (error) {
       console.error('Matchmaking error:', error);
@@ -147,6 +149,38 @@ export function useEnhancedDuelMatchmaking() {
       setSearchPhase(null);
     }
   };
+
+  // Add cleanup for polling when component unmounts or search is cancelled
+  useEffect(() => {
+    return () => {
+      // Cleanup any ongoing searches when hook is unmounted
+      if (!isSearching) return;
+      
+      const cleanup = async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
+
+          if (profile) {
+            await supabase
+              .from('duel_queue')
+              .delete()
+              .eq('user_id', profile.id);
+          }
+        } catch (error) {
+          console.error('Error during cleanup:', error);
+        }
+      };
+      
+      cleanup();
+    };
+  }, [isSearching]);
 
   const cancelMatchmaking = async () => {
     try {
@@ -207,6 +241,12 @@ export function useEnhancedDuelMatchmaking() {
     }
   };
 
+  // Add method to stop searching when wheel completes
+  const stopSearching = () => {
+    setIsSearching(false);
+    setSearchPhase(null);
+  };
+
   return {
     isSearching,
     matchResult,
@@ -214,7 +254,8 @@ export function useEnhancedDuelMatchmaking() {
     startMatchmaking,
     cancelMatchmaking,
     createDuel,
-    setIsSearching
+    setIsSearching,
+    stopSearching
   };
 }
 

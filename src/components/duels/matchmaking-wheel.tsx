@@ -259,9 +259,9 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
                 {isSlowingDown && <span className="text-yellow-400 ml-2">🎯</span>}
               </p>
               <div className="text-sm text-muted-foreground">
-                <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
-                  Tempo: {30 - searchTime}s / 30s
-                </span>
+                 <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
+                   Tempo: {searchTime}s / 30s
+                 </span>
                 {isSlowingDown && (
                   <div className="text-yellow-400 text-xs mt-1 animate-pulse">
                     Finalizando busca...
