@@ -40,20 +40,25 @@ export function useUserEvolution(userId: string, timeRange: '7d' | '30d' | '90d'
           break;
       }
 
-      const { data: evolutionData, error } = await supabase
-        .rpc('get_user_evolution_data', {
-          user_id_param: userId,
-          start_date: startDate.toISOString(),
-          end_date: endDate.toISOString()
-        });
+      // TODO: Implement get_user_evolution_data RPC function in Supabase
+      // const { data: evolutionData, error } = await supabase
+      //   .rpc('get_user_evolution_data', {
+      //     user_id_param: userId,
+      //     start_date: startDate.toISOString(),
+      //     end_date: endDate.toISOString()
+      //   });
 
-      if (error) {
-        console.error('Error loading evolution data:', error);
-        const mockData = generateMockData(timeRange);
-        setData(mockData);
-      } else {
-        setData(evolutionData || []);
-      }
+      // if (error) {
+      //   console.error('Error loading evolution data:', error);
+      //   const mockData = generateMockData(timeRange);
+      //   setData(mockData);
+      // } else {
+      //   setData(evolutionData || []);
+      // }
+      
+      // Using mock data until RPC function is implemented
+      const mockData = generateMockData(timeRange);
+      setData(mockData);
     } catch (error) {
       console.error('Error loading evolution data:', error);
       const mockData = generateMockData(timeRange);

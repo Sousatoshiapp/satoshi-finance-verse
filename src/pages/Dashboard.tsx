@@ -5,7 +5,7 @@ import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { AvatarSelection } from "@/components/shared/avatar-selection";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { TournamentCarousel } from "@/components/features/gamification/tournament-carousel";
-import { DuelPlaygroundGrid } from "@/components/shared/duel-playground-grid";
+// import { DuelPlaygroundGrid } from "@/components/shared/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/shared/subscription-indicator";
 import { CarouselDailyMissions } from "@/components/shared/carousel-daily-missions";
 import { useSubscription } from "@/hooks/use-subscription";
@@ -381,9 +381,9 @@ export default function Dashboard() {
             <TournamentCarousel />
           </div>
           
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <DuelPlaygroundGrid />
-          </div>
+          </div> */}
 
           {/* Proximity Detection */}
           <div className="mb-6">
