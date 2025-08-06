@@ -5,6 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useAdvancedQuizAudio } from "./use-advanced-quiz-audio";
 import { useBTZAnalytics } from "./use-btz-analytics";
 
+const MAX_BTZ_PER_HOUR = 10;
+const MAX_QUIZZES_PER_DAY = 10;
+
 interface QuizGamificationState {
   streak: number;
   totalBTZ: number;
@@ -98,6 +101,16 @@ export function useQuizGamification() {
       return;
     }
 
+    const hourlyCheck = await checkDailyLimit('quiz_hourly', 0.1);
+    if (!hourlyCheck) {
+      toast({
+        title: "⚠️ Limite por Hora Atingido",
+        description: `Máximo ${MAX_BTZ_PER_HOUR} BTZ por hora`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     // NOVA LÓGICA: Streak só incrementa com acertos consecutivos
     const newStreak = state.streak + 1;
     let newMultiplier = state.currentMultiplier;
@@ -110,9 +123,9 @@ export function useQuizGamification() {
       timestamp: Date.now()
     });
     
-    // REBALANCEADO: Multiplicador limitado a 2x máximo
-    if (newStreak === 5 || newStreak === 10 || newStreak === 15) {
-      newMultiplier = Math.min(2, newStreak >= 5 ? 1.5 : newStreak >= 10 ? 2 : 2);
+    // REBALANCEADO: Sistema simplificado - máximo 2x a partir de 7 acertos
+    if (newStreak >= 7) {
+      newMultiplier = 2;
       
       const earnedBTZ = baseBTZ * newMultiplier;
       
