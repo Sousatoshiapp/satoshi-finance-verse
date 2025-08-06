@@ -26,7 +26,7 @@ import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import { useCrisisState } from "@/hooks/use-crisis-state";
 import { LanguageSwitch } from "@/components/shared/language-switch";
 import { useI18n } from "@/hooks/use-i18n";
-import { ProximityDetection } from "@/components/proximity/ProximityDetection";
+// import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 
 
@@ -400,10 +400,10 @@ export default function Dashboard() {
             <DuelPlaygroundGrid />
           </div> */}
 
-          {/* Proximity Detection */}
-          <div className="mb-6">
+          {/* Proximity Detection - Commented for future use */}
+          {/* <div className="mb-6">
             <ProximityDetection />
-          </div>
+          </div> */}
 
         </div>
       </div>
