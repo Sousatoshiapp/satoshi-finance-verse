@@ -4,7 +4,7 @@ import { BTZCounter } from "@/components/features/quiz/btz-counter";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { AvatarSelection } from "@/components/shared/avatar-selection";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
-import { TournamentCarousel } from "@/components/features/gamification/tournament-carousel";
+// import { TournamentCarousel } from "@/components/features/gamification/tournament-carousel";
 // import { DuelPlaygroundGrid } from "@/components/shared/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/shared/subscription-indicator";
 import { CarouselDailyMissions } from "@/components/shared/carousel-daily-missions";
@@ -377,9 +377,24 @@ export default function Dashboard() {
             <CarouselDailyMissions />
           </div>
 
+          {/* Torneios Épicos - Coming Soon Card */}
           <div className="mb-6">
-            <TournamentCarousel />
+            <div className="bg-card border border-border rounded-lg p-6 text-center">
+              <div className="text-4xl mb-3">🏆</div>
+              <h3 className="font-semibold text-foreground mb-2">Torneios Épicos</h3>
+              <p className="text-muted-foreground text-sm mb-3">
+                Prepare-se para batalhas épicas e prêmios incríveis!
+              </p>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-3 py-1.5 rounded-full">
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-primary">Em breve!</span>
+              </div>
+            </div>
           </div>
+          
+          {/* <div className="mb-6">
+            <TournamentCarousel />
+          </div> */}
           
           {/* <div className="mb-6">
             <DuelPlaygroundGrid />
