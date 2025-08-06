@@ -178,7 +178,7 @@ export default function Dashboard() {
       currentXP: dashboardData.profile?.xp || 0,
       nextLevelXP: dashboardData.nextLevelXP || 100,
       streak: dashboardData.profile?.streak || 0,
-      completedLessons: dashboardData.profile?.completed_lessons || 0,
+      completedLessons: dashboardData.completedQuizzes || 0, // Use real quiz data
       points: realtimePoints || dashboardData.profile?.points || 0
     };
   }, [dashboardData, realtimePoints]);

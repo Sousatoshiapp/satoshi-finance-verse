@@ -10,6 +10,7 @@ export interface DashboardData {
   team: any;
   nextLevelXP: number;
   calculatedLevel: number;
+  completedQuizzes: number;
 }
 
 const fetchDashboardDataOptimized = async (): Promise<DashboardData | null> => {
@@ -38,7 +39,8 @@ const fetchDashboardDataOptimized = async (): Promise<DashboardData | null> => {
       district: parsed.district,
       team: parsed.team,
       nextLevelXP: parsed.nextLevelXP || 100,
-      calculatedLevel: parsed.profile?.level || 1
+      calculatedLevel: parsed.profile?.level || 1,
+      completedQuizzes: parsed.completedQuizzes || 0
     };
   } catch (error) {
     console.warn('Database function not available, using fallback:', error);
@@ -64,8 +66,8 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
 
   if (!profile) return null;
 
-  // Parallel queries for district and team
-  const [districtResult, teamResult] = await Promise.all([
+  // Parallel queries for district, team, and quiz completions
+  const [districtResult, teamResult, quizResult] = await Promise.all([
     supabase
       .from('user_districts')
       .select(`
@@ -83,11 +85,20 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
       .select(`district_teams(id, name, team_color)`)
       .eq('user_id', profile.id)
       .eq('is_active', true)
-      .maybeSingle()
+      .maybeSingle(),
+
+    // Get completed quiz sessions count
+    supabase
+      .from('quiz_sessions')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', profile.id)
+      .eq('session_type', 'practice')
+      .gte('questions_correct', 5) // Only count quizzes with at least 5 correct answers
   ]);
 
   const calculatedLevel = profile.level || 1;
   const nextLevelXP = (calculatedLevel + 1) * 100; // Simple calculation
+  const completedQuizzes = quizResult.count || 0;
 
   return {
     profile: { ...profile, level: calculatedLevel },
@@ -95,7 +106,8 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
     district: districtResult.data?.districts,
     team: teamResult.data?.district_teams,
     nextLevelXP,
-    calculatedLevel
+    calculatedLevel,
+    completedQuizzes
   };
 };
 
@@ -103,7 +115,7 @@ export const useDashboardData = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   
-  // Set up realtime subscription for profile updates
+  // Set up realtime subscription for profile and quiz updates
   useEffect(() => {
     if (!user) return;
 
@@ -119,6 +131,19 @@ export const useDashboardData = () => {
         },
         () => {
           // Invalidate dashboard data when profile is updated
+          queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'quiz_sessions',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          // Invalidate dashboard data when new quiz is completed
           queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
         }
       )

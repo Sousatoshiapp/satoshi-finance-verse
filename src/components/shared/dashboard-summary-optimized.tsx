@@ -65,10 +65,18 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
     return "bg-gradient-to-r from-gray-500 to-slate-500";
   }, [userStats.streak]);
 
-  // Memoize lesson progress calculation
+  // Calculate dynamic lesson goal based on user level
+  const lessonGoal = useMemo(() => {
+    const level = userStats.level || 1;
+    if (level <= 5) return 10;
+    if (level <= 10) return 15;
+    return 20;
+  }, [userStats.level]);
+
+  // Memoize lesson progress calculation with dynamic goal
   const lessonProgress = useMemo(() => {
-    return ((userStats.completedLessons || 0) / 20) * 100;
-  }, [userStats.completedLessons]);
+    return Math.min(((userStats.completedLessons || 0) / lessonGoal) * 100, 100);
+  }, [userStats.completedLessons, lessonGoal]);
 
   return (
     <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5 h-40 overflow-hidden">
@@ -95,10 +103,13 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
           <div className="text-center p-2 rounded-lg bg-gradient-to-b from-muted/50 to-background">
             <div className="text-sm font-bold text-primary flex items-center justify-center gap-1">
               <Target className="h-3 w-3" />
-              {userStats.completedLessons || 0}
+              {userStats.completedLessons || 0}/{lessonGoal}
             </div>
             <p className="text-xs text-muted-foreground">{t('dashboard.lessons')}</p>
             <Progress value={lessonProgress} className="h-1 mt-1" />
+            {lessonProgress >= 100 && (
+              <div className="text-xs text-success mt-1">🎯 Meta alcançada!</div>
+            )}
           </div>
 
           {/* XP Multiplier */}
