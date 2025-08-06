@@ -71,7 +71,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
   }, [userStats.completedLessons]);
 
   return (
-    <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5 h-48 overflow-hidden">
+    <Card className="mb-6 border-primary/20 bg-gradient-to-br from-background to-primary/5 h-40 overflow-hidden">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
           <Trophy className="h-5 w-5 text-primary" />
@@ -79,21 +79,7 @@ const DashboardSummaryOptimized = memo(function DashboardSummaryOptimized({ user
         </CardTitle>
       </CardHeader>
       
-      <CardContent className="space-y-3 h-full overflow-hidden">
-        {/* XP Progress */}
-        <div className="space-y-1">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium flex items-center gap-1">
-              <Sparkles className="h-4 w-4 text-yellow-500" />
-              {t('dashboard.experience')}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {userStats.currentXP || 0} / {userStats.nextLevelXP || 0} XP
-            </span>
-          </div>
-          <Progress value={xpProgress} className="h-2" />
-        </div>
-
+      <CardContent className="h-full overflow-hidden">
         {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-2">
           {/* Streak */}
