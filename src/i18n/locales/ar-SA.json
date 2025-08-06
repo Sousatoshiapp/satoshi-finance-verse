@@ -258,6 +258,59 @@
     "enhanceBotRealism": "تعزيز واقعية البوت",
     "updateBotNicknames": "تحديث أسماء البوتات"
   },
+  "matchmaking": {
+    "preferences": {
+      "title": "تفضيلات المطابقة",
+      "subtitle": "اضبط كيف تريد العثور على خصوم للمبارزات",
+      "topics": {
+        "title": "المواضيع المفضلة",
+        "subtitle": "اختر المواضيع التي تستمتع بالمبارزة فيها أكثر",
+        "financas": "التمويل العام",
+        "investimentos": "الاستثمارات",
+        "criptomoedas": "العملات الرقمية",
+        "economia": "الاقتصاد"
+      },
+      "allowBots": {
+        "title": "السماح للخصوم الآليين",
+        "subtitle": "قبول المبارزات ضد خصوم يتحكم بهم الذكاء الاصطناعي"
+      },
+      "skillLevel": {
+        "title": "مستوى الخصم",
+        "similar": "مستوى مماثل",
+        "similarDesc": "خصوم قريبون من مستواك",
+        "any": "أي مستوى",
+        "anyDesc": "أي خصم متاح",
+        "challenging": "تحدي",
+        "challengingDesc": "خصوم بمستوى أعلى"
+      },
+      "autoAccept": {
+        "title": "قبول تلقائي من الأصدقاء",
+        "subtitle": "قبول دعوات الأصدقاء تلقائياً"
+      },
+      "maxInvites": {
+        "title": "الدعوات المتزامنة",
+        "subtitle": "الحد الأقصى للدعوات التي يمكنك تلقيها في نفس الوقت"
+      },
+      "availability": {
+        "title": "حالة التوفر",
+        "available": "متاح",
+        "availableDesc": "قبول جميع الدعوات",
+        "busy": "مشغول",
+        "busyDesc": "الدعوات ذات الأولوية فقط",
+        "invisible": "غير مرئي",
+        "invisibleDesc": "عدم تلقي دعوات"
+      },
+      "actions": {
+        "cancel": "إلغاء",
+        "save": "حفظ التفضيلات",
+        "saving": "جاري الحفظ...",
+        "saveSuccess": "تم حفظ التفضيلات",
+        "saveSuccessDesc": "تم تحديث تفضيلات المطابقة الخاصة بك!",
+        "saveError": "خطأ",
+        "saveErrorDesc": "لا يمكن حفظ تفضيلاتك. حاول مرة أخرى."
+      }
+    }
+  },
   "quizEngine": {
     "loadingQuestions": "جاري تحميل الأسئلة...",
     "noQuestionsAvailable": "لا توجد أسئلة متاحة",

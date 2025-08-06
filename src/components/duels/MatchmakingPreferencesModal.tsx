@@ -19,19 +19,14 @@ import {
 } from 'lucide-react';
 import { useMatchmakingPreferences, MatchmakingPreferences } from '@/hooks/useMatchmakingPreferences';
 import { useToast } from '@/hooks/use-toast';
+import { useI18n } from '@/hooks/use-i18n';
 
 const topicsMap: Record<string, string> = {
-  "financas": "Finanças Gerais",
-  "investimentos": "Investimentos", 
-  "criptomoedas": "Criptomoedas",
-  "economia": "Economia"
+  "financas": "financas",
+  "investimentos": "investimentos", 
+  "criptomoedas": "criptomoedas",
+  "economia": "economia"
 };
-
-const skillLevelOptions = [
-  { value: 'similar', label: 'Nível Similar', description: 'Adversários próximos ao seu nível' },
-  { value: 'any', label: 'Qualquer Nível', description: 'Qualquer adversário disponível' },
-  { value: 'challenging', label: 'Desafiador', description: 'Adversários de nível superior' }
-];
 
 interface MatchmakingPreferencesModalProps {
   isOpen: boolean;
@@ -43,6 +38,7 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
   const [localPreferences, setLocalPreferences] = React.useState<MatchmakingPreferences>(preferences);
   const [saving, setSaving] = React.useState(false);
   const { toast } = useToast();
+  const { t } = useI18n();
 
   React.useEffect(() => {
     setLocalPreferences(preferences);
@@ -55,17 +51,17 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
       
       if (success) {
         toast({
-          title: "✅ Preferências Salvas",
-          description: "Suas preferências de matchmaking foram atualizadas!",
+          title: `✅ ${t('matchmaking.preferences.actions.saveSuccess')}`,
+          description: t('matchmaking.preferences.actions.saveSuccessDesc'),
         });
         onClose();
       } else {
-        throw new Error('Falha ao salvar preferências');
+        throw new Error('Failed to save preferences');
       }
     } catch (error) {
       toast({
-        title: "❌ Erro",
-        description: "Não foi possível salvar suas preferências. Tente novamente.",
+        title: `❌ ${t('matchmaking.preferences.actions.saveError')}`,
+        description: t('matchmaking.preferences.actions.saveErrorDesc'),
         variant: "destructive"
       });
     } finally {
@@ -99,31 +95,31 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
           initial={{ scale: 0.8, y: 50 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.8, y: 50 }}
-          className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+          className="w-full max-w-lg sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto"
         >
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="h-6 w-6" />
-                Preferências de Matchmaking
+            <CardHeader className="pb-4 sm:pb-6">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Settings className="h-5 w-5 sm:h-6 sm:w-6" />
+                {t('matchmaking.preferences.title')}
               </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Configure como você gostaria de encontrar adversários para duelos
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {t('matchmaking.preferences.subtitle')}
               </p>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6">
               {/* Tópicos Preferidos */}
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2 text-base font-semibold">
-                  <Target className="h-5 w-5" />
-                  Tópicos Preferidos
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {t('matchmaking.preferences.topics.title')}
                 </Label>
-                <p className="text-sm text-muted-foreground">
-                  Selecione os tópicos que você mais gosta de duelar
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {t('matchmaking.preferences.topics.subtitle')}
                 </p>
-                <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(topicsMap).map(([key, label]) => {
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  {Object.entries(topicsMap).map(([key, translationKey]) => {
                     const isSelected = localPreferences.preferredTopics.includes(key);
                     return (
                       <Button
@@ -131,10 +127,10 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
                         variant={isSelected ? "default" : "outline"}
                         size="sm"
                         onClick={() => toggleTopic(key)}
-                        className={`justify-start ${isSelected ? 'bg-primary' : ''}`}
+                        className={`justify-start text-xs sm:text-sm h-9 sm:h-10 ${isSelected ? 'bg-primary' : ''}`}
                       >
-                        {isSelected && <Check className="h-4 w-4 mr-2" />}
-                        {label}
+                        {isSelected && <Check className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />}
+                        {t(`matchmaking.preferences.topics.${translationKey}`)}
                       </Button>
                     );
                   })}
@@ -142,14 +138,14 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
               </div>
 
               {/* Permitir Bots */}
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2 text-base font-semibold">
-                  <Bot className="h-5 w-5" />
-                  Permitir Adversários Bot
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                  <Bot className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {t('matchmaking.preferences.allowBots.title')}
                 </Label>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Aceitar duelos contra adversários controlados por IA
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground flex-1">
+                    {t('matchmaking.preferences.allowBots.subtitle')}
                   </p>
                   <Switch
                     checked={localPreferences.allowBots}
@@ -161,10 +157,10 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
               </div>
 
               {/* Nível de Habilidade */}
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2 text-base font-semibold">
-                  <Shield className="h-5 w-5" />
-                  Nível de Adversários
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                  <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {t('matchmaking.preferences.skillLevel.title')}
                 </Label>
                 <Select
                   value={localPreferences.skillLevelRange}
@@ -172,31 +168,41 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
                     setLocalPreferences(prev => ({ ...prev, skillLevelRange: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 sm:h-11">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {skillLevelOptions.map(option => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div>
-                          <div className="font-medium">{option.label}</div>
-                          <div className="text-xs text-muted-foreground">{option.description}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="similar">
+                      <div>
+                        <div className="font-medium text-xs sm:text-sm">{t('matchmaking.preferences.skillLevel.similar')}</div>
+                        <div className="text-xs text-muted-foreground">{t('matchmaking.preferences.skillLevel.similarDesc')}</div>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="any">
+                      <div>
+                        <div className="font-medium text-xs sm:text-sm">{t('matchmaking.preferences.skillLevel.any')}</div>
+                        <div className="text-xs text-muted-foreground">{t('matchmaking.preferences.skillLevel.anyDesc')}</div>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="challenging">
+                      <div>
+                        <div className="font-medium text-xs sm:text-sm">{t('matchmaking.preferences.skillLevel.challenging')}</div>
+                        <div className="text-xs text-muted-foreground">{t('matchmaking.preferences.skillLevel.challengingDesc')}</div>
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Auto-aceitar de Amigos */}
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2 text-base font-semibold">
-                  <Users className="h-5 w-5" />
-                  Auto-aceitar de Amigos
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                  <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {t('matchmaking.preferences.autoAccept.title')}
                 </Label>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    Aceitar automaticamente convites de amigos
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground flex-1">
+                    {t('matchmaking.preferences.autoAccept.subtitle')}
                   </p>
                   <Switch
                     checked={localPreferences.autoAcceptFromFriends}
@@ -208,13 +214,13 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
               </div>
 
               {/* Máximo de Convites */}
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2 text-base font-semibold">
-                  <Clock className="h-5 w-5" />
-                  Convites Simultâneos: {localPreferences.maxConcurrentInvites}
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {t('matchmaking.preferences.maxInvites.title')}: {localPreferences.maxConcurrentInvites}
                 </Label>
-                <p className="text-sm text-muted-foreground">
-                  Máximo de convites que você pode receber ao mesmo tempo
+                <p className="text-xs sm:text-sm text-muted-foreground">
+                  {t('matchmaking.preferences.maxInvites.subtitle')}
                 </p>
                 <Slider
                   value={[localPreferences.maxConcurrentInvites]}
@@ -233,10 +239,10 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
               </div>
 
               {/* Status de Disponibilidade */}
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2 text-base font-semibold">
-                  <Zap className="h-5 w-5" />
-                  Status de Disponibilidade
+              <div className="space-y-2 sm:space-y-3">
+                <Label className="flex items-center gap-2 text-sm sm:text-base font-semibold">
+                  <Zap className="h-4 w-4 sm:h-5 sm:w-5" />
+                  {t('matchmaking.preferences.availability.title')}
                 </Label>
                 <Select
                   value={localPreferences.availabilityStatus}
@@ -244,7 +250,7 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
                     setLocalPreferences(prev => ({ ...prev, availabilityStatus: value }))
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 sm:h-11">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -252,8 +258,8 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-green-500"></div>
                         <div>
-                          <div className="font-medium">Disponível</div>
-                          <div className="text-xs text-muted-foreground">Aceitar todos os convites</div>
+                          <div className="font-medium text-xs sm:text-sm">{t('matchmaking.preferences.availability.available')}</div>
+                          <div className="text-xs text-muted-foreground">{t('matchmaking.preferences.availability.availableDesc')}</div>
                         </div>
                       </div>
                     </SelectItem>
@@ -261,8 +267,8 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
                         <div>
-                          <div className="font-medium">Ocupado</div>
-                          <div className="text-xs text-muted-foreground">Apenas convites prioritários</div>
+                          <div className="font-medium text-xs sm:text-sm">{t('matchmaking.preferences.availability.busy')}</div>
+                          <div className="text-xs text-muted-foreground">{t('matchmaking.preferences.availability.busyDesc')}</div>
                         </div>
                       </div>
                     </SelectItem>
@@ -270,8 +276,8 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-gray-500"></div>
                         <div>
-                          <div className="font-medium">Invisível</div>
-                          <div className="text-xs text-muted-foreground">Não receber convites</div>
+                          <div className="font-medium text-xs sm:text-sm">{t('matchmaking.preferences.availability.invisible')}</div>
+                          <div className="text-xs text-muted-foreground">{t('matchmaking.preferences.availability.invisibleDesc')}</div>
                         </div>
                       </div>
                     </SelectItem>
@@ -280,20 +286,20 @@ export function MatchmakingPreferencesModal({ isOpen, onClose }: MatchmakingPref
               </div>
 
               {/* Botões de Ação */}
-              <div className="flex gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-3 sm:pt-4">
                 <Button
                   variant="outline"
                   onClick={onClose}
-                  className="flex-1"
+                  className="flex-1 h-10 sm:h-11 text-xs sm:text-sm"
                 >
-                  Cancelar
+                  {t('matchmaking.preferences.actions.cancel')}
                 </Button>
                 <Button
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1"
+                  className="flex-1 h-10 sm:h-11 text-xs sm:text-sm"
                 >
-                  {saving ? "Salvando..." : "Salvar Preferências"}
+                  {saving ? t('matchmaking.preferences.actions.saving') : t('matchmaking.preferences.actions.save')}
                 </Button>
               </div>
             </CardContent>

@@ -280,6 +280,59 @@
       "socialInteractions": "Interacciones Sociales"
     }
   },
+  "matchmaking": {
+    "preferences": {
+      "title": "Preferencias de Emparejamiento",
+      "subtitle": "Configura cómo te gustaría encontrar oponentes para duelos",
+      "topics": {
+        "title": "Temas Preferidos",
+        "subtitle": "Selecciona los temas sobre los que más disfrutas duelos",
+        "financas": "Finanzas Generales",
+        "investimentos": "Inversiones",
+        "criptomoedas": "Criptomonedas",
+        "economia": "Economía"
+      },
+      "allowBots": {
+        "title": "Permitir Oponentes Bot",
+        "subtitle": "Aceptar duelos contra oponentes controlados por IA"
+      },
+      "skillLevel": {
+        "title": "Nivel de Oponentes",
+        "similar": "Nivel Similar",
+        "similarDesc": "Oponentes cercanos a tu nivel",
+        "any": "Cualquier Nivel",
+        "anyDesc": "Cualquier oponente disponible",
+        "challenging": "Desafiante",
+        "challengingDesc": "Oponentes de nivel superior"
+      },
+      "autoAccept": {
+        "title": "Auto-aceptar de Amigos",
+        "subtitle": "Aceptar automáticamente invitaciones de amigos"
+      },
+      "maxInvites": {
+        "title": "Invitaciones Simultáneas",
+        "subtitle": "Máximo de invitaciones que puedes recibir al mismo tiempo"
+      },
+      "availability": {
+        "title": "Estado de Disponibilidad",
+        "available": "Disponible",
+        "availableDesc": "Aceptar todas las invitaciones",
+        "busy": "Ocupado",
+        "busyDesc": "Solo invitaciones prioritarias",
+        "invisible": "Invisible",
+        "invisibleDesc": "No recibir invitaciones"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "save": "Guardar Preferencias",
+        "saving": "Guardando...",
+        "saveSuccess": "Preferencias Guardadas",
+        "saveSuccessDesc": "¡Tus preferencias de emparejamiento han sido actualizadas!",
+        "saveError": "Error",
+        "saveErrorDesc": "No se pudieron guardar tus preferencias. Inténtalo de nuevo."
+      }
+    }
+  },
   "admin": {
     "dashboard": "Panel de Administración",
     "language": "Idioma",

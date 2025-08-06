@@ -861,6 +861,59 @@
     "noSponsorAccess": "Você não possui acesso administrativo a nenhum distrito patrocinado",
     "configureAccess": "Para configurar acessos de sponsor admin, acesse"
   },
+  "matchmaking": {
+    "preferences": {
+      "title": "Preferências de Matchmaking",
+      "subtitle": "Configure como você gostaria de encontrar adversários para duelos",
+      "topics": {
+        "title": "Tópicos Preferidos",
+        "subtitle": "Selecione os tópicos que você mais gosta de duelar",
+        "financas": "Finanças Gerais",
+        "investimentos": "Investimentos",
+        "criptomoedas": "Criptomoedas",
+        "economia": "Economia"
+      },
+      "allowBots": {
+        "title": "Permitir Adversários Bot",
+        "subtitle": "Aceitar duelos contra adversários controlados por IA"
+      },
+      "skillLevel": {
+        "title": "Nível de Adversários",
+        "similar": "Nível Similar",
+        "similarDesc": "Adversários próximos ao seu nível",
+        "any": "Qualquer Nível",
+        "anyDesc": "Qualquer adversário disponível",
+        "challenging": "Desafiador",
+        "challengingDesc": "Adversários de nível superior"
+      },
+      "autoAccept": {
+        "title": "Auto-aceitar de Amigos",
+        "subtitle": "Aceitar automaticamente convites de amigos"
+      },
+      "maxInvites": {
+        "title": "Convites Simultâneos",
+        "subtitle": "Máximo de convites que você pode receber ao mesmo tempo"
+      },
+      "availability": {
+        "title": "Status de Disponibilidade",
+        "available": "Disponível",
+        "availableDesc": "Aceitar todos os convites",
+        "busy": "Ocupado",
+        "busyDesc": "Apenas convites prioritários",
+        "invisible": "Invisível",
+        "invisibleDesc": "Não receber convites"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "save": "Salvar Preferências",
+        "saving": "Salvando...",
+        "saveSuccess": "Preferências Salvas",
+        "saveSuccessDesc": "Suas preferências de matchmaking foram atualizadas!",
+        "saveError": "Erro",
+        "saveErrorDesc": "Não foi possível salvar suas preferências. Tente novamente."
+      }
+    }
+  },
   "districtQuiz": {
     "backToDistrict": "Voltar ao Distrito",
     "prepareToTest": "Prepare-se para testar seus conhecimentos!",

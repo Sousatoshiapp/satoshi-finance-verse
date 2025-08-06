@@ -389,6 +389,59 @@
     "enhanceBotRealism": "增强机器人真实感",
     "updateBotNicknames": "更新机器人昵称"
   },
+  "matchmaking": {
+    "preferences": {
+      "title": "匹配偏好设置",
+      "subtitle": "配置您希望如何寻找决斗对手",
+      "topics": {
+        "title": "偏好主题",
+        "subtitle": "选择您最喜欢决斗的主题",
+        "financas": "通用金融",
+        "investimentos": "投资",
+        "criptomoedas": "加密货币",
+        "economia": "经济"
+      },
+      "allowBots": {
+        "title": "允许机器人对手",
+        "subtitle": "接受与AI控制的对手进行决斗"
+      },
+      "skillLevel": {
+        "title": "对手水平",
+        "similar": "相似水平",
+        "similarDesc": "接近您水平的对手",
+        "any": "任何水平",
+        "anyDesc": "任何可用的对手",
+        "challenging": "挑战性",
+        "challengingDesc": "更高水平的对手"
+      },
+      "autoAccept": {
+        "title": "自动接受好友邀请",
+        "subtitle": "自动接受来自好友的邀请"
+      },
+      "maxInvites": {
+        "title": "并发邀请",
+        "subtitle": "您可以同时接收的最大邀请数量"
+      },
+      "availability": {
+        "title": "可用状态",
+        "available": "可用",
+        "availableDesc": "接受所有邀请",
+        "busy": "忙碌",
+        "busyDesc": "仅限优先邀请",
+        "invisible": "隐身",
+        "invisibleDesc": "不接收邀请"
+      },
+      "actions": {
+        "cancel": "取消",
+        "save": "保存偏好设置",
+        "saving": "保存中...",
+        "saveSuccess": "偏好设置已保存",
+        "saveSuccessDesc": "您的匹配偏好设置已更新！",
+        "saveError": "错误",
+        "saveErrorDesc": "无法保存您的偏好设置。请重试。"
+      }
+    }
+  },
   "quizEngine": {
     "loadingQuestions": "加载问题中...",
     "noQuestionsAvailable": "暂无问题",

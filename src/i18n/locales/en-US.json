@@ -331,6 +331,59 @@
       "socialInteractions": "Social Interactions"
     }
   },
+  "matchmaking": {
+    "preferences": {
+      "title": "Matchmaking Preferences",
+      "subtitle": "Configure how you would like to find opponents for duels",
+      "topics": {
+        "title": "Preferred Topics",
+        "subtitle": "Select the topics you most enjoy dueling about",
+        "financas": "General Finance",
+        "investimentos": "Investments",
+        "criptomoedas": "Cryptocurrencies",
+        "economia": "Economy"
+      },
+      "allowBots": {
+        "title": "Allow Bot Opponents",
+        "subtitle": "Accept duels against AI-controlled opponents"
+      },
+      "skillLevel": {
+        "title": "Opponent Level",
+        "similar": "Similar Level",
+        "similarDesc": "Opponents close to your level",
+        "any": "Any Level",
+        "anyDesc": "Any available opponent",
+        "challenging": "Challenging",
+        "challengingDesc": "Higher level opponents"
+      },
+      "autoAccept": {
+        "title": "Auto-accept from Friends",
+        "subtitle": "Automatically accept invites from friends"
+      },
+      "maxInvites": {
+        "title": "Concurrent Invites",
+        "subtitle": "Maximum invites you can receive at the same time"
+      },
+      "availability": {
+        "title": "Availability Status",
+        "available": "Available",
+        "availableDesc": "Accept all invites",
+        "busy": "Busy",
+        "busyDesc": "Priority invites only",
+        "invisible": "Invisible",
+        "invisibleDesc": "Don't receive invites"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save Preferences",
+        "saving": "Saving...",
+        "saveSuccess": "Preferences Saved",
+        "saveSuccessDesc": "Your matchmaking preferences have been updated!",
+        "saveError": "Error",
+        "saveErrorDesc": "Could not save your preferences. Please try again."
+      }
+    }
+  },
   "admin": {
     "dashboard": "Admin Dashboard",
     "language": "Language",
