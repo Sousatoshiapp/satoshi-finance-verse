@@ -290,12 +290,8 @@ export function TwitterSocialFeed() {
       if (error) throw error;
 
       setNewComment(prev => ({ ...prev, [postId]: "" }));
+      setExpandedPost(null);
       loadComments(postId);
-
-      toast({
-        title: t('common.success'),
-        description: t('social.messages.commentAdded')
-      });
 
       // Award challenge progress
       await supabase.functions.invoke('process-social-activity', {
