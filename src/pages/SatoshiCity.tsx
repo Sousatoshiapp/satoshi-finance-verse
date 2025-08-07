@@ -428,8 +428,8 @@ export default function SatoshiCity() {
           </Badge>
         </div>
         
-        {/* Botão para modo 3D Cyberpunk */}
-        <div className="flex justify-center">
+        {/* Botão para modo 3D Cyberpunk - TEMPORARIAMENTE DESABILITADO */}
+        {/* <div className="flex justify-center">
           <Button
             onClick={() => setIs3DMode(true)}
             className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:from-cyan-600 hover:to-purple-600 transition-all duration-300"
@@ -437,7 +437,7 @@ export default function SatoshiCity() {
             <Box className="w-5 h-5 mr-2" />
             Explorar em 3D Cyberpunk
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* Interactive City Map - Mobile Optimized */}
