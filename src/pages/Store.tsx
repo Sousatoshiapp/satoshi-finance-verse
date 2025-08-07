@@ -13,7 +13,9 @@ import { CryptoCheckout } from "@/components/crypto/crypto-checkout";
 import { useCryptoPayments } from "@/hooks/use-crypto-payments";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
-import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield } from "lucide-react";
+import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield, Infinity, Eye, Sparkles } from "lucide-react";
+import { ComingSoonOverlay } from "@/components/shared/coming-soon-overlay";
+import { AvatarFallbackImage } from "@/components/features/store/avatar-fallback-image";
 
 // Import cyberpunk avatar images
 import neoTrader from "@/assets/avatars/neo-trader.jpg";
@@ -840,6 +842,10 @@ export default function Store() {
                           {getRarityIcon(avatar.rarity)}
                         </Badge>
                       </div>
+                      {/* Premium Avatars Visual Effect */}
+                      {avatar.price >= 1000 && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none rounded-lg" />
+                      )}
                       {avatar.is_starter && (
                         <div className="absolute top-1 left-1">
                           <Badge variant="secondary" className="text-xs">
@@ -916,8 +922,9 @@ export default function Store() {
 
           {/* Skins Tab */}
           <TabsContent value="skins">
-            <div className="grid grid-cols-2 gap-3">
-              {skins.map((skin) => {
+            <ComingSoonOverlay>
+              <div className="grid grid-cols-2 gap-3">
+                {skins.map((skin) => {
                 const isOwned = userProducts.includes(skin.id);
                 const canAfford = userProfile ? userProfile.points >= skin.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= skin.level_required : false;
@@ -1023,14 +1030,16 @@ export default function Store() {
                     </CardContent>
                   </Card>
                 );
-              })}
-            </div>
+                })}
+              </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Boosts Tab */}
           <TabsContent value="boosts">
-            <div className="grid grid-cols-2 gap-3">
-              {products.filter(p => p.category === 'boost').map((product) => {
+            <ComingSoonOverlay>
+              <div className="grid grid-cols-2 gap-3">
+                {products.filter(p => p.category === 'boost').map((product) => {
                 const isOwned = userProducts.includes(product.id);
                 const canAfford = userProfile ? userProfile.points >= product.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
@@ -1129,14 +1138,16 @@ export default function Store() {
                     </CardContent>
                   </Card>
                 );
-              })}
-            </div>
+                })}
+              </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Accessories Tab */}
           <TabsContent value="accessories">
-            <div className="grid grid-cols-2 gap-3">
-              {products.filter(p => p.category === 'accessory').map((product) => {
+            <ComingSoonOverlay>
+              <div className="grid grid-cols-2 gap-3">
+                {products.filter(p => p.category === 'accessory').map((product) => {
                 const isOwned = userProducts.includes(product.id);
                 const canAfford = userProfile ? userProfile.points >= product.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
@@ -1242,19 +1253,21 @@ export default function Store() {
                     </CardContent>
                   </Card>
                 );
-              })}
-            </div>
+                })}
+              </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Lives Tab */}
           <TabsContent value="lives">
-            <div className="space-y-4">
-              <div className="text-center mb-6">
-                <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
-                  <Shield className="w-5 h-5" /> {t('store.livesProtection')}
-                </h2>
-                <p className="text-sm text-muted-foreground">{t('store.maintainStreak')}</p>
-              </div>
+            <ComingSoonOverlay>
+              <div className="space-y-4">
+                <div className="text-center mb-6">
+                  <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+                    <Shield className="w-5 h-5" /> {t('store.livesProtection')}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">{t('store.maintainStreak')}</p>
+                </div>
               
               {/* Go to Lives Marketplace Card */}
               <Card 
@@ -1329,8 +1342,9 @@ export default function Store() {
                     </div>
                   </div>
                 </Card>
+                </div>
               </div>
-            </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Beetz Tab */}

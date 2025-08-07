@@ -15,6 +15,15 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        // Rarity variants
+        common: "border-gray-500/30 bg-gray-500/20 text-gray-400",
+        rare: "border-blue-500/30 bg-blue-500/20 text-blue-400",
+        epic: "border-purple-500/30 bg-purple-500/20 text-purple-400",
+        legendary: "border-yellow-500/30 bg-yellow-500/20 text-yellow-400",
+        mythic: "border-orange-500/30 bg-orange-500/20 text-orange-400",
+        cosmic: "border-cyan-500/30 bg-cyan-500/20 text-cyan-400",
+        divine: "border-pink-500/30 bg-pink-500/20 text-pink-400",
+        transcendent: "border-purple-500/30 bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300",
       },
     },
     defaultVariants: {
