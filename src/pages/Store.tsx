@@ -46,6 +46,20 @@ import stormHacker from "@/assets/avatars/storm-hacker.jpg";
 import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
 import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
 
+// Import new cyberpunk avatar images
+import universeArchitect from "@/assets/avatars/universe-architect.jpg";
+import cosmicOracle from "@/assets/avatars/cosmic-oracle.jpg";
+import digitalDeity from "@/assets/avatars/digital-deity.jpg";
+import galaxyCommander from "@/assets/avatars/galaxy-commander.jpg";
+import infinityGuardian from "@/assets/avatars/infinity-guardian.jpg";
+import neuralEmperor from "@/assets/avatars/neural-emperor.jpg";
+import omniscientSage from "@/assets/avatars/omniscient-sage.jpg";
+import quantumOverlord from "@/assets/avatars/quantum-overlord.jpg";
+import satoshiPrime from "@/assets/avatars/satoshi-prime.jpg";
+import eternalTrader from "@/assets/avatars/eternal-trader.jpg";
+import timeWeaver from "@/assets/avatars/time-weaver.jpg";
+import voidArchitect from "@/assets/avatars/void-architect.jpg";
+
 // Import cyberpunk skins
 import neonMatrixOverlay from "@/assets/skins/neon-matrix-overlay.jpg";
 import chromeNeuralInterface from "@/assets/skins/chrome-neural-interface.jpg";
@@ -820,6 +834,18 @@ export default function Store() {
                     'Storm Hacker': stormHacker,
                     'Dream Architect': dreamArchitect,
                     'Chrome Gladiator': chromeGladiator,
+                    'Universe Architect': universeArchitect,
+                    'Cosmic Oracle': cosmicOracle,
+                    'Digital Deity': digitalDeity,
+                    'Galaxy Commander': galaxyCommander,
+                    'Infinity Guardian': infinityGuardian,
+                    'Neural Emperor': neuralEmperor,
+                    'Omniscient Sage': omniscientSage,
+                    'Quantum Overlord': quantumOverlord,
+                    'Satoshi Prime': satoshiPrime,
+                    'The Eternal Trader': eternalTrader,
+                    'Time Weaver': timeWeaver,
+                    'Void Architect': voidArchitect,
                   };
                   return imageMap[avatar.name] || avatar.image_url;
                 };
