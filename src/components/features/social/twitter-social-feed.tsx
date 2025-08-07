@@ -387,52 +387,52 @@ export function TwitterSocialFeed() {
   return (
     <div className="divide-y divide-border/50">
       {posts.map((post) => (
-        <article key={post.id} className="p-1.5 hover:bg-muted/30 transition-colors duration-200">
-          <div className="flex space-x-1">
+        <article key={post.id} className="p-2 hover:bg-muted/30 transition-colors duration-200">
+          <div className="flex space-x-1.5">
             {/* Avatar */}
             <AvatarDisplayUniversal
               avatarData={normalizeAvatarData(post.profiles)}
               nickname={post.profiles.nickname}
-              size="xs"
+              size="xs-plus"
               onClick={() => handleUserClick(post.profiles.id)}
             />
 
             <div className="flex-1 min-w-0">
               {/* Header */}
-              <div className="flex items-center space-x-1 mb-0.5">
+              <div className="flex items-center space-x-1.5 mb-1">
                 <span 
-                  className="font-bold hover:underline cursor-pointer text-[7px]"
+                  className="font-bold hover:underline cursor-pointer text-[9px]"
                   onClick={() => handleUserClick(post.profiles.id)}
                 >
                   @{post.profiles.nickname}
                 </span>
-                <Badge variant="secondary" className="text-[6px] px-1 py-0.5">
+                <Badge variant="secondary" className="text-[8px] px-1.5 py-0.5">
                   Nv.{post.profiles.level}
                 </Badge>
                 {post.is_following && (
-                  <Badge variant="outline" className="text-[6px] px-1 py-0.5">
+                  <Badge variant="outline" className="text-[8px] px-1.5 py-0.5">
                     Seguindo
                   </Badge>
                 )}
-                <span className="text-[7px] text-muted-foreground">·</span>
-                <span className="text-[7px] text-muted-foreground">
+                <span className="text-[9px] text-muted-foreground">·</span>
+                <span className="text-[9px] text-muted-foreground">
                   {formatPostDate(post.created_at)}
                 </span>
-                <Button variant="ghost" size="sm" className="ml-auto p-0.5 h-auto">
-                  <MoreHorizontal className="h-2 w-2" />
+                <Button variant="ghost" size="sm" className="ml-auto p-1 h-auto">
+                  <MoreHorizontal className="h-3 w-3" />
                 </Button>
               </div>
 
               {/* Content */}
-              <div className="mb-1">
-                <p className="text-[8px] leading-[10px] whitespace-pre-wrap">
+              <div className="mb-1.5">
+                <p className="text-[10px] leading-[13px] whitespace-pre-wrap">
                   {post.content}
                 </p>
                 
                 {post.trade_data && (
-                  <Card className="mt-1.5 border-l-2 border-l-primary">
-                    <CardContent className="p-1.5">
-                      <div className="flex items-center space-x-1 text-[7px]">
+                  <Card className="mt-2 border-l-2 border-l-primary">
+                    <CardContent className="p-2">
+                      <div className="flex items-center space-x-1.5 text-[9px]">
                         <Badge variant="outline">Trade</Badge>
                         <span className="text-muted-foreground">
                           {post.trade_data.symbol} - {post.trade_data.action}
@@ -444,15 +444,15 @@ export function TwitterSocialFeed() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-0.5">
+              <div className="flex items-center space-x-1">
                 <Button
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
                   onClick={() => toggleComments(post.id)}
                 >
-                  <MessageCircle className="h-3 w-3 mr-0.5" />
-                  <span className="text-[8px]">{post.comments_count}</span>
+                  <MessageCircle className="h-4 w-4 mr-1" />
+                  <span className="text-[10px]">{post.comments_count}</span>
                 </Button>
 
                 <Button
@@ -464,8 +464,8 @@ export function TwitterSocialFeed() {
                   )}
                   onClick={() => handleLikePost(post.id, !!post.user_liked)}
                 >
-                  <Heart className={cn("h-3 w-3 mr-0.5", post.user_liked && "fill-current")} />
-                  <span className="text-[8px]">{post.likes_count}</span>
+                  <Heart className={cn("h-4 w-4 mr-1", post.user_liked && "fill-current")} />
+                  <span className="text-[10px]">{post.likes_count}</span>
                 </Button>
 
                 <Button
@@ -473,7 +473,7 @@ export function TwitterSocialFeed() {
                   size="sm"
                   className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
                 >
-                  <Share2 className="h-3 w-3" />
+                  <Share2 className="h-4 w-4" />
                 </Button>
 
                 {/* Follow Button - only show if not following */}
@@ -498,13 +498,13 @@ export function TwitterSocialFeed() {
                   <Separator />
                   
                   {/* Add Comment */}
-                  <div className="flex items-start space-x-1.5 p-1.5 bg-muted/30 rounded-lg">
+                  <div className="flex items-start space-x-2 p-2 bg-muted/30 rounded-lg">
                     <AvatarDisplayUniversal
                       avatarData={{ profile_image_url: null, current_avatar_id: null, avatars: null }}
                       nickname="U"
-                      size="xs"
+                      size="xs-plus"
                     />
-                    <div className="flex-1 flex items-center space-x-1">
+                    <div className="flex-1 flex items-center space-x-1.5">
                       <input
                         type="text"
                         placeholder={t('social.placeholders.addComment')}
@@ -513,7 +513,7 @@ export function TwitterSocialFeed() {
                           ...prev, 
                           [post.id]: e.target.value 
                         }))}
-                        className="flex-1 bg-transparent border-0 outline-none text-[8px] placeholder:text-muted-foreground"
+                        className="flex-1 bg-transparent border-0 outline-none text-[10px] placeholder:text-muted-foreground"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && newComment[post.id]?.trim()) {
                             handleAddComment(post.id);
@@ -525,7 +525,7 @@ export function TwitterSocialFeed() {
                         onClick={() => handleAddComment(post.id)}
                         disabled={!newComment[post.id]?.trim()}
                         variant="ghost"
-                        className="text-primary hover:text-primary/80 text-[8px] p-0.5"
+                        className="text-primary hover:text-primary/80 text-[10px] p-1"
                       >
                         {t('social.buttons.comment')}
                       </Button>
@@ -534,20 +534,20 @@ export function TwitterSocialFeed() {
 
                   {/* Comments List */}
                   {comments[post.id] && comments[post.id].map((comment) => (
-                    <div key={comment.id} className="flex space-x-1">
+                    <div key={comment.id} className="flex space-x-1.5">
                       <AvatarDisplayUniversal
                         avatarData={normalizeAvatarData(comment.profiles)}
                         nickname={comment.profiles.nickname}
-                        size="xs"
+                        size="xs-plus"
                       />
                       <div className="flex-1">
-                        <div className="bg-muted/50 rounded-lg p-1.5">
-                          <div className="font-medium text-[6px] mb-0.5">
+                        <div className="bg-muted/50 rounded-lg p-2">
+                          <div className="font-medium text-[8px] mb-1">
                             @{comment.profiles.nickname}
                           </div>
-                          <p className="text-[8px]">{comment.content}</p>
+                          <p className="text-[10px]">{comment.content}</p>
                         </div>
-                        <div className="text-[6px] text-muted-foreground mt-0.5 px-1.5">
+                        <div className="text-[8px] text-muted-foreground mt-1 px-2">
                           {formatPostDate(comment.created_at)}
                         </div>
                       </div>
