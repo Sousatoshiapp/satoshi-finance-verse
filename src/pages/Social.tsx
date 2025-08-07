@@ -372,7 +372,7 @@ export default function Social() {
           {/* Mobile Content with Tabs */}
           <div className="lg:hidden">
             <Tabs value={activeTab} onValueChange={(value) => navigateToTab(value as any)} className="w-full">
-              <TabsList className="fixed bottom-20 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 rounded-none h-12 grid grid-cols-5">
+              <TabsList className="fixed bottom-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-md border-t border-border/50 rounded-none h-12 grid grid-cols-5">
                 <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-10 text-xs">
                   <Home className="h-4 w-4 mb-1" />
                   <span>{t('social.tabs.feed')}</span>
@@ -395,7 +395,7 @@ export default function Social() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="feed" className="pb-32 min-h-screen">
+              <TabsContent value="feed" className="pb-16 min-h-screen">
                 <CreatePostCard 
                   variant="mobile"
                   currentUser={currentUser}
@@ -405,7 +405,7 @@ export default function Social() {
                 <TwitterSocialFeed />
               </TabsContent>
 
-              <TabsContent value="search" className="pb-32">
+              <TabsContent value="search" className="pb-16">
                 <div className="p-4 space-y-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -452,19 +452,19 @@ export default function Social() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="challenges" className="pb-32">
+              <TabsContent value="challenges" className="pb-16">
                 <div className="p-4">
                   <SocialChallenges />
                 </div>
               </TabsContent>
 
-              <TabsContent value="rankings" className="pb-32">
+              <TabsContent value="rankings" className="pb-16">
                 <div className="p-4">
                   <SocialLeaderboard />
                 </div>
               </TabsContent>
 
-              <TabsContent value="messages" className="pb-32">
+              <TabsContent value="messages" className="pb-16">
                 <div className="p-4">
                   <ConversationsList onSelectConversation={setSelectedConversationId} />
                 </div>
