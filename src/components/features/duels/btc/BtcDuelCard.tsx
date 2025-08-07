@@ -21,7 +21,6 @@ const BtcDuelCard = memo(function BtcDuelCard() {
       isGlowing ? 'scale-105' : ''
     }`}>
       {/* Cyber Background with animated elements */}
-      <div className="absolute inset-0 bg-black" />
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-purple-500/10" />
       
       {/* Animated border effect */}
