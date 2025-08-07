@@ -7061,6 +7061,18 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: string
       }
+      get_arena_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          avatar_id: string
+          is_bot: boolean
+          is_online: boolean
+          profile_image_url: string
+        }[]
+      }
       get_current_season: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -7093,6 +7105,19 @@ export type Database = {
           avatar_name: string
           avatar_image_url: string
           is_bot: boolean
+        }[]
+      }
+      get_user_evolution_data: {
+        Args:
+          | { user_id_param: string; start_date: string; end_date: string }
+          | { user_id_param: string; start_date: string; end_date: string }
+        Returns: {
+          date: string
+          xp: number
+          level: number
+          btz: number
+          streak: number
+          quizzes_completed: number
         }[]
       }
       get_user_profile_id: {

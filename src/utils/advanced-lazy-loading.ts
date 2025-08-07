@@ -58,6 +58,7 @@ export const LazyRoutes = {
   ContentGenerator: lazy(() => import('@/pages/ContentGenerator')),
   Inventory: lazy(() => import('@/pages/Inventory')),
   AvatarShop: lazy(() => import('@/pages/AvatarShop')),
+  AvatarCollection: lazy(() => import('@/pages/AvatarCollection')),
   AISimulator: lazy(() => import('@/pages/AISimulator')),
   MonetizationDashboard: lazy(() => import('@/pages/MonetizationDashboard')),
   VirtualStore: lazy(() => import('@/pages/VirtualStore')),

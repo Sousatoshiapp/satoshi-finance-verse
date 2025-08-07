@@ -63,7 +63,7 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
                 variant={timeRange === button.key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onTimeRangeChange(button.key)}
-                className="text-xs sm:text-sm px-3 py-1 h-8 flex-1 sm:flex-none min-w-16"
+                className="text-xs sm:text-sm px-2 py-1 h-7 sm:h-8 flex-1 sm:flex-none min-w-12 sm:min-w-16"
               >
                 {button.label}
               </Button>
