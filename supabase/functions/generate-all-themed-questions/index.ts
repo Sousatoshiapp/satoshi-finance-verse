@@ -66,6 +66,103 @@ const THEME_TEMPLATES = {
   }
 };
 
+// Rate limiting e retry utilities
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxAttempts: number = 3,
+  baseDelay: number = 2000
+): Promise<T> {
+  let lastError: any;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error;
+      console.warn(`🔄 Tentativa ${attempt} falhou:`, error);
+      
+      if (attempt === maxAttempts) break;
+      
+      // Exponential backoff com jitter
+      const delay = baseDelay * Math.pow(2, attempt - 1) + Math.random() * 1000;
+      console.log(`⏱️ Aguardando ${delay}ms antes da próxima tentativa...`);
+      await sleep(delay);
+    }
+  }
+  
+  throw lastError;
+}
+
+// JSON parsing robusto
+function parseJsonRobust(content: string): any {
+  if (!content || typeof content !== 'string') {
+    throw new Error('Conteúdo inválido para parsing');
+  }
+
+  const cleanContent = content.trim();
+  
+  // Múltiplas estratégias de parsing
+  const parseStrategies = [
+    // Parsing direto
+    () => JSON.parse(cleanContent),
+    
+    // Extrair do bloco ```json
+    () => {
+      const jsonMatch = cleanContent.match(/```json\s*([\s\S]*?)\s*```/);
+      if (jsonMatch?.[1]) {
+        return JSON.parse(jsonMatch[1].trim());
+      }
+      throw new Error('Bloco JSON não encontrado');
+    },
+    
+    // Extrair qualquer bloco de código
+    () => {
+      const codeMatch = cleanContent.match(/```\s*([\s\S]*?)\s*```/);
+      if (codeMatch?.[1]) {
+        return JSON.parse(codeMatch[1].trim());
+      }
+      throw new Error('Bloco de código não encontrado');
+    },
+    
+    // Extrair objeto JSON
+    () => {
+      const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
+      if (jsonMatch?.[0]) {
+        return JSON.parse(jsonMatch[0]);
+      }
+      throw new Error('Objeto JSON não encontrado');
+    },
+    
+    // Estratégia de limpeza linha por linha
+    () => {
+      const lines = cleanContent.split('\n');
+      const jsonLines = lines.filter(line => 
+        line.trim().startsWith('{') || 
+        line.trim().startsWith('"') || 
+        line.trim().startsWith('}') ||
+        line.includes(':') ||
+        line.includes('[') ||
+        line.includes(']')
+      );
+      return JSON.parse(jsonLines.join('\n'));
+    }
+  ];
+  
+  for (let i = 0; i < parseStrategies.length; i++) {
+    try {
+      const result = parseStrategies[i]();
+      console.log(`✅ JSON parsing bem-sucedido na estratégia ${i + 1}`);
+      return result;
+    } catch (error) {
+      console.warn(`⚠️ Estratégia de parsing ${i + 1} falhou:`, error);
+    }
+  }
+  
+  throw new Error(`Falha no parsing após ${parseStrategies.length} tentativas. Conteúdo: ${cleanContent.substring(0, 200)}...`);
+}
+
 function shuffleArray(array: any[]) {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -75,7 +172,7 @@ function shuffleArray(array: any[]) {
   return shuffled;
 }
 
-async function generateThemeQuestions(theme: string, difficulty: string, count: number = 50) {
+async function generateThemeQuestions(theme: string, difficulty: string, count: number = 25) {
   const themeConfig = THEME_TEMPLATES[theme];
   if (!themeConfig) return [];
 
@@ -105,7 +202,7 @@ INSTRUÇÕES CRÍTICAS:
 6. Perguntas práticas e relevantes para investidores brasileiros
 7. ${difficulty === 'easy' ? 'CONCEITOS MUITO BÁSICOS E FUNDAMENTAIS' : difficulty === 'medium' ? 'APLICAÇÃO PRÁTICA DE CONCEITOS' : 'CENÁRIOS COMPLEXOS E ANÁLISE AVANÇADA'}
 
-FORMATO JSON OBRIGATÓRIO:
+FORMATO JSON OBRIGATÓRIO (responda APENAS com JSON válido):
 {
   "questions": [
     {
@@ -124,7 +221,7 @@ FORMATO JSON OBRIGATÓRIO:
 
 GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
 
-  try {
+  const makeOpenAICall = async () => {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -136,7 +233,7 @@ GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
         messages: [
           {
             role: 'system',
-            content: 'Você é um especialista em educação financeira brasileira. Gere perguntas precisas e educativas em formato JSON válido.'
+            content: 'Você é um especialista em educação financeira brasileira. Gere perguntas precisas e educativas em formato JSON válido. Responda APENAS com JSON válido, sem texto adicional.'
           },
           {
             role: 'user',
@@ -149,23 +246,26 @@ GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
     });
 
     if (!response.ok) {
-      console.error(`❌ Erro OpenAI (${theme}-${difficulty}):`, response.status);
-      return [];
+      const errorText = await response.text();
+      throw new Error(`OpenAI API erro ${response.status}: ${errorText}`);
     }
 
-    const data = await response.json();
+    return response.json();
+  };
+
+  try {
+    console.log(`🔄 Gerando ${count} perguntas ${difficulty} para ${theme} (com retry)`);
+    
+    const data = await withRetry(makeOpenAICall, 3, 3000);
     const content = data.choices[0].message.content;
 
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error(`❌ Não foi possível extrair JSON (${theme}-${difficulty})`);
-      return [];
-    }
+    console.log(`📝 Conteúdo recebido para ${theme}-${difficulty}: ${content.substring(0, 100)}...`);
 
-    const questionsData = JSON.parse(jsonMatch[0]);
+    // Usar parsing robusto
+    const questionsData = parseJsonRobust(content);
     
     if (!questionsData.questions || !Array.isArray(questionsData.questions)) {
-      console.error(`❌ Formato JSON inválido (${theme}-${difficulty})`);
+      console.error(`❌ Formato JSON inválido (${theme}-${difficulty}):`, questionsData);
       return [];
     }
 
@@ -173,29 +273,35 @@ GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
     
     for (const q of questionsData.questions) {
       try {
+        // Validação mais rigorosa dos campos obrigatórios
+        if (!q.question || !q.option_a || !q.option_b || !q.option_c || !q.option_d || !q.correct_answer) {
+          console.warn(`⚠️ Pergunta incompleta ignorada:`, q);
+          continue;
+        }
+
         const options = [q.option_a, q.option_b, q.option_c, q.option_d];
         const shuffledOptions = shuffleArray(options);
         
         if (!options.includes(q.correct_answer)) {
-          console.warn(`⚠️ Resposta correta não encontrada nas opções: ${q.correct_answer}`);
+          console.warn(`⚠️ Resposta correta não encontrada nas opções: ${q.correct_answer}. Opções: ${options.join(', ')}`);
           continue;
         }
 
         processedQuestions.push({
-          question: q.question,
+          question: q.question.trim(),
           options: shuffledOptions,
-          correct_answer: q.correct_answer,
-          explanation: q.explanation,
+          correct_answer: q.correct_answer.trim(),
+          explanation: q.explanation?.trim() || 'Explicação não fornecida',
           difficulty: difficulty,
-          category: q.category || themeConfig.name,
+          category: q.category?.trim() || themeConfig.name,
           theme: theme
         });
       } catch (questionError) {
-        console.error(`❌ Erro processando pergunta individual:`, questionError);
+        console.error(`❌ Erro processando pergunta individual:`, questionError, q);
       }
     }
 
-    console.log(`✅ ${processedQuestions.length} perguntas geradas para ${theme}-${difficulty}`);
+    console.log(`✅ ${processedQuestions.length}/${count} perguntas processadas com sucesso para ${theme}-${difficulty}`);
     return processedQuestions;
 
   } catch (error) {
@@ -221,24 +327,67 @@ serve(async (req) => {
 
     const themes = Object.keys(THEME_TEMPLATES);
     const difficulties = ['easy', 'medium', 'hard'];
-    const questionsPerDifficultyPerTheme = 70; // 70 x 3 = 210 per theme
+    const targetQuestionsPerDifficulty = 50; // Reduzido de 70 para 50
+    const batchSize = 25; // Gerar em lotes de 25 perguntas
     
     let allGeneratedQuestions: any[] = [];
     let themeResults = {};
 
     for (const theme of themes) {
       console.log(`📚 Processando tema: ${THEME_TEMPLATES[theme].name}`);
-      themeResults[theme] = { easy: 0, medium: 0, hard: 0 };
+      themeResults[theme] = { easy: 0, medium: 0, hard: 0, total: 0 };
 
       for (const difficulty of difficulties) {
-        console.log(`🔄 Gerando ${questionsPerDifficultyPerTheme} perguntas ${difficulty} para ${theme}`);
+        console.log(`🔄 Iniciando geração de ${targetQuestionsPerDifficulty} perguntas ${difficulty} para ${theme}`);
         
-        const questions = await generateThemeQuestions(theme, difficulty, questionsPerDifficultyPerTheme);
-        allGeneratedQuestions.push(...questions);
-        themeResults[theme][difficulty] = questions.length;
+        let difficultyQuestions: any[] = [];
+        const batchCount = Math.ceil(targetQuestionsPerDifficulty / batchSize);
         
-        // Pequeno delay para não sobrecarregar a API
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Gerar em lotes menores para evitar timeout e rate limiting
+        for (let batchIndex = 0; batchIndex < batchCount; batchIndex++) {
+          const questionsInThisBatch = Math.min(batchSize, targetQuestionsPerDifficulty - difficultyQuestions.length);
+          
+          if (questionsInThisBatch <= 0) break;
+          
+          console.log(`📦 Lote ${batchIndex + 1}/${batchCount}: ${questionsInThisBatch} perguntas ${difficulty} para ${theme}`);
+          
+          try {
+            const batchQuestions = await generateThemeQuestions(theme, difficulty, questionsInThisBatch);
+            difficultyQuestions.push(...batchQuestions);
+            
+            console.log(`✅ Lote ${batchIndex + 1} completado: ${batchQuestions.length} perguntas geradas`);
+            
+            // Delay maior entre lotes para evitar rate limiting
+            if (batchIndex < batchCount - 1) {
+              console.log(`⏳ Aguardando 4 segundos antes do próximo lote...`);
+              await sleep(4000);
+            }
+          } catch (batchError) {
+            console.error(`❌ Erro no lote ${batchIndex + 1} para ${theme}-${difficulty}:`, batchError);
+            // Continuar com o próximo lote mesmo se um falhar
+          }
+        }
+        
+        allGeneratedQuestions.push(...difficultyQuestions);
+        themeResults[theme][difficulty] = difficultyQuestions.length;
+        themeResults[theme].total += difficultyQuestions.length;
+        
+        console.log(`📈 Total para ${theme}-${difficulty}: ${difficultyQuestions.length} perguntas`);
+        
+        // Delay entre diferentes dificuldades
+        if (difficulty !== 'hard') {
+          console.log(`⏳ Aguardando 3 segundos antes da próxima dificuldade...`);
+          await sleep(3000);
+        }
+      }
+      
+      console.log(`✅ Tema ${THEME_TEMPLATES[theme].name} concluído: ${themeResults[theme].total} perguntas`);
+      
+      // Delay maior entre temas
+      const currentThemeIndex = themes.indexOf(theme);
+      if (currentThemeIndex < themes.length - 1) {
+        console.log(`⏳ Aguardando 5 segundos antes do próximo tema...`);
+        await sleep(5000);
       }
     }
 
