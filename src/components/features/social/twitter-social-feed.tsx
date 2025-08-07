@@ -8,6 +8,7 @@ import { Separator } from "@/components/shared/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
+import { SocialButton } from "@/components/features/social/social-button";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -447,14 +448,14 @@ export function TwitterSocialFeed() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-between max-w-md">
+              <div className="flex items-center space-x-1">
                 <Button
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
                   onClick={() => toggleComments(post.id)}
                 >
-                  <MessageCircle className="h-5 w-5 mr-2" />
+                  <MessageCircle className="h-5 w-5 mr-1" />
                   <span className="text-sm">{post.comments_count}</span>
                 </Button>
 
@@ -467,7 +468,7 @@ export function TwitterSocialFeed() {
                   )}
                   onClick={() => handleLikePost(post.id, !!post.user_liked)}
                 >
-                  <Heart className={cn("h-5 w-5 mr-2", post.user_liked && "fill-current")} />
+                  <Heart className={cn("h-5 w-5 mr-1", post.user_liked && "fill-current")} />
                   <span className="text-sm">{post.likes_count}</span>
                 </Button>
 
@@ -478,6 +479,19 @@ export function TwitterSocialFeed() {
                 >
                   <Share2 className="h-5 w-5" />
                 </Button>
+
+                {/* Follow Button - only show if not following */}
+                {!post.is_following && post.user_id !== currentUserId && (
+                  <SocialButton
+                    targetType="profile"
+                    targetId={post.user_id}
+                    actionType="follow"
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
+                    showCount={false}
+                  />
+                )}
               </div>
 
               {/* Comments Section */}
