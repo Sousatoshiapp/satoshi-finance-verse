@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
-import { Clock, Shield, TrendingUp, TrendingDown, Send, Download } from "lucide-react";
+import { Clock, Shield, TrendingUp, TrendingDown, Send, Download, Eye, EyeOff } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
 interface BTZCounterProps {
@@ -24,6 +24,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
   const [animationState, setAnimationState] = useState<AnimationState>('IDLE');
   const [showDetails, setShowDetails] = useState(false);
   const [showTrend, setShowTrend] = useState(false);
+  const [showBTZ, setShowBTZ] = useState(true);
 
   const animationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const trendTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -92,6 +93,22 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
     }
   }, [currentBTZ, isLoading, animationState, startSlotMachineAnimation]);
 
+  // Load BTZ visibility preference from localStorage
+  useEffect(() => {
+    const savedVisibility = localStorage.getItem('btz-visibility');
+    if (savedVisibility !== null) {
+      setShowBTZ(savedVisibility === 'true');
+    }
+  }, []);
+
+  // Toggle BTZ visibility with persistence
+  const toggleBTZVisibility = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newVisibility = !showBTZ;
+    setShowBTZ(newVisibility);
+    localStorage.setItem('btz-visibility', newVisibility.toString());
+  }, [showBTZ]);
+
   // Cleanup robusto
   useEffect(() => {
     return () => {
@@ -114,7 +131,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
           ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
           cursor-pointer
-          w-full
+          max-w-sm md:max-w-md
         `}
         onClick={() => setShowDetails(!showDetails)}
       >
@@ -126,9 +143,22 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
             </div>
             <div className="flex items-center gap-1 md:gap-2">
               <span className="text-4xl md:text-5xl font-mono font-bold text-foreground">
-                {displayBTZ.toLocaleString()}
+                {showBTZ ? displayBTZ.toLocaleString() : "••••"}
               </span>
-              <span className="text-3xl md:text-4xl text-muted-foreground font-medium">BTZ</span>
+              <span className="text-lg md:text-xl text-muted-foreground font-medium">BTZ</span>
+              
+              {/* Eye toggle button */}
+              <button 
+                onClick={toggleBTZVisibility}
+                className="ml-1 p-1 rounded hover:bg-muted/50 transition-colors"
+                title={showBTZ ? "Ocultar BTZ" : "Mostrar BTZ"}
+              >
+                {showBTZ ? (
+                  <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                ) : (
+                  <EyeOff className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                )}
+              </button>
               
               {/* Trend Arrow */}
               {showTrend && currentBTZ !== previousBTZ && (
@@ -144,7 +174,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           </div>
 
           {/* Right Section: P2P Transfer Icons */}
-          <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-0.5 md:gap-1 flex-shrink-0">
             <button
               onClick={(e) => {
                 e.stopPropagation();
