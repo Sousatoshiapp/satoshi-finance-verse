@@ -1,22 +1,33 @@
-export const YIELD_CAPS = {
-  MAX_DAILY_PERCENTAGE: 0.001, // 0,1% do BTZ total
-  ABSOLUTE_DAILY_CAP: 5, // 5 BTZ máximo por dia
-  BASE_RATE: 0.001 // 0.1% fixo ao dia
-};
+import { YIELD_CONFIG, calculateDailyYield as configCalculateDailyYield } from '@/config/yield-config';
+
+export const YIELD_CAPS = YIELD_CONFIG;
 
 export function useYieldCaps() {
-  const calculateDailyYield = (totalBTZ: number): number => {
-    const percentageYield = totalBTZ * YIELD_CAPS.MAX_DAILY_PERCENTAGE;
-    return Math.min(percentageYield, YIELD_CAPS.ABSOLUTE_DAILY_CAP);
+  const calculateDailyYield = (
+    totalBTZ: number, 
+    consecutiveDays: number = 0, 
+    subscriptionTier: 'free' | 'pro' | 'elite' = 'free'
+  ): number => {
+    const result = configCalculateDailyYield(totalBTZ, consecutiveDays, subscriptionTier);
+    return result.appliedYield;
   };
 
   const isWithinDailyLimit = (currentYield: number, proposedYield: number): boolean => {
-    return (currentYield + proposedYield) <= YIELD_CAPS.ABSOLUTE_DAILY_CAP;
+    return (currentYield + proposedYield) <= YIELD_CONFIG.ABSOLUTE_DAILY_CAP;
+  };
+
+  const calculateYieldWithDetails = (
+    totalBTZ: number, 
+    consecutiveDays: number = 0, 
+    subscriptionTier: 'free' | 'pro' | 'elite' = 'free'
+  ) => {
+    return configCalculateDailyYield(totalBTZ, consecutiveDays, subscriptionTier);
   };
 
   return {
-    YIELD_CAPS,
+    YIELD_CAPS: YIELD_CONFIG,
     calculateDailyYield,
+    calculateYieldWithDetails,
     isWithinDailyLimit
   };
 }

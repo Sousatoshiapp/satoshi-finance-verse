@@ -20,8 +20,23 @@ serve(async (req) => {
 
     const { user_id } = await req.json();
     
-    // REBALANCEAMENTO: Cap absoluto de 5 BTZ por dia para yield
-    const DAILY_YIELD_CAP = 5;
+    // Importar configurações centralizadas
+    const YIELD_CONFIG = {
+      BASE_RATE: 0.001, // 0.1% ao dia
+      ABSOLUTE_DAILY_CAP: 5, // 5 BTZ máximo por dia
+      SUBSCRIPTION_BONUS: {
+        free: 0,
+        pro: 0.0005, // +0.05%
+        elite: 0.001  // +0.1%
+      },
+      STREAK_BONUS: {
+        DAYS_PER_TIER: 5,
+        BONUS_PER_TIER: 0.0001, // +0.01% por tier
+        MAX_BONUS: 0.003 // Máximo 0.3%
+      }
+    };
+    
+    const DAILY_YIELD_CAP = YIELD_CONFIG.ABSOLUTE_DAILY_CAP;
 
     if (!user_id) {
       return new Response(
@@ -54,20 +69,34 @@ serve(async (req) => {
     const { data: yieldData, error: yieldError } = await supabaseClient
       .rpc('calculate_daily_yield', { profile_id: profile.id });
     
-    // Apply yield cap
-    if (yieldData?.[0]?.yield_amount > DAILY_YIELD_CAP) {
-      console.log(`Yield capped from ${yieldData[0].yield_amount} to ${DAILY_YIELD_CAP} BTZ`);
+    // Apply yield cap and validate
+    if (yieldData?.[0]) {
+      const originalAmount = yieldData[0].yield_amount;
+      const cappedAmount = Math.min(originalAmount, DAILY_YIELD_CAP);
       
-      // Update with capped amount
-      await supabaseClient
-        .from('profiles')
-        .update({ 
-          points: yieldData[0].new_total - yieldData[0].yield_amount + DAILY_YIELD_CAP 
-        })
-        .eq('id', profile.id);
-      
-      yieldData[0].yield_amount = DAILY_YIELD_CAP;
-      yieldData[0].new_total = yieldData[0].new_total - yieldData[0].yield_amount + DAILY_YIELD_CAP;
+      if (originalAmount > DAILY_YIELD_CAP) {
+        console.log(`YIELD CAP APPLIED: Original ${originalAmount} BTZ capped to ${cappedAmount} BTZ`);
+        
+        // Recalculate new total with capped amount
+        const correctedTotal = yieldData[0].new_total - originalAmount + cappedAmount;
+        
+        // Update with capped amount
+        await supabaseClient
+          .from('profiles')
+          .update({ 
+            points: correctedTotal
+          })
+          .eq('id', profile.id);
+        
+        // Update response data
+        yieldData[0].yield_amount = cappedAmount;
+        yieldData[0].new_total = correctedTotal;
+        
+        // Log for monitoring
+        console.log(`Profile ${profile.id}: Yield corrected from ${originalAmount} to ${cappedAmount} BTZ`);
+      } else {
+        console.log(`Yield within cap: ${originalAmount} BTZ (cap: ${DAILY_YIELD_CAP})`);
+      }
     }
 
     if (yieldError) {
