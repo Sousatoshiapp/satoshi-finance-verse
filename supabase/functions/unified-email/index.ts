@@ -132,7 +132,7 @@ const handler = async (req: Request): Promise<Response> => {
         }
 
         const emailResponse = await resend.emails.send({
-          from: "BTZ Plataforma <no-reply@btzplatform.com>",
+          from: "BTZ Plataforma <no-reply@quizconomy.com>",
           to: [email],
           subject: "Redefinição de Senha - BTZ",
           html: generatePasswordResetTemplate({
@@ -143,6 +143,11 @@ const handler = async (req: Request): Promise<Response> => {
         });
 
         console.log("Email de reset enviado:", emailResponse);
+        
+        if (emailResponse.error) {
+          console.error('Erro detalhado do Resend:', emailResponse.error);
+          throw new Error(`Falha no envio de email: ${emailResponse.error.message || 'Erro desconhecido'}`);
+        }
         
         return new Response(
           JSON.stringify({ 
@@ -200,7 +205,7 @@ const handler = async (req: Request): Promise<Response> => {
 
           // Enviar email de confirmação
           const confirmationEmail = await resend.emails.send({
-            from: "BTZ Plataforma <no-reply@btzplatform.com>",
+            from: "BTZ Plataforma <no-reply@quizconomy.com>",
             to: [tokenData.email],
             subject: "Senha Redefinida com Sucesso - BTZ Admin",
             html: `
@@ -211,6 +216,10 @@ const handler = async (req: Request): Promise<Response> => {
           });
 
           console.log("Email de confirmação enviado:", confirmationEmail);
+          
+          if (confirmationEmail.error) {
+            console.error('Erro no email de confirmação:', confirmationEmail.error);
+          }
 
           return new Response(
             JSON.stringify({ 
@@ -247,7 +256,7 @@ const handler = async (req: Request): Promise<Response> => {
           const resetLink = `${Deno.env.get('SITE_URL') || 'http://localhost:8080'}/admin/reset-password?token=${resetToken}`;
 
           const emailResponse = await resend.emails.send({
-            from: "BTZ Plataforma <no-reply@btzplatform.com>",
+            from: "BTZ Plataforma <no-reply@quizconomy.com>",
             to: [email],
             subject: "Reset de Senha - Administrador BTZ",
             html: generatePasswordResetTemplate({
@@ -258,6 +267,11 @@ const handler = async (req: Request): Promise<Response> => {
           });
 
           console.log("Email de reset admin enviado:", emailResponse);
+          
+          if (emailResponse.error) {
+            console.error('Erro detalhado do Resend:', emailResponse.error);
+            throw new Error(`Falha no envio de email: ${emailResponse.error.message || 'Erro desconhecido'}`);
+          }
 
           return new Response(
             JSON.stringify({ 
