@@ -46,7 +46,7 @@ serve(async (req) => {
       supabase_url: Deno.env.get("SUPABASE_URL") ?? "",
       supabase_anon_key: Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       app_url: mode === "production" ? "https://https://app.sousatoshi.com.br" : 
-               mode === "staging" ? "https://staging.satoshifinance.com" : 
+               mode === "staging" ? "https://https://app.sousatoshi.com.br" : 
                "http://localhost:8080",
       api_url: Deno.env.get("SUPABASE_URL") ?? "",
       features: {
