@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
@@ -187,13 +187,32 @@ export default function AdminQuestions() {
     }
   };
 
-  const filteredQuestions = questions.filter(question => {
-    const matchesSearch = question.question.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || question.category === categoryFilter;
-    const matchesDifficulty = difficultyFilter === "all" || question.difficulty === difficultyFilter;
+  // Memoized filtering for performance optimization
+  const filteredQuestions = useMemo(() => {
+    // Skip filtering if no filters are applied
+    if (searchQuery === '' && categoryFilter === 'all' && difficultyFilter === 'all') {
+      return questions;
+    }
+
+    // Pre-compute lowercase strings for search
+    const searchLower = searchQuery.toLowerCase();
     
-    return matchesSearch && matchesCategory && matchesDifficulty;
-  });
+    return questions.filter(question => {
+      // Early return if search doesn't match
+      if (searchQuery !== '') {
+        const questionLower = question.question.toLowerCase();
+        if (!questionLower.includes(searchLower)) {
+          return false;
+        }
+      }
+      
+      // Check category and difficulty filters
+      const matchesCategory = categoryFilter === 'all' || question.category === categoryFilter;
+      const matchesDifficulty = difficultyFilter === 'all' || question.difficulty === difficultyFilter;
+      
+      return matchesCategory && matchesDifficulty;
+    });
+  }, [questions, searchQuery, categoryFilter, difficultyFilter]);
 
   const getDifficultyBadge = (difficulty: string) => {
     switch (difficulty) {

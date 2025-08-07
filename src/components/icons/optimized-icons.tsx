@@ -3,16 +3,30 @@ import type { LucideProps } from 'lucide-react';
 
 // Core icons - bundled with main chunk (most frequently used)
 export { 
-  ArrowLeft, Trophy, Users, Star, Crown, Medal, Zap, Target, 
-  TrendingUp, BookOpen, Settings, Search, Plus, Minus, X,
+  // Navigation & Layout (high frequency)
+  ArrowLeft, Home, User, Settings, Search, Plus, Minus, X,
   Check, ChevronDown, ChevronUp, ChevronLeft, ChevronRight,
-  Home, User, Heart, Share, MessageCircle, Bell, Menu,
-  Sparkles, Gamepad2, Filter, Clock, Calendar, Award,
-  Activity, DollarSign, BarChart3, Brain, Upload, Edit,
-  Copy, Download, Save, RefreshCw, Play, Pause, Volume2,
-  Wifi, Globe, MapPin, Car, Building, ShoppingCart, Gift,
-  Timer, Sun, Moon, Palette, Code, Database, Wrench,
-  Shield, Lock, Eye, EyeOff, CheckCircle, XCircle, AlertTriangle
+  Menu, Bell, Heart, Share, Filter, Calendar, Upload, Edit,
+  Copy, Download, Save, RefreshCw, Eye, EyeOff, CheckCircle, XCircle,
+  
+  // Game & Duels (very high frequency in app)
+  Trophy, Users, Star, Crown, Medal, Zap, Target, Swords, Bot,
+  TrendingUp, BookOpen, Sparkles, Gamepad2, Timer, Flag, Award,
+  Activity, BarChart3, Brain, Play, Pause, RotateCcw,
+  
+  // Admin & Management (frequently used)
+  Shield, Lock, AlertTriangle, Building2, Globe, UserPlus,
+  FileText, Database, Wrench, DollarSign, Code, Cpu,
+  
+  // Communication & Social (high frequency)
+  MessageCircle, Send, Mail, Volume2,
+  
+  // Crypto & Finance (specific to app)
+  Bitcoin, Coins, Wallet, TrendingDown, 
+  
+  // UI Elements (very common)
+  Wifi, MapPin, Car, Building, ShoppingCart, Gift,
+  Sun, Moon, Palette, Clock, Trash2
 } from 'lucide-react';
 
 const iconMap = {
