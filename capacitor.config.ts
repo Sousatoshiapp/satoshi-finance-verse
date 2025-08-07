@@ -5,11 +5,11 @@ const getServerUrl = () => {
   
   switch (mode) {
     case 'production':
-      return 'https://app.satoshifinance.com';
+      return 'https://app.sousatoshi.com.br';
     case 'staging':
-      return 'https://staging.satoshifinance.com';
+      return 'https://https://app.sousatoshi.com.br';
     default:
-      return 'https://d2e8a781-1b9b-4d86-a980-5a42d9bce352.lovableproject.com?forceHideBadge=true';
+      return 'https://https://app.sousatoshi.com.br';
   }
 };
 
