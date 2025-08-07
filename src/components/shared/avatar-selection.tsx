@@ -46,6 +46,7 @@ interface Avatar {
   district_theme: string;
   backstory: string;
   bonus_effects: any;
+  is_starter: boolean;
 }
 
 interface AvatarSelectionProps {
@@ -138,7 +139,16 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.error('Usuário não autenticado');
+        throw new Error('Usuário não encontrado');
+      }
+
+      // Validar se é avatar starter
+      if (!selectedAvatar || selectedAvatar.is_starter !== true) {
+        console.error('Avatar selecionado não é starter:', selectedAvatar);
+        throw new Error('Avatar inválido');
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -146,31 +156,89 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return;
+      if (!profile) {
+        console.error('Perfil não encontrado para user_id:', user.id);
+        throw new Error('Perfil não encontrado');
+      }
 
-      // Add avatar to user's collection
-      const { error: insertError } = await supabase
+      console.log('Iniciando seleção de avatar starter para:', profile.id);
+
+      // Verificar se já possui o avatar
+      const { data: existingAvatar } = await supabase
         .from('user_avatars')
-        .insert({
-          user_id: profile.id,
-          avatar_id: selectedAvatar.id,
-          is_active: true
-        });
+        .select('id')
+        .eq('user_id', profile.id)
+        .eq('avatar_id', selectedAvatar.id)
+        .maybeSingle();
 
-      if (insertError) throw insertError;
+      if (existingAvatar) {
+        console.log('Avatar já existe, apenas ativando');
+      } else {
+        // Adicionar avatar à coleção do usuário (inativo inicialmente)
+        const { error: insertError } = await supabase
+          .from('user_avatars')
+          .insert({
+            user_id: profile.id,
+            avatar_id: selectedAvatar.id,
+            is_active: false
+          });
 
-      // Update profile to reference this avatar
+        if (insertError) {
+          console.error('Erro ao inserir avatar:', insertError);
+          throw insertError;
+        }
+        console.log('Avatar adicionado à coleção');
+      }
+
+      // Desativar todos os outros avatares do usuário
+      const { error: deactivateError } = await supabase
+        .from('user_avatars')
+        .update({ is_active: false })
+        .eq('user_id', profile.id);
+
+      if (deactivateError) {
+        console.error('Erro ao desativar avatares:', deactivateError);
+        throw deactivateError;
+      }
+      console.log('Outros avatares desativados');
+
+      // Ativar o avatar selecionado
+      const { error: activateError } = await supabase
+        .from('user_avatars')
+        .update({ is_active: true })
+        .eq('user_id', profile.id)
+        .eq('avatar_id', selectedAvatar.id);
+
+      if (activateError) {
+        console.error('Erro ao ativar avatar:', activateError);
+        throw activateError;
+      }
+      console.log('Avatar ativado na coleção');
+
+      // Atualizar perfil com o avatar atual e limpar imagem personalizada
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ avatar_id: selectedAvatar.id })
+        .update({ 
+          current_avatar_id: selectedAvatar.id,
+          profile_image_url: null 
+        })
         .eq('id', profile.id);
 
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Erro ao atualizar perfil:', updateError);
+        throw updateError;
+      }
+      console.log('Perfil atualizado com sucesso');
 
       toast({
         title: "Avatar Selecionado!",
         description: `Bem-vindo(a) à Satoshi City, ${selectedAvatar.name}!`,
       });
+
+      // Invalidar caches
+      if (window.dispatchEvent) {
+        window.dispatchEvent(new CustomEvent('avatar-changed'));
+      }
 
       onAvatarSelected();
       onOpenChange(false);
@@ -178,7 +246,7 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
       console.error('Error selecting avatar:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível selecionar o avatar",
+        description: error instanceof Error ? error.message : "Não foi possível selecionar o avatar",
         variant: "destructive"
       });
     }
