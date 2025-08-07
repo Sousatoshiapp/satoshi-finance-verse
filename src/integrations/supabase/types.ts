@@ -633,6 +633,50 @@ export type Database = {
           },
         ]
       }
+      btc_bots: {
+        Row: {
+          created_at: string | null
+          difficulty_level: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          max_bet_amount: number | null
+          min_bet_amount: number | null
+          profile_id: string
+          win_rate: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          max_bet_amount?: number | null
+          min_bet_amount?: number | null
+          profile_id: string
+          win_rate?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          difficulty_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          max_bet_amount?: number | null
+          min_bet_amount?: number | null
+          profile_id?: string
+          win_rate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "btc_bots_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       btc_duel_queue: {
         Row: {
           bet_amount: number
