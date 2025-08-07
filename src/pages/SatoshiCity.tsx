@@ -7,7 +7,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { Progress } from "@/components/shared/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/shared/ui/dialog";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
-import { SatoshiCity3D } from "@/components/shared/satoshi-city-3d";
+import { SatoshiCity3DCyberpunk } from "@/components/3d/SatoshiCity3DCyberpunk";
 import { PowerBar } from "@/components/shared/ui/power-bar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DistrictTransition } from "@/components/district/DistrictTransition";
@@ -353,9 +353,14 @@ export default function SatoshiCity() {
     );
   }
 
-  // Renderizar modo 3D
+  // Renderizar modo 3D cyberpunk
   if (is3DMode) {
-    return <SatoshiCity3D onBack={() => setIs3DMode(false)} />;
+    return (
+      <SatoshiCity3DCyberpunk 
+        onBack={() => setIs3DMode(false)}
+        onDistrictClick={handleDistrictClick}
+      />
+    );
   }
 
   return (
@@ -423,14 +428,14 @@ export default function SatoshiCity() {
           </Badge>
         </div>
         
-        {/* Botão para modo 3D - Temporariamente desabilitado */}
+        {/* Botão para modo 3D Cyberpunk */}
         <div className="flex justify-center">
           <Button
-            disabled
-            className="bg-gray-500 text-gray-300 font-medium px-6 py-3 rounded-full shadow-lg cursor-not-allowed opacity-60"
+            onClick={() => setIs3DMode(true)}
+            className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-medium px-6 py-3 rounded-full shadow-lg hover:from-cyan-600 hover:to-purple-600 transition-all duration-300"
           >
             <Box className="w-5 h-5 mr-2" />
-            {t('satoshiCity.buttons.3dDevelopment')}
+            Explorar em 3D Cyberpunk
           </Button>
         </div>
       </div>
