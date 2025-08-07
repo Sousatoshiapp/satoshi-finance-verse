@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAvatarContext } from "@/contexts/AvatarContext";
+import { getAvatarImage } from "@/utils/avatar-images";
 import { Search, Crown, Lock } from "lucide-react";
 
 interface Avatar {
@@ -49,7 +50,7 @@ export default function AvatarCollection() {
       // Get current user's profile with avatar info
       const { data: profile } = await supabase
         .from('profiles')
-        .select('current_avatar_id')
+        .select('id, current_avatar_id')
         .eq('user_id', user.id)
         .single();
 
@@ -63,7 +64,7 @@ export default function AvatarCollection() {
       const { data: ownedAvatars } = await supabase
         .from('user_avatars')
         .select('avatar_id')
-        .eq('user_id', user.id);
+        .eq('user_id', profile?.id);
 
       const ownedIds = ownedAvatars?.map(ua => ua.avatar_id) || [];
       const currentAvatarId = profile?.current_avatar_id;
@@ -229,9 +230,12 @@ export default function AvatarCollection() {
               <CardContent className="p-3">
                 <div className="relative aspect-square mb-3">
                   <img
-                    src={avatar.image_url}
+                    src={getAvatarImage(avatar.image_url)}
                     alt={avatar.name}
                     className="w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                      e.currentTarget.src = getAvatarImage('/avatars/the-satoshi.jpg');
+                    }}
                   />
                   
                   {avatar.is_active && (

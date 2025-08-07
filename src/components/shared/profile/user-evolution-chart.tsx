@@ -56,14 +56,14 @@ export function UserEvolutionChart({ userId, timeRange, onTimeRangeChange }: Use
             <TrendingUp className="w-5 h-5" />
             {t('profile.evolution.title')}
           </CardTitle>
-          <div className="flex flex-wrap gap-1 sm:gap-2">
+          <div className="flex flex-wrap gap-1 sm:gap-2 w-full md:w-auto">
             {timeRangeButtons.map((button) => (
               <Button
                 key={button.key}
                 variant={timeRange === button.key ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onTimeRangeChange(button.key)}
-                className="text-xs sm:text-sm px-2 py-1 h-7 sm:h-8 flex-1 sm:flex-none min-w-12 sm:min-w-16"
+                className="text-xs sm:text-sm px-1.5 sm:px-3 py-1 h-6 sm:h-7 md:h-8 flex-1 md:flex-none min-w-0 sm:min-w-14"
               >
                 {button.label}
               </Button>
