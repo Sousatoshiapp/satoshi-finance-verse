@@ -97,8 +97,15 @@ export default function Dashboard() {
       handlePaymentSuccess(sessionId, tier);
     }
     
-    // Mark daily login for missions
-    markDailyLogin();
+    // Mark daily login for missions (only for users older than 1 hour)
+    if (dashboardData?.profile) {
+      const userCreatedAt = new Date(dashboardData.profile.created_at);
+      const hoursAgo = (Date.now() - userCreatedAt.getTime()) / (1000 * 60 * 60);
+      
+      if (hoursAgo >= 1) {
+        markDailyLogin();
+      }
+    }
     
     // Update greeting every minute
     const interval = setInterval(() => {
