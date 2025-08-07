@@ -93,6 +93,19 @@ export default function GameMode() {
                 </div>
               </Button>
 
+              {/* Conectar Conceitos */}
+              <Button
+                onClick={() => navigate('/concept-connections?theme=basic_finance')}
+                variant="outline"
+                className="w-full py-4 text-base font-medium bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200 hover:from-purple-100 hover:to-blue-100"
+              >
+                <div className="flex items-center justify-center gap-3">
+                  <Zap className="h-5 w-5 text-purple-600" />
+                  <span className="text-purple-700 font-semibold">Conectar Conceitos</span>
+                  <span className="px-2 py-1 text-xs bg-purple-100 text-purple-600 rounded-full">Novo</span>
+                </div>
+              </Button>
+
               {/* Modo Duelo */}
               <Button
                 onClick={() => handleModeSelect('duelo')}

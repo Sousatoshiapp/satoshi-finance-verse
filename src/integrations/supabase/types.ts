@@ -1042,6 +1042,95 @@ export type Database = {
           },
         ]
       }
+      concept_connection_questions: {
+        Row: {
+          correct_connections: Json
+          created_at: string
+          difficulty: string
+          explanation: string | null
+          id: string
+          is_active: boolean
+          left_concepts: Json
+          right_concepts: Json
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          correct_connections: Json
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean
+          left_concepts: Json
+          right_concepts: Json
+          theme: string
+          updated_at?: string
+        }
+        Update: {
+          correct_connections?: Json
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean
+          left_concepts?: Json
+          right_concepts?: Json
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      concept_connection_sessions: {
+        Row: {
+          btz_earned: number
+          completed_at: string
+          connections_made: Json
+          correct_connections: number
+          created_at: string
+          id: string
+          question_id: string
+          time_seconds: number
+          total_connections: number
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          btz_earned?: number
+          completed_at?: string
+          connections_made?: Json
+          correct_connections?: number
+          created_at?: string
+          id?: string
+          question_id: string
+          time_seconds?: number
+          total_connections?: number
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          btz_earned?: number
+          completed_at?: string
+          connections_made?: Json
+          correct_connections?: number
+          created_at?: string
+          id?: string
+          question_id?: string
+          time_seconds?: number
+          total_connections?: number
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concept_connection_sessions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "concept_connection_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
           created_at: string

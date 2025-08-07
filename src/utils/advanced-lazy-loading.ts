@@ -76,5 +76,6 @@ export const LazyRoutes = {
   DuelWaitingScreen: lazy(() => import('@/components/duels/duel-waiting-screen')),
   EnhancedSimultaneousDuel: lazy(() => import('@/components/duels/enhanced-simultaneous-duel')),
   ProximityTransferBluetooth: lazy(() => import('@/pages/ProximityTransferBluetooth')),
-  P2PTransfer: lazy(() => import('@/pages/P2PTransfer'))
+  P2PTransfer: lazy(() => import('@/pages/P2PTransfer')),
+  ConceptConnectionsPage: lazy(() => import('@/pages/ConceptConnectionsPage'))
 };

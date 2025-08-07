@@ -16,3 +16,4 @@ export { QuizAnalyticsDashboard } from './quiz-analytics-dashboard';
 export { QuizQualityManager } from './quiz-quality-manager';
 export { StagedQuestionGenerator } from './staged-question-generator';
 export { DuplicateDetectionDashboard } from './duplicate-detection-dashboard';
+export { ConceptConnectionGame } from './concept-connection-game';

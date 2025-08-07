@@ -54,5 +54,12 @@ export const gameRoutes = [
     requiresAuth: true,
     showNavbar: false,
     isDirectImport: true
+  },
+  {
+    path: "/concept-connections",
+    element: "ConceptConnectionsPage",
+    requiresAuth: true,
+    showNavbar: false,
+    isDirectImport: true
   }
 ];
