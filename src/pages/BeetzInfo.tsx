@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Coins, Gift, ShoppingCart, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

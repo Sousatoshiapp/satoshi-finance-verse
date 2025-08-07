@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shared/ui/dialog";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { Swords, Clock, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
+import { generateDuelQuestions } from "@/utils/duel-questions";
 
 interface DuelInvite {
   id: string;
@@ -44,6 +46,7 @@ const topicsMap: Record<string, string> = {
 export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInviteModalProps) {
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
+  const { dismissCurrentInvite } = useGlobalDuelInvites();
 
   if (!invite || !invite.challenger) return null;
 
@@ -52,44 +55,153 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
     
     try {
       if (accepted) {
-        // Update invite status
-        await supabase
+        console.log('🎯 Iniciando processo de aceitação do duelo para:', invite.quiz_topic);
+        console.log('📋 Dados do convite:', {
+          id: invite.id,
+          challenger_id: invite.challenger_id,
+          challenged_id: invite.challenged_id,
+          quiz_topic: invite.quiz_topic,
+          challenger_nickname: invite.challenger?.nickname
+        });
+
+        dismissCurrentInvite();
+
+        console.log('🎯 Gerando perguntas para:', invite.quiz_topic);
+        const questions = await generateDuelQuestions(invite.quiz_topic);
+        console.log('✅ Perguntas geradas:', questions.length, 'perguntas', questions);
+
+        console.log('🚀 Chamando RPC create_duel_with_invite...');
+        console.log('📤 Parâmetros da RPC:', {
+          p_challenger_id: invite.challenger_id,
+          p_challenged_id: invite.challenged_id,
+          p_quiz_topic: invite.quiz_topic,
+          questions_count: questions.length
+        });
+
+        const rpcResult = await supabase.rpc('create_duel_with_invite', {
+          p_challenger_id: invite.challenger_id,
+          p_challenged_id: invite.challenged_id,
+          p_quiz_topic: invite.quiz_topic,
+          p_questions: questions as any
+        });
+
+        let duelId = rpcResult.data;
+        const duelError = rpcResult.error;
+
+        console.log('📊 Resultado da RPC:', { duelId, duelError });
+
+        if (duelError) {
+          console.error('❌ Erro na RPC create_duel_with_invite:', duelError);
+          console.error('❌ Detalhes do erro:', {
+            message: duelError.message,
+            details: duelError.details,
+            hint: duelError.hint,
+            code: duelError.code
+          });
+          
+          console.log('🔄 Tentando criação direta na tabela como fallback...');
+          try {
+            const { data: directDuel, error: directError } = await supabase
+              .from('duels')
+              .insert({
+                player1_id: invite.challenger_id,
+                player2_id: invite.challenged_id,
+                quiz_topic: invite.quiz_topic,
+                questions: questions as any,
+                status: 'active',
+                current_question: 1,
+                player1_current_question: 1,
+                player2_current_question: 1,
+                invite_id: invite.id
+              })
+              .select()
+              .single();
+
+            if (directError) {
+              console.error('❌ Erro na criação direta:', directError);
+              throw new Error(`Erro ao criar duelo: ${directError.message}`);
+            }
+
+            console.log('✅ Duelo criado diretamente com sucesso:', directDuel.id);
+            duelId = directDuel.id;
+          } catch (fallbackError) {
+            console.error('❌ Fallback também falhou:', fallbackError);
+            throw new Error(`Erro ao criar duelo: ${duelError.message}`);
+          }
+        }
+
+        if (!duelId) {
+          console.error('❌ Nenhum ID de duelo foi obtido');
+          throw new Error('Duelo não foi criado - ID não retornado');
+        }
+
+        console.log('✅ Duelo criado com ID:', duelId);
+
+        console.log('🔄 Atualizando status do convite para "accepted"...');
+        const { error: updateError } = await supabase
           .from('duel_invites')
           .update({ status: 'accepted' })
           .eq('id', invite.id);
 
-        // Create duel
-        const { data: questionsData } = await supabase.functions.invoke('generate-quiz-questions', {
-          body: { topic: invite.quiz_topic, count: 10 }
-        });
-
-        if (!questionsData?.questions) {
-          throw new Error('Não foi possível gerar perguntas para o duelo');
+        if (updateError) {
+          console.error('❌ Erro ao atualizar status do convite:', updateError);
+        } else {
+          console.log('✅ Status do convite atualizado com sucesso');
         }
 
-        const { data: duel } = await supabase
+        console.log('📧 Enviando notificação de aceitação...');
+        try {
+          await supabase.functions.invoke('send-social-notification', {
+            body: {
+              userId: invite.challenger_id,
+              type: 'duel_accepted',
+              title: 'Convite Aceito!',
+              message: `Seu convite de duelo foi aceito! O duelo começou.`,
+              data: { invite_id: invite.id }
+            }
+          });
+          console.log('✅ Notificação enviada com sucesso');
+        } catch (notificationError) {
+          console.error('❌ Erro ao enviar notificação:', notificationError);
+        }
+
+        console.log('🔍 Verificando se o duelo foi realmente criado...');
+        const { data: createdDuel, error: fetchError } = await supabase
           .from('duels')
-          .insert({
-            invite_id: invite.id,
-            player1_id: invite.challenger_id,
-            player2_id: invite.challenged_id,
-            quiz_topic: invite.quiz_topic,
-            questions: questionsData.questions,
-            status: 'active',
-            current_turn: invite.challenger_id,
-            turn_started_at: new Date().toISOString()
-          })
-          .select()
+          .select('*')
+          .eq('id', duelId)
           .single();
+
+        console.log('📋 Resultado da verificação:', { createdDuel, fetchError });
+
+        if (fetchError) {
+          console.error('❌ Erro ao buscar duelo criado:', fetchError);
+          throw new Error(`Duelo não foi encontrado após criação: ${fetchError.message}`);
+        }
+
+        if (!createdDuel) {
+          console.error('❌ Duelo não foi encontrado na base de dados');
+          throw new Error('Duelo não foi encontrado após criação');
+        }
+
+        console.log('✅ Duelo verificado com sucesso:', {
+          id: createdDuel.id,
+          status: createdDuel.status,
+          player1_id: createdDuel.player1_id,
+          player2_id: createdDuel.player2_id,
+          topic: createdDuel.quiz_topic
+        });
 
         toast({
           title: "Duelo aceito!",
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
         });
 
+        console.log('🎮 Redirecionando para duelo...');
         setTimeout(() => {
-          window.location.href = '/duels';
-        }, 1000);
+          window.location.href = `/duel/${duelId}`;
+        }, 2000);
+        return;
 
       } else {
         // Reject invite
@@ -97,6 +209,20 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           .from('duel_invites')
           .update({ status: 'rejected' })
           .eq('id', invite.id);
+
+        try {
+          await supabase.functions.invoke('send-social-notification', {
+            body: {
+              userId: invite.challenger_id,
+              type: 'duel_rejected',
+              title: 'Convite Recusado',
+              message: `Seu convite de duelo foi recusado`,
+              data: { invite_id: invite.id }
+            }
+          });
+        } catch (notificationError) {
+          console.error('Error sending rejection notification:', notificationError);
+        }
 
         toast({
           title: "❌ Convite recusado",
@@ -108,10 +234,14 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
       onClose();
 
     } catch (error) {
-      console.error('Error responding to invite:', error);
+      console.error('💥 Erro completo ao responder convite:', error);
+      console.error('💥 Stack trace:', error instanceof Error ? error.stack : 'N/A');
+      console.error('💥 Tipo do erro:', typeof error);
+      console.error('💥 Propriedades do erro:', Object.keys(error || {}));
+      
       toast({
         title: "❌ Erro",
-        description: "Não foi possível responder ao convite",
+        description: error instanceof Error ? error.message : "Não foi possível responder ao convite",
         variant: "destructive"
       });
     } finally {

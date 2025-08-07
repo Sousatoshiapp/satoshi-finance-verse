@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSponsorTheme } from '@/contexts/SponsorThemeProvider';
+import { useI18n } from '@/hooks/use-i18n';
 import { TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu } from 'lucide-react';
 
 // Import district logos
@@ -30,6 +31,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
 }) => {
   const [stage, setStage] = useState(0);
   const { getTheme } = useSponsorTheme();
+  const { t } = useI18n();
   
   const sponsorTheme = toDistrictTheme ? getTheme(toDistrictTheme) : null;
 
@@ -55,31 +57,31 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
     fintech: Cpu,
   };
 
-  // Function to get district logo with fallback system - CORRIGIDA
+  // Function to get district logo with fallback system - CORRECTED
   const getDistrictLogoOrIcon = () => {
-    console.log('🎯 [TRANSIÇÃO] Buscando logo para tema:', toDistrictTheme);
+    console.log('🎯 [TRANSITION] Searching logo for theme:', toDistrictTheme);
     
     // Priority 1: sponsor logo from database
     if (sponsorTheme?.logoUrl) {
-      console.log('✅ [TRANSIÇÃO] Usando sponsor logo:', sponsorTheme.logoUrl);
+      console.log('✅ [TRANSITION] Using sponsor logo:', sponsorTheme.logoUrl);
       return { type: 'image', src: sponsorTheme.logoUrl };
     }
     
     // Priority 2: local theme logo
     if (toDistrictTheme && districtLogos[toDistrictTheme as keyof typeof districtLogos]) {
       const logoSrc = districtLogos[toDistrictTheme as keyof typeof districtLogos];
-      console.log('✅ [TRANSIÇÃO] Usando logo local:', logoSrc);
+      console.log('✅ [TRANSITION] Using local logo:', logoSrc);
       return { type: 'image', src: logoSrc };
     }
     
     // Priority 3: fallback icon
     if (toDistrictTheme && districtIcons[toDistrictTheme as keyof typeof districtIcons]) {
       const IconComponent = districtIcons[toDistrictTheme as keyof typeof districtIcons];
-      console.log('✅ [TRANSIÇÃO] Usando ícone fallback para tema:', toDistrictTheme);
+      console.log('✅ [TRANSITION] Using fallback icon for theme:', toDistrictTheme);
       return { type: 'icon', component: IconComponent };
     }
     
-    console.log('⚠️ [TRANSIÇÃO] Nenhum logo/ícone encontrado para tema:', toDistrictTheme);
+    console.log('⚠️ [TRANSITION] No logo/icon found for theme:', toDistrictTheme);
     return null;
   };
 
@@ -144,7 +146,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  Saindo de {fromLocation}
+                  {t('satoshiCity.transition.leaving', { location: fromLocation })}
                 </motion.div>
                 <motion.div
                   className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto"
@@ -254,7 +256,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                   ease: "easeInOut"
                 }}
               >
-                Viajando para
+                {t('satoshiCity.transition.traveling')}
               </motion.div>
               
               {(() => {
@@ -340,7 +342,7 @@ export const DistrictTransition: React.FC<DistrictTransitionProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  Chegando em {toLocation}
+                  {t('satoshiCity.transition.arriving', { location: toLocation })}
                 </motion.div>
               </div>
             </motion.div>

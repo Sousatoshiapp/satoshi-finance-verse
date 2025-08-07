@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PowerBar } from "@/components/ui/power-bar";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
+import { PowerBar } from "@/components/shared/ui/power-bar";
+import { DistrictPowerBars } from "@/components/district/DistrictPowerBars";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Users, Trophy, BookOpen, Zap, Crown, Medal, Star, Swords, Target, Flame, ShoppingBag, Timer, ExternalLink, Building, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { DistrictCrisisCard } from "@/components/crisis/DistrictCrisisCard";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 import { CrisisEmergencyModal } from "@/components/crisis/CrisisEmergencyModal";
@@ -74,6 +76,12 @@ interface District {
   sponsor_logo_url: string;
   referral_link: string;
   special_power: string;
+  monetary_power?: number;
+  tech_power?: number;
+  military_power?: number;
+  energy_power?: number;
+  commercial_power?: number;
+  social_power?: number;
 }
 
 interface UserDistrict {
@@ -171,6 +179,7 @@ const getDistrictImage = (districtTheme: string) => {
 export default function DistrictDetail() {
   const { districtId } = useParams();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [district, setDistrict] = useState<District | null>(null);
   const [userDistrict, setUserDistrict] = useState<UserDistrict | null>(null);
   const [residents, setResidents] = useState<Resident[]>([]);
@@ -619,14 +628,20 @@ export default function DistrictDetail() {
         </div>
       </div>
 
-      {/* District Power Bar */}
+      {/* District Power Bars */}
       <div className="container mx-auto px-4 py-6 relative z-20">
+        <DistrictPowerBars 
+          district={district}
+          className="mb-8"
+        />
+
+        {/* District Stats */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Zap className="w-5 h-5" style={{ color: district.color_primary }} />
-                Poder do Distrito
+                Estatísticas do Distrito
               </span>
               <Badge variant="outline">
                 #{districtRanking} no Ranking
@@ -634,14 +649,7 @@ export default function DistrictDetail() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <PowerBar
-              currentPower={districtPower}
-              maxPower={20000000}
-              label={`${districtPower.toLocaleString()} XP`}
-              color={district.color_primary}
-              showPercentage={false}
-            />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-center text-sm">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
               <div>
                 <div className="font-semibold">{residents.length}</div>
                 <div className="text-muted-foreground">Moradores</div>

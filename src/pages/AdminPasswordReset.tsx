@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { Lock, Eye, EyeOff, CheckCircle } from "lucide-react";
 
@@ -11,6 +12,7 @@ export default function AdminPasswordReset() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useI18n();
   
   const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -56,20 +58,24 @@ export default function AdminPasswordReset() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('admin-password-reset', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('unified-email', {
+        body: {
+          type: 'admin_password_reset',
           email: 'fasdurian@gmail.com',
-          action: 'reset_password',
           token: token,
           newPassword: newPassword
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error('Erro ao conectar com o servidor');
+      }
 
-      // Atualizar senha no localStorage
-      localStorage.setItem("admin_password", newPassword);
-      
+      if (!data?.success) {
+        throw new Error(data?.error || 'Erro ao redefinir senha');
+      }
+
       setSuccess(true);
       toast({
         title: "Senha alterada!",
@@ -84,8 +90,8 @@ export default function AdminPasswordReset() {
     } catch (error: any) {
       console.error('Password reset error:', error);
       toast({
-        title: "Erro ao redefinir senha",
-        description: error.message || "Token inválido ou expirado.",
+        title: t('errors.passwordResetError'),
+        description: error.message || t('errors.invalidToken'),
         variant: "destructive",
       });
     } finally {

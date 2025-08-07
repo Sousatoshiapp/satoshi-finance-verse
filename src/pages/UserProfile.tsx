@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { SocialButton } from "@/components/social/social-button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { SocialButton } from "@/components/features/social/social-button";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Trophy, Medal, Star, TrendingUp, Users, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
+import { normalizeAvatarData } from "@/lib/avatar-utils";
 
 interface UserProfileData {
   id: string;
@@ -20,6 +21,8 @@ interface UserProfileData {
   completed_lessons: number;
   streak: number;
   created_at: string;
+  is_bot: boolean;
+  current_avatar_id?: string | null;
   avatar?: {
     id: string;
     name: string;
@@ -27,6 +30,11 @@ interface UserProfileData {
     description?: string;
     rarity: string;
   };
+  avatars?: {
+    id: string;
+    name: string;
+    image_url: string;
+  } | null;
   follower_count: number;
   following_count: number;
   portfolio_count: number;
@@ -66,7 +74,14 @@ export default function UserProfile() {
           completed_lessons,
           streak,
           created_at,
-          avatar:avatars(id, name, image_url, description, rarity)
+          is_bot,
+          current_avatar_id,
+          avatars!current_avatar_id (
+            id, name, image_url
+          ),
+          avatar:user_avatars (
+            avatars(id, name, image_url, description, rarity)
+          )
         `)
         .eq('id', profileId)
         .single();
@@ -106,8 +121,13 @@ export default function UserProfile() {
         social_interactions: (followerCount || 0) + (followingCount || 0)
       };
 
+      // Transform the nested avatar data
+      const transformedAvatar = profile.avatar?.[0]?.avatars || null;
+      
       setUser({
         ...profile,
+        avatar: transformedAvatar,
+        avatars: profile.avatars,
         follower_count: followerCount || 0,
         following_count: followingCount || 0,
         portfolio_count: portfolioCount || 0,
@@ -216,14 +236,23 @@ export default function UserProfile() {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex flex-col items-center md:items-start">
-                <AvatarDisplayUniversal
-                  avatarName={user.avatar?.name}
-                  avatarUrl={user.avatar?.image_url}
-                  profileImageUrl={user.profile_image_url}
-                  nickname={user.nickname}
-                  size="xl"
-                  className="mb-4"
-                />
+                {user.is_bot ? (
+                  <AvatarDisplayUniversal
+                    avatarData={normalizeAvatarData(user)}
+                    nickname={user.nickname}
+                    size="xl"
+                    className="mb-4"
+                  />
+                ) : (
+                  <AvatarDisplayUniversal
+                    avatarName={user.avatar?.name}
+                    avatarUrl={user.avatar?.image_url}
+                    profileImageUrl={user.profile_image_url}
+                    nickname={user.nickname}
+                    size="xl"
+                    className="mb-4"
+                  />
+                )}
                 
                 <div className="text-center md:text-left">
                   <h2 className="text-2xl font-bold mb-2">{user.nickname}</h2>
@@ -369,12 +398,20 @@ export default function UserProfile() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <AvatarDisplayUniversal
-                  avatarName={user.avatar.name}
-                  avatarUrl={user.avatar.image_url}
-                  nickname={user.avatar.name}
-                  size="lg"
-                />
+                {user.is_bot ? (
+                  <AvatarDisplayUniversal
+                    avatarData={normalizeAvatarData(user)}
+                    nickname={user.nickname}
+                    size="lg"
+                  />
+                ) : (
+                  <AvatarDisplayUniversal
+                    avatarName={user.avatar.name}
+                    avatarUrl={user.avatar.image_url}
+                    nickname={user.avatar.name}
+                    size="lg"
+                  />
+                )}
                 <div>
                   <h3 className="font-semibold text-lg">{user.avatar.name}</h3>
                   <Badge 

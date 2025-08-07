@@ -161,3 +161,1240 @@
     "level_100": { "name": "LO INCONCEBIBLE", "description": "Más allá de toda comprensión humana" }
   }
 }
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "level": "Nivel",
+    "points": "Puntos",
+    "xp": "XP",
+    "beetz": "Beetz",
+    "pro": "Pro",
+    "online": "En línea",
+    "offline": "Desconectado",
+    "viewAll": "Ver Todo",
+    "available": "DISPONIBLE",
+    "new": "¡NUEVO!",
+    "switchTo": "Cambiar a",
+    "playground": "Playground",
+    "explore": "Explorar"
+  },
+  "duels": {
+    "activeArena": "Arena",
+    "online": "jugadores en línea",
+    "searching": "Buscando Oponente...",
+    "moreBotsAvailable": "Más bots disponibles",
+    "lastUpdate": "Última actualización"
+  },
+  "quiz": {
+    "title": "Quiz",
+    "question": "Pregunta {{number}} de {{total}}",
+    "nextQuestion": "Siguiente Pregunta",
+    "finishQuiz": "Finalizar Quiz",
+    "timeRemaining": "Tiempo Restante",
+    "correct": "¡Correcto!",
+    "incorrect": "¡Incorrecto!",
+    "explanation": "Explicación",
+    "score": "Puntuación",
+    "completed": "¡Quiz Completado!",
+    "startQuiz": "Iniciar Quiz",
+    "questions": {
+      "stockExchange": {
+        "question": "¿Cuál es la función principal de una bolsa de valores?",
+        "options": ["Prestar dinero a empresas", "Facilitar el comercio de valores", "Establecer tasas de interés", "Imprimir dinero"],
+        "correct": "Facilitar el comercio de valores",
+        "explanation": "Las bolsas de valores facilitan el comercio de valores entre compradores y vendedores."
+      },
+      "ipo": {
+        "question": "¿Qué significa IPO?",
+        "options": ["Oferta Pública Inicial", "Orden de Compra Internacional", "Opciones de Cartera de Inversión", "Optimización Interna de Precios"],
+        "correct": "Oferta Pública Inicial",
+        "explanation": "IPO significa Oferta Pública Inicial, cuando una empresa vende acciones al público por primera vez."
+      },
+      "diversification": {
+        "question": "¿Qué es la diversificación en inversiones?",
+        "options": ["Invertir todo el dinero en una acción", "Distribuir inversiones entre diferentes activos", "Solo comprar acciones", "Vender todas las inversiones"],
+        "correct": "Distribuir inversiones entre diferentes activos",
+        "explanation": "La diversificación implica distribuir inversiones entre diferentes activos para reducir el riesgo."
+      },
+      "defi": {
+        "question": "¿Qué es DeFi?",
+        "options": ["Bitcoin", "Finanzas Descentralizadas", "Tipo de billetera", "Exchange centralizado"],
+        "correct": "Finanzas Descentralizadas",
+        "explanation": "DeFi son aplicaciones financieras descentralizadas."
+      },
+      "correlation": {
+        "question": "¿Qué es la Correlación?",
+        "options": ["Precio de activos", "Relación entre movimientos", "Tasa de retorno", "Dividendos"],
+        "correct": "Relación entre movimientos",
+        "explanation": "La correlación mide cómo se mueven los activos juntos."
+      },
+      "bitcoin": {
+        "question": "¿Quién creó Bitcoin?",
+        "options": ["Vitalik Buterin", "Satoshi Nakamoto", "Charlie Lee", "Gavin Andresen"],
+        "correct": "Satoshi Nakamoto",
+        "explanation": "Satoshi Nakamoto es el seudónimo del creador de Bitcoin."
+      },
+      "duration": {
+        "question": "¿Qué es la Duración?",
+        "options": ["Plazo de inversión", "Sensibilidad a la tasa de interés", "Tasa de retorno", "Valor presente"],
+        "correct": "Sensibilidad a la tasa de interés",
+        "explanation": "La duración mide la sensibilidad a los cambios en las tasas de interés."
+      },
+      "bullMarket": {
+        "question": "¿Qué significa Mercado Alcista?",
+        "options": ["Mercado bajista", "Mercado alcista", "Mercado lateral", "Mercado volátil"],
+        "correct": "Mercado alcista",
+        "explanation": "El Mercado Alcista es un período de crecimiento sostenido."
+      },
+      "roi": {
+        "question": "¿Qué es ROI?",
+        "options": ["Retorno de la Inversión", "Tasa de Interés", "Riesgo de Inversión", "Ingreso Operativo Real"],
+        "correct": "Retorno de la Inversión",
+        "explanation": "ROI significa Retorno de la Inversión, midiendo la rentabilidad."
+      },
+      "volatility": {
+        "question": "¿Qué es la volatilidad?",
+        "options": ["Estabilidad de precios", "Variación de precios", "Garantía de inversión", "Retorno fijo"],
+        "correct": "Variación de precios",
+        "explanation": "La volatilidad mide cuánto fluctúa el precio de un activo."
+      },
+      "bearMarket": {
+        "question": "¿Qué es un Mercado Bajista?",
+        "options": ["Mercado en alza", "Mercado en baja", "Mercado estable", "Mercado nuevo"],
+        "correct": "Mercado en baja",
+        "explanation": "El Mercado Bajista es un período de declive sostenido en los precios."
+      },
+      "inflation": {
+        "question": "¿Qué es la inflación?",
+        "options": ["Aumento de precios", "Disminución de precios", "Cambio de moneda", "Tasa de interés"],
+        "correct": "Aumento de precios",
+        "explanation": "La inflación es el aumento general de precios y la caída del valor adquisitivo del dinero."
+      },
+      "liquidity": {
+        "question": "¿Qué es la liquidez?",
+        "options": ["Facilidad de conversión a efectivo", "Retorno de inversión", "Volatilidad del mercado", "Tasa de interés"],
+        "correct": "Facilidad de conversión a efectivo",
+        "explanation": "La liquidez se refiere a la facilidad con que un activo puede convertirse en efectivo sin afectar su precio de mercado."
+      },
+      "compoundInterest": {
+        "question": "¿Qué es el interés compuesto?",
+        "options": ["Interés sobre interés", "Interés simple", "Tasa fija", "Tasa variable"],
+        "correct": "Interés sobre interés",
+        "explanation": "El interés compuesto es el interés calculado sobre el capital inicial y los intereses acumulados de períodos anteriores."
+      }
+    }
+  },
+  "proximityDetection": {
+    "title": "Detección de Proximidad",
+    "location": "Ubicación",
+    "permissionGranted": "Permitida",
+    "permissionDenied": "Denegada",
+    "permissionPending": "Pendiente",
+    "activateDetection": "Activar Detección",
+    "visibleToOthers": "Visible para Otros",
+    "detectionStatus": "Estado de Detección",
+    "playersFound": "{{count}} jugador(es) cercano(s) encontrado(s)",
+    "searchingPlayers": "Buscando jugadores cercanos...",
+    "additionalPlayers": "+{{count}} otros jugadores",
+    "infoDetectionRange": "• Detecta jugadores en un radio de 500 metros",
+    "infoUpdateFrequency": "• Actualización automática cada 30 segundos",
+    "infoNotificationLimit": "• Notificaciones limitadas a una por jugador cada 2 horas",
+    "permissionDeniedTitle": "Permiso Denegado",
+    "permissionDeniedDescription": "Para usar la detección de proximidad, permite el acceso a la ubicación en la configuración de tu dispositivo.",
+    "challengeSentTitle": "¡Desafío Enviado! 🎯",
+    "challengeSentDescription": "Tu desafío fue enviado a @{{nickname}}. ¡Espera la respuesta!",
+    "modal": {
+      "title": "Jugador Cercano Detectado",
+      "distanceAway": "{{distance}}m de distancia",
+      "proximityDuel": "Duelo de Proximidad",
+      "nearbyPlayer": "Jugador cerca de ti",
+      "challengeText": "¡@{{nickname}} está cerca de ti! 🎯",
+      "topicLabel": "Tema: Finanzas Generales",
+      "challengeQuestion": "¿Desafiar a un duelo por BTZ?",
+      "duelDetails": "10 preguntas • 30 segundos cada una • Duelo simultáneo",
+      "ignoreButton": "❌ Ignorar",
+      "challengeButton": "⚔️ Desafiar",
+      "errorTitle": "Error",
+      "errorDescription": "No se pudo enviar el desafío. Inténtalo de nuevo."
+    }
+  },
+  "bluetooth": {
+    "title": "Transferencia por Proximidad",
+    "subtitle": "Transfiere BTZ a usuarios cercanos vía Bluetooth",
+    "proximityTransfer": "Transferencia por Proximidad",
+    "scanning": "Escaneando",
+    "advertising": "Transmitiendo",
+    "nearbyUsers": "Usuarios Cercanos",
+    "send": "Enviar",
+    "sendTo": "Enviar a {{user}}",
+    "searchingTimeout": "Buscando usuarios cercanos... {{seconds}}s",
+    "noUsersFound": "No se encontraron usuarios",
+    "fallbackMessage": "No pudimos encontrar usuarios cercanos. Usa el código QR como alternativa.",
+    "useQRCode": "Usar Código QR",
+    "permissionDenied": "Permiso Bluetooth denegado",
+    "scanningFailed": "Error al escanear dispositivos",
+    "advertisingFailed": "Error al transmitir presencia",
+    "transferRequestSent": "Solicitud enviada",
+    "transferRequestSentDesc": "Solicitud de transferencia enviada vía Bluetooth",
+    "transferRequestFailed": "Error al enviar solicitud",
+    "tryAgain": "Intentar de Nuevo"
+  },
+  "navigation": {
+    "dashboard": "Panel",
+    "quiz": "Quiz",
+    "social": "Social",
+    "profile": "Perfil",
+    "leaderboard": "Clasificación",
+    "store": "Tienda",
+    "settings": "Configuración",
+    "city": "Ciudad",
+    "game": "Juego"
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenido al Juego de Finanzas Satoshi!",
+    "weeklyRanking": "Clasificación Semanal",
+    "dailyMissions": "Misiones Diarias",
+    "streak": "Racha",
+    "level": "Nivel {{level}}",
+    "goodMorning": "BUENOS DÍAS",
+    "goodAfternoon": "BUENAS TARDES",
+    "goodNight": "BUENAS NOCHES",
+    "student": "Estudiante",
+    "goal": "Objetivo",
+    "dailySummary": "Resumen del Día",
+    "sequence": "Secuencia",
+    "days": "días",
+    "rewards": "Recompensas",
+    "missions": "misiones",
+    "achievements": "Logros",
+    "badges": "insignias",
+    "dailyDuels": "Duelos Diarios",
+    "resetIn24h": "Reinicio en 24h",
+    "upgrade": "Mejora",
+    "todayProgress": "Progreso Hoy",
+    "experience": "Experiencia",
+    "lessons": "Lecciones",
+    "xpBoost": "Impulso XP",
+    "rankingBeetz": "Ranking BTZ",
+    "duelDescription": "Desafía a otros jugadores en batallas épicas de conocimiento financiero",
+    "playgroundDescription": "Practica inversiones, sigue a otros jugadores y construye tu imperio"
+  },
+  "leaderboard": {
+    "weeklyRankings": "Clasificaciones Semanales",
+    "global": "Global",
+    "league": "Liga",
+    "yourPosition": "Tu Posición",
+    "totalScore": "Puntuación Total",
+    "resetIn": "Reinicio en",
+    "noRank": "Sin rango",
+    "noRankingAvailable": "No hay clasificación disponible",
+    "beFirstInRanking": "¡Sé el primero en aparecer en la clasificación semanal!",
+    "climbRanking": "¡Sube en la Clasificación!",
+    "climbRankingDescription": "Completa quizzes, gana duelos y obtén XP para subir en la clasificación",
+    "pointsPerXP": "+1 pt por XP",
+    "pointsPerQuiz": "+1 pt por Quiz",
+    "pointsPerDuel": "+100 pts por Duelo"
+  },
+  "profile": {
+    "header": {
+      "profile": "Perfil"
+    },
+    "userProfile": "Perfil de Usuario",
+    "achievements": "Logros",
+    "statistics": "Estadísticas",
+    "followersCount": "Seguidores",
+    "followingCount": "Siguiendo",
+    "completedLessons": "Lecciones Completadas",
+    "currentStreak": "Racha Actual",
+    "publicPortfolios": "Carteras Públicas",
+    "memberSince": "Miembro desde",
+    "activeAvatar": "Avatar Activo",
+    "message": "Mensaje",
+    "anonymousUser": "Usuario Anónimo",
+    "header": {
+      "profile": "Perfil",
+      "settings": "Configuración"
+    },
+    "stats": {
+      "level": "Nivel",
+      "beetz": "Beetz",
+      "followers": "Seguidores",
+      "following": "Siguiendo",
+      "progress": "Progreso",
+      "lessonsCompleted": "Lecciones Completadas",
+      "of": "de"
+    },
+    "plans": {
+      "satoshiPro": "Satoshi Pro",
+      "satoshiElite": "Satoshi Elite"
+    },
+    "loading": "Cargando perfil...",
+    "notFound": "Usuario no encontrado",
+    "achievements": {
+      "tournamentsWon": "Torneos Ganados",
+      "quizzesCompleted": "Quizzes Completados",
+      "perfectScore": "Puntuación Perfecta",
+      "socialInteractions": "Interacciones Sociales"
+    }
+  },
+  "matchmaking": {
+    "preferences": {
+      "title": "Preferencias de Emparejamiento",
+      "subtitle": "Configura cómo te gustaría encontrar oponentes para duelos",
+      "topics": {
+        "title": "Temas Preferidos",
+        "subtitle": "Selecciona los temas sobre los que más disfrutas duelos",
+        "financas": "Finanzas Generales",
+        "investimentos": "Inversiones",
+        "criptomoedas": "Criptomonedas",
+        "economia": "Economía"
+      },
+      "allowBots": {
+        "title": "Permitir Oponentes Bot",
+        "subtitle": "Aceptar duelos contra oponentes controlados por IA"
+      },
+      "skillLevel": {
+        "title": "Nivel de Oponentes",
+        "similar": "Nivel Similar",
+        "similarDesc": "Oponentes cercanos a tu nivel",
+        "any": "Cualquier Nivel",
+        "anyDesc": "Cualquier oponente disponible",
+        "challenging": "Desafiante",
+        "challengingDesc": "Oponentes de nivel superior"
+      },
+      "autoAccept": {
+        "title": "Auto-aceptar de Amigos",
+        "subtitle": "Aceptar automáticamente invitaciones de amigos"
+      },
+      "maxInvites": {
+        "title": "Invitaciones Simultáneas",
+        "subtitle": "Máximo de invitaciones que puedes recibir al mismo tiempo"
+      },
+      "availability": {
+        "title": "Estado de Disponibilidad",
+        "available": "Disponible",
+        "availableDesc": "Aceptar todas las invitaciones",
+        "busy": "Ocupado",
+        "busyDesc": "Solo invitaciones prioritarias",
+        "invisible": "Invisible",
+        "invisibleDesc": "No recibir invitaciones"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "save": "Guardar Preferencias",
+        "saving": "Guardando...",
+        "saveSuccess": "Preferencias Guardadas",
+        "saveSuccessDesc": "¡Tus preferencias de emparejamiento han sido actualizadas!",
+        "saveError": "Error",
+        "saveErrorDesc": "No se pudieron guardar tus preferencias. Inténtalo de nuevo."
+      }
+    }
+  },
+  "admin": {
+    "dashboard": "Panel de Administración",
+    "language": "Idioma",
+    "changeLanguage": "Cambiar Idioma",
+    "botManagement": "Gestión de Bots",
+    "enhanceBotRealism": "Mejorar Realismo de Bots",
+    "updateBotNicknames": "Actualizar Nombres de Bots"
+  },
+  "quizEngine": {
+    "loadingQuestions": "Cargando preguntas...",
+    "noQuestionsAvailable": "No hay preguntas disponibles",
+    "couldNotLoadQuestions": "No se pudieron cargar las preguntas en este momento.",
+    "question": "Pregunta {{current}} de {{total}}",
+    "soloQuiz": "Quiz Solo",
+    "duelQuiz": "Quiz Duelo",
+    "tournamentQuiz": "Quiz Torneo",
+    "dailyMission": "Misión Diaria",
+    "districtQuiz": "Quiz del Distrito",
+    "congratulations": "¡Felicitaciones!",
+    "lost": "¡Perdiste!",
+    "correctAnswers": "respuestas correctas",
+    "accuracy": "precisión",
+    "nextQuiz": "Siguiente Quiz",
+    "continue": "Continuar",
+    "tryAgain": "Intentar de Nuevo",
+    "back": "Atrás",
+    "confirmAnswer": "Confirmar Respuesta",
+    "selectOption": "Selecciona una opción",
+    "timeUp": "¡Se Acabó el Tiempo!",
+    "correct": "¡Correcto!",
+    "incorrect": "¡Incorrecto!",
+    "correctAnswer": "Respuesta correcta: ",
+    "timeRemaining": "Tiempo Restante"
+  },
+  "social": {
+    "socialFeed": "Feed Social",
+    "shareOpinion": "¿Qué está pasando?",
+    "whatsHappening": "¿Qué está pasando?",
+    "post": "Publicar",
+    "like": "Me gusta",
+    "comment": "Comentar",
+    "share": "Compartir",
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafíos",
+      "ranks": "Rankings",
+      "following": "Siguiendo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "¿Qué está pasando?",
+      "searchUsers": "Buscar usuarios...",
+      "addComment": "Añade un comentario..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "comment": "Comentar"
+    },
+    "messages": {
+      "searchingUsers": "Buscando usuarios...",
+      "noResults": "No se encontraron resultados",
+      "comingSoon": "Próximamente",
+      "postCreated": "¡Post creado con éxito!",
+      "commentAdded": "¡Comentario añadido!",
+      "errorPost": "No se pudo crear el post",
+      "errorComment": "No se pudo añadir el comentario"
+    },
+    "stats": {
+      "likes": "me gusta",
+      "comments": "comentarios",
+      "shares": "compartir",
+      "ago": "hace",
+      "now": "ahora"
+    }
+  },
+  "satoshiCity": {
+    "welcome": "Bienvenido a la ciudad del futuro financiero",
+    "subtitle": "Haz clic en los distritos para explorar conocimiento",
+    "badges": {
+      "activeDistricts": "7 Distritos Activos",
+      "neuralSystem": "Sistema Neural Activo",
+      "hyperRealistic": "Ciudad Hiperrealista"
+    },
+    "modes": {
+      "3dDevelopment": "3D en Desarrollo",
+      "back2d": "Volver 2D",
+      "overview": "Vista General",
+      "exploration": "Exploración"
+    },
+    "loading": {
+      "city": "Cargando Satoshi City...",
+      "city3d": "Cargando Satoshi City 3D..."
+    },
+    "emergency": {
+      "state": "ESTADO DE EMERGENCIA",
+      "hackDetected": "HACK FINANCIERO DETECTADO",
+      "marketCollapse": "COLAPSO DEL MERCADO",
+      "cyberAttack": "ATAQUE CIBERNÉTICO"
+    },
+    "avatar": {
+      "chooseTitle": "Elige tu Ciudadano Digital",
+      "chooseSubtitle": "Selecciona tu avatar inicial para comenzar tu viaje"
+    },
+    "affiliation": {
+      "district": "Distrito",
+      "explore": "Explorar",
+      "chooseDistrict": "Elegir Distrito",
+      "team": "Equipo",
+      "createJoinTeam": "Crear/Unirse al Equipo"
+    },
+    "contribution": {
+      "title": "Contribuir a la Emergencia",
+      "subtitle": "Tus contribuciones son amplificadas",
+      "button": "Contribuir Ahora"
+    }
+  },
+  "districts": {
+    "navigation": {
+      "backToCity": "Volver a la Ciudad",
+      "becomeMember": "Convertirse en Miembro",
+      "viewTeam": "Ver Equipo"
+    },
+    "stats": {
+      "totalBTZ": "BTZ Total",
+      "totalXP": "XP Total",
+      "power": "Poder"
+    },
+    "timeOfDay": {
+      "morning": "Mañana",
+      "afternoon": "Tarde",
+      "night": "Noche"
+    },
+    "specialPower": "Poder Especial",
+    "actions": {
+      "access": "Acceder",
+      "districtQuiz": "Quiz del Distrito",
+      "challengeDistrict": "Desafiar Distrito",
+      "viewResidents": "Ver Residentes"
+    },
+    "loading": {
+      "district": "Cargando distrito...",
+      "notFound": "Distrito no encontrado"
+    },
+    "quiz": {
+      "prepare": "¡Prepárate para poner a prueba tus conocimientos!",
+      "questions": "preguntas",
+      "secondsPerQuestion": "segundos por pregunta",
+      "xpPerCorrect": "XP por respuesta correcta"
+    },
+    "ranking": {
+      "districtPower": "Poder del Distrito",
+      "inRanking": "en el Ranking",
+      "residents": "Residentes",
+      "averageXP": "XP Promedio",
+      "victories": "Victorias",
+      "winRate": "Tasa de Victoria"
+    },
+    "duels": {
+      "activeDuels": "Duelos Activos",
+      "challenge": "Desafiar",
+      "participants": "participantes",
+      "average": "Promedio"
+    }
+  },
+  "store": {
+    "store": "Tienda",
+    "avatars": "Avatares",
+    "upgrades": "Mejoras",
+    "buy": "Comprar",
+    "owned": "Poseído",
+    "loading": "Cargando tienda...",
+    "error": "Error",
+    "errorLoadingStore": "No se pudo cargar la tienda",
+    "purchaseError": "Error de Compra",
+    "processing": "Procesando...",
+    "upgradeSuccessful": "¡Compra Exitosa!",
+    "insufficientFunds": "Beetz Insuficientes",
+    "alreadyOwned": "Ya Poseído",
+    "levelRequired": "Nivel {{level}} requerido",
+    "selectPaymentMethod": "Seleccionar Método de Pago",
+    "viewPlans": "Ver Planes",
+    "duels": "Duelos",
+    "beetzPerMonth": "Beetz/mes",
+    "accessories": "Accesorios",
+    "lives": "Vidas",
+    "skins": "Skins",
+    "boosts": "Impulsos",
+    "livesProtection": "Vidas y Protección",
+    "maintainStreak": "Mantén tu racha y sigue jugando",
+    "beetzPackages": "Paquetes de Beetz",
+    "buyBeetzReal": "Compra Beetz con dinero real vía Stripe",
+    "basicPackage": "Paquete Básico",
+    "popularPackage": "Paquete Popular",
+    "premiumPackage": "Paquete Premium",
+    "supremePackage": "Paquete Supremo",
+    "buyBeetz": "Comprar Beetz",
+    "notEnoughBeetz": "No tienes suficientes Beetz. Elige un paquete para continuar:",
+    "securePayment": "Pago Seguro",
+    "processedStripe": "Procesado vía Stripe con máxima seguridad",
+    "premiumPlans": "Planes Premium",
+    "accelerateProgress": "Acelera tu progreso",
+    "xpBoost": "Impulso XP",
+    "marketplaceLives": "Mercado de Vidas",
+    "buyLivesKeepStreak": "Compra vidas para mantener tus rachas",
+    "savesStreak": "Salva Racha",
+    "multipliesBTZ": "Multiplica BTZ",
+    "viewLives": "Ver Vidas",
+    "streakProtection": "Protección de Racha",
+    "useLifeKeepStreak": "Usa una vida para mantener tu racha activa",
+    "keepMultipliers": "Mantener Multiplicadores",
+    "preserveBTZMultipliers": "Preserva tus multiplicadores BTZ activos",
+    "continueWithoutStop": "Continúa Sin Parar",
+    "dontLoseMomentum": "No pierdas el impulso de tu aprendizaje"
+  },
+  "subscription": {
+    "plans": "Planes de Suscripción",
+    "choosePlan": "Elige tu Plan",
+    "free": "Gratis",
+    "premium": "Premium",
+    "elite": "Elite",
+    "monthly": "Mensual",
+    "annually": "Anual",
+    "subscribe": "Suscribirse",
+    "benefits": "Beneficios",
+    "compareBenefits": "Comparar Beneficios"
+  },
+  "settings": {
+    "settings": "Configuración",
+    "account": "Cuenta",
+    "notifications": "Notificaciones",
+    "privacy": "Privacidad",
+    "theme": "Tema",
+    "language": "Idioma",
+    "personalInfo": "Información Personal",
+    "nickname": "Apodo",
+    "email": "Email",
+    "password": "Contraseña",
+    "financialGoal": "Objetivo Financiero",
+    "experience": "Experiencia",
+    "soundEffects": "Efectos de Sonido",
+    "darkMode": "Modo Oscuro",
+    "saveSettings": "Guardar Configuración",
+    "logout": "Cerrar Sesión",
+    "pushNotifications": "Notificaciones Push",
+    "receiveNotifications": "Recibir notificaciones de la app",
+    "dailyReminder": "Recordatorio Diario",
+    "studyReminder": "Recordatorio para estudiar todos los días",
+    "interactionSounds": "Sonidos de interacción y logros",
+    "darkInterface": "Interfaz con tema oscuro",
+    "aboutSatoshi": "Acerca de Satoshi",
+    "gameVersion": "El juego de las finanzas",
+    "header": {
+      "profile": "Perfil",
+      "settings": "Configuración"
+    },
+    "sections": {
+      "personalInfo": "Información Personal",
+      "notifications": "Notificaciones",
+      "experience": "Experiencia",
+      "account": "Cuenta",
+      "aboutSatoshi": "Acerca de Satoshi"
+    },
+    "buttons": {
+      "saving": "Guardando...",
+      "saveSettings": "Guardar Configuración",
+      "logout": "Cerrar Sesión"
+    },
+    "app": {
+      "version": "Versión de la App 1.0.0",
+      "description": "FinGame - Aprende finanzas jugando"
+    },
+    "emailChange": {
+      "title": "Cambiar Email",
+      "confirmTitle": "Confirmar Cambio",
+      "currentEmail": "Email Actual",
+      "newEmail": "Nuevo Email",
+      "confirmEmail": "Confirmar Nuevo Email",
+      "newEmailPlaceholder": "Ingrese el nuevo email",
+      "confirmEmailPlaceholder": "Confirme el nuevo email",
+      "emailMismatch": "Los emails no coinciden",
+      "invalidEmail": "Ingrese un email válido",
+      "sameEmail": "El nuevo email debe ser diferente al actual",
+      "success": "Éxito",
+      "successDescription": "¡Solicitud de cambio enviada! Verifique el email {{email}} para confirmar el cambio.",
+      "error": "Error",
+      "errorDescription": "No se pudo cambiar el email",
+      "confirmQuestion": "¿Está seguro de que desea cambiar su email de:",
+      "to": "a:",
+      "confirmationNote": "Se enviará un email de confirmación a la nueva dirección.",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "confirmChange": "Confirmar Cambio",
+      "sending": "Enviando..."
+    },
+    "passwordChange": {
+      "title": "Cambiar Contraseña",
+      "currentPassword": "Contraseña Actual",
+      "newPassword": "Nueva Contraseña",
+      "confirmPassword": "Confirmar Nueva Contraseña",
+      "currentPasswordPlaceholder": "Ingrese su contraseña actual",
+      "newPasswordPlaceholder": "Ingrese la nueva contraseña",
+      "confirmPasswordPlaceholder": "Confirme la nueva contraseña",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La nueva contraseña debe tener al menos 6 caracteres",
+      "success": "Éxito",
+      "successDescription": "¡Contraseña cambiada exitosamente! Se ha enviado un email de confirmación.",
+      "error": "Error",
+      "errorDescription": "No se pudo cambiar la contraseña",
+      "changing": "Cambiando...",
+      "changePassword": "Cambiar Contraseña",
+      "back": "Atrás"
+    }
+  },
+  "missions": {
+    "dailyMissions": "Misiones Diarias",
+    "completed": "Completada",
+    "inProgress": "En Progreso",
+    "reward": "Recompensa",
+    "claim": "Reclamar",
+    "dailyProgress": "Progreso Diario",
+    "comboCompleted": "¡Combo Completado! +500 XP + 1000 Beetz + ¡Caja de Botín Rara!",
+    "special": "Especial",
+    "noMissionsAvailable": "No hay misiones disponibles en este momento",
+    "newMissionsSoon": "¡Nuevas misiones aparecerán pronto!",
+    "adaptiveMissions": "Misiones Adaptativas",
+    "personalizedFor": "Personalizada para ti",
+    "focusArea": "Área de Enfoque",
+    "weaknessImprovement": "Mejora de Debilidades",
+    "difficultyAdjusted": "Dificultad Ajustada",
+    "streakBonus": "Bonificación de Racha",
+    "adaptiveRewards": "Recompensas Adaptativas",
+    "intelligentNavigation": "Navegación Inteligente",
+    "contextualHints": "Pistas Contextuales",
+    "performanceAnalytics": "Análisis de Rendimiento",
+    "missionInsights": "Perspectivas de Misiones",
+    "optimalTiming": "Tiempo Óptimo",
+    "categoryPreferences": "Preferencias de Categoría",
+    "completionPatterns": "Patrones de Finalización",
+    "suggestedFocusAreas": "Áreas de Enfoque Sugeridas"
+  },
+  "tournaments": {
+    "tournaments": "Torneos",
+    "joinTournament": "Unirse al Torneo",
+    "upcoming": "Próximos",
+    "active": "Activos",
+    "finished": "Terminados",
+    "epicTournaments": "Torneos Épicos",
+    "all": "Todos",
+    "soon": "Pronto",
+    "prizeBeetz": "Premio Beetz",
+    "players": "Jugadores",
+    "timeRemaining": "Tiempo Restante",
+    "participateNow": "Participar Ahora",
+    "viewDetails": "Ver Detalles",
+    "viewResults": "Ver Resultados",
+    "noTournamentsFound": "No se encontraron torneos",
+    "noTournamentsAvailable": "No hay torneos disponibles en este momento",
+    "noActiveTournaments": "No hay torneos activos en este momento",
+    "noUpcomingTournaments": "No hay torneos próximos en este momento",
+    "noFinishedTournaments": "No hay torneos terminados en este momento"
+  },
+  "auth": {
+    "loginError": "Error de Inicio de Sesión",
+    "invalidCredentials": "Email o contraseña incorrectos. Verifique sus credenciales.",
+    "emailNotConfirmed": "Email no confirmado",
+    "emailNotConfirmedDescription": "Verifique su email y haga clic en el enlace de confirmación antes de iniciar sesión.",
+    "loginSuccess": "¡Inicio de sesión exitoso!",
+    "loginSuccessDescription": "Bienvenido de vuelta a Satoshi City.",
+    "signupError": "Error de Registro",
+    "userAlreadyExists": "El usuario ya existe",
+    "userAlreadyExistsDescription": "Esta cuenta ya está registrada. Inicie sesión o use otro email.",
+    "signupSuccess": "¡Registro exitoso!",
+    "signupSuccessDescription": "Verifique su email para activar su cuenta",
+    "welcomeMessage": "¡Bienvenido!",
+    "accountCreatedSuccess": "Cuenta creada exitosamente",
+    "emailRequired": "Email requerido",
+    "emailRequiredDescription": "Ingrese su email para recibir el enlace de restablecimiento.",
+    "emailSent": "¡Email enviado!",
+    "emailSentDescription": "Verifique su email para restablecer su contraseña.",
+    "unexpectedError": "Error inesperado",
+    "unexpectedErrorDescription": "Algo salió mal. Inténtelo de nuevo.",
+    "emailRequiredResend": "Email requerido",
+    "emailRequiredResendDescription": "Ingrese su email para reenviar la confirmación.",
+    "emailResent": "¡Email reenviado!",
+    "emailResentDescription": "Verifique su email para confirmar su cuenta.",
+    "verifyEmail": "Verifique su email",
+    "verificationSent": "Enviamos un enlace de verificación a:",
+    "clickLinkToActivate": "Haga clic en el enlace del email para activar su cuenta e iniciar sesión en la app.",
+    "resendEmail": "Reenviar email",
+    "resending": "Reenviando...",
+    "checkSpamFolder": "¿No recibió el email? Verifique su carpeta de spam o correo no deseado.",
+    "emailResentSuccess": "Email reenviado",
+    "emailResentSuccessDescription": "Verifique su bandeja de entrada nuevamente",
+    "resendError": "Error",
+    "resendErrorDescription": "No se pudo reenviar el email"
+  },
+  "duels": {
+    "duels": "Duelos",
+    "challenge": "Desafiar",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "waiting": "Esperando",
+    "financialDuel": "Duelo Financiero",
+    "duelNow": "Duelar Ahora",
+    "waitingForOpponent": "Esperando oponente",
+    "startDuel": "Iniciar",
+    "autoRedirectIn": "Redirigiendo en {{seconds}}s",
+    "preparingDuel": "Preparando duelo...",
+    "duelReady": "¡Duelo listo!"
+  },
+  "duelInviteNotification": {
+    "title": "¡Nueva Invitación de Duelo!",
+    "subtitle": "{{challenger}} te ha desafiado",
+    "accept": "Aceptar",
+    "decline": "Rechazar",
+    "autoClose": "Se cierra automáticamente en {{seconds}}s",
+    "accepted": "¡Duelo aceptado!",
+    "startingDuel": "Iniciando duelo contra {{challenger}}...",
+    "declined": "❌ Invitación rechazada",
+    "inviteDeclined": "La invitación fue rechazada",
+    "errorResponding": "No se pudo responder a la invitación"
+  },
+  "levels": {
+    "levels": "Niveles",
+    "currentLevel": "Nivel Actual",
+    "nextLevel": "Siguiente Nivel",
+    "progress": "Progreso General"
+  },
+  "gameMode": {
+    "title": "Modos de Juego",
+    "selectMode": "Seleccionar Modo",
+    "chooseHow": "Elige cómo te gustaría jugar",
+    "solo": "Modo Solo",
+    "duel": "Modo Duelo",
+    "tournament": "Torneo",
+    "soloDescription": "Juega solo y mejora tus habilidades",
+    "duelDescription": "Desafía a otros jugadores",
+    "tournamentDescription": "Compite en torneos"
+  },
+  "findOpponent": {
+    "title": "Encontrar Oponente",
+    "searching": "Buscando oponente...",
+    "findPlayer": "Buscar Jugador",
+    "found": "¡Oponente encontrado!",
+    "cancel": "Cancelar",
+    "preferences": "Preferencias",
+    "quickMatch": "Partida Rápida",
+    "searchPlayers": "Buscar Jugadores",
+    "friendsList": "Lista de Amigos",
+    "quickStart": "Inicio Rápido",
+    "topicSelection": "Selección de Tema",
+    "selectTopic": "Selecciona un tema",
+    "searchUsers": "Buscar usuarios...",
+    "invitePlayer": "Invitar Jugador",
+    "levelRange": "Rango de Nivel",
+    "onlineNow": "En Línea Ahora",
+    "recentlyActive": "Activo Recientemente",
+    "noResults": "No se encontraron resultados",
+    "searchForPlayers": "Busca jugadores para desafiar",
+    "yourFriends": "Tus Amigos",
+    "noFriends": "Aún no tienes amigos agregados",
+    "addFriends": "Añade amigos para duelar fácilmente",
+    "matchmakingPreferences": "Preferencias de Emparejamiento",
+    "smartQueue": "Cola Inteligente",
+    "priorityInvites": "Invitaciones Prioritarias",
+    "filteredInvites": "Invitaciones Filtradas",
+    "allInvites": "Todas las Invitaciones",
+    "acceptAll": "Aceptar Todas",
+    "declineAll": "Rechazar Todas",
+    "noPendingInvites": "No hay invitaciones pendientes",
+    "inviteQueueDescription": "Cuando recibas invitaciones de duelo, aparecerán aquí",
+    "queueManager": "Cola de Invitaciones",
+    "clickToRespond": "Haz clic en una invitación para responder inmediatamente"
+  },
+  "btz": {
+    "yieldedToday": "Rendido hoy",
+    "nextYield": "Próximo rendimiento",
+    "protectedBTZ": "BTZ Protegido",
+    "streak": "Racha",
+    "next": "Próximo",
+    "days": "días",
+    "nextIn": "Próximo en"
+  },
+  "common": {
+    "loading": "Cargando",
+    "accessDenied": "Acceso Denegado",
+    "noSponsorAccess": "No tienes acceso administrativo a ningún distrito patrocinado",
+    "configureAccess": "Para configurar el acceso de administrador patrocinador, ve a",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "level": "Nivel"
+  },
+  "satoshiCity": {
+    "welcome": "Bienvenido a la ciudad del futuro financiero.",
+    "instructions": {
+      "mobile": "Toca los distritos para vivir o explorar.",
+      "desktop": "Haz clic en los distritos para explorar conocimiento."
+    },
+    "badges": {
+      "activeDistricts": "7 Distritos Activos",
+      "neuralSystem": "Sistema Neural Activo"
+    },
+    "buttons": {
+      "3dDevelopment": "3D en Desarrollo"
+    },
+    "residence": {
+      "home": "Casa",
+      "current": "Esta es tu residencia actual",
+      "liveHere": "Vivir Aquí"
+    },
+    "modal": {
+      "liveIn": "Vivir en",
+      "confirmResidence": "¿Quieres establecer tu residencia en el distrito {{districtName}}? Podrás participar en actividades exclusivas y representar este distrito."
+    },
+    "transition": {
+      "leaving": "Saliendo de {{location}}",
+      "traveling": "Viajando hacia",
+      "arriving": "Llegando a {{location}}"
+    }
+  },
+  "social": {
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar",
+      "challenges": "Desafíos",
+      "ranks": "Rangos",
+      "following": "Siguiendo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "Comparte tu opinión sobre el mercado...",
+      "searchUsers": "Buscar usuarios por apodo..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Publicando...",
+      "share": "Compartir"
+    },
+    "messages": {
+      "beFirstToPost": "¡Sé el primero en publicar!",
+      "searchingUsers": "Buscando usuarios...",
+      "comingSoon": "Próximamente"
+    },
+    "profile": {
+      "level": "Nivel",
+      "followers": "seguidores"
+    },
+    "chat": {
+      "typeMessage": "Añadir un comentario..."
+    },
+    "shareOpinion": "Comparte tus experiencias de trading y conéctate con otros inversores"
+  },
+  "store": {
+    "header": {
+      "marketplace": "Mercado",
+      "subtitle": "Avatares, potenciadores y mucho más"
+    },
+    "premium": {
+      "title": "Planes Premium",
+      "subtitle": "Acelera tu progreso",
+      "viewPlans": "Ver Planes",
+      "duels": "Duelos",
+      "xpBoost": "Potenciador XP",
+      "beetzPerMonth": "Beetz/mes"
+    },
+    "tabs": {
+      "avatars": "Avatares",
+      "skins": "Aspectos",
+      "boosts": "Potenciadores",
+      "accessories": "Accesorios",
+      "lives": "Vidas",
+      "beetz": "Beetz"
+    },
+    "buttons": {
+      "owns": "Posee",
+      "buy": "Comprar",
+      "noBeetz": "Sin Beetz",
+      "viewDetails": "Ver Detalles"
+    },
+    "lives": {
+      "title": "Vidas y Protección",
+      "subtitle": "Mantén tu racha y sigue jugando",
+      "marketplace": "Mercado de Vidas"
+    },
+    "beetzPackages": {
+      "title": "Paquetes de Beetz",
+      "subtitle": "Compra Beetz con dinero real vía Stripe"
+    },
+    "security": {
+      "title": "Pago Seguro",
+      "subtitle": "Procesado vía Stripe con máxima seguridad"
+    },
+    "loading": "Cargando mercado...",
+    "error": {
+      "title": "Error",
+      "message": "No se pudo cargar la tienda"
+    },
+    "livesProtection": "Vidas y Protección",
+    "maintainStreak": "Mantén tu racha y sigue jugando",
+    "marketplaceLives": "Mercado de Vidas",
+    "buyLivesKeepStreak": "Compra vidas para mantener tu racha",
+    "savesStreak": "Salva Racha",
+    "multipliesBTZ": "Multiplica BTZ",
+    "viewLives": "Ver Vidas",
+    "streakProtection": "Protección de Racha",
+    "useLifeKeepStreak": "Usa una vida para mantener tu racha activa",
+    "keepMultipliers": "Mantener Multiplicadores",
+    "preserveBTZMultipliers": "Preserva tus multiplicadores de BTZ",
+    "continueWithoutStop": "Continuar Sin Parar",
+    "dontLoseMomentum": "No pierdas el impulso de tu progreso",
+    "beetzPackages": "Paquetes de Beetz",
+    "buyBeetzReal": "Compra Beetz con dinero real vía Stripe",
+    "buy": "Comprar",
+    "securePayment": "Pago Seguro",
+    "processedStripe": "Procesado vía Stripe con máxima seguridad",
+    "buyBeetz": "Comprar Beetz",
+    "notEnoughBeetz": "No tienes suficientes Beetz para esta compra",
+    "basicPackage": "Paquete Básico",
+    "popularPackage": "Paquete Popular",
+    "premiumPackage": "Paquete Premium",
+    "supremePackage": "Paquete Supremo"
+  },
+  "auth": {
+    "title": {
+      "login": "Entrar al Juego",
+      "signup": "Entrar al Juego"
+    },
+    "description": {
+      "login": "Entra a Satoshi City y continúa tu viaje",
+      "signup": "Conviértete en ciudadano de la ciudad del futuro financiero"
+    },
+    "form": {
+      "nickname": "Nombre de Usuario",
+      "nicknamePlaceholder": "¿Cómo quieres ser conocido?",
+      "email": "Email",
+      "emailPlaceholder": "tu@email.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "Mínimo 6 caracteres",
+      "resetEmail": "Email para restablecer",
+      "resetEmailPlaceholder": "Ingresa tu email registrado"
+    },
+    "buttons": {
+      "back": "Volver",
+      "login": "Entrar al Juego",
+      "signup": "Convertirse en Ciudadano",
+      "processing": "Procesando...",
+      "sending": "Enviando...",
+      "forgotPassword": "Olvidé mi contraseña",
+      "backToLogin": "← Volver al login",
+      "sendResetLink": "Enviar Enlace de Restablecimiento",
+      "resendConfirmation": "Reenviar email de confirmación",
+      "socialSeparator": "o continúa con",
+      "toggleLogin": "¿Ya eres ciudadano? Inicia sesión",
+      "toggleSignup": "¿Nuevo en la ciudad? Crea tu cuenta"
+    },
+    "messages": {
+      "loginError": "Error de Login",
+      "invalidCredentials": "Email o contraseña incorrectos. Verifica tus credenciales.",
+      "emailNotConfirmed": "Email no confirmado",
+      "emailNotConfirmedDesc": "Verifica tu email y haz clic en el enlace de confirmación antes de iniciar sesión.",
+      "loginSuccess": "¡Login exitoso!",
+      "loginSuccessDesc": "Bienvenido de vuelta a Satoshi City.",
+      "userExists": "El usuario ya existe",
+      "userExistsDesc": "Esta cuenta ya está registrada. Inicia sesión o usa otro email.",
+      "signupError": "Error de Registro",
+      "signupSuccess": "¡Registro completado!",
+      "signupSuccessDesc": "Verifica tu email para activar tu cuenta",
+      "welcomeNew": "¡Bienvenido!",
+      "welcomeNewDesc": "Cuenta creada exitosamente",
+      "unexpectedError": "Error inesperado",
+      "unexpectedErrorDesc": "Algo salió mal. Inténtalo de nuevo.",
+      "socialLoginError": "Error de Login Social",
+      "socialLoginErrorDesc": "Algo salió mal con el login social. Inténtalo de nuevo.",
+      "emailRequired": "Email requerido",
+      "emailRequiredDesc": "Ingresa tu email para recibir el enlace de restablecimiento.",
+      "emailSent": "¡Email enviado!",
+      "emailSentDesc": "Verifica tu email para restablecer tu contraseña.",
+      "emailRequiredResend": "Email requerido",
+      "emailRequiredResendDesc": "Ingresa tu email para reenviar la confirmación.",
+      "emailResent": "¡Email reenviado!",
+      "emailResentDesc": "Verifica tu email para confirmar tu cuenta.",
+      "resetInstructions": "Recibirás un email con instrucciones para restablecer tu contraseña.",
+      "checkSpam": "También verifica tu carpeta de spam."
+    },
+    "narrative": {
+      "loginText": "espera tu regreso.",
+      "loginSubtext": "Tus distritos y logros están preservados.",
+      "signupText": "Bienvenido al futuro de las finanzas en",
+      "signupSubtext": "Explora distritos, gana XP y domina el conocimiento financiero.",
+      "satoshiCity": "Satoshi City"
+    }
+  },
+  "district": {
+    "selectDistrict": "Selecciona un distrito",
+    "enterDistrict": "Entrar al Distrito",
+    "residents": "Residentes",
+    "power": "Poder",
+    "ranking": "Ranking",
+    "battles": "Batallas",
+    "victories": "Victorias",
+    "winRate": "Tasa de Victoria",
+    "powers": {
+      "title": "Poderes del Distrito",
+      "average": "Promedio",
+      "monetary": "Poder Monetario",
+      "tech": "Poder Tecnológico",
+      "military": "Poder Militar",
+      "energy": "Poder Energético",
+      "commercial": "Poder Comercial",
+      "social": "Poder Social",
+      "monetaryDesc": "Representa la fuerza financiera y capacidad de inversión del distrito",
+      "techDesc": "Nivel de innovación y desarrollo tecnológico",
+      "militaryDesc": "Capacidad de defensa y estrategia en duelos",
+      "energyDesc": "Sostenibilidad y eficiencia energética",
+      "commercialDesc": "Fuerza en el mercado y capacidad comercial",
+      "socialDesc": "Cohesión social y compromiso de la comunidad",
+      "helpText": "Los poderes aumentan a través de acciones específicas: cuestionarios, duelos, misiones y contribuciones",
+      "updated": "¡Poder actualizado!",
+      "updatedDesc": "El distrito ganó poder con tu acción.",
+      "updateError": "Error al actualizar poder"
+    }
+  },
+  "welcome": {
+    "title": "El futuro de las finanzas ha llegado",
+    "badges": {
+      "neuralSystem": "Sistema Neural",
+      "districts": "7 Distritos",
+      "multiplayer": "Multijugador"
+    },
+    "buttons": {
+      "enterGame": "Entrar al Juego",
+      "createAccount": "Crear Cuenta"
+    }
+  },
+  "p2p": {
+    "title": "Transferencias P2P",
+    "subtitle": "Envía y recibe BTZ con otros usuarios",
+    "tabs": {
+      "send": "Enviar",
+      "receive": "Recibir",
+      "history": "Historial"
+    },
+    "send": {
+      "title": "Enviar BTZ",
+      "receiverLabel": "ID del Destinatario",
+      "receiverPlaceholder": "Pega el ID o escanea código QR",
+      "amountLabel": "Cantidad (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "Saldo disponible: {{balance}} BTZ",
+      "sendButton": "Enviar BTZ",
+      "sending": "Transfiriendo..."
+    },
+    "receive": {
+      "title": "Recibir BTZ",
+      "qrInstruction": "Comparte este código QR para recibir BTZ",
+      "yourId": "Tu ID:",
+      "copyId": "¡ID copiado!",
+      "copyIdDesc": "ID de usuario copiado al portapapeles",
+      "copyError": "No se pudo copiar el ID"
+    },
+    "qrScanner": {
+      "title": "Escáner de Código QR",
+      "instruction": "Posiciona el código QR aquí",
+      "startScan": "Iniciar Escáner",
+      "scanning": "Escaneando...",
+      "cameraError": "Error al acceder a la cámara. Verifica los permisos."
+    },
+    "history": {
+      "title": "Historial de Transferencias",
+      "noTransfers": "No se encontraron transferencias P2P",
+      "sentTo": "Enviado a {{user}}",
+      "receivedFrom": "Recibido de {{user}}"
+    },
+    "notifications": {
+      "received": {
+        "title": "¡WOW! Acabas de recibir {{amount}} BTZ",
+        "body": "¡WOW! Acabas de recibir {{amount}} BTZ"
+      }
+    },
+    "errors": {
+      "insufficientBalance": "BTZ insuficientes",
+      "insufficientBalanceDesc": "Necesitas {{amount}} BTZ para realizar esta transferencia",
+      "invalidAmount": "Cantidad inválida",
+      "invalidAmountDesc": "La cantidad debe ser mayor que cero",
+      "receiverNotFound": "Destinatario no encontrado",
+      "receiverNotFoundDesc": "El usuario con este ID no existe",
+      "selfTransfer": "Transferencia inválida",
+      "selfTransferDesc": "No puedes transferir a ti mismo",
+      "transferFailed": "Error en la transferencia",
+      "transferFailedDesc": "Falló al procesar la transferencia"
+    },
+    "success": {
+      "transferComplete": "¡Transferencia completada!",
+      "transferCompleteDesc": "{{amount}} BTZ enviados a {{receiver}}"
+    }
+  },
+  "kyc": {
+    "title": "Verificación de Identidad",
+    "subtitle": "Verificación requerida para transferencias P2P",
+    "verifyIdentity": "Verificar Identidad",
+    "required": "KYC necesario para continuar",
+    "pending": "Verificación en progreso...",
+    "approved": "Identidad verificada",
+    "rejected": "Verificación rechazada"
+  },
+  "profile": {
+    "header": {
+      "profile": "Perfil"
+    },
+    "userProfile": "Perfil de Usuario",
+    "achievements": "Logros",
+    "statistics": "Estadísticas",
+    "followersCount": "Seguidores",
+    "followingCount": "Siguiendo",
+    "postsCount": "Publicaciones",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir",
+    "message": "Mensaje",
+    "anonymousUser": "Usuario Anónimo",
+    "evolution": {
+      "title": "Evolución del Usuario",
+      "7days": "7 días",
+      "30days": "30 días",
+      "90days": "90 días",
+      "1year": "1 año",
+      "xpProgress": "Progreso XP",
+      "btzEarned": "BTZ Ganados",
+      "streakHistory": "Historial de Rachas",
+      "quizzesCompleted": "Quizzes Completados"
+    },
+    "gamification": {
+      "title": "Sistema de Gamificación",
+      "currentLevel": "Nivel Actual",
+      "nextLevel": "Próximo Nivel",
+      "activeStreak": "Racha Activa",
+      "todaysBtz": "BTZ de Hoy",
+      "availableRewards": "Recompensas Disponibles",
+      "dailyMissions": "Misiones Diarias",
+      "activeRewards": "Recompensas Activas",
+      "recentAchievements": "Logros Recientes",
+      "multiplier": "Multiplicador",
+      "rewards": "Recompensas"
+    },
+    "rewards": {
+      "btzMultiplier": "Multiplicador BTZ",
+      "xpBoost": "Impulso XP",
+      "streakProtection": "Protección de Racha",
+      "dailyBonus": "Bono Diario",
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "timeRemaining": "Tiempo Restante"
+    },
+    "stats": {
+      "xp": "XP",
+      "level": "Nivel",
+      "streak": "Racha",
+      "lessons": "Lecciones",
+      "of": "de",
+      "lessonsCompleted": "lecciones completadas"
+    }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "¡BTZ Ganados!",
+      "xpGained": "¡XP Ganado!",
+      "streakMilestone": "¡Hito de Racha!",
+      "levelUp": "¡Subiste de Nivel!",
+      "achievement": "¡Logro Desbloqueado!",
+      "perfectQuiz": "¡Quiz Perfecto!",
+      "multiplierActive": "Multiplicador Activo",
+      "timeBonus": "Bono de Tiempo"
+    },
+    "celebrations": {
+      "streak7": "¡7 Días de Racha!",
+      "streak14": "¡2 Semanas de Racha!",
+      "streak30": "¡1 Mes de Dedicación!",
+      "firstAchievement": "¡Primer Logro!",
+      "levelMilestone": "¡Nivel {{level}} Alcanzado!",
+      "perfectScore": "¡Puntuación Perfecta!",
+      "rankingUp": "¡Subiendo en el Ranking!"
+    },
+    "notifications": {
+      "streakProtected": "¡Racha Protegida!",
+      "powerUpActivated": "¡Power-up Activado!",
+      "missionComplete": "¡Misión Completada!",
+      "dailyGoalReached": "¡Meta Diaria Alcanzada!",
+      "weeklyRankingUp": "Posición en Ranking: {{position}}",
+      "multiplierExpiring": "Multiplicador expira en {{time}}",
+      "achievementUnlocked": "¡Logro Desbloqueado!",
+      "nextMilestone": "Próximo hito: {{milestone}} días"
+    },
+    "settings": {
+      "title": "Configuraciones de Feedback",
+      "animations": "Animaciones",
+      "sound": "Sonido",
+      "haptics": "Vibración",
+      "celebrations": "Celebraciones",
+      "particleQuality": "Calidad de Efectos",
+      "reducedMotion": "Movimiento Reducido"
+    }
+  }
+}

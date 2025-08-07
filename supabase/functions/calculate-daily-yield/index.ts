@@ -19,6 +19,24 @@ serve(async (req) => {
     );
 
     const { user_id } = await req.json();
+    
+    // Importar configurações centralizadas
+    const YIELD_CONFIG = {
+      BASE_RATE: 0.001, // 0.1% ao dia
+      ABSOLUTE_DAILY_CAP: 5, // 5 BTZ máximo por dia
+      SUBSCRIPTION_BONUS: {
+        free: 0,
+        pro: 0.0005, // +0.05%
+        elite: 0.001  // +0.1%
+      },
+      STREAK_BONUS: {
+        DAYS_PER_TIER: 5,
+        BONUS_PER_TIER: 0.0001, // +0.01% por tier
+        MAX_BONUS: 0.003 // Máximo 0.3%
+      }
+    };
+    
+    const DAILY_YIELD_CAP = YIELD_CONFIG.ABSOLUTE_DAILY_CAP;
 
     if (!user_id) {
       return new Response(
@@ -47,9 +65,39 @@ serve(async (req) => {
 
     console.log('Streak updated:', streakData);
 
-    // Calculate and apply daily yield
+    // Calculate and apply daily yield with cap
     const { data: yieldData, error: yieldError } = await supabaseClient
       .rpc('calculate_daily_yield', { profile_id: profile.id });
+    
+    // Apply yield cap and validate
+    if (yieldData?.[0]) {
+      const originalAmount = yieldData[0].yield_amount;
+      const cappedAmount = Math.min(originalAmount, DAILY_YIELD_CAP);
+      
+      if (originalAmount > DAILY_YIELD_CAP) {
+        console.log(`YIELD CAP APPLIED: Original ${originalAmount} BTZ capped to ${cappedAmount} BTZ`);
+        
+        // Recalculate new total with capped amount
+        const correctedTotal = yieldData[0].new_total - originalAmount + cappedAmount;
+        
+        // Update with capped amount
+        await supabaseClient
+          .from('profiles')
+          .update({ 
+            points: correctedTotal
+          })
+          .eq('id', profile.id);
+        
+        // Update response data
+        yieldData[0].yield_amount = cappedAmount;
+        yieldData[0].new_total = correctedTotal;
+        
+        // Log for monitoring
+        console.log(`Profile ${profile.id}: Yield corrected from ${originalAmount} to ${cappedAmount} BTZ`);
+      } else {
+        console.log(`Yield within cap: ${originalAmount} BTZ (cap: ${DAILY_YIELD_CAP})`);
+      }
+    }
 
     if (yieldError) {
       console.error('Yield calculation error:', yieldError);

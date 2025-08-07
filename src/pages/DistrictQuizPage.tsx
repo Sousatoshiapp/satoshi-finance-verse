@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, BookOpen, Clock, CheckCircle, XCircle, Trophy, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
+import { XP_CONFIG } from "@/config/xp-config";
 
 interface Question {
   id: string;
@@ -28,6 +30,7 @@ interface District {
 export default function DistrictQuizPage() {
   const { districtId } = useParams();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [district, setDistrict] = useState<District | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -90,18 +93,18 @@ export default function DistrictQuizPage() {
         setQuestions(formattedQuestions);
       } else {
         toast({
-          title: "Aviso",
-          description: "Este distrito ainda não possui perguntas disponíveis",
+          title: t('errors.warning'),
+          description: t('errors.noQuestionsAvailable'),
           variant: "destructive"
         });
         navigate(`/satoshi-city/district/${districtId}`);
       }
 
     } catch (error) {
-      console.error('Erro ao carregar quiz:', error);
+      console.error('Error loading quiz:', error);
       toast({
-        title: "Erro",
-        description: "Não foi possível carregar o quiz",
+        title: t('errors.error'),
+        description: t('errors.couldNotLoadQuiz'),
         variant: "destructive"
       });
       navigate(`/satoshi-city/district/${districtId}`);
@@ -151,7 +154,7 @@ export default function DistrictQuizPage() {
 
       if (profile) {
         // Award XP and update district progress
-        const xpGained = score * 20; // 20 XP per correct answer
+        const xpGained = score * XP_CONFIG.DISTRICT_QUIZ_CORRECT; // XP per correct answer (reduced)
         
         await supabase.rpc('award_xp', {
           profile_id: profile.id,
@@ -173,17 +176,17 @@ export default function DistrictQuizPage() {
           });
 
         if (progressError) {
-          console.error('Erro ao atualizar progresso:', progressError);
+          console.error('Error updating progress:', progressError);
         }
 
         toast({
-          title: "Quiz Concluído!",
-          description: `Você ganhou ${xpGained} XP! Score: ${score}/${questions.length}`,
+          title: t('districtQuiz.quizCompleted2'),
+          description: t('districtQuiz.youGained', { xp: xpGained, score: score, total: questions.length }),
           duration: 5000
         });
       }
     } catch (error) {
-      console.error('Erro ao salvar resultado:', error);
+      console.error('Error saving result:', error);
     }
   };
 
@@ -202,7 +205,7 @@ export default function DistrictQuizPage() {
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-400 mx-auto mb-4"></div>
-          <p className="text-gray-300">Carregando quiz...</p>
+          <p className="text-gray-300">{t('errors.loadingQuiz')}</p>
         </div>
       </div>
     );
@@ -221,18 +224,18 @@ export default function DistrictQuizPage() {
             </div>
             <CardTitle className="text-2xl">Quiz: {district.name}</CardTitle>
             <CardDescription>
-              Teste seus conhecimentos sobre {district.theme.replace('_', ' ')}
+              {t('districtQuiz.testYourKnowledge', { theme: district.theme.replace('_', ' ') })}
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="p-3 bg-muted rounded-lg">
                 <div className="font-semibold">{questions.length}</div>
-                <div className="text-muted-foreground">Perguntas</div>
+                <div className="text-muted-foreground">{t('districtQuiz.questions')}</div>
               </div>
               <div className="p-3 bg-muted rounded-lg">
                 <div className="font-semibold">30s</div>
-                <div className="text-muted-foreground">Por pergunta</div>
+                <div className="text-muted-foreground">{t('districtQuiz.perQuestion')}</div>
               </div>
             </div>
             <div className="space-y-3">
@@ -241,7 +244,7 @@ export default function DistrictQuizPage() {
                 className="w-full"
                 style={{ backgroundColor: district.color_primary }}
               >
-                Iniciar Quiz
+                {t('districtQuiz.startQuiz')}
               </Button>
               <Button 
                 variant="outline" 
@@ -249,7 +252,7 @@ export default function DistrictQuizPage() {
                 className="w-full"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar ao Distrito
+                {t('districtQuiz.backToDistrict')}
               </Button>
             </div>
           </CardContent>
@@ -260,7 +263,7 @@ export default function DistrictQuizPage() {
 
   if (showResult) {
     const percentage = Math.round((score / questions.length) * 100);
-    const performance = percentage >= 80 ? 'Excelente!' : percentage >= 60 ? 'Bom!' : 'Continue praticando!';
+    const performance = percentage >= 80 ? t('districtQuiz.excellent') : percentage >= 60 ? t('districtQuiz.good') : t('districtQuiz.keepPracticing');
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
@@ -272,7 +275,7 @@ export default function DistrictQuizPage() {
             >
               <Trophy className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl">Quiz Concluído!</CardTitle>
+            <CardTitle className="text-2xl">{t('districtQuiz.quizCompleted2')}</CardTitle>
             <CardDescription>{performance}</CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-6">
@@ -280,17 +283,17 @@ export default function DistrictQuizPage() {
               {score}/{questions.length}
             </div>
             <div className="text-lg text-muted-foreground">
-              {percentage}% de acertos
+              {percentage}% {t('districtQuiz.accuracy')}
             </div>
             
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
                 <div className="font-semibold text-green-400">{score}</div>
-                <div className="text-muted-foreground">Corretas</div>
+                <div className="text-muted-foreground">{t('districtQuiz.correctAnswers')}</div>
               </div>
               <div className="p-3 bg-red-500/10 rounded-lg border border-red-500/20">
                 <div className="font-semibold text-red-400">{questions.length - score}</div>
-                <div className="text-muted-foreground">Incorretas</div>
+                <div className="text-muted-foreground">{t('districtQuiz.incorrectAnswers')}</div>
               </div>
             </div>
 
@@ -300,14 +303,14 @@ export default function DistrictQuizPage() {
                 className="w-full"
                 style={{ backgroundColor: district.color_primary }}
               >
-                Tentar Novamente
+                {t('districtQuiz.tryAgain')}
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => navigate(`/satoshi-city/district/${districtId}`)}
                 className="w-full"
               >
-                Voltar ao Distrito
+                {t('districtQuiz.backToDistrict')}
               </Button>
             </div>
           </CardContent>
@@ -334,7 +337,7 @@ export default function DistrictQuizPage() {
             </Button>
             <div>
               <h1 className="text-xl font-bold text-white">{district.name}</h1>
-              <p className="text-gray-300">Pergunta {currentQuestion + 1} de {questions.length}</p>
+              <p className="text-gray-300">{t('districtQuiz.questionXofY', { current: currentQuestion + 1, total: questions.length })}</p>
             </div>
           </div>
           
@@ -395,7 +398,7 @@ export default function DistrictQuizPage() {
             size="lg"
             style={{ backgroundColor: district.color_primary }}
           >
-            {currentQuestion + 1 === questions.length ? 'Finalizar' : 'Próxima'}
+            {currentQuestion + 1 === questions.length ? t('districtQuiz.finish') : t('districtQuiz.next')}
           </Button>
         </div>
       </div>

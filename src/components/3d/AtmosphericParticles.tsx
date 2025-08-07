@@ -5,8 +5,10 @@ import * as THREE from 'three';
 export function AtmosphericParticles() {
   const particlesRef = useRef<THREE.Points>(null);
   const rainRef = useRef<THREE.Points>(null);
-  const particleCount = 1500;
-  const rainCount = 800;
+  const neonParticlesRef = useRef<THREE.Points>(null);
+  const particleCount = 2000;
+  const rainCount = 1200;
+  const neonCount = 500;
   
   const particles = useMemo(() => {
     const temp = new Float32Array(particleCount * 3);
@@ -21,9 +23,19 @@ export function AtmosphericParticles() {
   const rainParticles = useMemo(() => {
     const temp = new Float32Array(rainCount * 3);
     for (let i = 0; i < rainCount; i++) {
-      temp[i * 3] = (Math.random() - 0.5) * 100;
-      temp[i * 3 + 1] = Math.random() * 80 + 20;
-      temp[i * 3 + 2] = (Math.random() - 0.5) * 100;
+      temp[i * 3] = (Math.random() - 0.5) * 150;
+      temp[i * 3 + 1] = Math.random() * 100 + 20;
+      temp[i * 3 + 2] = (Math.random() - 0.5) * 150;
+    }
+    return temp;
+  }, []);
+
+  const neonParticles = useMemo(() => {
+    const temp = new Float32Array(neonCount * 3);
+    for (let i = 0; i < neonCount; i++) {
+      temp[i * 3] = (Math.random() - 0.5) * 200;
+      temp[i * 3 + 1] = Math.random() * 50 + 10;
+      temp[i * 3 + 2] = (Math.random() - 0.5) * 200;
     }
     return temp;
   }, []);
@@ -43,12 +55,24 @@ export function AtmosphericParticles() {
     if (rainRef.current) {
       const positions = rainRef.current.geometry.attributes.position.array as Float32Array;
       for (let i = 0; i < positions.length; i += 3) {
-        positions[i + 1] -= 0.5;
-        if (positions[i + 1] < -2) {
-          positions[i + 1] = 80;
+        positions[i + 1] -= 0.8;
+        if (positions[i + 1] < -5) {
+          positions[i + 1] = 100;
         }
       }
       rainRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+
+    if (neonParticlesRef.current) {
+      neonParticlesRef.current.rotation.y = state.clock.elapsedTime * 0.01;
+      
+      const positions = neonParticlesRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < positions.length; i += 3) {
+        positions[i + 1] += Math.sin(state.clock.elapsedTime * 3 + i) * 0.01;
+        positions[i] += Math.cos(state.clock.elapsedTime * 0.5 + i) * 0.005;
+        positions[i + 2] += Math.sin(state.clock.elapsedTime * 0.8 + i) * 0.005;
+      }
+      neonParticlesRef.current.geometry.attributes.position.needsUpdate = true;
     }
   });
 
@@ -73,7 +97,7 @@ export function AtmosphericParticles() {
         />
       </points>
 
-      {/* Chuva cyberpunk */}
+      {/* Chuva cyberpunk intensa */}
       <points ref={rainRef}>
         <bufferGeometry>
           <bufferAttribute
@@ -84,10 +108,29 @@ export function AtmosphericParticles() {
           />
         </bufferGeometry>
         <pointsMaterial
-          size={0.05}
+          size={0.03}
           color="#00ffff"
           transparent
-          opacity={0.3}
+          opacity={0.6}
+          sizeAttenuation
+        />
+      </points>
+
+      {/* Partículas néon cyberpunk */}
+      <points ref={neonParticlesRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            count={neonCount}
+            array={neonParticles}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.15}
+          color="#ff00ff"
+          transparent
+          opacity={0.7}
           sizeAttenuation
         />
       </points>

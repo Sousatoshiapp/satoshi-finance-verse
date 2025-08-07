@@ -1,0 +1,15 @@
+# Type: Brief description (50 chars max)
+#
+# Longer explanation if needed (wrap at 72 chars)
+# - What changed and why
+# - Any breaking changes
+# - Related issue numbers
+#
+# Types:
+# Feat: New feature
+# Fix: Bug fix
+# Refactor: Code improvement
+# Style: UI/CSS changes
+# Docs: Documentation
+# Test: Adding tests
+# Chore: Maintenance tasks

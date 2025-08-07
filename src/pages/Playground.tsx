@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { TradingInterface } from "@/components/trading/trading-interface";
 import { PortfolioBuilder } from "@/components/portfolio/portfolio-builder";
-import { UserCard } from "@/components/social/user-card";
-import { SocialButton } from "@/components/social/social-button";
+import { UserCard } from "@/components/features/social/user-card";
+import { SocialButton } from "@/components/features/social/social-button";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { 

@@ -1,24 +1,30 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { XPCard } from "@/components/ui/xp-card";
-import { StreakBadge } from "@/components/ui/streak-badge";
-import { ProgressBar } from "@/components/ui/progress-bar";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
-import { SubscriptionIndicator } from "@/components/subscription-indicator";
-import { InventoryCarousel } from "@/components/profile/inventory-carousel";
-import { AvatarCarousel } from "@/components/profile/avatar-carousel";
-import { AchievementsCarousel } from "@/components/profile/achievements-carousel";
-import { StatsGrid } from "@/components/profile/stats-grid";
-import { QuickActions } from "@/components/profile/quick-actions";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { XPCard } from "@/components/shared/ui/xp-card";
+import { StreakBadge } from "@/components/shared/ui/streak-badge";
+import { ProgressBar } from "@/components/shared/ui/progress-bar";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
+import { SubscriptionIndicator } from "@/components/shared/subscription-indicator";
+import { InventoryCarousel } from "@/components/shared/profile/inventory-carousel";
+import { AvatarCarousel } from "@/components/shared/profile/avatar-carousel";
+import { AchievementsCarousel } from "@/components/shared/profile/achievements-carousel";
+import { StatsGrid } from "@/components/shared/profile/stats-grid";
+
+import { UserEvolutionChart } from "@/components/shared/profile/user-evolution-chart";
+import { ActiveRewardsPanel } from "@/components/shared/profile/active-rewards-panel";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useI18n } from "@/hooks/use-i18n";
-import { Crown, Star, Shield, Camera } from "lucide-react";
+import { useCurrentUserAvatar } from "@/hooks/use-user-avatar";
+import { useAvatarContext } from "@/contexts/AvatarContext";
+import { normalizeAvatarData } from "@/lib/avatar-utils";
+import { getLevelInfo } from "@/data/levels";
+import { Crown, Star, Shield, Camera, TrendingUp } from "lucide-react";
 import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
 
@@ -90,8 +96,13 @@ interface UserProfile {
   completed_lessons: number;
   points: number;
   profile_image_url?: string;
-  avatar_id?: string;
+  current_avatar_id?: string;
   subscription_tier?: 'free' | 'pro' | 'elite';
+  avatars?: {
+    id: string;
+    name: string;
+    image_url: string;
+  };
 }
 
 interface UserAvatar {
@@ -105,8 +116,10 @@ export default function Profile() {
   const [userAvatar, setUserAvatar] = useState<UserAvatar | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription } = useSubscription();
   const { t } = useI18n();
   
@@ -132,9 +145,18 @@ export default function Profile() {
       if (authUser) {
         const { data: supabaseProfile } = await supabase
           .from('profiles')
-          .select('*')
+          .select(`
+            *,
+            profile_image_url,
+            current_avatar_id,
+            avatars!current_avatar_id (
+              id, name, image_url
+            )
+          `)
           .eq('user_id', authUser.id)
           .single();
+        
+        console.log('🔍 DASHBOARD Profile Query Result:', supabaseProfile);
         profile = supabaseProfile;
       }
 
@@ -159,21 +181,8 @@ export default function Profile() {
 
       if (profile) {
         setUser(profile);
-        
-        // Load user avatar if they have one
-        if (profile.avatar_id) {
-          console.log('Loading avatar for ID:', profile.avatar_id);
-          const { data: avatarData } = await supabase
-            .from('avatars')
-            .select('id, name, image_url')
-            .eq('id', profile.avatar_id)
-            .single();
-          
-          console.log('Avatar data loaded:', avatarData);
-          if (avatarData) {
-            setUserAvatar(avatarData);
-          }
-        }
+        // Avatar data is already included in the profile query
+        setUserAvatar(profile.avatars || null);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -185,26 +194,55 @@ export default function Profile() {
   const handleImageUpdated = (newImageUrl: string) => {
     if (user) {
       setUser({ ...user, profile_image_url: newImageUrl });
+      // CORREÇÃO 1: Invalidar caches quando foto é atualizada
+      invalidateAvatarCaches();
     }
   };
 
   const handleAvatarChanged = async (avatarId: string) => {
     if (user) {
-      setUser({ ...user, avatar_id: avatarId });
-      
-      // Load the new avatar data
-      if (avatarId) {
-        const { data: avatarData } = await supabase
-          .from('avatars')
-          .select('id, name, image_url')
-          .eq('id', avatarId)
-          .single();
-        
-        if (avatarData) {
-          setUserAvatar(avatarData);
+      try {
+        // CORREÇÃO 2: Limpar profile_image_url no BANCO também
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (authUser) {
+          const { error } = await supabase
+            .from('profiles')
+            .update({ 
+              current_avatar_id: avatarId, 
+              profile_image_url: null // Limpar foto quando avatar é selecionado
+            })
+            .eq('user_id', authUser.id);
+
+          if (error) throw error;
         }
-      } else {
-        setUserAvatar(null);
+        
+        // Update local state
+        setUser({ ...user, current_avatar_id: avatarId, profile_image_url: null });
+        
+        // Load the new avatar data
+        if (avatarId) {
+          const { data: avatarData } = await supabase
+            .from('avatars')
+            .select('id, name, image_url')
+            .eq('id', avatarId)
+            .single();
+          
+          if (avatarData) {
+            setUserAvatar(avatarData);
+          }
+        } else {
+          setUserAvatar(null);
+        }
+        
+        // CORREÇÃO 2: Invalidar caches quando avatar é selecionado
+        invalidateAvatarCaches();
+      } catch (error) {
+        console.error('Error updating avatar:', error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível atualizar o avatar",
+          variant: "destructive"
+        });
       }
     }
   };
@@ -307,7 +345,7 @@ export default function Profile() {
     switch (tier) {
       case 'pro': return 'Satoshi Pro';
       case 'elite': return 'Satoshi Elite';
-      default: return 'Plano Gratuito';
+      default: return t('subscription.free');
     }
   };
 
@@ -316,7 +354,7 @@ export default function Profile() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Carregando perfil...</p>
+          <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -332,12 +370,12 @@ export default function Profile() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                ← Dashboard
+                ← {t('navigation.dashboard')}
               </Button>
-              <h1 className="text-xl font-bold text-foreground">Meu Perfil</h1>
+              
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate('/settings')}>
-              Configurações
+              {t('navigation.settings')}
             </Button>
           </div>
         </div>
@@ -347,15 +385,28 @@ export default function Profile() {
         {/* Profile Header - Enhanced Mobile Design */}
         <Card className="p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-            <div className="relative self-center md:self-auto">
-              <AvatarDisplayUniversal
-                avatarName={userAvatar?.name}
-                avatarUrl={userAvatar?.image_url}
-                profileImageUrl={user.profile_image_url}
-                nickname={user.nickname}
-                size="xl"
-                className="w-20 h-20 md:w-24 md:h-24"
-              />
+              <div className="relative self-center md:self-auto">
+                <AvatarDisplayUniversal
+                  avatarData={{
+                    profile_image_url: user.profile_image_url,
+                    current_avatar_id: user.current_avatar_id,
+                    avatars: userAvatar
+                  }}
+                  nickname={user.nickname}
+                  size="xl"
+                  className="w-20 h-20 md:w-24 md:h-24"
+                />
+               
+               {/* Debug info */}
+               {(() => {
+                 console.log('🔍 Dashboard Avatar Data:', {
+                   profile_image_url: user.profile_image_url,
+                   current_avatar_id: user.current_avatar_id,
+                   userAvatar: userAvatar,
+                   userId: user.id
+                 });
+                 return null;
+               })()}
               
               <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">
                 <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
@@ -384,15 +435,21 @@ export default function Profile() {
                 <StreakBadge days={user.streak} />
                 <SubscriptionIndicator tier={subscription.tier} size="sm" />
                 <Badge variant="outline" className="text-xs md:text-sm">
-                  Nível {user.level}
+                  {t('common.level')} {user.level}
                 </Badge>
               </div>
             </div>
           </div>
         </Card>
 
-        {/* Quick Actions */}
-        <QuickActions subscription={subscription} />
+
+        {/* User Evolution Chart - Nova Seção */}
+        <UserEvolutionChart 
+          userId={user.id} 
+          timeRange={timeRange}
+          onTimeRangeChange={setTimeRange}
+        />
+
 
         {/* Stats Grid */}
         <StatsGrid
@@ -411,7 +468,7 @@ export default function Profile() {
           />
           
           <Card className="p-4 md:p-6">
-            <h3 className="font-bold text-foreground mb-4">Progresso Geral</h3>
+            <h3 className="font-bold text-foreground mb-4">{t('levels.progress')}</h3>
             <ProgressBar
               value={user.completed_lessons}
               max={20}
@@ -419,10 +476,11 @@ export default function Profile() {
               className="mb-3"
             />
             <p className="text-sm text-muted-foreground">
-              {user.completed_lessons} de 20 lições principais completadas
+              {user.completed_lessons} {t('profile.stats.of')} 20 {t('profile.stats.lessonsCompleted')}
             </p>
           </Card>
         </div>
+
 
         {/* Carousels Section */}
         <div className="space-y-6">
@@ -432,13 +490,24 @@ export default function Profile() {
           {/* Avatar Carousel */}
           <AvatarCarousel
             userProfileId={user.id}
-            currentAvatarId={user.avatar_id}
-            onAvatarChanged={handleAvatarChanged}
+            currentAvatarId={user.current_avatar_id}
+            onAvatarChanged={(avatarId) => {
+              setUser(prev => ({ ...prev, current_avatar_id: avatarId }));
+              invalidateAvatarCaches();
+              toast({
+                title: "Avatar atualizado! ✨",
+                description: "Seu avatar foi alterado com sucesso.",
+              });
+            }}
           />
 
           {/* Inventory Carousel */}
           <InventoryCarousel />
         </div>
+
+        {/* Active Rewards Panel - Nova Seção */}
+        <ActiveRewardsPanel userId={user.id} showHistory={true} />
+
 
         {/* Subscription Plan Card - Compact Design */}
         <Card className="p-4 md:p-6">
@@ -451,8 +520,8 @@ export default function Profile() {
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {subscription.tier === 'free' 
-                    ? 'Desbloqueie benefícios exclusivos'
-                    : `XP ${subscription.xpMultiplier}x • ${subscription.monthlyBeetz} Beetz/mês`
+                    ? t('subscription.benefits')
+                    : `XP ${subscription.xpMultiplier}x • ${subscription.monthlyBeetz} ${t('common.beetz')}/mês`
                   }
                 </p>
               </div>
@@ -466,7 +535,7 @@ export default function Profile() {
                 : ''
               }
             >
-              {subscription.tier === 'free' ? '⭐ Upgrade' : 'Gerenciar'}
+              {subscription.tier === 'free' ? '⭐ Upgrade' : t('subscription.subscribe')}
             </Button>
           </div>
         </Card>

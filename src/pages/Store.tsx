@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { BeetzIcon } from "@/components/ui/beetz-icon";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { FloatingNavbar } from "@/components/floating-navbar";
-import { PaymentMethodSelector } from "@/components/ui/payment-method-selector";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/shared/ui/dialog";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
+import { PaymentMethodSelector } from "@/components/shared/ui/payment-method-selector";
 import { CryptoCheckout } from "@/components/crypto/crypto-checkout";
 import { useCryptoPayments } from "@/hooks/use-crypto-payments";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
+import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield, Infinity, Eye, Sparkles } from "lucide-react";
+import { ComingSoonOverlay } from "@/components/shared/coming-soon-overlay";
+import { AvatarFallbackImage } from "@/components/features/store/avatar-fallback-image";
 
 // Import cyberpunk avatar images
 import neoTrader from "@/assets/avatars/neo-trader.jpg";
@@ -42,6 +45,14 @@ import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
 import stormHacker from "@/assets/avatars/storm-hacker.jpg";
 import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
 import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+import universeArchitect from "@/assets/avatars/universe-architect.jpg";
+import eternalTrader from "@/assets/avatars/eternal-trader.jpg";
+import infinityGuardian from "@/assets/avatars/infinity-guardian.jpg";
+import omniscientSage from "@/assets/avatars/omniscient-sage.jpg";
+import galaxyCommander from "@/assets/avatars/galaxy-commander.jpg";
+import digitalDeity from "@/assets/avatars/digital-deity.jpg";
+import voidArchitect from "@/assets/avatars/void-architect.jpg";
+import timeWeaver from "@/assets/avatars/time-weaver.jpg";
 
 // Import cyberpunk skins
 import neonMatrixOverlay from "@/assets/skins/neon-matrix-overlay.jpg";
@@ -155,6 +166,7 @@ export default function Store() {
   const [selectedBeetzPackage, setSelectedBeetzPackage] = useState<{ amount: number; price: number; name: string } | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useI18n();
   const { createCryptoPayment, redirectToCryptoPayment, isLoading: cryptoLoading } = useCryptoPayments();
 
   useEffect(() => {
@@ -662,8 +674,8 @@ export default function Store() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">Marketplace</h1>
-            <p className="text-muted-foreground text-sm">Avatares, boosts e muito mais</p>
+            <h1 className="text-2xl font-bold text-foreground">{t('store.header.marketplace')}</h1>
+            <p className="text-muted-foreground text-sm">{t('store.header.subtitle')}</p>
           </div>
         </div>
 
@@ -675,8 +687,8 @@ export default function Store() {
                 <Crown className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-foreground mb-1">Planos Premium</h3>
-                <p className="text-xs text-muted-foreground">Acelere seu progresso</p>
+                <h3 className="text-sm font-bold text-foreground mb-1">{t('store.premium.title')}</h3>
+                <p className="text-xs text-muted-foreground">{t('store.premium.subtitle')}</p>
               </div>
             </div>
             <Button 
@@ -685,22 +697,22 @@ export default function Store() {
               onClick={() => navigate('/subscription-plans')}
               className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
             >
-              Ver Planos
+              {t('store.premium.viewPlans')}
             </Button>
           </div>
           
           <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
             <div className="text-center">
               <div className="text-purple-400 font-bold">∞</div>
-              <div className="text-muted-foreground text-xs">Duelos</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.duels')}</div>
             </div>
             <div className="text-center">
               <div className="text-purple-400 font-bold">3x</div>
-              <div className="text-muted-foreground text-xs">XP Boost</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.xpBoost')}</div>
             </div>
             <div className="text-center">
               <div className="text-purple-400 font-bold">100</div>
-              <div className="text-muted-foreground text-xs">Beetz/mês</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.beetzPerMonth')}</div>
             </div>
           </div>
         </Card>
@@ -736,21 +748,21 @@ export default function Store() {
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">👤</div>
-                <span className="text-xs font-medium">Avatares</span>
+                <span className="text-xs font-medium">{t('store.tabs.avatars')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="skins" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">🎨</div>
-                <span className="text-xs font-medium">Skins</span>
+                <span className="text-xs font-medium">{t('store.tabs.skins')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="boosts" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">⚡</div>
-                <span className="text-xs font-medium">Boosts</span>
+                <span className="text-xs font-medium">{t('store.tabs.boosts')}</span>
               </TabsTrigger>
             </TabsList>
             <TabsList className="grid grid-cols-3 gap-2 h-auto bg-transparent p-0">
@@ -759,21 +771,21 @@ export default function Store() {
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">🎒</div>
-                <span className="text-xs font-medium">Acessórios</span>
+                <span className="text-xs font-medium">{t('store.tabs.accessories')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="lives" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <div className="text-lg">❤️</div>
-                <span className="text-xs font-medium">Vidas</span>
+                <span className="text-xs font-medium">{t('store.tabs.lives')}</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="beetz" 
                 className="flex flex-col items-center gap-1 p-3 rounded-xl border-2 border-border/50 bg-card/50 hover:bg-card data-[state=active]:bg-primary/10 data-[state=active]:border-primary/30 data-[state=active]:text-primary transition-all duration-200"
               >
                 <BeetzIcon size="sm" />
-                <span className="text-xs font-medium">Beetz</span>
+                <span className="text-xs font-medium">{t('store.tabs.beetz')}</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -816,6 +828,14 @@ export default function Store() {
                     'Storm Hacker': stormHacker,
                     'Dream Architect': dreamArchitect,
                     'Chrome Gladiator': chromeGladiator,
+                    'Universe Architect': universeArchitect,
+                    'The Eternal Trader': eternalTrader,
+                    'Infinity Guardian': infinityGuardian,
+                    'Omniscient Sage': omniscientSage,
+                    'Galaxy Commander': galaxyCommander,
+                    'Digital Deity': digitalDeity,
+                    'Void Architect': voidArchitect,
+                    'Time Weaver': timeWeaver,
                   };
                   return imageMap[avatar.name] || avatar.image_url;
                 };
@@ -838,6 +858,10 @@ export default function Store() {
                           {getRarityIcon(avatar.rarity)}
                         </Badge>
                       </div>
+                      {/* Premium Avatars Visual Effect */}
+                      {avatar.price >= 1000 && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent pointer-events-none rounded-lg" />
+                      )}
                       {avatar.is_starter && (
                         <div className="absolute top-1 left-1">
                           <Badge variant="secondary" className="text-xs">
@@ -876,7 +900,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <div className="space-y-1">
@@ -891,8 +915,8 @@ export default function Store() {
                           >
                             {purchasing === avatar.id ? "..." :
                              !meetsLevel ? `Nv ${avatar.level_required}` :
-                             !canAfford ? (avatar.price === 0 ? "Selecionar" : "Sem Beetz") : 
-                             avatar.price === 0 ? "Selecionar" : "Comprar"
+                             !canAfford ? (avatar.price === 0 ? t('store.buttons.buy') : t('store.buttons.noBeetz')) : 
+                             avatar.price === 0 ? t('store.buttons.buy') : t('store.buttons.buy')
                             }
                           </Button>
                           <Button
@@ -901,7 +925,7 @@ export default function Store() {
                             size="sm"
                             className="w-full text-xs py-1 h-6 text-muted-foreground hover:text-primary"
                           >
-                            Ver Detalhes
+                            {t('store.buttons.viewDetails')}
                           </Button>
                         </div>
                       )}
@@ -914,8 +938,9 @@ export default function Store() {
 
           {/* Skins Tab */}
           <TabsContent value="skins">
-            <div className="grid grid-cols-2 gap-3">
-              {skins.map((skin) => {
+            <ComingSoonOverlay>
+              <div className="grid grid-cols-2 gap-3">
+                {skins.map((skin) => {
                 const isOwned = userProducts.includes(skin.id);
                 const canAfford = userProfile ? userProfile.points >= skin.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= skin.level_required : false;
@@ -990,7 +1015,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <div className="space-y-1">
@@ -1014,21 +1039,23 @@ export default function Store() {
                             size="sm"
                             className="w-full text-xs py-1 h-6 text-muted-foreground hover:text-primary"
                           >
-                            Ver Detalhes
+                            {t('store.buttons.viewDetails')}
                           </Button>
                         </div>
                       )}
                     </CardContent>
                   </Card>
                 );
-              })}
-            </div>
+                })}
+              </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Boosts Tab */}
           <TabsContent value="boosts">
-            <div className="grid grid-cols-2 gap-3">
-              {products.filter(p => p.category === 'boost').map((product) => {
+            <ComingSoonOverlay>
+              <div className="grid grid-cols-2 gap-3">
+                {products.filter(p => p.category === 'boost').map((product) => {
                 const isOwned = userProducts.includes(product.id);
                 const canAfford = userProfile ? userProfile.points >= product.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
@@ -1109,7 +1136,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <Button
@@ -1127,14 +1154,16 @@ export default function Store() {
                     </CardContent>
                   </Card>
                 );
-              })}
-            </div>
+                })}
+              </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Accessories Tab */}
           <TabsContent value="accessories">
-            <div className="grid grid-cols-2 gap-3">
-              {products.filter(p => p.category === 'accessory').map((product) => {
+            <ComingSoonOverlay>
+              <div className="grid grid-cols-2 gap-3">
+                {products.filter(p => p.category === 'accessory').map((product) => {
                 const isOwned = userProducts.includes(product.id);
                 const canAfford = userProfile ? userProfile.points >= product.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= product.level_required : false;
@@ -1222,7 +1251,7 @@ export default function Store() {
                       
                       {isOwned ? (
                         <Button variant="secondary" className="w-full text-xs py-1 h-8" disabled>
-                          ✅ Possui
+                          ✅ {t('store.buttons.owns')}
                         </Button>
                       ) : (
                         <Button
@@ -1240,19 +1269,21 @@ export default function Store() {
                     </CardContent>
                   </Card>
                 );
-              })}
-            </div>
+                })}
+              </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Lives Tab */}
           <TabsContent value="lives">
-            <div className="space-y-4">
-              <div className="text-center mb-6">
-                <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
-                  <Shield className="w-5 h-5" /> Vidas & Proteção
-                </h2>
-                <p className="text-sm text-muted-foreground">Mantenha sua sequência e continue jogando</p>
-              </div>
+            <ComingSoonOverlay>
+              <div className="space-y-4">
+                <div className="text-center mb-6">
+                  <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+                    <Shield className="w-5 h-5" /> {t('store.livesProtection')}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">{t('store.maintainStreak')}</p>
+                </div>
               
               {/* Go to Lives Marketplace Card */}
               <Card 
@@ -1265,16 +1296,16 @@ export default function Store() {
                       <Shield className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-foreground mb-1">Marketplace de Vidas</h3>
-                      <p className="text-sm text-muted-foreground">Compre vidas para manter suas sequências</p>
+                      <h3 className="text-lg font-bold text-foreground mb-1">{t('store.marketplaceLives')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('store.buyLivesKeepStreak')}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
                           <Shield className="w-3 h-3 mr-1" />
-                          Salva Streak
+                          {t('store.savesStreak')}
                         </Badge>
                         <Badge className="bg-pink-500/20 text-pink-400 border-pink-500/30">
                           <Zap className="w-3 h-3 mr-1" />
-                          Multiplica BTZ
+                          {t('store.multipliesBTZ')}
                         </Badge>
                       </div>
                     </div>
@@ -1284,7 +1315,7 @@ export default function Store() {
                       variant="outline"
                       className="border-red-500/30 text-red-400 hover:bg-red-500/10"
                     >
-                      Ver Vidas
+                      {t('store.viewLives')}
                     </Button>
                   </div>
                 </div>
@@ -1298,8 +1329,8 @@ export default function Store() {
                       <Shield className="w-4 h-4 text-red-400" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-foreground">Proteção de Streak</h4>
-                      <p className="text-xs text-muted-foreground">Use uma vida para manter sua sequência ativa</p>
+                      <h4 className="font-bold text-sm text-foreground">{t('store.streakProtection')}</h4>
+                      <p className="text-xs text-muted-foreground">{t('store.useLifeKeepStreak')}</p>
                     </div>
                   </div>
                 </Card>
@@ -1310,8 +1341,8 @@ export default function Store() {
                       <Gem className="w-4 h-4 text-yellow-400" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-foreground">Mantenha Multiplicadores</h4>
-                      <p className="text-xs text-muted-foreground">Preserve seus multiplicadores de BTZ ativos</p>
+                      <h4 className="font-bold text-sm text-foreground">{t('store.keepMultipliers')}</h4>
+                      <p className="text-xs text-muted-foreground">{t('store.preserveBTZMultipliers')}</p>
                     </div>
                   </div>
                 </Card>
@@ -1322,13 +1353,14 @@ export default function Store() {
                       <Clock className="w-4 h-4 text-green-400" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-foreground">Continue Sem Parar</h4>
-                      <p className="text-xs text-muted-foreground">Não perca o momentum do seu aprendizado</p>
+                      <h4 className="font-bold text-sm text-foreground">{t('store.continueWithoutStop')}</h4>
+                      <p className="text-xs text-muted-foreground">{t('store.dontLoseMomentum')}</p>
                     </div>
                   </div>
                 </Card>
+                </div>
               </div>
-            </div>
+            </ComingSoonOverlay>
           </TabsContent>
 
           {/* Beetz Tab */}
@@ -1336,9 +1368,9 @@ export default function Store() {
             <div className="space-y-4">
               <div className="text-center mb-6">
                 <h2 className="text-lg font-bold text-foreground mb-2 flex items-center justify-center gap-2">
-                  <BeetzIcon size="lg" /> Pacotes de Beetz
+                  <BeetzIcon size="lg" /> {t('store.beetzPackages')}
                 </h2>
-                <p className="text-sm text-muted-foreground">Compre Beetz com dinheiro real via Stripe</p>
+                <p className="text-sm text-muted-foreground">{t('store.buyBeetzReal')}</p>
               </div>
               
               <div className="grid grid-cols-1 gap-4">
@@ -1383,7 +1415,7 @@ export default function Store() {
                               className="w-full"
                               size="sm"
                             >
-                              {purchasing === `beetz-${beetzAmount}` ? "..." : "Comprar"}
+                              {purchasing === `beetz-${beetzAmount}` ? "..." : t('store.buy')}
                             </Button>
                           </div>
                         </div>
@@ -1395,9 +1427,9 @@ export default function Store() {
               
               <div className="mt-6 p-4 bg-muted/50 rounded-lg">
                 <div className="text-center">
-                  <h3 className="font-bold text-foreground mb-2">🔒 Pagamento Seguro</h3>
+                  <h3 className="font-bold text-foreground mb-2">🔒 {t('store.securePayment')}</h3>
                   <p className="text-xs text-muted-foreground mb-2">
-                    Processado via Stripe com máxima segurança
+                    {t('store.processedStripe')}
                   </p>
                   <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                     <Shield className="h-3 w-3" />
@@ -1416,9 +1448,9 @@ export default function Store() {
       <Dialog open={showBeetzModal} onOpenChange={setShowBeetzModal}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>💎 Comprar Beetz</DialogTitle>
+            <DialogTitle>💎 {t('store.buyBeetz')}</DialogTitle>
             <DialogDescription>
-              Você não tem Beetz suficientes. Escolha um pacote para continuar:
+              {t('store.notEnoughBeetz')}
             </DialogDescription>
           </DialogHeader>
           
@@ -1431,7 +1463,7 @@ export default function Store() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-bold text-lg">20 Beetz</div>
-                  <div className="text-sm text-muted-foreground">Pacote Básico</div>
+                  <div className="text-sm text-muted-foreground">{t('store.basicPackage')}</div>
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-primary">R$ 2,00</div>
@@ -1439,7 +1471,7 @@ export default function Store() {
                     size="sm" 
                     disabled={purchasing === 'beetz-20'}
                   >
-                    {purchasing === 'beetz-20' ? '...' : 'Comprar'}
+                    {purchasing === 'beetz-20' ? '...' : t('store.buy')}
                   </Button>
                 </div>
               </div>
@@ -1453,7 +1485,7 @@ export default function Store() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-bold text-lg">50 Beetz</div>
-                  <div className="text-sm text-muted-foreground">Pacote Popular</div>
+                  <div className="text-sm text-muted-foreground">{t('store.popularPackage')}</div>
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-primary">R$ 4,00</div>
@@ -1461,7 +1493,7 @@ export default function Store() {
                     size="sm" 
                     disabled={purchasing === 'beetz-50'}
                   >
-                    {purchasing === 'beetz-50' ? '...' : 'Comprar'}
+                    {purchasing === 'beetz-50' ? '...' : t('store.buy')}
                   </Button>
                 </div>
               </div>
@@ -1475,7 +1507,7 @@ export default function Store() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-bold text-lg">100 Beetz</div>
-                  <div className="text-sm text-muted-foreground">Pacote Premium</div>
+                  <div className="text-sm text-muted-foreground">{t('store.premiumPackage')}</div>
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-primary">R$ 7,00</div>
@@ -1483,7 +1515,7 @@ export default function Store() {
                     size="sm" 
                     disabled={purchasing === 'beetz-100'}
                   >
-                    {purchasing === 'beetz-100' ? '...' : 'Comprar'}
+                    {purchasing === 'beetz-100' ? '...' : t('store.buy')}
                   </Button>
                 </div>
               </div>
@@ -1497,7 +1529,7 @@ export default function Store() {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-bold text-lg">500 Beetz</div>
-                  <div className="text-sm text-muted-foreground">Pacote Supremo</div>
+                  <div className="text-sm text-muted-foreground">{t('store.supremePackage')}</div>
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-primary">R$ 50,00</div>
@@ -1505,7 +1537,7 @@ export default function Store() {
                     size="sm" 
                     disabled={purchasing === 'beetz-500'}
                   >
-                    {purchasing === 'beetz-500' ? '...' : 'Comprar'}
+                    {purchasing === 'beetz-500' ? '...' : t('store.buy')}
                   </Button>
                 </div>
               </div>
@@ -1516,7 +1548,7 @@ export default function Store() {
 
       {/* Payment Method Selector Dialog */}
       <Dialog open={showPaymentSelector} onOpenChange={setShowPaymentSelector}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           {selectedBeetzPackage && (
             <PaymentMethodSelector 
               onPaymentMethodSelect={handlePaymentMethodSelect}

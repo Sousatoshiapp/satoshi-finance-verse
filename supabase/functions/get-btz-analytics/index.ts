@@ -69,15 +69,35 @@ serve(async (req) => {
     const totalYieldLast30Days = yieldHistory?.reduce((sum, record) => sum + record.yield_amount, 0) || 0;
     const totalPenaltyLast30Days = penaltyHistory?.reduce((sum, record) => sum + record.penalty_amount, 0) || 0;
     
+    // Use centralized yield configuration
+    const YIELD_CONFIG = {
+      BASE_RATE: 0.001, // 0.1% ao dia (corrigido de 0.5%)
+      ABSOLUTE_DAILY_CAP: 5, // 5 BTZ máximo por dia
+      SUBSCRIPTION_BONUS: {
+        free: 0,
+        pro: 0.0005, // +0.05%
+        elite: 0.001  // +0.1%
+      },
+      STREAK_BONUS: {
+        DAYS_PER_TIER: 5,
+        BONUS_PER_TIER: 0.0001, // +0.01% por tier
+        MAX_BONUS: 0.003 // Máximo 0.3%
+      }
+    };
+    
     // Calculate current yield rate
-    const baseRate = 0.005; // 0.5%
-    const subscriptionBonus = profile.subscription_tier === 'pro' ? 0.005 : 
-                             profile.subscription_tier === 'elite' ? 0.010 : 0;
-    const streakBonus = Math.min(0.015, Math.floor(profile.consecutive_login_days / 5) * 0.001);
+    const baseRate = YIELD_CONFIG.BASE_RATE;
+    const subscriptionBonus = YIELD_CONFIG.SUBSCRIPTION_BONUS[profile.subscription_tier] || 0;
+    const streakTiers = Math.floor(profile.consecutive_login_days / YIELD_CONFIG.STREAK_BONUS.DAYS_PER_TIER);
+    const streakBonus = Math.min(
+      streakTiers * YIELD_CONFIG.STREAK_BONUS.BONUS_PER_TIER,
+      YIELD_CONFIG.STREAK_BONUS.MAX_BONUS
+    );
     const currentYieldRate = baseRate + subscriptionBonus + streakBonus;
 
-    // Calculate next yield amount
-    const nextYieldAmount = Math.floor(profile.points * currentYieldRate);
+    // Calculate next yield amount with cap
+    const calculatedYield = Math.floor(profile.points * currentYieldRate);
+    const nextYieldAmount = Math.min(calculatedYield, YIELD_CONFIG.ABSOLUTE_DAILY_CAP);
 
     // Time until next yield (if not applied today)
     const now = new Date();

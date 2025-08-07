@@ -1,21 +1,32 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/shared/ui/button";
+import { Card } from "@/components/shared/ui/card";
+import { Input } from "@/components/shared/ui/input";
+import { Switch } from "@/components/shared/ui/switch";
+import { Badge } from "@/components/shared/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
+import { useKYCStatus } from "@/hooks/use-kyc-status";
+import { KYCVerification } from "@/components/features/kyc/KYCVerification";
+import { PasswordChangeDialog } from "@/components/settings/password-change-dialog";
+import { EmailChangeDialog } from "@/components/settings/email-change-dialog";
+import { Edit, Shield } from "lucide-react";
 
 export default function Settings() {
+  const { t } = useI18n();
   const [settings, setSettings] = useState({
     notifications: true,
     dailyReminder: true,
     soundEffects: true,
     darkMode: true,
-    language: 'pt-BR'
+    language: 'pt-BR',
+    animationsEnabled: true,
+    celebrationsEnabled: true,
+    hapticsEnabled: true,
+    particleQuality: 'medium' as 'low' | 'medium' | 'high'
   });
   
   const [userInfo, setUserInfo] = useState({
@@ -24,33 +35,16 @@ export default function Settings() {
     financialGoal: ''
   });
 
-  const [dialogStates, setDialogStates] = useState({
-    changePassword: false,
-    changeEmail: false,
-    exportData: false,
-    importData: false,
-    terms: false,
-    privacy: false,
-    support: false
-  });
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [changeEmailOpen, setChangeEmailOpen] = useState(false);
+  const [showKYCVerification, setShowKYCVerification] = useState(false);
 
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-
-  const [emailForm, setEmailForm] = useState({
-    newEmail: '',
-    password: ''
-  });
-
-  const [importText, setImportText] = useState('');
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const { toast } = useToast();
   const { profile } = useProfile();
+  const { checkKYCRequired } = useKYCStatus();
 
   useEffect(() => {
     loadUserData();
@@ -151,7 +145,7 @@ export default function Settings() {
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
       toast({
-        title: "Erro ❌",
+        title: t('errors.error') + " ❌",
         description: "Não foi possível salvar algumas informações.",
         variant: "destructive"
       });
@@ -206,143 +200,6 @@ export default function Settings() {
     });
   };
 
-  const handleImportData = () => {
-    try {
-      if (!importText.trim()) {
-        toast({
-          title: "Erro na importação ❌",
-          description: "Por favor, cole os dados do backup.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      const importedData = JSON.parse(importText);
-      
-      if (importedData.user) {
-        localStorage.setItem('satoshi_user', JSON.stringify(importedData.user));
-      }
-      if (importedData.settings) {
-        localStorage.setItem('satoshi_settings', JSON.stringify(importedData.settings));
-        setSettings(importedData.settings);
-      }
-      
-      setImportText('');
-      setDialogStates({ ...dialogStates, importData: false });
-      
-      toast({
-        title: "Dados importados! 📥",
-        description: "Seu progresso foi restaurado com sucesso.",
-      });
-    } catch (error) {
-      toast({
-        title: "Erro na importação ❌",
-        description: "Formato de dados inválido.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleChangePassword = async () => {
-    console.log('🔐 Tentando alterar senha...');
-    
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast({
-        title: "Erro ❌",
-        description: "As senhas não coincidem.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (passwordForm.newPassword.length < 6) {
-      toast({
-        title: "Erro ❌",
-        description: "A senha deve ter pelo menos 6 caracteres.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      console.log('📝 Enviando requisição para atualizar senha...');
-      const { data, error } = await supabase.auth.updateUser({
-        password: passwordForm.newPassword
-      });
-
-      console.log('📄 Resposta do Supabase:', { data, error });
-
-      if (error) {
-        console.error('❌ Erro específico ao alterar senha:', error);
-        throw error;
-      }
-
-      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setDialogStates({ ...dialogStates, changePassword: false });
-      
-      toast({
-        title: "Senha alterada! 🔐",
-        description: "Sua senha foi atualizada com sucesso.",
-      });
-    } catch (error: any) {
-      console.error('💥 Erro completo ao alterar senha:', error);
-      toast({
-        title: "Erro ❌",
-        description: error.message || "Não foi possível alterar a senha.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleChangeEmail = async () => {
-    console.log('📧 Tentando alterar email...');
-    
-    if (!emailForm.newEmail || !emailForm.password) {
-      toast({
-        title: "Erro ❌",
-        description: "Preencha todos os campos.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      console.log('📝 Enviando requisição para atualizar email...');
-      const { data, error } = await supabase.auth.updateUser({
-        email: emailForm.newEmail
-      });
-
-      console.log('📄 Resposta do Supabase:', { data, error });
-
-      if (error) {
-        console.error('❌ Erro específico ao alterar email:', error);
-        throw error;
-      }
-
-      setEmailForm({ newEmail: '', password: '' });
-      setDialogStates({ ...dialogStates, changeEmail: false });
-      
-      toast({
-        title: "Email alterado! 📧",
-        description: "Verifique seu novo email para confirmar a alteração.",
-      });
-    } catch (error: any) {
-      console.error('💥 Erro completo ao alterar email:', error);
-      toast({
-        title: "Erro ❌",
-        description: error.message || "Não foi possível alterar o email.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const openDialog = (dialogName: string) => {
-    setDialogStates({ ...dialogStates, [dialogName]: true });
-  };
-
-  const closeDialog = (dialogName: string) => {
-    setDialogStates({ ...dialogStates, [dialogName]: false });
-  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -351,9 +208,9 @@ export default function Settings() {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
-              ← Perfil
+              ← {t('profile.header.profile')}
             </Button>
-            <h1 className="text-xl font-bold text-foreground">Configurações</h1>
+            <h1 className="text-xl font-bold text-foreground">{t('settings.header.settings')}</h1>
           </div>
         </div>
       </div>
@@ -361,10 +218,10 @@ export default function Settings() {
       <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
         {/* Informações Pessoais */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Informações Pessoais</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.personalInfo')}</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Apelido</label>
+              <label className="block text-sm font-medium mb-2">{t('settings.nickname')}</label>
               <Input
                 value={userInfo.nickname}
                 onChange={(e) => setUserInfo({...userInfo, nickname: e.target.value})}
@@ -372,16 +229,44 @@ export default function Settings() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
-              <Input
-                type="email"
-                value={userInfo.email}
-                onChange={(e) => setUserInfo({...userInfo, email: e.target.value})}
-                placeholder="seu@email.com"
-              />
+              <label className="block text-sm font-medium mb-2">{t('settings.email')}</label>
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  value={userInfo.email}
+                  readOnly
+                  placeholder="seu@email.com"
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setChangeEmailOpen(true)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Objetivo Financeiro</label>
+              <label className="block text-sm font-medium mb-2">{t('settings.password')}</label>
+              <div className="flex gap-2">
+                <Input
+                  type="password"
+                  value="••••••••"
+                  readOnly
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setChangePasswordOpen(true)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">{t('settings.financialGoal')}</label>
               <Input
                 value={userInfo.financialGoal}
                 onChange={(e) => setUserInfo({...userInfo, financialGoal: e.target.value})}
@@ -391,14 +276,49 @@ export default function Settings() {
           </div>
         </Card>
 
+        {/* KYC Verification */}
+        <Card className="p-6">
+          <h3 className="font-bold text-foreground mb-6">{t('kyc.title')}</h3>
+          <div className="space-y-4">
+            <p className="text-muted-foreground">{t('kyc.subtitle')}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span className="text-sm">
+                  {profile?.kyc_status === 'approved' ? t('kyc.approved') : 
+                   profile?.kyc_status === 'pending' ? t('kyc.pending') : 
+                   t('kyc.required')}
+                </span>
+              </div>
+              <Badge variant={
+                profile?.kyc_status === 'approved' ? 'default' : 
+                profile?.kyc_status === 'pending' ? 'secondary' : 
+                'destructive'
+              }>
+                {profile?.kyc_status === 'approved' ? t('kyc.approved') : 
+                 profile?.kyc_status === 'pending' ? t('kyc.pending') : 
+                 t('kyc.required')}
+              </Badge>
+            </div>
+            <Button 
+              onClick={() => setShowKYCVerification(true)}
+              disabled={profile?.kyc_status === 'approved'}
+              className="w-full"
+              variant={profile?.kyc_status === 'approved' ? 'outline' : 'default'}
+            >
+              {profile?.kyc_status === 'approved' ? t('kyc.approved') : t('kyc.verifyIdentity')}
+            </Button>
+          </div>
+        </Card>
+
         {/* Notificações */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Notificações</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.notifications')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Notificações Push</h4>
-                <p className="text-sm text-muted-foreground">Receber notificações do app</p>
+                <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.receiveNotifications')}</p>
               </div>
               <Switch
                 checked={settings.notifications}
@@ -408,8 +328,8 @@ export default function Settings() {
             
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Lembrete Diário</h4>
-                <p className="text-sm text-muted-foreground">Lembrete para estudar todos os dias</p>
+                <h4 className="font-medium text-foreground">{t('settings.dailyReminder')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.studyReminder')}</p>
               </div>
               <Switch
                 checked={settings.dailyReminder}
@@ -421,12 +341,12 @@ export default function Settings() {
 
         {/* Experiência */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Experiência</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.experience')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Efeitos Sonoros</h4>
-                <p className="text-sm text-muted-foreground">Sons de interação e conquistas</p>
+                <h4 className="font-medium text-foreground">{t('settings.soundEffects')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.interactionSounds')}</p>
               </div>
               <Switch
                 checked={settings.soundEffects}
@@ -436,8 +356,8 @@ export default function Settings() {
             
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-medium text-foreground">Modo Escuro</h4>
-                <p className="text-sm text-muted-foreground">Interface com tema escuro</p>
+                <h4 className="font-medium text-foreground">{t('settings.darkMode')}</h4>
+                <p className="text-sm text-muted-foreground">{t('settings.darkInterface')}</p>
               </div>
               <Switch
                 checked={settings.darkMode}
@@ -447,277 +367,115 @@ export default function Settings() {
           </div>
         </Card>
 
-        {/* Dados */}
+        {/* Feedback Visual */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Dados</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('feedback.settings.title')}</h3>
           <div className="space-y-4">
-            <Button onClick={handleSaveSettings} className="w-full">
-              💾 Salvar Configurações
-            </Button>
-            
-            <Button variant="outline" onClick={handleExportData} className="w-full">
-              📤 Exportar Progresso
-            </Button>
-            
-            <Dialog open={dialogStates.importData} onOpenChange={() => closeDialog('importData')}>
-              <DialogTrigger asChild>
-                <Button variant="outline" onClick={() => openDialog('importData')} className="w-full">
-                  📥 Importar Progresso
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Importar Progresso</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <p className="text-sm text-muted-foreground">
-                    Cole os dados do backup aqui:
-                  </p>
-                  <textarea
-                    value={importText}
-                    onChange={(e) => setImportText(e.target.value)}
-                    placeholder="Cole o conteúdo do arquivo de backup aqui..."
-                    className="w-full h-32 p-3 border rounded-md resize-none"
-                  />
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => closeDialog('importData')}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleImportData}>
-                    Importar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            
-            <Button 
-              variant="destructive" 
-              onClick={handleResetProgress}
-              className="w-full"
-            >
-              🔄 Resetar Progresso
-            </Button>
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.animations')}</h4>
+                <p className="text-sm text-muted-foreground">Animações de recompensas e conquistas</p>
+              </div>
+              <Switch
+                checked={settings.animationsEnabled}
+                onCheckedChange={(checked) => setSettings({...settings, animationsEnabled: checked})}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.celebrations')}</h4>
+                <p className="text-sm text-muted-foreground">Celebrações visuais para marcos importantes</p>
+              </div>
+              <Switch
+                checked={settings.celebrationsEnabled}
+                onCheckedChange={(checked) => setSettings({...settings, celebrationsEnabled: checked})}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.haptics')}</h4>
+                <p className="text-sm text-muted-foreground">Vibração para feedback tátil</p>
+              </div>
+              <Switch
+                checked={settings.hapticsEnabled}
+                onCheckedChange={(checked) => setSettings({...settings, hapticsEnabled: checked})}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-foreground">{t('feedback.settings.particleQuality')}</h4>
+                <p className="text-sm text-muted-foreground">Qualidade dos efeitos visuais</p>
+              </div>
+              <select 
+                value={settings.particleQuality} 
+                onChange={(e) => setSettings({...settings, particleQuality: e.target.value as 'low' | 'medium' | 'high'})}
+                className="px-3 py-2 border rounded-md bg-background text-foreground"
+              >
+                <option value="low">Baixa</option>
+                <option value="medium">Média</option>
+                <option value="high">Alta</option>
+              </select>
+            </div>
           </div>
+        </Card>
+
+        {/* Salvar */}
+        <Card className="p-6">
+          <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
+            {loading ? t('settings.buttons.saving') : "💾 " + t('settings.buttons.saveSettings')}
+          </Button>
         </Card>
 
         {/* Conta */}
         <Card className="p-6">
-          <h3 className="font-bold text-foreground mb-6">Conta</h3>
+          <h3 className="font-bold text-foreground mb-6">{t('settings.account')}</h3>
           <div className="space-y-4">
-            <Dialog open={dialogStates.changePassword} onOpenChange={() => closeDialog('changePassword')}>
-              <DialogTrigger asChild>
-                <Button variant="outline" onClick={() => openDialog('changePassword')} className="w-full">
-                  🔐 Alterar Senha
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Alterar Senha</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Nova Senha</label>
-                    <Input
-                      type="password"
-                      value={passwordForm.newPassword}
-                      onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
-                      placeholder="Digite sua nova senha"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Confirmar Senha</label>
-                    <Input
-                      type="password"
-                      value={passwordForm.confirmPassword}
-                      onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
-                      placeholder="Confirme sua nova senha"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => closeDialog('changePassword')}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={() => {
-                    console.log('🔴 Botão de alterar senha clicado!');
-                    handleChangePassword();
-                  }}>
-                    Alterar Senha
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            
-            <Dialog open={dialogStates.changeEmail} onOpenChange={() => closeDialog('changeEmail')}>
-              <DialogTrigger asChild>
-                <Button variant="outline" onClick={() => openDialog('changeEmail')} className="w-full">
-                  📧 Alterar Email
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Alterar Email</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Novo Email</label>
-                    <Input
-                      type="email"
-                      value={emailForm.newEmail}
-                      onChange={(e) => setEmailForm({...emailForm, newEmail: e.target.value})}
-                      placeholder="Digite seu novo email"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => closeDialog('changeEmail')}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={() => {
-                    console.log('🔴 Botão de alterar email clicado!');
-                    handleChangeEmail();
-                  }}>
-                    Alterar Email
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            
             <Button 
               variant="destructive"
               onClick={handleLogout}
               className="w-full"
             >
-              🚪 Sair da Conta
+              🚪 {t('settings.buttons.logout')}
             </Button>
           </div>
         </Card>
 
         {/* Sobre */}
         <Card className="p-6 text-center">
-          <h3 className="font-bold text-foreground mb-4">Sobre o Satoshi</h3>
+          <h3 className="font-bold text-foreground mb-4">{t('settings.aboutSatoshi')}</h3>
           <p className="text-muted-foreground mb-4">
-            Versão 1.0.0<br />
-            O game das finanças
+            {t('settings.app.version')}<br />
+            {t('settings.app.description')}
           </p>
-          <div className="flex gap-2 justify-center">
-            <Dialog open={dialogStates.terms} onOpenChange={() => closeDialog('terms')}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" onClick={() => openDialog('terms')}>
-                  Termos de Uso
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Termos de Uso</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 text-sm">
-                  <h4 className="font-semibold">1. Aceitação dos Termos</h4>
-                  <p>Ao usar o Satoshi Finance Game, você concorda com estes termos de uso.</p>
-                  
-                  <h4 className="font-semibold">2. Uso do Aplicativo</h4>
-                  <p>O aplicativo é destinado para fins educacionais sobre finanças pessoais e investimentos.</p>
-                  
-                  <h4 className="font-semibold">3. Gamificação</h4>
-                  <p>Os pontos, níveis e conquistas são virtuais e não possuem valor monetário real.</p>
-                  
-                  <h4 className="font-semibold">4. Responsabilidades</h4>
-                  <p>O conteúdo educacional não constitui aconselhamento financeiro profissional.</p>
-                  
-                  <h4 className="font-semibold">5. Modificações</h4>
-                  <p>Reservamos o direito de modificar estes termos a qualquer momento.</p>
-                </div>
-                <DialogFooter>
-                  <Button onClick={() => closeDialog('terms')}>
-                    Fechar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            
-            <Dialog open={dialogStates.privacy} onOpenChange={() => closeDialog('privacy')}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" onClick={() => openDialog('privacy')}>
-                  Privacidade
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Política de Privacidade</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 text-sm">
-                  <h4 className="font-semibold">1. Coleta de Dados</h4>
-                  <p>Coletamos apenas dados necessários para o funcionamento do aplicativo e sua experiência educacional.</p>
-                  
-                  <h4 className="font-semibold">2. Uso dos Dados</h4>
-                  <p>Seus dados são usados para personalizar seu aprendizado e salvar seu progresso.</p>
-                  
-                  <h4 className="font-semibold">3. Compartilhamento</h4>
-                  <p>Não compartilhamos seus dados pessoais com terceiros sem seu consentimento.</p>
-                  
-                  <h4 className="font-semibold">4. Segurança</h4>
-                  <p>Implementamos medidas de segurança para proteger seus dados.</p>
-                  
-                  <h4 className="font-semibold">5. Cookies</h4>
-                  <p>Usamos localStorage para salvar suas preferências e progresso localmente.</p>
-                  
-                  <h4 className="font-semibold">6. Seus Direitos</h4>
-                  <p>Você pode exportar, importar ou resetar seus dados a qualquer momento.</p>
-                </div>
-                <DialogFooter>
-                  <Button onClick={() => closeDialog('privacy')}>
-                    Fechar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            
-            <Dialog open={dialogStates.support} onOpenChange={() => closeDialog('support')}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" onClick={() => openDialog('support')}>
-                  Suporte
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Suporte</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="text-center space-y-3">
-                    <h4 className="font-semibold">Precisa de Ajuda?</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Entre em contato conosco através dos canais abaixo:
-                    </p>
-                    
-                    <div className="space-y-2">
-                      <Button variant="outline" className="w-full" onClick={() => window.open('mailto:suporte@satoshi.app')}>
-                        📧 Email: suporte@satoshi.app
-                      </Button>
-                      
-                      <Button variant="outline" className="w-full" onClick={() => window.open('https://telegram.me/satoshisupport')}>
-                        💬 Telegram
-                      </Button>
-                      
-                      <Button variant="outline" className="w-full" onClick={() => window.open('https://wa.me/5511999999999')}>
-                        📱 WhatsApp
-                      </Button>
-                    </div>
-                    
-                    <p className="text-xs text-muted-foreground mt-4">
-                      Respondemos em até 24 horas
-                    </p>
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button onClick={() => closeDialog('support')}>
-                    Fechar
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+          <div className="text-sm text-muted-foreground">
+            <p>Email: suporte@sousatoshi.com</p>
+            <p>Telegram: @satoshisupport</p>
           </div>
         </Card>
+
+        {/* Password Change Dialog */}
+        <PasswordChangeDialog
+          isOpen={changePasswordOpen}
+          onClose={() => setChangePasswordOpen(false)}
+        />
+
+        {/* Email Change Dialog */}
+        <EmailChangeDialog
+          isOpen={changeEmailOpen}
+          onClose={() => setChangeEmailOpen(false)}
+          currentEmail={userInfo.email}
+        />
+
+        {/* KYC Verification Dialog */}
+        {showKYCVerification && (
+          <KYCVerification 
+            onComplete={() => setShowKYCVerification(false)}
+            onCancel={() => setShowKYCVerification(false)}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
 import { FileText, Download, Calendar, TrendingUp, DollarSign, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminFinanceReports() {
+  const { t } = useI18n();
   const [selectedPeriod, setSelectedPeriod] = useState("monthly");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -43,8 +45,8 @@ export default function AdminFinanceReports() {
       });
     } catch (error) {
       toast({
-        title: "Erro ao gerar relatório",
-        description: "Não foi possível gerar o relatório",
+        title: t('errors.error'),
+        description: t('errors.couldNotLoadQuiz'),
         variant: "destructive",
       });
     } finally {

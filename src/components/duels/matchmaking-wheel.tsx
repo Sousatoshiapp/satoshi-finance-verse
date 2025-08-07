@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { motion, AnimatePresence } from "framer-motion";
 import { TargetIcon, IconSystem } from "@/components/icons/icon-system";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface MatchmakingWheelProps {
   isSearching: boolean;
@@ -12,11 +13,14 @@ interface MatchmakingWheelProps {
 }
 
 export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }: MatchmakingWheelProps) {
+  const { t } = useI18n();
   const [potentialOpponents, setPotentialOpponents] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [searchTime, setSearchTime] = useState(0);
+  const [searchTime, setSearchTime] = useState(30); // Start from 30 seconds
   const [isMatched, setIsMatched] = useState(false);
   const [matchedOpponent, setMatchedOpponent] = useState<any>(null);
+  const [animationSpeed, setAnimationSpeed] = useState(50); // Dynamic speed
+  const [isSlowingDown, setIsSlowingDown] = useState(false);
 
   useEffect(() => {
     loadPotentialOpponents();
@@ -24,32 +28,60 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
 
   useEffect(() => {
     if (!isSearching) {
-      setSearchTime(0);
+      setSearchTime(30); // Reset to 30 seconds
       setIsMatched(false);
       setMatchedOpponent(null);
+      setAnimationSpeed(50);
+      setIsSlowingDown(false);
       return;
     }
 
-    // Animate through opponents quickly - faster for better roulette effect
-    const interval = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % potentialOpponents.length);
-    }, 80); // Faster animation for better roulette feel
+    // Dynamic roulette animation with acceleration/deceleration
+    let interval: NodeJS.Timeout;
+    const updateInterval = () => {
+      interval = setInterval(() => {
+        setCurrentIndex(prev => (prev + 1) % potentialOpponents.length);
+      }, animationSpeed);
+    };
+    updateInterval();
 
-    // Timer for search - shorter time for better UX
+    // Timer for search - counting down from 30 to 0
     const timer = setInterval(() => {
       setSearchTime(prev => {
-        if (prev >= 5) { // Reduced to 5 seconds for faster matchmaking
+        const newTime = prev - 1; // Count down
+        
+        // Start slowing down in the last 5 seconds
+        if (newTime <= 5 && !isSlowingDown) {
+          setIsSlowingDown(true);
+        }
+        
+        // Adjust animation speed based on time remaining
+        if (newTime > 25) {
+          // Fast in the beginning
+          setAnimationSpeed(50);
+        } else if (newTime > 10) {
+          // Medium speed
+          setAnimationSpeed(100);
+        } else if (newTime > 5) {
+          // Slightly slower
+          setAnimationSpeed(150);
+        } else if (newTime > 0) {
+          // Very slow at the end (dramatic effect)
+          setAnimationSpeed(300);
+        }
+        
+        if (newTime <= 0) { // Match found when timer reaches 0
           setIsMatched(true);
-          // Pick a random opponent instead of current index for more variety
+          // Pick a random opponent for variety
           const randomOpponent = potentialOpponents[Math.floor(Math.random() * potentialOpponents.length)];
           setMatchedOpponent(randomOpponent);
           clearInterval(interval);
           setTimeout(() => {
             onMatchFound(randomOpponent);
-          }, 1500); // Slightly faster transition
-          return prev;
+          }, 2000); // Give time to see the match
+          return 0;
         }
-        return prev + 1;
+        return newTime;
       });
     }, 1000);
 
@@ -57,11 +89,11 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
       clearInterval(interval);
       clearInterval(timer);
     };
-  }, [isSearching, potentialOpponents, currentIndex, onMatchFound]);
+  }, [isSearching, potentialOpponents, animationSpeed, isSlowingDown, onMatchFound]);
 
   const loadPotentialOpponents = async () => {
     try {
-      // Get a diverse set of opponents, excluding recently used ones
+      // Get a diverse set of opponents with variety in levels and avatars
       const { data: profiles } = await supabase
         .from('profiles')
         .select(`
@@ -69,27 +101,54 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
           avatars (name, image_url, avatar_class)
         `)
         .eq('is_bot', true)
-        .order('level', { ascending: false })
-        .limit(50); // Get more opponents for better variety
+        .order('RANDOM()')
+        .limit(50); // More opponents for better variety
 
-      if (profiles) {
-        // Shuffle the array to get random opponents each time
-        const shuffled = [...profiles].sort(() => Math.random() - 0.5);
+      if (profiles && profiles.length > 0) {
+        // Ensure we have a good mix by shuffling multiple times
+        const shuffled = [...profiles]
+          .sort(() => Math.random() - 0.5)
+          .sort(() => Math.random() - 0.5);
         setPotentialOpponents(shuffled);
+      } else {
+        // Enhanced fallback with more diverse bots
+        setPotentialOpponents([
+          { id: '1', nickname: 'Rafael Souza', level: 15, avatars: { name: 'Trader Bot', image_url: null } },
+          { id: '2', nickname: 'Carla Lima', level: 22, avatars: { name: 'Finance Pro', image_url: null } },
+          { id: '3', nickname: 'Bruno Dias', level: 18, avatars: { name: 'Crypto Master', image_url: null } },
+          { id: '4', nickname: 'Patricia Ramos', level: 8, avatars: { name: 'Beginner', image_url: null } },
+          { id: '5', nickname: 'Sabrina Campos', level: 25, avatars: { name: 'Expert', image_url: null } },
+          { id: '6', nickname: 'Vinicius Lopes', level: 12, avatars: { name: 'Intermediate', image_url: null } },
+          { id: '7', nickname: 'Eduardo Barros', level: 30, avatars: { name: 'Master', image_url: null } },
+          { id: '8', nickname: 'Fernanda Ribeiro', level: 7, avatars: { name: 'Novice', image_url: null } },
+          { id: '9', nickname: 'Pedro Costa', level: 20, avatars: { name: 'Advanced', image_url: null } },
+          { id: '10', nickname: 'Leticia Barbosa', level: 16, avatars: { name: 'Professional', image_url: null } },
+          { id: '11', nickname: 'Gustavo Freitas', level: 28, avatars: { name: 'Veteran', image_url: null } },
+          { id: '12', nickname: 'Larissa Duarte', level: 11, avatars: { name: 'Student', image_url: null } },
+        ]);
       }
     } catch (error) {
       console.error('Error loading opponents:', error);
-      // Fallback: create some default opponents if DB fails
+      // Enhanced fallback with more diverse bots
       setPotentialOpponents([
-        { id: '1', nickname: 'Bot Trader', level: 15, avatars: { name: 'Trader Bot', image_url: '/lovable-uploads/crypto-analyst.jpg' } },
-        { id: '2', nickname: 'Finance Pro', level: 22, avatars: { name: 'Finance Pro', image_url: '/lovable-uploads/finance-hacker.jpg' } },
-        { id: '3', nickname: 'Crypto Master', level: 18, avatars: { name: 'Crypto Master', image_url: '/lovable-uploads/defi-samurai.jpg' } },
+        { id: '1', nickname: 'Rafael Souza', level: 15, avatars: { name: 'Trader Bot', image_url: null } },
+        { id: '2', nickname: 'Carla Lima', level: 22, avatars: { name: 'Finance Pro', image_url: null } },
+        { id: '3', nickname: 'Bruno Dias', level: 18, avatars: { name: 'Crypto Master', image_url: null } },
+        { id: '4', nickname: 'Patricia Ramos', level: 8, avatars: { name: 'Beginner', image_url: null } },
+        { id: '5', nickname: 'Sabrina Campos', level: 25, avatars: { name: 'Expert', image_url: null } },
+        { id: '6', nickname: 'Vinicius Lopes', level: 12, avatars: { name: 'Intermediate', image_url: null } },
+        { id: '7', nickname: 'Eduardo Barros', level: 30, avatars: { name: 'Master', image_url: null } },
+        { id: '8', nickname: 'Fernanda Ribeiro', level: 7, avatars: { name: 'Novice', image_url: null } },
+        { id: '9', nickname: 'Pedro Costa', level: 20, avatars: { name: 'Advanced', image_url: null } },
+        { id: '10', nickname: 'Leticia Barbosa', level: 16, avatars: { name: 'Professional', image_url: null } },
+        { id: '11', nickname: 'Gustavo Freitas', level: 28, avatars: { name: 'Veteran', image_url: null } },
+        { id: '12', nickname: 'Larissa Duarte', level: 11, avatars: { name: 'Student', image_url: null } },
       ]);
     }
   };
 
   const currentOpponent = potentialOpponents[currentIndex];
-  const progress = (searchTime / 10) * 100;
+  const progress = ((30 - searchTime) / 30) * 100; // Progress based on time elapsed
 
   if (!isSearching) return null;
 
@@ -131,9 +190,16 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
                 <motion.div
                   key={currentIndex}
                   initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                  animate={{ 
+                    scale: 1, 
+                    opacity: 1,
+                    rotateY: isSlowingDown ? [0, 10, -10, 0] : 0
+                  }}
                   exit={{ scale: 1.2, opacity: 0 }}
-                  transition={{ duration: 0.1 }}
+                  transition={{ 
+                    duration: animationSpeed / 1000,
+                    rotateY: { duration: 0.5, ease: "easeInOut" }
+                  }}
                   className="relative"
                 >
                   <AvatarDisplayUniversal
@@ -141,7 +207,11 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
                     avatarUrl={currentOpponent.avatars?.image_url}
                     nickname={currentOpponent.nickname}
                     size="xl"
-                    className="border-4 border-primary/20 rounded-full bg-background"
+                    className={`border-4 rounded-full bg-background transition-all duration-300 ${
+                      isSlowingDown 
+                        ? 'border-yellow-400/60 shadow-lg shadow-yellow-400/30' 
+                        : 'border-primary/20'
+                    }`}
                   />
                   <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-bold">
                     {currentOpponent.level}
@@ -185,10 +255,18 @@ export function MatchmakingWheel({ isSearching, onMatchFound, onCancel, topic }:
                 </span>
               </h2>
               <p className="text-muted-foreground">
-                {currentOpponent?.nickname || "Carregando..."}
+                {currentOpponent?.nickname || t('common.loading') + "..."} 
+                {isSlowingDown && <span className="text-yellow-400 ml-2">🎯</span>}
               </p>
               <div className="text-sm text-muted-foreground">
-                Tempo: {searchTime}s
+                 <span className={isSlowingDown ? 'text-yellow-400 font-semibold' : ''}>
+                   Tempo: {searchTime}s / 30s
+                 </span>
+                {isSlowingDown && (
+                  <div className="text-yellow-400 text-xs mt-1 animate-pulse">
+                    Finalizando busca...
+                  </div>
+                )}
               </div>
             </>
           ) : (

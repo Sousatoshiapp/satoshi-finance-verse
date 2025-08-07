@@ -5,11 +5,20 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -22,10 +31,27 @@ jobs:
       - name: Install Fastlane
         run: gem install fastlane
 
-      - name: Build and upload to TestFlight
-        working-directory: ios  # ESSENCIAL: garante que rode na pasta correta
+      - name: Install CocoaPods
+        run: gem install cocoapods
+
+      - name: Install iOS dependencies
+        working-directory: ios/App
+        run: pod install
+
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor
+        run: npm run capacitor:sync
+
+      - name: Configure Git authentication
+        run: |
+          git config --global url."https://${{ secrets.CERTIFICATES_ACCESS_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Create provisioning profile if missing
+        working-directory: ios
         env:
-          APP_STORE_CONNECT_API_KEY_ID: 4U7CWTXHQ2
+          APP_STORE_CONNECT_API_KEY_KEY_ID: 4U7CWTXHQ2
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: 2b23890c-3caf-4628-a330-573f616db812
           APP_STORE_CONNECT_API_KEY_KEY_CONTENT: |
            -----BEGIN PRIVATE KEY-----
@@ -34,5 +60,24 @@ jobs:
            Y7rO05FJ3hXHK9WSkDjwk0KzjqBy6Jrd19GVhPvOgaD5ZMrp6WJn7cpY6sqvkxkD
            iKR0X2Ft
            -----END PRIVATE KEY-----
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
+        run: |
+          fastlane match appstore --app_identifier Satoshi.Satoshi-Finance-Game || echo "Provisioning profile creation attempted"
+
+      - name: Build and upload to TestFlight
+        working-directory: ios  # ESSENCIAL: garante que rode na pasta correta
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: 4U7CWTXHQ2
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: 2b23890c-3caf-4628-a330-573f616db812
+          APP_STORE_CONNECT_API_KEY_KEY_CONTENT: |
+           -----BEGIN PRIVATE KEY-----
+           MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgbRQUJW/uDxs8WIhW
+           5AxipnlE6px0NSydKD6fH8XdZZCgCgYIKoZIzj0DAQehRANCAASuVgZSqFmJnCPN
+           Y7rO05FJ3hXHK9WSkDjwk0KzjqBy6Jrd19GVhPvOgaD5ZMrp6WJn7cpY6sqvkxkD
+           iKR0X2Ft
+           -----END PRIVATE KEY-----
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          FASTLANE_PASSWORD: ${{ secrets.FASTLANE_PASSWORD }}
         run: fastlane ios beta
 

@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { createIPLanguageDetector } from '@/utils/ip-language-detector';
 
 import ptBR from './locales/pt-BR.json';
 import enUS from './locales/en-US.json';
@@ -30,22 +31,29 @@ const resources = {
   }
 };
 
+const languageDetector = new LanguageDetector();
+languageDetector.addDetector(createIPLanguageDetector());
+
 i18n
-  .use(LanguageDetector)
+  .use(languageDetector)
   .use(initReactI18next)
   .init({
     resources,
     fallbackLng: 'pt-BR',
     debug: false,
+    preload: ['pt-BR', 'en-US', 'es-ES', 'hi-IN', 'zh-CN', 'ar-SA'],
     
     interpolation: {
       escapeValue: false,
     },
     
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
+      order: ['querystring', 'cookie', 'localStorage', 'sessionStorage', 'ipDetector', 'navigator', 'htmlTag', 'path', 'subdomain'],
+      lookupQuerystring: 'lng',
+      lookupCookie: 'i18next',
       lookupLocalStorage: 'i18nextLng',
-      caches: ['localStorage']
+      lookupSessionStorage: 'i18nextLng',
+      caches: ['localStorage', 'cookie']
     }
   });
 

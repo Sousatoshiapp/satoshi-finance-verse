@@ -1,0 +1,422 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/shared/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useAvatarContext } from "@/contexts/AvatarContext";
+import { Sparkles, Zap, Brain, Shield, Loader2, CheckCircle } from "lucide-react";
+
+// Import avatar images
+import neoTrader from "@/assets/avatars/neo-trader.jpg";
+import cryptoAnalyst from "@/assets/avatars/crypto-analyst.jpg";
+import financeHacker from "@/assets/avatars/finance-hacker.jpg";
+import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
+import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
+import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
+import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
+import neuralArchitect from "@/assets/avatars/neural-architect.jpg";
+import dataMiner from "@/assets/avatars/data-miner.jpg";
+import blockchainGuardian from "@/assets/avatars/blockchain-guardian.jpg";
+import quantumPhysician from "@/assets/avatars/quantum-physician.jpg";
+import virtualRealtor from "@/assets/avatars/virtual-realtor.jpg";
+import codeAssassin from "@/assets/avatars/code-assassin.jpg";
+import cryptoShaman from "@/assets/avatars/crypto-shaman.jpg";
+import marketProphet from "@/assets/avatars/market-prophet.jpg";
+import digitalNomad from "@/assets/avatars/digital-nomad.jpg";
+import neonDetective from "@/assets/avatars/neon-detective.jpg";
+import hologramDancer from "@/assets/avatars/hologram-dancer.jpg";
+import cyberMechanic from "@/assets/avatars/cyber-mechanic.jpg";
+import ghostTrader from "@/assets/avatars/ghost-trader.jpg";
+import binaryMonk from "@/assets/avatars/binary-monk.jpg";
+import pixelArtist from "@/assets/avatars/pixel-artist.jpg";
+import quantumThief from "@/assets/avatars/quantum-thief.jpg";
+import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
+import stormHacker from "@/assets/avatars/storm-hacker.jpg";
+import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
+import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+
+interface Avatar {
+  id: string;
+  name: string;
+  description: string;
+  image_url: string;
+  avatar_class: string;
+  district_theme: string;
+  backstory: string;
+  bonus_effects: any;
+  is_starter: boolean;
+}
+
+interface AvatarSelectionProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onAvatarSelected: () => void;
+}
+
+const avatarImages = {
+  'Neo Trader': neoTrader,
+  'Crypto Analyst': cryptoAnalyst,
+  'Finance Hacker': financeHacker,
+  'Investment Scholar': investmentScholar,
+  'Quantum Broker': quantumBroker,
+  'DeFi Samurai': defiSamurai,
+  'The Satoshi': theSatoshi,
+  'Neural Architect': neuralArchitect,
+  'Data Miner': dataMiner,
+  'Blockchain Guardian': blockchainGuardian,
+  'Quantum Physician': quantumPhysician,
+  'Virtual Realtor': virtualRealtor,
+  'Code Assassin': codeAssassin,
+  'Crypto Shaman': cryptoShaman,
+  'Market Prophet': marketProphet,
+  'Digital Nomad': digitalNomad,
+  'Neon Detective': neonDetective,
+  'Hologram Dancer': hologramDancer,
+  'Cyber Mechanic': cyberMechanic,
+  'Ghost Trader': ghostTrader,
+  'Binary Monk': binaryMonk,
+  'Pixel Artist': pixelArtist,
+  'Quantum Thief': quantumThief,
+  'Memory Keeper': memoryKeeper,
+  'Storm Hacker': stormHacker,
+  'Dream Architect': dreamArchitect,
+  'Chrome Gladiator': chromeGladiator,
+};
+
+const classIcons = {
+  trader: Zap,
+  analyst: Brain,
+  hacker: Shield,
+  scholar: Sparkles,
+};
+
+export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: AvatarSelectionProps) {
+  const [starterAvatars, setStarterAvatars] = useState<Avatar[]>([]);
+  const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
+  const [confirming, setConfirming] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const { toast } = useToast();
+  const { invalidateAvatarCaches } = useAvatarContext();
+
+  useEffect(() => {
+    if (open) {
+      loadStarterAvatars();
+      // Reset states when opening
+      setSelectedAvatar(null);
+      setConfirming(false);
+      setIsConfirming(false);
+      setSuccess(false);
+    }
+  }, [open]);
+
+  const loadStarterAvatars = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('avatars')
+        .select('*')
+        .eq('is_starter', true)
+        .eq('is_available', true)
+        .order('name');
+
+      if (error) throw error;
+      setStarterAvatars(data || []);
+    } catch (error) {
+      console.error('Error loading starter avatars:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar os avatares",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAvatarSelect = (avatar: Avatar) => {
+    setSelectedAvatar(avatar);
+    setConfirming(true);
+  };
+
+  const confirmAvatarSelection = async () => {
+    if (!selectedAvatar || isConfirming) return;
+
+    setIsConfirming(true);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('Usuário não autenticado');
+        throw new Error('Usuário não encontrado');
+      }
+
+      // Validar se é avatar starter
+      if (!selectedAvatar || selectedAvatar.is_starter !== true) {
+        console.error('Avatar selecionado não é starter:', selectedAvatar);
+        throw new Error('Avatar inválido');
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile) {
+        console.error('Perfil não encontrado para user_id:', user.id);
+        throw new Error('Perfil não encontrado');
+      }
+
+      console.log('Iniciando seleção de avatar starter para:', profile.id);
+
+      // Verificar se já possui o avatar
+      const { data: existingAvatar } = await supabase
+        .from('user_avatars')
+        .select('id')
+        .eq('user_id', profile.id)
+        .eq('avatar_id', selectedAvatar.id)
+        .maybeSingle();
+
+      if (existingAvatar) {
+        console.log('Avatar já existe, apenas ativando');
+      } else {
+        // Adicionar avatar à coleção do usuário (inativo inicialmente)
+        const { error: insertError } = await supabase
+          .from('user_avatars')
+          .insert({
+            user_id: profile.id,
+            avatar_id: selectedAvatar.id,
+            is_active: false
+          });
+
+        if (insertError) {
+          console.error('Erro ao inserir avatar:', insertError);
+          throw insertError;
+        }
+        console.log('Avatar adicionado à coleção');
+      }
+
+      // Desativar todos os outros avatares do usuário
+      const { error: deactivateError } = await supabase
+        .from('user_avatars')
+        .update({ is_active: false })
+        .eq('user_id', profile.id);
+
+      if (deactivateError) {
+        console.error('Erro ao desativar avatares:', deactivateError);
+        throw deactivateError;
+      }
+      console.log('Outros avatares desativados');
+
+      // Ativar o avatar selecionado
+      const { error: activateError } = await supabase
+        .from('user_avatars')
+        .update({ is_active: true })
+        .eq('user_id', profile.id)
+        .eq('avatar_id', selectedAvatar.id);
+
+      if (activateError) {
+        console.error('Erro ao ativar avatar:', activateError);
+        throw activateError;
+      }
+      console.log('Avatar ativado na coleção');
+
+      // Atualizar perfil com o avatar atual e limpar imagem personalizada
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ 
+          current_avatar_id: selectedAvatar.id,
+          profile_image_url: null 
+        })
+        .eq('id', profile.id);
+
+      if (updateError) {
+        console.error('Erro ao atualizar perfil:', updateError);
+        throw updateError;
+      }
+      console.log('Perfil atualizado com sucesso');
+
+      // Mostrar sucesso
+      setSuccess(true);
+      
+      toast({
+        title: "Avatar Selecionado!",
+        description: `Bem-vindo(a) à Satoshi City, ${selectedAvatar.name}!`,
+      });
+
+      // Invalidar caches
+      invalidateAvatarCaches();
+
+      // Aguardar um pouco para mostrar o feedback e fechar
+      setTimeout(() => {
+        onAvatarSelected();
+        onOpenChange(false);
+        // Reset states
+        setSelectedAvatar(null);
+        setConfirming(false);
+        setIsConfirming(false);
+        setSuccess(false);
+      }, 1500);
+    } catch (error) {
+      console.error('Error selecting avatar:', error);
+      toast({
+        title: "Erro",
+        description: error instanceof Error ? error.message : "Não foi possível selecionar o avatar",
+        variant: "destructive"
+      });
+    } finally {
+      setIsConfirming(false);
+    }
+  };
+
+  const getAvatarImage = (avatar: Avatar) => {
+    return avatarImages[avatar.name as keyof typeof avatarImages] || avatar.image_url;
+  };
+
+  const getClassIcon = (avatarClass: string) => {
+    const IconComponent = classIcons[avatarClass as keyof typeof classIcons] || Sparkles;
+    return IconComponent;
+  };
+
+  if (loading) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl">
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <>
+      <Dialog open={open && !confirming} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-center bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              Escolha seu Cidadão Digital
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              Selecione seu avatar inicial para começar sua jornada em Satoshi City
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+            {starterAvatars.map((avatar) => {
+              const IconComponent = getClassIcon(avatar.avatar_class);
+              
+              return (
+                <Card 
+                  key={avatar.id} 
+                  className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 hover:border-primary"
+                  onClick={() => handleAvatarSelect(avatar)}
+                >
+                  <div className="relative">
+                    <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
+                      <img 
+                        src={getAvatarImage(avatar)}
+                        alt={avatar.name}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    </div>
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-primary text-primary-foreground">
+                        <IconComponent className="h-3 w-3 mr-1" />
+                        Inicial
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <CardHeader className="p-3">
+                    <CardTitle className="text-sm text-center">{avatar.name}</CardTitle>
+                  </CardHeader>
+                  
+                  <CardContent className="p-3 pt-0">
+                    <p className="text-xs text-muted-foreground text-center line-clamp-2 mb-2">
+                      {avatar.description}
+                    </p>
+                    <Badge variant="outline" className="w-full justify-center text-xs">
+                      {avatar.district_theme?.replace('_', ' ').toUpperCase()}
+                    </Badge>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          <div className="text-center text-sm text-muted-foreground p-4">
+            Avatares gratuitos para começar sua aventura • Desbloqueie mais na loja
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirming} onOpenChange={setConfirming}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Escolha seu Avatar</DialogTitle>
+            <DialogDescription>
+              Você deseja selecionar este avatar como seu cidadão digital?
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedAvatar && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <img 
+                  src={getAvatarImage(selectedAvatar)}
+                  alt={selectedAvatar.name}
+                  className="w-16 h-16 rounded-lg object-cover"
+                />
+                <div>
+                  <h3 className="font-bold">{selectedAvatar.name}</h3>
+                  <p className="text-sm text-muted-foreground">{selectedAvatar.description}</p>
+                </div>
+              </div>
+
+              <div className="bg-muted p-3 rounded-lg">
+                <h4 className="font-semibold mb-2">História:</h4>
+                <p className="text-sm">{selectedAvatar.backstory}</p>
+              </div>
+
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setConfirming(false)} 
+                  className="flex-1"
+                  disabled={isConfirming}
+                >
+                  Voltar
+                </Button>
+                <Button 
+                  onClick={confirmAvatarSelection} 
+                  className="flex-1 transition-all duration-300"
+                  disabled={isConfirming}
+                >
+                  {success ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Sucesso!
+                    </>
+                  ) : isConfirming ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Confirmando...
+                    </>
+                  ) : (
+                    'Confirmar Seleção'
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}

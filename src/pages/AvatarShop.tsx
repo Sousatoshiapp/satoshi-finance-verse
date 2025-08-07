@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Crown, Lock, Star, Users, Coins } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAvatarContext } from "@/contexts/AvatarContext";
 
 interface Avatar {
   id: string;
@@ -24,6 +26,8 @@ interface Avatar {
 }
 
 export default function AvatarShop() {
+  const queryClient = useQueryClient();
+  const { invalidateAvatarCaches } = useAvatarContext();
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -66,7 +70,7 @@ export default function AvatarShop() {
       const avatarsWithOwnership = allAvatars?.map(avatar => ({
         ...avatar,
         is_owned: ownedAvatarIds.includes(avatar.id),
-        is_active: avatar.id === profile?.avatar_id
+        is_active: avatar.id === profile?.current_avatar_id
       })) || [];
 
       setAvatars(avatarsWithOwnership);
@@ -136,7 +140,7 @@ export default function AvatarShop() {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ avatar_id: avatarId })
+        .update({ current_avatar_id: avatarId })
         .eq('id', userProfile.id);
 
       if (error) throw error;
@@ -145,6 +149,9 @@ export default function AvatarShop() {
         title: "Avatar equipado! ✨",
         description: "Seu avatar foi alterado com sucesso.",
       });
+      
+      // Invalidate all avatar-related caches
+      invalidateAvatarCaches();
       
       loadAvatarsAndProfile();
     } catch (error) {

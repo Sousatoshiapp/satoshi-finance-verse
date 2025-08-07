@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { QuestionImportTool } from "@/components/admin/question-import-tool";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Badge } from "@/components/shared/ui/badge";
+import { QuestionImportTool } from "@/components/features/admin/question-import-tool";
 import { useLearningModules } from "@/hooks/use-learning-modules";
 import { BookOpen, Brain, Upload, BarChart3, Users, TrendingUp } from "lucide-react";
 

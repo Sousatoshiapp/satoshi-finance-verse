@@ -589,6 +589,175 @@ export type Database = {
         }
         Relationships: []
       }
+      bot_presence_simulation: {
+        Row: {
+          bot_id: string
+          created_at: string
+          id: string
+          is_online: boolean
+          last_activity_at: string
+          online_probability: number
+          peak_hours: number[]
+          personality_type: string
+          updated_at: string
+        }
+        Insert: {
+          bot_id: string
+          created_at?: string
+          id?: string
+          is_online?: boolean
+          last_activity_at?: string
+          online_probability?: number
+          peak_hours?: number[]
+          personality_type?: string
+          updated_at?: string
+        }
+        Update: {
+          bot_id?: string
+          created_at?: string
+          id?: string
+          is_online?: boolean
+          last_activity_at?: string
+          online_probability?: number
+          peak_hours?: number[]
+          personality_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_presence_simulation_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      btc_bots: {
+        Row: {
+          created_at: string | null
+          difficulty_level: string | null
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          max_bet_amount: number | null
+          min_bet_amount: number | null
+          profile_id: string
+          win_rate: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          max_bet_amount?: number | null
+          min_bet_amount?: number | null
+          profile_id: string
+          win_rate?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          difficulty_level?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          max_bet_amount?: number | null
+          min_bet_amount?: number | null
+          profile_id?: string
+          win_rate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "btc_bots_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      btc_duel_queue: {
+        Row: {
+          bet_amount: number
+          created_at: string
+          expires_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bet_amount: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bet_amount?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      btc_prediction_duels: {
+        Row: {
+          bet_amount: number
+          completed_at: string | null
+          created_at: string
+          expires_at: string
+          final_btc_price: number | null
+          id: string
+          initial_btc_price: number
+          player1_id: string
+          player1_prediction: string
+          player2_id: string
+          player2_prediction: string
+          prediction_duration: number
+          price_source: string
+          started_at: string | null
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          bet_amount: number
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          final_btc_price?: number | null
+          id?: string
+          initial_btc_price: number
+          player1_id: string
+          player1_prediction: string
+          player2_id: string
+          player2_prediction: string
+          prediction_duration?: number
+          price_source?: string
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          bet_amount?: number
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          final_btc_price?: number | null
+          id?: string
+          initial_btc_price?: number
+          player1_id?: string
+          player1_prediction?: string
+          player2_id?: string
+          player2_prediction?: string
+          prediction_duration?: number
+          price_source?: string
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       btz_penalty_history: {
         Row: {
           btz_after: number
@@ -673,6 +842,107 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      city_emergency_contributions: {
+        Row: {
+          btz_contributed: number | null
+          contribution_type: string | null
+          created_at: string | null
+          emergency_id: string
+          heroic_action: string | null
+          id: string
+          user_id: string
+          xp_contributed: number | null
+        }
+        Insert: {
+          btz_contributed?: number | null
+          contribution_type?: string | null
+          created_at?: string | null
+          emergency_id: string
+          heroic_action?: string | null
+          id?: string
+          user_id: string
+          xp_contributed?: number | null
+        }
+        Update: {
+          btz_contributed?: number | null
+          contribution_type?: string | null
+          created_at?: string | null
+          emergency_id?: string
+          heroic_action?: string | null
+          id?: string
+          user_id?: string
+          xp_contributed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "city_emergency_contributions_emergency_id_fkey"
+            columns: ["emergency_id"]
+            isOneToOne: false
+            referencedRelation: "city_emergency_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      city_emergency_events: {
+        Row: {
+          btz_goal: number
+          created_at: string | null
+          crisis_type: string
+          current_btz_contributions: number | null
+          current_xp_contributions: number | null
+          description: string
+          duration_hours: number | null
+          end_time: string | null
+          id: string
+          is_active: boolean | null
+          penalty_multiplier: number | null
+          reward_multiplier: number | null
+          start_time: string | null
+          theme_data: Json | null
+          title: string
+          updated_at: string | null
+          xp_goal: number
+        }
+        Insert: {
+          btz_goal?: number
+          created_at?: string | null
+          crisis_type?: string
+          current_btz_contributions?: number | null
+          current_xp_contributions?: number | null
+          description: string
+          duration_hours?: number | null
+          end_time?: string | null
+          id?: string
+          is_active?: boolean | null
+          penalty_multiplier?: number | null
+          reward_multiplier?: number | null
+          start_time?: string | null
+          theme_data?: Json | null
+          title: string
+          updated_at?: string | null
+          xp_goal?: number
+        }
+        Update: {
+          btz_goal?: number
+          created_at?: string | null
+          crisis_type?: string
+          current_btz_contributions?: number | null
+          current_xp_contributions?: number | null
+          description?: string
+          duration_hours?: number | null
+          end_time?: string | null
+          id?: string
+          is_active?: boolean | null
+          penalty_multiplier?: number | null
+          reward_multiplier?: number | null
+          start_time?: string | null
+          theme_data?: Json | null
+          title?: string
+          updated_at?: string | null
+          xp_goal?: number
+        }
+        Relationships: []
       }
       collectible_items: {
         Row: {
@@ -768,6 +1038,95 @@ export type Database = {
             columns: ["powerup_reward"]
             isOneToOne: false
             referencedRelation: "advanced_powerups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concept_connection_questions: {
+        Row: {
+          correct_connections: Json
+          created_at: string
+          difficulty: string
+          explanation: string | null
+          id: string
+          is_active: boolean
+          left_concepts: Json
+          right_concepts: Json
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          correct_connections: Json
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean
+          left_concepts: Json
+          right_concepts: Json
+          theme: string
+          updated_at?: string
+        }
+        Update: {
+          correct_connections?: Json
+          created_at?: string
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean
+          left_concepts?: Json
+          right_concepts?: Json
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      concept_connection_sessions: {
+        Row: {
+          btz_earned: number
+          completed_at: string
+          connections_made: Json
+          correct_connections: number
+          created_at: string
+          id: string
+          question_id: string
+          time_seconds: number
+          total_connections: number
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          btz_earned?: number
+          completed_at?: string
+          connections_made?: Json
+          correct_connections?: number
+          created_at?: string
+          id?: string
+          question_id: string
+          time_seconds?: number
+          total_connections?: number
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          btz_earned?: number
+          completed_at?: string
+          connections_made?: Json
+          correct_connections?: number
+          created_at?: string
+          id?: string
+          question_id?: string
+          time_seconds?: number
+          total_connections?: number
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concept_connection_sessions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "concept_connection_questions"
             referencedColumns: ["id"]
           },
         ]
@@ -1809,8 +2168,11 @@ export type Database = {
       }
       duel_invites: {
         Row: {
+          bet_amount: number | null
+          bet_status: string | null
           challenged_id: string
           challenger_id: string
+          counter_bet_amount: number | null
           created_at: string
           expires_at: string
           id: string
@@ -1818,8 +2180,11 @@ export type Database = {
           status: string
         }
         Insert: {
+          bet_amount?: number | null
+          bet_status?: string | null
           challenged_id: string
           challenger_id: string
+          counter_bet_amount?: number | null
           created_at?: string
           expires_at?: string
           id?: string
@@ -1827,8 +2192,11 @@ export type Database = {
           status?: string
         }
         Update: {
+          bet_amount?: number | null
+          bet_status?: string | null
           challenged_id?: string
           challenger_id?: string
+          counter_bet_amount?: number | null
           created_at?: string
           expires_at?: string
           id?: string
@@ -1887,6 +2255,7 @@ export type Database = {
       }
       duels: {
         Row: {
+          bet_amount: number | null
           created_at: string
           current_question: number | null
           finished_at: string | null
@@ -1910,8 +2279,10 @@ export type Database = {
           quiz_topic: string
           status: string
           winner_id: string | null
+          winner_prize: number | null
         }
         Insert: {
+          bet_amount?: number | null
           created_at?: string
           current_question?: number | null
           finished_at?: string | null
@@ -1935,8 +2306,10 @@ export type Database = {
           quiz_topic: string
           status?: string
           winner_id?: string | null
+          winner_prize?: number | null
         }
         Update: {
+          bet_amount?: number | null
           created_at?: string
           current_question?: number | null
           finished_at?: string | null
@@ -1960,6 +2333,7 @@ export type Database = {
           quiz_topic?: string
           status?: string
           winner_id?: string | null
+          winner_prize?: number | null
         }
         Relationships: [
           {
@@ -2412,6 +2786,57 @@ export type Database = {
           {
             foreignKeyName: "guilds_leader_id_fkey"
             columns: ["leader_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invite_queue_sessions: {
+        Row: {
+          auto_dismiss_at: string | null
+          created_at: string | null
+          id: string
+          interaction_type: string | null
+          invite_id: string
+          priority_score: number | null
+          processed_at: string | null
+          queue_position: number
+          user_id: string
+        }
+        Insert: {
+          auto_dismiss_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string | null
+          invite_id: string
+          priority_score?: number | null
+          processed_at?: string | null
+          queue_position: number
+          user_id: string
+        }
+        Update: {
+          auto_dismiss_at?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string | null
+          invite_id?: string
+          priority_score?: number | null
+          processed_at?: string | null
+          queue_position?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invite_queue_sessions_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "duel_invites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invite_queue_sessions_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -3464,9 +3889,11 @@ export type Database = {
           completed_lessons: number | null
           consecutive_login_days: number | null
           created_at: string
+          current_avatar_id: string | null
           current_streak_multiplier: number | null
           daily_duels_reset_date: string | null
           daily_duels_used: number | null
+          financial_goal: string | null
           id: string
           is_bot: boolean | null
           last_login_date: string | null
@@ -3485,7 +3912,7 @@ export type Database = {
             | null
           total_yield_earned: number | null
           updated_at: string
-          user_id: string | null
+          user_id: string
           xp: number | null
           yield_rate: number | null
         }
@@ -3494,9 +3921,11 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_avatar_id?: string | null
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
+          financial_goal?: string | null
           id?: string
           is_bot?: boolean | null
           last_login_date?: string | null
@@ -3515,7 +3944,7 @@ export type Database = {
             | null
           total_yield_earned?: number | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
           xp?: number | null
           yield_rate?: number | null
         }
@@ -3524,9 +3953,11 @@ export type Database = {
           completed_lessons?: number | null
           consecutive_login_days?: number | null
           created_at?: string
+          current_avatar_id?: string | null
           current_streak_multiplier?: number | null
           daily_duels_reset_date?: string | null
           daily_duels_used?: number | null
+          financial_goal?: string | null
           id?: string
           is_bot?: boolean | null
           last_login_date?: string | null
@@ -3545,7 +3976,7 @@ export type Database = {
             | null
           total_yield_earned?: number | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
           xp?: number | null
           yield_rate?: number | null
         }
@@ -3557,7 +3988,53 @@ export type Database = {
             referencedRelation: "avatars"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "profiles_current_avatar_id_fkey"
+            columns: ["current_avatar_id"]
+            isOneToOne: false
+            referencedRelation: "avatars"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      push_notification_logs: {
+        Row: {
+          body: string
+          created_at: string | null
+          data: Json | null
+          error_message: string | null
+          id: string
+          notification_type: string
+          sent_at: string | null
+          status: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string | null
+          data?: Json | null
+          error_message?: string | null
+          id?: string
+          notification_type: string
+          sent_at?: string | null
+          status?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string | null
+          data?: Json | null
+          error_message?: string | null
+          id?: string
+          notification_type?: string
+          sent_at?: string | null
+          status?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       push_notification_settings: {
         Row: {
@@ -3639,6 +4116,41 @@ export type Database = {
           },
         ]
       }
+      question_hashes: {
+        Row: {
+          created_at: string | null
+          difficulty: string
+          id: string
+          question_hash: string
+          question_id: string | null
+          theme: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty: string
+          id?: string
+          question_hash: string
+          question_id?: string | null
+          theme: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string
+          id?: string
+          question_hash?: string
+          question_id?: string | null
+          theme?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_hashes_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       question_imports: {
         Row: {
           created_at: string | null
@@ -3691,6 +4203,7 @@ export type Database = {
       }
       quiz_questions: {
         Row: {
+          approval_status: string | null
           approved_by: string | null
           author_notes: string | null
           avg_response_time: number | null
@@ -3716,11 +4229,13 @@ export type Database = {
           source_material: string | null
           success_rate: number | null
           tags: string[] | null
+          theme: string | null
           updated_at: string
           usage_count: number | null
           version: number | null
         }
         Insert: {
+          approval_status?: string | null
           approved_by?: string | null
           author_notes?: string | null
           avg_response_time?: number | null
@@ -3746,11 +4261,13 @@ export type Database = {
           source_material?: string | null
           success_rate?: number | null
           tags?: string[] | null
+          theme?: string | null
           updated_at?: string
           usage_count?: number | null
           version?: number | null
         }
         Update: {
+          approval_status?: string | null
           approved_by?: string | null
           author_notes?: string | null
           avg_response_time?: number | null
@@ -3776,6 +4293,7 @@ export type Database = {
           source_material?: string | null
           success_rate?: number | null
           tags?: string[] | null
+          theme?: string | null
           updated_at?: string
           usage_count?: number | null
           version?: number | null
@@ -4720,9 +5238,11 @@ export type Database = {
           id: string
           processed_at: string | null
           product_id: string | null
+          receiver_id: string | null
           status: Database["public"]["Enums"]["transaction_status"]
           stripe_payment_intent_id: string | null
           stripe_session_id: string | null
+          transfer_type: string | null
           updated_at: string
           user_id: string
           virtual_rewards_data: Json | null
@@ -4734,9 +5254,11 @@ export type Database = {
           id?: string
           processed_at?: string | null
           product_id?: string | null
+          receiver_id?: string | null
           status?: Database["public"]["Enums"]["transaction_status"]
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          transfer_type?: string | null
           updated_at?: string
           user_id: string
           virtual_rewards_data?: Json | null
@@ -4748,9 +5270,11 @@ export type Database = {
           id?: string
           processed_at?: string | null
           product_id?: string | null
+          receiver_id?: string | null
           status?: Database["public"]["Enums"]["transaction_status"]
           stripe_payment_intent_id?: string | null
           stripe_session_id?: string | null
+          transfer_type?: string | null
           updated_at?: string
           user_id?: string
           virtual_rewards_data?: Json | null
@@ -4761,6 +5285,13 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "store_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -5546,6 +6077,53 @@ export type Database = {
           },
         ]
       }
+      user_matchmaking_preferences: {
+        Row: {
+          allow_bots: boolean | null
+          auto_accept_from_friends: boolean | null
+          availability_status: string | null
+          created_at: string | null
+          id: string
+          max_concurrent_invites: number | null
+          preferred_topics: string[] | null
+          skill_level_range: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          allow_bots?: boolean | null
+          auto_accept_from_friends?: boolean | null
+          availability_status?: string | null
+          created_at?: string | null
+          id?: string
+          max_concurrent_invites?: number | null
+          preferred_topics?: string[] | null
+          skill_level_range?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          allow_bots?: boolean | null
+          auto_accept_from_friends?: boolean | null
+          availability_status?: string | null
+          created_at?: string | null
+          id?: string
+          max_concurrent_invites?: number | null
+          preferred_topics?: string[] | null
+          skill_level_range?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_matchmaking_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_mission_progress: {
         Row: {
           completed: boolean
@@ -6151,6 +6729,45 @@ export type Database = {
           },
         ]
       }
+      user_theme_progress: {
+        Row: {
+          created_at: string | null
+          current_difficulty: string | null
+          difficulty_progression: Json | null
+          id: string
+          last_session_at: string | null
+          questions_answered: number | null
+          questions_correct: number | null
+          theme: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_difficulty?: string | null
+          difficulty_progression?: Json | null
+          id?: string
+          last_session_at?: string | null
+          questions_answered?: number | null
+          questions_correct?: number | null
+          theme: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_difficulty?: string | null
+          difficulty_progression?: Json | null
+          id?: string
+          last_session_at?: string | null
+          questions_answered?: number | null
+          questions_correct?: number | null
+          theme?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_titles: {
         Row: {
           description: string | null
@@ -6532,6 +7149,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_to_smart_queue: {
+        Args: { p_invite_id: string }
+        Returns: string
+      }
       apply_btz_penalty: {
         Args: { profile_id: string }
         Returns: {
@@ -6544,9 +7165,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      auto_accept_bot_duels: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       award_daily_loot_box: {
         Args: { profile_id: string }
         Returns: string
+      }
+      award_duel_prize: {
+        Args: { duel_id: string; winner_id: string; prize_amount: number }
+        Returns: boolean
       }
       award_xp: {
         Args: { profile_id: string; xp_amount: number; activity_type?: string }
@@ -6566,6 +7195,14 @@ export type Database = {
           streak_bonus: number
         }[]
       }
+      calculate_invite_priority: {
+        Args: {
+          p_challenger_id: string
+          p_challenged_id: string
+          p_quiz_topic: string
+        }
+        Returns: number
+      }
       calculate_league_points: {
         Args: {
           p_user_id: string
@@ -6573,6 +7210,10 @@ export type Database = {
           p_quiz_score: number
           p_combo_achieved?: number
         }
+        Returns: number
+      }
+      calculate_question_similarity: {
+        Args: { text1: string; text2: string }
         Returns: number
       }
       calculate_user_level: {
@@ -6586,6 +7227,21 @@ export type Database = {
       check_user_team_membership: {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
+      }
+      clean_duplicate_questions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      clean_expired_btc_queue: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      complete_btc_duel: {
+        Args: { p_duel_id: string; p_final_price: number }
+        Returns: {
+          winner_profile_id: string
+          prize_amount: number
+        }[]
       }
       complete_duel_participation: {
         Args: {
@@ -6620,6 +7276,33 @@ export type Database = {
         }
         Returns: string
       }
+      daitch_mokotoff: {
+        Args: { "": string }
+        Returns: string[]
+      }
+      determine_duel_winner: {
+        Args: {
+          p_duel_id: string
+          p_player1_answers: Json
+          p_player2_answers: Json
+          p_player1_time: number
+          p_player2_time: number
+        }
+        Returns: {
+          winner_id: string
+          player1_score: number
+          player2_score: number
+          tie_broken_by: string
+        }[]
+      }
+      dmetaphone: {
+        Args: { "": string }
+        Returns: string
+      }
+      dmetaphone_alt: {
+        Args: { "": string }
+        Returns: string
+      }
       enhance_bot_realism: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -6638,12 +7321,35 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      finalize_expired_emergencies: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       find_automatic_opponent: {
-        Args: { p_user_id: string; p_topic?: string }
+        Args:
+          | { p_user_id: string; p_topic?: string }
+          | {
+              user_id_param: string
+              topic_param?: string
+              max_level_diff?: number
+            }
+          | { user_profile_id: string }
+        Returns: string
+      }
+      find_btc_duel_opponent: {
+        Args: { p_user_id: string; p_bet_amount: number }
         Returns: {
           opponent_id: string
-          opponent_type: string
-          match_found: boolean
+          queue_id: string
+          is_bot: boolean
+        }[]
+      }
+      find_similar_questions: {
+        Args: { new_question: string; similarity_threshold?: number }
+        Returns: {
+          id: string
+          question: string
+          similarity: number
         }[]
       }
       generate_ai_recommendations: {
@@ -6693,8 +7399,28 @@ export type Database = {
         }[]
       }
       get_admin_role: {
-        Args: { user_uuid?: string }
-        Returns: Database["public"]["Enums"]["admin_role"]
+        Args: { user_uuid: string }
+        Returns: string
+      }
+      get_arena_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          avatar_id: string
+          is_bot: boolean
+          is_online: boolean
+          profile_image_url: string
+        }[]
+      }
+      get_btc_queue_stats: {
+        Args: { p_bet_amount: number }
+        Returns: {
+          queue_count: number
+          estimated_wait_time: number
+          active_duels: number
+        }[]
       }
       get_current_season: {
         Args: Record<PropertyKey, never>
@@ -6716,6 +7442,33 @@ export type Database = {
         Args: { profile_id: string }
         Returns: string
       }
+      get_profile_with_avatar: {
+        Args: { profile_id: string }
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          xp: number
+          points: number
+          profile_image_url: string
+          avatar_name: string
+          avatar_image_url: string
+          is_bot: boolean
+        }[]
+      }
+      get_user_evolution_data: {
+        Args:
+          | { user_id_param: string; start_date: string; end_date: string }
+          | { user_id_param: string; start_date: string; end_date: string }
+        Returns: {
+          date: string
+          xp: number
+          level: number
+          btz: number
+          streak: number
+          quizzes_completed: number
+        }[]
+      }
       get_user_profile_id: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -6733,7 +7486,7 @@ export type Database = {
         Returns: undefined
       }
       is_admin: {
-        Args: { user_uuid?: string }
+        Args: { user_uuid: string }
         Returns: boolean
       }
       is_guild_leader_or_officer: {
@@ -6744,9 +7497,21 @@ export type Database = {
         Args: { p_user_id: string; p_guild_id: string }
         Returns: boolean
       }
+      is_master_admin: {
+        Args: { email_check: string }
+        Returns: boolean
+      }
       log_security_event: {
         Args: { event_type: string; user_id: string; event_data?: Json }
         Returns: undefined
+      }
+      monitor_yield_anomalies: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          profile_id: string
+          yield_amount: number
+          issue_type: string
+        }[]
       }
       open_loot_box: {
         Args: { profile_id: string; user_loot_box_id: string }
@@ -6784,11 +7549,23 @@ export type Database = {
         Args: { p_guild_id: string; p_user_id: string; p_message?: string }
         Returns: boolean
       }
+      simulate_bot_presence: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      soundex: {
+        Args: { "": string }
+        Returns: string
+      }
       start_district_duel: {
         Args: {
           p_initiator_district_id: string
           p_challenged_district_id: string
         }
+        Returns: string
+      }
+      text_soundex: {
+        Args: { "": string }
         Returns: string
       }
       track_district_metric: {
@@ -6799,6 +7576,10 @@ export type Database = {
           p_metric_data?: Json
         }
         Returns: undefined
+      }
+      transfer_btz: {
+        Args: { sender_id: string; receiver_id: string; amount: number }
+        Returns: Json
       }
       update_bot_nicknames: {
         Args: Record<PropertyKey, never>
@@ -6900,12 +7681,13 @@ export type Database = {
     }
     Enums: {
       admin_role: "super_admin" | "admin" | "moderator"
+      approval_status_type: "pending" | "approved" | "rejected"
       combo_type:
         | "perfect_streak"
         | "speed_demon"
         | "knowledge_master"
         | "quiz_dominator"
-      currency_type: "BRL" | "USD" | "EUR"
+      currency_type: "BRL" | "USD" | "EUR" | "BTZ"
       customization_type:
         | "avatar_skin"
         | "profile_theme"
@@ -7077,13 +7859,14 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["super_admin", "admin", "moderator"],
+      approval_status_type: ["pending", "approved", "rejected"],
       combo_type: [
         "perfect_streak",
         "speed_demon",
         "knowledge_master",
         "quiz_dominator",
       ],
-      currency_type: ["BRL", "USD", "EUR"],
+      currency_type: ["BRL", "USD", "EUR", "BTZ"],
       customization_type: [
         "avatar_skin",
         "profile_theme",

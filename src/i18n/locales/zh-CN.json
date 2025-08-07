@@ -161,3 +161,1347 @@
     "level_100": { "name": "不可思议", "description": "超越所有人类理解" }
   }
 }
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "level": "等级",
+    "points": "积分",
+    "xp": "经验值",
+    "beetz": "Beetz",
+    "pro": "专业版",
+    "online": "在线",
+    "offline": "离线",
+    "viewAll": "查看全部",
+    "available": "可用",
+    "new": "新!",
+    "switchTo": "切换到",
+    "start": "开始",
+    "end": "结束",
+    "edit": "编辑",
+    "delete": "删除",
+    "add": "添加",
+    "remove": "移除",
+    "search": "搜索",
+    "filter": "筛选",
+    "sort": "排序",
+    "next": "下一个",
+    "previous": "上一个",
+    "close": "关闭",
+    "open": "打开",
+    "yes": "是",
+    "no": "否",
+    "ok": "确定",
+    "continue": "继续",
+    "submit": "提交",
+    "reset": "重置",
+    "clear": "清除",
+    "select": "选择",
+    "share": "分享",
+    "like": "点赞",
+    "unlike": "取消点赞",
+    "follow": "关注",
+    "unfollow": "取消关注",
+    "login": "登录",
+    "logout": "登出",
+    "register": "注册",
+    "profile": "资料",
+    "settings": "设置",
+    "help": "帮助",
+    "followers": "粉丝",
+    "following": "关注中",
+    "publish": "发布",
+    "publishing": "发布中...",
+    "searchUsers": "搜索用户...",
+    "comingSoon": "即将推出",
+    "beFirstToPost": "成为第一个发帖的人!",
+    "removed": "已移除",
+    "added": "已添加",
+    "likeRemoved": "已取消点赞",
+    "nowFollowing": "正在关注!",
+    "typeMessage": "输入您的消息...",
+    "loadingConversation": "加载对话中...",
+    "totalXP": "总经验值",
+    "highestStreak": "最高连胜",
+    "postsCreated": "创建的帖子",
+    "likesReceived": "收到的点赞",
+    "switchTo": "切换到",
+    "playground": "游乐场",
+    "explore": "探索"
+  },
+  "duels": {
+    "activeArena": "竞技场",
+    "online": "玩家在线",
+    "searching": "寻找对手...",
+    "moreBotsAvailable": "更多机器人可用",
+    "lastUpdate": "最后更新"
+  },
+  "quiz": {
+    "title": "测验",
+    "question": "第{{number}}题，共{{total}}题",
+    "nextQuestion": "下一题",
+    "finishQuiz": "完成测验",
+    "timeRemaining": "剩余时间",
+    "correct": "正确！",
+    "incorrect": "错误！",
+    "explanation": "解释",
+    "score": "得分",
+    "completed": "测验完成！",
+    "startQuiz": "开始测验",
+    "questions": {
+      "stockExchange": {
+        "question": "证券交易所的主要功能是什么？",
+        "options": ["向公司放贷", "促进证券交易", "设定利率", "印刷货币"],
+        "correct": "促进证券交易",
+        "explanation": "证券交易所促进买卖双方之间的证券交易。"
+      },
+      "ipo": {
+        "question": "IPO代表什么？",
+        "options": ["首次公开募股", "国际采购订单", "投资组合选项", "内部价格优化"],
+        "correct": "首次公开募股",
+        "explanation": "IPO代表首次公开募股，即公司首次向公众出售股票。"
+      },
+      "diversification": {
+        "question": "投资中的多元化是什么？",
+        "options": ["将所有资金投入一只股票", "将投资分散到不同资产", "只购买股票", "出售所有投资"],
+        "correct": "将投资分散到不同资产",
+        "explanation": "多元化涉及将投资分散到不同资产以降低风险。"
+      },
+      "defi": {
+        "question": "什么是DeFi？",
+        "options": ["比特币", "去中心化金融", "钱包类型", "中心化交易所"],
+        "correct": "去中心化金融",
+        "explanation": "DeFi是去中心化金融应用。"
+      },
+      "correlation": {
+        "question": "什么是相关性？",
+        "options": ["资产价格", "运动之间的关系", "回报率", "股息"],
+        "correct": "运动之间的关系",
+        "explanation": "相关性衡量资产如何一起移动。"
+      },
+      "bitcoin": {
+        "question": "谁创造了比特币？",
+        "options": ["维塔利克·布特林", "中本聪", "查理·李", "加文·安德烈森"],
+        "correct": "中本聪",
+        "explanation": "中本聪是比特币创造者的化名。"
+      },
+      "duration": {
+        "question": "什么是久期？",
+        "options": ["投资期限", "利率敏感性", "回报率", "现值"],
+        "correct": "利率敏感性",
+        "explanation": "久期衡量对利率变化的敏感性。"
+      },
+      "bullMarket": {
+        "question": "牛市意味着什么？",
+        "options": ["熊市", "牛市", "横盘市场", "波动市场"],
+        "correct": "牛市",
+        "explanation": "牛市是持续增长的时期。"
+      },
+      "roi": {
+        "question": "什么是ROI？",
+        "options": ["投资回报率", "利率", "投资风险", "实际营业收入"],
+        "correct": "投资回报率",
+        "explanation": "ROI意味着投资回报率，衡量盈利能力。"
+      },
+      "volatility": {
+        "question": "什么是波动性？",
+        "options": ["价格稳定", "价格变化", "投资保证", "固定回报"],
+        "correct": "价格变化",
+        "explanation": "波动性衡量资产价格波动的程度。"
+      },
+      "bearMarket": {
+        "question": "什么是熊市？",
+        "options": ["上涨市场", "下跌市场", "稳定市场", "新市场"],
+        "correct": "下跌市场",
+        "explanation": "熊市是价格持续下跌的时期。"
+      },
+      "inflation": {
+        "question": "什么是通胀？",
+        "options": ["价格上涨", "价格下跌", "货币兑换", "利率"],
+        "correct": "价格上涨",
+        "explanation": "通胀是价格普遍上涨和货币购买力下降。"
+      },
+      "liquidity": {
+        "question": "什么是流动性？",
+        "options": ["易于转换为现金", "投资回报", "市场波动", "利率"],
+        "correct": "易于转换为现金",
+        "explanation": "流动性是指资产在不影响市场价格的情况下易于转换为现金的程度。"
+      },
+      "compoundInterest": {
+        "question": "什么是复利？",
+        "options": ["利息的利息", "单利", "固定利率", "可变利率"],
+        "correct": "利息的利息",
+        "explanation": "复利是根据初始本金和以前期间累积利息计算的利息。"
+      }
+    }
+  },
+  "proximityDetection": {
+    "title": "邻近检测",
+    "location": "位置",
+    "permissionGranted": "已授权",
+    "permissionDenied": "已拒绝",
+    "permissionPending": "待定",
+    "activateDetection": "激活检测",
+    "visibleToOthers": "对他人可见",
+    "detectionStatus": "检测状态",
+    "playersFound": "发现{{count}}名附近玩家",
+    "searchingPlayers": "正在搜索附近玩家...",
+    "additionalPlayers": "+{{count}}名其他玩家",
+    "infoDetectionRange": "• 检测500米半径内的玩家",
+    "infoUpdateFrequency": "• 每30秒自动更新",
+    "infoNotificationLimit": "• 每个玩家每2小时限制一次通知",
+    "permissionDeniedTitle": "权限被拒绝",
+    "permissionDeniedDescription": "要使用邻近检测，请在设备设置中允许位置访问。",
+    "challengeSentTitle": "挑战已发送！🎯",
+    "challengeSentDescription": "您的挑战已发送给@{{nickname}}。等待回应！",
+    "modal": {
+      "title": "检测到附近玩家",
+      "distanceAway": "距离{{distance}}米",
+      "proximityDuel": "邻近决斗",
+      "nearbyPlayer": "您附近的玩家",
+      "challengeText": "@{{nickname}}就在您附近！🎯",
+      "topicLabel": "主题：一般金融",
+      "challengeQuestion": "挑战BTZ决斗？",
+      "duelDetails": "10个问题 • 每个30秒 • 同时决斗",
+      "ignoreButton": "❌ 忽略",
+      "challengeButton": "⚔️ 挑战",
+      "errorTitle": "错误",
+      "errorDescription": "无法发送挑战。请重试。"
+    }
+  },
+  "bluetooth": {
+    "title": "邻近传输",
+    "subtitle": "通过蓝牙向附近用户传输BTZ",
+    "proximityTransfer": "邻近传输",
+    "scanning": "扫描中",
+    "advertising": "广播中",
+    "nearbyUsers": "附近用户",
+    "send": "发送",
+    "sendTo": "发送给{{user}}",
+    "searchingTimeout": "搜索附近用户中...{{seconds}}秒",
+    "noUsersFound": "未找到用户",
+    "fallbackMessage": "我们找不到附近的用户。请使用二维码作为替代方案。",
+    "useQRCode": "使用二维码",
+    "permissionDenied": "蓝牙权限被拒绝",
+    "scanningFailed": "设备扫描失败",
+    "advertisingFailed": "广播存在失败",
+    "transferRequestSent": "请求已发送",
+    "transferRequestSentDesc": "通过蓝牙发送传输请求",
+    "transferRequestFailed": "发送请求失败",
+    "tryAgain": "重试"
+  },
+  "navigation": {
+    "dashboard": "仪表板",
+    "quiz": "测验",
+    "social": "社交",
+    "profile": "个人资料",
+    "leaderboard": "排行榜",
+    "store": "商店",
+    "settings": "设置",
+    "city": "城市",
+    "game": "游戏"
+  },
+  "dashboard": {
+    "welcome": "欢迎来到中本聪金融游戏！",
+    "weeklyRanking": "周排行榜",
+    "dailyMissions": "每日任务",
+    "streak": "连胜",
+    "level": "等级{{level}}",
+    "goodMorning": "早上好",
+    "goodAfternoon": "下午好",
+    "goodNight": "晚上好",
+    "student": "学生",
+    "goal": "目标",
+    "dailySummary": "每日摘要",
+    "sequence": "序列",
+    "days": "天",
+    "rewards": "奖励",
+    "missions": "任务",
+    "achievements": "成就",
+    "badges": "徽章",
+    "dailyDuels": "每日决斗",
+    "resetIn24h": "24小时后重置",
+    "upgrade": "升级",
+    "todayProgress": "今日进度",
+    "experience": "经验",
+    "lessons": "课程",
+    "xpBoost": "经验值增强",
+    "rankingBeetz": "BTZ排行榜"
+  },
+  "leaderboard": {
+    "weeklyRankings": "周排行榜",
+    "global": "全球",
+    "league": "联赛",
+    "yourPosition": "您的位置",
+    "totalScore": "总分",
+    "resetIn": "重置时间",
+    "noRank": "无排名",
+    "noRankingAvailable": "暂无排行榜",
+    "beFirstInRanking": "成为第一个出现在周排行榜上的人！",
+    "climbRanking": "攀登排行榜！",
+    "climbRankingDescription": "完成测验，赢得决斗并获得经验值以攀登排行榜",
+    "pointsPerXP": "每经验值+1分",
+    "pointsPerQuiz": "每测验+1分",
+    "pointsPerDuel": "每决斗+100分"
+  },
+  "auth": {
+    "loginError": "登录错误",
+    "invalidCredentials": "邮箱或密码错误。请检查您的凭据。",
+    "emailNotConfirmed": "邮箱未确认",
+    "emailNotConfirmedDescription": "请检查您的邮箱并在登录前点击确认链接。",
+    "loginSuccess": "登录成功！",
+    "loginSuccessDescription": "欢迎回到中本聪城市。",
+    "signupError": "注册错误",
+    "userAlreadyExists": "用户已存在",
+    "userAlreadyExistsDescription": "此账户已注册。请登录或使用其他邮箱。",
+    "signupSuccess": "注册成功！",
+    "signupSuccessDescription": "请检查您的邮箱以激活您的账户",
+    "welcomeMessage": "欢迎！",
+    "accountCreatedSuccess": "账户创建成功",
+    "emailRequired": "邮箱必填",
+    "emailRequiredDescription": "请输入您的邮箱以接收重置链接。",
+    "emailSent": "邮件已发送！",
+    "emailSentDescription": "请检查您的邮箱以重置密码。",
+    "unexpectedError": "意外错误",
+    "unexpectedErrorDescription": "出现问题。请重试。",
+    "emailRequiredResend": "邮箱必填",
+    "emailRequiredResendDescription": "请输入您的邮箱以重发确认。",
+    "emailResent": "邮件已重发！",
+    "emailResentDescription": "请检查您的邮箱以确认您的账户。",
+    "verifyEmail": "验证您的邮箱",
+    "verificationSent": "我们已发送验证链接至：",
+    "clickLinkToActivate": "点击邮件中的链接以激活您的账户并登录应用。",
+    "resendEmail": "重发邮件",
+    "resending": "重发中...",
+    "checkSpamFolder": "没收到邮件？请检查您的垃圾邮件文件夹。",
+    "emailResentSuccess": "邮件已重发",
+    "emailResentSuccessDescription": "请再次检查您的收件箱",
+    "resendError": "错误",
+    "resendErrorDescription": "无法重发邮件"
+  },
+  "settings": {
+    "emailChange": {
+      "title": "更改邮箱",
+      "confirmTitle": "确认更改",
+      "currentEmail": "当前邮箱",
+      "newEmail": "新邮箱",
+      "confirmEmail": "确认新邮箱",
+      "newEmailPlaceholder": "输入新邮箱",
+      "confirmEmailPlaceholder": "确认新邮箱",
+      "emailMismatch": "邮箱不匹配",
+      "invalidEmail": "请输入有效邮箱",
+      "sameEmail": "新邮箱必须与当前邮箱不同",
+      "success": "成功",
+      "successDescription": "更改请求已发送！请检查邮箱 {{email}} 以确认更改。",
+      "error": "错误",
+      "errorDescription": "无法更改邮箱",
+      "confirmQuestion": "您确定要将邮箱从：",
+      "to": "更改为：",
+      "confirmationNote": "确认邮件将发送到新地址。",
+      "back": "返回",
+      "continue": "继续",
+      "confirmChange": "确认更改",
+      "sending": "发送中..."
+    },
+    "passwordChange": {
+      "title": "更改密码",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码",
+      "currentPasswordPlaceholder": "输入您的当前密码",
+      "newPasswordPlaceholder": "输入新密码",
+      "confirmPasswordPlaceholder": "确认新密码",
+      "passwordMismatch": "密码不匹配",
+      "passwordTooShort": "新密码至少需要6个字符",
+      "success": "成功",
+      "successDescription": "密码更改成功！已发送确认邮件。",
+      "error": "错误",
+      "errorDescription": "无法更改密码",
+      "changing": "更改中...",
+      "changePassword": "更改密码",
+      "back": "返回"
+    }
+  },
+  "profile": {
+    "header": {
+      "profile": "资料"
+    },
+    "userProfile": "用户资料",
+    "achievements": "成就",
+    "statistics": "统计",
+    "followersCount": "关注者",
+    "followingCount": "关注中",
+    "completedLessons": "已完成课程",
+    "currentStreak": "当前连胜",
+    "publicPortfolios": "公开投资组合",
+    "memberSince": "注册时间",
+    "activeAvatar": "活跃头像",
+    "message": "消息",
+    "anonymousUser": "匿名用户"
+  },
+  "admin": {
+    "dashboard": "管理员仪表板",
+    "language": "语言",
+    "changeLanguage": "更改语言",
+    "botManagement": "机器人管理",
+    "enhanceBotRealism": "增强机器人真实感",
+    "updateBotNicknames": "更新机器人昵称"
+  },
+  "matchmaking": {
+    "preferences": {
+      "title": "匹配偏好设置",
+      "subtitle": "配置您希望如何寻找决斗对手",
+      "topics": {
+        "title": "偏好主题",
+        "subtitle": "选择您最喜欢决斗的主题",
+        "financas": "通用金融",
+        "investimentos": "投资",
+        "criptomoedas": "加密货币",
+        "economia": "经济"
+      },
+      "allowBots": {
+        "title": "允许机器人对手",
+        "subtitle": "接受与AI控制的对手进行决斗"
+      },
+      "skillLevel": {
+        "title": "对手水平",
+        "similar": "相似水平",
+        "similarDesc": "接近您水平的对手",
+        "any": "任何水平",
+        "anyDesc": "任何可用的对手",
+        "challenging": "挑战性",
+        "challengingDesc": "更高水平的对手"
+      },
+      "autoAccept": {
+        "title": "自动接受好友邀请",
+        "subtitle": "自动接受来自好友的邀请"
+      },
+      "maxInvites": {
+        "title": "并发邀请",
+        "subtitle": "您可以同时接收的最大邀请数量"
+      },
+      "availability": {
+        "title": "可用状态",
+        "available": "可用",
+        "availableDesc": "接受所有邀请",
+        "busy": "忙碌",
+        "busyDesc": "仅限优先邀请",
+        "invisible": "隐身",
+        "invisibleDesc": "不接收邀请"
+      },
+      "actions": {
+        "cancel": "取消",
+        "save": "保存偏好设置",
+        "saving": "保存中...",
+        "saveSuccess": "偏好设置已保存",
+        "saveSuccessDesc": "您的匹配偏好设置已更新！",
+        "saveError": "错误",
+        "saveErrorDesc": "无法保存您的偏好设置。请重试。"
+      }
+    }
+  },
+  "quizEngine": {
+    "loadingQuestions": "加载问题中...",
+    "noQuestionsAvailable": "暂无问题",
+    "couldNotLoadQuestions": "目前无法加载问题。",
+    "question": "第{{current}}题，共{{total}}题",
+    "soloQuiz": "单人测验",
+    "duelQuiz": "决斗测验",
+    "tournamentQuiz": "锦标赛测验",
+    "dailyMission": "每日任务",
+    "districtQuiz": "区域测验",
+    "congratulations": "恭喜！",
+    "lost": "失败！",
+    "correctAnswers": "正确答案",
+    "accuracy": "准确率",
+    "nextQuiz": "下一个测验",
+    "continue": "继续",
+    "tryAgain": "重试",
+    "back": "返回",
+    "confirmAnswer": "确认答案",
+    "selectOption": "选择一个选项",
+    "timeUp": "时间到！",
+    "correct": "正确！",
+    "incorrect": "错误！",
+    "correctAnswer": "正确答案：",
+    "timeRemaining": "剩余时间"
+  },
+  "social": {
+    "tabs": {
+      "feed": "动态",
+      "search": "搜索",
+      "challenges": "挑战",
+      "ranks": "排名",
+      "following": "关注中",
+      "chat": "聊天"
+    },
+    "placeholders": {
+      "shareOpinion": "有什么新鲜事？",
+      "searchUsers": "搜索用户...",
+      "addComment": "添加评论..."
+    },
+    "buttons": {
+      "publish": "发布",
+      "publishing": "发布中...",
+      "comment": "评论"
+    },
+    "messages": {
+      "searchingUsers": "搜索用户中...",
+      "noResults": "未找到结果",
+      "comingSoon": "即将推出",
+      "postCreated": "帖子创建成功！",
+      "commentAdded": "评论已添加！",
+      "errorPost": "无法创建帖子",
+      "errorComment": "无法添加评论"
+    },
+    "stats": {
+      "likes": "赞",
+      "comments": "评论",
+      "shares": "分享",
+      "ago": "前",
+      "now": "现在"
+    },
+    "profile": {
+      "level": "等级",
+      "followers": "粉丝",
+      "following": "关注中",
+      "follow": "关注"
+    },
+    "actions": {
+      "removed": "已移除",
+      "added": "已添加",
+      "likeRemoved": "已取消点赞",
+      "nowFollowing": "正在关注！"
+    },
+    "chat": {
+      "typeMessage": "输入您的消息...",
+      "loadingConversation": "加载对话中..."
+    },
+    "leaderboard": {
+      "totalXP": "总经验值",
+      "highestStreak": "最高连胜",
+      "postsCreated": "创建的帖子",
+      "likesReceived": "收到的点赞",
+      "followers": "粉丝"
+    },
+    "socialFeed": "社交动态",
+    "shareOpinion": "发生了什么？",
+    "whatsHappening": "发生了什么？",
+    "post": "发布",
+    "like": "点赞",
+    "comment": "评论",
+    "share": "分享"
+  },
+  "satoshiCity": {
+    "welcome": "欢迎来到金融未来之城",
+    "subtitle": "点击区域探索知识",
+    "badges": {
+      "activeDistricts": "7个活跃区域",
+      "neuralSystem": "神经系统激活",
+      "hyperRealistic": "超现实城市"
+    },
+    "modes": {
+      "3dDevelopment": "3D开发中",
+      "back2d": "返回2D",
+      "overview": "概览",
+      "exploration": "探索"
+    },
+    "loading": {
+      "city": "加载中本聪城市...",
+      "city3d": "加载中本聪城市3D..."
+    },
+    "emergency": {
+      "state": "紧急状态",
+      "hackDetected": "检测到金融黑客攻击",
+      "marketCollapse": "市场崩盘",
+      "cyberAttack": "网络攻击"
+    },
+    "avatar": {
+      "chooseTitle": "选择您的数字公民",
+      "chooseSubtitle": "选择您的初始头像开始您的旅程"
+    },
+    "affiliation": {
+      "district": "区域",
+      "explore": "探索",
+      "chooseDistrict": "选择区域",
+      "team": "团队",
+      "createJoinTeam": "创建/加入团队"
+    },
+    "contribution": {
+      "title": "为紧急情况做贡献",
+      "subtitle": "您的贡献将被放大",
+      "button": "立即贡献"
+    }
+  },
+  "districts": {
+    "navigation": {
+      "backToCity": "返回城市",
+      "becomeMember": "成为成员",
+      "viewTeam": "查看团队"
+    },
+    "stats": {
+      "totalBTZ": "总BTZ",
+      "totalXP": "总经验值",
+      "power": "力量"
+    },
+    "timeOfDay": {
+      "morning": "早晨",
+      "afternoon": "下午",
+      "night": "夜晚"
+    },
+    "specialPower": "特殊力量",
+    "actions": {
+      "access": "访问",
+      "districtQuiz": "区域测验",
+      "challengeDistrict": "挑战区域",
+      "viewResidents": "查看居民"
+    },
+    "loading": {
+      "district": "加载区域中...",
+      "notFound": "未找到区域"
+    },
+    "quiz": {
+      "prepare": "准备测试您的知识！",
+      "questions": "问题",
+      "secondsPerQuestion": "每题秒数",
+      "xpPerCorrect": "每答对一题的经验值"
+    },
+    "ranking": {
+      "districtPower": "区域力量",
+      "inRanking": "排名中",
+      "residents": "居民",
+      "averageXP": "平均经验值",
+      "victories": "胜利",
+      "winRate": "胜率"
+    },
+    "duels": {
+      "activeDuels": "活跃决斗",
+      "challenge": "挑战",
+      "participants": "参与者",
+      "average": "平均"
+    }
+  },
+  "store": {
+    "header": {
+      "title": "市场",
+      "subtitle": "头像、增强道具等等"
+    },
+    "premium": {
+      "title": "高级计划",
+      "subtitle": "加速您的进度",
+      "viewPlans": "查看计划",
+      "duels": "决斗",
+      "xpBoost": "经验值增强",
+      "beetzPerMonth": "Beetz/月"
+    },
+    "tabs": {
+      "avatars": "头像",
+      "skins": "皮肤",
+      "boosts": "增强",
+      "accessories": "配件",
+      "lives": "生命",
+      "beetz": "Beetz"
+    },
+    "loading": "加载市场中...",
+    "buttons": {
+      "owns": "拥有",
+      "buy": "购买",
+      "noBeetz": "没有Beetz",
+      "viewDetails": "查看详情"
+    },
+    "lives": {
+      "title": "生命与保护",
+      "subtitle": "保持您的连胜并继续游戏",
+      "marketplace": "生命市场"
+    },
+    "beetzPackages": {
+      "title": "Beetz套餐",
+      "subtitle": "通过Stripe用真钱购买Beetz"
+    },
+    "security": {
+      "title": "安全支付",
+      "subtitle": "通过Stripe处理，最大安全保障"
+    },
+    "error": {
+      "title": "错误",
+      "message": "无法加载商店"
+    },
+    "store": "商店",
+    "avatars": "头像",
+    "upgrades": "升级",
+    "buy": "购买",
+    "owned": "已拥有",
+    "loading": "商店加载中...",
+    "error": "错误",
+    "errorLoadingStore": "无法加载商店",
+    "purchaseError": "购买错误",
+    "processing": "处理中...",
+    "upgradeSuccessful": "购买成功！",
+    "insufficientFunds": "Beetz不足",
+    "alreadyOwned": "已拥有",
+    "levelRequired": "需要等级{{level}}",
+    "selectPaymentMethod": "选择支付方式",
+    "viewPlans": "查看计划",
+    "duels": "决斗",
+    "beetzPerMonth": "Beetz/月",
+    "accessories": "配件",
+    "lives": "生命",
+    "skins": "皮肤",
+    "boosts": "增强",
+    "livesProtection": "生命与保护",
+    "maintainStreak": "保持连胜并继续游戏",
+    "beetzPackages": "Beetz套餐",
+    "buyBeetzReal": "通过Stripe用真钱购买Beetz",
+    "basicPackage": "基础套餐",
+    "popularPackage": "热门套餐",
+    "premiumPackage": "高级套餐",
+    "supremePackage": "至尊套餐",
+    "buyBeetz": "购买Beetz",
+    "notEnoughBeetz": "您的Beetz不足。选择一个套餐继续：",
+    "securePayment": "安全支付",
+    "processedStripe": "通过Stripe处理，最高安全性",
+    "premiumPlans": "高级计划",
+    "accelerateProgress": "加速您的进度",
+    "xpBoost": "经验值增强",
+    "marketplaceLives": "生命市场",
+    "buyLivesKeepStreak": "购买生命保持连胜",
+    "savesStreak": "保存连胜",
+    "multipliesBTZ": "倍增BTZ",
+    "viewLives": "查看生命",
+    "streakProtection": "连胜保护",
+    "useLifeKeepStreak": "使用生命保持连胜活跃",
+    "keepMultipliers": "保持倍数",
+    "preserveBTZMultipliers": "保留您的活跃BTZ倍数",
+    "continueWithoutStop": "不停继续",
+    "dontLoseMomentum": "不要失去学习动力"
+  },
+  "profile": {
+    "userProfile": "用户资料",
+    "achievements": "成就",
+    "statistics": "统计",
+    "followersCount": "粉丝",
+    "followingCount": "关注中",
+    "completedLessons": "已完成课程",
+    "currentStreak": "当前连胜",
+    "publicPortfolios": "公开投资组合",
+    "memberSince": "成员自",
+    "activeAvatar": "活跃头像",
+    "message": "消息",
+    "anonymousUser": "匿名用户",
+    "header": {
+      "profile": "资料",
+      "settings": "设置"
+    },
+    "stats": {
+      "level": "等级",
+      "beetz": "Beetz",
+      "followers": "粉丝",
+      "following": "关注中",
+      "progress": "进度",
+      "lessonsCompleted": "已完成课程",
+      "of": "的"
+    },
+    "plans": {
+      "satoshiPro": "中本聪专业版",
+      "satoshiElite": "中本聪精英版"
+    },
+    "loading": "加载资料中...",
+    "notFound": "未找到用户",
+    "achievements": {
+      "tournamentsWon": "赢得的锦标赛",
+      "quizzesCompleted": "完成的测验",
+      "perfectScore": "完美分数",
+      "socialInteractions": "社交互动"
+    }
+  },
+  "subscription": {
+    "plans": "订阅计划",
+    "choosePlan": "选择您的计划",
+    "free": "免费",
+    "premium": "高级版",
+    "elite": "精英版",
+    "monthly": "月付",
+    "annually": "年付",
+    "subscribe": "订阅",
+    "benefits": "福利",
+    "compareBenefits": "比较福利"
+  },
+  "settings": {
+    "settings": "设置",
+    "account": "账户",
+    "notifications": "通知",
+    "privacy": "隐私",
+    "theme": "主题",
+    "language": "语言",
+    "personalInfo": "个人信息",
+    "nickname": "昵称",
+    "email": "邮箱",
+    "password": "密码",
+    "financialGoal": "财务目标",
+    "experience": "经验",
+    "soundEffects": "音效",
+    "darkMode": "暗黑模式",
+    "saveSettings": "保存设置",
+    "logout": "退出登录",
+    "pushNotifications": "推送通知",
+    "receiveNotifications": "接收应用通知",
+    "dailyReminder": "每日提醒",
+    "studyReminder": "每天学习提醒",
+    "interactionSounds": "交互和成就音效",
+    "darkInterface": "暗黑主题界面",
+    "aboutSatoshi": "关于中本聪",
+    "gameVersion": "金融游戏",
+    "header": {
+      "profile": "资料",
+      "settings": "设置"
+    },
+    "sections": {
+      "personalInfo": "个人信息",
+      "notifications": "通知",
+      "experience": "体验",
+      "account": "账户",
+      "aboutSatoshi": "关于中本聪"
+    },
+    "buttons": {
+      "saving": "保存中...",
+      "saveSettings": "💾 保存设置",
+      "logout": "🚪 登出"
+    },
+    "app": {
+      "version": "应用版本 1.0.0",
+      "description": "FinGame - 游戏化学习金融"
+    }
+  },
+  "missions": {
+    "dailyMissions": "每日任务",
+    "completed": "已完成",
+    "inProgress": "进行中",
+    "reward": "奖励",
+    "claim": "领取",
+    "dailyProgress": "每日进度",
+    "comboCompleted": "连击完成！+500经验值+1000 Beetz+稀有战利品箱！",
+    "special": "特殊",
+    "noMissionsAvailable": "目前没有可用任务",
+    "newMissionsSoon": "新任务即将出现！",
+    "adaptiveMissions": "自适应任务",
+    "personalizedFor": "为您个性化定制",
+    "focusArea": "重点领域",
+    "weaknessImprovement": "弱点改进",
+    "difficultyAdjusted": "难度已调整",
+    "streakBonus": "连击奖励",
+    "adaptiveRewards": "自适应奖励",
+    "intelligentNavigation": "智能导航",
+    "contextualHints": "上下文提示",
+    "performanceAnalytics": "性能分析",
+    "missionInsights": "任务洞察",
+    "optimalTiming": "最佳时机",
+    "categoryPreferences": "类别偏好",
+    "completionPatterns": "完成模式",
+    "suggestedFocusAreas": "建议重点领域"
+  },
+  "tournaments": {
+    "tournaments": "锦标赛",
+    "joinTournament": "加入锦标赛",
+    "upcoming": "即将开始",
+    "active": "进行中",
+    "finished": "已结束",
+    "epicTournaments": "史诗锦标赛",
+    "all": "全部",
+    "soon": "即将到来",
+    "prizeBeetz": "奖励Beetz",
+    "players": "玩家",
+    "timeRemaining": "剩余时间",
+    "participateNow": "立即参与",
+    "viewDetails": "查看详情",
+    "viewResults": "查看结果",
+    "noTournamentsFound": "未找到锦标赛",
+    "noTournamentsAvailable": "目前没有可用的锦标赛",
+    "noActiveTournaments": "目前没有进行中的锦标赛",
+    "noUpcomingTournaments": "目前没有即将开始的锦标赛",
+    "noFinishedTournaments": "目前没有已结束的锦标赛"
+  },
+  "duels": {
+    "duels": "决斗",
+    "challenge": "挑战",
+    "accept": "接受",
+    "decline": "拒绝",
+    "waiting": "等待中",
+    "financialDuel": "金融决斗",
+    "duelNow": "立即决斗",
+    "waitingForOpponent": "等待对手",
+    "startDuel": "开始",
+    "autoRedirectIn": "{{seconds}}秒后重定向",
+    "preparingDuel": "准备决斗中...",
+    "duelReady": "决斗准备就绪！"
+  },
+  "duelInviteNotification": {
+    "title": "新的决斗邀请！",
+    "subtitle": "{{challenger}} 向你发起了挑战",
+    "accept": "接受",
+    "decline": "拒绝",
+    "autoClose": "{{seconds}}秒后自动关闭",
+    "accepted": "决斗已接受！",
+    "startingDuel": "正在开始与{{challenger}}的决斗...",
+    "declined": "❌ 邀请已拒绝",
+    "inviteDeclined": "邀请已被拒绝",
+    "errorResponding": "无法回应邀请"
+  },
+  "levels": {
+    "levels": "等级",
+    "currentLevel": "当前等级",
+    "nextLevel": "下一等级",
+    "progress": "总体进度"
+  },
+  "gameMode": {
+    "title": "游戏模式",
+    "selectMode": "选择模式",
+    "chooseHow": "选择您想要的游戏方式",
+    "solo": "单人模式",
+    "duel": "决斗模式",
+    "tournament": "锦标赛",
+    "soloDescription": "独自游戏并提高技能",
+    "duelDescription": "挑战其他玩家",
+    "tournamentDescription": "参加锦标赛"
+  },
+  "findOpponent": {
+    "title": "寻找对手",
+    "searching": "正在寻找对手...",
+    "findPlayer": "寻找玩家",
+    "found": "找到对手！",
+    "cancel": "取消",
+    "preferences": "偏好设置",
+    "quickMatch": "快速匹配",
+    "searchPlayers": "搜索玩家",
+    "friendsList": "好友列表",
+    "quickStart": "快速开始",
+    "topicSelection": "主题选择",
+    "selectTopic": "选择一个主题",
+    "searchUsers": "搜索用户...",
+    "invitePlayer": "邀请玩家",
+    "levelRange": "等级范围",
+    "onlineNow": "现在在线",
+    "recentlyActive": "最近活跃",
+    "noResults": "未找到结果",
+    "searchForPlayers": "搜索要挑战的玩家",
+    "yourFriends": "您的好友",
+    "noFriends": "您还没有添加任何好友",
+    "addFriends": "添加好友以便轻松决斗",
+    "matchmakingPreferences": "匹配偏好",
+    "smartQueue": "智能队列",
+    "priorityInvites": "优先邀请",
+    "filteredInvites": "已筛选邀请",
+    "allInvites": "所有邀请",
+    "acceptAll": "全部接受",
+    "declineAll": "全部拒绝",
+    "noPendingInvites": "没有待处理的邀请",
+    "inviteQueueDescription": "当您收到决斗邀请时，它们将在此处显示",
+    "queueManager": "邀请队列",
+    "clickToRespond": "点击邀请立即回应"
+  },
+  "btz": {
+    "yieldedToday": "今日收益",
+    "nextYield": "下次收益",
+    "protectedBTZ": "受保护的BTZ",
+    "streak": "连胜",
+    "next": "下一个",
+    "days": "天",
+    "nextIn": "下次在"
+  },
+  "common": {
+    "loading": "加载中",
+    "accessDenied": "访问被拒绝",
+    "noSponsorAccess": "您没有任何赞助区域的管理访问权限",
+    "configureAccess": "要配置赞助商管理员访问权限，请前往",
+    "cancel": "取消",
+    "confirm": "确认",
+    "level": "等级"
+  },
+  "satoshiCity": {
+    "welcome": "欢迎来到金融未来之城。",
+    "instructions": {
+      "mobile": "点击区域来居住或探索。",
+      "desktop": "点击区域来探索知识。"
+    },
+    "badges": {
+      "activeDistricts": "7个活跃区域",
+      "neuralSystem": "神经系统激活"
+    },
+    "buttons": {
+      "3dDevelopment": "3D开发中"
+    },
+    "residence": {
+      "home": "家",
+      "current": "这是您当前的住所",
+      "liveHere": "在这里居住"
+    },
+    "modal": {
+      "liveIn": "居住在",
+      "confirmResidence": "您想在{{districtName}}区域建立您的住所吗？您将能够参与独家活动并代表这个区域。"
+    },
+    "transition": {
+      "leaving": "正在离开{{location}}",
+      "traveling": "正在前往",
+      "arriving": "正在到达{{location}}"
+    }
+  },
+  "social": {
+    "tabs": {
+      "feed": "动态",
+      "search": "搜索",
+      "challenges": "挑战",
+      "ranks": "排名",
+      "following": "关注中",
+      "chat": "聊天"
+    },
+    "placeholders": {
+      "shareOpinion": "分享您对市场的看法...",
+      "searchUsers": "通过昵称搜索用户..."
+    },
+    "buttons": {
+      "publish": "发布",
+      "publishing": "发布中...",
+      "share": "分享"
+    },
+    "messages": {
+      "beFirstToPost": "成为第一个发帖的人！",
+      "searchingUsers": "搜索用户中...",
+      "comingSoon": "即将推出"
+    },
+    "profile": {
+      "level": "等级",
+      "followers": "粉丝"
+    },
+    "chat": {
+      "typeMessage": "添加评论..."
+    },
+    "shareOpinion": "分享您的交易经验并与其他投资者建立联系"
+  },
+  "district": {
+    "selectDistrict": "选择一个区域",
+    "enterDistrict": "进入区域",
+    "residents": "居民",
+    "power": "力量",
+    "ranking": "排名",
+    "battles": "战斗",
+    "victories": "胜利",
+    "winRate": "胜率",
+    "powers": {
+      "title": "区域力量",
+      "average": "平均",
+      "monetary": "货币力量",
+      "tech": "科技力量",
+      "military": "军事力量",
+      "energy": "能源力量",
+      "commercial": "商业力量",
+      "social": "社会力量",
+      "monetaryDesc": "代表区域的财政实力和投资能力",
+      "techDesc": "创新和技术发展水平",
+      "militaryDesc": "防御能力和决斗策略",
+      "energyDesc": "可持续性和能源效率",
+      "commercialDesc": "市场实力和商业能力",
+      "socialDesc": "社会凝聚力和社区参与度",
+      "helpText": "力量通过特定行动增加：测验、决斗、任务和贡献",
+      "updated": "力量已更新！",
+      "updatedDesc": "区域通过您的行动获得了力量。",
+      "updateError": "更新力量时出错"
+    }
+  },
+  "store": {
+    "header": {
+      "marketplace": "商城",
+      "subtitle": "头像、增强道具等等"
+    },
+    "premium": {
+      "title": "高级计划",
+      "subtitle": "加速您的进度",
+      "viewPlans": "查看计划",
+      "duels": "决斗",
+      "xpBoost": "经验加成",
+      "beetzPerMonth": "Beetz/月"
+    },
+    "tabs": {
+      "avatars": "头像",
+      "skins": "皮肤",
+      "boosts": "增强",
+      "accessories": "配饰",
+      "lives": "生命",
+      "beetz": "Beetz"
+    },
+    "buttons": {
+      "owns": "拥有",
+      "buy": "购买",
+      "noBeetz": "没有Beetz",
+      "viewDetails": "查看详情"
+    },
+    "lives": {
+      "title": "生命与保护",
+      "subtitle": "保持连胜并继续游戏",
+      "marketplace": "生命商城"
+    },
+    "beetzPackages": {
+      "title": "Beetz套餐",
+      "subtitle": "通过Stripe用真钱购买Beetz"
+    },
+    "security": {
+      "title": "安全支付",
+      "subtitle": "通过Stripe处理，最大安全保障"
+    },
+    "loading": "加载商城中...",
+    "error": {
+      "title": "错误",
+      "message": "无法加载商店"
+    }
+  },
+  "auth": {
+    "title": {
+      "login": "进入游戏",
+      "signup": "进入游戏"
+    },
+    "description": {
+      "login": "进入中本聪城市，继续您的旅程",
+      "signup": "成为金融未来城市的公民"
+    },
+    "form": {
+      "nickname": "用户名",
+      "nicknamePlaceholder": "您希望如何被称呼？",
+      "email": "邮箱",
+      "emailPlaceholder": "您的@邮箱.com",
+      "password": "密码",
+      "passwordPlaceholder": "••••••••",
+      "passwordMinLength": "最少6个字符",
+      "resetEmail": "重置邮箱",
+      "resetEmailPlaceholder": "输入您的注册邮箱"
+    },
+    "buttons": {
+      "back": "返回",
+      "login": "进入游戏",
+      "signup": "成为公民",
+      "processing": "处理中...",
+      "sending": "发送中...",
+      "forgotPassword": "忘记密码",
+      "backToLogin": "← 返回登录",
+      "sendResetLink": "发送重置链接",
+      "resendConfirmation": "重新发送确认邮件",
+      "socialSeparator": "或继续使用",
+      "toggleLogin": "已经是公民？登录",
+      "toggleSignup": "城市新人？创建账户"
+    },
+    "messages": {
+      "loginError": "登录错误",
+      "invalidCredentials": "邮箱或密码错误。请检查您的凭据。",
+      "emailNotConfirmed": "邮箱未确认",
+      "emailNotConfirmedDesc": "请检查您的邮箱并在登录前点击确认链接。",
+      "loginSuccess": "登录成功！",
+      "loginSuccessDesc": "欢迎回到中本聪城市。",
+      "userExists": "用户已存在",
+      "userExistsDesc": "此账户已注册。请登录或使用其他邮箱。",
+      "signupError": "注册错误",
+      "signupSuccess": "注册完成！",
+      "signupSuccessDesc": "请检查您的邮箱以激活账户",
+      "welcomeNew": "欢迎！",
+      "welcomeNewDesc": "账户创建成功",
+      "unexpectedError": "意外错误",
+      "unexpectedErrorDesc": "出现问题。请重试。",
+      "socialLoginError": "社交登录错误",
+      "socialLoginErrorDesc": "社交登录出现问题。请重试。",
+      "emailRequired": "邮箱必填",
+      "emailRequiredDesc": "输入您的邮箱以接收重置链接。",
+      "emailSent": "邮件已发送！",
+      "emailSentDesc": "请检查您的邮箱以重置密码。",
+      "emailRequiredResend": "邮箱必填",
+      "emailRequiredResendDesc": "输入您的邮箱以重新发送确认。",
+      "emailResent": "邮件已重新发送！",
+      "emailResentDesc": "请检查您的邮箱以确认账户。",
+      "resetInstructions": "您将收到一封包含重置密码说明的邮件。",
+      "checkSpam": "也请检查您的垃圾邮件文件夹。"
+    },
+    "narrative": {
+      "loginText": "等待您的归来。",
+      "loginSubtext": "您的区域和成就已保存。",
+      "signupText": "欢迎来到金融未来",
+      "signupSubtext": "探索区域，赚取XP并掌握金融知识。",
+      "satoshiCity": "中本聪城市"
+    }
+  },
+  "welcome": {
+    "title": "金融的未来已经到来",
+    "badges": {
+      "neuralSystem": "神经系统",
+      "districts": "7个区域",
+      "multiplayer": "多人游戏"
+    },
+    "buttons": {
+      "enterGame": "进入游戏",
+      "createAccount": "创建账户"
+    }
+  },
+  "p2p": {
+    "title": "P2P转账",
+    "subtitle": "与其他用户发送和接收BTZ",
+    "tabs": {
+      "send": "发送",
+      "receive": "接收",
+      "history": "历史"
+    },
+    "send": {
+      "title": "发送BTZ",
+      "receiverLabel": "接收者ID",
+      "receiverPlaceholder": "粘贴ID或扫描二维码",
+      "amountLabel": "金额 (BTZ)",
+      "amountPlaceholder": "0",
+      "availableBalance": "可用余额: {{balance}} BTZ",
+      "sendButton": "发送BTZ",
+      "sending": "转账中..."
+    },
+    "receive": {
+      "title": "接收BTZ",
+      "qrInstruction": "分享此二维码以接收BTZ",
+      "yourId": "您的ID:",
+      "copyId": "ID已复制!",
+      "copyIdDesc": "用户ID已复制到剪贴板",
+      "copyError": "无法复制ID"
+    },
+    "qrScanner": {
+      "title": "二维码扫描器",
+      "instruction": "将二维码放在这里",
+      "startScan": "开始扫描",
+      "scanning": "扫描中...",
+      "cameraError": "访问摄像头出错。请检查权限。"
+    },
+    "history": {
+      "title": "转账历史",
+      "noTransfers": "未找到P2P转账",
+      "sentTo": "发送给 {{user}}",
+      "receivedFrom": "从 {{user}} 接收"
+    },
+    "notifications": {
+      "received": {
+        "title": "哇！您刚收到{{amount}} BTZ",
+        "body": "哇！您刚收到{{amount}} BTZ"
+      }
+    },
+    "errors": {
+      "insufficientBalance": "BTZ不足",
+      "insufficientBalanceDesc": "您需要 {{amount}} BTZ 来进行此转账",
+      "invalidAmount": "无效金额",
+      "invalidAmountDesc": "金额必须大于零",
+      "receiverNotFound": "未找到接收者",
+      "receiverNotFoundDesc": "此ID的用户不存在",
+      "selfTransfer": "无效转账",
+      "selfTransferDesc": "您不能转账给自己",
+      "transferFailed": "转账失败",
+      "transferFailedDesc": "处理转账失败"
+    },
+    "success": {
+      "transferComplete": "转账完成!",
+      "transferCompleteDesc": "{{amount}} BTZ 已发送给 {{receiver}}"
+    }
+  },
+  "kyc": {
+    "title": "身份验证",
+    "subtitle": "P2P转账需要验证",
+    "verifyIdentity": "验证身份",
+    "required": "需要KYC才能继续",
+    "pending": "验证进行中...",
+    "approved": "身份已验证",
+    "rejected": "验证被拒绝"
+  },
+  "profile": {
+    "header": {
+      "profile": "个人资料"
+    },
+    "userProfile": "用户资料",
+    "achievements": "成就",
+    "statistics": "统计",
+    "followersCount": "关注者",
+    "followingCount": "正在关注",
+    "postsCount": "帖子",
+    "follow": "关注",
+    "unfollow": "取消关注",
+    "message": "消息",
+    "anonymousUser": "匿名用户",
+    "evolution": {
+      "title": "用户进化",
+      "7days": "7天",
+      "30days": "30天",
+      "90days": "90天",
+      "1year": "1年",
+      "xpProgress": "经验进度",
+      "btzEarned": "获得的BTZ",
+      "streakHistory": "连击历史",
+      "quizzesCompleted": "完成的测验"
+    },
+    "gamification": {
+      "title": "游戏化系统",
+      "currentLevel": "当前等级",
+      "nextLevel": "下一等级",
+      "activeStreak": "活跃连击",
+      "todaysBtz": "今日BTZ",
+      "availableRewards": "可用奖励",
+      "dailyMissions": "每日任务",
+      "activeRewards": "活跃奖励",
+      "recentAchievements": "最近成就",
+      "multiplier": "倍数",
+      "rewards": "奖励"
+    },
+    "rewards": {
+      "btzMultiplier": "BTZ倍数",
+      "xpBoost": "经验加成",
+      "streakProtection": "连击保护",
+      "dailyBonus": "每日奖励",
+      "active": "活跃",
+      "inactive": "非活跃",
+      "timeRemaining": "剩余时间"
+    },
+    "stats": {
+      "xp": "经验",
+      "level": "等级",
+      "streak": "连击",
+      "lessons": "课程",
+      "of": "的",
+      "lessonsCompleted": "课程完成"
+    }
+  },
+  "feedback": {
+    "animations": {
+      "btzGained": "获得BTZ！",
+      "xpGained": "获得经验值！",
+      "streakMilestone": "连击里程碑！",
+      "levelUp": "升级！",
+      "achievement": "成就解锁！",
+      "perfectQuiz": "完美测验！",
+      "multiplierActive": "倍数激活",
+      "timeBonus": "时间奖励"
+    },
+    "celebrations": {
+      "streak7": "7天连击！",
+      "streak14": "2周连击！",
+      "streak30": "1个月坚持！",
+      "firstAchievement": "首个成就！",
+      "levelMilestone": "达到{{level}}级！",
+      "perfectScore": "完美分数！",
+      "rankingUp": "排名上升！"
+    },
+    "notifications": {
+      "streakProtected": "连击受保护！",
+      "powerUpActivated": "道具激活！",
+      "missionComplete": "任务完成！",
+      "dailyGoalReached": "每日目标达成！",
+      "weeklyRankingUp": "排名位置：{{position}}",
+      "multiplierExpiring": "倍数将在{{time}}后过期",
+      "achievementUnlocked": "成就解锁！",
+      "nextMilestone": "下个里程碑：{{milestone}}天"
+    },
+    "settings": {
+      "title": "反馈设置",
+      "animations": "动画",
+      "sound": "声音",
+      "haptics": "触觉反馈",
+      "celebrations": "庆祝效果",
+      "particleQuality": "特效质量",
+      "reducedMotion": "减少动画"
+    }
+  }
+}

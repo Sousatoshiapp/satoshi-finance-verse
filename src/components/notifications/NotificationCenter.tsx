@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Switch } from "@/components/shared/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -13,7 +13,8 @@ import {
   BookOpen, 
   Target,
   Clock,
-  MessageSquare
+  MessageSquare,
+  Coins
 } from "lucide-react";
 
 interface NotificationSetting {
@@ -69,6 +70,14 @@ export function NotificationCenter() {
       description: 'Alertas quando sua sequência estiver em risco',
       enabled: true,
       icon: <Clock className="h-4 w-4" />
+    },
+    {
+      id: 'p2p_transfers',
+      type: 'p2p_transfers',
+      title: 'Transferências P2P',
+      description: 'Notificações quando receber BTZ de outros usuários',
+      enabled: true,
+      icon: <Coins className="h-4 w-4" />
     },
     {
       id: 'social_updates',
@@ -143,18 +152,22 @@ export function NotificationCenter() {
           .single();
 
         if (profile) {
-          await supabase
-            .from('push_notification_settings')
-            .upsert({
-              user_id: profile.id,
-              endpoint: subscription.endpoint,
-              p256dh_key: subscription.getKey('p256dh') ? 
-                btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))) : null,
-              auth_key: subscription.getKey('auth') ? 
-                btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!))) : null,
-              enabled: true,
-              user_agent: navigator.userAgent
-            });
+          try {
+            await supabase
+              .from('push_notification_settings')
+              .upsert({
+                user_id: profile.id,
+                endpoint: subscription.endpoint,
+                p256dh_key: subscription.getKey('p256dh') ? 
+                  btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh')!))) : null,
+                auth_key: subscription.getKey('auth') ? 
+                  btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth')!))) : null,
+                enabled: true,
+                user_agent: navigator.userAgent
+              });
+          } catch (dbError) {
+            console.warn('Failed to save push subscription to database:', dbError);
+          }
         }
       }
     } catch (error) {
@@ -217,7 +230,14 @@ export function NotificationCenter() {
         .eq('user_id', profile.id)
         .single();
 
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error) {
+        if (error.code === 'PGRST116') {
+          console.log('No push notification settings found for user');
+        } else {
+          console.warn('Failed to load push notification settings:', error.message, error.code);
+        }
+        return;
+      }
 
       // Update settings based on database preferences
       if (data) {
@@ -225,7 +245,7 @@ export function NotificationCenter() {
         console.log('Loaded notification settings:', data);
       }
     } catch (error) {
-      console.error('Error loading notification settings:', error);
+      console.warn('Error loading notification settings:', error);
     }
   };
 
@@ -317,6 +337,7 @@ export function NotificationCenter() {
       case 'mission': return <Target className="h-4 w-4 text-green-500" />;
       case 'streak_warning': return <Clock className="h-4 w-4 text-red-500" />;
       case 'social': return <MessageSquare className="h-4 w-4 text-purple-500" />;
+      case 'p2p_received': return <Coins className="h-4 w-4 text-green-600" />;
       default: return <Bell className="h-4 w-4 text-muted-foreground" />;
     }
   };

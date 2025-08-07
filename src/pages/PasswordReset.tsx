@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 export default function PasswordReset() {
+  const { t } = useI18n();
   const [searchParams] = useSearchParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,11 +21,28 @@ export default function PasswordReset() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if we have the required tokens
-    const accessToken = searchParams.get('access_token');
+    // Check if we have the required tokens (new format or legacy format)
+    const accessToken = searchParams.get('access_token') || searchParams.get('token');
     const refreshToken = searchParams.get('refresh_token');
+    const type = searchParams.get('type');
     
-    if (!accessToken || !refreshToken) {
+    // For password reset, we might get different URL parameters
+    if (type !== 'recovery' && (!accessToken || !refreshToken)) {
+      // Check if this is a password reset link with different format
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const hashAccessToken = hashParams.get('access_token');
+      const hashRefreshToken = hashParams.get('refresh_token');
+      const hashType = hashParams.get('type');
+      
+      if (hashType === 'recovery' && hashAccessToken && hashRefreshToken) {
+        // Set the session with hash tokens
+        supabase.auth.setSession({
+          access_token: hashAccessToken,
+          refresh_token: hashRefreshToken
+        });
+        return;
+      }
+      
       toast({
         title: "Link inválido",
         description: "Este link de redefinição não é válido ou expirou.",
@@ -33,11 +52,13 @@ export default function PasswordReset() {
       return;
     }
 
-    // Set the session with the tokens
-    supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken
-    });
+    // Set the session with the tokens from URL params
+    if (accessToken && refreshToken) {
+      supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken
+      });
+    }
   }, [searchParams, navigate, toast]);
 
   const handlePasswordReset = async (e: React.FormEvent) => {
@@ -70,7 +91,7 @@ export default function PasswordReset() {
 
       if (error) {
         toast({
-          title: "Erro ao redefinir senha",
+          title: t('errors.error'),
           description: error.message,
           variant: "destructive"
         });
@@ -211,7 +232,7 @@ export default function PasswordReset() {
                   {loading ? (
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
-                      <span>Salvando...</span>
+                      <span>{t('admin.saving')}</span>
                     </div>
                   ) : (
                     'Salvar Nova Senha'

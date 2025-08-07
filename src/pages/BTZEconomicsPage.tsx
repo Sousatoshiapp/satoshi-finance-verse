@@ -1,6 +1,6 @@
 import BTZEconomics from "./BTZEconomics";
 import { BTZAchievements } from "@/components/btz-achievements";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
 
 export default function BTZEconomicsPage() {
   return (

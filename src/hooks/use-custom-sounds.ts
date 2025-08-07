@@ -53,29 +53,28 @@ function useCustomSounds() {
       '/quiz',
       '/solo-quiz', 
       '/enhanced-quiz',
-      '/duel-quiz',
       '/tournament-quiz',
       '/district-duel',
     ];
     
-    console.log('🔊 [SOM] Verificando rota:', location.pathname);
+    console.log('🔊 [SOM] Checking route:', location.pathname);
     const isQuiz = quizRoutes.some(route => location.pathname.startsWith(route));
-    console.log('🔊 [SOM] É rota de quiz?', isQuiz);
+    console.log('🔊 [SOM] Is quiz route?', isQuiz);
     
     return isQuiz;
   }, [location.pathname]);
   const playSound = useCallback((soundType: keyof typeof CUSTOM_SOUNDS, volume: number = 0.3) => {
-    console.log(`🔊 [SOM] Reproduzindo som: ${soundType} (volume: ${volume})`);
+    console.log(`🔊 [SOM] Playing sound: ${soundType} (volume: ${volume})`);
     try {
       const audio = new Audio(CUSTOM_SOUNDS[soundType]);
       audio.volume = volume;
       audio.play().then(() => {
-        console.log(`🔊 [SOM] Som ${soundType} reproduzido com sucesso`);
+        console.log(`🔊 [SOM] Sound ${soundType} played successfully`);
       }).catch((error) => {
-        console.error(`🔊 [SOM] Erro ao tocar som ${soundType}:`, error);
+        console.error(`🔊 [SOM] Error playing sound ${soundType}:`, error);
       });
     } catch (error) {
-      console.error(`🔊 [SOM] Erro ao criar áudio ${soundType}:`, error);
+      console.error(`🔊 [SOM] Error creating audio ${soundType}:`, error);
     }
   }, []);
 
@@ -119,31 +118,28 @@ function useCustomSounds() {
   }, [playSound]);
 
   const playCountdownSound = useCallback(() => {
-    console.log('🔊 [SOM] playCountdownSound chamado. Rota atual:', location.pathname);
+    console.log('🔊 [SOM] playCountdownSound called. Current route:', location.pathname);
     
-    // Só toca o countdown se estiver em uma rota de quiz
     if (!isQuizRoute()) {
-      console.log('🔊 [SOM] Não está em uma rota de quiz, som de countdown bloqueado');
+      console.log('🔊 [SOM] Not on a quiz route, countdown sound blocked');
       return;
     }
     
-    console.log('🔊 [SOM] Tentando tocar som de countdown');
+    console.log('🔊 [SOM] Attempting to play countdown sound');
     
-    // Se já existe uma instância tocando, não criar nova
     if (countdownAudioRef.current && !countdownAudioRef.current.paused) {
-      console.log('🔊 [SOM] Som de countdown já está tocando, ignorando nova chamada');
+      console.log('🔊 [SOM] Countdown sound already playing, ignoring new call');
       return;
     }
     
     try {
-      // Parar e limpar instância anterior se existir
       if (countdownAudioRef.current) {
         countdownAudioRef.current.pause();
         countdownAudioRef.current.currentTime = 0;
       }
       
       countdownAudioRef.current = new Audio('/audio/10sec-digital-countdown-sfx-319873.mp3');
-      console.log('🔊 [SOM] Arquivo de áudio criado:', countdownAudioRef.current.src);
+      console.log('🔊 [SOM] Audio file created:', countdownAudioRef.current.src);
       countdownAudioRef.current.volume = 0.15;
       
       // Deixar o som tocar naturalmente até o fim

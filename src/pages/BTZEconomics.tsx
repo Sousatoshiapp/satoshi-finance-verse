@@ -1,13 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Progress } from "@/components/shared/ui/progress";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
+import { useI18n } from "@/hooks/use-i18n";
 import { TrendingUp, Shield, Clock, Award, History, BarChart3 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 export default function BTZEconomics() {
+  const { t } = useI18n();
   const { analytics, loading, getStreakTier, formatTimeUntilYield } = useBTZEconomics();
 
   if (loading) {
@@ -31,7 +33,7 @@ export default function BTZEconomics() {
       <div className="p-6 max-w-7xl mx-auto">
         <Card>
           <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground">Erro ao carregar dados de BTZ</p>
+            <p className="text-muted-foreground">{t('errors.error')} ao carregar dados de BTZ</p>
           </CardContent>
         </Card>
       </div>

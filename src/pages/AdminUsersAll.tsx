@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Badge } from "@/components/shared/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Search, UserCheck, UserX, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface User {
   id: string;
@@ -22,6 +23,7 @@ interface User {
 }
 
 export default function AdminUsersAll() {
+  const { t } = useI18n();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +44,7 @@ export default function AdminUsersAll() {
       setUsers(data || []);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar usuários",
+        title: t('errors.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -152,7 +154,7 @@ export default function AdminUsersAll() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {filteredUsers.map((user) => (

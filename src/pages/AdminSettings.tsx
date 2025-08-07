@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
+import { Switch } from "@/components/shared/ui/switch";
+import { Textarea } from "@/components/shared/ui/textarea";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { LanguageSelector } from "@/components/admin/language-selector";
-import { BotAchievementManager } from "@/components/admin/bot-achievement-manager";
-import { SponsorAccessManager } from "@/components/admin/sponsor-access-manager";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { LanguageSelector } from "@/components/features/admin/language-selector";
+import { BotAchievementManager } from "@/components/features/admin/bot-achievement-manager";
+import { SponsorAccessManager } from "@/components/features/admin/sponsor-access-manager";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { 
   Settings, Save, RefreshCw, Database, Shield, 
   Bell, Gamepad2, DollarSign, Users 
@@ -58,6 +59,7 @@ export default function AdminSettings() {
   });
   
   const { toast } = useToast();
+  const { t } = useI18n();
 
   const handleSaveSettings = async () => {
     setLoading(true);
@@ -71,8 +73,8 @@ export default function AdminSettings() {
       });
     } catch (error) {
       toast({
-        title: "Erro ao Salvar",
-        description: "Falha ao atualizar configurações.",
+        title: t('errors.error'),
+        description: t('errors.failedToUpdate'),
         variant: "destructive"
       });
     } finally {
@@ -207,7 +209,7 @@ export default function AdminSettings() {
                   ) : (
                     <Save className="mr-2 h-4 w-4" />
                   )}
-                  {loading ? 'Salvando...' : 'Salvar Tudo'}
+                  {loading ? t('admin.saving') : t('admin.saveAll')}
                 </Button>
               </div>
 

@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { AdminStatsCards } from "@/components/admin/admin-stats-cards";
-import { AdminRecentActivity } from "@/components/admin/admin-recent-activity";
-import { AdminQuickActions } from "@/components/admin/admin-quick-actions";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { AdminStatsCards } from "@/components/features/admin/admin-stats-cards";
+import { AdminRecentActivity } from "@/components/features/admin/admin-recent-activity";
+import { AdminQuickActions } from "@/components/features/admin/admin-quick-actions";
 import { Users, Activity, TrendingUp, DollarSign, Trophy, MessageSquare, Bot, Shield } from "lucide-react";
 
 export default function AdminDashboard() {
+  const { t } = useI18n();
   const [stats, setStats] = useState({
     totalUsers: 0,
     activeUsers: 0,
@@ -63,7 +65,7 @@ export default function AdminDashboard() {
     } catch (error: any) {
       console.error('Error loading dashboard stats:', error);
       toast({
-        title: "Erro ao carregar estatísticas",
+        title: t('errors.errorLoading'),
         description: error.message,
         variant: "destructive",
       });

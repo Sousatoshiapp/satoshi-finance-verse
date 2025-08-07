@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Badge } from "@/components/shared/ui/badge";
+import { Button } from "@/components/shared/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Crown, Star, Users, Calendar, TrendingUp, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 export default function AdminFinanceSubscriptions() {
+  const { t } = useI18n();
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -30,7 +32,7 @@ export default function AdminFinanceSubscriptions() {
       setSubscriptions(profiles || []);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar assinaturas",
+        title: t('errors.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -59,7 +61,7 @@ export default function AdminFinanceSubscriptions() {
       loadSubscriptions();
     } catch (error: any) {
       toast({
-        title: "Erro ao cancelar assinatura",
+        title: t('errors.error'),
         description: error.message,
         variant: "destructive",
       });
@@ -154,7 +156,7 @@ export default function AdminFinanceSubscriptions() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {subscriptions.map((subscription) => (

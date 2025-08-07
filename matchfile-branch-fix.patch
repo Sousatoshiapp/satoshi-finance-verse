@@ -1,0 +1,28 @@
+From 2145a2ee7165e44d1eb2739994f95fa01fdef17c Mon Sep 17 00:00:00 2001
+From: Devin AI <158243242+devin-ai-integration[bot]@users.noreply.github.com>
+Date: Sat, 2 Aug 2025 03:11:14 +0000
+Subject: [PATCH] Configure Fastlane Match to use push-certificates-fix branch
+
+- Specify git_branch parameter to use push-certificates-fix where certificates are stored
+- This resolves GitHub Actions 'Invalid password passed via MATCH_PASSWORD' error
+- Certificates are available on push-certificates-fix branch with MATCH_PASSWORD: SatoshiMatch2025!Secure#iOS
+- GitHub Actions will now find certificates on the correct branch for decryption
+
+Co-Authored-By: Fabio Asdurian <fabio@sousatoshi.com>
+---
+ ios/fastlane/Matchfile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/ios/fastlane/Matchfile b/ios/fastlane/Matchfile
+index a06fc6d..74ab361 100644
+--- a/ios/fastlane/Matchfile
++++ b/ios/fastlane/Matchfile
+@@ -1,4 +1,5 @@
+ git_url("https://github.com/Sousatoshiapp/ios-certificates")
++git_branch("push-certificates-fix")
+ 
+ storage_mode("git")
+ 
+-- 
+2.34.1
+

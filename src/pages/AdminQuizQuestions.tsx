@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Badge } from "@/components/shared/ui/badge";
+import { Textarea } from "@/components/shared/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/shared/ui/dialog";
 import { HelpCircle, Plus, Edit, Trash2, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface Question {
   id: string;
@@ -25,6 +26,7 @@ interface Question {
 }
 
 export default function AdminQuizQuestions() {
+  const { t } = useI18n();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,7 +86,7 @@ export default function AdminQuizQuestions() {
       setQuestions(mockQuestions);
     } catch (error: any) {
       toast({
-        title: "Erro ao carregar questões",
+        title: t('errors.error') + " ao carregar questões",
         description: error.message,
         variant: "destructive",
       });
@@ -117,7 +119,7 @@ export default function AdminQuizQuestions() {
       resetForm();
     } catch (error: any) {
       toast({
-        title: "Erro ao salvar questão",
+        title: t('errors.error') + " ao salvar questão",
         description: error.message,
         variant: "destructive",
       });
@@ -133,7 +135,7 @@ export default function AdminQuizQuestions() {
       });
     } catch (error: any) {
       toast({
-        title: "Erro ao remover questão",
+        title: t('errors.error') + " ao remover questão",
         description: error.message,
         variant: "destructive",
       });
@@ -386,7 +388,7 @@ export default function AdminQuizQuestions() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">Carregando...</div>
+                    <div className="text-center py-8">{t('common.loading')}...</div>
                   ) : (
                     <div className="space-y-4">
                       {filteredQuestions.map((question) => (

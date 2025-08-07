@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Button } from "@/components/shared/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Progress } from "@/components/shared/ui/progress";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Clock, Trophy } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
 
 interface Question {
   id: string;
@@ -25,6 +26,7 @@ interface District {
 export default function DistrictQuiz() {
   const { districtId } = useParams();
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [district, setDistrict] = useState<District | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -183,9 +185,9 @@ export default function DistrictQuiz() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Quiz não disponível</h1>
+          <h1 className="text-2xl font-bold mb-4">{t('errors.quizNotAvailable')}</h1>
           <Button onClick={() => navigate(`/satoshi-city/district/${districtId}`)}>
-            Voltar ao Distrito
+            {t('districtQuiz.backToDistrict')}
           </Button>
         </div>
       </div>
@@ -202,7 +204,7 @@ export default function DistrictQuiz() {
           className="text-gray-300 hover:text-white"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Voltar ao Distrito
+          {t('districtQuiz.backToDistrict')}
         </Button>
       </div>
 
@@ -215,22 +217,22 @@ export default function DistrictQuiz() {
                   Quiz: {district.name}
                 </CardTitle>
                 <p className="text-gray-300">
-                  Prepare-se para testar seus conhecimentos!
+                  {t('districtQuiz.prepareToTest')}
                 </p>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="text-gray-300">
-                    <p>• {questions.length} perguntas</p>
-                    <p>• 30 segundos por pergunta</p>
-                    <p>• 10 XP por resposta correta</p>
+                    <p>• {questions.length} {t('districtQuiz.questions')}</p>
+                    <p>• 30 {t('districtQuiz.secondsPerQuestion')}</p>
+                    <p>• 10 {t('districtQuiz.xpPerCorrect')}</p>
                   </div>
                   <Button 
                     onClick={startQuiz}
                     className="w-full text-black font-bold text-lg py-6"
                     style={{ backgroundColor: district.color_primary }}
                   >
-                    Iniciar Quiz
+                    {t('districtQuiz.startQuiz')}
                   </Button>
                 </div>
               </CardContent>
@@ -244,7 +246,7 @@ export default function DistrictQuiz() {
             <div className="mb-6">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-300">
-                  Pergunta {currentQuestion + 1} de {questions.length}
+                  {t('districtQuiz.questionXofY', { current: currentQuestion + 1, total: questions.length })}
                 </span>
                 <div className="flex items-center text-gray-300">
                   <Clock className="mr-1 h-4 w-4" />
@@ -289,7 +291,7 @@ export default function DistrictQuiz() {
                   className="w-full mt-6 text-black font-bold"
                   style={{ backgroundColor: district.color_primary }}
                 >
-                  {currentQuestion + 1 === questions.length ? 'Finalizar' : 'Próxima'}
+                  {currentQuestion + 1 === questions.length ? t('districtQuiz.finish') : t('districtQuiz.next')}
                 </Button>
               </CardContent>
             </Card>
@@ -304,7 +306,7 @@ export default function DistrictQuiz() {
                   <Trophy className="h-16 w-16" style={{ color: district.color_primary }} />
                 </div>
                 <CardTitle className="text-white text-3xl">
-                  Quiz Concluído!
+                  {t('districtQuiz.quizCompleted')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -314,12 +316,12 @@ export default function DistrictQuiz() {
                       {score}/{questions.length}
                     </p>
                     <p className="text-gray-300">
-                      {Math.round((score / questions.length) * 100)}% de precisão
+                      {Math.round((score / questions.length) * 100)}% {t('districtQuiz.accuracy')}
                     </p>
                   </div>
 
                   <div className="text-gray-300">
-                    <p>XP Ganho: <span style={{ color: district.color_primary }}>+{score * 10}</span></p>
+                    <p>{t('districtQuiz.xpGained')}: <span style={{ color: district.color_primary }}>+{score * 10}</span></p>
                   </div>
 
                   <div className="space-y-3">
@@ -328,7 +330,7 @@ export default function DistrictQuiz() {
                       className="w-full text-black font-bold"
                       style={{ backgroundColor: district.color_primary }}
                     >
-                      Voltar ao Distrito
+                      {t('districtQuiz.backToDistrict')}
                     </Button>
                     <Button 
                       variant="outline"
@@ -342,7 +344,7 @@ export default function DistrictQuiz() {
                       }}
                       className="w-full text-gray-300 border-gray-600"
                     >
-                      Tentar Novamente
+                      {t('districtQuiz.tryAgain')}
                     </Button>
                   </div>
                 </div>

@@ -1,8 +1,8 @@
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Badge } from "@/components/shared/ui/badge";
 import { Users, DollarSign, Share2, TrendingUp, Copy, Gift } from "lucide-react";
 
 export default function AffiliateProgram() {

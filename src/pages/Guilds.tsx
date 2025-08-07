@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { FloatingNavbar } from "@/components/floating-navbar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Badge } from "@/components/shared/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/shared/ui/avatar";
+import { Progress } from "@/components/shared/ui/progress";
+import { Input } from "@/components/shared/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/shared/ui/dialog";
+import { Textarea } from "@/components/shared/ui/textarea";
+import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { Users, Crown, Trophy, Shield, Search, Plus, ArrowLeft, MessageCircle, Target, Star, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AvatarDisplayUniversal } from "@/components/avatar-display-universal";
+import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 
 interface Guild {
   id: string;
@@ -108,7 +108,9 @@ export default function Guilds() {
           *,
           profiles!guilds_leader_id_fkey(
             nickname,
-            avatars(name, image_url)
+            user_avatars (
+              avatars(name, image_url)
+            )
           ),
           guild_members!guild_members_guild_id_fkey(
             role,

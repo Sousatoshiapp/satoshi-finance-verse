@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Badge } from "@/components/shared/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
 import { 
   Users, Search, MoreHorizontal, Crown, Shield, 
   Trash2, Edit, Eye, DollarSign, Trophy, Calendar
@@ -18,7 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/shared/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/shared/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +35,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/shared/ui/dialog";
 
 interface User {
   id: string;
@@ -51,6 +52,7 @@ interface User {
 }
 
 export default function AdminUsers() {
+  const { t } = useI18n();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +80,7 @@ export default function AdminUsers() {
     } catch (error: any) {
       console.error('Error loading users:', error);
       toast({
-        title: "Erro ao carregar usuários",
+        title: t('errors.error') + " ao carregar usuários",
         description: error.message,
         variant: "destructive",
       });
@@ -109,7 +111,7 @@ export default function AdminUsers() {
     } catch (error: any) {
       console.error('Error deleting user:', error);
       toast({
-        title: "Erro ao deletar usuário",
+        title: t('errors.error') + " ao deletar usuário",
         description: error.message,
         variant: "destructive",
       });
@@ -139,7 +141,7 @@ export default function AdminUsers() {
     } catch (error: any) {
       console.error('Error updating user:', error);
       toast({
-        title: "Erro ao atualizar usuário",
+        title: t('errors.error') + " ao atualizar usuário",
         description: error.message,
         variant: "destructive",
       });
@@ -191,7 +193,7 @@ export default function AdminUsers() {
                 </p>
               </div>
               <Button onClick={loadUsers} disabled={loading}>
-                {loading ? "Carregando..." : "Atualizar"}
+                {loading ? t('common.loading') + "..." : "Atualizar"}
               </Button>
             </div>
 

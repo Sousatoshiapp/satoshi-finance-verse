@@ -85,14 +85,14 @@ export function useUnifiedSRS() {
 
       console.log('🔍 NOVA LÓGICA DE QUESTÕES - Evitando repetições recentes');
 
-      // 1. Buscar questões respondidas recentemente (últimas 10 - reduzido de 20)
+      // 1. Buscar questões respondidas recentemente (últimas 50 - aumentado para evitar repetições)
       const { data: recentAnswers } = await supabase
         .from('user_question_progress')
         .select('question_id, last_reviewed')
         .eq('user_id', profile.id)
         .not('last_reviewed', 'is', null)
         .order('last_reviewed', { ascending: false })
-        .limit(10);
+        .limit(50);
 
       const recentQuestionIds = recentAnswers?.map(r => r.question_id) || [];
       const allExcludeIds = [...excludeIds, ...recentQuestionIds];
@@ -141,7 +141,7 @@ export function useUnifiedSRS() {
         return formatQuestions(selectedQuestions);
       }
 
-      // 4. Complementar com questões SRS antigas (>7 dias)
+      // 4. Complementar com questões SRS antigas (>3 dias - reduzido para melhor rotação)
       const remainingCount = limit - neverAnsweredQuestions.length;
       
       let oldQuestionsQuery = supabase
@@ -156,7 +156,7 @@ export function useUnifiedSRS() {
         .in('category', FINANCE_CATEGORIES)
         .eq('user_question_progress.user_id', profile.id)
         .lt('user_question_progress.last_reviewed', 
-            new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+            new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString());
 
       // Só aplicar filtro de exclusão se tiver IDs para excluir
       if (allExcludeIds.length > 0) {

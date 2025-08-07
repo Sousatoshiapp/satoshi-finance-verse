@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { YIELD_CONFIG, calculateDailyYield } from '@/config/yield-config';
 
 interface BTZAnalytics {
   current: {
@@ -174,7 +175,7 @@ export function useBTZEconomics() {
       : 0;
   };
 
-  // Get streak tier
+  // Get streak tier with corrected logic
   const getStreakTier = () => {
     if (!analytics) return 'Iniciante';
     const days = analytics.current.consecutive_login_days;
@@ -186,6 +187,41 @@ export function useBTZEconomics() {
     return 'Iniciante';
   };
 
+  // Calculate corrected next yield using centralized config
+  const getCorrectNextYield = () => {
+    if (!analytics) return 0;
+    
+    const result = calculateDailyYield(
+      analytics.current.total_btz,
+      analytics.current.consecutive_login_days,
+      analytics.bonuses.subscription_tier as 'free' | 'pro' | 'elite'
+    );
+    
+    return result.appliedYield;
+  };
+
+  // Validate if current data is consistent
+  const validateYieldData = () => {
+    if (!analytics) return { isValid: true, issues: [] };
+    
+    const issues = [];
+    
+    // Check if next yield is above cap
+    if (analytics.current.next_yield_amount > YIELD_CONFIG.ABSOLUTE_DAILY_CAP) {
+      issues.push(`Next yield (${analytics.current.next_yield_amount}) exceeds daily cap (${YIELD_CONFIG.ABSOLUTE_DAILY_CAP})`);
+    }
+    
+    // Check if yield rate is suspiciously high
+    if (analytics.current.current_yield_rate > 0.01) {
+      issues.push(`Yield rate (${(analytics.current.current_yield_rate * 100).toFixed(2)}%) is abnormally high`);
+    }
+    
+    return {
+      isValid: issues.length === 0,
+      issues
+    };
+  };
+
   return {
     analytics,
     loading,
@@ -194,6 +230,9 @@ export function useBTZEconomics() {
     loadAnalytics,
     formatTimeUntilYield,
     getProtectionPercentage,
-    getStreakTier
+    getStreakTier,
+    getCorrectNextYield,
+    validateYieldData,
+    YIELD_CONFIG
   };
 }
