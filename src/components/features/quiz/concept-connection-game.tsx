@@ -180,158 +180,157 @@ export function ConceptConnectionGame({ theme, onComplete }: ConceptConnectionGa
 
   if (gameStatus === 'completed' || gameStatus === 'timeout') {
     return (
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2">
-            <Trophy className="h-6 w-6 text-yellow-500" />
-            Sessão {gameStatus === 'completed' ? 'Completada' : 'Finalizada'}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {results && (
-            <div className="text-center space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-primary/10 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-primary">{results.btz_earned.toFixed(2)}</div>
-                  <div className="text-sm text-muted-foreground">BTZ Ganhos</div>
+      <div className="h-screen flex items-center justify-center p-4">
+        <Card className="w-full max-w-2xl">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="flex items-center justify-center gap-2 text-lg">
+              <Trophy className="h-5 w-5 text-yellow-500" />
+              Sessão {gameStatus === 'completed' ? 'Completada' : 'Finalizada'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {results && (
+              <>
+                {/* Estatísticas em linha */}
+                <div className="flex gap-3 justify-center">
+                  <div className="bg-primary/10 p-3 rounded-lg text-center flex-1">
+                    <div className="text-lg font-bold text-primary">{results.btz_earned.toFixed(2)}</div>
+                    <div className="text-xs text-muted-foreground">BTZ</div>
+                  </div>
+                  <div className="bg-blue-100 p-3 rounded-lg text-center flex-1">
+                    <div className="text-lg font-bold text-blue-600">{results.xp_earned}</div>
+                    <div className="text-xs text-muted-foreground">XP</div>
+                  </div>
+                  <div className="bg-green-100 p-3 rounded-lg text-center flex-1">
+                    <div className="text-lg font-bold text-green-800">{(results.accuracy * 100).toFixed(1)}%</div>
+                    <div className="text-xs text-muted-foreground">Precisão</div>
+                  </div>
                 </div>
-                <div className="bg-blue-100 p-4 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{results.xp_earned}</div>
-                  <div className="text-sm text-muted-foreground">XP Ganhos</div>
-                </div>
-              </div>
-              
-              <div className="bg-green-100 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-green-800">
-                  Precisão: {(results.accuracy * 100).toFixed(1)}%
-                </div>
-              </div>
 
-              {currentQuestion.explanation && (
-                <div className="bg-blue-50 p-4 rounded-lg text-left">
-                  <h4 className="font-semibold text-blue-800 mb-2">💡 Explicação:</h4>
-                  <p className="text-blue-700">{currentQuestion.explanation}</p>
-                </div>
-              )}
+                {/* Explicação compacta */}
+                {currentQuestion.explanation && (
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <h4 className="font-semibold text-blue-800 mb-1 text-sm">💡 Explicação:</h4>
+                    <p className="text-blue-700 text-sm">{currentQuestion.explanation}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Botões compactos */}
+            <div className="flex gap-3 pt-2">
+              <Button onClick={initializeGame} variant="outline" className="flex-1">
+                Jogar Novamente
+              </Button>
+              <Button onClick={() => navigate('/game-mode')} className="flex-1">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Menu
+              </Button>
             </div>
-          )}
-
-          <div className="flex gap-4 justify-center">
-            <Button onClick={initializeGame} variant="outline">
-              Jogar Novamente
-            </Button>
-            <Button onClick={() => navigate('/game-mode')}>
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar ao Menu
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="w-full max-w-6xl mx-auto space-y-6">
-        {/* Header com Timer */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Timer className="h-5 w-5" />
-                <span className="font-mono text-lg">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
-              </div>
-              <div className="text-right">
-                <div className="text-sm text-muted-foreground">Conecte os conceitos</div>
-                <div className="font-semibold">{connections.length}/{currentQuestion.left_concepts.length}</div>
+      <div className="h-screen flex flex-col overflow-hidden">
+        {/* Header Compacto Fixo */}
+        <div className="flex-shrink-0 bg-background/95 backdrop-blur-sm border-b p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Timer className="h-4 w-4" />
+              <span className="font-mono text-sm">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+            </div>
+            <div className="text-right">
+              <div className="text-xs text-muted-foreground">Conecte os conceitos</div>
+              <div className="text-sm font-semibold">{connections.length}/{currentQuestion.left_concepts.length}</div>
+            </div>
+          </div>
+          <Progress value={(connections.length / currentQuestion.left_concepts.length) * 100} className="h-2" />
+        </div>
+
+        {/* Área do Jogo Responsiva */}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 p-3">
+            {/* Conceitos da Esquerda */}
+            <div className="flex flex-col min-h-0">
+              <h3 className="text-sm font-semibold mb-2 text-center">Conceitos</h3>
+              <div className="flex-1 overflow-y-auto space-y-2 pr-2">
+                {currentQuestion.left_concepts.map((concept, index) => {
+                  const connection = connections.find(c => c.leftConcept === concept);
+                  return (
+                    <Droppable key={`left-${index}`} droppableId={`left-${index}`}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className={`p-3 border-2 border-dashed rounded-lg min-h-[50px] flex flex-col gap-2 transition-colors ${
+                            snapshot.isDraggingOver ? 'border-primary bg-primary/5' : 'border-muted'
+                          }`}
+                        >
+                          <span className="font-medium text-sm">{concept}</span>
+                          {connection && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs bg-muted px-2 py-1 rounded flex-1 truncate">
+                                {connection.rightConcept}
+                              </span>
+                              {connection.isCorrect ? (
+                                <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                              ) : (
+                                <XCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                              )}
+                            </div>
+                          )}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  );
+                })}
               </div>
             </div>
-            <Progress value={(connections.length / currentQuestion.left_concepts.length) * 100} className="mt-2" />
-          </CardContent>
-        </Card>
 
-        {/* Área do Jogo */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Conceitos da Esquerda */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Conceitos</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {currentQuestion.left_concepts.map((concept, index) => {
-                const connection = connections.find(c => c.leftConcept === concept);
-                return (
-                  <Droppable key={`left-${index}`} droppableId={`left-${index}`}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={`p-4 border-2 border-dashed rounded-lg min-h-[60px] flex items-center justify-between transition-colors ${
-                          snapshot.isDraggingOver ? 'border-primary bg-primary/5' : 'border-muted'
-                        }`}
-                      >
-                        <span className="font-medium">{concept}</span>
-                        {connection && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm bg-muted px-2 py-1 rounded">
-                              {connection.rightConcept}
-                            </span>
-                            {connection.isCorrect ? (
-                              <CheckCircle className="h-5 w-5 text-green-500" />
-                            ) : (
-                              <XCircle className="h-5 w-5 text-red-500" />
-                            )}
-                          </div>
-                        )}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                );
-              })}
-            </CardContent>
-          </Card>
+            {/* Seta Visual - Apenas Desktop */}
+            <div className="hidden lg:flex items-center justify-center">
+              <div className="text-2xl text-muted-foreground">→</div>
+            </div>
 
-          {/* Seta Visual */}
-          <div className="hidden lg:flex items-center justify-center">
-            <div className="text-4xl text-muted-foreground">→</div>
+            {/* Definições Disponíveis */}
+            <div className="flex flex-col min-h-0">
+              <h3 className="text-sm font-semibold mb-2 text-center">Definições</h3>
+              <div className="flex-1 overflow-y-auto">
+                <Droppable droppableId="available">
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="space-y-2 pr-2"
+                    >
+                      {availableRightConcepts.map((concept, index) => (
+                        <Draggable key={concept} draggableId={concept} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`p-3 bg-card border rounded-lg cursor-move transition-all text-sm ${
+                                snapshot.isDragging ? 'shadow-lg scale-105 z-50' : 'hover:shadow-md'
+                              }`}
+                            >
+                              {concept}
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            </div>
           </div>
-
-          {/* Conceitos Disponíveis */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Definições Disponíveis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Droppable droppableId="available">
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className="space-y-2 min-h-[400px]"
-                  >
-                    {availableRightConcepts.map((concept, index) => (
-                      <Draggable key={concept} draggableId={concept} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`p-3 bg-card border rounded-lg cursor-move transition-all ${
-                              snapshot.isDragging ? 'shadow-lg scale-105' : 'hover:shadow-md'
-                            }`}
-                          >
-                            {concept}
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </DragDropContext>

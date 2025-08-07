@@ -7,10 +7,8 @@ export default function ConceptConnectionsPage() {
   const theme = searchParams.get('theme') || 'basic_finance';
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <ConceptConnectionGame theme={theme} />
-      </div>
+    <div className="h-screen bg-background overflow-hidden">
+      <ConceptConnectionGame theme={theme} />
     </div>
   );
 }
