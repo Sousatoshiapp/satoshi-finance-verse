@@ -4114,6 +4114,7 @@ export type Database = {
       }
       quiz_questions: {
         Row: {
+          approval_status: string | null
           approved_by: string | null
           author_notes: string | null
           avg_response_time: number | null
@@ -4145,6 +4146,7 @@ export type Database = {
           version: number | null
         }
         Insert: {
+          approval_status?: string | null
           approved_by?: string | null
           author_notes?: string | null
           avg_response_time?: number | null
@@ -4176,6 +4178,7 @@ export type Database = {
           version?: number | null
         }
         Update: {
+          approval_status?: string | null
           approved_by?: string | null
           author_notes?: string | null
           avg_response_time?: number | null
@@ -7589,6 +7592,7 @@ export type Database = {
     }
     Enums: {
       admin_role: "super_admin" | "admin" | "moderator"
+      approval_status_type: "pending" | "approved" | "rejected"
       combo_type:
         | "perfect_streak"
         | "speed_demon"
@@ -7766,6 +7770,7 @@ export const Constants = {
   public: {
     Enums: {
       admin_role: ["super_admin", "admin", "moderator"],
+      approval_status_type: ["pending", "approved", "rejected"],
       combo_type: [
         "perfect_streak",
         "speed_demon",

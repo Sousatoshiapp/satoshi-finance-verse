@@ -11,6 +11,7 @@ import { QuestionPreviewModal } from "@/components/features/quiz/question-previe
 import { QuizAnalyticsDashboard } from "@/components/features/quiz/quiz-analytics-dashboard";
 import { QuizQualityManager } from "@/components/features/quiz/quiz-quality-manager";
 import { StagedQuestionGenerator } from "@/components/features/quiz/staged-question-generator";
+import { DuplicateDetectionDashboard } from "@/components/features/quiz/duplicate-detection-dashboard";
 
 export function GenerateQuestionsButton() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -122,10 +123,11 @@ export function GenerateQuestionsButton() {
   return (
     <div className="w-full max-w-6xl space-y-6">
       <Tabs defaultValue="staged" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="staged">Lotes</TabsTrigger>
           <TabsTrigger value="generator">Gerador</TabsTrigger>
           <TabsTrigger value="quality">Qualidade</TabsTrigger>
+          <TabsTrigger value="duplicates">Duplicatas</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="preview">Preview</TabsTrigger>
         </TabsList>
@@ -245,6 +247,10 @@ export function GenerateQuestionsButton() {
 
         <TabsContent value="quality">
           <QuizQualityManager onUpdate={handleGetStats} />
+        </TabsContent>
+
+        <TabsContent value="duplicates">
+          <DuplicateDetectionDashboard />
         </TabsContent>
 
         <TabsContent value="analytics">
