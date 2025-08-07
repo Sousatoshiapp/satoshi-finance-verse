@@ -88,7 +88,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
       <DialogContent className="max-w-md max-h-[85vh] overflow-hidden">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold text-center">
-            Escolha seu Tema de Quiz
+            Níveis
           </DialogTitle>
         </DialogHeader>
 
