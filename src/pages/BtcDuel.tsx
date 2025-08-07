@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { BtcBetSelector } from "@/components/features/duels/btc/BtcBetSelector";
 import { BtcMatchmaking } from "@/components/features/duels/btc/BtcMatchmaking";
 import { BtcDuelInterface } from "@/components/features/duels/btc/BtcDuelInterface";
+import { BtcTutorialModal } from "@/components/features/duels/btc/BtcTutorialModal";
 import { useBtcDuel } from "@/hooks/use-btc-duel";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { useBtcTutorial } from "@/hooks/use-btc-tutorial";
 
 type DuelPhase = 'betting' | 'matchmaking' | 'dueling' | 'completed';
 
@@ -19,6 +21,7 @@ export default function BtcDuel() {
   
   const { createDuel } = useBtcDuel();
   const { data: dashboardData } = useDashboardData();
+  const { showTutorial, markTutorialAsSeen } = useBtcTutorial();
 
   const userPoints = dashboardData?.profile?.points || 0;
 
@@ -127,6 +130,12 @@ export default function BtcDuel() {
       <div className="max-w-md mx-auto px-4 py-6">
         {renderPhase()}
       </div>
+
+      {/* Tutorial Modal */}
+      <BtcTutorialModal 
+        open={showTutorial} 
+        onClose={markTutorialAsSeen} 
+      />
     </div>
   );
 }

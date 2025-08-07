@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
-import { Coins, TrendingUp, Timer } from "lucide-react";
+import { Coins, TrendingUp } from "lucide-react";
 
 interface BtcBetSelectorProps {
   onBetSelected: (amount: number) => void;
@@ -33,37 +33,6 @@ export function BtcBetSelector({ onBetSelected, isLoading = false, userPoints }:
         </p>
       </div>
 
-      {/* Rules card */}
-      <Card className="border-orange-500/20 bg-gradient-to-br from-background to-orange-500/5">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Timer className="h-5 w-5 text-orange-500" />
-            Como Funciona
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          <div className="flex items-start gap-2">
-            <span className="text-orange-500 font-bold">1.</span>
-            <span>Escolha o valor da aposta (5-50 BTZ)</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="text-orange-500 font-bold">2.</span>
-            <span>Sistema encontra um oponente com a mesma aposta</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="text-orange-500 font-bold">3.</span>
-            <span>Ambos escolhem UP ou DOWN em 30 segundos</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="text-orange-500 font-bold">4.</span>
-            <span>Aguardem 5 minutos para ver quem acertou</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <span className="text-orange-500 font-bold">5.</span>
-            <span>Vencedor leva tudo (menos taxa de 5%)</span>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Bet amount selection */}
       <Card>
