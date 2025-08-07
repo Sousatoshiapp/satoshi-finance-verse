@@ -337,7 +337,6 @@ export default function Dashboard() {
             
             {/* User information on the right */}
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-foreground truncate mb-1">{userNickname}</h2>
               <p className="text-sm text-muted-foreground mb-3">{t('common.level')} {userStats.level}</p>
               
               {/* Compact Progress Bar */}
