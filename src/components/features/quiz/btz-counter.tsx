@@ -17,7 +17,13 @@ type AnimationState = 'IDLE' | 'ANIMATING' | 'COMPLETE';
 export function BTZCounter({ className = "" }: BTZCounterProps) {
   const navigate = useNavigate();
   const { points: currentBTZ, isLoading } = useRealtimePoints();
-  const { analytics, formatTimeUntilYield, getProtectionPercentage } = useBTZEconomics();
+  const { 
+    analytics, 
+    formatTimeUntilYield, 
+    getProtectionPercentage, 
+    getCorrectNextYield,
+    validateYieldData 
+  } = useBTZEconomics();
   const { t } = useI18n();
 
   const [displayBTZ, setDisplayBTZ] = useState(0);
@@ -198,7 +204,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <span>{t('btz.nextYield')}</span>
                 </div>
                 <span className="font-mono text-[#adff2f]">
-                  +{formatBTZ(analytics.current.next_yield_amount)} BTZ
+                  +{formatBTZ(getCorrectNextYield())} BTZ
                 </span>
               </div>
               
@@ -220,7 +226,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <span>{t('btz.streak')}</span>
                 </div>
                 <span className="font-mono text-orange-500">
-                  {analytics.current.consecutive_login_days} {t('btz.days')} (+{(analytics.bonuses.streak_bonus * 100).toFixed(1)}%)
+                  {analytics.current.consecutive_login_days} {t('btz.days')} (+{(analytics.bonuses.streak_bonus * 100).toFixed(2)}%)
                 </span>
               </div>
               

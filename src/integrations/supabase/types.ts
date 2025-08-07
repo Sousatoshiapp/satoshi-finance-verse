@@ -7156,6 +7156,14 @@ export type Database = {
         Args: { event_type: string; user_id: string; event_data?: Json }
         Returns: undefined
       }
+      monitor_yield_anomalies: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          profile_id: string
+          yield_amount: number
+          issue_type: string
+        }[]
+      }
       open_loot_box: {
         Args: { profile_id: string; user_loot_box_id: string }
         Returns: {
