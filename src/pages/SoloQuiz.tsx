@@ -9,6 +9,8 @@ export default function SoloQuiz() {
   const navigate = useNavigate();
   const theme = searchParams.get('theme');
 
+  const generate = searchParams.get('generate');
+
   useEffect(() => {
     // Se não há tema selecionado E não é geração, redirecionar para seleção
     if (!theme && searchParams.get('generate') !== 'true') {
