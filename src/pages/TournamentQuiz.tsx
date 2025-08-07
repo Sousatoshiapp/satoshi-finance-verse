@@ -6,6 +6,7 @@ import { ProgressBar } from "@/components/shared/ui/progress-bar";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Settings, Trophy, Users, Crown, X } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/shared/ui/alert-dialog";
+import { OptimizedImage } from "@/components/shared/ui/optimized-image";
 import confetti from "canvas-confetti";
 import satoshiMascot from "@/assets/satoshi-mascot.png";
 
@@ -235,7 +236,14 @@ export default function TournamentQuiz() {
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-card rounded-xl p-8 shadow-card text-center">
           <div className="mb-6">
-            <img src={satoshiMascot} alt="Satoshi" className="w-20 h-20 mx-auto mb-4" />
+            <OptimizedImage 
+              src={satoshiMascot} 
+              alt="Satoshi" 
+              width={80} 
+              height={80} 
+              className="w-20 h-20 mx-auto mb-4" 
+              priority={true}
+            />
             <h1 className="text-3xl font-bold text-foreground mb-2">
               {isChampion ? "🏆 CAMPEÃO!" : "Torneio Finalizado!"}
             </h1>

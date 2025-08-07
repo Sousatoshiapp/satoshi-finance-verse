@@ -4,6 +4,7 @@ import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
 import { Copy, Check, ArrowLeft, Timer, Wallet, QrCode } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { OptimizedImage } from "@/components/shared/ui/optimized-image";
 import { motion } from "framer-motion";
 import QRCode from 'qrcode';
 
@@ -148,7 +149,14 @@ export function CryptoCheckout({
               className="flex flex-col items-center space-y-4"
             >
               <div className="p-4 bg-white rounded-lg shadow-sm">
-                <img src={qrCodeUrl} alt="QR Code" className="w-48 h-48" />
+                <OptimizedImage 
+                  src={qrCodeUrl} 
+                  alt="QR Code" 
+                  width={192} 
+                  height={192} 
+                  className="w-48 h-48" 
+                  priority={true}
+                />
               </div>
               <div className="text-center">
                 <div className="flex items-center gap-2 text-sm font-medium mb-1">
