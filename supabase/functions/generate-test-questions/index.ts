@@ -20,16 +20,43 @@ serve(async (req) => {
     
     if (!supabaseServiceKey) {
       console.error('❌ SUPABASE_SERVICE_ROLE_KEY não configurada');
-      throw new Error('Supabase Service Key não configurada');
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'SUPABASE_SERVICE_ROLE_KEY não configurada'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    console.log('✅ Service Key encontrada');
+    console.log('✅ Service Key encontrada, criando cliente Supabase...');
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Inserir uma pergunta de teste simples (sem OpenAI)
+    // Testar conexão primeiro
+    console.log('🔍 Testando conexão com banco de dados...');
+    const { data: testConnection, error: connectionError } = await supabase
+      .from('quiz_questions')
+      .select('count')
+      .limit(1);
+
+    if (connectionError) {
+      console.error('❌ Erro de conexão:', connectionError);
+      return new Response(JSON.stringify({
+        success: false,
+        error: `Erro de conexão: ${connectionError.message}`,
+        details: connectionError
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('✅ Conexão testada com sucesso');
+
+    // Preparar dados da pergunta de teste com validação
     const testQuestion = {
       question: "Teste: O que é poupança?",
-      options: ["Uma conta bancária", "Um investimento", "Uma dívida", "Um empréstimo"],
+      options: JSON.stringify(["Uma conta bancária", "Um investimento", "Uma dívida", "Um empréstimo"]),
       correct_answer: "Uma conta bancária",
       explanation: "A poupança é uma conta bancária para guardar dinheiro.",
       difficulty: 'easy',
@@ -37,6 +64,7 @@ serve(async (req) => {
       theme: 'financial_education'
     };
 
+    console.log('💾 Dados preparados:', testQuestion);
     console.log('💾 Tentando inserir pergunta de teste...');
     
     const { data: insertedData, error: insertError } = await supabase
@@ -45,8 +73,24 @@ serve(async (req) => {
       .select('id');
 
     if (insertError) {
-      console.error('❌ Erro ao inserir:', insertError);
-      throw new Error(`Erro na inserção: ${insertError.message}`);
+      console.error('❌ Erro detalhado ao inserir:', {
+        message: insertError.message,
+        details: insertError.details,
+        hint: insertError.hint,
+        code: insertError.code
+      });
+      
+      return new Response(JSON.stringify({
+        success: false,
+        error: `Erro na inserção: ${insertError.message}`,
+        error_details: insertError.details,
+        error_hint: insertError.hint,
+        error_code: insertError.code,
+        test_data: testQuestion
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     console.log('✅ Pergunta inserida com sucesso:', insertedData);
@@ -62,10 +106,16 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    console.error('❌ ERRO NO TESTE:', error);
+    console.error('❌ ERRO GERAL NO TESTE:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
     return new Response(JSON.stringify({
       success: false,
       error: error.message,
+      error_name: error.name,
       stack: error.stack,
       details: 'Erro completo logado no console'
     }), {
