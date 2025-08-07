@@ -271,7 +271,7 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
       <Dialog open={confirming} onOpenChange={setConfirming}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Confirmação de Avatar</DialogTitle>
+            <DialogTitle>Escolha seu Avatar</DialogTitle>
             <DialogDescription>
               Você deseja selecionar este avatar como seu cidadão digital?
             </DialogDescription>
