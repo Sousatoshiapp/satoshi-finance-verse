@@ -24,7 +24,7 @@ export const dashboardRoutes = [
     path: "/social",
     element: "Social",
     requiresAuth: true,
-    showNavbar: true,
+    showNavbar: false,
     isDirectImport: true
   },
   {

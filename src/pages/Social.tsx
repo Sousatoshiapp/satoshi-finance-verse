@@ -9,7 +9,7 @@ import { ChatWindow } from "@/components/features/social/chat-window";
 import { CreatePostCard } from "@/components/features/social/create-post-card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Search, MessageCircle, Home, Hash, Bell, Mail } from "lucide-react";
+import { Search, MessageCircle, Home, Hash, Bell, Mail, ArrowLeft } from "lucide-react";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { TwitterSocialFeed } from "@/components/features/social/twitter-social-feed";
 import { SocialChallenges } from "@/components/features/social/social-challenges";
@@ -153,8 +153,21 @@ export default function Social() {
   if (isMainLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <FloatingNavbar />
-        <div className="max-w-7xl mx-auto flex min-h-screen justify-center">
+        {/* Header with back arrow */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
+          <div className="flex items-center px-4 py-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="mr-3"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-lg font-semibold">Social</h1>
+          </div>
+        </div>
+        <div className="pt-16 max-w-7xl mx-auto flex min-h-screen justify-center">
           <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 min-h-screen">
             <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-4">
               <div className="h-6 bg-muted rounded w-32 animate-pulse" />
@@ -180,9 +193,24 @@ export default function Social() {
 
   return (
     <div className="min-h-screen bg-background">
-      <FloatingNavbar />
+      {/* Header with back arrow */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="flex items-center px-4 py-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="mr-3"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-lg font-semibold">Social</h1>
+        </div>
+      </div>
       
-      {/* Simplified responsive layout */}
+      {/* Content with padding for fixed header */}
+      <div className="pt-16">
+        {/* Simplified responsive layout */}
       <div className="max-w-7xl mx-auto flex min-h-screen">
         {/* Left Sidebar - Desktop only */}
         <div className="hidden lg:flex w-64 flex-col p-4 space-y-4 sticky top-0 h-screen overflow-y-auto">
@@ -511,6 +539,7 @@ export default function Social() {
             </Card>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
