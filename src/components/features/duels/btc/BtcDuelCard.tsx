@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
-import { Bitcoin, TrendingUp, TrendingDown, Timer, Zap } from "lucide-react";
+import { Bitcoin, TrendingUp, TrendingDown, Timer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useBtcPrice } from "@/hooks/use-btc-price";
 
@@ -21,7 +21,7 @@ const BtcDuelCard = memo(function BtcDuelCard() {
       isGlowing ? 'scale-105' : ''
     }`}>
       {/* Cyber Background with animated elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 via-blue-900/20 to-purple-900/20" />
+      <div className="absolute inset-0 bg-black" />
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-purple-500/10" />
       
       {/* Animated border effect */}
@@ -85,8 +85,7 @@ const BtcDuelCard = memo(function BtcDuelCard() {
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-cyan-400/20 to-cyan-400/0 
                          translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
           
-          <div className="relative flex items-center gap-1">
-            <Zap className="h-3 w-3" />
+          <div className="relative">
             ENTRAR
           </div>
         </Button>
