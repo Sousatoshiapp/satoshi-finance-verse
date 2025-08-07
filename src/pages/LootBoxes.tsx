@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
@@ -30,11 +30,16 @@ interface Prize {
 
 export default function LootBoxes() {
   const navigate = useNavigate();
-  const [lootBoxes, setLootBoxes] = useState<LootBox[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [openingBox, setOpeningBox] = useState<string | null>(null);
-  const [prizes, setPrizes] = useState<Prize[]>([]);
-  const [showPrizes, setShowPrizes] = useState(false);
+  
+  // Loot boxes temporariamente desabilitadas
+  console.log('[MAINTENANCE] Loot boxes access attempt blocked');
+  
+  // Redirecionar para página de manutenção
+  React.useEffect(() => {
+    navigate('/loot-boxes-maintenance');
+  }, [navigate]);
+
+  return null;
 
   useEffect(() => {
     loadLootBoxes();

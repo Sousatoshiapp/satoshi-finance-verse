@@ -13,7 +13,7 @@ export const gamificationRoutes = [
   },
   {
     path: "/loot-boxes",
-    element: "LootBoxes",
+    element: "LootBoxMaintenance",
     requiresAuth: true,
     showNavbar: true
   },

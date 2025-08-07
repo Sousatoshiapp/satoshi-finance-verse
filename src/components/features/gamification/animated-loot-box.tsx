@@ -21,15 +21,9 @@ interface Prize {
 }
 
 export function AnimatedLootBox({ isAvailable }: AnimatedLootBoxProps) {
-  const { toast } = useToast();
-  const [isOpening, setIsOpening] = useState(false);
-  const [showPrize, setShowPrize] = useState(false);
-  const [prize, setPrize] = useState<Prize | null>(null);
-  const [isVisible, setIsVisible] = useState(isAvailable);
-
-  if (!isVisible) {
-    return null;
-  }
+  // Loot boxes temporariamente desabilitadas
+  console.log('[MAINTENANCE] AnimatedLootBox disabled - isAvailable:', isAvailable);
+  return null;
 
   const generateRandomPrize = (): Prize => {
     const prizes = [
