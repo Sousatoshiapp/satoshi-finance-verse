@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { generateAllThemedQuestions, getThemeQuestionStats } from "@/utils/generate-questions";
+import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Database, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 
@@ -73,6 +74,41 @@ export function GenerateQuestionsButton() {
     setStats(currentStats);
   };
 
+  const handleTestGeneration = async () => {
+    setIsGenerating(true);
+    try {
+      toast({
+        title: "🧪 Iniciando teste simples",
+        description: "Testando geração de 10 perguntas de educação financeira...",
+      });
+
+      const { data, error } = await supabase.functions.invoke('generate-test-questions');
+      
+      if (error) {
+        throw error;
+      }
+
+      if (data?.success) {
+        toast({
+          title: "✅ Teste concluído!",
+          description: `${data.questions_generated} perguntas de teste geradas com sucesso!`,
+        });
+        await handleGetStats();
+      } else {
+        throw new Error(data?.error || 'Erro no teste');
+      }
+    } catch (error) {
+      console.error('Erro no teste:', error);
+      toast({
+        title: "❌ Erro no teste",
+        description: error.message || "Falha no teste de geração.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <Card className="w-full max-w-2xl">
@@ -83,32 +119,51 @@ export function GenerateQuestionsButton() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-3">
             <Button 
-              onClick={handleGenerate}
+              onClick={handleTestGeneration}
               disabled={isGenerating}
-              className="flex-1"
               size="lg"
+              variant="secondary"
+              className="w-full"
             >
               {isGenerating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Gerando perguntas...
+                  Testando...
                 </>
               ) : (
-                <>
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Gerar Todas as Perguntas
-                </>
+                "🧪 Teste Rápido (10 perguntas)"
               )}
             </Button>
             
-            <Button 
-              onClick={handleGetStats}
-              variant="outline"
-            >
-              Ver Estatísticas
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="flex-1"
+                size="lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Gerando perguntas...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Gerar Todas as Perguntas
+                  </>
+                )}
+              </Button>
+              
+              <Button 
+                onClick={handleGetStats}
+                variant="outline"
+              >
+                Ver Estatísticas
+              </Button>
+            </div>
           </div>
           
           {stats && (
