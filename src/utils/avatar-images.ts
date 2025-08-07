@@ -26,6 +26,14 @@ import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
 import stormHacker from "@/assets/avatars/storm-hacker.jpg";
 import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
 import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+import universeArchitect from "@/assets/avatars/universe-architect.jpg";
+import eternalTrader from "@/assets/avatars/eternal-trader.jpg";
+import infinityGuardian from "@/assets/avatars/infinity-guardian.jpg";
+import omniscientSage from "@/assets/avatars/omniscient-sage.jpg";
+import galaxyCommander from "@/assets/avatars/galaxy-commander.jpg";
+import digitalDeity from "@/assets/avatars/digital-deity.jpg";
+import voidArchitect from "@/assets/avatars/void-architect.jpg";
+import timeWeaver from "@/assets/avatars/time-weaver.jpg";
 
 export const avatarImages = {
   'neo-trader': neoTrader,
@@ -55,6 +63,14 @@ export const avatarImages = {
   'storm-hacker': stormHacker,
   'dream-architect': dreamArchitect,
   'chrome-gladiator': chromeGladiator,
+  'universe-architect': universeArchitect,
+  'eternal-trader': eternalTrader,
+  'infinity-guardian': infinityGuardian,
+  'omniscient-sage': omniscientSage,
+  'galaxy-commander': galaxyCommander,
+  'digital-deity': digitalDeity,
+  'void-architect': voidArchitect,
+  'time-weaver': timeWeaver,
 };
 
 export function getAvatarImage(imageUrl: string): string {

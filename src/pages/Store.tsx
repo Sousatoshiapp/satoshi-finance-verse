@@ -45,6 +45,14 @@ import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
 import stormHacker from "@/assets/avatars/storm-hacker.jpg";
 import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
 import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
+import universeArchitect from "@/assets/avatars/universe-architect.jpg";
+import eternalTrader from "@/assets/avatars/eternal-trader.jpg";
+import infinityGuardian from "@/assets/avatars/infinity-guardian.jpg";
+import omniscientSage from "@/assets/avatars/omniscient-sage.jpg";
+import galaxyCommander from "@/assets/avatars/galaxy-commander.jpg";
+import digitalDeity from "@/assets/avatars/digital-deity.jpg";
+import voidArchitect from "@/assets/avatars/void-architect.jpg";
+import timeWeaver from "@/assets/avatars/time-weaver.jpg";
 
 // Import cyberpunk skins
 import neonMatrixOverlay from "@/assets/skins/neon-matrix-overlay.jpg";
@@ -820,6 +828,14 @@ export default function Store() {
                     'Storm Hacker': stormHacker,
                     'Dream Architect': dreamArchitect,
                     'Chrome Gladiator': chromeGladiator,
+                    'Universe Architect': universeArchitect,
+                    'The Eternal Trader': eternalTrader,
+                    'Infinity Guardian': infinityGuardian,
+                    'Omniscient Sage': omniscientSage,
+                    'Galaxy Commander': galaxyCommander,
+                    'Digital Deity': digitalDeity,
+                    'Void Architect': voidArchitect,
+                    'Time Weaver': timeWeaver,
                   };
                   return imageMap[avatar.name] || avatar.image_url;
                 };
