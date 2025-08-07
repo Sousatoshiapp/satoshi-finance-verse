@@ -53,68 +53,103 @@ export function ConversationsList({ onSelectConversation }: ConversationsListPro
       
       setCurrentUserId(profile.id);
 
-      // Get conversations with participant details
+      // Get conversations with a more optimized query using JOINs
       const { data: conversationsData, error } = await supabase
         .from('conversations')
         .select(`
           id,
           participant1_id,
           participant2_id,
-          updated_at
+          updated_at,
+          participant1:profiles!conversations_participant1_id_fkey(id, nickname, profile_image_url),
+          participant2:profiles!conversations_participant2_id_fkey(id, nickname, profile_image_url)
         `)
         .or(`participant1_id.eq.${profile.id},participant2_id.eq.${profile.id}`)
         .order('updated_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading conversations:', error);
+        return;
+      }
 
-      // Get last message and unread count for each conversation
+      // Process conversations and get additional data
       const conversationsWithDetails = await Promise.all(
         (conversationsData || []).map(async (conv) => {
-          // Get other participant details
-          const otherParticipantId = conv.participant1_id === profile.id 
-            ? conv.participant2_id 
-            : conv.participant1_id;
+          try {
+            // Validate conversation
+            if (conv.participant1_id === conv.participant2_id) {
+              console.warn('Invalid conversation with same participants:', conv.id);
+              return null;
+            }
 
-          const { data: otherUser } = await supabase
-            .from('profiles')
-            .select('id, nickname, profile_image_url')
-            .eq('id', otherParticipantId)
-            .single();
+            // Get other participant - use fallback if JOIN failed
+            let otherUser;
+            if (conv.participant1_id === profile.id) {
+              otherUser = conv.participant2 || await getProfileFallback(conv.participant2_id);
+            } else {
+              otherUser = conv.participant1 || await getProfileFallback(conv.participant1_id);
+            }
 
-          // Get last message
-          const { data: lastMessage } = await supabase
-            .from('messages')
-            .select('content, created_at, sender_id')
-            .eq('conversation_id', conv.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
+            if (!otherUser) {
+              console.warn('Could not find other participant for conversation:', conv.id);
+              return null;
+            }
 
-          // Get unread count
-          const { count: unreadCount } = await supabase
-            .from('messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('conversation_id', conv.id)
-            .eq('is_read', false)
-            .neq('sender_id', profile.id);
+            // Get last message
+            const { data: lastMessage } = await supabase
+              .from('messages')
+              .select('content, created_at, sender_id')
+              .eq('conversation_id', conv.id)
+              .order('created_at', { ascending: false })
+              .limit(1)
+              .maybeSingle();
 
-          return {
-            id: conv.id,
-            participant1_id: conv.participant1_id,
-            participant2_id: conv.participant2_id,
-            updated_at: conv.updated_at,
-            other_user: otherUser || { id: '', nickname: 'Usuário', profile_image_url: undefined },
-            last_message: lastMessage,
-            unread_count: unreadCount || 0
-          };
+            // Get unread count
+            const { count: unreadCount } = await supabase
+              .from('messages')
+              .select('*', { count: 'exact', head: true })
+              .eq('conversation_id', conv.id)
+              .eq('is_read', false)
+              .neq('sender_id', profile.id);
+
+            return {
+              id: conv.id,
+              participant1_id: conv.participant1_id,
+              participant2_id: conv.participant2_id,
+              updated_at: conv.updated_at,
+              other_user: otherUser,
+              last_message: lastMessage,
+              unread_count: unreadCount || 0
+            };
+          } catch (convError) {
+            console.error('Error processing conversation:', conv.id, convError);
+            return null;
+          }
         })
       );
 
-      setConversations(conversationsWithDetails);
+      // Filter out null conversations and set state
+      const validConversations = conversationsWithDetails.filter(conv => conv !== null) as Conversation[];
+      setConversations(validConversations);
     } catch (error) {
       console.error('Error loading conversations:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fallback function to get profile data if JOIN fails
+  const getProfileFallback = async (profileId: string) => {
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, nickname, profile_image_url')
+        .eq('id', profileId)
+        .single();
+      return data;
+    } catch (error) {
+      console.error('Error getting profile fallback:', error);
+      return { id: profileId, nickname: 'Usuário', profile_image_url: undefined };
     }
   };
 

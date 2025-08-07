@@ -48,7 +48,14 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
   const loadConversationData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Usuário não autenticado",
+          variant: "destructive"
+        });
+        return;
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -56,29 +63,75 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return;
+      if (!profile) {
+        toast({
+          title: "Erro",
+          description: "Perfil não encontrado",
+          variant: "destructive"
+        });
+        return;
+      }
       setCurrentUserId(profile.id);
 
-      // Load conversation details
+      // Load conversation details with simplified query
       const { data: conversation, error: convError } = await supabase
         .from('conversations')
-        .select(`
-          id,
-          participant1_id,
-          participant2_id,
-          participant1:profiles!conversations_participant1_id_fkey(id, nickname, profile_image_url),
-          participant2:profiles!conversations_participant2_id_fkey(id, nickname, profile_image_url)
-        `)
+        .select('id, participant1_id, participant2_id')
         .eq('id', conversationId)
         .single();
 
-      if (convError) throw convError;
+      if (convError) {
+        console.error('Conversation error:', convError);
+        toast({
+          title: "Erro",
+          description: "Conversa não encontrada",
+          variant: "destructive"
+        });
+        return;
+      }
 
-      const otherParticipant = conversation.participant1_id === profile.id 
-        ? conversation.participant2 
-        : conversation.participant1;
+      // Validate conversation participants
+      if (conversation.participant1_id === conversation.participant2_id) {
+        toast({
+          title: "Erro",
+          description: "Conversa inválida",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if current user is part of this conversation
+      if (conversation.participant1_id !== profile.id && conversation.participant2_id !== profile.id) {
+        toast({
+          title: "Erro",
+          description: "Acesso negado a esta conversa",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Get other participant details
+      const otherParticipantId = conversation.participant1_id === profile.id 
+        ? conversation.participant2_id 
+        : conversation.participant1_id;
+
+      const { data: otherUserData, error: userError } = await supabase
+        .from('profiles')
+        .select('id, nickname, profile_image_url')
+        .eq('id', otherParticipantId)
+        .single();
+
+      if (userError || !otherUserData) {
+        console.error('Other user error:', userError);
+        toast({
+          title: "Erro",
+          description: "Usuário não encontrado",
+          variant: "destructive"
+        });
+        return;
+      }
       
-      setOtherUser(otherParticipant);
+      setOtherUser(otherUserData);
 
       // Load messages
       const { data: messagesData, error: msgError } = await supabase
@@ -87,22 +140,34 @@ export function ChatWindow({ conversationId, onBack }: ChatWindowProps) {
         .eq('conversation_id', conversationId)
         .order('created_at', { ascending: true });
 
-      if (msgError) throw msgError;
+      if (msgError) {
+        console.error('Messages error:', msgError);
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar as mensagens",
+          variant: "destructive"
+        });
+        return;
+      }
       setMessages(messagesData || []);
 
       // Mark messages as read
-      await supabase
+      const { error: readError } = await supabase
         .from('messages')
         .update({ is_read: true, read_at: new Date().toISOString() })
         .eq('conversation_id', conversationId)
         .neq('sender_id', profile.id)
         .eq('is_read', false);
 
+      if (readError) {
+        console.error('Error marking messages as read:', readError);
+      }
+
     } catch (error) {
       console.error('Error loading conversation:', error);
       toast({
         title: "Erro",
-        description: "Não foi possível carregar a conversa",
+        description: "Erro inesperado ao carregar a conversa",
         variant: "destructive"
       });
     } finally {
