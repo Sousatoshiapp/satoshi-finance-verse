@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
-import { Clock, Shield, TrendingUp, TrendingDown, Send, Download, Eye, EyeOff } from "lucide-react";
+import { Clock, Shield, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownLeft, Eye, EyeOff } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 
 interface BTZCounterProps {
@@ -124,19 +124,43 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
 
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="flex items-center gap-3">
-        {/* BTZ Card - 20% smaller */}
-        <div 
-          className={`
-            bg-transparent backdrop-blur-sm 
-            border border-[#adff2f]/20 rounded-lg px-3 md:px-6 py-2 md:py-3 
-            transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
-            ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
-            cursor-pointer
-            max-w-xs md:max-w-sm
-          `}
-          onClick={() => setShowDetails(!showDetails)}
-        >
+      {/* BTZ Card with floating P2P icons */}
+      <div 
+        className={`
+          relative bg-transparent backdrop-blur-sm 
+          border border-[#adff2f]/20 rounded-lg px-3 md:px-6 py-2 md:py-3 
+          transition-all duration-300 hover:shadow-lg hover:shadow-[#adff2f]/10
+          ${animationState === 'ANIMATING' ? 'scale-105 shadow-lg shadow-[#adff2f]/20' : ''}
+          cursor-pointer
+          max-w-xs md:max-w-sm
+        `}
+        onClick={() => setShowDetails(!showDetails)}
+      >
+        {/* Floating P2P Transfer Icons */}
+        <div className="absolute -top-1 -right-1 flex gap-1 z-10">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/p2p-transfer?tab=send');
+            }}
+            className="w-6 h-6 rounded-full bg-background/80 backdrop-blur border border-border/50 
+                     hover:bg-muted/80 transition-all duration-200 flex items-center justify-center"
+            title="Enviar BTZ"
+          >
+            <ArrowUpRight className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/p2p-transfer?tab=receive');
+            }}
+            className="w-6 h-6 rounded-full bg-background/80 backdrop-blur border border-border/50 
+                     hover:bg-muted/80 transition-all duration-200 flex items-center justify-center"
+            title="Receber BTZ"
+          >
+            <ArrowDownLeft className="w-3 h-3 text-muted-foreground hover:text-foreground" />
+          </button>
+        </div>
           <div className="flex items-center w-full">
             {/* BTZ Icon + Number + Eye + Trend */}
             <div className="flex items-center gap-2 md:gap-3 flex-1">
@@ -237,31 +261,6 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               )}
             </div>
           )}
-        </div>
-
-        {/* P2P Transfer Icons - Outside the card */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/p2p-transfer?tab=send');
-            }}
-            className="p-1.5 md:p-2 rounded-full hover:bg-muted/50 transition-colors"
-            title="Enviar BTZ"
-          >
-            <Send className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground hover:text-foreground" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/p2p-transfer?tab=receive');
-            }}
-            className="p-1.5 md:p-2 rounded-full hover:bg-muted/50 transition-colors"
-            title="Receber BTZ"
-          >
-            <Download className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground hover:text-foreground" />
-          </button>
-        </div>
       </div>
     </div>
   );
