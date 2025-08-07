@@ -197,14 +197,18 @@ export function ThemedQuizEngine({
     const isCorrect = selectedAnswer === question.correct_answer;
     
     setShowAnswer(true);
-    setShowFeedback(true);
     
     if (isCorrect) {
       setScore(prev => prev + 1);
       playCorrectSound();
       triggerHaptic('light');
       await handleCorrectAnswer();
+      // Para respostas corretas, não mostrar feedback, apenas animações
+      setTimeout(() => {
+        handleContinue();
+      }, 1500); // Tempo para ver as animações
     } else {
+      setShowFeedback(true); // Só mostrar feedback para incorretas
       playWrongSound();
       triggerHaptic('heavy');
       await handleWrongAnswer(
@@ -516,31 +520,18 @@ export function ThemedQuizEngine({
           </Button>
         )}
 
-        {/* Feedback */}
-        {showFeedback && (
-          <QuizFeedback
-            isCorrect={selectedAnswer === currentQuestion.correct_answer}
-            explanation={currentQuestion.explanation}
-            correctAnswer={currentQuestion.correct_answer}
-            userAnswer={selectedAnswer}
-            show={showFeedback}
-            onClose={() => {
-              setShowFeedback(false);
-              handleContinue();
-            }}
-          />
-        )}
-
-        {/* Botão Continue (para respostas erradas) */}
-        {showAnswer && !showFeedback && (
-          <Button
-            onClick={handleContinue}
-            className="w-full"
-            size="lg"
-          >
-            {currentIndex < questions.length - 1 ? "Próxima Pergunta" : "Ver Resultados"}
-          </Button>
-        )}
+        {/* Feedback apenas para respostas incorretas */}
+        <QuizFeedback
+          isCorrect={selectedAnswer === currentQuestion.correct_answer}
+          explanation={currentQuestion.explanation}
+          correctAnswer={currentQuestion.correct_answer}
+          userAnswer={selectedAnswer}
+          show={showFeedback}
+          onClose={() => {
+            setShowFeedback(false);
+            handleContinue();
+          }}
+        />
       </div>
 
       {/* Animações */}

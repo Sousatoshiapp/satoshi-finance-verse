@@ -20,73 +20,66 @@ export function QuizFeedback({
   show,
   onClose
 }: QuizFeedbackProps) {
-  if (!show) return null;
+  // Só mostrar feedback para respostas INCORRETAS
+  if (!show || isCorrect) return null;
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 animate-fade-in">
-      <Card className={cn(
-        "w-full max-w-md border-2 animate-scale-in shadow-2xl",
-        isCorrect 
-          ? "border-green-500 bg-green-50 dark:bg-green-950" 
-          : "border-red-500 bg-red-50 dark:bg-red-950"
-      )}>
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 animate-fade-in">
+      <Card className="w-full max-w-md border-2 border-destructive bg-card animate-scale-in shadow-2xl">
         <CardContent className="p-6">
-          <div className="flex items-start gap-3">
-            {/* Botão X no lado esquerdo */}
-            {onClose && !isCorrect && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onClose}
-                className="flex-shrink-0 h-8 w-8 p-0 hover:bg-red-100 dark:hover:bg-red-900"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-            
-            <div className="flex-shrink-0 mt-0.5">
-              {isCorrect ? (
-                <CheckCircle className="h-5 w-5 text-green-600" />
-              ) : (
-                <AlertCircle className="h-5 w-5 text-red-600" />
-              )}
-            </div>
-            
-            <div className="flex-1">
-              <div className={cn(
-                "font-semibold text-base mb-3",
-                isCorrect ? "text-green-800 dark:text-green-200" : "text-red-800 dark:text-red-200"
-              )}>
-                {isCorrect ? "✅ Correto!" : "❌ Incorreto"}
+          {/* Header com X destacado */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-destructive/10">
+                <AlertCircle className="h-5 w-5 text-destructive" />
               </div>
-              
-              {!isCorrect && correctAnswer && (
-                <div className="text-sm text-muted-foreground mb-3 p-3 bg-muted rounded-lg">
-                  <span className="font-medium">Resposta correta:</span> {correctAnswer}
-                </div>
-              )}
-              
-              {explanation && (
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="h-4 w-4 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {explanation}
-                  </p>
-                </div>
-              )}
-              
-              {/* Botão para continuar quando correto */}
-              {isCorrect && onClose && (
-                <Button 
-                  onClick={onClose}
-                  className="w-full mt-4"
-                  variant="default"
-                >
-                  Continuar
-                </Button>
-              )}
+              <h3 className="text-lg font-semibold text-destructive">
+                Resposta Incorreta
+              </h3>
             </div>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
+          
+          {/* Resposta correta */}
+          {correctAnswer && (
+            <div className="mb-4 p-3 bg-muted/50 rounded-lg border border-border">
+              <p className="text-sm text-muted-foreground mb-1">Resposta correta:</p>
+              <p className="font-medium text-foreground">{correctAnswer}</p>
+            </div>
+          )}
+          
+          {/* Explicação */}
+          {explanation && (
+            <div className="mb-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <p className="text-sm text-muted-foreground mb-1">Explicação:</p>
+              <p className="text-sm leading-relaxed text-foreground">
+                {explanation}
+              </p>
+            </div>
+          )}
+          
+          {/* Botão para fechar */}
+          <Button 
+            onClick={handleClose}
+            className="w-full"
+            size="lg"
+          >
+            Continuar
+          </Button>
         </CardContent>
       </Card>
     </div>
