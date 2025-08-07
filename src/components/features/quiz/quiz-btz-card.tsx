@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { cn } from "@/lib/utils";
+import { formatBTZDisplay } from "@/utils/btz-formatter";
 
 interface QuizBTZCardProps {
   className?: string;
@@ -132,7 +133,7 @@ export function QuizBTZCard({ className = "" }: QuizBTZCardProps) {
               showGlow && "text-[#adff2f] drop-shadow-[0_0_4px_rgba(173,255,47,0.8)]"
             )}
           >
-            {displayBTZ.toLocaleString()} BTZ
+            {formatBTZDisplay(displayBTZ)}
           </div>
         </div>
       </div>

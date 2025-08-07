@@ -5,6 +5,7 @@ import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useBTZEconomics } from "@/hooks/use-btz-economics";
 import { Clock, Shield, TrendingUp, TrendingDown, Send, Download, Eye, EyeOff } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { formatBTZ } from "@/utils/btz-formatter";
 
 interface BTZCounterProps {
   className?: string;
@@ -145,7 +146,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
               </div>
               <div className="flex items-center gap-1 md:gap-2">
                 <span className="text-3xl md:text-4xl font-mono font-bold text-foreground">
-                  {showBTZ ? displayBTZ.toLocaleString() : "••••"}
+                  {showBTZ ? formatBTZ(displayBTZ) : "••••"}
                 </span>
                 <span className="text-base md:text-lg text-muted-foreground font-medium">BTZ</span>
                 
@@ -197,7 +198,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <span>{t('btz.nextYield')}</span>
                 </div>
                 <span className="font-mono text-[#adff2f]">
-                  +{analytics.current.next_yield_amount.toLocaleString()} BTZ
+                  +{formatBTZ(analytics.current.next_yield_amount)} BTZ
                 </span>
               </div>
               
@@ -208,7 +209,7 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
                   <span>{t('btz.protectedBTZ')}</span>
                 </div>
                 <span className="font-mono text-blue-400">
-                  {analytics.current.protected_btz.toLocaleString()} ({getProtectionPercentage().toFixed(1)}%)
+                  {formatBTZ(analytics.current.protected_btz)} ({getProtectionPercentage().toFixed(1)}%)
                 </span>
               </div>
               

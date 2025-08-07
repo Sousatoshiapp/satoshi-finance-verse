@@ -162,17 +162,13 @@ export function useUnifiedRewards(): UnifiedRewardSystem {
           await logBTZTransaction(source as any, amount, { streak: state.currentStreak });
           playCashRegisterSound();
           
-          toast({
-            title: `+${amount} BTZ`,
-            description: `Fonte: ${source}`,
-            duration: 2000,
-          });
+          // Toast removida - só animação visual agora
         }
       }
     } catch (error) {
       console.error('Error earning BTZ:', error);
     }
-  }, [user, state.isLoaded, state.currentStreak, checkDailyLimit, logBTZTransaction, playCashRegisterSound, toast]);
+  }, [user, state.isLoaded, state.currentStreak, checkDailyLimit, logBTZTransaction, playCashRegisterSound]);
 
   const awardXP = useCallback(async (amount: number, source: string) => {
     if (!user || !state.isLoaded) return;
@@ -200,19 +196,15 @@ export function useUnifiedRewards(): UnifiedRewardSystem {
             nextLevelXP: prev.nextLevelXP
           }));
 
+          // Level up toast mantida - importante para o usuário
           if (result.level_up) {
             toast({
               title: "🎉 Level Up!",
               description: `Parabéns! Você alcançou o nível ${result.new_level}!`,
               duration: 5000,
             });
-          } else {
-            toast({
-              title: `+${amount} XP`,
-              description: `Atividade: ${source}`,
-              duration: 2000,
-            });
           }
+          // XP toast removida - só animação visual agora
         }
       }
     } catch (error) {
@@ -258,15 +250,11 @@ export function useUnifiedRewards(): UnifiedRewardSystem {
           currentMultiplier: newMultiplier
         }));
 
-        if (correct && newStreak > state.currentStreak) {
+          if (correct && newStreak > state.currentStreak) {
           if (playStreakSound) {
             playStreakSound(newStreak);
           }
-          toast({
-            title: `🔥 Streak de ${newStreak}!`,
-            description: `Multiplicador: ${newMultiplier}x`,
-            duration: 3000,
-          });
+          // Streak toast removida - só animação visual agora
         }
       }
     } catch (error) {
