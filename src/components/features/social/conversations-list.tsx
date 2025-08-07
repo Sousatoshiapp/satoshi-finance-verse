@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
-import { ScrollArea } from "@/components/shared/ui/scroll-area";
+import { VirtualList } from "@/components/shared/ui/virtual-list";
 import { Badge } from "@/components/shared/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
@@ -193,54 +193,57 @@ export function ConversationsList({ onSelectConversation }: ConversationsListPro
     );
   }
 
-  return (
-    <ScrollArea className="h-[500px]">
-      <div className="space-y-2">
-        {conversations.map((conversation) => (
-          <div
-            key={conversation.id}
-            onClick={() => onSelectConversation(conversation.id)}
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-          >
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={conversation.other_user.profile_image_url} />
-              <AvatarFallback>
-                {conversation.other_user.nickname.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <h3 className="font-medium truncate">
-                  {conversation.other_user.nickname}
-                </h3>
-                <div className="flex items-center gap-2">
-                  {conversation.unread_count > 0 && (
-                    <Badge variant="destructive" className="text-xs">
-                      {conversation.unread_count}
-                    </Badge>
-                  )}
-                  {conversation.last_message && (
-                    <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(conversation.last_message.created_at), {
-                        addSuffix: true,
-                        locale: ptBR
-                      })}
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              {conversation.last_message && (
-                <p className="text-sm text-muted-foreground truncate mt-1">
-                  {conversation.last_message.sender_id === currentUserId ? "Você: " : ""}
-                  {conversation.last_message.content}
-                </p>
-              )}
-            </div>
+  const renderConversation = useMemo(() => (conversation: Conversation) => (
+    <div
+      onClick={() => onSelectConversation(conversation.id)}
+      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+    >
+      <Avatar className="h-12 w-12">
+        <AvatarImage src={conversation.other_user.profile_image_url} />
+        <AvatarFallback>
+          {conversation.other_user.nickname.charAt(0).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+      
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium truncate">
+            {conversation.other_user.nickname}
+          </h3>
+          <div className="flex items-center gap-2">
+            {conversation.unread_count > 0 && (
+              <Badge variant="destructive" className="text-xs">
+                {conversation.unread_count}
+              </Badge>
+            )}
+            {conversation.last_message && (
+              <span className="text-xs text-muted-foreground">
+                {formatDistanceToNow(new Date(conversation.last_message.created_at), {
+                  addSuffix: true,
+                  locale: ptBR
+                })}
+              </span>
+            )}
           </div>
-        ))}
+        </div>
+        
+        {conversation.last_message && (
+          <p className="text-sm text-muted-foreground truncate mt-1">
+            {conversation.last_message.sender_id === currentUserId ? "Você: " : ""}
+            {conversation.last_message.content}
+          </p>
+        )}
       </div>
-    </ScrollArea>
+    </div>
+  ), [currentUserId, onSelectConversation]);
+
+  return (
+    <VirtualList
+      items={conversations}
+      itemHeight={80}
+      height={500}
+      renderItem={renderConversation}
+      className="space-y-2"
+    />
   );
 }

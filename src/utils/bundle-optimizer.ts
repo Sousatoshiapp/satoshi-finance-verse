@@ -65,6 +65,66 @@ export const optimizeMemoryUsage = () => {
   }
 };
 
+export const advancedMemoryOptimization = () => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    const memory = (performance as any).memory;
+    if (memory) {
+      const memoryUsage = memory.usedJSHeapSize / memory.totalJSHeapSize;
+      
+      if (memoryUsage > 0.8) {
+        if ('gc' in window) {
+          (window as any).gc();
+        }
+        
+        // Clear React Query cache if available
+        if ((window as any).queryClient) {
+          (window as any).queryClient.getQueryCache().clear();
+        }
+        
+        const unusedNodes = document.querySelectorAll('[data-unused="true"]');
+        unusedNodes.forEach(node => node.remove());
+        
+        const virtualLists = document.querySelectorAll('[data-virtual-list="true"]');
+        virtualLists.forEach(list => {
+          const items = list.querySelectorAll('[data-virtual-item="true"]');
+          items.forEach((item, index) => {
+            if (index > 100) {
+              item.remove();
+            }
+          });
+        });
+      }
+      
+      console.log(`Memory usage: ${(memoryUsage * 100).toFixed(2)}%`);
+    }
+  }
+};
+
+// Performance monitoring and optimization
+export const monitorPerformance = () => {
+  if (typeof window !== 'undefined' && 'performance' in window) {
+    const observer = new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      entries.forEach((entry) => {
+        if (entry.entryType === 'measure') {
+          console.log(`Performance measure: ${entry.name} took ${entry.duration}ms`);
+        }
+        
+        if (entry.entryType === 'navigation') {
+          const navEntry = entry as PerformanceNavigationTiming;
+          console.log(`Page load time: ${navEntry.loadEventEnd - navEntry.navigationStart}ms`);
+        }
+      });
+    });
+    
+    observer.observe({ entryTypes: ['measure', 'navigation'] });
+    
+    setTimeout(() => {
+      observer.disconnect();
+    }, 30000);
+  }
+};
+
 // Bundle analyzer helper (development only)
 export const analyzeBundle = () => {
   if (import.meta.env.DEV) {

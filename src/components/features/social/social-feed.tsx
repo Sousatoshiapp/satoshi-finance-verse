@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
 import { Textarea } from "@/components/shared/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/shared/ui/avatar";
 import { Badge } from "@/components/shared/ui/badge";
-import { ScrollArea } from "@/components/shared/ui/scroll-area";
+import { VirtualList } from "@/components/shared/ui/virtual-list";
 import { Separator } from "@/components/shared/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -223,7 +223,7 @@ export function SocialFeed() {
     }
   };
 
-  const handleLikePost = async (postId: string, isLiked: boolean) => {
+  const handleLikePost = useCallback(async (postId: string, isLiked: boolean) => {
     if (!currentUserId) return;
 
     try {
@@ -275,7 +275,7 @@ export function SocialFeed() {
         variant: "destructive"
       });
     }
-  };
+  }, [currentUserId, toast]);
 
   const loadComments = async (postId: string) => {
     try {
@@ -342,7 +342,7 @@ export function SocialFeed() {
     }
   };
 
-  const toggleComments = (postId: string) => {
+  const toggleComments = useCallback((postId: string) => {
     if (expandedPost === postId) {
       setExpandedPost(null);
     } else {
@@ -351,7 +351,7 @@ export function SocialFeed() {
         loadComments(postId);
       }
     }
-  };
+  }, [expandedPost, comments, loadComments]);
 
   if (loading) {
     return (

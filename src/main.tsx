@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/shared/ui/toaster";
 import { BrowserRouter } from "react-router-dom";
-import { optimizeMemoryUsage } from "@/utils/bundle-optimizer";
+import { optimizeMemoryUsage, advancedMemoryOptimization, monitorPerformance } from "@/utils/bundle-optimizer";
 import App from "./App";
 import "./index.css";
 import "./i18n";
@@ -27,8 +27,16 @@ const queryClient = new QueryClient({
 
 const MemoryOptimizer = () => {
   useEffect(() => {
-    const interval = setInterval(optimizeMemoryUsage, 30000);
-    return () => clearInterval(interval);
+    monitorPerformance();
+    
+    const memoryInterval = setInterval(optimizeMemoryUsage, 30000);
+    
+    const advancedInterval = setInterval(advancedMemoryOptimization, 60000);
+    
+    return () => {
+      clearInterval(memoryInterval);
+      clearInterval(advancedInterval);
+    };
   }, []);
   return null;
 };

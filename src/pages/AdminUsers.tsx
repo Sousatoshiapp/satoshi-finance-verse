@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
@@ -8,18 +8,11 @@ import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
+import { VirtualTable } from "@/components/shared/ui/virtual-table";
 import { 
   Users, Search, MoreHorizontal, Crown, Shield, 
   Trash2, Edit, Eye, DollarSign, Trophy, Calendar
 } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/shared/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -160,8 +153,10 @@ export default function AdminUsers() {
     setEditDialogOpen(true);
   };
 
-  const filteredUsers = users.filter(user =>
-    user.nickname.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = useMemo(() => 
+    users.filter(user =>
+      user.nickname.toLowerCase().includes(searchQuery.toLowerCase())
+    ), [users, searchQuery]
   );
 
   const getSubscriptionBadge = (tier: string) => {
@@ -174,6 +169,87 @@ export default function AdminUsers() {
         return <Badge variant="outline">Free</Badge>;
     }
   };
+
+  const tableColumns = useMemo(() => [
+    {
+      key: 'nickname',
+      header: 'Usuário',
+      render: (user: User) => (
+        <div className="font-medium">{user.nickname}</div>
+      ),
+      width: '15%'
+    },
+    {
+      key: 'level',
+      header: 'Nível',
+      render: (user: User) => <div>{user.level}</div>,
+      width: '10%'
+    },
+    {
+      key: 'xp',
+      header: 'XP',
+      render: (user: User) => <div>{user.xp?.toLocaleString()}</div>,
+      width: '12%'
+    },
+    {
+      key: 'points',
+      header: 'Beetz',
+      render: (user: User) => <div>{user.points?.toLocaleString()}</div>,
+      width: '12%'
+    },
+    {
+      key: 'subscription',
+      header: 'Assinatura',
+      render: (user: User) => getSubscriptionBadge(user.subscription_tier),
+      width: '12%'
+    },
+    {
+      key: 'streak',
+      header: 'Streak',
+      render: (user: User) => <div>{user.streak}</div>,
+      width: '10%'
+    },
+    {
+      key: 'created_at',
+      header: 'Criado em',
+      render: (user: User) => (
+        <div>{new Date(user.created_at).toLocaleDateString()}</div>
+      ),
+      width: '15%'
+    },
+    {
+      key: 'actions',
+      header: 'Ações',
+      render: (user: User) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => openEditDialog(user)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem 
+              className="text-destructive"
+              onClick={() => {
+                setSelectedUser(user);
+                setDeleteDialogOpen(true);
+              }}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Deletar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+      width: '14%'
+    }
+  ], []);
 
   return (
     <AdminAuthProtection>
@@ -273,64 +349,13 @@ export default function AdminUsers() {
                 </div>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Usuário</TableHead>
-                      <TableHead>Nível</TableHead>
-                      <TableHead>XP</TableHead>
-                      <TableHead>Beetz</TableHead>
-                      <TableHead>Assinatura</TableHead>
-                      <TableHead>Streak</TableHead>
-                      <TableHead>Criado em</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredUsers.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-medium">
-                          {user.nickname}
-                        </TableCell>
-                        <TableCell>{user.level}</TableCell>
-                        <TableCell>{user.xp?.toLocaleString()}</TableCell>
-                        <TableCell>{user.points?.toLocaleString()}</TableCell>
-                        <TableCell>{getSubscriptionBadge(user.subscription_tier)}</TableCell>
-                        <TableCell>{user.streak}</TableCell>
-                        <TableCell>
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => openEditDialog(user)}>
-                                <Edit className="mr-2 h-4 w-4" />
-                                Editar
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem 
-                                className="text-destructive"
-                                onClick={() => {
-                                  setSelectedUser(user);
-                                  setDeleteDialogOpen(true);
-                                }}
-                              >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Deletar
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <VirtualTable
+                  data={filteredUsers}
+                  columns={tableColumns}
+                  itemHeight={60}
+                  height={500}
+                  className="w-full"
+                />
               </CardContent>
             </Card>
           </div>
