@@ -45,13 +45,17 @@ export function useConceptConnections() {
     try {
       setLoading(true);
       
-      if (!profile) return;
-      
-      // Determinar dificuldade baseada no nível
+      // Determinar dificuldade baseada no nível (com fallback)
       let difficulty: string;
-      if (profile.level <= 5) difficulty = 'basic';
-      else if (profile.level <= 15) difficulty = 'intermediate';
-      else difficulty = 'advanced';
+      if (profile && profile.level) {
+        if (profile.level <= 5) difficulty = 'basic';
+        else if (profile.level <= 15) difficulty = 'intermediate';
+        else difficulty = 'advanced';
+      } else {
+        // Fallback para dificuldade básica se profile não disponível
+        difficulty = 'basic';
+        console.log('Profile não disponível, usando dificuldade básica');
+      }
 
       const { data, error } = await supabase
         .from('concept_connection_questions')
