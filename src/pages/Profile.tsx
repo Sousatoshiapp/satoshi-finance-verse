@@ -21,68 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAvatarContext } from "@/contexts/AvatarContext";
-import { Crown, Star, Shield, Camera, TrendingUp } from "lucide-react";
-import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
-import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
+import { Crown, Star, Shield, Camera } from "lucide-react";
 
-// Import avatar images
-import neoTrader from "@/assets/avatars/neo-trader.jpg";
-import cryptoAnalyst from "@/assets/avatars/crypto-analyst.jpg";
-import financeHacker from "@/assets/avatars/finance-hacker.jpg";
-import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
-import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
-import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
-import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
-import neuralArchitect from "@/assets/avatars/neural-architect.jpg";
-import dataMiner from "@/assets/avatars/data-miner.jpg";
-import blockchainGuardian from "@/assets/avatars/blockchain-guardian.jpg";
-import quantumPhysician from "@/assets/avatars/quantum-physician.jpg";
-import virtualRealtor from "@/assets/avatars/virtual-realtor.jpg";
-import codeAssassin from "@/assets/avatars/code-assassin.jpg";
-import cryptoShaman from "@/assets/avatars/crypto-shaman.jpg";
-import marketProphet from "@/assets/avatars/market-prophet.jpg";
-import digitalNomad from "@/assets/avatars/digital-nomad.jpg";
-import neonDetective from "@/assets/avatars/neon-detective.jpg";
-import hologramDancer from "@/assets/avatars/hologram-dancer.jpg";
-import cyberMechanic from "@/assets/avatars/cyber-mechanic.jpg";
-import ghostTrader from "@/assets/avatars/ghost-trader.jpg";
-import binaryMonk from "@/assets/avatars/binary-monk.jpg";
-import pixelArtist from "@/assets/avatars/pixel-artist.jpg";
-import quantumThief from "@/assets/avatars/quantum-thief.jpg";
-import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
-import stormHacker from "@/assets/avatars/storm-hacker.jpg";
-import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
-import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
-
-const avatarImages = {
-  'neo-trader': neoTrader,
-  'crypto-analyst': cryptoAnalyst,
-  'finance-hacker': financeHacker,
-  'investment-scholar': investmentScholar,
-  'quantum-broker': quantumBroker,
-  'defi-samurai': defiSamurai,
-  'the-satoshi': theSatoshi,
-  'neural-architect': neuralArchitect,
-  'data-miner': dataMiner,
-  'blockchain-guardian': blockchainGuardian,
-  'quantum-physician': quantumPhysician,
-  'virtual-realtor': virtualRealtor,
-  'code-assassin': codeAssassin,
-  'crypto-shaman': cryptoShaman,
-  'market-prophet': marketProphet,
-  'digital-nomad': digitalNomad,
-  'neon-detective': neonDetective,
-  'hologram-dancer': hologramDancer,
-  'cyber-mechanic': cyberMechanic,
-  'ghost-trader': ghostTrader,
-  'binary-monk': binaryMonk,
-  'pixel-artist': pixelArtist,
-  'quantum-thief': quantumThief,
-  'memory-keeper': memoryKeeper,
-  'storm-hacker': stormHacker,
-  'dream-architect': dreamArchitect,
-  'chrome-gladiator': chromeGladiator,
-};
 
 interface UserProfile {
   id: string;
@@ -120,14 +60,6 @@ export default function Profile() {
   const { subscription } = useSubscription();
   const { t } = useI18n();
   
-  const getAvatarImage = (avatarName?: string) => {
-    if (!avatarName) return satoshiLogo;
-    console.log('Avatar name:', avatarName);
-    const key = avatarName.toLowerCase().replace(' ', '-') as keyof typeof avatarImages;
-    console.log('Mapped key:', key);
-    console.log('Found image:', avatarImages[key]);
-    return avatarImages[key] || satoshiLogo;
-  };
 
   useEffect(() => {
     loadUserProfile();
@@ -196,53 +128,6 @@ export default function Profile() {
     }
   };
 
-  const handleAvatarChanged = async (avatarId: string) => {
-    if (user) {
-      try {
-        // CORREÇÃO 2: Limpar profile_image_url no BANCO também
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        if (authUser) {
-          const { error } = await supabase
-            .from('profiles')
-            .update({ 
-              current_avatar_id: avatarId, 
-              profile_image_url: null // Limpar foto quando avatar é selecionado
-            })
-            .eq('user_id', authUser.id);
-
-          if (error) throw error;
-        }
-        
-        // Update local state
-        setUser({ ...user, current_avatar_id: avatarId, profile_image_url: null });
-        
-        // Load the new avatar data
-        if (avatarId) {
-          const { data: avatarData } = await supabase
-            .from('avatars')
-            .select('id, name, image_url')
-            .eq('id', avatarId)
-            .single();
-          
-          if (avatarData) {
-            setUserAvatar(avatarData);
-          }
-        } else {
-          setUserAvatar(null);
-        }
-        
-        // CORREÇÃO 2: Invalidar caches quando avatar é selecionado
-        invalidateAvatarCaches();
-      } catch (error) {
-        console.error('Error updating avatar:', error);
-        toast({
-          title: "Erro",
-          description: "Não foi possível atualizar o avatar",
-          variant: "destructive"
-        });
-      }
-    }
-  };
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -399,7 +284,7 @@ export default function Profile() {
                  console.log('🔍 Dashboard Avatar Data:', {
                    profile_image_url: user.profile_image_url,
                    current_avatar_id: user.current_avatar_id,
-                   userAvatar: userAvatar,
+                   userAvatar,
                    userId: user.id
                  });
                  return null;
