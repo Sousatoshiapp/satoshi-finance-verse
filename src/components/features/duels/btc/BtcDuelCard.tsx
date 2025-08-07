@@ -21,7 +21,7 @@ const BtcDuelCard = memo(function BtcDuelCard() {
       isGlowing ? 'scale-105' : ''
     }`}>
       {/* Cyber Background with animated elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-blue-900/90 to-purple-900/95" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 via-blue-900/50 to-purple-900/50" />
       <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-purple-500/10" />
       
       {/* Animated border effect */}
@@ -87,7 +87,7 @@ const BtcDuelCard = memo(function BtcDuelCard() {
           
           <div className="relative flex items-center gap-1">
             <Zap className="h-3 w-3" />
-            APOSTAR
+            ENTRAR
           </div>
         </Button>
       </CardContent>
