@@ -129,9 +129,15 @@ export const useDashboardData = () => {
           table: 'profiles',
           filter: `user_id=eq.${user.id}`,
         },
-        () => {
+        (payload) => {
+          console.log('Profile updated, invalidating dashboard cache:', payload);
           // Invalidate dashboard data when profile is updated
           queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
+          
+          // Force refresh after profile image changes with small delay
+          setTimeout(() => {
+            queryClient.refetchQueries({ queryKey: ['dashboard-data'] });
+          }, 500);
         }
       )
       .on(
@@ -149,16 +155,29 @@ export const useDashboardData = () => {
       )
       .subscribe();
 
+    // Listen to custom avatar change events
+    const handleAvatarChange = () => {
+      console.log('Avatar changed event received, invalidating dashboard cache');
+      queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
+      // Force refresh with delay to ensure DB update is complete
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['dashboard-data'] });
+      }, 1000);
+    };
+
+    window.addEventListener('avatar-changed', handleAvatarChange);
+
     return () => {
       supabase.removeChannel(channel);
+      window.removeEventListener('avatar-changed', handleAvatarChange);
     };
   }, [user, queryClient]);
   
   return useQuery({
     queryKey: ['dashboard-data'],
     queryFn: fetchDashboardDataOptimized,
-    staleTime: 5 * 60 * 1000, // 5 minutes (increased for better performance)
-    gcTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 1 * 60 * 1000, // Reduced to 1 minute for faster avatar updates
+    gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,
     retry: 2,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),

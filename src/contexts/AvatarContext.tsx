@@ -11,6 +11,8 @@ export function AvatarProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
 
   const invalidateAvatarCaches = useCallback(() => {
+    console.log('Invalidating all avatar caches after image update');
+    
     // Invalidate all relevant caches when avatar changes
     queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
     queryClient.invalidateQueries({ queryKey: ['avatar-data'] });
@@ -20,6 +22,11 @@ export function AvatarProvider({ children }: { children: React.ReactNode }) {
     queryClient.invalidateQueries({ queryKey: ['current-user-avatar'] });
     queryClient.invalidateQueries({ queryKey: ['user-avatar'] });
     queryClient.invalidateQueries({ queryKey: ['current-user'] });
+    
+    // Force immediate refetch of dashboard data
+    setTimeout(() => {
+      queryClient.refetchQueries({ queryKey: ['dashboard-data'] });
+    }, 200);
     
     // Dispatch custom event for components not using react-query
     window.dispatchEvent(new CustomEvent('avatar-changed'));
