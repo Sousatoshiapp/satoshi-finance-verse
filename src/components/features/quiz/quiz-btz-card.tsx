@@ -48,9 +48,7 @@ export function QuizBTZCard({ className = "" }: QuizBTZCardProps) {
       const easedProgress = easeOutQuart(progress);
       
       // Slot machine effect: números "girando"
-      const animatedValue = Math.floor(
-        startValue + (targetValue - startValue) * easedProgress
-      );
+      const animatedValue = startValue + (targetValue - startValue) * easedProgress;
       
       setDisplayBTZ(animatedValue);
       

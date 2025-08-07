@@ -69,8 +69,8 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
       } else {
         const easeOut = 1 - Math.pow(1 - progress, 3);
         const currentValue = startValue + (increment * currentStep * easeOut);
-        const randomOffset = (Math.random() - 0.5) * 5 * (1 - progress);
-        setDisplayBTZ(Math.round(Math.max(0, currentValue + randomOffset)));
+        const randomOffset = (Math.random() - 0.5) * 0.05 * (1 - progress);
+        setDisplayBTZ(Math.max(0, currentValue + randomOffset));
       }
     }, duration / steps);
   }, [animationState]);
