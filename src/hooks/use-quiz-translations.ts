@@ -1,4 +1,3 @@
-import { useI18n } from "@/hooks/use-i18n";
 import { QuizQuestion } from "@/hooks/use-quiz-shuffle";
 import { createEnhancedTranslationMatcher } from "@/utils/translation-mapper";
 
@@ -581,7 +580,6 @@ const questionTranslations: Record<string, Record<string, any>> = {
 };
 
 export const useQuizTranslations = () => {
-  const { getCurrentLanguage } = useI18n();
   
   const translateQuestion = (question: QuizQuestion): QuizQuestion => {
     const currentLang = getCurrentLanguage();

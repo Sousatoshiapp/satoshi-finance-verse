@@ -26,7 +26,6 @@ import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import { useCrisisState } from "@/hooks/use-crisis-state";
 import { LanguageSwitch } from "@/components/shared/language-switch";
-import { useI18n } from "@/hooks/use-i18n";
 // import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 
@@ -35,17 +34,16 @@ const getGreeting = (t: any) => {
   const hour = new Date().getHours();
   
   if (hour >= 5 && hour < 12) {
-    return { text: t('dashboard.goodMorning'), icon: "☀️" };
+    return { text: "Bom dia", icon: "☀️" };
   } else if (hour >= 12 && hour < 18) {
-    return { text: t('dashboard.goodAfternoon'), icon: "🌤️" };
+    return { text: "Boa tarde", icon: "🌤️" };
   } else {
-    return { text: t('dashboard.goodNight'), icon: "🌙" };
+    return { text: "Boa noite", icon: "🌙" };
   }
 };
 
 export default function Dashboard() {
-  const { t } = useI18n();
-  const [greeting, setGreeting] = useState(getGreeting(t));
+  const [greeting, setGreeting] = useState(getGreeting(null));
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   
   const navigate = useNavigate();
@@ -148,8 +146,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error processing payment:', error);
       toast({
-        title: t('errors.paymentProcessingError'),
-        description: t('errors.subscriptionActivationProblem'),
+        title: "Erro ao processar pagamento",
+        description: "Problema na ativação da assinatura",
         variant: "destructive"
       });
     }
@@ -192,7 +190,7 @@ export default function Dashboard() {
   }, [dashboardData, realtimePoints]);
 
   // Memoize user data extraction
-  const userNickname = useMemo(() => dashboardData?.profile?.nickname || t('dashboard.student'), [dashboardData?.profile?.nickname, t]);
+  const userNickname = useMemo(() => dashboardData?.profile?.nickname || "Estudante", [dashboardData?.profile?.nickname]);
   const userAvatar = useMemo(() => dashboardData?.avatar, [dashboardData?.avatar]);
   const hasAvatar = useMemo(() => !!userAvatar, [userAvatar]);
   const userDistrict = useMemo(() => dashboardData?.district, [dashboardData?.district]);
@@ -222,12 +220,12 @@ export default function Dashboard() {
                   {isOnline ? (
                     <span className="inline-flex items-center gap-1">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs text-green-500">{t('online')}</span>
+                      <span className="text-xs text-green-500">Online</span>
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1">
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span className="text-xs text-red-500">{t('offline')}</span>
+                      <span className="text-xs text-red-500">Offline</span>
                     </span>
                   )}
                 </span>
@@ -250,7 +248,7 @@ export default function Dashboard() {
                   onClick={handleNavigateToSubscription}
                   className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0"
                 >
-                  ⭐ {t('common.pro')}
+                  ⭐ Pro
                 </Button>
               )}
             </div>
@@ -332,7 +330,7 @@ export default function Dashboard() {
             
             {/* User information on the right */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-muted-foreground mb-3">{t('common.level')} {userStats.level}</p>
+              <p className="text-sm text-muted-foreground mb-3">Nível {userStats.level}</p>
               
               {/* Compact Progress Bar */}
               <div className="w-full">
@@ -349,8 +347,8 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
-                  <span>{t('common.xp')}: {userStats.currentXP}</span>
-                  <span>{t('dashboard.goal')}: {userStats.nextLevelXP}</span>
+                  <span>XP: {userStats.currentXP}</span>
+                  <span>Meta: {userStats.nextLevelXP}</span>
                 </div>
               </div>
             </div>

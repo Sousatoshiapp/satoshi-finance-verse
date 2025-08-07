@@ -19,8 +19,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useI18n } from "@/hooks/use-i18n";
 import { useAvatarContext } from "@/contexts/AvatarContext";
+import { getLevelInfo } from "@/data/levels";
 import { Crown, Star, Shield, Camera } from "lucide-react";
 
 
@@ -58,7 +58,6 @@ export default function Profile() {
   const { toast } = useToast();
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription } = useSubscription();
-  const { t } = useI18n();
   
 
   useEffect(() => {
@@ -227,7 +226,7 @@ export default function Profile() {
     switch (tier) {
       case 'pro': return 'Satoshi Pro';
       case 'elite': return 'Satoshi Elite';
-      default: return t('subscription.free');
+      default: return 'Plano Gratuito';
     }
   };
 
@@ -236,7 +235,7 @@ export default function Profile() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
         </div>
       </div>
     );
@@ -252,12 +251,12 @@ export default function Profile() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                ← {t('navigation.dashboard')}
+                ← Dashboard
               </Button>
               
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate('/settings')}>
-              {t('navigation.settings')}
+              Configurações
             </Button>
           </div>
         </div>
@@ -311,13 +310,13 @@ export default function Profile() {
                 {user.nickname}
               </h2>
               <p className="text-muted-foreground mb-3 text-sm md:text-base">
-                {t(`levels.level_${user.level}.name`)} • {user.points} Beetz
+                {getLevelInfo(user.level).name} • {user.points} Beetz
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
                 <StreakBadge days={user.streak} />
                 <SubscriptionIndicator tier={subscription.tier} size="sm" />
                 <Badge variant="outline" className="text-xs md:text-sm">
-                  {t('common.level')} {user.level}
+                  Nível {user.level}
                 </Badge>
               </div>
             </div>
@@ -350,7 +349,7 @@ export default function Profile() {
           />
           
           <Card className="p-4 md:p-6">
-            <h3 className="font-bold text-foreground mb-4">{t('levels.progress')}</h3>
+            <h3 className="font-bold text-foreground mb-4">Progresso</h3>
             <ProgressBar
               value={user.completed_lessons}
               max={20}
@@ -358,7 +357,7 @@ export default function Profile() {
               className="mb-3"
             />
             <p className="text-sm text-muted-foreground">
-              {user.completed_lessons} {t('profile.stats.of')} 20 {t('profile.stats.lessonsCompleted')}
+              {user.completed_lessons} de 20 lições completadas
             </p>
           </Card>
         </div>
@@ -402,8 +401,8 @@ export default function Profile() {
                 </h3>
                 <p className="text-sm text-muted-foreground">
                   {subscription.tier === 'free' 
-                    ? t('subscription.benefits')
-                    : `XP ${subscription.xpMultiplier}x • ${subscription.monthlyBeetz} ${t('common.beetz')}/mês`
+                    ? 'Benefícios limitados'
+                    : `XP ${subscription.xpMultiplier}x • ${subscription.monthlyBeetz} Beetz/mês`
                   }
                 </p>
               </div>
@@ -417,7 +416,7 @@ export default function Profile() {
                 : ''
               }
             >
-              {subscription.tier === 'free' ? '⭐ Upgrade' : t('subscription.subscribe')}
+              {subscription.tier === 'free' ? '⭐ Upgrade' : 'Gerenciar'}
             </Button>
           </div>
         </Card>

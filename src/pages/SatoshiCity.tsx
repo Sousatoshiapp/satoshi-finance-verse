@@ -13,7 +13,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { DistrictTransition } from "@/components/district/DistrictTransition";
 import { Building, Users, Zap, TrendingUp, GraduationCap, Bitcoin, Banknote, Home, Globe, Cpu, Swords, Shield, Star, Trophy, Crown, Timer, Target, Users2, Flame, Box, AlertTriangle } from "lucide-react";
 import { useCrisisData } from "@/hooks/use-crisis-data";
-import { useI18n } from "@/hooks/use-i18n";
 import satoshiCityMap from "@/assets/satoshi-city-map.jpg";
 import satoshiCityDay from "@/assets/satoshi-city-day-illuminated.jpg";
 import satoshiCitySunset from "@/assets/satoshi-city-sunset-illuminated.jpg";
@@ -101,7 +100,6 @@ const districtPositions = {
 };
 
 export default function SatoshiCity() {
-  const { t } = useI18n();
   const [districts, setDistricts] = useState<District[]>([]);
   const [userDistricts, setUserDistricts] = useState<UserDistrict[]>([]);
   const [districtXPData, setDistrictXPData] = useState<Record<string, number>>({});
@@ -416,15 +414,15 @@ export default function SatoshiCity() {
           />
         </div>
         <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          {t('satoshiCity.welcome')}
-          {isMobile ? t('satoshiCity.instructions.mobile') : t('satoshiCity.instructions.desktop')}
+          Bem-vindo à Satoshi City - O epicentro financeiro do futuro!
+          {isMobile ? "Toque nos distritos para explorar" : "Clique nos distritos para explorar"}
         </p>
         <div className="flex justify-center space-x-4 mb-6">
           <Badge variant="outline" className="border-cyan-400 text-cyan-400">
-            {t('satoshiCity.badges.activeDistricts')}
+            7 Distritos Ativos
           </Badge>
           <Badge variant="outline" className="border-purple-400 text-purple-400">
-            {t('satoshiCity.badges.neuralSystem')}
+            Sistema Neural Ativo
           </Badge>
         </div>
         
@@ -566,7 +564,7 @@ export default function SatoshiCity() {
                         {userInfo?.is_residence && (
                           <Badge variant="outline" className="text-xs border-yellow-400 text-yellow-400 ml-auto">
                             <Crown className="w-3 h-3 mr-1" />
-                            {t('satoshiCity.residence.home')}
+                            Casa
                           </Badge>
                         )}
                       </div>
@@ -584,7 +582,7 @@ export default function SatoshiCity() {
                       >
                         {userInfo?.is_residence ? (
                           <div className="text-xs text-center text-yellow-400 font-medium p-2 bg-yellow-400/10 rounded">
-                            ✨ {t('satoshiCity.residence.current')}
+                            ✨ Sua residência atual
                           </div>
                         ) : (
                           <Button
@@ -597,7 +595,7 @@ export default function SatoshiCity() {
                             onClick={() => handleChangeResidence(district.id)}
                           >
                             <Home className="w-3 h-3 mr-1" />
-                            {t('satoshiCity.residence.liveHere')}
+                            Morar aqui
                           </Button>
                         )}
                       </div>
@@ -647,10 +645,10 @@ export default function SatoshiCity() {
                   )
                 )}
               </div>
-              <span>{t('satoshiCity.modal.liveIn')} {selectedDistrictForMobile?.name}</span>
+              <span>Morar em {selectedDistrictForMobile?.name}</span>
             </DialogTitle>
             <DialogDescription>
-              {t('satoshiCity.modal.confirmResidence', { districtName: selectedDistrictForMobile?.name })}
+              Tem certeza que deseja mudar sua residência para {selectedDistrictForMobile?.name}?
             </DialogDescription>
           </DialogHeader>
           
@@ -660,7 +658,7 @@ export default function SatoshiCity() {
               className="flex-1"
               onClick={() => setShowMobileModal(false)}
             >
-              {t('common.cancel')}
+              Cancelar
             </Button>
             <Button
               className="flex-1"
@@ -671,7 +669,7 @@ export default function SatoshiCity() {
               onClick={() => selectedDistrictForMobile && handleChangeResidence(selectedDistrictForMobile.id)}
             >
               <Home className="w-4 h-4 mr-2" />
-              {t('common.confirm')}
+              Confirmar
             </Button>
           </div>
         </DialogContent>

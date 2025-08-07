@@ -6,7 +6,6 @@ import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { levelTiers, getLevelInfo } from "@/data/levels";
-import { useI18n } from "@/hooks/use-i18n";
 import { Trophy, Star, Lock, CheckCircle } from "lucide-react";
 
 interface UserProfile {
@@ -18,7 +17,6 @@ export default function Levels() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { t } = useI18n();
 
   useEffect(() => {
     loadUserProfile();
@@ -107,7 +105,7 @@ export default function Levels() {
             {user && (
               <Badge variant="secondary" className="flex items-center gap-2">
                 <Trophy className="h-4 w-4" />
-                {t(`levels.level_${user.level}.name`)}
+                {getLevelInfo(user.level).name}
               </Badge>
             )}
           </div>
@@ -124,14 +122,14 @@ export default function Levels() {
                   {user.level}
                 </div>
                 <div>
-                  <h2 className="text-xl">{t(`levels.level_${user.level}.name`)}</h2>
+                  <h2 className="text-xl">{getLevelInfo(user.level).name}</h2>
                   <p className="text-sm text-muted-foreground">Seu nível atual</p>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                {t(`levels.level_${user.level}.description`)}
+                {getLevelInfo(user.level).description}
               </p>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">XP Atual: {user.xp}</span>
@@ -178,7 +176,7 @@ export default function Levels() {
                           {tier.level}
                         </div>
                         <div>
-                          <CardTitle className="text-lg">{t(`levels.level_${tier.level}.name`)}</CardTitle>
+                          <CardTitle className="text-lg">{getLevelInfo(tier.level).name}</CardTitle>
                           <p className="text-xs text-muted-foreground">Nível {tier.level}</p>
                         </div>
                       </div>
@@ -195,7 +193,7 @@ export default function Levels() {
                   
                   <CardContent>
                     <CardDescription className={isLocked ? 'text-muted-foreground/60' : ''}>
-                      {t(`levels.level_${tier.level}.description`)}
+                      {getLevelInfo(tier.level).description}
                     </CardDescription>
                     
                     <div className="mt-3 flex items-center justify-between text-sm">

@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui
 import { Button } from "@/components/shared/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
 import { Globe, Check } from "lucide-react";
-import { useI18n } from "@/hooks/use-i18n";
 
 const languages = [
   { code: 'pt-BR', name: 'Português (Brasil)', flag: '🇧🇷' },
@@ -14,11 +13,9 @@ const languages = [
 ];
 
 export function LanguageSelector() {
-  const { t, changeLanguage, getCurrentLanguage } = useI18n();
-  const currentLang = getCurrentLanguage();
+  const currentLang = 'pt-BR';
 
   const handleLanguageChange = (languageCode: string) => {
-    changeLanguage(languageCode);
   };
 
   return (
@@ -26,17 +23,17 @@ export function LanguageSelector() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Globe className="h-5 w-5" />
-          {t('admin.language')}
+          Idioma
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="text-sm text-muted-foreground">
-          {t('admin.changeLanguage')}
+          Alterar idioma
         </div>
         
         <Select value={currentLang} onValueChange={handleLanguageChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder={t('admin.changeLanguage')} />
+            <SelectValue placeholder="Alterar idioma" />
           </SelectTrigger>
           <SelectContent>
             {languages.map((language) => (
