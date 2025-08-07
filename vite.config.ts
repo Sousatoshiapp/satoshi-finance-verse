@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
     production: {
       VITE_SUPABASE_URL: "https://uabdmohhzsertxfishoh.supabase.co",
       VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVhYmRtb2hoenNlcnR4ZmlzaG9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MDEyNTIsImV4cCI6MjA2NzA3NzI1Mn0.Dbmi7MvETErWGrvC-lJ_5gIf2lGRxWTKIoAm9N9U9KE",
-      VITE_APP_URL: "https://app.satoshifinance.com",
+      VITE_APP_URL: "https://app.sousatoshi.com.br",
       VITE_API_URL: "https://uabdmohhzsertxfishoh.supabase.co",
       VITE_PERSONA_ENVIRONMENT_ID: "env_wi6mxC93nGVwXz8AtNkt4oCwegMj",
       VITE_PERSONA_TEMPLATE_ID: "vtmpl_48WRTb1itWfoT1jmXSHLtpuLoUC5"
