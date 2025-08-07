@@ -10,11 +10,11 @@ export default function SoloQuiz() {
   const theme = searchParams.get('theme');
 
   useEffect(() => {
-    // Se não há tema selecionado, redirecionar para seleção
-    if (!theme) {
+    // Se não há tema selecionado E não é geração, redirecionar para seleção
+    if (!theme && searchParams.get('generate') !== 'true') {
       navigate('/game-mode');
     }
-  }, [theme, navigate]);
+  }, [theme, navigate, searchParams]);
 
   // Mostrar gerador de perguntas se for desenvolvimento
   if (searchParams.get('generate') === 'true') {
