@@ -17,11 +17,34 @@ import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield, Infinity, Eye, S
 import { ComingSoonOverlay } from "@/components/shared/coming-soon-overlay";
 import { AvatarFallbackImage } from "@/components/features/store/avatar-fallback-image";
 
-// Import only premium avatar images that exist
-import cosmicOracle from "/avatars/cosmic-oracle.jpg";
-import quantumOverlord from "/avatars/quantum-overlord.jpg";
-import neuralEmperor from "/avatars/neural-emperor.jpg";
-import satoshiPrime from "/avatars/satoshi-prime.jpg";
+// Import cyberpunk avatar images
+import neoTrader from "@/assets/avatars/neo-trader.jpg";
+import cryptoAnalyst from "@/assets/avatars/crypto-analyst.jpg";
+import financeHacker from "@/assets/avatars/finance-hacker.jpg";
+import investmentScholar from "@/assets/avatars/investment-scholar.jpg";
+import quantumBroker from "@/assets/avatars/quantum-broker.jpg";
+import defiSamurai from "@/assets/avatars/defi-samurai.jpg";
+import theSatoshi from "@/assets/avatars/the-satoshi.jpg";
+import neuralArchitect from "@/assets/avatars/neural-architect.jpg";
+import dataMiner from "@/assets/avatars/data-miner.jpg";
+import blockchainGuardian from "@/assets/avatars/blockchain-guardian.jpg";
+import quantumPhysician from "@/assets/avatars/quantum-physician.jpg";
+import virtualRealtor from "@/assets/avatars/virtual-realtor.jpg";
+import codeAssassin from "@/assets/avatars/code-assassin.jpg";
+import cryptoShaman from "@/assets/avatars/crypto-shaman.jpg";
+import marketProphet from "@/assets/avatars/market-prophet.jpg";
+import digitalNomad from "@/assets/avatars/digital-nomad.jpg";
+import neonDetective from "@/assets/avatars/neon-detective.jpg";
+import hologramDancer from "@/assets/avatars/hologram-dancer.jpg";
+import cyberMechanic from "@/assets/avatars/cyber-mechanic.jpg";
+import ghostTrader from "@/assets/avatars/ghost-trader.jpg";
+import binaryMonk from "@/assets/avatars/binary-monk.jpg";
+import pixelArtist from "@/assets/avatars/pixel-artist.jpg";
+import quantumThief from "@/assets/avatars/quantum-thief.jpg";
+import memoryKeeper from "@/assets/avatars/memory-keeper.jpg";
+import stormHacker from "@/assets/avatars/storm-hacker.jpg";
+import dreamArchitect from "@/assets/avatars/dream-architect.jpg";
+import chromeGladiator from "@/assets/avatars/chrome-gladiator.jpg";
 
 // Import cyberpunk skins
 import neonMatrixOverlay from "@/assets/skins/neon-matrix-overlay.jpg";
@@ -649,44 +672,42 @@ export default function Store() {
         </div>
 
         {/* Premium Plans Promotion Card */}
-        <ComingSoonOverlay>
-          <Card className="p-4 mb-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <Crown className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-foreground mb-1">{t('store.premium.title')}</h3>
-                  <p className="text-xs text-muted-foreground">{t('store.premium.subtitle')}</p>
-                </div>
+        <Card className="p-4 mb-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <Crown className="w-5 h-5 text-white" />
               </div>
-              <Button 
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/subscription-plans')}
-                className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
-              >
-                {t('store.premium.viewPlans')}
-              </Button>
+              <div>
+                <h3 className="text-sm font-bold text-foreground mb-1">{t('store.premium.title')}</h3>
+                <p className="text-xs text-muted-foreground">{t('store.premium.subtitle')}</p>
+              </div>
             </div>
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/subscription-plans')}
+              className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
+            >
+              {t('store.premium.viewPlans')}
+            </Button>
+          </div>
           
-            <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
-              <div className="text-center">
-                <div className="text-purple-400 font-bold">∞</div>
-                <div className="text-muted-foreground text-xs">{t('store.premium.duels')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-purple-400 font-bold">3x</div>
-                <div className="text-muted-foreground text-xs">{t('store.premium.xpBoost')}</div>
-              </div>
-              <div className="text-center">
-                <div className="text-purple-400 font-bold">100</div>
-                <div className="text-muted-foreground text-xs">{t('store.premium.beetzPerMonth')}</div>
-              </div>
+          <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+            <div className="text-center">
+              <div className="text-purple-400 font-bold">∞</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.duels')}</div>
             </div>
-          </Card>
-        </ComingSoonOverlay>
+            <div className="text-center">
+              <div className="text-purple-400 font-bold">3x</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.xpBoost')}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-purple-400 font-bold">100</div>
+              <div className="text-muted-foreground text-xs">{t('store.premium.beetzPerMonth')}</div>
+            </div>
+          </div>
+        </Card>
 
         {/* User Points - BTZ Card Igual ao Dashboard */}
         {userProfile && (
@@ -769,19 +790,39 @@ export default function Store() {
                 const canAfford = userProfile ? userProfile.points >= avatar.price : false;
                 const meetsLevel = userProfile ? userProfile.level >= avatar.level_required : false;
                 
-                // Get avatar image from imports - only for premium avatars with existing images
+                // Get avatar image from imports
                 const getAvatarImage = () => {
                   const imageMap: { [key: string]: any } = {
-                    'Cosmic Oracle': cosmicOracle,
-                    'Quantum Overlord': quantumOverlord,
-                    'Neural Emperor': neuralEmperor,
-                    'Satoshi Prime': satoshiPrime,
+                    'Neo Trader': neoTrader,
+                    'Crypto Analyst': cryptoAnalyst,
+                    'Finance Hacker': financeHacker,
+                    'Investment Scholar': investmentScholar,
+                    'Quantum Broker': quantumBroker,
+                    'DeFi Samurai': defiSamurai,
+                    'The Satoshi': theSatoshi,
+                    'Neural Architect': neuralArchitect,
+                    'Data Miner': dataMiner,
+                    'Blockchain Guardian': blockchainGuardian,
+                    'Quantum Physician': quantumPhysician,
+                    'Virtual Realtor': virtualRealtor,
+                    'Code Assassin': codeAssassin,
+                    'Crypto Shaman': cryptoShaman,
+                    'Market Prophet': marketProphet,
+                    'Digital Nomad': digitalNomad,
+                    'Neon Detective': neonDetective,
+                    'Hologram Dancer': hologramDancer,
+                    'Cyber Mechanic': cyberMechanic,
+                    'Ghost Trader': ghostTrader,
+                    'Binary Monk': binaryMonk,
+                    'Pixel Artist': pixelArtist,
+                    'Quantum Thief': quantumThief,
+                    'Memory Keeper': memoryKeeper,
+                    'Storm Hacker': stormHacker,
+                    'Dream Architect': dreamArchitect,
+                    'Chrome Gladiator': chromeGladiator,
                   };
-                  return imageMap[avatar.name] || null;
+                  return imageMap[avatar.name] || avatar.image_url;
                 };
-
-                const isPremiumAvatar = avatar.price >= 1000;
-                const avatarImageUrl = getAvatarImage();
                 
                 return (
                   <Card key={avatar.id} className="overflow-hidden hover:shadow-elevated transition-shadow">
@@ -790,20 +831,11 @@ export default function Store() {
                       onClick={() => navigate(`/avatar/${avatar.id}`)}
                     >
                       <div className="aspect-square bg-gradient-to-b from-muted to-card flex items-center justify-center p-2">
-                        {avatarImageUrl ? (
-                          <img 
-                            src={avatarImageUrl} 
-                            alt={avatar.name}
-                            className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform"
-                          />
-                        ) : (
-                          <AvatarFallbackImage
-                            name={avatar.name}
-                            rarity={avatar.rarity}
-                            price={avatar.price}
-                            className="w-full h-full rounded-lg hover:scale-105 transition-transform"
-                          />
-                        )}
+                        <img 
+                          src={getAvatarImage()} 
+                          alt={avatar.name}
+                          className="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform"
+                        />
                       </div>
                       <div className="absolute top-1 right-1">
                         <Badge className={`${getRarityColor(avatar.rarity)} flex items-center gap-1 text-xs`}>
