@@ -20,6 +20,10 @@ platform :ios do
       app_identifier: "Satoshi.Satoshi-Finance-Game"
     )
 
+    increment_build_number(  
+      xcodeproj: "App/App.xcodeproj"  
+    )
+
     build_app(
       workspace: "App/App.xcworkspace",
       scheme: "App",
