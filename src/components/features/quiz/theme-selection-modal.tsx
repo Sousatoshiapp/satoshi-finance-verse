@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/s
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
-import { Brain, TrendingUp, Bitcoin, Briefcase, GraduationCap, Calculator, BarChart } from "lucide-react";
+import { GraduationCap, TrendingUp, Bitcoin, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ThemeSelectionModalProps {
@@ -14,74 +14,56 @@ interface ThemeSelectionModalProps {
 
 const QUIZ_THEMES = [
   {
-    id: "trading",
-    name: "Trading & Análise Técnica",
-    description: "Gráficos, indicadores e estratégias de trading",
+    id: "basic_finance",
+    name: "Finanças Básicas",
+    description: "Fundamentos financeiros, controle de gastos e primeiros investimentos",
+    icon: GraduationCap,
+    difficulty: "Fácil",
+    difficultyLevel: 1,
+    questionCount: "150+ perguntas",
+    consolidatedThemes: ["financial_education", "budgeting", "basic_investments"],
+    gradient: "from-emerald-500 to-green-600",
+    textColor: "text-emerald-600",
+    bgGradient: "from-emerald-50 to-green-50"
+  },
+  {
+    id: "intermediate_finance", 
+    name: "Finanças Intermediária",
+    description: "Diversificação, estratégias de trading e análise de mercado",
     icon: TrendingUp,
-    color: "from-green-500 to-emerald-600",
-    textColor: "text-green-600",
-    bgColor: "bg-green-50",
-    difficulty: "Medium"
+    difficulty: "Médio",
+    difficultyLevel: 2,
+    questionCount: "120+ perguntas",
+    consolidatedThemes: ["portfolio", "trading"],
+    gradient: "from-blue-500 to-cyan-600",
+    textColor: "text-blue-600",
+    bgGradient: "from-blue-50 to-cyan-50"
   },
   {
     id: "cryptocurrency",
-    name: "Criptomoedas & DeFi",
+    name: "Cripto",
     description: "Bitcoin, Ethereum, DeFi e tecnologia blockchain",
     icon: Bitcoin,
-    color: "from-orange-500 to-yellow-600",
+    difficulty: "Difícil", 
+    difficultyLevel: 3,
+    questionCount: "90+ perguntas",
+    consolidatedThemes: ["cryptocurrency"],
+    gradient: "from-orange-500 to-amber-600",
     textColor: "text-orange-600",
-    bgColor: "bg-orange-50",
-    difficulty: "Hard"
-  },
-  {
-    id: "portfolio",
-    name: "Gestão de Portfolio",
-    description: "Diversificação, asset allocation e estratégias",
-    icon: Briefcase,
-    color: "from-blue-500 to-cyan-600",
-    textColor: "text-blue-600",
-    bgColor: "bg-blue-50",
-    difficulty: "Medium"
-  },
-  {
-    id: "basic_investments",
-    name: "Investimentos Básicos",
-    description: "Fundamentos de renda fixa e variável",
-    icon: BarChart,
-    color: "from-purple-500 to-indigo-600",
-    textColor: "text-purple-600",
-    bgColor: "bg-purple-50",
-    difficulty: "Easy"
-  },
-  {
-    id: "financial_education",
-    name: "Educação Financeira",
-    description: "Conceitos fundamentais e planejamento",
-    icon: GraduationCap,
-    color: "from-teal-500 to-cyan-600",
-    textColor: "text-teal-600",
-    bgColor: "bg-teal-50",
-    difficulty: "Easy"
-  },
-  {
-    id: "budgeting",
-    name: "Orçamento & Planejamento",
-    description: "Controle financeiro pessoal e metas",
-    icon: Calculator,
-    color: "from-pink-500 to-rose-600",
-    textColor: "text-pink-600",
-    bgColor: "bg-pink-50",
-    difficulty: "Easy"
+    bgGradient: "from-orange-50 to-amber-50"
   },
   {
     id: "economics",
-    name: "Economia & Macroeconomia",
-    description: "Indicadores econômicos e mercados",
+    name: "Finanças Hard Core",
+    description: "Indicadores econômicos, política monetária e macroeconomia",
     icon: Brain,
-    color: "from-gray-500 to-slate-600",
-    textColor: "text-gray-600",
-    bgColor: "bg-gray-50",
-    difficulty: "Hard"
+    difficulty: "Muito Difícil",
+    difficultyLevel: 4,
+    questionCount: "80+ perguntas", 
+    consolidatedThemes: ["economics"],
+    gradient: "from-slate-600 to-gray-700",
+    textColor: "text-slate-600",
+    bgGradient: "from-slate-50 to-gray-50"
   }
 ];
 
@@ -97,12 +79,13 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
     }, 200);
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy": return "bg-green-100 text-green-800";
-      case "Medium": return "bg-yellow-100 text-yellow-800";
-      case "Hard": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+  const getDifficultyColor = (difficultyLevel: number) => {
+    switch (difficultyLevel) {
+      case 1: return "bg-success/10 text-success border-success/20";
+      case 2: return "bg-warning/10 text-warning border-warning/20";
+      case 3: return "bg-destructive/10 text-destructive border-destructive/20";
+      case 4: return "bg-slate-500/10 text-slate-600 border-slate-500/20";
+      default: return "bg-muted text-muted-foreground border-border";
     }
   };
 
@@ -118,7 +101,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
           </p>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {QUIZ_THEMES.map((theme) => {
             const IconComponent = theme.icon;
             const isSelected = selectedTheme === theme.id;
@@ -127,48 +110,77 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
               <Card
                 key={theme.id}
                 className={cn(
-                  "cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02]",
-                  "border-2 hover:border-primary/50",
-                  isSelected && "border-primary ring-2 ring-primary/20 scale-[1.02]"
+                  "group cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-primary/10",
+                  "border-2 hover:border-primary/30 hover:-translate-y-1",
+                  "relative overflow-hidden",
+                  isSelected && "border-primary ring-4 ring-primary/20 scale-[1.02] shadow-xl shadow-primary/20"
                 )}
                 onClick={() => handleThemeSelect(theme.id)}
               >
-                <CardContent className="p-6">
+                {/* Background Gradient */}
+                <div className={cn(
+                  "absolute inset-0 bg-gradient-to-br opacity-5 group-hover:opacity-10 transition-opacity",
+                  theme.bgGradient
+                )} />
+                
+                <CardContent className="relative p-6">
                   {/* Header with Icon and Difficulty */}
                   <div className="flex items-start justify-between mb-4">
                     <div className={cn(
-                      "p-3 rounded-lg",
-                      theme.bgColor
+                      "p-4 rounded-xl bg-gradient-to-br shadow-lg",
+                      theme.bgGradient,
+                      "group-hover:scale-110 transition-transform duration-300"
                     )}>
-                      <IconComponent className={cn("h-6 w-6", theme.textColor)} />
+                      <IconComponent className={cn("h-7 w-7", theme.textColor)} />
                     </div>
-                    <Badge className={getDifficultyColor(theme.difficulty)}>
+                    <Badge 
+                      variant="outline"
+                      className={cn(
+                        "font-semibold px-3 py-1 text-xs",
+                        getDifficultyColor(theme.difficultyLevel)
+                      )}
+                    >
                       {theme.difficulty}
                     </Badge>
                   </div>
 
                   {/* Theme Info */}
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-lg leading-tight">
+                  <div className="space-y-3 mb-4">
+                    <h3 className="font-bold text-xl leading-tight text-foreground group-hover:text-primary transition-colors">
                       {theme.name}
                     </h3>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
                       {theme.description}
                     </p>
                   </div>
 
                   {/* Stats */}
-                  <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                    <span>200+ perguntas</span>
-                    <span>SRS Adaptativo</span>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                    <span className="font-medium">{theme.questionCount}</span>
+                    <span className="font-medium">SRS Adaptativo</span>
                   </div>
 
-                  {/* Gradient Bar */}
-                  <div className={cn(
-                    "mt-4 h-2 rounded-full bg-gradient-to-r",
-                    theme.color,
-                    "opacity-70"
-                  )} />
+                  {/* Progress Bar */}
+                  <div className="relative h-2 rounded-full bg-muted overflow-hidden">
+                    <div className={cn(
+                      "absolute inset-0 bg-gradient-to-r rounded-full",
+                      theme.gradient,
+                      "transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"
+                    )} />
+                  </div>
+                  
+                  {/* Difficulty Level Indicators */}
+                  <div className="flex items-center justify-center mt-4 space-x-1">
+                    {Array.from({ length: 4 }, (_, i) => (
+                      <div
+                        key={i}
+                        className={cn(
+                          "h-2 w-2 rounded-full transition-colors",
+                          i < theme.difficultyLevel ? "bg-primary" : "bg-muted"
+                        )}
+                      />
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             );

@@ -40,13 +40,25 @@ interface ThemedQuizEngineProps {
 }
 
 const THEME_NAMES: { [key: string]: string } = {
+  // Consolidated themes
+  basic_finance: "Finanças Básicas",
+  intermediate_finance: "Finanças Intermediária", 
+  cryptocurrency: "Cripto",
+  economics: "Finanças Hard Core",
+  // Legacy themes (backward compatibility)
   trading: "Trading & Análise Técnica",
-  cryptocurrency: "Criptomoedas & DeFi",
   portfolio: "Gestão de Portfolio",
   basic_investments: "Investimentos Básicos",
   financial_education: "Educação Financeira",
-  budgeting: "Orçamento & Planejamento",
-  economics: "Economia & Macroeconomia"
+  budgeting: "Orçamento & Planejamento"
+};
+
+// Theme mapping for consolidated themes
+const THEME_MAPPING: { [key: string]: string[] } = {
+  basic_finance: ["financial_education", "budgeting", "basic_investments"],
+  intermediate_finance: ["portfolio", "trading"],
+  cryptocurrency: ["cryptocurrency"],
+  economics: ["economics"]
 };
 
 export function ThemedQuizEngine({
@@ -141,13 +153,21 @@ export function ThemedQuizEngine({
     try {
       setLoading(true);
       
-      const fetchedQuestions = await getThemedQuestions(
-        theme,
-        questionsCount,
-        answeredQuestions.map(q => q.questionId)
-      );
+      // Get the actual themes to query based on consolidation
+      const themesToQuery = THEME_MAPPING[theme] || [theme];
+      let allQuestions: QuizQuestion[] = [];
       
-      if (fetchedQuestions.length === 0) {
+      // Fetch questions from all consolidated themes
+      for (const themeToQuery of themesToQuery) {
+        const fetchedQuestions = await getThemedQuestions(
+          themeToQuery,
+          Math.ceil(questionsCount / themesToQuery.length),
+          answeredQuestions.map(q => q.questionId)
+        );
+        allQuestions = [...allQuestions, ...fetchedQuestions];
+      }
+      
+      if (allQuestions.length === 0) {
         toast({
           title: "Questões não disponíveis",
           description: `Não foi possível carregar questões para o tema ${THEME_NAMES[theme] || theme}`,
@@ -157,8 +177,9 @@ export function ThemedQuizEngine({
         return;
       }
       
-      const shuffledQuestions = shuffleQuestions(fetchedQuestions) as QuizQuestion[];
-      setQuestions(shuffledQuestions);
+      // Shuffle and limit to requested count
+      const shuffledQuestions = shuffleQuestions(allQuestions) as QuizQuestion[];
+      setQuestions(shuffledQuestions.slice(0, questionsCount));
     } catch (error) {
       console.error('Error fetching themed questions:', error);
       toast({

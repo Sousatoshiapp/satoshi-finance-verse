@@ -37,8 +37,10 @@ All colors MUST be HSL.
     /* Custom semantic tokens */
     --experience: 60 100% 50%;
     --streak: 25 95% 53%;
-    --success: 81 100% 59%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
     --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 98%;
     --info: 221 83% 53%;
     --level: 280 100% 70%;
     --beetz: 15 80% 45%;
