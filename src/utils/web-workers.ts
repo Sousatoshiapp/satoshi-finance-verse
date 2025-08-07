@@ -126,33 +126,33 @@ export class WebWorkerManager {
     const workerCode = `
       // Processamento de dados e filtros
       const dataProcessing = {
-        // Filtrar e ordenar leaderboard
+        // Filtrar e ordenar leaderboard - Single-Pass Optimization
         filterLeaderboard(users, filters = {}) {
-          let filtered = [...users];
+          // Preparar filtros
+          const search = filters.search ? filters.search.toLowerCase() : null;
           
-          // Filtro por nível
-          if (filters.minLevel) {
-            filtered = filtered.filter(u => u.level >= filters.minLevel);
-          }
-          if (filters.maxLevel) {
-            filtered = filtered.filter(u => u.level <= filters.maxLevel);
-          }
+          // Single-pass filter com todos os critérios
+          const filtered = users.filter(user => {
+            // Filtro por nível mínimo
+            if (filters.minLevel && user.level < filters.minLevel) return false;
+            
+            // Filtro por nível máximo
+            if (filters.maxLevel && user.level > filters.maxLevel) return false;
+            
+            // Filtro por nome/busca
+            if (search) {
+              const nickname = user.nickname.toLowerCase();
+              const username = user.username?.toLowerCase() || '';
+              if (!nickname.includes(search) && !username.includes(search)) return false;
+            }
+            
+            // Filtro por distrito
+            if (filters.district && user.district !== filters.district) return false;
+            
+            return true;
+          });
           
-          // Filtro por nome
-          if (filters.search) {
-            const search = filters.search.toLowerCase();
-            filtered = filtered.filter(u => 
-              u.nickname.toLowerCase().includes(search) ||
-              u.username?.toLowerCase().includes(search)
-            );
-          }
-          
-          // Filtro por distrito
-          if (filters.district) {
-            filtered = filtered.filter(u => u.district === filters.district);
-          }
-          
-          // Ordenação
+          // Ordenação (se necessária)
           if (filters.sortBy) {
             filtered.sort((a, b) => {
               const aVal = a[filters.sortBy];
@@ -164,11 +164,27 @@ export class WebWorkerManager {
           return filtered;
         },
 
-        // Processar resultados de quiz
+        // Processar resultados de quiz - Single-Pass Optimization
         processQuizResults(answers, questions) {
+          let correctAnswers = 0;
+          let maxCombo = 0;
+          let currentCombo = 0;
+          const totalQuestions = answers.length;
+          
+          // Single-pass para calcular results + métricas
           const results = answers.map((answer, index) => {
             const question = questions[index];
             const isCorrect = answer === question.correct_answer;
+            
+            // Calcular métricas durante o map (evita re-iteração)
+            if (isCorrect) {
+              correctAnswers++;
+              currentCombo++;
+              maxCombo = Math.max(maxCombo, currentCombo);
+            } else {
+              currentCombo = 0;
+            }
+            
             return {
               questionId: question.id,
               userAnswer: answer,
@@ -179,23 +195,8 @@ export class WebWorkerManager {
             };
           });
           
-          const totalQuestions = results.length;
-          const correctAnswers = results.filter(r => r.isCorrect).length;
+          // Métricas já calculadas no loop acima
           const accuracy = totalQuestions > 0 ? correctAnswers / totalQuestions : 0;
-          
-          // Calcular combo
-          let maxCombo = 0;
-          let currentCombo = 0;
-          results.forEach(result => {
-            if (result.isCorrect) {
-              currentCombo++;
-              maxCombo = Math.max(maxCombo, currentCombo);
-            } else {
-              currentCombo = 0;
-            }
-          });
-          
-          // Calcular XP baseado na performance
           const baseXP = correctAnswers * 10;
           const comboBonus = maxCombo > 3 ? maxCombo * 5 : 0;
           const accuracyBonus = accuracy > 0.8 ? 20 : 0;

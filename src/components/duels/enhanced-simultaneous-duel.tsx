@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useReducer, useEffect, useRef, useCallback, useMemo, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/shared/ui/button";
@@ -24,31 +24,217 @@ interface EnhancedSimultaneousDuelProps {
   }) => void;
 }
 
-function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimultaneousDuelProps) {
+// Consolidated state interface
+interface DuelState {
+  duel: any;
+  loading: {
+    duel: boolean;
+    profiles: boolean;
+  };
+  game: {
+    currentQuestion: number;
+    selectedAnswer: string | null;
+    answeredQuestions: Set<number>;
+    answerResults: Map<number, { answerId: string; isCorrect: boolean }>;
+    phase: 'playing' | 'finished';
+    isTimerActive: boolean;
+    showResult: boolean;
+  };
+  players: {
+    current: any;
+    player1: any;
+    player2: any;
+  };
+  scores: {
+    my: number;
+    opponent: number;
+    opponentProgress: number;
+  };
+}
+
+// Action types for reducer
+type DuelAction =
+  | { type: 'SET_DUEL'; payload: any }
+  | { type: 'SET_DUEL_LOADING'; payload: boolean }
+  | { type: 'SET_PROFILES_LOADING'; payload: boolean }
+  | { type: 'SET_CURRENT_QUESTION'; payload: number }
+  | { type: 'SET_SELECTED_ANSWER'; payload: string | null }
+  | { type: 'ADD_ANSWERED_QUESTION'; payload: number }
+  | { type: 'SET_ANSWER_RESULT'; payload: { question: number; result: { answerId: string; isCorrect: boolean } } }
+  | { type: 'SET_GAME_PHASE'; payload: 'playing' | 'finished' }
+  | { type: 'SET_TIMER_ACTIVE'; payload: boolean }
+  | { type: 'SET_SHOW_RESULT'; payload: boolean }
+  | { type: 'SET_CURRENT_PROFILE'; payload: any }
+  | { type: 'SET_PLAYER1_PROFILE'; payload: any }
+  | { type: 'SET_PLAYER2_PROFILE'; payload: any }
+  | { type: 'SET_MY_SCORE'; payload: number }
+  | { type: 'SET_OPPONENT_SCORE'; payload: number }
+  | { type: 'SET_OPPONENT_PROGRESS'; payload: number }
+  | { type: 'RESET_QUESTION_STATE' };
+
+// Initial state
+const initialState: DuelState = {
+  duel: null,
+  loading: {
+    duel: true,
+    profiles: false,
+  },
+  game: {
+    currentQuestion: 1,
+    selectedAnswer: null,
+    answeredQuestions: new Set(),
+    answerResults: new Map(),
+    phase: 'playing',
+    isTimerActive: false,
+    showResult: false,
+  },
+  players: {
+    current: null,
+    player1: null,
+    player2: null,
+  },
+  scores: {
+    my: 0,
+    opponent: 0,
+    opponentProgress: 0,
+  },
+};
+
+// Reducer function
+function duelReducer(state: DuelState, action: DuelAction): DuelState {
+  switch (action.type) {
+    case 'SET_DUEL':
+      return {
+        ...state,
+        duel: action.payload,
+        loading: { ...state.loading, duel: false },
+      };
+    case 'SET_DUEL_LOADING':
+      return {
+        ...state,
+        loading: { ...state.loading, duel: action.payload },
+      };
+    case 'SET_PROFILES_LOADING':
+      return {
+        ...state,
+        loading: { ...state.loading, profiles: action.payload },
+      };
+    case 'SET_CURRENT_QUESTION':
+      return {
+        ...state,
+        game: { ...state.game, currentQuestion: action.payload },
+      };
+    case 'SET_SELECTED_ANSWER':
+      return {
+        ...state,
+        game: { ...state.game, selectedAnswer: action.payload },
+      };
+    case 'ADD_ANSWERED_QUESTION':
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          answeredQuestions: new Set([...state.game.answeredQuestions, action.payload]),
+        },
+      };
+    case 'SET_ANSWER_RESULT':
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          answerResults: new Map([...state.game.answerResults, [action.payload.question, action.payload.result]]),
+        },
+      };
+    case 'SET_GAME_PHASE':
+      return {
+        ...state,
+        game: { ...state.game, phase: action.payload },
+      };
+    case 'SET_TIMER_ACTIVE':
+      return {
+        ...state,
+        game: { ...state.game, isTimerActive: action.payload },
+      };
+    case 'SET_SHOW_RESULT':
+      return {
+        ...state,
+        game: { ...state.game, showResult: action.payload },
+      };
+    case 'SET_CURRENT_PROFILE':
+      return {
+        ...state,
+        players: { ...state.players, current: action.payload },
+      };
+    case 'SET_PLAYER1_PROFILE':
+      return {
+        ...state,
+        players: { ...state.players, player1: action.payload },
+      };
+    case 'SET_PLAYER2_PROFILE':
+      return {
+        ...state,
+        players: { ...state.players, player2: action.payload },
+      };
+    case 'SET_MY_SCORE':
+      return {
+        ...state,
+        scores: { ...state.scores, my: action.payload },
+      };
+    case 'SET_OPPONENT_SCORE':
+      return {
+        ...state,
+        scores: { ...state.scores, opponent: action.payload },
+      };
+    case 'SET_OPPONENT_PROGRESS':
+      return {
+        ...state,
+        scores: { ...state.scores, opponentProgress: action.payload },
+      };
+    case 'RESET_QUESTION_STATE':
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          selectedAnswer: null,
+          isTimerActive: true,
+        },
+      };
+    default:
+      return state;
+  }
+}
+
+const EnhancedSimultaneousDuel = memo(({ duel: propDuel, onDuelEnd }: EnhancedSimultaneousDuelProps) => {
   const { duelId: paramDuelId } = useParams();
   const navigate = useNavigate();
-  const [duel, setDuel] = useState(propDuel);
-  const [isLoadingDuel, setIsLoadingDuel] = useState(!propDuel);
-  const [currentQuestion, setCurrentQuestion] = useState(1);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
-  const [answerResults, setAnswerResults] = useState<Map<number, { answerId: string, isCorrect: boolean }>>(new Map());
-  const [currentProfile, setCurrentProfile] = useState<any>(null);
-  const [player1Profile, setPlayer1Profile] = useState<any>(null);
-  const [player2Profile, setPlayer2Profile] = useState<any>(null);
-  const [myScore, setMyScore] = useState(0);
-  const [opponentScore, setOpponentScore] = useState(0);
-  const [isFinished, setIsFinished] = useState(false);
-  const [opponentProgress, setOpponentProgress] = useState(0);
-  const [isTimerActive, setIsTimerActive] = useState(false);
-  const [showResult, setShowResult] = useState(false);
-  const [gamePhase, setGamePhase] = useState<'playing' | 'finished'>('playing');
-  const [isWaitingForOpponent] = useState(false);
-  const [playerAnswers] = useState<any[]>([]);
+  const [state, dispatch] = useReducer(duelReducer, {
+    ...initialState,
+    duel: propDuel,
+    loading: { ...initialState.loading, duel: !propDuel },
+  });
   const subscriptionRef = useRef<any>(null);
+  const playerAnswersRef = useRef<any[]>([]);
   const { toast } = useToast();
 
-  const loadDuelData = async (duelId: string) => {
+  // Memoized computed values
+  const currentDuel = useMemo(() => state.duel, [state.duel]);
+  const isLoading = useMemo(() => state.loading.duel || state.loading.profiles, [state.loading]);
+  const isFinished = useMemo(() => state.game.phase === 'finished', [state.game.phase]);
+  const currentQuestion = useMemo(() => state.game.currentQuestion, [state.game.currentQuestion]);
+  const selectedAnswer = useMemo(() => state.game.selectedAnswer, [state.game.selectedAnswer]);
+  const answeredQuestions = useMemo(() => state.game.answeredQuestions, [state.game.answeredQuestions]);
+  const answerResults = useMemo(() => state.game.answerResults, [state.game.answerResults]);
+  const isTimerActive = useMemo(() => state.game.isTimerActive, [state.game.isTimerActive]);
+  const showResult = useMemo(() => state.game.showResult, [state.game.showResult]);
+  const gamePhase = useMemo(() => state.game.phase, [state.game.phase]);
+  const currentProfile = useMemo(() => state.players.current, [state.players.current]);
+  const player1Profile = useMemo(() => state.players.player1, [state.players.player1]);
+  const player2Profile = useMemo(() => state.players.player2, [state.players.player2]);
+  const myScore = useMemo(() => state.scores.my, [state.scores.my]);
+  const opponentScore = useMemo(() => state.scores.opponent, [state.scores.opponent]);
+  const opponentProgress = useMemo(() => state.scores.opponentProgress, [state.scores.opponentProgress]);
+
+  const loadDuelData = useCallback(async (duelId: string) => {
     try {
       const { data: duelData, error } = await supabase
         .from('duels')
@@ -85,8 +271,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
             duelData.questions : 
             JSON.parse(duelData.questions as string)
         };
-        setDuel(formattedDuel);
-        setIsLoadingDuel(false);
+        dispatch({ type: 'SET_DUEL', payload: formattedDuel });
       }
     } catch (error) {
       console.error('Error in loadDuelData:', error);
@@ -97,37 +282,11 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
       });
       navigate('/duels');
     }
-  };
+  }, [toast, navigate]);
 
-  useEffect(() => {
-    if (!propDuel && paramDuelId) {
-      loadDuelData(paramDuelId);
-    }
-  }, [paramDuelId, propDuel]);
-
-  useEffect(() => {
-    if (duel) {
-      loadProfiles();
-      setupRealtimeSubscription();
-    }
+  const setupRealtimeSubscription = useCallback(() => {
+    if (!currentDuel?.id) return;
     
-    return () => {
-      if (subscriptionRef.current) {
-        supabase.removeChannel(subscriptionRef.current);
-      }
-    };
-  }, [duel]);
-
-  useEffect(() => {
-    // Start timer for current question if not answered
-    if (!answeredQuestions.has(currentQuestion) && !isFinished) {
-      setIsTimerActive(true);
-    } else {
-      setIsTimerActive(false);
-    }
-  }, [currentQuestion, answeredQuestions, isFinished]);
-
-  const setupRealtimeSubscription = () => {
     subscriptionRef.current = supabase
       .channel('duel-progress')
       .on(
@@ -136,14 +295,14 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
           event: 'UPDATE',
           schema: 'public',
           table: 'duels',
-          filter: `id=eq.${duel?.id}`
+          filter: `id=eq.${currentDuel.id}`
         },
         handleDuelUpdate
       )
       .subscribe();
-  };
+  }, [currentDuel?.id]);
 
-  const handleDuelUpdate = (payload: any) => {
+  const handleDuelUpdate = useCallback((payload: any) => {
     const updatedDuel = payload.new;
     
     if (updatedDuel.status === 'finished') {
@@ -151,11 +310,11 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     } else {
       updateOpponentProgress(updatedDuel);
     }
-  };
+  }, []);
 
-  const handleDuelFinished = (updatedDuel: any) => {
-    setIsFinished(true);
-    setIsTimerActive(false);
+  const handleDuelFinished = useCallback((updatedDuel: any) => {
+    dispatch({ type: 'SET_GAME_PHASE', payload: 'finished' });
+    dispatch({ type: 'SET_TIMER_ACTIVE', payload: false });
     
     const isWinner = updatedDuel.winner_id === currentProfile?.id;
     const finalMyScore = currentProfile?.id === updatedDuel.player1_id ? 
@@ -163,9 +322,9 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     const finalOpponentScore = currentProfile?.id === updatedDuel.player1_id ? 
       updatedDuel.player2_score : updatedDuel.player1_score;
     
-    setMyScore(finalMyScore || 0);
-    setOpponentScore(finalOpponentScore || 0);
-    setShowResult(true);
+    dispatch({ type: 'SET_MY_SCORE', payload: finalMyScore || 0 });
+    dispatch({ type: 'SET_OPPONENT_SCORE', payload: finalOpponentScore || 0 });
+    dispatch({ type: 'SET_SHOW_RESULT', payload: true });
     
     // Show final result and navigate back
     setTimeout(() => {
@@ -174,16 +333,16 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
           winner: isWinner,
           score: finalMyScore || 0,
           opponentScore: finalOpponentScore || 0,
-          playerAnswers,
-          questions: duel?.questions || []
+          playerAnswers: playerAnswersRef.current,
+          questions: currentDuel?.questions || []
         });
       } else {
         navigate('/duels');
       }
     }, 3000);
-  };
+  }, [currentProfile, currentDuel, onDuelEnd, navigate]);
 
-  const updateOpponentProgress = (updatedDuel: any) => {
+  const updateOpponentProgress = useCallback((updatedDuel: any) => {
     if (!currentProfile) return;
     
     const isPlayer1 = currentProfile.id === updatedDuel.player1_id;
@@ -192,16 +351,18 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     const opponentCurrentScore = isPlayer1 ? 
       updatedDuel.player2_score : updatedDuel.player1_score;
     
-    setOpponentProgress(opponentCurrentQuestion - 1);
-    setOpponentScore(opponentCurrentScore || 0);
+    dispatch({ type: 'SET_OPPONENT_PROGRESS', payload: opponentCurrentQuestion - 1 });
+    dispatch({ type: 'SET_OPPONENT_SCORE', payload: opponentCurrentScore || 0 });
     
     // Update my score if it changed
     const myCurrentScore = isPlayer1 ? 
       updatedDuel.player1_score : updatedDuel.player2_score;
-    setMyScore(myCurrentScore || 0);
-  };
+    dispatch({ type: 'SET_MY_SCORE', payload: myCurrentScore || 0 });
+  }, [currentProfile]);
 
-  const loadProfiles = async () => {
+  const loadProfiles = useCallback(async () => {
+    if (!currentDuel) return;
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -215,32 +376,32 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
       const { data: player1 } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', duel.player1_id)
+        .eq('id', currentDuel.player1_id)
         .single();
 
       const { data: player2 } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', duel.player2_id)
+        .eq('id', currentDuel.player2_id)
         .single();
 
-      setCurrentProfile(currentUserProfile);
-      setPlayer1Profile(player1);
-      setPlayer2Profile(player2);
+      dispatch({ type: 'SET_CURRENT_PROFILE', payload: currentUserProfile });
+      dispatch({ type: 'SET_PLAYER1_PROFILE', payload: player1 });
+      dispatch({ type: 'SET_PLAYER2_PROFILE', payload: player2 });
     } catch (error) {
       console.error('Error loading profiles:', error);
     }
-  };
+  }, [currentDuel]);
 
-  const handleAnswer = async (optionId: string) => {
+  const handleAnswer = useCallback(async (optionId: string) => {
     if (answeredQuestions.has(currentQuestion) || gamePhase !== 'playing') return;
     
-    setSelectedAnswer(optionId);
-    setIsTimerActive(false);
+    dispatch({ type: 'SET_SELECTED_ANSWER', payload: optionId });
+    dispatch({ type: 'SET_TIMER_ACTIVE', payload: false });
     
     try {
       const { data, error } = await supabase.rpc('process_duel_answer', {
-        p_duel_id: duel.id,
+        p_duel_id: currentDuel.id,
         p_player_id: currentProfile.id,
         p_question_number: currentQuestion,
         p_answer_id: optionId,
@@ -252,24 +413,25 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
       const result = data as any;
       if (result.success) {
         // Store result for visual feedback
-        setAnswerResults(prev => new Map(prev.set(currentQuestion, {
-          answerId: optionId,
-          isCorrect: result.isCorrect
-        })));
+        dispatch({ 
+          type: 'SET_ANSWER_RESULT', 
+          payload: { 
+            question: currentQuestion, 
+            result: { answerId: optionId, isCorrect: result.isCorrect }
+          }
+        });
         
-        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-        setMyScore(result.newScore);
+        dispatch({ type: 'ADD_ANSWERED_QUESTION', payload: currentQuestion });
+        dispatch({ type: 'SET_MY_SCORE', payload: result.newScore });
         
         // Avançar imediatamente - sistema simultâneo
         setTimeout(() => {
-          if (currentQuestion < duel.questions.length) {
-            setCurrentQuestion(prev => prev + 1);
-            setSelectedAnswer(null);
-            setIsTimerActive(true);
+          if (currentQuestion < currentDuel.questions.length) {
+            dispatch({ type: 'SET_CURRENT_QUESTION', payload: currentQuestion + 1 });
+            dispatch({ type: 'RESET_QUESTION_STATE' });
           } else {
-            setGamePhase('finished');
-            setIsFinished(true);
-            setShowResult(true);
+            dispatch({ type: 'SET_GAME_PHASE', payload: 'finished' });
+            dispatch({ type: 'SET_SHOW_RESULT', payload: true });
           }
         }, 1500);
       }
@@ -281,24 +443,24 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         variant: "destructive"
       });
     }
-  };
+  }, [answeredQuestions, currentQuestion, gamePhase, currentDuel, currentProfile, toast]);
 
-  const handleAnswerSelect = (answerId: string) => {
+  const handleAnswerSelect = useCallback((answerId: string) => {
     if (answeredQuestions.has(currentQuestion) || isFinished) return;
-    setSelectedAnswer(answerId);
-  };
+    dispatch({ type: 'SET_SELECTED_ANSWER', payload: answerId });
+  }, [answeredQuestions, currentQuestion, isFinished]);
 
-  const handleAnswerSubmit = () => {
+  const handleAnswerSubmit = useCallback(() => {
     if (!selectedAnswer || answeredQuestions.has(currentQuestion)) return;
     handleAnswer(selectedAnswer);
-  };
+  }, [selectedAnswer, answeredQuestions, currentQuestion, handleAnswer]);
 
-  const handleSkipQuestion = async () => {
+  const handleSkipQuestion = useCallback(async () => {
     if (answeredQuestions.has(currentQuestion) || isFinished) return;
     
     try {
       const { data, error } = await supabase.rpc('process_duel_answer', {
-        p_duel_id: duel.id,
+        p_duel_id: currentDuel.id,
         p_player_id: currentProfile.id,
         p_question_number: currentQuestion,
         p_answer_id: null,
@@ -309,8 +471,8 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
 
       const result = data as any;
       if (result.success) {
-        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-        setMyScore(result.newScore);
+        dispatch({ type: 'ADD_ANSWERED_QUESTION', payload: currentQuestion });
+        dispatch({ type: 'SET_MY_SCORE', payload: result.newScore });
         
         toast({
           title: "⏭️ Pergunta pulada",
@@ -320,14 +482,12 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         
         // Auto advance after skip
         setTimeout(() => {
-          if (currentQuestion < duel.questions.length) {
-            setCurrentQuestion(prev => prev + 1);
-            setSelectedAnswer(null);
-            setIsTimerActive(true);
+          if (currentQuestion < currentDuel.questions.length) {
+            dispatch({ type: 'SET_CURRENT_QUESTION', payload: currentQuestion + 1 });
+            dispatch({ type: 'RESET_QUESTION_STATE' });
           } else {
-            setGamePhase('finished');
-            setIsFinished(true);
-            setShowResult(true);
+            dispatch({ type: 'SET_GAME_PHASE', payload: 'finished' });
+            dispatch({ type: 'SET_SHOW_RESULT', payload: true });
           }
         }, 1000);
       }
@@ -338,9 +498,9 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         variant: "destructive"
       });
     }
-  };
+  }, [answeredQuestions, currentQuestion, isFinished, currentDuel, currentProfile, toast]);
 
-  const handleTimeUp = async () => {
+  const handleTimeUp = useCallback(async () => {
     // Guard: Check if user is still on duel screen
     if (!window.location.pathname.includes('/duels') && !window.location.pathname.includes('/duel/')) {
       return;
@@ -350,7 +510,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
     
     try {
       const { data, error } = await supabase.rpc('process_duel_answer', {
-        p_duel_id: duel.id,
+        p_duel_id: currentDuel.id,
         p_player_id: currentProfile.id,
         p_question_number: currentQuestion,
         p_answer_id: null,
@@ -361,8 +521,8 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
 
       const result = data as any;
       if (result.success) {
-        setAnsweredQuestions(prev => new Set(prev.add(currentQuestion)));
-        setMyScore(result.newScore);
+        dispatch({ type: 'ADD_ANSWERED_QUESTION', payload: currentQuestion });
+        dispatch({ type: 'SET_MY_SCORE', payload: result.newScore });
         
         toast({
           title: "⏰ Tempo esgotado!",
@@ -372,13 +532,12 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         
         // Auto advance after timeout
         setTimeout(() => {
-          if (currentQuestion < duel.questions.length) {
-            setCurrentQuestion(prev => prev + 1);
-            setIsTimerActive(true);
+          if (currentQuestion < currentDuel.questions.length) {
+            dispatch({ type: 'SET_CURRENT_QUESTION', payload: currentQuestion + 1 });
+            dispatch({ type: 'SET_TIMER_ACTIVE', payload: true });
           } else {
-            setGamePhase('finished');
-            setIsFinished(true);
-            setShowResult(true);
+            dispatch({ type: 'SET_GAME_PHASE', payload: 'finished' });
+            dispatch({ type: 'SET_SHOW_RESULT', payload: true });
           }
         }, 1500);
       }
@@ -389,14 +548,14 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         variant: "destructive"
       });
     }
-  };
+  }, [answeredQuestions, currentQuestion, currentDuel, currentProfile, toast]);
 
-  const handleSurrender = async () => {
+  const handleSurrender = useCallback(async () => {
     if (isFinished) return;
     
     try {
       const { data, error } = await supabase.rpc('process_duel_answer', {
-        p_duel_id: duel.id,
+        p_duel_id: currentDuel.id,
         p_player_id: currentProfile.id,
         p_question_number: currentQuestion,
         p_answer_id: null,
@@ -411,11 +570,9 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         variant: "destructive"
       });
       
-      setGamePhase('finished');
-      setIsFinished(true);
-      setShowResult(true);
-      
-      setOpponentScore(duel.questions.length * 100);
+      dispatch({ type: 'SET_GAME_PHASE', payload: 'finished' });
+      dispatch({ type: 'SET_SHOW_RESULT', payload: true });
+      dispatch({ type: 'SET_OPPONENT_SCORE', payload: currentDuel.questions.length * 100 });
       
     } catch (error) {
       toast({
@@ -424,9 +581,37 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
         variant: "destructive"
       });
     }
-  };
+  }, [isFinished, currentDuel, currentProfile, currentQuestion, toast]);
 
-  if (isLoadingDuel || !duel || !duel.questions || !Array.isArray(duel.questions) || duel.questions.length === 0 || !currentProfile) {
+  useEffect(() => {
+    if (!propDuel && paramDuelId) {
+      loadDuelData(paramDuelId);
+    }
+  }, [paramDuelId, propDuel, loadDuelData]);
+
+  useEffect(() => {
+    if (currentDuel) {
+      loadProfiles();
+      setupRealtimeSubscription();
+    }
+    
+    return () => {
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+      }
+    };
+  }, [currentDuel, loadProfiles, setupRealtimeSubscription]);
+
+  useEffect(() => {
+    // Start timer for current question if not answered
+    if (!answeredQuestions.has(currentQuestion) && !isFinished) {
+      dispatch({ type: 'SET_TIMER_ACTIVE', payload: true });
+    } else {
+      dispatch({ type: 'SET_TIMER_ACTIVE', payload: false });
+    }
+  }, [currentQuestion, answeredQuestions, isFinished]);
+
+  if (isLoading || !currentDuel || !currentDuel.questions || !Array.isArray(currentDuel.questions) || currentDuel.questions.length === 0 || !currentProfile) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center">
         <div className="text-center">
@@ -438,26 +623,26 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
   }
 
   // Show enhanced interface during gameplay
-  if (gamePhase === 'playing' && duel.questions && currentProfile) {
+  if (gamePhase === 'playing' && currentDuel.questions && currentProfile) {
     return (
       <EnhancedDuelInterface
-        questions={duel.questions}
+        questions={currentDuel.questions}
         currentQuestion={currentQuestion}
         onAnswer={handleAnswer}
         playerAvatar={currentProfile?.avatars}
-        opponentAvatar={(currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.avatars}
+        opponentAvatar={(currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.avatars}
         playerScore={myScore}
         opponentScore={opponentScore}
         playerNickname={currentProfile?.nickname || 'Você'}
-        opponentNickname={(currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.nickname || 'Oponente'}
+        opponentNickname={(currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.nickname || 'Oponente'}
         timeLeft={30}
         isWaitingForOpponent={false}
       />
     );
   }
 
-  const question = duel?.questions?.[currentQuestion - 1];
-  const progress = duel?.questions?.length ? (currentQuestion / duel.questions.length) * 100 : 0;
+  const question = currentDuel?.questions?.[currentQuestion - 1];
+  const progress = currentDuel?.questions?.length ? (currentQuestion / currentDuel.questions.length) * 100 : 0;
   const isQuestionAnswered = answeredQuestions.has(currentQuestion);
   const answerResult = answerResults.get(currentQuestion);
 
@@ -552,7 +737,7 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                 <span>Duelo Simultâneo</span>
               </div>
               <Badge variant="secondary" className="animate-pulse">
-                {currentQuestion} / {duel?.questions?.length || 0}
+                {currentQuestion} / {currentDuel?.questions?.length || 0}
               </Badge>
             </CardTitle>
           </CardHeader>
@@ -595,22 +780,22 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
               >
                 <AvatarDisplayUniversal
                   avatarName={
-                    (currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.avatar_name
+                    (currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.avatar_name
                   }
                   avatarUrl={
-                    (currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.avatar_url
+                    (currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.avatar_url
                   }
                   profileImageUrl={
-                    (currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.profile_image_url
+                    (currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.profile_image_url
                   }
                   nickname={
-                    (currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.nickname || "Oponente"
+                    (currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.nickname || "Oponente"
                   }
                   size="sm"
                 />
                 <div className="flex-1">
                   <div className="font-semibold">
-                    {(currentProfile?.id === duel.player1_id ? player2Profile : player1Profile)?.nickname || "Oponente"}
+                    {(currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.nickname || "Oponente"}
                   </div>
                   <motion.div 
                     key={opponentScore}
@@ -681,21 +866,12 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
               <div className="flex flex-col sm:flex-row gap-2 justify-center px-0 sm:px-0">
                 <Button
                   onClick={handleAnswerSubmit}
-                  disabled={!selectedAnswer || isWaitingForOpponent}
+                  disabled={!selectedAnswer}
                   className="flex-1 bg-primary hover:bg-primary/80 h-12 sm:h-auto"
                   size="sm"
                 >
-                  {isWaitingForOpponent ? (
-                    <>
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
-                      Processando...
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="mr-2 h-3 w-3" />
-                      Confirmar Resposta
-                    </>
-                  )}
+                  <Zap className="mr-2 h-3 w-3" />
+                  Confirmar Resposta
                 </Button>
                 
                 <Button
@@ -711,7 +887,6 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
                 <Button
                   onClick={handleSkipQuestion}
                   variant="outline"
-                  disabled={isWaitingForOpponent}
                   className="border-muted-foreground/30 hover:bg-muted/50 px-3 h-12 sm:h-auto"
                   size="sm"
                 >
@@ -731,6 +906,6 @@ function EnhancedSimultaneousDuel({ duel: propDuel, onDuelEnd }: EnhancedSimulta
       </div>
     </div>
   );
-}
+});
 
 export default EnhancedSimultaneousDuel;
