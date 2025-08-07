@@ -58,15 +58,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      // Clear localStorage before signing out
+      // Clear all session data
       localStorage.removeItem('satoshi_user');
+      sessionStorage.clear();
       
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
       if (error) {
         console.error('Sign out error:', error);
+        throw error;
       }
+      
+      // Force reload to clear any cached state
+      window.location.href = '/welcome';
     } catch (error) {
       console.error('Failed to sign out:', error);
+      // Still clear local state even if server sign out fails
+      setSession(null);
+      setUser(null);
+      window.location.href = '/welcome';
     }
   };
 

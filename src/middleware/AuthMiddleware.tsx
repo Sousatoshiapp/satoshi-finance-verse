@@ -22,8 +22,8 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
     return <LoadingSpinner />;
   }
 
-  // Always check for auto-redirect on root path, regardless of requiresAuth
-  const hasValidAuth = (user && session) || localStorage.getItem('satoshi_user');
+  // Enhanced security: Only rely on proper Supabase session
+  const hasValidAuth = user && session;
   const isOnRootPath = location.pathname === '/' || location.pathname === '' || window.location.hash === '#';
   
   if (hasValidAuth && isOnRootPath) {

@@ -3912,7 +3912,7 @@ export type Database = {
             | null
           total_yield_earned: number | null
           updated_at: string
-          user_id: string | null
+          user_id: string
           xp: number | null
           yield_rate: number | null
         }
@@ -3944,7 +3944,7 @@ export type Database = {
             | null
           total_yield_earned?: number | null
           updated_at?: string
-          user_id?: string | null
+          user_id: string
           xp?: number | null
           yield_rate?: number | null
         }
@@ -3976,7 +3976,7 @@ export type Database = {
             | null
           total_yield_earned?: number | null
           updated_at?: string
-          user_id?: string | null
+          user_id?: string
           xp?: number | null
           yield_rate?: number | null
         }

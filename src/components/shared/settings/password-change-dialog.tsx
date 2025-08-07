@@ -24,7 +24,36 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
   const { toast } = useToast();
   const { t } = useTranslation();
 
+  const validatePassword = (password: string): string | null => {
+    if (password.length < 8) {
+      return t('settings.passwordChange.passwordTooShort');
+    }
+    if (!/(?=.*[a-z])/.test(password)) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!/(?=.*[A-Z])/.test(password)) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    if (!/(?=.*\d)/.test(password)) {
+      return 'Password must contain at least one number';
+    }
+    if (!/(?=.*[@$!%*?&])/.test(password)) {
+      return 'Password must contain at least one special character';
+    }
+    return null;
+  };
+
   const handlePasswordChange = async () => {
+    // Enhanced validation
+    if (!currentPassword) {
+      toast({
+        title: t('settings.passwordChange.error'),
+        description: 'Current password is required',
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       toast({
         title: t('settings.passwordChange.passwordMismatch'),
@@ -34,10 +63,41 @@ export function PasswordChangeDialog({ isOpen, onClose }: PasswordChangeDialogPr
       return;
     }
 
-    if (newPassword.length < 6) {
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
       toast({
-        title: t('settings.passwordChange.passwordTooShort'), 
-        description: t('settings.passwordChange.passwordTooShort'),
+        title: t('settings.passwordChange.error'),
+        description: passwordError,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Verify current password before allowing change
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) {
+        throw new Error('User not authenticated');
+      }
+
+      // Test current password by attempting to sign in
+      const { error: verifyError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword
+      });
+
+      if (verifyError) {
+        toast({
+          title: t('settings.passwordChange.error'),
+          description: 'Current password is incorrect',
+          variant: "destructive"
+        });
+        return;
+      }
+    } catch (error: any) {
+      toast({
+        title: t('settings.passwordChange.error'),
+        description: 'Failed to verify current password',
         variant: "destructive"
       });
       return;
