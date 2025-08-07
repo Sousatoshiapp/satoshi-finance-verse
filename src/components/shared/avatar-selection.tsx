@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/shared/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, Zap, Brain, Shield } from "lucide-react";
+import { useAvatarContext } from "@/contexts/AvatarContext";
+import { Sparkles, Zap, Brain, Shield, Loader2, CheckCircle } from "lucide-react";
 
 // Import avatar images
 import neoTrader from "@/assets/avatars/neo-trader.jpg";
@@ -97,12 +97,19 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
   const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { toast } = useToast();
+  const { invalidateAvatarCaches } = useAvatarContext();
 
   useEffect(() => {
     if (open) {
       loadStarterAvatars();
+      // Reset states when opening
+      setSelectedAvatar(null);
+      setConfirming(false);
+      setIsConfirming(false);
+      setSuccess(false);
     }
   }, [open]);
 
@@ -135,8 +142,10 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
   };
 
   const confirmAvatarSelection = async () => {
-    if (!selectedAvatar) return;
+    if (!selectedAvatar || isConfirming) return;
 
+    setIsConfirming(true);
+    
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -230,18 +239,27 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
       }
       console.log('Perfil atualizado com sucesso');
 
+      // Mostrar sucesso
+      setSuccess(true);
+      
       toast({
         title: "Avatar Selecionado!",
         description: `Bem-vindo(a) à Satoshi City, ${selectedAvatar.name}!`,
       });
 
       // Invalidar caches
-      if (window.dispatchEvent) {
-        window.dispatchEvent(new CustomEvent('avatar-changed'));
-      }
+      invalidateAvatarCaches();
 
-      onAvatarSelected();
-      onOpenChange(false);
+      // Aguardar um pouco para mostrar o feedback e fechar
+      setTimeout(() => {
+        onAvatarSelected();
+        onOpenChange(false);
+        // Reset states
+        setSelectedAvatar(null);
+        setConfirming(false);
+        setIsConfirming(false);
+        setSuccess(false);
+      }, 1500);
     } catch (error) {
       console.error('Error selecting avatar:', error);
       toast({
@@ -249,6 +267,8 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
         description: error instanceof Error ? error.message : "Não foi possível selecionar o avatar",
         variant: "destructive"
       });
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -365,11 +385,32 @@ export function AvatarSelection({ open, onOpenChange, onAvatarSelected }: Avatar
               </div>
 
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setConfirming(false)} className="flex-1">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setConfirming(false)} 
+                  className="flex-1"
+                  disabled={isConfirming}
+                >
                   Voltar
                 </Button>
-                <Button onClick={confirmAvatarSelection} className="flex-1">
-                  Confirmar Seleção
+                <Button 
+                  onClick={confirmAvatarSelection} 
+                  className="flex-1 transition-all duration-300"
+                  disabled={isConfirming}
+                >
+                  {success ? (
+                    <>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Sucesso!
+                    </>
+                  ) : isConfirming ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Confirmando...
+                    </>
+                  ) : (
+                    'Confirmar Seleção'
+                  )}
                 </Button>
               </div>
             </div>
