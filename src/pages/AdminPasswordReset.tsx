@@ -58,19 +58,24 @@ export default function AdminPasswordReset() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('admin-password-reset', {
-        body: { 
+      const { data, error } = await supabase.functions.invoke('unified-email', {
+        body: {
+          type: 'admin_password_reset',
           email: 'fasdurian@gmail.com',
-          action: 'reset_password',
           token: token,
           newPassword: newPassword
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw new Error('Erro ao conectar com o servidor');
+      }
 
-      // Password successfully reset - no client-side storage needed
-      
+      if (!data?.success) {
+        throw new Error(data?.error || 'Erro ao redefinir senha');
+      }
+
       setSuccess(true);
       toast({
         title: "Senha alterada!",

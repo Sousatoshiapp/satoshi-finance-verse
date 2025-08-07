@@ -174,28 +174,35 @@ export default function Auth() {
 
     setLoading(true);
     try {
-    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/password-reset`,
+      // Usar a função unificada de email
+      const { data, error } = await supabase.functions.invoke('unified-email', {
+        body: {
+          type: 'password_reset',
+          email: resetEmail,
+          redirectTo: `${window.location.origin}/password-reset`
+        }
       });
 
       if (error) {
-        toast({
-          title: t('errors.passwordResetError'),
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: t('auth.messages.emailSent'),
-          description: t('auth.messages.emailSentDesc'),
-        });
-        setShowForgotPassword(false);
-        setResetEmail("");
+        console.error('Edge function error:', error);
+        throw new Error('Erro ao conectar com o servidor');
       }
-    } catch (error) {
+
+      if (!data?.success) {
+        throw new Error(data?.error || 'Erro ao enviar email');
+      }
+
       toast({
-        title: t('auth.messages.unexpectedError'),
-        description: t('auth.messages.unexpectedErrorDesc'),
+        title: t('auth.messages.emailSent'),
+        description: t('auth.messages.emailSentDesc'),
+      });
+      setShowForgotPassword(false);
+      setResetEmail("");
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      toast({
+        title: t('errors.passwordResetError'),
+        description: error.message || t('auth.messages.unexpectedErrorDesc'),
         variant: "destructive",
       });
     } finally {
