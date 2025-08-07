@@ -12,3 +12,5 @@ export { BeetzAnimation } from './beetz-animation';
 export { LootInventory } from './loot-inventory';
 export { ThemeSelectionModal } from './theme-selection-modal';
 export { ThemedQuizEngine } from './themed-quiz-engine';
+export { QuizAnalyticsDashboard } from './quiz-analytics-dashboard';
+export { QuizQualityManager } from './quiz-quality-manager';
