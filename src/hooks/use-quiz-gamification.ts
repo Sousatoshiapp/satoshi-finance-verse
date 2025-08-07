@@ -7,6 +7,7 @@ import { useBTZAnalytics } from "./use-btz-analytics";
 import { useUnifiedRewards } from "./use-unified-rewards";
 import { useRewardAnimationSystem } from "./use-reward-animation-system";
 import { useSmartNotifications } from "./use-smart-notifications";
+import { XP_CONFIG } from "@/config/xp-config";
 import confetti from 'canvas-confetti';
 
 const MAX_BTZ_PER_HOUR = 10;
@@ -84,12 +85,12 @@ export function useQuizGamification() {
     showCorrectAnswer({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     
     await unifiedRewards.earnBTZ(earnedBTZ, 'quiz');
-    await unifiedRewards.awardXP(10, 'quiz_correct');
+    await unifiedRewards.awardXP(XP_CONFIG.QUIZ_CORRECT_ANSWER, 'quiz_correct');
     const streakResult = await unifiedRewards.updateStreak(true);
     
     showBTZGain(earnedBTZ, { x: window.innerWidth / 2, y: window.innerHeight / 2 }, unifiedRewards.currentMultiplier);
     
-    showXPGain(10, false);
+    showXPGain(XP_CONFIG.QUIZ_CORRECT_ANSWER, false);
     
     setAnimationState(prev => ({
       ...prev,

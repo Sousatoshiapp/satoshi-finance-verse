@@ -9,6 +9,7 @@ import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, BookOpen, Clock, CheckCircle, XCircle, Trophy, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
+import { XP_CONFIG } from "@/config/xp-config";
 
 interface Question {
   id: string;
@@ -153,7 +154,7 @@ export default function DistrictQuizPage() {
 
       if (profile) {
         // Award XP and update district progress
-        const xpGained = score * 20; // 20 XP per correct answer
+        const xpGained = score * XP_CONFIG.DISTRICT_QUIZ_CORRECT; // XP per correct answer (reduced)
         
         await supabase.rpc('award_xp', {
           profile_id: profile.id,

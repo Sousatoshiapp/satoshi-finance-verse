@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from './use-profile';
 import { useUnifiedRewards } from './use-unified-rewards';
+import { XP_CONFIG } from '@/config/xp-config';
 
 export interface ConceptConnectionQuestion {
   id: string;
@@ -104,9 +105,10 @@ export function useConceptConnections() {
       const accuracyMultiplier = session.correct_connections / session.total_connections;
       const finalBTZ = baseBTZ * Math.max(0.5, accuracyMultiplier);
       
-      // XP baseado na complexidade: 2-5 pontos
-      const baseXP = session.difficulty === 'basic' ? 2 : 
-                    session.difficulty === 'intermediate' ? 3 : 5;
+      // XP baseado na complexidade (valores reduzidos)
+      const baseXP = session.difficulty === 'basic' ? XP_CONFIG.CONCEPT_CONNECTION_BASE : 
+                    session.difficulty === 'intermediate' ? XP_CONFIG.CONCEPT_CONNECTION_BASE + 1 : 
+                    XP_CONFIG.CONCEPT_CONNECTION_BASE + 2;
       
       // Salvar sessão no banco
       const { error } = await supabase

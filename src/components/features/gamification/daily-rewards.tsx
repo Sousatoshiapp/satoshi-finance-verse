@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
+import { XP_CONFIG } from "@/config/xp-config";
 import confetti from "canvas-confetti";
 import { GiftIcon } from "@/components/icons/game-icons";
 
@@ -20,11 +21,11 @@ interface DailyReward {
 
 const weeklyRewards: DailyReward[] = [
   { day: 1, type: 'beetz', amount: 50, claimed: false },
-  { day: 2, type: 'xp', amount: 25, claimed: false },
+  { day: 2, type: 'xp', amount: XP_CONFIG.DAILY_REWARD_MIN, claimed: false },
   { day: 3, type: 'beetz', amount: 75, claimed: false },
   { day: 4, type: 'item', amount: 1, item: 'Streak Freeze', claimed: false },
   { day: 5, type: 'beetz', amount: 100, claimed: false },
-  { day: 6, type: 'xp', amount: 50, claimed: false },
+  { day: 6, type: 'xp', amount: XP_CONFIG.DAILY_REWARD_MAX, claimed: false },
   { day: 7, type: 'beetz', amount: 200, claimed: false }
 ];
 
