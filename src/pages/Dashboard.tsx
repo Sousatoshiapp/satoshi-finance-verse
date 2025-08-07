@@ -259,51 +259,50 @@ export default function Dashboard() {
             onContributed={markAsContributed} 
           />
 
-          {/* Consolidated Avatar & Level Section */}
-          <div className="text-center mb-6">
-            <div className="relative mb-4">
+          {/* Consolidated Avatar & User Info - Horizontal Layout */}
+          <div className="flex items-center gap-4 mb-6">
+            {/* Avatar with badges on the left */}
+            <div className="relative flex-shrink-0">
               {userAvatar ? (
-                <div className="flex justify-center">
-                  <div className="relative">
-                    {(() => {
-                      console.log('🔍 Dashboard Avatar Data:', {
-                        profile_image_url: dashboardData?.profile?.profile_image_url,
-                        current_avatar_id: dashboardData?.profile?.current_avatar_id,
-                        userAvatar: userAvatar,
-                        fullProfile: dashboardData?.profile
-                      });
-                      return null;
-                    })()}
-                    <AvatarDisplayUniversal
-                      avatarData={{
-                        profile_image_url: dashboardData?.profile?.profile_image_url,
-                        current_avatar_id: dashboardData?.profile?.current_avatar_id,
-                        avatars: userAvatar
+                <div className="relative">
+                  {(() => {
+                    console.log('🔍 Dashboard Avatar Data:', {
+                      profile_image_url: dashboardData?.profile?.profile_image_url,
+                      current_avatar_id: dashboardData?.profile?.current_avatar_id,
+                      userAvatar: userAvatar,
+                      fullProfile: dashboardData?.profile
+                    });
+                    return null;
+                  })()}
+                  <AvatarDisplayUniversal
+                    avatarData={{
+                      profile_image_url: dashboardData?.profile?.profile_image_url,
+                      current_avatar_id: dashboardData?.profile?.current_avatar_id,
+                      avatars: userAvatar
+                    }}
+                    nickname={dashboardData?.profile?.nickname || 'User'}
+                    size="lg"
+                    className="cursor-pointer hover:scale-105 transition-transform duration-200"
+                    onClick={handleNavigateToProfile}
+                  />
+                  {/* Level Badge - Positioned Right Side (smaller) */}
+                  <div className="absolute -bottom-0.5 right-1">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
+                      <span>{t('common.level')}</span>
+                      <span className="font-bold">{userStats.level}</span>
+                    </div>
+                  </div>
+                  {/* Botão + Discreto (smaller) */}
+                  <div className="absolute top-0 left-0">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNavigateToStore();
                       }}
-                      nickname={dashboardData?.profile?.nickname || 'User'}
-                      size="xl"
-                      className="cursor-pointer hover:scale-105 transition-transform duration-200"
-                      onClick={handleNavigateToProfile}
-                    />
-                    {/* Level Badge - Positioned Right Side */}
-                    <div className="absolute -bottom-0.5 right-2">
-                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
-                        <span>{t('common.level')}</span>
-                        <span className="font-bold">{userStats.level}</span>
-                      </div>
-                    </div>
-                    {/* Botão + Discreto */}
-                    <div className="absolute top-0 left-0">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleNavigateToStore();
-                        }}
-                        className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-6 h-6 rounded-full text-sm font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
-                      >
-                        +
-                      </button>
-                    </div>
+                      className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-5 h-5 rounded-full text-xs font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -311,23 +310,23 @@ export default function Dashboard() {
                   className="relative cursor-pointer hover:scale-105 transition-transform duration-200"
                   onClick={handleNavigateToProfile}
                 >
-                  <div className="w-32 h-32 mx-auto bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
-                    <div className="text-5xl">🤖</div>
+                  <div className="w-16 h-16 bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
+                    <div className="text-2xl">🤖</div>
                   </div>
-                  <div className="absolute -bottom-0.5 right-2">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
+                  <div className="absolute -bottom-0.5 right-1">
+                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
                       <span>{t('common.level')}</span>
                       <span className="font-bold">{userStats.level}</span>
                     </div>
                   </div>
-                  {/* Botão + Discreto */}
+                  {/* Botão + Discreto (smaller) */}
                   <div className="absolute top-0 left-0">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNavigateToStore();
                       }}
-                      className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-6 h-6 rounded-full text-sm font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
+                      className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-5 h-5 rounded-full text-xs font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
                     >
                       +
                     </button>
@@ -336,30 +335,36 @@ export default function Dashboard() {
               )}
             </div>
             
-            {/* Responsive Progress Bar */}
-            <div className="w-full max-w-sm mx-auto px-2 sm:px-0">
-              <div 
-                className="w-full bg-muted rounded-full h-2 mb-3 cursor-pointer hover:bg-muted/80 transition-colors"
-                onClick={handleNavigateToLevels}
-              >
-                <div 
-                  className="bg-gradient-to-r from-success to-primary h-2 rounded-full transition-all duration-300"
-                  style={{ 
-                    width: `${Math.min((userStats.currentXP / userStats.nextLevelXP) * 100, 100)}%` 
-                  }}
-                ></div>
-              </div>
+            {/* User information on the right */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg font-bold text-foreground truncate mb-1">{userNickname}</h2>
+              <p className="text-sm text-muted-foreground mb-3">{t('common.level')} {userStats.level}</p>
               
-              <div className="flex justify-between items-center text-xs text-muted-foreground mb-4 px-1">
-                <span>{t('common.xp')}: {userStats.currentXP}</span>
-                <span>{t('dashboard.goal')}: {userStats.nextLevelXP}</span>
+              {/* Compact Progress Bar */}
+              <div className="w-full">
+                <div 
+                  className="w-full bg-muted rounded-full h-1.5 mb-2 cursor-pointer hover:bg-muted/80 transition-colors"
+                  onClick={handleNavigateToLevels}
+                >
+                  <div 
+                    className="bg-gradient-to-r from-success to-primary h-1.5 rounded-full transition-all duration-300"
+                    style={{ 
+                      width: `${Math.min((userStats.currentXP / userStats.nextLevelXP) * 100, 100)}%` 
+                    }}
+                  ></div>
+                </div>
+                
+                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                  <span>{t('common.xp')}: {userStats.currentXP}</span>
+                  <span>{t('dashboard.goal')}: {userStats.nextLevelXP}</span>
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* BTZ Counter com trend arrows */}
-            <div className="w-full px-0">
-              <BTZCounter />
-            </div>
+          {/* BTZ Counter - Separate section */}
+          <div className="mb-6">
+            <BTZCounter />
           </div>
 
 
