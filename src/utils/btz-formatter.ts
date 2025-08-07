@@ -1,17 +1,19 @@
 /**
- * Formata valores BTZ armazenados como inteiros (centavos) para exibição com decimais
- * @param value - Valor BTZ em centavos (ex: 19567 representa 195.67 BTZ)
- * @returns String formatada com 2 casas decimais (ex: "195.67", "0.10", "1,234.56")
+ * Formata valores BTZ com até 2 casas decimais, removendo zeros desnecessários
+ * @param value - Valor BTZ para formatar
+ * @returns String formatada (ex: "1", "0.1", "0.15", "1,234.56")
  */
 export function formatBTZ(value: number): string {
-  if (value === 0) return "0.00";
+  if (value === 0) return "0";
   
-  // Converte centavos para BTZ (divide por 100)
-  const btzValue = value / 100;
+  // Se for número inteiro, não mostrar decimais
+  if (value % 1 === 0) {
+    return value.toLocaleString();
+  }
   
-  // Sempre mostrar 2 casas decimais
-  const formatted = btzValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
+  // Para decimais, mostrar até 2 casas removendo zeros desnecessários
+  const formatted = value.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2
   });
   
