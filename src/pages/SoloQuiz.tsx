@@ -2,6 +2,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { QuizEngine } from "@/components/quiz/quiz-engine";
 import { ThemedQuizEngine } from "@/components/features/quiz/themed-quiz-engine";
+import { GenerateQuestionsButton } from "@/components/quiz/generate-questions-button";
 
 export default function SoloQuiz() {
   const [searchParams] = useSearchParams();
@@ -14,6 +15,15 @@ export default function SoloQuiz() {
       navigate('/game-mode');
     }
   }, [theme, navigate]);
+
+  // Mostrar gerador de perguntas se for desenvolvimento
+  if (searchParams.get('generate') === 'true') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
+        <GenerateQuestionsButton />
+      </div>
+    );
+  }
 
   // Se há tema selecionado, usar o quiz temático
   if (theme) {
