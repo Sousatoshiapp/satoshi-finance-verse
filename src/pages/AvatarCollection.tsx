@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getAvatarImage } from "@/utils/avatar-images";
-import { Search, Crown, Lock } from "lucide-react";
+import { Search, Crown } from "lucide-react";
 
 interface Avatar {
   id: string;
@@ -28,7 +28,7 @@ export default function AvatarCollection() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [rarityFilter, setRarityFilter] = useState("all");
-  const [ownershipFilter, setOwnershipFilter] = useState("all");
+  
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useI18n();
@@ -40,7 +40,7 @@ export default function AvatarCollection() {
 
   useEffect(() => {
     filterAvatars();
-  }, [avatars, searchTerm, rarityFilter, ownershipFilter]);
+  }, [avatars, searchTerm, rarityFilter]);
 
   const loadAvatars = async () => {
     try {
@@ -60,22 +60,25 @@ export default function AvatarCollection() {
         .select('*')
         .order('rarity', { ascending: false });
 
-      // Get user's owned avatars
-      const { data: ownedAvatars } = await supabase
-        .from('user_avatars')
-        .select('avatar_id')
-        .eq('user_id', profile?.id);
+    // Get user's owned avatars
+    const { data: ownedAvatars } = await supabase
+      .from('user_avatars')
+      .select('avatar_id')
+      .eq('user_id', profile?.id);
 
-      const ownedIds = ownedAvatars?.map(ua => ua.avatar_id) || [];
-      const currentAvatarId = profile?.current_avatar_id;
+    const ownedIds = ownedAvatars?.map(ua => ua.avatar_id) || [];
+    const currentAvatarId = profile?.current_avatar_id;
 
-      const avatarsWithOwnership = allAvatars?.map(avatar => ({
-        ...avatar,
-        owned: ownedIds.includes(avatar.id),
-        is_active: avatar.id === currentAvatarId
-      })) || [];
+    // Only show owned avatars in the collection
+    const ownedAvatarsWithData = allAvatars?.filter(avatar => 
+      ownedIds.includes(avatar.id)
+    ).map(avatar => ({
+      ...avatar,
+      owned: true, // All avatars in collection are owned
+      is_active: avatar.id === currentAvatarId
+    })) || [];
 
-      setAvatars(avatarsWithOwnership);
+    setAvatars(ownedAvatarsWithData);
     } catch (error) {
       console.error('Error loading avatars:', error);
       toast({
@@ -103,12 +106,7 @@ export default function AvatarCollection() {
       filtered = filtered.filter(avatar => avatar.rarity === rarityFilter);
     }
 
-    // Filter by ownership
-    if (ownershipFilter === "owned") {
-      filtered = filtered.filter(avatar => avatar.owned);
-    } else if (ownershipFilter === "not-owned") {
-      filtered = filtered.filter(avatar => !avatar.owned);
-    }
+    // No ownership filter needed since all avatars in collection are owned
 
     setFilteredAvatars(filtered);
   };
@@ -175,9 +173,9 @@ export default function AvatarCollection() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
-                ← Voltar ao Perfil
+                ← Perfil
               </Button>
-              <h1 className="text-xl font-bold">Coleção de Avatares</h1>
+              <h1 className="text-xl font-bold">Coleção</h1>
             </div>
           </div>
         </div>
@@ -210,16 +208,6 @@ export default function AvatarCollection() {
               </SelectContent>
             </Select>
 
-            <Select value={ownershipFilter} onValueChange={setOwnershipFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filtrar por posse" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="owned">Possuo</SelectItem>
-                <SelectItem value="not-owned">Não possuo</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </Card>
 
@@ -243,12 +231,6 @@ export default function AvatarCollection() {
                       <Crown className="h-6 w-6 text-yellow-500" />
                     </div>
                   )}
-                  
-                  {!avatar.owned && (
-                    <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
-                      <Lock className="h-8 w-8 text-white" />
-                    </div>
-                  )}
                 </div>
                 
                 <div className="space-y-2">
@@ -258,26 +240,15 @@ export default function AvatarCollection() {
                     {avatar.rarity}
                   </Badge>
                   
-                  {avatar.owned ? (
-                    <Button
-                      size="sm"
-                      variant={avatar.is_active ? "default" : "outline"}
-                      className="w-full text-xs h-8"
-                      onClick={() => selectAvatar(avatar.id)}
-                      disabled={avatar.is_active}
-                    >
-                      {avatar.is_active ? "Ativo" : "Usar"}
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full text-xs h-8"
-                      disabled
-                    >
-                      {avatar.price} BTZ
-                    </Button>
-                  )}
+                  <Button
+                    size="sm"
+                    variant={avatar.is_active ? "default" : "outline"}
+                    className="w-full text-xs h-8"
+                    onClick={() => selectAvatar(avatar.id)}
+                    disabled={avatar.is_active}
+                  >
+                    {avatar.is_active ? "Ativo" : "Usar"}
+                  </Button>
                 </div>
               </CardContent>
             </Card>
