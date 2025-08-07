@@ -49,7 +49,8 @@ export function useQuizGamification() {
     showStreakAnimation: false,
     currentQuestion: "",
     currentCorrectAnswer: "",
-    currentExplanation: undefined as string | undefined
+    currentExplanation: undefined as string | undefined,
+    earnedBTZ: 0
   });
 
 
@@ -93,7 +94,8 @@ export function useQuizGamification() {
     setAnimationState(prev => ({
       ...prev,
       showBeetzAnimation: true,
-      showStreakAnimation: unifiedRewards.currentStreak > 0
+      showStreakAnimation: unifiedRewards.currentStreak > 0,
+      earnedBTZ: earnedBTZ
     }));
 
     const currentStreak = unifiedRewards.currentStreak;
@@ -162,7 +164,8 @@ export function useQuizGamification() {
       showStreakAnimation: false,
       currentQuestion: "",
       currentCorrectAnswer: "",
-      currentExplanation: undefined
+      currentExplanation: undefined,
+      earnedBTZ: 0
     });
   }, []);
 
@@ -197,6 +200,7 @@ export function useQuizGamification() {
     currentQuestion: animationState.currentQuestion,
     currentCorrectAnswer: animationState.currentCorrectAnswer,
     currentExplanation: animationState.currentExplanation,
+    earnedBTZ: animationState.earnedBTZ,
     isLoaded: unifiedRewards.isLoaded,
     handleCorrectAnswer,
     handleWrongAnswer,

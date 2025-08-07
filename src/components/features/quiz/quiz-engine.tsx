@@ -89,6 +89,7 @@ export function QuizEngine({
     currentQuestion: currentQuestionText,
     currentCorrectAnswer,
     currentExplanation,
+    earnedBTZ,
     handleCorrectAnswer,
     handleWrongAnswer,
     // handleUseLife removido
@@ -586,7 +587,7 @@ export function QuizEngine({
       {/* Gamification Overlays */}
       <BeetzAnimation
         isVisible={showBeetzAnimation}
-        amount={currentMultiplier}
+        amount={earnedBTZ}
         onComplete={hideBeetzAnimation}
       />
 
