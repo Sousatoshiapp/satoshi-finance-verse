@@ -412,12 +412,43 @@
     "timeRemaining": "Tempo Restante"
   },
   "social": {
-    "socialFeed": "Feed Social",
+    "socialFeed": "Feed Social", 
     "shareOpinion": "O que está pensando?",
     "whatsHappening": "O que está acontecendo?",
     "post": "Postar",
     "like": "Curtir",
     "comment": "Comentar",
+    "tabs": {
+      "feed": "Feed",
+      "search": "Buscar", 
+      "challenges": "Desafios",
+      "ranks": "Ranks",
+      "following": "Seguindo",
+      "chat": "Chat"
+    },
+    "placeholders": {
+      "shareOpinion": "Compartilhe sua opinião sobre o mercado...",
+      "searchUsers": "Buscar usuários por nickname...",
+      "addComment": "Adicione um comentário..."
+    },
+    "buttons": {
+      "publish": "Publicar",
+      "publishing": "Postando...",
+      "share": "Compartilhar",
+      "comment": "Comentar"
+    },
+    "messages": {
+      "beFirstToPost": "Seja o primeiro a postar!",
+      "searchingUsers": "Buscando usuários...",
+      "comingSoon": "Em breve"
+    },
+    "profile": {
+      "level": "Nível",
+      "followers": "seguidores"
+    },
+    "chat": {
+      "typeMessage": "Adicione um comentário..."
+    },
     "share": "Compartilhar",
     "tabs": {
       "feed": "Feed",
@@ -974,38 +1005,6 @@
       "traveling": "Viajando para",
       "arriving": "Chegando em {{location}}"
     }
-  },
-  "social": {
-    "tabs": {
-      "feed": "Feed",
-      "search": "Buscar",
-      "challenges": "Desafios",
-      "ranks": "Ranks",
-      "following": "Seguindo",
-      "chat": "Chat"
-    },
-    "placeholders": {
-      "shareOpinion": "Compartilhe sua opinião sobre o mercado...",
-      "searchUsers": "Buscar usuários por nickname..."
-    },
-    "buttons": {
-      "publish": "Publicar",
-      "publishing": "Postando...",
-      "share": "Compartilhar"
-    },
-    "messages": {
-      "beFirstToPost": "Seja o primeiro a postar!",
-      "searchingUsers": "Buscando usuários...",
-      "comingSoon": "Em breve"
-    },
-    "profile": {
-      "level": "Nível",
-      "followers": "seguidores"
-    },
-    "chat": {
-      "typeMessage": "Adicione um comentário..."
-    },
-    "shareOpinion": "Compartilhe suas experiências de trading e conecte-se com outros investidores"
   },
   "district": {
     "selectDistrict": "Selecione um distrito",

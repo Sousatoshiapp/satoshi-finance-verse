@@ -502,27 +502,34 @@ export function TwitterSocialFeed() {
                   <Separator />
                   
                   {/* Add Comment */}
-                  <div className="flex space-x-2">
+                  <div className="flex items-start space-x-3 p-3 bg-muted/30 rounded-lg">
                     <AvatarDisplayUniversal
                       avatarData={{ profile_image_url: null, current_avatar_id: null, avatars: null }}
                       nickname="U"
                       size="sm"
                     />
-                    <div className="flex-1 flex space-x-2">
-                      <Textarea
+                    <div className="flex-1 flex items-center space-x-2">
+                      <input
+                        type="text"
                         placeholder={t('social.placeholders.addComment')}
                         value={newComment[post.id] || ""}
                         onChange={(e) => setNewComment(prev => ({ 
                           ...prev, 
                           [post.id]: e.target.value 
                         }))}
-                        className="resize-none text-sm border-0 shadow-none focus-visible:ring-1"
-                        rows={1}
+                        className="flex-1 bg-transparent border-0 outline-none text-sm placeholder:text-muted-foreground"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && newComment[post.id]?.trim()) {
+                            handleAddComment(post.id);
+                          }
+                        }}
                       />
                       <Button
                         size="sm"
                         onClick={() => handleAddComment(post.id)}
                         disabled={!newComment[post.id]?.trim()}
+                        variant="ghost"
+                        className="text-primary hover:text-primary/80"
                       >
                         {t('social.buttons.comment')}
                       </Button>
