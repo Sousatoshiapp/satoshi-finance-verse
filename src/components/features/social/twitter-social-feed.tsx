@@ -485,6 +485,7 @@ export function TwitterSocialFeed() {
                   <SocialButton
                     targetType="profile"
                     targetId={post.user_id}
+                    targetUserId={post.user_id}
                     actionType="follow"
                     variant="ghost"
                     size="sm"
