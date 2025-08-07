@@ -205,7 +205,10 @@ export const useDashboardPreloading = () => {
     const preloadTargets = [
       () => import('@/pages/Quiz'),
       () => import('@/pages/Profile'),
-      () => import('@/pages/Leaderboard')
+      () => import('@/pages/Leaderboard'),
+      () => import('@/pages/Store'),
+      () => import('@/pages/Social'),
+      () => import('@/pages/Settings')
     ];
 
     // Preload após idle callback

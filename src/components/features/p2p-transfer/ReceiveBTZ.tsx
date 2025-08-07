@@ -5,6 +5,7 @@ import { Copy, Check, QrCode, CheckCircle, AlertCircle, Clock } from "lucide-rea
 import { useToast } from "@/hooks/use-toast";
 import { useProfile } from "@/hooks/use-profile";
 import { useI18n } from "@/hooks/use-i18n";
+import { OptimizedImage } from "@/components/shared/ui/optimized-image";
 import { motion, AnimatePresence } from "framer-motion";
 import QRCode from 'qrcode';
 import { useP2PNotifications } from "@/hooks/use-p2p-notifications";
@@ -63,7 +64,14 @@ export function ReceiveBTZ() {
           {qrCodeUrl && (
             <div className="flex flex-col items-center space-y-4">
               <div className="p-4 bg-white rounded-lg shadow-sm">
-                <img src={qrCodeUrl} alt="QR Code" className="w-48 h-48" />
+                <OptimizedImage 
+                  src={qrCodeUrl} 
+                  alt="QR Code" 
+                  width={192} 
+                  height={192} 
+                  className="w-48 h-48" 
+                  priority={true}
+                />
               </div>
               <p className="text-sm text-muted-foreground text-center">
                 {t('p2p.receive.qrInstruction')}

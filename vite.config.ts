@@ -91,6 +91,17 @@ export default defineConfig(({ mode }) => {
             'src/pages/Auth.tsx',
             'src/contexts/AuthContext.tsx'
           ],
+          'dashboard-core': [
+            'src/pages/Dashboard.tsx', 
+            'src/hooks/use-dashboard-data.ts'
+          ],
+          'quiz-system': [
+            'src/components/quiz/quiz-engine.tsx'
+          ],
+          'realtime': [
+            'src/contexts/RealtimeContext.tsx', 
+            'src/hooks/use-realtime-points.ts'
+          ],
           'chunk-quiz-core': [
             'src/pages/Quiz.tsx',
             'src/pages/SoloQuiz.tsx'

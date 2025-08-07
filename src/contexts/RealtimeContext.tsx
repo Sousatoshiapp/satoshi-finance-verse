@@ -1,7 +1,15 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
+
+const debounce = (func: Function, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(null, args), delay);
+  };
+};
 
 interface RealtimeContextType {
   points: number;
@@ -27,6 +35,16 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
   const [isOnline, setIsOnline] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const queryClient = useQueryClient();
+
+  const debouncedInvalidate = useCallback(
+    debounce(() => {
+      queryClient.invalidateQueries({ queryKey: ['dashboard-data'], exact: true });
+      queryClient.invalidateQueries({ queryKey: ['user-profile'], exact: true });
+      queryClient.invalidateQueries({ queryKey: ['leaderboard-data'], exact: true });
+      queryClient.invalidateQueries({ queryKey: ['store-data'], exact: true });
+    }, 500),
+    [queryClient]
+  );
 
   useEffect(() => {
     if (!user) {
@@ -71,11 +89,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
             setPoints(newPoints);
             setLastUpdate(new Date());
             
-            // Invalidate all related queries for comprehensive updates
-            queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
-            queryClient.invalidateQueries({ queryKey: ['user-profile'] });
-            queryClient.invalidateQueries({ queryKey: ['leaderboard-data'] });
-            queryClient.invalidateQueries({ queryKey: ['store-data'] });
+            debouncedInvalidate();
             
             // Show visual feedback for large point changes
             if (Math.abs(newPoints - points) >= 100) {
