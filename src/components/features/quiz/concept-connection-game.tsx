@@ -240,6 +240,14 @@ export function ConceptConnectionGame({ theme, onComplete }: ConceptConnectionGa
         <div className="flex-shrink-0 bg-background/95 backdrop-blur-sm border-b p-3">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigate('/game-mode')}
+                className="p-1 h-auto"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
               <Timer className="h-4 w-4" />
               <span className="font-mono text-sm">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
             </div>
