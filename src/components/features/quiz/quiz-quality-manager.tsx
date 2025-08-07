@@ -13,7 +13,9 @@ import {
   ChevronRight,
   AlertTriangle,
   RefreshCw,
-  FileText
+  FileText,
+  Wrench,
+  Zap
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -39,23 +41,30 @@ export function QuizQualityManager({ onUpdate }: QuizQualityManagerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [filter, setFilter] = useState<'pending' | 'approved' | 'rejected'>('pending');
+  const [filter, setFilter] = useState<'pending' | 'approved' | 'rejected' | 'problematic'>('pending');
   const [feedback, setFeedback] = useState('');
+  const [isFixing, setIsFixing] = useState(false);
   const { toast } = useToast();
 
   const loadQuestions = async () => {
     try {
       setLoading(true);
       
-      const approvalFilter = filter === 'pending' ? null : filter === 'approved';
-      
-      const { data, error } = await supabase
+      let query = supabase
         .from('quiz_questions')
         .select('*')
-        .eq('is_approved', approvalFilter)
         .not('theme', 'is', null)
         .order('created_at', { ascending: false })
         .limit(50);
+
+      if (filter === 'problematic') {
+        query = query.or('correct_answer.like.Opção %,correct_answer.like.Option %');
+      } else {
+        const approvalFilter = filter === 'pending' ? null : filter === 'approved';
+        query = query.eq('is_approved', approvalFilter);
+      }
+      
+      const { data, error } = await query;
 
       if (error) throw error;
 
@@ -186,6 +195,76 @@ export function QuizQualityManager({ onUpdate }: QuizQualityManagerProps) {
     return isApproved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
   };
 
+  const isProblematicQuestion = (question: Question) => {
+    return question.correct_answer.includes('Opção ') || question.correct_answer.includes('Option ');
+  };
+
+  const fixSingleQuestion = async (questionId: string) => {
+    const question = questions.find(q => q.id === questionId);
+    if (!question || !isProblematicQuestion(question)) return;
+
+    try {
+      const optionMatch = question.correct_answer.match(/Opção ([A-D])|Option ([A-D])/i);
+      if (!optionMatch) return;
+
+      const optionLetter = optionMatch[1] || optionMatch[2];
+      const optionIndex = optionLetter.charCodeAt(0) - 65;
+      
+      if (optionIndex < 0 || optionIndex >= question.options.length) return;
+
+      const correctAnswerText = question.options[optionIndex];
+
+      const { error } = await supabase
+        .from('quiz_questions')
+        .update({ correct_answer: correctAnswerText })
+        .eq('id', questionId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Questão Corrigida",
+        description: `Resposta atualizada para: "${correctAnswerText}"`,
+        variant: "default"
+      });
+
+      await loadQuestions();
+    } catch (error) {
+      console.error('Erro ao corrigir questão:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível corrigir a questão",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fixAllProblematicQuestions = async () => {
+    try {
+      setIsFixing(true);
+      
+      const { data, error } = await supabase.functions.invoke('fix-quiz-answers');
+      
+      if (error) throw error;
+
+      toast({
+        title: "Correção Concluída",
+        description: `${data.fixed} questões foram corrigidas automaticamente`,
+        variant: "default"
+      });
+
+      await loadQuestions();
+    } catch (error) {
+      console.error('Erro ao corrigir questões:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível executar a correção automática",
+        variant: "destructive"
+      });
+    } finally {
+      setIsFixing(false);
+    }
+  };
+
   if (loading) {
     return (
       <Card>
@@ -204,9 +283,10 @@ export function QuizQualityManager({ onUpdate }: QuizQualityManagerProps) {
           <div className="text-center">
             <h3 className="font-medium">Nenhuma pergunta encontrada</h3>
             <p className="text-sm text-muted-foreground">
-              {filter === 'pending' && 'Não há perguntas pendentes para revisar'}
+               {filter === 'pending' && 'Não há perguntas pendentes para revisar'}
               {filter === 'approved' && 'Não há perguntas aprovadas'}
               {filter === 'rejected' && 'Não há perguntas rejeitadas'}
+              {filter === 'problematic' && 'Não há perguntas problemáticas! 🎉'}
             </p>
           </div>
           <Button onClick={loadQuestions} variant="outline">
@@ -232,13 +312,34 @@ export function QuizQualityManager({ onUpdate }: QuizQualityManagerProps) {
         </Button>
       </div>
 
-      {/* Filter Tabs */}
+          {/* Filter Tabs */}
       <Tabs value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
-        <TabsList>
+        <div className="flex items-center justify-between mb-4">
+          <TabsList>
           <TabsTrigger value="pending">Pendentes</TabsTrigger>
           <TabsTrigger value="approved">Aprovadas</TabsTrigger>
           <TabsTrigger value="rejected">Rejeitadas</TabsTrigger>
+          <TabsTrigger value="problematic" className="text-orange-600">
+            <AlertTriangle className="h-4 w-4 mr-1" />
+            Problemáticas
+          </TabsTrigger>
         </TabsList>
+        
+        {filter === 'problematic' && (
+          <Button
+            onClick={fixAllProblematicQuestions}
+            disabled={isFixing}
+            className="bg-orange-600 hover:bg-orange-700"
+          >
+            {isFixing ? (
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Zap className="h-4 w-4 mr-2" />
+            )}
+            {isFixing ? 'Corrigindo...' : 'Corrigir Todas'}
+          </Button>
+        )}
+      </div>
 
         <TabsContent value={filter} className="space-y-4">
           {/* Navigation */}
@@ -273,6 +374,12 @@ export function QuizQualityManager({ onUpdate }: QuizQualityManagerProps) {
                 {currentQuestion.is_approved === null ? 'Pendente' : 
                  currentQuestion.is_approved ? 'Aprovada' : 'Rejeitada'}
               </Badge>
+              {isProblematicQuestion(currentQuestion) && (
+                <Badge variant="destructive" className="animate-pulse">
+                  <AlertTriangle className="h-3 w-3 mr-1" />
+                  Problema
+                </Badge>
+              )}
             </div>
           </div>
 
@@ -307,7 +414,25 @@ export function QuizQualityManager({ onUpdate }: QuizQualityManagerProps) {
 
               {/* Options */}
               <div>
-                <h3 className="font-medium mb-2">Opções:</h3>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-medium">Opções:</h3>
+                  {isProblematicQuestion(currentQuestion) && (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-orange-600 font-medium">
+                        Resposta problemática: "{currentQuestion.correct_answer}"
+                      </span>
+                      <Button
+                        onClick={() => fixSingleQuestion(currentQuestion.id)}
+                        size="sm"
+                        variant="outline"
+                        className="h-6 px-2 text-xs"
+                      >
+                        <Wrench className="h-3 w-3 mr-1" />
+                        Corrigir
+                      </Button>
+                    </div>
+                  )}
+                </div>
                 <div className="space-y-2">
                   {currentQuestion.options.map((option, index) => (
                     <div
