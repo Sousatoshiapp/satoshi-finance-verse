@@ -4104,6 +4104,7 @@ export type Database = {
           source_material: string | null
           success_rate: number | null
           tags: string[] | null
+          theme: string | null
           updated_at: string
           usage_count: number | null
           version: number | null
@@ -4134,6 +4135,7 @@ export type Database = {
           source_material?: string | null
           success_rate?: number | null
           tags?: string[] | null
+          theme?: string | null
           updated_at?: string
           usage_count?: number | null
           version?: number | null
@@ -4164,6 +4166,7 @@ export type Database = {
           source_material?: string | null
           success_rate?: number | null
           tags?: string[] | null
+          theme?: string | null
           updated_at?: string
           usage_count?: number | null
           version?: number | null
@@ -6598,6 +6601,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_theme_progress: {
+        Row: {
+          created_at: string | null
+          current_difficulty: string | null
+          difficulty_progression: Json | null
+          id: string
+          last_session_at: string | null
+          questions_answered: number | null
+          questions_correct: number | null
+          theme: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_difficulty?: string | null
+          difficulty_progression?: Json | null
+          id?: string
+          last_session_at?: string | null
+          questions_answered?: number | null
+          questions_correct?: number | null
+          theme: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_difficulty?: string | null
+          difficulty_progression?: Json | null
+          id?: string
+          last_session_at?: string | null
+          questions_answered?: number | null
+          questions_correct?: number | null
+          theme?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_titles: {
         Row: {

@@ -10,3 +10,5 @@ export { EnhancedQuizCard } from './enhanced-quiz-card';
 export { StreakAnimation } from './streak-animation';
 export { BeetzAnimation } from './beetz-animation';
 export { LootInventory } from './loot-inventory';
+export { ThemeSelectionModal } from './theme-selection-modal';
+export { ThemedQuizEngine } from './themed-quiz-engine';

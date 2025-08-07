@@ -4,12 +4,14 @@ import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { ArrowLeft, Settings, Zap, Users, Trophy, Gamepad2 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
 
 export default function GameMode() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [hologramRotation, setHologramRotation] = useState(0);
+  const [showThemeModal, setShowThemeModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -23,7 +25,7 @@ export default function GameMode() {
     setTimeout(() => {
       switch (mode) {
         case 'solo':
-          navigate('/solo-quiz');
+          setShowThemeModal(true);
           break;
         case 'duelo':
           navigate('/find-opponent');
@@ -33,6 +35,10 @@ export default function GameMode() {
           break;
       }
     }, 300);
+  };
+
+  const handleThemeSelect = (theme: string) => {
+    navigate(`/solo-quiz?theme=${theme}`);
   };
 
   return (
@@ -117,6 +123,13 @@ export default function GameMode() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Modal de Seleção de Tema */}
+        <ThemeSelectionModal
+          isOpen={showThemeModal}
+          onClose={() => setShowThemeModal(false)}
+          onSelectTheme={handleThemeSelect}
+        />
       </div>
     </div>
   );
