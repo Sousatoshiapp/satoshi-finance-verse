@@ -10,6 +10,7 @@ import { AdvancedQuestionGenerator } from "@/components/features/quiz/advanced-q
 import { QuestionPreviewModal } from "@/components/features/quiz/question-preview-modal";
 import { QuizAnalyticsDashboard } from "@/components/features/quiz/quiz-analytics-dashboard";
 import { QuizQualityManager } from "@/components/features/quiz/quiz-quality-manager";
+import { StagedQuestionGenerator } from "@/components/features/quiz/staged-question-generator";
 
 export function GenerateQuestionsButton() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -120,13 +121,18 @@ export function GenerateQuestionsButton() {
 
   return (
     <div className="w-full max-w-6xl space-y-6">
-      <Tabs defaultValue="generator" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+      <Tabs defaultValue="staged" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="staged">Lotes</TabsTrigger>
           <TabsTrigger value="generator">Gerador</TabsTrigger>
-          <TabsTrigger value="quality">Controle de Qualidade</TabsTrigger>
+          <TabsTrigger value="quality">Qualidade</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="preview">Preview</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="staged" className="space-y-6">
+          <StagedQuestionGenerator onUpdate={handleGetStats} />
+        </TabsContent>
 
         <TabsContent value="generator" className="space-y-6">
           <Card>
