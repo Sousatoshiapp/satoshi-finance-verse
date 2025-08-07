@@ -7055,6 +7055,10 @@ export type Database = {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
       }
+      clean_expired_btc_queue: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       complete_btc_duel: {
         Args: { p_duel_id: string; p_final_price: number }
         Returns: {
