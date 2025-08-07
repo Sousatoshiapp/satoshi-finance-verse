@@ -7148,6 +7148,7 @@ export type Database = {
         Returns: {
           opponent_id: string
           queue_id: string
+          is_bot: boolean
         }[]
       }
       generate_ai_recommendations: {
