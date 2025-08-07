@@ -10,6 +10,7 @@ import { useThemedSRS } from "@/hooks/use-themed-srs";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
+import { useResponsiveFeedback } from "@/hooks/use-responsive-feedback";
 import { useI18n } from "@/hooks/use-i18n";
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
@@ -94,7 +95,8 @@ export function ThemedQuizEngine({
   } = useQuizGamification();
 
   const { getThemedQuestions, submitThemedAnswer, themeProgress } = useThemedSRS();
-  const { } = useAdvancedQuizAudio();
+  const { playCorrectSound, playWrongSound } = useAdvancedQuizAudio();
+  const { triggerHaptic } = useResponsiveFeedback();
   const { shuffleQuestions } = useQuizShuffle();
   const { t } = useI18n();
 
@@ -199,13 +201,12 @@ export function ThemedQuizEngine({
     
     if (isCorrect) {
       setScore(prev => prev + 1);
+      playCorrectSound();
+      triggerHaptic('light');
       await handleCorrectAnswer();
-      
-      setTimeout(() => {
-        setShowFeedback(false);
-        handleContinue();
-      }, 1500);
     } else {
+      playWrongSound();
+      triggerHaptic('heavy');
       await handleWrongAnswer(
         question.question,
         question.correct_answer,
@@ -523,6 +524,10 @@ export function ThemedQuizEngine({
             correctAnswer={currentQuestion.correct_answer}
             userAnswer={selectedAnswer}
             show={showFeedback}
+            onClose={() => {
+              setShowFeedback(false);
+              handleContinue();
+            }}
           />
         )}
 
