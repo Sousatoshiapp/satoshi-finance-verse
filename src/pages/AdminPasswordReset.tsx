@@ -69,8 +69,7 @@ export default function AdminPasswordReset() {
 
       if (error) throw error;
 
-      // Atualizar senha no localStorage
-      localStorage.setItem("admin_password", newPassword);
+      // Password successfully reset - no client-side storage needed
       
       setSuccess(true);
       toast({
