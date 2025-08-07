@@ -387,52 +387,52 @@ export function TwitterSocialFeed() {
   return (
     <div className="divide-y divide-border/50">
       {posts.map((post) => (
-        <article key={post.id} className="p-3 hover:bg-muted/30 transition-colors duration-200">
-          <div className="flex space-x-2">
+        <article key={post.id} className="p-1.5 hover:bg-muted/30 transition-colors duration-200">
+          <div className="flex space-x-1">
             {/* Avatar */}
             <AvatarDisplayUniversal
               avatarData={normalizeAvatarData(post.profiles)}
               nickname={post.profiles.nickname}
-              size="md"
+              size="xs"
               onClick={() => handleUserClick(post.profiles.id)}
             />
 
             <div className="flex-1 min-w-0">
               {/* Header */}
-              <div className="flex items-center space-x-2 mb-1">
+              <div className="flex items-center space-x-1 mb-0.5">
                 <span 
-                  className="font-bold hover:underline cursor-pointer text-[13px]"
+                  className="font-bold hover:underline cursor-pointer text-[7px]"
                   onClick={() => handleUserClick(post.profiles.id)}
                 >
                   @{post.profiles.nickname}
                 </span>
-                <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                <Badge variant="secondary" className="text-[6px] px-1 py-0.5">
                   Nv.{post.profiles.level}
                 </Badge>
                 {post.is_following && (
-                  <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                  <Badge variant="outline" className="text-[6px] px-1 py-0.5">
                     Seguindo
                   </Badge>
                 )}
-                <span className="text-[13px] text-muted-foreground">·</span>
-                <span className="text-[13px] text-muted-foreground">
+                <span className="text-[7px] text-muted-foreground">·</span>
+                <span className="text-[7px] text-muted-foreground">
                   {formatPostDate(post.created_at)}
                 </span>
-                <Button variant="ghost" size="sm" className="ml-auto p-1 h-auto">
-                  <MoreHorizontal className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="ml-auto p-0.5 h-auto">
+                  <MoreHorizontal className="h-2 w-2" />
                 </Button>
               </div>
 
               {/* Content */}
-              <div className="mb-2">
-                <p className="text-[15px] leading-[20px] whitespace-pre-wrap">
+              <div className="mb-1">
+                <p className="text-[8px] leading-[10px] whitespace-pre-wrap">
                   {post.content}
                 </p>
                 
                 {post.trade_data && (
-                  <Card className="mt-3 border-l-4 border-l-primary">
-                    <CardContent className="p-3">
-                      <div className="flex items-center space-x-2 text-sm">
+                  <Card className="mt-1.5 border-l-2 border-l-primary">
+                    <CardContent className="p-1.5">
+                      <div className="flex items-center space-x-1 text-[7px]">
                         <Badge variant="outline">Trade</Badge>
                         <span className="text-muted-foreground">
                           {post.trade_data.symbol} - {post.trade_data.action}
@@ -444,36 +444,36 @@ export function TwitterSocialFeed() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-0.5">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
                   onClick={() => toggleComments(post.id)}
                 >
-                  <MessageCircle className="h-5 w-5 mr-1" />
-                  <span className="text-sm">{post.comments_count}</span>
+                  <MessageCircle className="h-3 w-3 mr-0.5" />
+                  <span className="text-[8px]">{post.comments_count}</span>
                 </Button>
 
                 <Button
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-muted-foreground hover:bg-muted/50 hover:text-red-500 p-2 h-auto transition-colors duration-150",
+                    "text-muted-foreground hover:bg-muted/50 hover:text-red-500 p-1 h-auto transition-colors duration-150",
                     post.user_liked && "text-red-500"
                   )}
                   onClick={() => handleLikePost(post.id, !!post.user_liked)}
                 >
-                  <Heart className={cn("h-5 w-5 mr-1", post.user_liked && "fill-current")} />
-                  <span className="text-sm">{post.likes_count}</span>
+                  <Heart className={cn("h-3 w-3 mr-0.5", post.user_liked && "fill-current")} />
+                  <span className="text-[8px]">{post.likes_count}</span>
                 </Button>
 
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
                 >
-                  <Share2 className="h-5 w-5" />
+                  <Share2 className="h-3 w-3" />
                 </Button>
 
                 {/* Follow Button - only show if not following */}
@@ -486,7 +486,7 @@ export function TwitterSocialFeed() {
                     actionType="follow"
                     variant="ghost"
                     size="sm"
-                    className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-2 h-auto transition-colors duration-150"
+                    className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
                     showCount={false}
                   />
                 )}
@@ -494,17 +494,17 @@ export function TwitterSocialFeed() {
 
               {/* Comments Section */}
               {expandedPost === post.id && (
-                <div className="mt-4 space-y-2">
+                <div className="mt-2 space-y-1">
                   <Separator />
                   
                   {/* Add Comment */}
-                  <div className="flex items-start space-x-3 p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-start space-x-1.5 p-1.5 bg-muted/30 rounded-lg">
                     <AvatarDisplayUniversal
                       avatarData={{ profile_image_url: null, current_avatar_id: null, avatars: null }}
                       nickname="U"
-                      size="sm"
+                      size="xs"
                     />
-                    <div className="flex-1 flex items-center space-x-2">
+                    <div className="flex-1 flex items-center space-x-1">
                       <input
                         type="text"
                         placeholder={t('social.placeholders.addComment')}
@@ -513,7 +513,7 @@ export function TwitterSocialFeed() {
                           ...prev, 
                           [post.id]: e.target.value 
                         }))}
-                        className="flex-1 bg-transparent border-0 outline-none text-sm placeholder:text-muted-foreground"
+                        className="flex-1 bg-transparent border-0 outline-none text-[8px] placeholder:text-muted-foreground"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && newComment[post.id]?.trim()) {
                             handleAddComment(post.id);
@@ -525,7 +525,7 @@ export function TwitterSocialFeed() {
                         onClick={() => handleAddComment(post.id)}
                         disabled={!newComment[post.id]?.trim()}
                         variant="ghost"
-                        className="text-primary hover:text-primary/80"
+                        className="text-primary hover:text-primary/80 text-[8px] p-0.5"
                       >
                         {t('social.buttons.comment')}
                       </Button>
@@ -534,20 +534,20 @@ export function TwitterSocialFeed() {
 
                   {/* Comments List */}
                   {comments[post.id] && comments[post.id].map((comment) => (
-                    <div key={comment.id} className="flex space-x-2">
+                    <div key={comment.id} className="flex space-x-1">
                       <AvatarDisplayUniversal
                         avatarData={normalizeAvatarData(comment.profiles)}
                         nickname={comment.profiles.nickname}
-                        size="sm"
+                        size="xs"
                       />
                       <div className="flex-1">
-                        <div className="bg-muted/50 rounded-lg p-2.5">
-                          <div className="font-medium text-xs mb-1">
+                        <div className="bg-muted/50 rounded-lg p-1.5">
+                          <div className="font-medium text-[6px] mb-0.5">
                             @{comment.profiles.nickname}
                           </div>
-                          <p className="text-sm">{comment.content}</p>
+                          <p className="text-[8px]">{comment.content}</p>
                         </div>
-                        <div className="text-xs text-muted-foreground mt-1 px-2.5">
+                        <div className="text-[6px] text-muted-foreground mt-0.5 px-1.5">
                           {formatPostDate(comment.created_at)}
                         </div>
                       </div>

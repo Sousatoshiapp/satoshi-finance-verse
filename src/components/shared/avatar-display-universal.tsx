@@ -67,7 +67,7 @@ interface AvatarDisplayUniversalProps {
   profileImageUrl?: string;
   nickname: string;
   className?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   // New prop to accept normalized avatar data
   avatarData?: AvatarData;
   // Add onClick support
@@ -75,6 +75,7 @@ interface AvatarDisplayUniversalProps {
 }
 
 const sizeClasses = {
+  xs: "h-5 w-5",
   sm: "h-8 w-8",
   md: "h-10 w-10", 
   lg: "h-16 w-16",
