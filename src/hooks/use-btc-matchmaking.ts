@@ -199,7 +199,7 @@ export function useBtcMatchmaking() {
         .from('btc_duel_queue')
         .select('id')
         .eq('bet_amount', betAmount)
-        .eq('expires_at', '>', new Date().toISOString());
+        .gt('expires_at', new Date().toISOString());
 
       if (error) throw error;
 

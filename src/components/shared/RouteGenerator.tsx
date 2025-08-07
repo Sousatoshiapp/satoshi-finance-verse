@@ -21,6 +21,7 @@ import Icons from '@/pages/Icons';
 import AdminPanel from '@/pages/AdminPanel';
 import P2PTransfer from '@/pages/P2PTransfer';
 import OAuthCallback from '@/pages/OAuthCallback';
+import BtcDuel from '@/pages/BtcDuel';
 
 const directImports: Record<string, React.ComponentType> = {
   Dashboard,
@@ -40,7 +41,8 @@ const directImports: Record<string, React.ComponentType> = {
   AdminPanel,
   P2PTransfer,
   TranslationTestPage,
-  OAuthCallback
+  OAuthCallback,
+  BtcDuel
 };
 
 export function generateRoutes() {

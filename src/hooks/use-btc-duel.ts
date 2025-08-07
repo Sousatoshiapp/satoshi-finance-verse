@@ -91,7 +91,7 @@ export function useBtcDuel() {
 
       setState(prev => ({
         ...prev,
-        currentDuel: duel,
+        currentDuel: duel as BtcDuel,
         phase: 'predicting',
         timeLeft: 30,
         isLoading: false
@@ -283,11 +283,31 @@ export function useBtcDuel() {
         },
         (payload) => {
           const updatedDuel = payload.new as BtcDuel;
-          setState(prev => ({
-            ...prev,
-            currentDuel: updatedDuel,
-            opponentPrediction: updatedDuel.player1_prediction !== 'up' ? updatedDuel.player1_prediction : updatedDuel.player2_prediction
-          }));
+          
+          // Get current user ID to determine opponent prediction
+          supabase.auth.getUser().then(({ data: { user } }) => {
+            if (user) {
+              supabase
+                .from('profiles')
+                .select('id')
+                .eq('user_id', user.id)
+                .single()
+                .then(({ data: profile }) => {
+                  if (profile) {
+                    const isPlayer1 = updatedDuel.player1_id === profile.id;
+                    const opponentPrediction = isPlayer1 
+                      ? updatedDuel.player2_prediction 
+                      : updatedDuel.player1_prediction;
+                    
+                    setState(prev => ({
+                      ...prev,
+                      currentDuel: updatedDuel,
+                      opponentPrediction: opponentPrediction as 'up' | 'down'
+                    }));
+                  }
+                });
+            }
+          });
         }
       )
       .subscribe();
