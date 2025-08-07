@@ -221,42 +221,65 @@ FORMATO JSON OBRIGATÓRIO (responda APENAS com JSON válido):
 
 GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
 
-  const makeOpenAICall = async () => {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'Você é um especialista em educação financeira brasileira. Gere perguntas precisas e educativas em formato JSON válido. Responda APENAS com JSON válido, sem texto adicional.'
+  // Modelos com fallback para maior confiabilidade
+  const MODELS = ['gpt-4o-mini', 'gpt-3.5-turbo'];
+  
+  const makeOpenAICallWithFallback = async () => {
+    let lastError: any;
+    
+    for (let i = 0; i < MODELS.length; i++) {
+      try {
+        console.log(`🤖 Tentando modelo ${MODELS[i]} para ${theme}-${difficulty}`);
+        
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openAIApiKey}`,
+            'Content-Type': 'application/json',
           },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 4000
-      }),
-    });
+          body: JSON.stringify({
+            model: MODELS[i],
+            messages: [
+              {
+                role: 'system',
+                content: 'Você é um especialista em educação financeira brasileira. Gere perguntas precisas e educativas em formato JSON válido. Responda APENAS com JSON válido, sem texto adicional.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: Math.min(2000, count * 150) // Ajustar tokens baseado no count
+          }),
+        });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`OpenAI API erro ${response.status}: ${errorText}`);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`OpenAI API erro ${response.status} com ${MODELS[i]}: ${errorText}`);
+        }
+
+        console.log(`✅ Sucesso com modelo ${MODELS[i]}`);
+        return response.json();
+        
+      } catch (error) {
+        lastError = error;
+        console.warn(`⚠️ Falha com modelo ${MODELS[i]}:`, error);
+        
+        if (i < MODELS.length - 1) {
+          console.log(`🔄 Tentando próximo modelo em 2s...`);
+          await sleep(2000);
+        }
+      }
     }
-
-    return response.json();
+    
+    throw lastError;
   };
 
   try {
     console.log(`🔄 Gerando ${count} perguntas ${difficulty} para ${theme} (com retry)`);
     
-    const data = await withRetry(makeOpenAICall, 3, 3000);
+    const data = await withRetry(makeOpenAICallWithFallback, 2, 3000);
     const content = data.choices[0].message.content;
 
     console.log(`📝 Conteúdo recebido para ${theme}-${difficulty}: ${content.substring(0, 100)}...`);
@@ -327,8 +350,8 @@ serve(async (req) => {
 
     const themes = Object.keys(THEME_TEMPLATES);
     const difficulties = ['easy', 'medium', 'hard'];
-    const targetQuestionsPerDifficulty = 50; // Reduzido de 70 para 50
-    const batchSize = 25; // Gerar em lotes de 25 perguntas
+    const targetQuestionsPerDifficulty = 30; // Reduzido para 30 para evitar timeout
+    const batchSize = 10; // Lotes menores de 10 perguntas
     
     let allGeneratedQuestions: any[] = [];
     let themeResults = {};
@@ -357,10 +380,11 @@ serve(async (req) => {
             
             console.log(`✅ Lote ${batchIndex + 1} completado: ${batchQuestions.length} perguntas geradas`);
             
-            // Delay maior entre lotes para evitar rate limiting
+            // Delay progressivo entre lotes
             if (batchIndex < batchCount - 1) {
-              console.log(`⏳ Aguardando 4 segundos antes do próximo lote...`);
-              await sleep(4000);
+              const delay = 2000 + (batchIndex * 1000); // 2s, 3s, 4s...
+              console.log(`⏳ Aguardando ${delay}ms antes do próximo lote...`);
+              await sleep(delay);
             }
           } catch (batchError) {
             console.error(`❌ Erro no lote ${batchIndex + 1} para ${theme}-${difficulty}:`, batchError);

@@ -86,7 +86,9 @@ export function GenerateQuestionsButton() {
         description: "Testando geração de 10 perguntas de educação financeira...",
       });
 
-      const { data, error } = await supabase.functions.invoke('generate-test-questions');
+      const { data, error } = await supabase.functions.invoke('generate-quick-questions', {
+        body: { theme: 'financial_education', difficulty: 'easy', count: 10 }
+      });
       
       if (error) {
         throw error;
@@ -137,7 +139,7 @@ export function GenerateQuestionsButton() {
                   Testando...
                 </>
               ) : (
-                "🧪 Teste Rápido (10 perguntas)"
+                "🧪 Teste Rápido (10 perguntas) - Modo Seguro"
               )}
             </Button>
             
@@ -207,8 +209,8 @@ export function GenerateQuestionsButton() {
               <ul className="list-disc list-inside space-y-1">
                 <li>7 temas financeiros (Educação Financeira, Trading, etc.)</li>
                 <li>3 níveis de dificuldade por tema (fácil, médio, difícil)</li>
-                <li>~50 perguntas por nível = ~150 perguntas por tema</li>
-                <li><strong>Total: ~1050 perguntas</strong></li>
+                <li>~30 perguntas por nível = ~90 perguntas por tema</li>
+                <li><strong>Total: ~630 perguntas</strong></li>
                 <li className="text-primary">✨ Geração otimizada em lotes menores</li>
               </ul>
             </div>
