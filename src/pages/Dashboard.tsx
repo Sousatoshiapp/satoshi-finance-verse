@@ -18,6 +18,7 @@ import { DashboardSummaryOptimized } from "@/components/shared/dashboard-summary
 import { QuickActionsOptimized } from "@/components/shared/quick-actions-optimized";
 import { DistrictCircleBadge } from "@/components/features/gamification/district-circle-badge";
 import { CompactLeaderboard } from "@/components/shared/compact-leaderboard";
+import { BtcDuelCard } from "@/components/features/duels/btc/BtcDuelCard";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
@@ -358,6 +359,11 @@ export default function Dashboard() {
           {/* Ranking Semanal de Beetz */}
           <div className="mb-4">
             <CompactLeaderboard />
+          </div>
+
+          {/* BTC Duelo Rápido Card */}
+          <div className="mb-4">
+            <BtcDuelCard />
           </div>
 
           {/* Enhanced Daily Summary */}

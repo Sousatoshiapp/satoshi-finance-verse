@@ -47,5 +47,11 @@ export const gameRoutes = [
     requiresAuth: true,
     showNavbar: true,
     isDirectImport: true
+  },
+  {
+    path: "/btc-duel",
+    element: "BtcDuel",
+    requiresAuth: true,
+    showNavbar: false
   }
 ];

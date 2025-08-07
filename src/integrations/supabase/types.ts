@@ -633,6 +633,87 @@ export type Database = {
           },
         ]
       }
+      btc_duel_queue: {
+        Row: {
+          bet_amount: number
+          created_at: string
+          expires_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bet_amount: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bet_amount?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      btc_prediction_duels: {
+        Row: {
+          bet_amount: number
+          completed_at: string | null
+          created_at: string
+          expires_at: string
+          final_btc_price: number | null
+          id: string
+          initial_btc_price: number
+          player1_id: string
+          player1_prediction: string
+          player2_id: string
+          player2_prediction: string
+          prediction_duration: number
+          price_source: string
+          started_at: string | null
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          bet_amount: number
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          final_btc_price?: number | null
+          id?: string
+          initial_btc_price: number
+          player1_id: string
+          player1_prediction: string
+          player2_id: string
+          player2_prediction: string
+          prediction_duration?: number
+          price_source?: string
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          bet_amount?: number
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          final_btc_price?: number | null
+          id?: string
+          initial_btc_price?: number
+          player1_id?: string
+          player1_prediction?: string
+          player2_id?: string
+          player2_prediction?: string
+          prediction_duration?: number
+          price_source?: string
+          started_at?: string | null
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       btz_penalty_history: {
         Row: {
           btz_after: number
@@ -6930,6 +7011,13 @@ export type Database = {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
       }
+      complete_btc_duel: {
+        Args: { p_duel_id: string; p_final_price: number }
+        Returns: {
+          winner_profile_id: string
+          prize_amount: number
+        }[]
+      }
       complete_duel_participation: {
         Args: {
           p_duel_id: string
@@ -7010,6 +7098,13 @@ export type Database = {
             }
           | { user_profile_id: string }
         Returns: string
+      }
+      find_btc_duel_opponent: {
+        Args: { p_user_id: string; p_bet_amount: number }
+        Returns: {
+          opponent_id: string
+          queue_id: string
+        }[]
       }
       generate_ai_recommendations: {
         Args: { p_user_id: string }
