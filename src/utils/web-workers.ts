@@ -373,6 +373,167 @@ export class WebWorkerManager {
     this.workers.clear();
     this.workerPromises.clear();
   }
+
+  createRankingWorker(): Worker {
+    const workerCode = `
+      const rankingProcessing = {
+        calculateAdvancedRankings(users, metrics) {
+          return users.map(user => {
+            const score = this.calculateComplexScore(user, metrics);
+            return { ...user, advancedScore: score };
+          }).sort((a, b) => b.advancedScore - a.advancedScore);
+        },
+        
+        calculateComplexScore(user, metrics) {
+          let score = 0;
+          score += (user.xp || 0) * (metrics.xpWeight || 1);
+          score += (user.level || 0) * (metrics.levelWeight || 10);
+          score += (user.streak || 0) * (metrics.streakWeight || 5);
+          score += (user.points || 0) * (metrics.pointsWeight || 0.1);
+          return score;
+        },
+        
+        processLeaderboardData(data, filters) {
+          let filtered = data;
+          
+          if (filters.district) {
+            filtered = filtered.filter(user => user.district === filters.district);
+          }
+          
+          if (filters.level) {
+            filtered = filtered.filter(user => user.level >= filters.level);
+          }
+          
+          return this.calculateAdvancedRankings(filtered, filters.metrics || {});
+        },
+        
+        processQuizResults(sessions, analysisType) {
+          const results = sessions.map(session => {
+            const accuracy = session.correct_answers / session.total_questions;
+            const timeEfficiency = session.total_questions / (session.duration || 1);
+            const difficultyBonus = this.calculateDifficultyBonus(session.difficulty);
+            
+            return {
+              ...session,
+              accuracy,
+              timeEfficiency,
+              difficultyBonus,
+              performanceScore: accuracy * timeEfficiency * difficultyBonus
+            };
+          });
+          
+          return results.sort((a, b) => b.performanceScore - a.performanceScore);
+        },
+        
+        calculateDifficultyBonus(difficulty) {
+          const bonuses = { easy: 1, medium: 1.2, hard: 1.5, expert: 2 };
+          return bonuses[difficulty] || 1;
+        }
+      };
+      
+      self.onmessage = function(e) {
+        const { id, type, data } = e.data;
+        let result;
+        
+        try {
+          switch(type) {
+            case 'CALCULATE_ADVANCED_RANKINGS':
+              result = rankingProcessing.calculateAdvancedRankings(data.users, data.metrics);
+              break;
+            case 'PROCESS_LEADERBOARD_DATA':
+              result = rankingProcessing.processLeaderboardData(data.data, data.filters);
+              break;
+            case 'PROCESS_QUIZ_RESULTS':
+              result = rankingProcessing.processQuizResults(data.sessions, data.analysisType);
+              break;
+            default:
+              throw new Error('Unknown worker task type: ' + type);
+          }
+          
+          self.postMessage({ id, success: true, result });
+        } catch (error) {
+          self.postMessage({ id, success: false, error: error.message });
+        }
+      };
+    `;
+    
+    return this.createWorker('ranking', workerCode);
+  }
+
+  createImageProcessingWorker(): Worker {
+    const workerCode = `
+      const imageProcessing = {
+        optimizeImageUrls(images, options) {
+          return images.map(img => {
+            if (typeof img === 'string') {
+              return this.generateOptimizedUrl(img, options);
+            }
+            return {
+              ...img,
+              optimizedUrl: this.generateOptimizedUrl(img.url, options)
+            };
+          });
+        },
+        
+        generateOptimizedUrl(url, options) {
+          if (!url) return url;
+          
+          const { width, height, quality = 75, format = 'auto' } = options;
+          
+          if (url.includes('unsplash')) {
+            const params = new URLSearchParams();
+            params.set('q', quality.toString());
+            params.set('auto', 'format');
+            params.set('fit', 'crop');
+            if (format !== 'auto') params.set('fm', format);
+            if (width) params.set('w', width.toString());
+            if (height) params.set('h', height.toString());
+            
+            return url + (url.includes('?') ? '&' : '?') + params.toString();
+          }
+          
+          return url;
+        },
+        
+        preloadImages(urls) {
+          return Promise.all(urls.map(url => {
+            return new Promise((resolve, reject) => {
+              const img = new Image();
+              img.onload = () => resolve({ url, loaded: true });
+              img.onerror = () => resolve({ url, loaded: false });
+              img.src = url;
+            });
+          }));
+        }
+      };
+      
+      self.onmessage = function(e) {
+        const { id, type, data } = e.data;
+        let result;
+        
+        try {
+          switch(type) {
+            case 'OPTIMIZE_IMAGE_URLS':
+              result = imageProcessing.optimizeImageUrls(data.images, data.options);
+              break;
+            case 'PRELOAD_IMAGES':
+              imageProcessing.preloadImages(data.urls).then(result => {
+                self.postMessage({ id, success: true, result });
+              });
+              return;
+            default:
+              throw new Error('Unknown image processing task: ' + type);
+          }
+          
+          self.postMessage({ id, success: true, result });
+        } catch (error) {
+          self.postMessage({ id, success: false, error: error.message });
+        }
+      };
+    `;
+    
+    return this.createWorker('imageProcessing', workerCode);
+  }
 }
 
 // Export singleton
@@ -426,4 +587,98 @@ export const useDataWorker = () => {
     filterLeaderboard,
     processQuizResults
   };
+};
+
+import { useState, useCallback } from 'react';
+
+export const useWorker = (name: string, workerFunction: (data: any) => Promise<any>) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const execute = useCallback(async (data: any) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const result = await workerFunction(data);
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [workerFunction]);
+
+  return { execute, isLoading, error };
+};
+
+export const useAdvancedRankingWorker = () => {
+  return useWorker('advanced-ranking', (data: { users: any[], metrics: any }) => {
+    const worker = webWorkerManager.createRankingWorker();
+    return new Promise((resolve, reject) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      
+      worker.onmessage = (e) => {
+        const { id: responseId, success, result, error } = e.data;
+        if (responseId === id) {
+          if (success) {
+            resolve(result);
+          } else {
+            reject(new Error(error));
+          }
+          worker.terminate();
+        }
+      };
+      
+      worker.postMessage({ id, type: 'CALCULATE_ADVANCED_RANKINGS', data });
+    });
+  });
+};
+
+export const useLeaderboardProcessingWorker = () => {
+  return useWorker('leaderboard-processing', (data: { data: any[], filters: any }) => {
+    const worker = webWorkerManager.createRankingWorker();
+    return new Promise((resolve, reject) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      
+      worker.onmessage = (e) => {
+        const { id: responseId, success, result, error } = e.data;
+        if (responseId === id) {
+          if (success) {
+            resolve(result);
+          } else {
+            reject(new Error(error));
+          }
+          worker.terminate();
+        }
+      };
+      
+      worker.postMessage({ id, type: 'PROCESS_LEADERBOARD_DATA', data });
+    });
+  });
+};
+
+export const useImageOptimizationWorker = () => {
+  return useWorker('image-optimization', (data: { images: any[], options: any }) => {
+    const worker = webWorkerManager.createImageProcessingWorker();
+    return new Promise((resolve, reject) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      
+      worker.onmessage = (e) => {
+        const { id: responseId, success, result, error } = e.data;
+        if (responseId === id) {
+          if (success) {
+            resolve(result);
+          } else {
+            reject(new Error(error));
+          }
+          worker.terminate();
+        }
+      };
+      
+      worker.postMessage({ id, type: 'OPTIMIZE_IMAGE_URLS', data });
+    });
+  });
 };
