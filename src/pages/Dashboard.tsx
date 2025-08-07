@@ -285,13 +285,6 @@ export default function Dashboard() {
                     className="cursor-pointer hover:scale-105 transition-transform duration-200"
                     onClick={handleNavigateToProfile}
                   />
-                  {/* Level Badge - Positioned Right Side (smaller) */}
-                  <div className="absolute -bottom-0.5 right-1">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
-                      <span>{t('common.level')}</span>
-                      <span className="font-bold">{userStats.level}</span>
-                    </div>
-                  </div>
                   {/* Botão + Discreto (smaller) */}
                   <div className="absolute top-0 left-0">
                     <button
@@ -312,12 +305,6 @@ export default function Dashboard() {
                 >
                   <div className="w-16 h-16 bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
                     <div className="text-2xl">🤖</div>
-                  </div>
-                  <div className="absolute -bottom-0.5 right-1">
-                    <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-1 py-0.5 rounded-full text-xs font-medium shadow-md flex items-center gap-1">
-                      <span>{t('common.level')}</span>
-                      <span className="font-bold">{userStats.level}</span>
-                    </div>
                   </div>
                   {/* Botão + Discreto (smaller) */}
                   <div className="absolute top-0 left-0">
