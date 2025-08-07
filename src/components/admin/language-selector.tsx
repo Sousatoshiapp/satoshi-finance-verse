@@ -6,7 +6,11 @@ import { useI18n } from "@/hooks/use-i18n";
 
 const languages = [
   { code: 'pt-BR', name: 'Português (Brasil)', flag: '🇧🇷' },
-  { code: 'en-US', name: 'English (United States)', flag: '🇺🇸' }
+  { code: 'en-US', name: 'English (United States)', flag: '🇺🇸' },
+  { code: 'es-ES', name: 'Español (España)', flag: '🇪🇸' },
+  { code: 'hi-IN', name: 'हिन्दी (भारत)', flag: '🇮🇳' },
+  { code: 'zh-CN', name: '中文 (中国)', flag: '🇨🇳' },
+  { code: 'ar-SA', name: 'العربية (السعودية)', flag: '🇸🇦' }
 ];
 
 export function LanguageSelector() {

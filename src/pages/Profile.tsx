@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
-import { getLevelInfo } from "@/data/levels";
+import { useI18n } from "@/hooks/use-i18n";
 import { Crown, Star, Shield, Camera } from "lucide-react";
 import { LightningIcon, BookIcon, StreakIcon, TrophyIcon } from "@/components/icons/game-icons";
 import satoshiLogo from "/lovable-uploads/f344f3a7-aa34-4a5f-a2e0-8ac072c6aac5.png";
@@ -108,6 +108,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { subscription } = useSubscription();
+  const { t } = useI18n();
   
   const getAvatarImage = (avatarName?: string) => {
     if (!avatarName) return satoshiLogo;
@@ -377,7 +378,7 @@ export default function Profile() {
                 {user.nickname}
               </h2>
               <p className="text-muted-foreground mb-3 text-sm md:text-base">
-                {getLevelInfo(user.level).name} • {user.points} Beetz
+                {t(`levels.level_${user.level}.name`)} • {user.points} Beetz
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
                 <StreakBadge days={user.streak} />
