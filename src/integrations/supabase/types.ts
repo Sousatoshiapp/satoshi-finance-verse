@@ -7213,6 +7213,14 @@ export type Database = {
           profile_image_url: string
         }[]
       }
+      get_btc_queue_stats: {
+        Args: { p_bet_amount: number }
+        Returns: {
+          queue_count: number
+          estimated_wait_time: number
+          active_duels: number
+        }[]
+      }
       get_current_season: {
         Args: Record<PropertyKey, never>
         Returns: string

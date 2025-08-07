@@ -8,6 +8,9 @@ interface MatchmakingState {
   opponentId: string | null;
   searchTime: number;
   queuePosition: number;
+  estimatedWaitTime: number;
+  activeDuels: number;
+  isBot: boolean;
 }
 
 export function useBtcMatchmaking() {
@@ -16,7 +19,10 @@ export function useBtcMatchmaking() {
     foundOpponent: false,
     opponentId: null,
     searchTime: 0,
-    queuePosition: 0
+    queuePosition: 0,
+    estimatedWaitTime: 0,
+    activeDuels: 0,
+    isBot: false
   });
 
   const { toast } = useToast();
@@ -58,11 +64,13 @@ export function useBtcMatchmaking() {
           ...prev,
           foundOpponent: true,
           opponentId: result.opponent_id,
-          isSearching: false
+          isSearching: false,
+          isBot: result.is_bot || false
         }));
 
+        const opponentType = result.is_bot ? "Bot" : "Jogador";
         toast({
-          title: "🎯 Oponente Encontrado!",
+          title: `🎯 ${opponentType} Encontrado!`,
           description: "Preparando duelo BTC..."
         });
 
@@ -89,9 +97,9 @@ export function useBtcMatchmaking() {
     }
   }, [toast]);
 
-  // Poll for opponent
+  // Poll for opponent with improved stats
   const pollForOpponent = useCallback(async (userId: string, betAmount: number) => {
-    const maxPollTime = 120; // 2 minutes maximum
+    const maxPollTime = 300; // 5 minutes maximum (increased)
     let pollCount = 0;
 
     const pollInterval = setInterval(async () => {
@@ -109,6 +117,22 @@ export function useBtcMatchmaking() {
       }
 
       try {
+        // Get queue stats first
+        const { data: statsData, error: statsError } = await supabase
+          .rpc('get_btc_queue_stats', {
+            p_bet_amount: betAmount
+          });
+
+        if (!statsError && statsData?.[0]) {
+          const stats = statsData[0];
+          setState(prev => ({
+            ...prev,
+            queuePosition: stats.queue_count,
+            estimatedWaitTime: stats.estimated_wait_time,
+            activeDuels: stats.active_duels
+          }));
+        }
+
         // Check if opponent was found
         const { data, error } = await supabase
           .rpc('find_btc_duel_opponent', {
@@ -126,19 +150,20 @@ export function useBtcMatchmaking() {
             ...prev,
             foundOpponent: true,
             opponentId: result.opponent_id,
-            isSearching: false
+            isSearching: false,
+            isBot: result.is_bot || false
           }));
 
+          const opponentType = result.is_bot ? "Bot" : "Jogador";
           toast({
-            title: "🎯 Oponente Encontrado!",
-            description: "Iniciando duelo BTC..."
+            title: `🎯 ${opponentType} Encontrado!`,
+            description: result.is_bot ? "Você foi pareado com um bot!" : "Iniciando duelo BTC..."
           });
         } else {
-          // Update search time and queue position
+          // Update search time
           setState(prev => ({
             ...prev,
-            searchTime: pollCount,
-            queuePosition: Math.max(1, Math.floor(Math.random() * 5)) // Simulated queue position
+            searchTime: pollCount
           }));
         }
 
@@ -147,7 +172,7 @@ export function useBtcMatchmaking() {
         clearInterval(pollInterval);
         cancelMatchmaking();
       }
-    }, 1000); // Poll every second
+    }, 3000); // Poll every 3 seconds (reduced frequency)
 
     // Store interval reference for cleanup
     setState(prev => ({ ...prev, searchTime: 0 }));
@@ -179,7 +204,10 @@ export function useBtcMatchmaking() {
         foundOpponent: false,
         opponentId: null,
         searchTime: 0,
-        queuePosition: 0
+        queuePosition: 0,
+        estimatedWaitTime: 0,
+        activeDuels: 0,
+        isBot: false
       });
 
       toast({
@@ -217,7 +245,10 @@ export function useBtcMatchmaking() {
       foundOpponent: false,
       opponentId: null,
       searchTime: 0,
-      queuePosition: 0
+      queuePosition: 0,
+      estimatedWaitTime: 0,
+      activeDuels: 0,
+      isBot: false
     });
   }, []);
 
