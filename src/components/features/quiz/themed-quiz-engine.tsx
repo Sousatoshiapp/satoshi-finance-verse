@@ -435,17 +435,14 @@ export function ThemedQuizEngine({
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Timer e BTZ Card */}
         <div className="flex justify-between items-center mb-6">
-          <CircularTimer
-            duration={30}
-            timeLeft={timeLeft}
-            onTimeUp={handleTimeUp}
-            isPaused={showAnswer}
-            size="small"
-          />
-          <QuizBTZCard 
-            points={totalBTZ}
-            multiplier={currentMultiplier}
-          />
+        <CircularTimer
+          duration={30}
+          isActive={!showAnswer}
+          onTimeUp={handleTimeUp}
+          onTick={(newTimeLeft) => setTimeLeft(newTimeLeft)}
+          size={80}
+        />
+        <QuizBTZCard />
         </div>
 
         {/* Pergunta */}
@@ -544,15 +541,16 @@ export function ThemedQuizEngine({
       {/* Animações */}
       {showBeetzAnimation && (
         <BeetzAnimation
-          points={earnedBTZ}
-          onAnimationComplete={hideBeetzAnimation}
+          isVisible={showBeetzAnimation}
+          amount={earnedBTZ}
+          onComplete={hideBeetzAnimation}
         />
       )}
 
       {showStreakAnimation && (
         <StreakAnimation
-          count={streak}
-          onAnimationComplete={hideStreakAnimation}
+          isVisible={showStreakAnimation}
+          onComplete={hideStreakAnimation}
         />
       )}
 
