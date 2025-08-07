@@ -229,7 +229,7 @@ GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -434,7 +434,7 @@ serve(async (req) => {
       summary: {
         themes_processed: themes.length,
         difficulties_per_theme: 3,
-        target_per_difficulty: questionsPerDifficultyPerTheme,
+        target_per_difficulty: targetQuestionsPerDifficulty,
         total_inserted: insertedQuestions?.length || 0
       }
     }), {

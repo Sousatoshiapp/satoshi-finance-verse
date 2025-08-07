@@ -3,6 +3,7 @@ import { LazyRoutes } from '@/utils/advanced-lazy-loading';
 import { RouteWrapper } from './RouteWrapper';
 import { routeConfig, RouteConfig } from '@/routes';
 import TranslationTestPage from '@/pages/TranslationTest';
+import SoloQuiz from '@/pages/SoloQuiz';
 
 import Dashboard from '@/pages/Dashboard';
 import Profile from '@/pages/Profile';
@@ -42,7 +43,8 @@ const directImports: Record<string, React.ComponentType> = {
   P2PTransfer,
   TranslationTestPage,
   OAuthCallback,
-  BtcDuel
+  BtcDuel,
+  SoloQuiz
 };
 
 export function generateRoutes() {
