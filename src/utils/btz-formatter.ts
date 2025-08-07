@@ -1,19 +1,14 @@
 /**
- * Formata valores BTZ com até 2 casas decimais, removendo zeros desnecessários
+ * Formata valores BTZ mostrando sempre pelo menos 1 casa decimal
  * @param value - Valor BTZ para formatar
- * @returns String formatada (ex: "1", "0.1", "0.15", "1,234.56")
+ * @returns String formatada (ex: "150,0", "150,1", "150,15")
  */
 export function formatBTZ(value: number): string {
-  if (value === 0) return "0";
+  if (value === 0) return "0,0";
   
-  // Se for número inteiro, não mostrar decimais
-  if (value % 1 === 0) {
-    return value.toLocaleString();
-  }
-  
-  // Para decimais, mostrar até 2 casas removendo zeros desnecessários
-  const formatted = value.toLocaleString(undefined, {
-    minimumFractionDigits: 0,
+  // Sempre mostrar pelo menos 1 casa decimal, máximo 2
+  const formatted = value.toLocaleString('pt-BR', {
+    minimumFractionDigits: 1,
     maximumFractionDigits: 2
   });
   
