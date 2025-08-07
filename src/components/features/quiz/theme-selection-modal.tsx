@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/s
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
 import { cn } from "@/lib/utils";
+import { Lock } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
 
 interface ThemeSelectionModalProps {
   isOpen: boolean;
@@ -16,6 +18,7 @@ const QUIZ_THEMES = [
     name: "Finanças Básicas",
     difficulty: "Fácil",
     difficultyLevel: 1,
+    requiredLevel: 1,
     consolidatedThemes: ["financial_education", "budgeting", "basic_investments"]
   },
   {
@@ -23,6 +26,7 @@ const QUIZ_THEMES = [
     name: "Finanças Intermediária",
     difficulty: "Médio",
     difficultyLevel: 2,
+    requiredLevel: 5,
     consolidatedThemes: ["portfolio", "trading"]
   },
   {
@@ -30,6 +34,7 @@ const QUIZ_THEMES = [
     name: "Cripto",
     difficulty: "Difícil", 
     difficultyLevel: 3,
+    requiredLevel: 10,
     consolidatedThemes: ["cryptocurrency"]
   },
   {
@@ -37,20 +42,35 @@ const QUIZ_THEMES = [
     name: "Finanças Hard Core",
     difficulty: "Muito Difícil",
     difficultyLevel: 4,
+    requiredLevel: 20,
     consolidatedThemes: ["economics"]
   }
 ];
 
 export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSelectionModalProps) {
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const { profile, loading } = useProfile();
 
   const handleThemeSelect = (themeId: string) => {
+    const theme = QUIZ_THEMES.find(t => t.id === themeId);
+    const userLevel = profile?.level || 1;
+    
+    // Verificar se o tema está desbloqueado
+    if (theme && userLevel < theme.requiredLevel) {
+      return; // Bloquear seleção
+    }
+    
     setSelectedTheme(themeId);
     // Small delay for visual feedback
     setTimeout(() => {
       onSelectTheme(themeId);
       onClose();
     }, 200);
+  };
+
+  const isThemeLocked = (requiredLevel: number) => {
+    const userLevel = profile?.level || 1;
+    return userLevel < requiredLevel;
   };
 
   const getDifficultyBadge = (difficultyLevel: number, difficulty: string) => {
@@ -76,21 +96,33 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
           <div className="space-y-3">
             {QUIZ_THEMES.map((theme) => {
               const isSelected = selectedTheme === theme.id;
+              const locked = isThemeLocked(theme.requiredLevel);
               
               return (
                 <div
                   key={theme.id}
                   className={cn(
-                    "flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all duration-200",
-                    "hover:bg-accent/50 hover:shadow-md",
+                    "flex items-center justify-between p-4 rounded-lg transition-all duration-200",
                     "border border-border",
-                    isSelected && "bg-primary/10 border-primary ring-2 ring-primary/20"
+                    !locked && "cursor-pointer hover:bg-accent/50 hover:shadow-md",
+                    locked && "opacity-50 cursor-not-allowed",
+                    isSelected && !locked && "bg-primary/10 border-primary ring-2 ring-primary/20"
                   )}
-                  onClick={() => handleThemeSelect(theme.id)}
+                  onClick={() => !locked && handleThemeSelect(theme.id)}
                 >
-                  <h3 className="font-semibold text-base text-foreground">
-                    {theme.name}
-                  </h3>
+                  <div className="flex items-center gap-3">
+                    {locked && <Lock className="w-4 h-4 text-muted-foreground" />}
+                    <div>
+                      <h3 className="font-semibold text-base text-foreground">
+                        {theme.name}
+                      </h3>
+                      {locked && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Desbloqueie no nível {theme.requiredLevel}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                   
                   <Badge 
                     variant="outline"
