@@ -4027,6 +4027,41 @@ export type Database = {
           },
         ]
       }
+      question_hashes: {
+        Row: {
+          created_at: string | null
+          difficulty: string
+          id: string
+          question_hash: string
+          question_id: string | null
+          theme: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty: string
+          id?: string
+          question_hash: string
+          question_id?: string | null
+          theme: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string
+          id?: string
+          question_hash?: string
+          question_id?: string | null
+          theme?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_hashes_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       question_imports: {
         Row: {
           created_at: string | null
@@ -7085,6 +7120,10 @@ export type Database = {
         }
         Returns: number
       }
+      calculate_question_similarity: {
+        Args: { text1: string; text2: string }
+        Returns: number
+      }
       calculate_user_level: {
         Args: { user_xp: number }
         Returns: number
@@ -7096,6 +7135,10 @@ export type Database = {
       check_user_team_membership: {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
+      }
+      clean_duplicate_questions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       clean_expired_btc_queue: {
         Args: Record<PropertyKey, never>
@@ -7141,6 +7184,10 @@ export type Database = {
         }
         Returns: string
       }
+      daitch_mokotoff: {
+        Args: { "": string }
+        Returns: string[]
+      }
       determine_duel_winner: {
         Args: {
           p_duel_id: string
@@ -7155,6 +7202,14 @@ export type Database = {
           player2_score: number
           tie_broken_by: string
         }[]
+      }
+      dmetaphone: {
+        Args: { "": string }
+        Returns: string
+      }
+      dmetaphone_alt: {
+        Args: { "": string }
+        Returns: string
       }
       enhance_bot_realism: {
         Args: Record<PropertyKey, never>
@@ -7195,6 +7250,14 @@ export type Database = {
           opponent_id: string
           queue_id: string
           is_bot: boolean
+        }[]
+      }
+      find_similar_questions: {
+        Args: { new_question: string; similarity_threshold?: number }
+        Returns: {
+          id: string
+          question: string
+          similarity: number
         }[]
       }
       generate_ai_recommendations: {
@@ -7398,11 +7461,19 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      soundex: {
+        Args: { "": string }
+        Returns: string
+      }
       start_district_duel: {
         Args: {
           p_initiator_district_id: string
           p_challenged_district_id: string
         }
+        Returns: string
+      }
+      text_soundex: {
+        Args: { "": string }
         Returns: string
       }
       track_district_metric: {

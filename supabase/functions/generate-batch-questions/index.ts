@@ -13,6 +13,124 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Função para verificar duplicatas usando hash e similaridade
+async function checkForDuplicates(questions: any[], theme: string, difficulty: string) {
+  console.log('🔍 Verificando duplicatas para', theme, difficulty);
+  
+  const filteredQuestions = [];
+  const currentBatchHashes = new Set();
+  
+  // Buscar hashes existentes para o tema/dificuldade
+  const { data: existingHashes } = await supabase
+    .from('question_hashes')
+    .select('question_hash')
+    .eq('theme', theme)
+    .eq('difficulty', difficulty);
+  
+  const existingHashSet = new Set(existingHashes?.map(h => h.question_hash) || []);
+  
+  for (const question of questions) {
+    const questionHash = await hashQuestion(question.question);
+    
+    // Verificar duplicata exata por hash
+    if (existingHashSet.has(questionHash) || currentBatchHashes.has(questionHash)) {
+      console.log(`❌ Pergunta duplicada (hash): "${question.question.substring(0, 50)}..."`);
+      continue;
+    }
+    
+    // Verificar similaridade semântica
+    const { data: similarQuestions } = await supabase
+      .rpc('find_similar_questions', {
+        new_question: question.question,
+        similarity_threshold: 0.85
+      });
+    
+    if (similarQuestions && similarQuestions.length > 0) {
+      console.log(`⚠️ Pergunta similar encontrada: "${question.question.substring(0, 50)}..."`);
+      console.log(`   Similar a: "${similarQuestions[0].question.substring(0, 50)}..." (${Math.round(similarQuestions[0].similarity * 100)}%)`);
+      continue;
+    }
+    
+    // Validar qualidade da pergunta
+    if (!validateQuestionQuality(question)) {
+      continue;
+    }
+    
+    filteredQuestions.push(question);
+    currentBatchHashes.add(questionHash);
+  }
+  
+  console.log(`✅ ${filteredQuestions.length}/${questions.length} perguntas aprovadas após verificação`);
+  return filteredQuestions;
+}
+
+// Função para gerar hash da pergunta
+async function hashQuestion(question: string): Promise<string> {
+  const cleanQuestion = question.toLowerCase().trim()
+    .replace(/[^\w\s]/g, '') // Remove pontuação
+    .replace(/\s+/g, ' '); // Normaliza espaços
+  
+  const encoder = new TextEncoder();
+  const data = encoder.encode(cleanQuestion);
+  const hashBuffer = await crypto.subtle.digest('MD5', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Função para validar qualidade das perguntas
+function validateQuestionQuality(question: any): boolean {
+  // Verificar comprimento mínimo da pergunta
+  if (question.question.length < 20) {
+    console.log(`⚠️ Pergunta muito curta rejeitada: "${question.question}"`);
+    return false;
+  }
+  
+  // Verificar se a pergunta não é muito genérica
+  const genericWords = ['o que é', 'qual é', 'como', 'quando', 'onde'];
+  const questionLower = question.question.toLowerCase();
+  const genericCount = genericWords.filter(word => questionLower.includes(word)).length;
+  
+  if (genericCount > 2) {
+    console.log(`⚠️ Pergunta muito genérica rejeitada: "${question.question}"`);
+    return false;
+  }
+  
+  // Verificar se todas as opções são diferentes
+  const uniqueOptions = new Set(question.options);
+  if (uniqueOptions.size !== question.options.length) {
+    console.log(`⚠️ Opções duplicadas na pergunta: "${question.question}"`);
+    return false;
+  }
+  
+  // Verificar se a resposta correta existe nas opções
+  if (!question.options.includes(question.correct_answer)) {
+    console.log(`⚠️ Resposta correta não encontrada nas opções: "${question.question}"`);
+    return false;
+  }
+  
+  // Verificar comprimento das opções
+  const hasValidOptions = question.options.every(opt => opt.length >= 3 && opt.length <= 100);
+  if (!hasValidOptions) {
+    console.log(`⚠️ Opções com comprimento inválido: "${question.question}"`);
+    return false;
+  }
+  
+  return true;
+}
+
+// Função para buscar contexto de perguntas existentes
+async function getExistingQuestionContext(theme: string, difficulty: string, limit: number = 5) {
+  const { data: existingQuestions } = await supabase
+    .from('quiz_questions')
+    .select('question')
+    .eq('theme', theme)
+    .eq('difficulty', difficulty)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  
+  return existingQuestions?.map(q => q.question) || [];
+}
+
 const THEME_TEMPLATES = {
   financial_education: {
     name: "Educação Financeira",
@@ -81,29 +199,38 @@ async function generateBatchQuestions(theme: string, difficulty: string, count: 
     hard: "nível AVANÇADO - cenários complexos e análise profunda"
   };
 
-  const prompt = `Você é um especialista em educação financeira brasileira. Gere EXATAMENTE ${count} perguntas de múltipla escolha sobre "${themeConfig.name}" com dificuldade ${difficultyInstructions[difficulty]}.
+  // Buscar contexto de perguntas existentes para evitar duplicatas
+  const existingQuestions = await getExistingQuestionContext(theme, difficulty);
+  const contextNote = existingQuestions.length > 0 
+    ? `\n\nPERGUNTAS EXISTENTES (EVITE DUPLICATAS):\n${existingQuestions.map((q, i) => `${i+1}. ${q}`).join('\n')}`
+    : '';
+
+  const prompt = `Você é um especialista em educação financeira brasileira. Gere EXATAMENTE ${count} perguntas de múltipla escolha ORIGINAIS e ÚNICAS sobre "${themeConfig.name}" com dificuldade ${difficultyInstructions[difficulty]}.
 
 TEMA: ${themeConfig.description}
 PALAVRAS-CHAVE ESPECÍFICAS: ${difficultyKeywords[difficulty]}
 
 INSTRUÇÕES CRÍTICAS:
-1. Cada pergunta deve ter EXATAMENTE 4 opções de resposta
+1. Cada pergunta deve ter EXATAMENTE 4 opções de resposta DISTINTAS
 2. Apenas UMA opção deve estar correta
 3. Explicação deve ser MUITO CONCISA (máximo 50 caracteres)
 4. Dificuldade: ${difficulty}
 5. Use terminologia brasileira e contexto do mercado brasileiro
 6. Perguntas práticas e relevantes para investidores brasileiros
+7. SEJA CRIATIVO - evite perguntas básicas como "O que é..."
+8. Varie os formatos: cenários, cálculos, comparações, aplicações práticas
+9. Inclua valores e situações realistas do mercado brasileiro${contextNote}
 
 FORMATO JSON OBRIGATÓRIO (responda APENAS com JSON válido):
 {
   "questions": [
     {
-      "question": "Pergunta clara e objetiva?",
-      "option_a": "Primeira opção",
-      "option_b": "Segunda opção", 
-      "option_c": "Terceira opção",
-      "option_d": "Quarta opção",
-      "correct_answer": "Primeira opção",
+      "question": "Pergunta específica e prática sobre o tema?",
+      "option_a": "Primeira opção específica",
+      "option_b": "Segunda opção específica", 
+      "option_c": "Terceira opção específica",
+      "option_d": "Quarta opção específica",
+      "correct_answer": "Primeira opção específica",
       "explanation": "Explicação concisa",
       "difficulty": "${difficulty}",
       "category": "${themeConfig.name}"
@@ -111,7 +238,7 @@ FORMATO JSON OBRIGATÓRIO (responda APENAS com JSON válido):
   ]
 }
 
-GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
+GERE EXATAMENTE ${count} PERGUNTAS ORIGINAIS NO FORMATO ACIMA.`;
 
   try {
     console.log(`🔄 Gerando ${count} perguntas ${difficulty} para ${theme}`);
@@ -127,15 +254,15 @@ GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
         messages: [
           {
             role: 'system',
-            content: 'Você é um especialista em educação financeira brasileira. Gere perguntas precisas e educativas em formato JSON válido. Responda APENAS com JSON válido, sem texto adicional.'
+            content: 'Você é um especialista em educação financeira brasileira. Gere perguntas específicas, práticas e educativas em formato JSON válido. Seja criativo e evite perguntas genéricas. Responda APENAS com JSON válido, sem texto adicional.'
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.7,
-        max_tokens: 1500
+        temperature: 0.8, // Aumentar criatividade
+        max_tokens: 2000
       }),
     });
 
@@ -200,7 +327,11 @@ GERE EXATAMENTE ${count} PERGUNTAS NO FORMATO ACIMA.`;
     }
 
     console.log(`✅ ${processedQuestions.length}/${count} perguntas processadas para ${theme}-${difficulty}`);
-    return processedQuestions;
+    
+    // Verificar duplicatas e qualidade
+    const filteredQuestions = await checkForDuplicates(processedQuestions, theme, difficulty);
+    
+    return filteredQuestions;
 
   } catch (error) {
     console.error(`❌ Erro gerando perguntas para ${theme}-${difficulty}:`, error);
@@ -214,7 +345,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('🚀 Iniciando geração de lote de perguntas');
+    console.log('🚀 Iniciando geração de lote de perguntas com sistema anti-duplicata');
 
     if (!openAIApiKey) {
       return new Response(JSON.stringify({ error: 'OpenAI API key não configurada' }), {
@@ -237,41 +368,55 @@ serve(async (req) => {
 
     let allGeneratedQuestions: any[] = [];
     let batchResults = {};
+    let duplicatesBlocked = 0;
 
     for (const theme of themes) {
-      batchResults[theme] = { easy: 0, medium: 0, hard: 0, total: 0 };
+      batchResults[theme] = { easy: 0, medium: 0, hard: 0, total: 0, duplicates_blocked: 0 };
 
       for (const difficulty of difficulties) {
         console.log(`🔄 Processando ${theme}-${difficulty}`);
         
+        const originalCount = allGeneratedQuestions.length;
         const questions = await generateBatchQuestions(theme, difficulty, questionsPerBatch);
         allGeneratedQuestions.push(...questions);
         
-        batchResults[theme][difficulty] = questions.length;
-        batchResults[theme].total += questions.length;
+        const actualAdded = questions.length;
+        const blocked = questionsPerBatch - actualAdded;
         
-        console.log(`✅ ${questions.length} perguntas geradas para ${theme}-${difficulty}`);
+        batchResults[theme][difficulty] = actualAdded;
+        batchResults[theme].total += actualAdded;
+        batchResults[theme].duplicates_blocked += blocked;
+        duplicatesBlocked += blocked;
+        
+        console.log(`✅ ${actualAdded} perguntas aprovadas para ${theme}-${difficulty} (${blocked} bloqueadas por duplicata/qualidade)`);
       }
     }
 
     console.log(`📊 Total de perguntas geradas: ${allGeneratedQuestions.length}`);
+    console.log(`🚫 Total de duplicatas/baixa qualidade bloqueadas: ${duplicatesBlocked}`);
 
     if (allGeneratedQuestions.length === 0) {
       return new Response(JSON.stringify({ 
-        error: 'Nenhuma pergunta foi gerada',
-        batchResults
+        error: 'Nenhuma pergunta foi gerada - todas foram bloqueadas por duplicata ou baixa qualidade',
+        batchResults,
+        duplicatesBlocked
       }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    // Inserir no banco
+    // Inserir no banco com status pendente para aprovação
     console.log(`💾 Inserindo ${allGeneratedQuestions.length} perguntas no banco`);
+    
+    const questionsToInsert = allGeneratedQuestions.map(q => ({
+      ...q,
+      approval_status: 'pending' // Todas as perguntas precisam de aprovação
+    }));
     
     const { data: insertedQuestions, error: insertError } = await supabase
       .from('quiz_questions')
-      .insert(allGeneratedQuestions)
+      .insert(questionsToInsert)
       .select();
 
     if (insertError) {
@@ -285,15 +430,18 @@ serve(async (req) => {
       });
     }
 
-    console.log(`✅ ${insertedQuestions?.length || 0} perguntas inseridas`);
+    console.log(`✅ ${insertedQuestions?.length || 0} perguntas inseridas (status: pendente aprovação)`);
 
     return new Response(JSON.stringify({
       success: true,
       message: `Lote de ${insertedQuestions?.length || 0} perguntas gerado com sucesso`,
       totalGenerated: insertedQuestions?.length || 0,
+      duplicatesBlocked,
+      qualityFilterEnabled: true,
       batchResults,
       themes_processed: themes.length,
-      difficulties_processed: difficulties.length
+      difficulties_processed: difficulties.length,
+      note: 'Todas as perguntas estão pendentes de aprovação manual'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
