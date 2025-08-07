@@ -11,6 +11,7 @@ interface SocialButtonProps {
   targetType: 'profile' | 'portfolio';
   targetId: string;
   targetUserId?: string;
+  targetUserNickname?: string;
   actionType: 'like' | 'follow';
   size?: 'sm' | 'lg' | 'default';
   variant?: 'default' | 'ghost' | 'outline';
@@ -22,6 +23,7 @@ export function SocialButton({
   targetType,
   targetId,
   targetUserId,
+  targetUserNickname,
   actionType,
   size = 'sm',
   variant = 'ghost',
@@ -218,8 +220,8 @@ export function SocialButton({
       toast({
         title: isActive ? "Removido" : "Adicionado",
         description: isActive 
-          ? `${actionType === 'like' ? 'Curtida removida' : 'Deixou de seguir'}`
-          : `${actionType === 'like' ? 'Curtido!' : 'Seguindo!'}`,
+          ? `${actionType === 'like' ? 'Curtida removida' : targetUserNickname ? `Você deixou de seguir @${targetUserNickname}` : 'Deixou de seguir'}`
+          : `${actionType === 'like' ? 'Curtido!' : targetUserNickname ? `Você começou a seguir @${targetUserNickname}` : 'Seguindo!'}`,
       });
 
     } catch (error) {

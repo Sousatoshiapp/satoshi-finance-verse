@@ -486,6 +486,7 @@ export function TwitterSocialFeed() {
                     targetType="profile"
                     targetId={post.user_id}
                     targetUserId={post.user_id}
+                    targetUserNickname={post.profiles.nickname}
                     actionType="follow"
                     variant="ghost"
                     size="sm"
