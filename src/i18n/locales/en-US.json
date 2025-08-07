@@ -572,7 +572,7 @@
     "correct": "Correct!",
     "incorrect": "Incorrect!",
     "correctAnswer": "Correct answer: ",
-    "timeRemaining": "Time Remaining"
+    "timeRemaining": "Time Remaining",
     "questionManager": "Question Manager",
     "questionManagerDescription": "Unified system to create and manage quiz questions",
     "search": "Search",

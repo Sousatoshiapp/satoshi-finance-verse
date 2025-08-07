@@ -511,7 +511,7 @@
     "correct": "Correto!",
     "incorrect": "Incorreto!",
     "correctAnswer": "Resposta correta: ",
-    "timeRemaining": "Tempo Restante"
+    "timeRemaining": "Tempo Restante",
     "questionManager": "Gerenciador de Perguntas",
     "questionManagerDescription": "Sistema unificado para criar e gerenciar perguntas de quiz",
     "search": "Buscar",
