@@ -56,7 +56,10 @@ export default function P2PTransfer() {
       </div>
 
       {isKYCRequired ? (
-        <KYCRequiredOverlay onStartKYC={() => setShowKYCVerification(true)} />
+        <div className="max-w-md mx-auto text-center p-8">
+          <h3 className="text-lg font-semibold mb-2">P2P Transfer em breve!</h3>
+          <p className="text-muted-foreground">Esta funcionalidade será lançada em uma próxima versão.</p>
+        </div>
       ) : (
         <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-3">

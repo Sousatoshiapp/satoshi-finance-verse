@@ -7,25 +7,31 @@ const getServerUrl = () => {
     case 'production':
       return 'https://app.sousatoshi.com.br';
     case 'staging':
-      return 'https://https://app.sousatoshi.com.br';
+      return 'https://app.sousatoshi.com.br';
     default:
-      return 'https://https://app.sousatoshi.com.br';
+      return 'https://app.sousatoshi.com.br';
   }
 };
 
 const config: CapacitorConfig = {
   appId: process.env.CAPACITOR_APP_ID || 'Satoshi.Satoshi-Finance-Game',
-  appName: process.env.CAPACITOR_APP_NAME || 'satoshi-finance-verse',
+  appName: process.env.CAPACITOR_APP_NAME || 'Satoshi Finance Game',
   webDir: 'dist',
   server: {
     url: getServerUrl(),
     cleartext: true
   },
+  ios: {
+    scheme: "Satoshi Finance Game"
+  },
+  android: {
+    scheme: "Satoshi Finance Game"
+  },
   plugins: {
     SplashScreen: {
       launchShowDuration: 10000,
       launchAutoHide: false,
-      backgroundColor: "##000000",
+      backgroundColor: "#000000",
       androidSplashResourceName: "splash",
       androidScaleType: "CENTER_CROP",
       showSpinner: true,

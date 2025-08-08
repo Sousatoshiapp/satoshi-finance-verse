@@ -301,7 +301,10 @@ export default function Settings() {
               </Badge>
             </div>
             <Button 
-              onClick={() => setShowKYCVerification(true)}
+              onClick={() => toast({
+                title: "Verificação em breve!",
+                description: "Esta funcionalidade será lançada em uma próxima versão."
+              })}
               disabled={profile?.kyc_status === 'approved'}
               className="w-full"
               variant={profile?.kyc_status === 'approved' ? 'outline' : 'default'}
@@ -470,12 +473,7 @@ export default function Settings() {
         />
 
         {/* KYC Verification Dialog */}
-        {showKYCVerification && (
-          <KYCVerification 
-            onComplete={() => setShowKYCVerification(false)}
-            onCancel={() => setShowKYCVerification(false)}
-          />
-        )}
+        {/* KYC Feature temporarily disabled - coming soon */}
       </div>
     </div>
   );

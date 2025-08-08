@@ -1,7 +1,7 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Build and upload to TestFlight"
+  desc "Build and upload to TestFlight - Satoshi Finance Game v1.0.0"
   lane :beta do
     setup_ci
 

@@ -45,8 +45,8 @@ serve(async (req) => {
     const config: AppConfig = {
       supabase_url: Deno.env.get("SUPABASE_URL") ?? "",
       supabase_anon_key: Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      app_url: mode === "production" ? "https://https://app.sousatoshi.com.br" : 
-               mode === "staging" ? "https://https://app.sousatoshi.com.br" : 
+      app_url: mode === "production" ? "https://app.sousatoshi.com.br" : 
+               mode === "staging" ? "https://app.sousatoshi.com.br" : 
                "http://localhost:8080",
       api_url: Deno.env.get("SUPABASE_URL") ?? "",
       features: {
@@ -56,12 +56,12 @@ serve(async (req) => {
       },
       platform_specific: {
         ios: {
-          app_store_url: "https://apps.apple.com/app/satoshi-finance-verse",
-          deep_link_scheme: "satoshifinance://",
+          app_store_url: "https://apps.apple.com/app/satoshi-finance-game",
+          deep_link_scheme: "satoshicity://",
         },
         android: {
-          play_store_url: "https://play.google.com/store/apps/details?id=com.satoshifinance.app",
-          deep_link_scheme: "satoshifinance://",
+          play_store_url: "https://play.google.com/store/apps/details?id=Satoshi.Satoshi-Finance-Game",
+          deep_link_scheme: "satoshicity://",
         },
         web: {
           pwa_enabled: true,
