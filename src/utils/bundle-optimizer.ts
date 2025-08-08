@@ -6,7 +6,7 @@ export const preloadCriticalResources = () => {
   const criticalCSS = document.createElement('link');
   criticalCSS.rel = 'preload';
   criticalCSS.as = 'style';
-  criticalCSS.href = '/src/index.css';
+  criticalCSS.href = '/index.css';
   document.head.appendChild(criticalCSS);
 
   // Preload critical fonts if any
