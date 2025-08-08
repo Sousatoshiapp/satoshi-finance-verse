@@ -226,7 +226,13 @@ export default function DirectChat() {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    // Voltar para messages se existe na história, senão voltar para social
+    const referrer = document.referrer;
+    if (referrer.includes('/messages') || window.history.length > 2) {
+      navigate('/messages');
+    } else {
+      navigate('/social');
+    }
   };
 
   if (loading) {

@@ -36,6 +36,7 @@ import { useI18n } from "@/hooks/use-i18n";
 // import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getLevelInfo } from "@/data/levels";
+import { HeaderNotifications } from "@/components/shared/header-notifications";
 
 
 const getGreeting = (t: any) => {
@@ -305,6 +306,7 @@ export default function Dashboard() {
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-3">
+              <HeaderNotifications />
               <LanguageSwitch />
               {shouldShowIcon && (
                 <CrisisIcon onClick={() => {
