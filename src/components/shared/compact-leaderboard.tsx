@@ -126,14 +126,10 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
                   size="sm"
                 />
                 
-                {/* Username & Beetz */}
+                {/* Username */}
                 <div className="flex-1 min-w-0">
                   <div className="font-bold truncate text-xs leading-tight">
                     {user.username}
-                  </div>
-                  <div className="text-xs text-green-500 flex items-center justify-center gap-0.5">
-                    {user.beetz}
-                    <BeetzIcon size="xs" />
                   </div>
                 </div>
               </div>
