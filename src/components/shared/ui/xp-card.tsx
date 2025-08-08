@@ -20,13 +20,13 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
   const getCurrentLevelXP = (level: number) => {
     if (level === 1) return 0;
     
-    // XP requirements by level (XP needed to REACH each level)
+    // XP requirements by level (XP needed to REACH each level) - From database
     const xpTable: { [key: number]: number } = {
       1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
       6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
       11: 3250, 12: 3850, 13: 4500, 14: 5200, 15: 5950,
       16: 6750, 17: 7600, 18: 8500, 19: 9450, 20: 10450,
-      21: 10500, 22: 11000, 23: 12000, 24: 13500, 25: 15500
+      21: 10500, 22: 11000, 23: 11500, 24: 12000, 25: 12500
     };
     
     return xpTable[level] || 0;
