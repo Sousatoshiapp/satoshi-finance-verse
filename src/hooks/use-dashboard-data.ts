@@ -97,7 +97,13 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
   ]);
 
   const calculatedLevel = profile.level || 1;
-  const nextLevelXP = (calculatedLevel + 1) * 100; // Simple calculation
+  
+  // Get correct next level XP from database
+  const { data: nextLevelData } = await supabase.rpc('get_next_level_xp', { 
+    current_level: calculatedLevel 
+  });
+  const nextLevelXP = nextLevelData || (calculatedLevel * 500); // Fallback
+  
   const completedQuizzes = quizResult.count || 0;
 
   return {

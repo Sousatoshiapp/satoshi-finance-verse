@@ -14,6 +14,7 @@ interface XPCardProps {
 export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps) {
   const currentLevelInfo = getLevelInfo(level);
   const nextLevelInfo = getLevelInfo(level + 1);
+  const isMaxLevel = nextLevelXP === 0 || level >= 100;
   
   return (
     <div className={cn(
@@ -41,19 +42,27 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
       </div>
       
       <ProgressBar
-        value={currentXP}
-        max={nextLevelXP}
+        value={isMaxLevel ? 100 : currentXP}
+        max={isMaxLevel ? 100 : nextLevelXP}
         variant="experience"
         showLabel={false}
       />
       
       <div className="flex justify-between items-center mt-2">
-        <p className="text-xs text-muted-foreground">
-          Próximo: {nextLevelInfo.name}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          {nextLevelXP - currentXP} XP
-        </p>
+        {isMaxLevel ? (
+          <p className="text-xs font-semibold text-primary">
+            🏆 NÍVEL MÁXIMO ATINGIDO
+          </p>
+        ) : (
+          <>
+            <p className="text-xs text-muted-foreground">
+              Próximo: {nextLevelInfo.name}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {nextLevelXP - currentXP} XP
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
