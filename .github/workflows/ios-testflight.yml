@@ -39,7 +39,7 @@ jobs:
         run: pod install
 
       - name: Build web assets
-        run: npm run build:prod
+        run: npm run build:production
 
       - name: Sync Capacitor
         run: npm run capacitor:sync
