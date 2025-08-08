@@ -23,6 +23,7 @@ export function generateRoutes() {
     // FASE 2.4: Determinar tipo de rota para skeleton otimizado
     const routeType = route.path === '/dashboard' ? 'dashboard' :
                      route.path === '/profile' ? 'profile' :
+                     route.path.includes('/user/') ? 'profile' :
                      route.path === '/social' ? 'social' :
                      route.path.includes('quiz') ? 'quiz' :
                      route.path === '/store' ? 'store' :

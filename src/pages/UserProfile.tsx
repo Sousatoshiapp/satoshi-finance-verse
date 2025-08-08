@@ -61,7 +61,7 @@ export default function UserProfile() {
 
   const loadUserProfile = async (profileId: string) => {
     try {
-      // Load user profile data
+      // Load user profile data (primeira consulta)
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select(`
@@ -88,30 +88,38 @@ export default function UserProfile() {
 
       if (profileError) throw profileError;
 
-      // Get follower count
-      const { count: followerCount } = await supabase
-        .from('user_follows')
-        .select('*', { count: 'exact', head: true })
-        .eq('following_id', profileId);
+      // Executar as demais consultas em paralelo para otimizar performance
+      const [
+        { count: followerCount },
+        { count: followingCount },
+        { count: portfolioCount },
+        { data: quizSessions }
+      ] = await Promise.all([
+        // Get follower count
+        supabase
+          .from('user_follows')
+          .select('*', { count: 'exact', head: true })
+          .eq('following_id', profileId),
 
-      // Get following count
-      const { count: followingCount } = await supabase
-        .from('user_follows')
-        .select('*', { count: 'exact', head: true })
-        .eq('follower_id', profileId);
+        // Get following count
+        supabase
+          .from('user_follows')
+          .select('*', { count: 'exact', head: true })
+          .eq('follower_id', profileId),
 
-      // Get portfolio count
-      const { count: portfolioCount } = await supabase
-        .from('portfolios')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', profileId)
-        .eq('is_public', true);
+        // Get portfolio count
+        supabase
+          .from('portfolios')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', profileId)
+          .eq('is_public', true),
 
-      // Get quiz sessions for achievements
-      const { data: quizSessions } = await supabase
-        .from('quiz_sessions')
-        .select('questions_correct, questions_total')
-        .eq('user_id', profileId);
+        // Get quiz sessions for achievements
+        supabase
+          .from('quiz_sessions')
+          .select('questions_correct, questions_total')
+          .eq('user_id', profileId)
+      ]);
 
       // Calculate achievements
       const achievements = {
