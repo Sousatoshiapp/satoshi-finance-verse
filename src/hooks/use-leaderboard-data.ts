@@ -25,15 +25,18 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
   weekStart.setHours(0, 0, 0, 0);
   
   console.log('Weekly leaderboard - Week start date:', weekStart.toISOString().split('T')[0]);
+  console.log('Current date:', currentDate.toISOString());
+  console.log('Day of week:', currentDate.getDay());
+  
   try {
-    // Single optimized query for weekly leaderboard
-    const { data: leaderboardData } = await supabase
+    // Query weekly leaderboard with proper joins
+    const { data: leaderboardData, error } = await supabase
       .from('weekly_leaderboards')
       .select(`
         user_id,
         xp_earned,
         total_score,
-        profiles!weekly_leaderboards_user_id_fkey (
+        profiles (
           id,
           nickname,
           profile_image_url,
@@ -41,7 +44,7 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
           xp,
           points,
           current_avatar_id,
-          avatars:avatars!current_avatar_id (
+          avatars (
             name,
             image_url
           )
@@ -51,7 +54,10 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
       .order('total_score', { ascending: false })
       .limit(3);
 
+    console.log('Weekly leaderboard query result:', { leaderboardData, error });
+
     if (leaderboardData && leaderboardData.length > 0) {
+      console.log('Found weekly data:', leaderboardData.length, 'entries');
       return leaderboardData.map((entry, index) => {
         const profile = entry.profiles as any;
         return {
