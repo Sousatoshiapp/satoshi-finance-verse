@@ -7438,10 +7438,6 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: Json
       }
-      get_dashboard_super_optimized: {
-        Args: { target_user_id: string }
-        Returns: Json
-      }
       get_duel_status: {
         Args: { p_duel_id: string }
         Returns: Json
