@@ -11,7 +11,6 @@ import { SubscriptionIndicator } from "@/components/shared/subscription-indicato
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useUltraDashboardQuery } from "@/hooks/use-ultra-dashboard-query";
-import { useDashboardSuperQuery } from "@/hooks/use-dashboard-super-query";
 import { usePerformanceOptimization } from "@/hooks/use-performance-optimization";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -77,15 +76,13 @@ export default function Dashboard() {
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
-  // ULTRA PERFORMANCE: Usar super query unificado
-  const { data: superData, isLoading, error } = useDashboardSuperQuery();
+  // ULTRA PERFORMANCE: Usar apenas query ultra-otimizada
   const { points: realtimePoints } = useRealtime();
   const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
   
-  // FASE 1: Usar ultra query otimizada
-  const { data: ultraData, isLoading: ultraLoading, error: ultraError } = useUltraDashboardQuery();
-  const dashboardData = ultraData || superData;
+  // FASE 1: Usar ultra query otimizada ÚNICA
+  const { data: dashboardData, isLoading, error } = useUltraDashboardQuery();
   
   // Remove logging para melhorar performance
   // console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });

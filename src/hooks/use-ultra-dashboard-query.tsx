@@ -31,7 +31,10 @@ const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardDa
     const { data: superData, error } = await supabase
       .rpc('get_dashboard_data_optimized', { target_user_id: userId });
 
-    if (superData && !error) {
+    if (error) {
+      console.error('Dashboard RPC Error:', error);
+      // Não lançar erro, continuar para fallback
+    } else if (superData) {
       const parsed = superData as any;
       const result = {
         profile: parsed.profile,
@@ -59,7 +62,7 @@ const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardDa
       return result;
     }
   } catch (error) {
-    console.warn('RPC query failed, using cache:', error);
+    console.error('RPC query exception:', error);
   }
 
   // Se falhou, usar cache do localStorage se disponível e não muito antigo
@@ -74,28 +77,76 @@ const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardDa
   }
 
   // Fallback mínimo apenas se tudo falhou
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('user_id', userId)
-    .single();
+  try {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle(); // Use maybeSingle to avoid errors if no profile
 
-  return {
-    profile,
-    avatar: null,
-    district: null,
-    team: null,
-    points: profile?.points || 0,
-    xp: profile?.xp || 0,
-    level: profile?.level || 1,
-    nextLevelXP: 100,
-    streak: profile?.streak || 0,
-    completedQuizzes: 0,
-    dailyMissions: [],
-    leaderboard: [],
-    subscription: { tier: 'free' },
-    btzYield: 0,
-  };
+    return {
+      profile: profile || {
+        id: null,
+        user_id: userId,
+        nickname: 'User',
+        level: 1,
+        xp: 0,
+        points: 0,
+        streak: 0,
+        consecutive_login_days: 0,
+        last_login_date: null,
+        current_avatar_id: null,
+        subscription_tier: 'free',
+        created_at: new Date().toISOString()
+      },
+      avatar: null,
+      district: null,
+      team: null,
+      points: profile?.points || 0,
+      xp: profile?.xp || 0,
+      level: profile?.level || 1,
+      nextLevelXP: 100,
+      streak: profile?.streak || 0,
+      completedQuizzes: 0,
+      dailyMissions: [],
+      leaderboard: [],
+      subscription: { tier: 'free' },
+      btzYield: 0,
+    };
+  } catch (fallbackError) {
+    console.error('Profile fallback failed:', fallbackError);
+    
+    // Último recurso - dados hardcoded funcionais
+    return {
+      profile: {
+        id: null,
+        user_id: userId,
+        nickname: 'User',
+        level: 1,
+        xp: 0,
+        points: 0,
+        streak: 0,
+        consecutive_login_days: 0,
+        last_login_date: null,
+        current_avatar_id: null,
+        subscription_tier: 'free',
+        created_at: new Date().toISOString()
+      },
+      avatar: null,
+      district: null,
+      team: null,
+      points: 0,
+      xp: 0,
+      level: 1,
+      nextLevelXP: 100,
+      streak: 0,
+      completedQuizzes: 0,
+      dailyMissions: [],
+      leaderboard: [],
+      subscription: { tier: 'free' },
+      btzYield: 0,
+    };
+  }
 };
 
 export const useUltraDashboardQuery = () => {
