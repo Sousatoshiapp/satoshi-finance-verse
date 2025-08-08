@@ -21,8 +21,8 @@ import {
   LazyDashboardSummary, 
   LazyQuickActions, 
   LazyLeaderboard, 
-  LazyDailyMissions, 
-  LazyBtcDuelCard 
+  // LazyDailyMissions, // PERFORMANCE: Removido temporariamente - Hook complexo de missões
+  // LazyBtcDuelCard // PERFORMANCE: Removido temporariamente - BTC WebSocket causando overhead
 } from "@/components/dashboard/LazyDashboardSections";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
@@ -412,19 +412,23 @@ export default function Dashboard() {
             <LazyLeaderboard />
           </div>
 
-          {/* BTC Duelo Rápido Card */}
+          {/* BTC Duelo Rápido Card - PERFORMANCE: Removido temporariamente */}
+          {/*
           <div className="mb-4">
             <LazyBtcDuelCard />
           </div>
+          */}
 
           {/* Enhanced Daily Summary */}
           <LazyDashboardSummary userStats={userStats} subscription={subscription} />
 
 
-          {/* Core Actions */}
+          {/* Core Actions - PERFORMANCE: Daily Missions removidas temporariamente */}
+          {/*
           <div className="mb-6">
             <LazyDailyMissions />
           </div>
+          */}
 
           {/* Torneios Épicos - Coming Soon Card */}
           <div className="mb-6">

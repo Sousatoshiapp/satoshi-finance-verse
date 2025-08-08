@@ -79,8 +79,8 @@ export function EnhancedQuizCard({ questions, onComplete, className }: EnhancedQ
     
     const result = await submitAnswer(answer);
     
-    // Update daily missions progress
-    completeQuizMission(result?.isCorrect || false);
+    // Update daily missions progress - PERFORMANCE: Desabilitado temporariamente
+    // completeQuizMission(result?.isCorrect || false);
     
     if (result?.isCorrect && result.newCombo > 1) {
       // Show combo effect

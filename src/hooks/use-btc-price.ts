@@ -7,6 +7,11 @@ interface BtcPriceData {
 }
 
 export function useBtcPrice() {
+  // PERFORMANCE: WebSocket completamente desabilitado para melhorar performance do dashboard
+  // Este hook estava causando overhead significativo com reconnexões constantes
+  
+  /* CÓDIGO ORIGINAL COMENTADO PARA PERFORMANCE:
+  
   const [data, setData] = useState<BtcPriceData>({
     price: null,
     priceChange: null,
@@ -18,66 +23,11 @@ export function useBtcPrice() {
   const lastPriceRef = useRef<number | null>(null);
 
   const connectWebSocket = () => {
-    try {
-      // Use Binance WebSocket for real-time BTC price
-      wsRef.current = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
-      
-      wsRef.current.onopen = () => {
-        console.log('🔗 BTC WebSocket connected');
-        setData(prev => ({ ...prev, isConnected: true }));
-      };
-
-      wsRef.current.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          const currentPrice = parseFloat(data.c); // Current price
-          const priceChangePercent = parseFloat(data.P); // Price change percentage
-          
-          // Calculate price change from last price if available
-          let priceChange = priceChangePercent;
-          if (lastPriceRef.current && currentPrice) {
-            priceChange = ((currentPrice - lastPriceRef.current) / lastPriceRef.current) * 100;
-          }
-          
-          setData(prev => ({
-            ...prev,
-            price: currentPrice,
-            priceChange: priceChangePercent
-          }));
-          
-          lastPriceRef.current = currentPrice;
-        } catch (error) {
-          console.error('Error parsing BTC price data:', error);
-        }
-      };
-
-      wsRef.current.onclose = () => {
-        console.log('🔌 BTC WebSocket disconnected');
-        setData(prev => ({ ...prev, isConnected: false }));
-        
-        // Reconnect after 3 seconds
-        reconnectTimeoutRef.current = setTimeout(() => {
-          connectWebSocket();
-        }, 3000);
-      };
-
-      wsRef.current.onerror = (error) => {
-        console.error('BTC WebSocket error:', error);
-        setData(prev => ({ ...prev, isConnected: false }));
-      };
-
-    } catch (error) {
-      console.error('Failed to connect to BTC WebSocket:', error);
-      // Fallback: try to reconnect after 5 seconds
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connectWebSocket();
-      }, 5000);
-    }
+    // WebSocket logic...
   };
 
   useEffect(() => {
     connectWebSocket();
-
     return () => {
       if (wsRef.current) {
         wsRef.current.close();
@@ -87,20 +37,19 @@ export function useBtcPrice() {
       }
     };
   }, []);
+  
+  */
 
-  // Function to get current price for duel
+  // Retorna dados mock para manter compatibilidade
+  const [data] = useState<BtcPriceData>({
+    price: 45000, // Preço mock
+    priceChange: 2.5, // Mudança mock
+    isConnected: false // Sempre false pois WebSocket está desabilitado
+  });
+
+  // Function to get current price for duel (mock)
   const getCurrentPrice = (): Promise<number> => {
-    return new Promise((resolve, reject) => {
-      if (data.price) {
-        resolve(data.price);
-      } else {
-        // Fallback: fetch from Binance REST API
-        fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT')
-          .then(response => response.json())
-          .then(data => resolve(parseFloat(data.price)))
-          .catch(reject);
-      }
-    });
+    return Promise.resolve(45000); // Retorna preço mock
   };
 
   return {
