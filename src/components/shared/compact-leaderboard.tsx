@@ -13,6 +13,9 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
   const { data: topUsers = [], isLoading } = useLeaderboardData();
   const { t } = useI18n();
 
+  // Debug log to see what data we're getting
+  console.log('CompactLeaderboard - topUsers:', topUsers, 'isLoading:', isLoading);
+
 
   // Memoize callback functions
   const handleViewAll = useCallback(() => {
