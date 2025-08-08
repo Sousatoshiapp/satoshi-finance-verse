@@ -164,7 +164,7 @@ class UltraQueryOptimizer {
     for (const query of criticalQueries) {
       const cached = this.queryClient.getQueryData([query]);
       if (!cached) {
-        this.prefetchQuery(query, () => this.getCriticalQueryFn(query));
+        this.prefetchQuery(query, this.getCriticalQueryFn(query));
       }
     }
   }
@@ -174,7 +174,7 @@ class UltraQueryOptimizer {
     const queries = cache.getAll();
     
     queries.forEach(query => {
-      const staleness = Date.now() - (query.dataUpdatedAt || 0);
+      const staleness = Date.now() - (query.state.dataUpdatedAt || 0);
       if (staleness > 10 * 60 * 1000) { // 10 minutes
         query.reset();
       }
@@ -231,13 +231,13 @@ class UltraQueryOptimizer {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return null;
       
-      const { data: stats } = await supabase
-        .from('user_stats')
+      const { data: profile } = await supabase
+        .from('profiles')
         .select('*')
         .eq('user_id', data.user.id)
         .single();
       
-      return stats;
+      return profile;
     });
   }
 
@@ -273,13 +273,12 @@ class UltraQueryOptimizer {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return null;
       
-      const { data: friends } = await supabase
-        .from('user_friends')
-        .select('*, profiles(nickname, avatar_url)')
-        .eq('user_id', data.user.id)
-        .eq('status', 'accepted');
+      const { data: following } = await supabase
+        .from('user_follows')
+        .select('*, profiles!user_follows_following_id_fkey(nickname, avatar_url)')
+        .eq('follower_id', data.user.id);
       
-      return friends;
+      return following;
     });
   }
 
@@ -298,9 +297,9 @@ class UltraQueryOptimizer {
   private async fetchQuizCategories() {
     return this.deduplicatedRequest('quiz-categories', async () => {
       const { data } = await supabase
-        .from('quiz_categories')
-        .select('*')
-        .eq('is_active', true);
+        .from('quiz_questions')
+        .select('category')
+        .limit(50);
       
       return data;
     });
@@ -311,12 +310,13 @@ class UltraQueryOptimizer {
       const { data } = await supabase.auth.getUser();
       if (!data.user) return null;
       
-      const { data: progress } = await supabase
-        .from('user_progress')
+      const { data: sessions } = await supabase
+        .from('quiz_sessions')
         .select('*')
-        .eq('user_id', data.user.id);
+        .eq('user_id', data.user.id)
+        .limit(10);
       
-      return progress;
+      return sessions;
     });
   }
 

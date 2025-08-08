@@ -101,7 +101,7 @@ class UltraRoutePreloader {
     if (!component) return Promise.resolve();
 
     // Simple preload by calling the component function
-    const preloadPromise = Promise.resolve().then(() => component());
+    const preloadPromise = Promise.resolve().then(() => component);
     
     this.preloadPromises.set(routeName, preloadPromise);
     
