@@ -27,6 +27,7 @@ import {
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
+import { useOnlineStatus } from "@/contexts/OnlineStatusContext";
 import { CrisisAlert } from "@/components/crisis/CrisisAlert";
 import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import { useCrisisState } from "@/hooks/use-crisis-state";
@@ -77,7 +78,8 @@ export default function Dashboard() {
   const { markDailyLogin } = useDailyMissions();
   // ULTRA PERFORMANCE: Usar super query unificado
   const { data: superData, isLoading, error } = useDashboardSuperQuery();
-  const { points: realtimePoints, isOnline } = useRealtime();
+  const { points: realtimePoints } = useRealtime();
+  const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
   
   // Fallback para dados antigos se super query falhar

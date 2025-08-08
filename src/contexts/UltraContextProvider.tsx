@@ -10,6 +10,7 @@ const LazyLoadingProvider = lazy(() => import('./LoadingContext').then(mod => ({
 const LazySponsorThemeProvider = lazy(() => import('./SponsorThemeProvider').then(mod => ({ default: mod.SponsorThemeProvider })));
 const LazyAvatarProvider = lazy(() => import('./AvatarContext').then(mod => ({ default: mod.AvatarProvider })));
 const LazyGlobalDuelInviteProvider = lazy(() => import('./GlobalDuelInviteContext').then(mod => ({ default: mod.GlobalDuelInviteProvider })));
+const LazyOnlineStatusProvider = lazy(() => import('./OnlineStatusContext').then(mod => ({ default: mod.OnlineStatusProvider })));
 
 // Consolidated Points & Notifications Context
 interface UltraContextType {
@@ -53,15 +54,17 @@ export function UltraLazyProvider({ children }: { children: ReactNode }) {
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <LazyLoadingProvider>
-        <LazyRealtimeProvider>
-          <LazyAvatarProvider>
-            <LazyGlobalDuelInviteProvider>
-              <LazySponsorThemeProvider>
-                {children}
-              </LazySponsorThemeProvider>
-            </LazyGlobalDuelInviteProvider>
-          </LazyAvatarProvider>
-        </LazyRealtimeProvider>
+        <LazyOnlineStatusProvider>
+          <LazyRealtimeProvider>
+            <LazyAvatarProvider>
+              <LazyGlobalDuelInviteProvider>
+                <LazySponsorThemeProvider>
+                  {children}
+                </LazySponsorThemeProvider>
+              </LazyGlobalDuelInviteProvider>
+            </LazyAvatarProvider>
+          </LazyRealtimeProvider>
+        </LazyOnlineStatusProvider>
       </LazyLoadingProvider>
     </Suspense>
   );

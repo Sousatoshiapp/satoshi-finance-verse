@@ -104,7 +104,8 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
 
     updateOnlineStatus();
 
-    const interval = setInterval(updateOnlineStatus, 30000);
+    // Otimização: Reduzir frequência de update para 60s
+    const interval = setInterval(updateOnlineStatus, 60000);
 
     const channel = supabase
       .channel('online-users')
