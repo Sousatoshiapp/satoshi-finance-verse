@@ -43,6 +43,22 @@ const getGreeting = (t: any) => {
   }
 };
 
+// Helper function to get XP required for current level
+const getCurrentLevelXP = (level: number) => {
+  if (level === 1) return 0;
+  
+  // XP requirements by level
+  const xpTable: { [key: number]: number } = {
+    1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
+    6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
+    11: 3250, 12: 3850, 13: 4500, 14: 5200, 15: 5950,
+    16: 6750, 17: 7600, 18: 8500, 19: 9450, 20: 10450,
+    21: 10500, 22: 11000, 23: 12000, 24: 13500, 25: 15500
+  };
+  
+  return xpTable[level] || 0;
+};
+
 export default function Dashboard() {
   const { t } = useI18n();
   const [greeting, setGreeting] = useState(getGreeting(t));
@@ -343,14 +359,14 @@ export default function Dashboard() {
                   <div 
                     className="bg-gradient-to-r from-success to-primary h-1.5 rounded-full transition-all duration-300"
                     style={{ 
-                      width: `${Math.min((userStats.currentXP / userStats.nextLevelXP) * 100, 100)}%` 
+                      width: `${Math.min(((userStats.currentXP - getCurrentLevelXP(userStats.level)) / Math.max(1, userStats.nextLevelXP - getCurrentLevelXP(userStats.level))) * 100, 100)}%` 
                     }}
                   ></div>
                 </div>
                 
                 <div className="flex justify-between items-center text-xs text-muted-foreground">
                   <span>{t('common.xp')}: {userStats.currentXP}</span>
-                  <span>{t('dashboard.goal')}: {userStats.nextLevelXP}</span>
+                  <span>{t('dashboard.goal')}: {Math.max(0, userStats.nextLevelXP - userStats.currentXP)} XP</span>
                 </div>
               </div>
             </div>

@@ -16,6 +16,28 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
   const nextLevelInfo = getLevelInfo(level + 1);
   const isMaxLevel = nextLevelXP === 0 || level >= 100;
   
+  // Calculate current level XP requirement
+  const getCurrentLevelXP = (level: number) => {
+    if (level === 1) return 0;
+    
+    // XP requirements by level
+    const xpTable: { [key: number]: number } = {
+      1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
+      6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
+      11: 3250, 12: 3850, 13: 4500, 14: 5200, 15: 5950,
+      16: 6750, 17: 7600, 18: 8500, 19: 9450, 20: 10450,
+      21: 10500, 22: 11000, 23: 12000, 24: 13500, 25: 15500
+    };
+    
+    return xpTable[level] || 0;
+  };
+
+  // Calculate progress within current level
+  const currentLevelXP = getCurrentLevelXP(level);
+  const xpInCurrentLevel = currentXP - currentLevelXP;
+  const xpNeededForLevel = nextLevelXP - currentLevelXP;
+  const xpRemaining = nextLevelXP - currentXP;
+  
   return (
     <div className={cn(
       "bg-card rounded-xl p-4 shadow-card border",
@@ -42,8 +64,8 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
       </div>
       
       <ProgressBar
-        value={isMaxLevel ? 100 : currentXP}
-        max={isMaxLevel ? 100 : nextLevelXP}
+        value={isMaxLevel ? 100 : Math.max(0, xpInCurrentLevel)}
+        max={isMaxLevel ? 100 : Math.max(1, xpNeededForLevel)}
         variant="experience"
         showLabel={false}
       />
@@ -59,7 +81,7 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
               Próximo: {nextLevelInfo.name}
             </p>
             <p className="text-xs text-muted-foreground">
-              {nextLevelXP - currentXP} XP
+              {Math.max(0, xpRemaining)} XP
             </p>
           </>
         )}
