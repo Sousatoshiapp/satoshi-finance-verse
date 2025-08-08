@@ -108,44 +108,40 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
         {(topUsers || []).slice(0, 3).map((user) => {
           const rankStyles = getRankStyles(user.rank);
           
+          // Get avatar URL for background
+          const avatarUrl = user.profileImageUrl || 
+            (user.avatar_url ? user.avatar_url : '/avatars/the-satoshi.jpg');
+          
           return (
             <Card 
               key={user.id}
               className={`
-                aspect-square p-3 cursor-pointer transition-all duration-300 hover:scale-105
-                ${rankStyles.borderClass} ${rankStyles.bgClass}
+                aspect-[5/4] cursor-pointer transition-all duration-300 hover:scale-105 relative overflow-hidden
+                ${rankStyles.borderClass}
               `}
+              style={{
+                backgroundImage: `url(${avatarUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
               onClick={() => handleUserClick(user.id)}
             >
-              <div className="h-full flex flex-col">
+              {/* Dark overlay for text readability */}
+              <div className="absolute inset-0 bg-black/20" />
+              
+              {/* Content overlay */}
+              <div className="relative h-full p-3 flex flex-col justify-between">
                 {/* Header with medal and @nickname */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-lg">{rankStyles.medal}</span>
-                  <div className="text-xs font-medium text-muted-foreground truncate">
+                <div className="flex items-center justify-between">
+                  <span className="text-lg drop-shadow-lg">{rankStyles.medal}</span>
+                  <div className="text-xs font-semibold text-white drop-shadow-lg truncate">
                     @{user.username}
                   </div>
                 </div>
                 
-                {/* Avatar - Center */}
-                <div className="flex-1 flex items-center justify-center">
-                  <AvatarDisplayUniversal
-                    avatarData={{
-                      profile_image_url: user.profileImageUrl,
-                      current_avatar_id: user.current_avatar_id,
-                      avatars: user.avatar_url ? { 
-                        name: user.avatarName || '', 
-                        image_url: user.avatar_url 
-                      } : null
-                    }}
-                    nickname={user.username}
-                    size="lg"
-                    className="ring-2 ring-current ring-opacity-20"
-                  />
-                </div>
-                
-                {/* BTZ Amount */}
-                <div className="text-center mt-2">
-                  <div className="text-xs font-bold">
+                {/* BTZ Amount at bottom */}
+                <div className="text-center">
+                  <div className="text-xs font-bold text-white drop-shadow-lg bg-black/30 rounded px-2 py-1 backdrop-blur-sm">
                     {user.beetz.toLocaleString()} BTZ
                   </div>
                 </div>
