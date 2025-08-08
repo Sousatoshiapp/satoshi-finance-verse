@@ -30,19 +30,19 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
       case 1: 
         return {
           medal: "🥇",
-          borderClass: "border-2 border-yellow-400 shadow-lg shadow-yellow-400/50",
+          borderClass: "border-2 border-yellow-400",
           bgClass: "bg-gradient-to-br from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/10"
         };
       case 2:
         return {
           medal: "🥈", 
-          borderClass: "border-2 border-gray-300 shadow-lg shadow-gray-300/50",
+          borderClass: "border-2 border-gray-300",
           bgClass: "bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900/20 dark:to-gray-800/10"
         };
       case 3:
         return {
           medal: "🥉",
-          borderClass: "border-2 border-amber-600 shadow-lg shadow-amber-600/50", 
+          borderClass: "border-2 border-amber-600", 
           bgClass: "bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/10"
         };
       default:
@@ -140,7 +140,7 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
               onClick={() => handleUserClick(user.id)}
             >
               {/* Dark overlay for text readability */}
-              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute inset-0 bg-black/80" />
               
               {/* Content overlay */}
               <div className="relative h-full p-3 flex flex-col justify-between">
