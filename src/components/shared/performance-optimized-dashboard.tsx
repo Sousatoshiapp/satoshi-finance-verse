@@ -6,7 +6,7 @@ import { CompactDailyRewards } from '@/components/features/gamification/compact-
 import { CompactStreakCounter } from '@/components/features/gamification/compact-streak-counter';
 import { QuickActionsOptimized } from '@/components/shared/quick-actions-optimized';
 import { useRenderPerformance } from '@/hooks/use-performance-monitor';
-import { useDashboardData } from '@/hooks/use-dashboard-data';
+import { useDashboardSuperQuery } from '@/hooks/use-dashboard-super-query';
 
 const ErrorFallback = ({ error }: { error: Error }) => (
   <div className="p-4 border border-destructive/20 rounded-lg bg-destructive/5">
@@ -39,7 +39,7 @@ DashboardSection.displayName = 'DashboardSection';
 
 export const PerformanceOptimizedDashboard = memo(function PerformanceOptimizedDashboard() {
   useRenderPerformance('PerformanceOptimizedDashboard');
-  const { data: dashboardData } = useDashboardData();
+  const { data: dashboardData } = useDashboardSuperQuery();
 
   // Memoize grid layout configuration
   const gridConfig = useMemo(() => ({

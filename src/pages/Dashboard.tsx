@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCircleBadge } from "@/components/features/gamification/district-circle-badge";
-import UltraOptimizedDashboard from '@/components/dashboard/UltraOptimizedDashboard';
+import { PerformanceOptimizedDashboard } from '@/components/shared/performance-optimized-dashboard';
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
@@ -275,8 +275,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <FloatingNavbar />
       
-      {/* Ultra-simplified dashboard usando apenas UltraOptimizedDashboard */}
-      <UltraOptimizedDashboard />
+      {/* Layout completo com grid responsivo e todas as funcionalidades */}
+      <PerformanceOptimizedDashboard />
 
       {/* Avatar Selection Modal */}
       <AvatarSelection 
