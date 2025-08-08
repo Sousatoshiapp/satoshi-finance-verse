@@ -186,7 +186,10 @@ export default function Dashboard() {
 
   // Memoize user stats calculation
   const userStats = useMemo(() => {
+    console.log('🔍 Dashboard Data RAW:', dashboardData);
+    
     if (!dashboardData) {
+      console.log('🔍 No dashboard data, returning defaults');
       return {
         level: 1,
         currentXP: 0,
@@ -202,8 +205,7 @@ export default function Dashboard() {
     const nextLevelXP = dashboardData.nextLevelXP || 100;
     const currentLevelXP = getCurrentLevelXP(currentLevel);
     
-    // Debug logs
-    console.log('🔍 XP Debug Info:', {
+    console.log('🔍 XP CALCULATION DEBUG:', {
       currentLevel,
       currentXP,
       nextLevelXP,
@@ -211,7 +213,9 @@ export default function Dashboard() {
       xpInCurrentLevel: currentXP - currentLevelXP,
       xpNeededForLevel: nextLevelXP - currentLevelXP,
       xpRemaining: nextLevelXP - currentXP,
-      progressPercentage: ((currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100
+      progressPercentage: ((currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100,
+      dashboardDataProfile: dashboardData.profile,
+      dashboardDataNextLevelXP: dashboardData.nextLevelXP
     });
     
     return {
@@ -219,7 +223,7 @@ export default function Dashboard() {
       currentXP,
       nextLevelXP,
       streak: dashboardData.profile?.streak || 0,
-      completedLessons: dashboardData.completedQuizzes || 0, // Use real quiz data
+      completedLessons: dashboardData.completedQuizzes || 0,
       points: realtimePoints || dashboardData.profile?.points || 0
     };
   }, [dashboardData, realtimePoints]);
