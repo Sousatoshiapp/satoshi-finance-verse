@@ -44,5 +44,19 @@ export const routeConfig: RouteConfig[] = [
     requiresAuth: true,
     showNavbar: false,
     isDirectImport: false
+  },
+  {
+    path: '/messages',
+    element: 'Messages',
+    requiresAuth: true,
+    showNavbar: true,
+    isDirectImport: false
+  },
+  {
+    path: '/chat/:conversationId',
+    element: 'DirectChatWrapper',
+    requiresAuth: true,
+    showNavbar: false,
+    isDirectImport: false
   }
 ];

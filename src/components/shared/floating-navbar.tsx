@@ -3,16 +3,23 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { IconSystem } from "@/components/icons/icon-system";
 import { useI18n } from "@/hooks/use-i18n";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 export function FloatingNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, language } = useI18n();
+  const { unreadCount } = useUnreadMessages();
   const isArabic = language === 'ar-SA';
 
   const navItems = [
     { path: '/dashboard', icon: '🏠' as const, label: t('navigation.dashboard') },
-    { path: '/social', icon: '💬' as const, label: t('navigation.social') },
+    { 
+      path: unreadCount > 0 ? '/messages' : '/social', 
+      icon: '💬' as const, 
+      label: t('navigation.social'),
+      badge: unreadCount > 0 ? unreadCount : undefined
+    },
     { path: '/game-mode', icon: '🎮' as const, label: t('navigation.game') },
     { path: '/satoshi-city', icon: '🌃' as const, label: t('navigation.city') },
     { path: '/store', icon: '🛒' as const, label: t('navigation.store') },
@@ -38,18 +45,25 @@ export function FloatingNavbar() {
                        ? "bg-gray-900 text-white scale-110" 
                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                    )}
-                 >
-                   <IconSystem 
-                     emoji={item.icon} 
-                     size="lg" 
-                     animated={isActive}
-                     variant={isActive ? "glow" : "default"}
-                   />
-                   <span className={cn(
-                     "text-[10px] md:text-xs font-medium leading-none",
-                     isArabic && "hidden md:block"
-                   )}>{item.label}</span>
-                 </button>
+                  >
+                    <div className="relative">
+                      <IconSystem 
+                        emoji={item.icon} 
+                        size="lg" 
+                        animated={isActive}
+                        variant={isActive ? "glow" : "default"}
+                      />
+                      {item.badge && (
+                        <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                          {item.badge > 9 ? '9+' : item.badge}
+                        </span>
+                      )}
+                    </div>
+                    <span className={cn(
+                      "text-[10px] md:text-xs font-medium leading-none",
+                      isArabic && "hidden md:block"
+                    )}>{item.label}</span>
+                  </button>
               );
             })}
           </div>

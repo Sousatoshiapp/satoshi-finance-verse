@@ -147,6 +147,21 @@ export default function DirectChat() {
     }
   };
 
+  const markMessageAsRead = async (messageId: string) => {
+    try {
+      await supabase
+        .from('direct_messages')
+        .update({ is_read: true })
+        .eq('id', messageId);
+      
+      setMessages(prev => prev.map(msg => 
+        msg.id === messageId ? { ...msg, is_read: true } : msg
+      ));
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+    }
+  };
+
   const setupRealtimeSubscription = () => {
     if (!conversationId) return;
 
@@ -166,15 +181,7 @@ export default function DirectChat() {
 
           // Mark as read if not sent by current user
           if (newMessage.sender_id !== profile?.id) {
-            supabase
-              .from('direct_messages')
-              .update({ is_read: true })
-              .eq('id', newMessage.id)
-              .then(() => {
-                setMessages(prev => prev.map(msg => 
-                  msg.id === newMessage.id ? { ...msg, is_read: true } : msg
-                ));
-              });
+            markMessageAsRead(newMessage.id);
           }
         }
       )
