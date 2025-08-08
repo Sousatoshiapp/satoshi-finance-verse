@@ -155,7 +155,8 @@ export default function Leaderboard() {
                         <AvatarDisplayUniversal
                           avatarData={{
                             profile_image_url: currentUser.profile_image_url,
-                            current_avatar_id: currentUser.current_avatar_id
+                            current_avatar_id: currentUser.current_avatar_id,
+                            avatars: null
                           }}
                           nickname={currentUser.nickname}
                           size="md"
@@ -198,7 +199,8 @@ export default function Leaderboard() {
                         <AvatarDisplayUniversal
                           avatarData={{
                             profile_image_url: user.profile_image_url,
-                            current_avatar_id: user.current_avatar_id
+                            current_avatar_id: user.current_avatar_id,
+                            avatars: user.avatars
                           }}
                           nickname={user.nickname}
                           size="sm"
@@ -242,7 +244,8 @@ export default function Leaderboard() {
                           <AvatarDisplayUniversal
                             avatarData={{
                               profile_image_url: user.profile_image_url,
-                              current_avatar_id: user.current_avatar_id
+                              current_avatar_id: user.current_avatar_id,
+                              avatars: user.avatars
                             }}
                             nickname={user.nickname}
                             size="sm"

@@ -21,7 +21,7 @@ export interface ResolvedAvatar {
 export const AVATAR_QUERY_FRAGMENT = `
   profile_image_url,
   current_avatar_id,
-  avatars!current_avatar_id (
+  avatars:avatars!current_avatar_id (
     name,
     image_url
   )

@@ -30,7 +30,12 @@ const fetchAllLeaderboardData = async (limit: number = 50) => {
       xp, 
       streak, 
       points, 
-      ${AVATAR_QUERY_FRAGMENT}
+      profile_image_url,
+      current_avatar_id,
+      avatars:avatars!current_avatar_id (
+        name,
+        image_url
+      )
     `)
     .eq('is_bot', false)
     .order('xp', { ascending: false })

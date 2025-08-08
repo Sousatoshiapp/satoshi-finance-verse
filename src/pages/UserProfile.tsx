@@ -245,9 +245,11 @@ export default function UserProfile() {
                   />
                 ) : (
                   <AvatarDisplayUniversal
-                    avatarName={user.avatar?.name}
-                    avatarUrl={user.avatar?.image_url}
-                    profileImageUrl={user.profile_image_url}
+                    avatarData={{
+                      profile_image_url: user.profile_image_url,
+                      current_avatar_id: user.current_avatar_id,
+                      avatars: user.avatars
+                    }}
                     nickname={user.nickname}
                     size="xl"
                     className="mb-4"
@@ -406,9 +408,12 @@ export default function UserProfile() {
                   />
                 ) : (
                   <AvatarDisplayUniversal
-                    avatarName={user.avatar.name}
-                    avatarUrl={user.avatar.image_url}
-                    nickname={user.avatar.name}
+                    avatarData={{
+                      profile_image_url: user.profile_image_url,
+                      current_avatar_id: user.current_avatar_id,
+                      avatars: user.avatars
+                    }}
+                    nickname={user.nickname}
                     size="lg"
                   />
                 )}
