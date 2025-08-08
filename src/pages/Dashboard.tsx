@@ -426,10 +426,6 @@ export default function Dashboard() {
           {/* Enhanced Daily Summary */}
           <LazyDashboardSummary userStats={userStats} subscription={subscription} />
 
-          {/* Quick Actions */}
-          <div className="mb-6">
-            <LazyQuickActions />
-          </div>
 
           {/* Core Actions */}
           <div className="mb-6">

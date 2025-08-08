@@ -1,4 +1,4 @@
-// FASE 2: Dashboard Query Unification - Single Super Query
+// FASE 1: Dashboard Query Unification - Single Super Query
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,12 +23,11 @@ interface DashboardSuperData {
 // Ultra-optimized single query that fetches EVERYTHING
 const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperData | null> => {
   try {
-    // Try optimized RPC first (will be created)
+    // Use optimized RPC for everything in one call
     const { data: superData, error } = await supabase
       .rpc('get_dashboard_data_optimized', { target_user_id: userId });
 
     if (superData && !error) {
-      // Transform optimized data to super data format
       const parsed = superData as any;
       return {
         profile: parsed.profile,
@@ -48,32 +47,32 @@ const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperD
       };
     }
   } catch (error) {
-    console.error('Super query failed, using minimal fallback:', error);
-    
-    // Minimal fallback - only profile
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
-
-    return {
-      profile,
-      avatar: null,
-      district: null,
-      team: null,
-      points: profile?.points || 0,
-      xp: profile?.xp || 0,
-      level: profile?.level || 1,
-      nextLevelXP: 100,
-      streak: profile?.streak || 0,
-      completedQuizzes: 0,
-      dailyMissions: [],
-      leaderboard: [],
-      subscription: { tier: 'free' },
-      btzYield: 0,
-    };
+    console.warn('Super query failed, using minimal fallback:', error);
   }
+  
+  // Minimal fallback - only profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  return {
+    profile,
+    avatar: null,
+    district: null,
+    team: null,
+    points: profile?.points || 0,
+    xp: profile?.xp || 0,
+    level: profile?.level || 1,
+    nextLevelXP: 100,
+    streak: profile?.streak || 0,
+    completedQuizzes: 0,
+    dailyMissions: [],
+    leaderboard: [],
+    subscription: { tier: 'free' },
+    btzYield: 0,
+  };
 };
 
 export const useDashboardSuperQuery = () => {

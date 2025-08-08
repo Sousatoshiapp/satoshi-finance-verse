@@ -38,11 +38,12 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
 
   const debouncedInvalidate = useCallback(
     debounce((userId: string) => {
-      // Selective invalidation based on user context
+      // Ultra-aggressive selective invalidation
+      queryClient.invalidateQueries({ queryKey: ['dashboard-super-data', userId] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-data', userId] });
       queryClient.invalidateQueries({ queryKey: ['user-profile', userId] });
       queryClient.invalidateQueries({ queryKey: ['leaderboard'], refetchType: 'active' });
-    }, 300), // Reduced debounce time for faster updates
+    }, 2000), // Increased debounce for better performance
     [queryClient]
   );
 

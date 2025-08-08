@@ -1,4 +1,4 @@
-// FASE 5: Advanced Performance Hacks
+// FASE 3: Advanced Performance Hacks
 import { QueryClient } from '@tanstack/react-query';
 
 // Request deduplication map

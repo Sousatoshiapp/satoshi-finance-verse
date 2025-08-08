@@ -1,22 +1,23 @@
-// FASE 5: Advanced Performance Hacks - Entry point ultra-otimizado
+// FASE 2: Advanced Performance Hacks - Entry point ultra-otimizado
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { createUltraQueryClient, preloadCriticalAssets, monitorUltraPerformance } from "@/utils/ultra-performance";
-import UltraApp from "./App-Ultra";
+import { Toaster } from "@/components/shared/ui/toaster";
+import App from "./App";
 import "./index.css";
 
-// FASE 5: Ultra-optimized QueryClient
+// Ultra-optimized QueryClient
 const ultraQueryClient = createUltraQueryClient();
 
-// FASE 4: Critical Path Inlining - Preload immediately
+// Critical Path Inlining - Preload immediately
 preloadCriticalAssets();
 
-// FASE 5: Performance monitoring for sub-0.2s
+// Performance monitoring for sub-0.2s
 monitorUltraPerformance();
 
-// FASE 4: Service Worker for instant cache
+// Service Worker for instant cache
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   navigator.serviceWorker.register('/ultra-sw.js').catch(() => {
     // Silent fail - no blocking
@@ -31,15 +32,19 @@ const root = createRoot(container);
 // Performance mark for measurement
 performance.mark('ultra-app-start');
 
-root.render(
+// Ultra App Component
+const UltraApp = () => (
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={ultraQueryClient}>
-        <UltraApp />
+        <App />
+        <Toaster />
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>
 );
+
+root.render(<UltraApp />);
 
 // Measure time to interactive
 performance.mark('ultra-app-end');
@@ -52,3 +57,5 @@ setTimeout(() => {
     console.log(`🚀 Ultra App Load Time: ${measure.duration.toFixed(2)}ms`);
   }
 }, 100);
+
+export default UltraApp;

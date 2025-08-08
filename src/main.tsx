@@ -6,7 +6,7 @@ import { Toaster } from "@/components/shared/ui/toaster";
 import { BrowserRouter } from "react-router-dom";
 import { optimizeMemoryUsage, advancedMemoryOptimization, monitorPerformance } from "@/utils/bundle-optimizer";
 import { initCriticalPreloading } from "@/utils/preload-critical";
-import App from "./App";
+import UltraApp from "./main-ultra";
 import "./index.css";
 import "./i18n";
 
@@ -51,15 +51,5 @@ if (!container) throw new Error("Root element not found");
 
 const root = createRoot(container);
 
-root.render(
-  <StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <PerformanceOptimizer />
-        <App />
-        <Toaster />
-      </QueryClientProvider>
-    </BrowserRouter>
-  </StrictMode>
-);
+root.render(<UltraApp />);
 
