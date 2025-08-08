@@ -1,9 +1,9 @@
-// FASE 1: Dashboard Query Ultra-Otimizada - Apenas RPC otimizada
+// FASE 1: Dashboard Query Unification - Single Super Query
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-interface UltraDashboardData {
+interface DashboardSuperData {
   profile: any;
   avatar: any;
   district: any;
@@ -20,20 +20,16 @@ interface UltraDashboardData {
   btzYield: number;
 }
 
-// Query ultra-otimizada sem fallbacks complexos
-const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardData | null> => {
-  // Tentar localStorage cache primeiro (backup instantâneo)
-  const cacheKey = `ultra-dashboard-${userId}`;
-  const cached = localStorage.getItem(cacheKey);
-  
+// Ultra-optimized single query that fetches EVERYTHING
+const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperData | null> => {
   try {
-    // Usar APENAS a função RPC otimizada
+    // Use optimized RPC for everything in one call
     const { data: superData, error } = await supabase
       .rpc('get_dashboard_data_optimized', { target_user_id: userId });
 
     if (superData && !error) {
       const parsed = superData as any;
-      const result = {
+      return {
         profile: parsed.profile,
         avatar: parsed.avatar,
         district: parsed.district,
@@ -49,40 +45,29 @@ const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardDa
         subscription: { tier: 'free' },
         btzYield: 0,
       };
-      
-      // Cache no localStorage para próxima visita
-      localStorage.setItem(cacheKey, JSON.stringify({
-        data: result,
-        timestamp: Date.now()
-      }));
-      
-      return result;
     }
   } catch (error) {
-    console.warn('RPC query failed, using cache:', error);
+    console.warn('Super query failed, using minimal fallback:', error);
   }
-
-  // Se falhou, usar cache do localStorage se disponível e não muito antigo
-  if (cached) {
-    try {
-      const { data, timestamp } = JSON.parse(cached);
-      const age = Date.now() - timestamp;
-      if (age < 10 * 60 * 1000) { // 10 minutos max
-        return data;
-      }
-    } catch {}
-  }
-
-  // Fallback mínimo apenas se tudo falhou
+  
+  // Minimal fallback - fetch profile with avatar data
   const { data: profile } = await supabase
     .from('profiles')
-    .select('*')
+    .select(`
+      *,
+      current_avatar_id,
+      profile_image_url,
+      avatars!current_avatar_id (
+        name,
+        image_url
+      )
+    `)
     .eq('user_id', userId)
     .single();
 
   return {
     profile,
-    avatar: null,
+    avatar: profile?.avatars || null,
     district: null,
     team: null,
     points: profile?.points || 0,
@@ -98,18 +83,19 @@ const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardDa
   };
 };
 
-export const useUltraDashboardQuery = () => {
+export const useDashboardSuperQuery = () => {
   const { user } = useAuth();
   
   return useQuery({
-    queryKey: ['ultra-dashboard-data', user?.id],
-    queryFn: () => user ? fetchUltraDashboardData(user.id) : null,
-    staleTime: 5 * 60 * 1000, // 5 minutos - cache agressivo
-    gcTime: 15 * 60 * 1000, // 15 minutos - retenção longa
-    refetchOnWindowFocus: false, // Sem refetch automático
-    refetchOnMount: false, // Só se stale
+    queryKey: ['dashboard-super-data', user?.id],
+    queryFn: () => user ? fetchDashboardSuperQuery(user.id) : null,
+    staleTime: 5 * 60 * 1000, // 5 minutes - aggressive cache
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false, // Disable for speed
+    refetchOnMount: false, // Only if stale
     enabled: !!user,
-    retry: 1, // Apenas 1 retry
+    retry: 1, // Minimal retries
+    // Ultra-fast mode
     networkMode: 'online',
   });
 };
