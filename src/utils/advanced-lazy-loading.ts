@@ -77,5 +77,6 @@ export const LazyRoutes = {
   EnhancedSimultaneousDuel: lazy(() => import('@/components/duels/enhanced-simultaneous-duel')),
   ProximityTransferBluetooth: lazy(() => import('@/pages/ProximityTransferBluetooth')),
   P2PTransfer: lazy(() => import('@/pages/P2PTransfer')),
-  ConceptConnectionsPage: lazy(() => import('@/pages/ConceptConnectionsPage'))
+  ConceptConnectionsPage: lazy(() => import('@/pages/ConceptConnectionsPage')),
+  UserProfile: lazy(() => import('@/pages/UserProfile'))
 };
