@@ -1,24 +1,27 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@/components/shared/ui/button";
-import { BTZCounter } from "@/components/features/quiz/btz-counter";
+import { LazyBTZCounter } from "@/components/dashboard/LazyBTZCounter";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { AvatarSelection } from "@/components/shared/avatar-selection";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 // import { TournamentCarousel } from "@/components/features/gamification/tournament-carousel";
 // import { DuelPlaygroundGrid } from "@/components/shared/duel-playground-grid";
 import { SubscriptionIndicator } from "@/components/shared/subscription-indicator";
-import { CarouselDailyMissions } from "@/components/shared/carousel-daily-missions";
+// Removed direct import - now using LazyDailyMissions
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DashboardSummaryOptimized } from "@/components/shared/dashboard-summary-optimized";
-import { QuickActionsOptimized } from "@/components/shared/quick-actions-optimized";
 import { DistrictCircleBadge } from "@/components/features/gamification/district-circle-badge";
-import { CompactLeaderboard } from "@/components/shared/compact-leaderboard";
-import { BtcDuelCard } from "@/components/features/duels/btc/BtcDuelCard";
+import { 
+  LazyDashboardSummary, 
+  LazyQuickActions, 
+  LazyLeaderboard, 
+  LazyDailyMissions, 
+  LazyBtcDuelCard 
+} from "@/components/dashboard/LazyDashboardSections";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
@@ -425,27 +428,32 @@ export default function Dashboard() {
 
           {/* BTZ Counter - Separate section */}
           <div className="mb-6">
-            <BTZCounter />
+            <LazyBTZCounter />
           </div>
 
 
 
           {/* Ranking Semanal de Beetz */}
           <div className="mb-4">
-            <CompactLeaderboard />
+            <LazyLeaderboard />
           </div>
 
           {/* BTC Duelo Rápido Card */}
           <div className="mb-4">
-            <BtcDuelCard />
+            <LazyBtcDuelCard />
           </div>
 
           {/* Enhanced Daily Summary */}
-          <DashboardSummaryOptimized userStats={userStats} subscription={subscription} />
+          <LazyDashboardSummary userStats={userStats} subscription={subscription} />
+
+          {/* Quick Actions */}
+          <div className="mb-6">
+            <LazyQuickActions />
+          </div>
 
           {/* Core Actions */}
           <div className="mb-6">
-            <CarouselDailyMissions />
+            <LazyDailyMissions />
           </div>
 
           {/* Torneios Épicos - Coming Soon Card */}

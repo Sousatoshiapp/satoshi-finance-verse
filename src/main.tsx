@@ -1,19 +1,21 @@
 import React, { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { optimizeQueryClient } from "@/utils/critical-cache";
 import { Toaster } from "@/components/shared/ui/toaster";
 import { BrowserRouter } from "react-router-dom";
 import { optimizeMemoryUsage, advancedMemoryOptimization, monitorPerformance } from "@/utils/bundle-optimizer";
+import { initCriticalPreloading } from "@/utils/preload-critical";
 import App from "./App";
 import "./index.css";
 import "./i18n";
 
-// Configuração otimizada do QueryClient
-const queryClient = new QueryClient({
+// Configuração ultra-otimizada do QueryClient
+const queryClient = optimizeQueryClient(new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30 * 1000,      // 30 segundos para dados críticos
-      gcTime: 3 * 60 * 1000,     // 3 minutos para garbage collection
+      staleTime: 15 * 1000,      // 15 segundos para dados críticos
+      gcTime: 2 * 60 * 1000,     // 2 minutos para garbage collection
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       retry: 1,
@@ -23,15 +25,18 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-});
+}));
 
-const MemoryOptimizer = () => {
+const PerformanceOptimizer = () => {
   useEffect(() => {
+    // Initialize critical preloading immediately
+    initCriticalPreloading();
+    
     monitorPerformance();
     
-    const memoryInterval = setInterval(optimizeMemoryUsage, 30000);
-    
-    const advancedInterval = setInterval(advancedMemoryOptimization, 60000);
+    // Reduce frequency to prevent performance impact
+    const memoryInterval = setInterval(optimizeMemoryUsage, 45000);
+    const advancedInterval = setInterval(advancedMemoryOptimization, 90000);
     
     return () => {
       clearInterval(memoryInterval);
@@ -50,7 +55,7 @@ root.render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <MemoryOptimizer />
+        <PerformanceOptimizer />
         <App />
         <Toaster />
       </QueryClientProvider>

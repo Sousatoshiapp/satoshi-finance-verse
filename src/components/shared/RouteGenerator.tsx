@@ -2,56 +2,14 @@ import { Route } from 'react-router-dom';
 import { LazyRoutes } from '@/utils/advanced-lazy-loading';
 import { RouteWrapper } from './RouteWrapper';
 import { routeConfig, RouteConfig } from '@/routes';
+
+// Only keep critical direct imports for immediate navigation
 import TranslationTestPage from '@/pages/TranslationTest';
-import SoloQuiz from '@/pages/SoloQuiz';
-
-import Dashboard from '@/pages/Dashboard';
-import Profile from '@/pages/Profile';
-import UserProfile from '@/pages/UserProfile';
-import Social from '@/pages/Social';
-import Duels from '@/pages/Duels';
-import SatoshiCity from '@/pages/SatoshiCity';
-import DistrictDetail from '@/pages/DistrictDetail';
-import DistrictQuiz from '@/pages/DistrictQuiz';
-import DistrictQuizPage from '@/pages/DistrictQuizPage';
-import { ImmersiveDistrictPage } from '@/components/district/ImmersiveDistrictPage';
-import GameMode from '@/pages/GameMode';
-import Store from '@/pages/Store';
-import SubscriptionPlans from '@/pages/SubscriptionPlans';
-import Icons from '@/pages/Icons';
-import AdminPanel from '@/pages/AdminPanel';
-import P2PTransfer from '@/pages/P2PTransfer';
-import OAuthCallback from '@/pages/OAuthCallback';
-import BtcDuel from '@/pages/BtcDuel';
-
-const directImports: Record<string, React.ComponentType> = {
-  Dashboard,
-  Profile,
-  UserProfile,
-  Social,
-  Duels,
-  SatoshiCity,
-  DistrictDetail,
-  DistrictQuiz,
-  DistrictQuizPage,
-  ImmersiveDistrictPage,
-  GameMode,
-  Store,
-  SubscriptionPlans,
-  Icons,
-  AdminPanel,
-  P2PTransfer,
-  TranslationTestPage,
-  OAuthCallback,
-  BtcDuel,
-  SoloQuiz
-};
 
 export function generateRoutes() {
   const routes = routeConfig.map((route: RouteConfig) => {
-    const Component = route.isDirectImport 
-      ? directImports[route.element]
-      : LazyRoutes[route.element as keyof typeof LazyRoutes];
+    // Force all routes to use lazy loading for better performance
+    const Component = LazyRoutes[route.element as keyof typeof LazyRoutes];
       
     return (
       <Route
