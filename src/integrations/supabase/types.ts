@@ -3896,6 +3896,7 @@ export type Database = {
           financial_goal: string | null
           id: string
           is_bot: boolean | null
+          last_daily_login_date: string | null
           last_login_date: string | null
           last_streak_reset_date: string | null
           last_yield_date: string | null
@@ -3928,6 +3929,7 @@ export type Database = {
           financial_goal?: string | null
           id?: string
           is_bot?: boolean | null
+          last_daily_login_date?: string | null
           last_login_date?: string | null
           last_streak_reset_date?: string | null
           last_yield_date?: string | null
@@ -3960,6 +3962,7 @@ export type Database = {
           financial_goal?: string | null
           id?: string
           is_bot?: boolean | null
+          last_daily_login_date?: string | null
           last_login_date?: string | null
           last_streak_reset_date?: string | null
           last_yield_date?: string | null
@@ -7186,6 +7189,10 @@ export type Database = {
           rewards: Json
         }[]
       }
+      calculate_correct_level: {
+        Args: { user_xp: number }
+        Returns: number
+      }
       calculate_daily_yield: {
         Args: { profile_id: string }
         Returns: {
@@ -7504,6 +7511,10 @@ export type Database = {
       log_security_event: {
         Args: { event_type: string; user_id: string; event_data?: Json }
         Returns: undefined
+      }
+      mark_daily_login_safe: {
+        Args: { profile_id: string }
+        Returns: boolean
       }
       monitor_yield_anomalies: {
         Args: Record<PropertyKey, never>
