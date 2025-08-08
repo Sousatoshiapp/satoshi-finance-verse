@@ -17,11 +17,14 @@ export interface LeaderboardUser {
 }
 
 const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
-  // Get current week start (Monday)
+  // Get current week start (Monday) - Fixed calculation for Sunday
   const currentDate = new Date();
   const weekStart = new Date(currentDate);
-  weekStart.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+  // Fix: Sunday (0) should be treated as 7 to get Monday as week start
+  weekStart.setDate(currentDate.getDate() - (currentDate.getDay() || 7) + 1);
   weekStart.setHours(0, 0, 0, 0);
+  
+  console.log('Weekly leaderboard - Week start date:', weekStart.toISOString().split('T')[0]);
   try {
     // Single optimized query for weekly leaderboard
     const { data: leaderboardData } = await supabase
