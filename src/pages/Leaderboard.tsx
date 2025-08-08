@@ -42,7 +42,11 @@ export default function Leaderboard() {
           .from('profiles')
           .select(`
             id, nickname, level, xp, streak, points, 
-            profile_image_url, current_avatar_id, user_id
+            profile_image_url, current_avatar_id, user_id,
+            avatars:avatars!current_avatar_id (
+              name,
+              image_url
+            )
           `)
           .eq('user_id', authUser.id)
           .single();
@@ -156,7 +160,7 @@ export default function Leaderboard() {
                           avatarData={{
                             profile_image_url: currentUser.profile_image_url,
                             current_avatar_id: currentUser.current_avatar_id,
-                            avatars: null
+                            avatars: currentUser.avatars
                           }}
                           nickname={currentUser.nickname}
                           size="md"
