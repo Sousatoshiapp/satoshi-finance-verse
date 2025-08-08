@@ -10,9 +10,7 @@ import { initCriticalPreloading } from "@/utils/preload-critical";
 import { criticalPathOptimizer } from "@/utils/critical-path-optimizer";
 import { bundleSplitter } from "@/utils/bundle-splitter";
 import { initializePerformanceOptimizations } from "@/utils/performance-manager";
-import { createUltraQueryClient, setupUltraQueryCleanup } from "@/utils/ultra-query-config";
-import { initUltraCriticalAssets } from "@/utils/ultra-critical-css";
-import { monitorUltraPerformance } from "@/utils/ultra-performance";
+import { createUltraQueryClient, preloadCriticalAssets, monitorUltraPerformance } from "@/utils/ultra-performance";
 import UltraApp from "./main-ultra";
 import "./index.css";
 import "./i18n";
@@ -21,8 +19,7 @@ import "./i18n";
 const ultraQueryClient = createUltraQueryClient();
 
 // FASE 1.1: Inicialização crítica IMEDIATA
-initUltraCriticalAssets();
-setupUltraQueryCleanup(ultraQueryClient);
+preloadCriticalAssets();
 monitorUltraPerformance();
 criticalPathOptimizer.init();
 bundleSplitter.init();
@@ -41,8 +38,8 @@ performance.mark('ultra-main-start');
 // FASE 1.4: Ultra Performance Optimizer
 const UltraPerformanceOptimizer = () => {
   useEffect(() => {
-    // Assets críticos inline
-    initUltraCriticalAssets();
+    // Preloading crítico imediato
+    initCriticalPreloading();
     
     // Performance monitoring
     monitorPerformance();

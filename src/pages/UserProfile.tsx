@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface UserProfileData {
   id: string;
@@ -52,34 +51,13 @@ export default function UserProfile() {
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentUserProfile, setCurrentUserProfile] = useState<string | null>(null);
   const { toast } = useToast();
-  const { user: authUser } = useAuth();
 
   useEffect(() => {
     if (userId) {
       loadUserProfile(userId);
     }
-    loadCurrentUserProfile();
-  }, [userId, authUser]);
-
-  const loadCurrentUserProfile = async () => {
-    if (!authUser) return;
-    
-    try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', authUser.id)
-        .single();
-      
-      if (profile) {
-        setCurrentUserProfile(profile.id);
-      }
-    } catch (error) {
-      console.error('Error loading current user profile:', error);
-    }
-  };
+  }, [userId]);
 
   const loadUserProfile = async (profileId: string) => {
     try {
@@ -337,7 +315,7 @@ export default function UserProfile() {
                     variant="ghost"
                     showCount
                   />
-                   {currentUserProfile && user.id !== currentUserProfile && (
+                   {userId !== user.id && (
                      <Button onClick={() => handleStartConversation(user.id)}>
                        <MessageCircle className="h-4 w-4 mr-2" />
                        Mensagem

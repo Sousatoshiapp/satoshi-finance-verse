@@ -72,13 +72,10 @@ export default defineConfig(({ mode }) => {
     rollupOptions: {
       output: {
         manualChunks: {
-          // FASE 1: Bundle Chunks Ultra-Otimizados (6 chunks essenciais)
           'vendor-react': ['react', 'react-dom'],
           'vendor-router': ['react-router-dom'],
           'vendor-query': ['@tanstack/react-query'],
-          'vendor-ui': ['@radix-ui/react-slot', '@radix-ui/react-dialog', '@radix-ui/react-toast', 'lucide-react'],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          'routes-critical': ['/src/pages/Dashboard.tsx', '/src/pages/Social.tsx', '/src/pages/Profile.tsx']
+          'vendor-supabase': ['@supabase/supabase-js']
         }
       }
     },

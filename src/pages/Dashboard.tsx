@@ -10,8 +10,8 @@ import { SubscriptionIndicator } from "@/components/shared/subscription-indicato
 // Removed direct import - now using LazyDailyMissions
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
-import { useDashboardQuery } from "@/hooks/use-ultra-dashboard-query";
-// Removed useDashboardSuperQuery to avoid conflicts
+import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { useDashboardSuperQuery } from "@/hooks/use-dashboard-super-query";
 import { usePerformanceOptimization } from "@/hooks/use-performance-optimization";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +36,6 @@ import { useI18n } from "@/hooks/use-i18n";
 // import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getLevelInfo } from "@/data/levels";
-import { HeaderNotifications } from "@/components/shared/header-notifications";
 
 
 const getGreeting = (t: any) => {
@@ -77,21 +76,15 @@ export default function Dashboard() {
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
-  // Using unified ultra query only
-  const { data: dashboardData, isLoading, error } = useDashboardQuery();
+  // ULTRA PERFORMANCE: Usar super query unificado
+  const { data: superData, isLoading, error } = useDashboardSuperQuery();
   const { points: realtimePoints } = useRealtime();
   const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
   
-  // Debug logging for troubleshooting
-  React.useEffect(() => {
-    if (error) {
-      console.error('🚨 Dashboard Error:', error);
-    }
-    if (dashboardData) {
-      console.debug('✅ Dashboard Data Loaded:', { hasProfile: !!dashboardData.profile, hasAvatar: !!dashboardData.avatar });
-    }
-  }, [error, dashboardData]);
+  // Fallback para dados antigos se super query falhar
+  const { data: fallbackData } = useDashboardData();
+  const dashboardData = superData || fallbackData;
   
   // Remove logging para melhorar performance
   // console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });
@@ -279,21 +272,9 @@ export default function Dashboard() {
     return loadingComponent;
   }
 
-  // Error state with user-visible message
+  // Error state  
   if (error) {
     console.error('Dashboard data error:', error);
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="max-w-md mx-auto text-center space-y-4">
-          <div className="text-6xl">😕</div>
-          <h2 className="text-xl font-semibold text-foreground">{t('errors.dashboardLoadError')}</h2>
-          <p className="text-muted-foreground">{t('errors.dashboardLoadErrorDescription')}</p>
-          <Button onClick={() => window.location.reload()} className="w-full">
-            {t('common.tryAgain')}
-          </Button>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -324,7 +305,6 @@ export default function Dashboard() {
               <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
             </div>
             <div className="flex items-center gap-3">
-              <HeaderNotifications />
               <LanguageSwitch />
               {shouldShowIcon && (
                 <CrisisIcon onClick={() => {
