@@ -38,7 +38,7 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
           xp,
           points,
           current_avatar_id,
-          avatars:current_avatar_id (
+          avatars:avatars!current_avatar_id (
             name,
             image_url
           )
@@ -78,7 +78,7 @@ const fetchLeaderboardDataOptimized = async (): Promise<LeaderboardUser[]> => {
         xp,
         points,
         current_avatar_id,
-        avatars:current_avatar_id (
+        avatars:avatars!current_avatar_id (
           name,
           image_url
         )
