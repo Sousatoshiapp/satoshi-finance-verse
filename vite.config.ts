@@ -77,8 +77,8 @@ export default defineConfig(({ mode }) => {
           'vendor-router': ['react-router-dom'],
           'vendor-query': ['@tanstack/react-query'],
           'vendor-ui': ['@radix-ui/react-slot', '@radix-ui/react-dialog', '@radix-ui/react-toast', 'lucide-react'],
-          'routes-critical': ['./src/pages/Dashboard', './src/pages/Social', './src/pages/Profile'],
-          'routes-admin': ['./src/pages/Admin']
+          'vendor-supabase': ['@supabase/supabase-js'],
+          'routes-critical': ['/src/pages/Dashboard.tsx', '/src/pages/Social.tsx', '/src/pages/Profile.tsx']
         }
       }
     },
