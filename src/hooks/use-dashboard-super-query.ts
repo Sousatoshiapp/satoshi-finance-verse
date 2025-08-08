@@ -81,8 +81,8 @@ export const useDashboardSuperQuery = () => {
   return useQuery({
     queryKey: ['dashboard-super-data', user?.id],
     queryFn: () => user ? fetchDashboardSuperQuery(user.id) : null,
-    staleTime: 5 * 60 * 1000, // 5 minutes - aggressive cache
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000, // 10 minutes - cache ainda mais agressivo
+    gcTime: 20 * 60 * 1000, // 20 minutes
     refetchOnWindowFocus: false, // Disable for speed
     refetchOnMount: false, // Only if stale
     enabled: !!user,

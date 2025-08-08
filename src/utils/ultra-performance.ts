@@ -39,20 +39,21 @@ export const deduplicateRequest = <T>(key: string, requestFn: () => Promise<T>):
   return promise;
 };
 
-// Memory pressure detection and cleanup
+// Memory pressure detection otimizado - menos agressivo
 export const detectMemoryPressure = () => {
   if ('memory' in performance) {
     const memory = (performance as any).memory;
     const usageRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
     
-    if (usageRatio > 0.8) {
-      // Emergency cleanup
+    // Só limpa em casos extremos (90% ao invés de 80%)
+    if (usageRatio > 0.9) {
       if ('gc' in window) {
         (window as any).gc();
       }
       
-      // Clear non-essential caches
-      requestCache.clear();
+      if (requestCache.size > 20) { // Cache maior antes de limpar
+        requestCache.clear();
+      }
       
       return true;
     }
@@ -113,22 +114,19 @@ export const preloadCriticalAssets = () => {
   });
 };
 
-// Ultra-fast component cleanup
+// Cleanup otimizado - menos agressivo
 export const ultraCleanup = () => {
-  // Remove unused DOM nodes
-  const unusedElements = document.querySelectorAll('[data-ultra-cleanup="true"]');
-  unusedElements.forEach(el => el.remove());
+  // Só remove elementos marcados como temporários
+  const elementsToClean = document.querySelectorAll('[data-ultra-cleanup="temp"]');
+  elementsToClean.forEach(el => el.remove());
   
-  // Force garbage collection if available
-  if ('gc' in window) {
-    (window as any).gc();
+  // Só limpa cache se muito grande
+  if (requestCache.size > 50) {
+    requestCache.clear();
   }
-  
-  // Clear request cache
-  requestCache.clear();
 };
 
-// Performance monitoring for sub-0.2s target
+// Performance monitoring otimizado
 export const monitorUltraPerformance = () => {
   // Monitor First Contentful Paint
   new PerformanceObserver((list) => {
@@ -137,17 +135,17 @@ export const monitorUltraPerformance = () => {
         const fcp = entry.startTime;
         console.log(`🚀 Ultra Performance - FCP: ${fcp.toFixed(2)}ms`);
         
-        if (fcp > 200) {
-          console.warn('⚠️ FCP exceeds 200ms target:', fcp);
+        // Target ainda mais agressivo: 150ms
+        if (fcp > 150) {
+          console.warn('⚠️ FCP exceeds 150ms target:', fcp);
         }
       }
     }
   }).observe({ entryTypes: ['paint'] });
 
-  // Monitor Time to Interactive
-  new PerformanceObserver((list) => {
-    for (const entry of list.getEntries()) {
-      console.log(`🎯 Ultra Performance - ${entry.name}: ${entry.startTime.toFixed(2)}ms`);
-    }
-  }).observe({ entryTypes: ['measure'] });
+  // Memory check menos frequente: 60s ao invés de tempo real
+  setInterval(detectMemoryPressure, 60000);
+  
+  // Cleanup menos frequente: 5min ao invés de constante
+  setInterval(ultraCleanup, 300000);
 };
