@@ -1,6 +1,6 @@
 // FASE 4: Loading Strategy Revolucionária - Skeleton-First Rendering
 import React, { memo, useMemo } from 'react';
-import { useUltraDashboardQuery } from '@/hooks/use-ultra-dashboard-query';
+import { useDashboardQuery } from '@/hooks/use-ultra-dashboard-query';
 import { UltraBTZCounter } from './UltraBTZCounter';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import { useI18n } from '@/hooks/use-i18n';
@@ -8,7 +8,7 @@ import { useI18n } from '@/hooks/use-i18n';
 // Ultra-minimalist dashboard that renders skeleton immediately
 const UltraOptimizedDashboard = memo(() => {
   const { t } = useI18n();
-  const { data, isLoading } = useUltraDashboardQuery();
+  const { data, isLoading } = useDashboardQuery();
 
   // Greeting calculation memoized
   const greeting = useMemo(() => {

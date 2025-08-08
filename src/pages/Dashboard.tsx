@@ -10,7 +10,7 @@ import { SubscriptionIndicator } from "@/components/shared/subscription-indicato
 // Removed direct import - now using LazyDailyMissions
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
-import { useUltraDashboardQuery } from "@/hooks/use-ultra-dashboard-query";
+import { useDashboardQuery } from "@/hooks/use-ultra-dashboard-query";
 // Removed useDashboardSuperQuery to avoid conflicts
 import { usePerformanceOptimization } from "@/hooks/use-performance-optimization";
 import { useNavigate } from "react-router-dom";
@@ -78,7 +78,7 @@ export default function Dashboard() {
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
   // Using unified ultra query only
-  const { data: dashboardData, isLoading, error } = useUltraDashboardQuery();
+  const { data: dashboardData, isLoading, error } = useDashboardQuery();
   const { points: realtimePoints } = useRealtime();
   const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();

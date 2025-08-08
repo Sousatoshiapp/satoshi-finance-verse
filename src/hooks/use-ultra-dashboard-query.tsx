@@ -1,9 +1,9 @@
-// FASE 1: Dashboard Query Ultra-Otimizada - Apenas RPC otimizada
+// Simplified Dashboard Hook - Clean and Focused
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
-interface UltraDashboardData {
+interface DashboardData {
   profile: any;
   avatar: any;
   district: any;
@@ -18,140 +18,141 @@ interface UltraDashboardData {
   leaderboard: any[];
   subscription: any;
   btzYield: number;
+  error?: string;
 }
 
-// Query ultra-otimizada sem fallbacks complexos
-const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardData | null> => {
-  console.debug('🔄 Starting ultra dashboard fetch for user:', userId);
-  
-  // Tentar localStorage cache primeiro (backup instantâneo)
-  const cacheKey = `ultra-dashboard-${userId}`;
-  const cached = localStorage.getItem(cacheKey);
+// Clear all dashboard-related cache
+export const clearDashboardCache = () => {
+  const keys = Object.keys(localStorage);
+  keys.forEach(key => {
+    if (key.includes('dashboard') || key.includes('ultra-dashboard')) {
+      localStorage.removeItem(key);
+    }
+  });
+  console.log('🧹 Dashboard cache cleared');
+};
+
+// Simplified data fetching with proper error handling
+const fetchDashboardData = async (userId: string): Promise<DashboardData | null> => {
+  console.log('🔄 Fetching dashboard data for user:', userId);
   
   try {
-    console.debug('📡 Calling RPC get_dashboard_data_optimized...');
-    // Usar APENAS a função RPC otimizada
-    const { data: superData, error } = await supabase
+    // Primary: Use optimized RPC function
+    const { data, error } = await supabase
       .rpc('get_dashboard_data_optimized', { target_user_id: userId });
 
-    console.debug('📊 RPC Response:', { hasData: !!superData, error });
-
-    if (superData && !error) {
-      const parsed = superData as any;
-      const result = {
-        profile: parsed.profile,
-        avatar: parsed.avatar,
-        district: parsed.district,
-        team: parsed.team,
-        points: parsed.profile?.points || 0,
-        xp: parsed.profile?.xp || 0,
-        level: parsed.profile?.level || 1,
-        nextLevelXP: parsed.nextLevelXP || 100,
-        streak: parsed.profile?.streak || 0,
-        completedQuizzes: parsed.completedQuizzes || 0,
-        dailyMissions: parsed.dailyMissions || [],
-        leaderboard: parsed.leaderboard || [],
-        subscription: parsed.subscription || { tier: 'free' },
-        btzYield: parsed.btzYield || 0,
-      };
-      
-      console.debug('✅ Dashboard data processed successfully:', {
-        hasProfile: !!result.profile,
-        points: result.points,
-        level: result.level
-      });
-      
-      // Cache no localStorage para próxima visita
-      localStorage.setItem(cacheKey, JSON.stringify({
-        data: result,
-        timestamp: Date.now()
-      }));
-      
-      return result;
-    }
-    
     if (error) {
-      console.error('❌ RPC Error:', error);
-    }
-  } catch (error) {
-    console.error('🚨 RPC query failed, trying fallback:', error);
-  }
-
-  // Se falhou, usar cache do localStorage se disponível e não muito antigo
-  if (cached) {
-    try {
-      const { data, timestamp } = JSON.parse(cached);
-      const age = Date.now() - timestamp;
-      if (age < 10 * 60 * 1000) { // 10 minutos max
-        console.debug('📦 Using cached data (age:', Math.round(age / 1000), 'seconds)');
-        return data;
-      }
-    } catch (e) {
-      console.warn('Cache parse error:', e);
-    }
-  }
-
-  console.debug('⚠️ Falling back to basic profile query...');
-  // Fallback robusto - usar maybeSingle para evitar erros
-  try {
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    if (profileError) {
-      console.error('Profile fallback error:', profileError);
-      return null;
+      console.error('❌ RPC Error:', error.message);
+      throw error;
     }
 
-    const fallbackResult = {
-      profile,
-      avatar: null,
-      district: null,
-      team: null,
-      points: profile?.points || 0,
-      xp: profile?.xp || 0,
-      level: profile?.level || 1,
-      nextLevelXP: 100,
-      streak: profile?.streak || 0,
-      completedQuizzes: 0,
-      dailyMissions: [],
-      leaderboard: [],
-      subscription: { tier: 'free' },
-      btzYield: 0,
+    if (!data) {
+      console.warn('⚠️ No data returned from RPC');
+      throw new Error('No data returned');
+    }
+
+    // Handle error in response
+    if ((data as any).error) {
+      console.warn('⚠️ RPC returned error:', (data as any).error);
+      // Still try to use partial data if available
+    }
+
+    const result: DashboardData = {
+      profile: (data as any).profile,
+      avatar: (data as any).avatar,
+      district: (data as any).district,
+      team: (data as any).team,
+      points: (data as any).points || 0,
+      xp: (data as any).xp || 0,
+      level: (data as any).level || 1,
+      nextLevelXP: (data as any).nextLevelXP || 100,
+      streak: (data as any).streak || 0,
+      completedQuizzes: (data as any).completedQuizzes || 0,
+      dailyMissions: (data as any).dailyMissions || [],
+      leaderboard: (data as any).leaderboard || [],
+      subscription: (data as any).subscription || { tier: 'free' },
+      btzYield: (data as any).btzYield || 0,
+      error: (data as any).error
     };
     
-    console.debug('🆘 Fallback data ready:', { hasProfile: !!profile });
-    return fallbackResult;
-  } catch (fallbackError) {
-    console.error('🔥 Complete fallback failure:', fallbackError);
-    return null;
+    console.log('✅ Dashboard data loaded:', {
+      hasProfile: !!result.profile,
+      points: result.points,
+      level: result.level,
+      hasError: !!result.error
+    });
+    
+    return result;
+  } catch (error) {
+    console.error('🚨 Primary query failed, using fallback:', error);
+    
+    // Fallback: Get basic profile data
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('❌ Fallback profile query failed:', profileError);
+        return null;
+      }
+
+      if (!profile) {
+        console.error('❌ No profile found for user:', userId);
+        return null;
+      }
+
+      const fallbackResult: DashboardData = {
+        profile,
+        avatar: null,
+        district: null,
+        team: null,
+        points: profile.points || 0,
+        xp: profile.xp || 0,
+        level: profile.level || 1,
+        nextLevelXP: 100,
+        streak: profile.streak || 0,
+        completedQuizzes: 0,
+        dailyMissions: [],
+        leaderboard: [],
+        subscription: { tier: profile.subscription_tier || 'free' },
+        btzYield: 0,
+        error: 'Using fallback data'
+      };
+      
+      console.log('🆘 Fallback data ready:', { nickname: profile.nickname });
+      return fallbackResult;
+    } catch (fallbackError) {
+      console.error('🔥 Complete failure:', fallbackError);
+      return null;
+    }
   }
 };
 
-export const useUltraDashboardQuery = () => {
+export const useDashboardQuery = () => {
   const { user } = useAuth();
   
   return useQuery({
-    queryKey: ['ultra-dashboard-data', user?.id],
+    queryKey: ['dashboard-data', user?.id],
     queryFn: () => {
       if (!user?.id) {
         console.warn('⚠️ No user ID available for dashboard query');
         return Promise.resolve(null);
       }
-      return fetchUltraDashboardData(user.id);
+      return fetchDashboardData(user.id);
     },
-    staleTime: 5 * 60 * 1000, // 5 minutos - cache agressivo
-    gcTime: 15 * 60 * 1000, // 15 minutos - retenção longa
-    refetchOnWindowFocus: false, // Sem refetch automático
-    refetchOnMount: false, // Só se stale
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: true, // Always refetch on mount for fresh data
     enabled: !!user?.id,
     retry: (failureCount, error) => {
-      console.error(`💥 Query retry ${failureCount}:`, error);
-      return failureCount < 2; // Max 2 retries
+      console.log(`🔄 Retry ${failureCount + 1}/3:`, error?.message);
+      return failureCount < 2; // Max 3 attempts
     },
-    retryDelay: 1000,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000), // Exponential backoff
     networkMode: 'online',
   });
 };
