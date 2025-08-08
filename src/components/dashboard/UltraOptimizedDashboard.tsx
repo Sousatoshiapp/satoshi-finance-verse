@@ -4,6 +4,7 @@ import { useDashboardSuperQuery } from '@/hooks/use-dashboard-super-query';
 import { UltraBTZCounter } from './UltraBTZCounter';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import { useI18n } from '@/hooks/use-i18n';
+import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
 
 // Ultra-minimalist dashboard that renders skeleton immediately
 const UltraOptimizedDashboard = memo(() => {
@@ -56,6 +57,12 @@ const UltraOptimizedDashboard = memo(() => {
               </p>
               <h1 className="text-xl font-bold text-foreground">{userStats.nickname}</h1>
             </div>
+            <AvatarDisplayUniversal
+              avatarData={data?.avatar}
+              nickname={userStats.nickname}
+              size="md"
+              className="h-12 w-12"
+            />
           </div>
 
           {/* Critical BTZ Counter - ultra-light version */}
