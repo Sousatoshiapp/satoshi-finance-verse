@@ -99,11 +99,49 @@ const fetchDashboardDataFallback = async (userId: string): Promise<DashboardData
 
   const calculatedLevel = profile.level || 1;
   
-  // Get correct next level XP from database
-  const { data: nextLevelData } = await supabase.rpc('get_next_level_xp', { 
-    current_level: calculatedLevel 
-  });
-  const nextLevelXP = nextLevelData || (calculatedLevel * 500); // Fallback
+  // Get correct next level XP - try RPC first, then direct query
+  let nextLevelXP = calculatedLevel * 500; // Default fallback
+  
+  try {
+    const { data: nextLevelData } = await supabase.rpc('get_next_level_xp', { 
+      current_level: calculatedLevel 
+    });
+    
+    if (nextLevelData) {
+      nextLevelXP = nextLevelData;
+      console.log('✅ RPC get_next_level_xp worked:', nextLevelData);
+    } else {
+      // Fallback: query level_tiers table directly
+      const { data: levelTier } = await supabase
+        .from('level_tiers')
+        .select('xp_required')
+        .eq('level', calculatedLevel + 1)
+        .single();
+      
+      if (levelTier) {
+        nextLevelXP = levelTier.xp_required;
+        console.log('✅ Direct level_tiers query worked:', levelTier.xp_required);
+      } else {
+        // Final fallback with correct XP table
+        const xpTable = [
+          0, 100, 200, 350, 550, 800, 1100, 1450, 1850, 2300, 2800,
+          3350, 3950, 4600, 5300, 6050, 6850, 7700, 8600, 9550, 10500,
+          11500, 12550, 13650, 14800, 16000, 17250, 18550, 19900, 21300, 22750
+        ];
+        nextLevelXP = xpTable[calculatedLevel + 1] || (calculatedLevel * 500);
+        console.log('⚠️ Using hardcoded XP table fallback:', nextLevelXP);
+      }
+    }
+  } catch (error) {
+    console.warn('❌ Error getting next level XP, using fallback:', error);
+    // Use corrected hardcoded values as final fallback
+    const xpTable = [
+      0, 100, 200, 350, 550, 800, 1100, 1450, 1850, 2300, 2800,
+      3350, 3950, 4600, 5300, 6050, 6850, 7700, 8600, 9550, 10500,
+      11500, 12550, 13650, 14800, 16000, 17250, 18550, 19900, 21300, 22750
+    ];
+    nextLevelXP = xpTable[calculatedLevel + 1] || (calculatedLevel * 500);
+  }
   
   const completedQuizzes = quizResult.count || 0;
 
