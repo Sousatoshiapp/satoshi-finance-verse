@@ -11,7 +11,7 @@ import { SubscriptionIndicator } from "@/components/shared/subscription-indicato
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useUltraDashboardQuery } from "@/hooks/use-ultra-dashboard-query";
-import { useDashboardSuperQuery } from "@/hooks/use-dashboard-super-query";
+// Removed useDashboardSuperQuery to avoid conflicts
 import { usePerformanceOptimization } from "@/hooks/use-performance-optimization";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -77,15 +77,21 @@ export default function Dashboard() {
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
-  // ULTRA PERFORMANCE: Usar super query unificado
-  const { data: superData, isLoading, error } = useDashboardSuperQuery();
+  // Using unified ultra query only
+  const { data: dashboardData, isLoading, error } = useUltraDashboardQuery();
   const { points: realtimePoints } = useRealtime();
   const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
   
-  // FASE 1: Usar ultra query otimizada
-  const { data: ultraData, isLoading: ultraLoading, error: ultraError } = useUltraDashboardQuery();
-  const dashboardData = ultraData || superData;
+  // Debug logging for troubleshooting
+  React.useEffect(() => {
+    if (error) {
+      console.error('🚨 Dashboard Error:', error);
+    }
+    if (dashboardData) {
+      console.debug('✅ Dashboard Data Loaded:', { hasProfile: !!dashboardData.profile, hasAvatar: !!dashboardData.avatar });
+    }
+  }, [error, dashboardData]);
   
   // Remove logging para melhorar performance
   // console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });
@@ -273,9 +279,21 @@ export default function Dashboard() {
     return loadingComponent;
   }
 
-  // Error state  
+  // Error state with user-visible message
   if (error) {
     console.error('Dashboard data error:', error);
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="max-w-md mx-auto text-center space-y-4">
+          <div className="text-6xl">😕</div>
+          <h2 className="text-xl font-semibold text-foreground">{t('errors.dashboardLoadError')}</h2>
+          <p className="text-muted-foreground">{t('errors.dashboardLoadErrorDescription')}</p>
+          <Button onClick={() => window.location.reload()} className="w-full">
+            {t('common.tryAgain')}
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (

@@ -69,7 +69,8 @@
     "totalXP": "XP Total",
     "highestStreak": "Maior Streak",
     "postsCreated": "Posts Criados",
-    "likesReceived": "Curtidas Recebidas"
+    "likesReceived": "Curtidas Recebidas",
+    "tryAgain": "Tentar Novamente"
   },
   "duels": {
     "activeArena": "Arena",
@@ -1033,7 +1034,11 @@
     "warning": "Aviso",
     "couldNotLoadQuestions": "Erro ao carregar quiz",
     "noQuestionsAvailable": "Este distrito ainda não possui perguntas disponíveis",
-    "accessDenied": "Acesso Negado"
+    "accessDenied": "Acesso Negado",
+    "dashboardLoadError": "Erro ao carregar dashboard",
+    "dashboardLoadErrorDescription": "Não foi possível carregar seus dados. Verifique sua conexão e tente novamente.",
+    "paymentProcessingError": "Erro ao processar pagamento",
+    "subscriptionActivationProblem": "Problema ao ativar assinatura"
   },
   "admin": {
     "systemSettings": "Configurações do Sistema",
