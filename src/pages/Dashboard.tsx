@@ -372,7 +372,7 @@ export default function Dashboard() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-3">
                 <p className="text-sm text-muted-foreground">{t('common.level')} {userStats.level}</p>
-                <span className="text-sm text-success/40">{getLevelInfo(userStats.level).name}</span>
+                <span className="text-sm" style={{ color: '#adff2f', opacity: 0.2 }}>{getLevelInfo(userStats.level).name}</span>
               </div>
               
               {/* Compact Progress Bar */}
