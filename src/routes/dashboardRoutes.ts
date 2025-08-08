@@ -28,6 +28,13 @@ export const dashboardRoutes = [
     isDirectImport: true
   },
   {
+    path: "/chat/:conversationId",
+    element: "DirectChat",
+    requiresAuth: true,
+    showNavbar: false,
+    isDirectImport: true
+  },
+  {
     path: "/duels",
     element: "Duels",
     requiresAuth: true,

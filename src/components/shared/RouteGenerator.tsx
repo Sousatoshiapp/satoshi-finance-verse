@@ -25,6 +25,7 @@ export function generateRoutes() {
                      route.path === '/profile' ? 'profile' :
                      route.path.includes('/user/') ? 'profile' :
                      route.path === '/social' ? 'social' :
+                     route.path.includes('/chat/') ? 'social' :
                      route.path.includes('quiz') ? 'quiz' :
                      route.path === '/store' ? 'store' :
                      route.path.includes('leaderboard') ? 'leaderboard' :

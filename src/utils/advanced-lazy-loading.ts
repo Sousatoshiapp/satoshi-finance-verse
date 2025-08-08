@@ -12,6 +12,7 @@ export const LazyRoutes = {
   Duels: lazy(() => import('@/pages/Duels')),
   Leaderboard: lazy(() => import('@/pages/Leaderboard')),
   Social: lazy(() => import('@/pages/Social')),
+  DirectChat: lazy(() => import('@/pages/DirectChat')),
   Settings: lazy(() => import('@/pages/Settings')),
   AdminDashboard: lazy(() => import('@/pages/AdminDashboard')),
   AdminSettings: lazy(() => import('@/pages/AdminSettings')),
