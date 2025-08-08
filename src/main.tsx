@@ -74,16 +74,14 @@ if (!container) throw new Error("Root element not found");
 
 const root = createRoot(container);
 
-// FASE 1.5: Ultra App com todas as otimizações
+// FASE 1.5: Ultra App sem router duplicado (router está no main-ultra.tsx)
 const UltraMainApp = () => (
   <StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={ultraQueryClient}>
-        <UltraPerformanceOptimizer />
-        <UltraApp />
-        <Toaster />
-      </QueryClientProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={ultraQueryClient}>
+      <UltraPerformanceOptimizer />
+      <UltraApp />
+      <Toaster />
+    </QueryClientProvider>
   </StrictMode>
 );
 
