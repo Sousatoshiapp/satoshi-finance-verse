@@ -7196,10 +7196,11 @@ export type Database = {
       calculate_daily_yield: {
         Args: { profile_id: string }
         Returns: {
-          yield_applied: boolean
           yield_amount: number
           new_total: number
+          yield_rate: number
           streak_bonus: number
+          subscription_bonus: number
         }[]
       }
       calculate_invite_priority: {
