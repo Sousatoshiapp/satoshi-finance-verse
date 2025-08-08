@@ -670,7 +670,8 @@ export default function DistrictDetail() {
           </CardContent>
         </Card>
 
-        {/* Crisis Alert Banner */}
+        {/* Crisis Alert Banner - TEMPORARIAMENTE COMENTADO - Performance Fix */}
+        {/*
         {shouldShowBanner && (
           <div className="mb-6">
             <CrisisAlert 
@@ -681,6 +682,7 @@ export default function DistrictDetail() {
             />
           </div>
         )}
+        */}
 
         {/* Crisis Alert for District - Only show when crisis is active */}
         {crisis && <DistrictCrisisCard districtId={districtId || ""} />}

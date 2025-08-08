@@ -11,6 +11,8 @@ import { SubscriptionIndicator } from "@/components/shared/subscription-indicato
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
 import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { useDashboardSuperQuery } from "@/hooks/use-dashboard-super-query";
+import { usePerformanceOptimization } from "@/hooks/use-performance-optimization";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -73,9 +75,14 @@ export default function Dashboard() {
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
-  const { data: dashboardData, isLoading, error } = useDashboardData();
+  // ULTRA PERFORMANCE: Usar super query unificado
+  const { data: superData, isLoading, error } = useDashboardSuperQuery();
   const { points: realtimePoints, isOnline } = useRealtime();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
+  
+  // Fallback para dados antigos se super query falhar
+  const { data: fallbackData } = useDashboardData();
+  const dashboardData = superData || fallbackData;
   
   // Remove logging para melhorar performance
   // console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });
@@ -86,6 +93,12 @@ export default function Dashboard() {
   const handleNavigateToProfile = useCallback(() => navigate('/profile'), [navigate]);
   const handleNavigateToStore = useCallback(() => navigate('/store'), [navigate]);
   const handleNavigateToSubscription = useCallback(() => navigate('/subscription-plans'), [navigate]);
+
+  // ULTRA PERFORMANCE: Ativar otimizações críticas
+  usePerformanceOptimization({
+    enableQueryOptimization: true,
+    enableBundleAnalysis: false, // Desligar em produção
+  });
 
   useEffect(() => {
     // Preload critical resources in background - with throttling
@@ -311,7 +324,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Crisis Alert - Non-invasive placement */}
+          {/* Crisis Alert - TEMPORARIAMENTE COMENTADO - Performance Fix */}
+          {/*
           <CrisisAlert 
             crisis={crisis}
             shouldShowBanner={shouldShowBanner}
@@ -321,6 +335,7 @@ export default function Dashboard() {
             }}
             onContributed={markAsContributed} 
           />
+          */}
 
           {/* Consolidated Avatar & User Info - Horizontal Layout */}
           <div className="flex items-center gap-4 mb-6">

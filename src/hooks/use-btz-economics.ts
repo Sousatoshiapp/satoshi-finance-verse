@@ -80,9 +80,19 @@ export function useBTZEconomics() {
     }
   };
 
-  // Process daily yield and login
+  // Process daily yield and login - COM RATE LIMITING CRÍTICO
   const processYield = async () => {
     if (!user || processingYield) return;
+
+    // RATE LIMITING CRÍTICO: Verificar se já processou hoje
+    const lastProcessedKey = `btز_yield_processed_${user.id}`;
+    const lastProcessed = localStorage.getItem(lastProcessedKey);
+    const today = new Date().toISOString().split('T')[0];
+    
+    if (lastProcessed === today) {
+      console.log('🛑 BTZ Yield já processado hoje, ignorando...');
+      return;
+    }
 
     setProcessingYield(true);
     try {
@@ -133,6 +143,9 @@ export function useBTZEconomics() {
         });
       }
 
+      // Marcar como processado hoje - RATE LIMITING
+      localStorage.setItem(lastProcessedKey, today);
+      
       // Reload analytics after processing
       await loadAnalytics();
 
@@ -148,10 +161,21 @@ export function useBTZEconomics() {
     }
   };
 
-  // Auto-process yield on login
+  // Auto-process yield on login - COM DEBOUNCE 24H
   useEffect(() => {
     if (user && !loading) {
-      processYield();
+      // Debounce adicional: só processar se não processou nas últimas 24h
+      const lastProcessed = localStorage.getItem(`btz_yield_processed_${user.id}`);
+      const now = new Date();
+      const today = now.toISOString().split('T')[0];
+      
+      if (lastProcessed !== today) {
+        const timeoutId = setTimeout(() => {
+          processYield();
+        }, 2000); // 2s delay para evitar múltiplas chamadas
+        
+        return () => clearTimeout(timeoutId);
+      }
     }
   }, [user]);
 
