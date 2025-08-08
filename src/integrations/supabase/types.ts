@@ -3432,6 +3432,8 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean
+          media_url: string | null
+          message_type: string | null
           read_at: string | null
           sender_id: string
         }
@@ -3441,6 +3443,8 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          media_url?: string | null
+          message_type?: string | null
           read_at?: string | null
           sender_id: string
         }
@@ -3450,6 +3454,8 @@ export type Database = {
           created_at?: string
           id?: string
           is_read?: boolean
+          media_url?: string | null
+          message_type?: string | null
           read_at?: string | null
           sender_id?: string
         }
@@ -7435,6 +7441,10 @@ export type Database = {
         Returns: string
       }
       get_dashboard_data_optimized: {
+        Args: { target_user_id: string }
+        Returns: Json
+      }
+      get_dashboard_super_optimized: {
         Args: { target_user_id: string }
         Returns: Json
       }

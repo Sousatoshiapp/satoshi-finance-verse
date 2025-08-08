@@ -191,7 +191,7 @@ export default function UserProfile() {
         conversationId = newConv.id;
       }
 
-      navigate('/social', { state: { openConversation: conversationId } });
+      navigate(`/chat/${conversationId}`);
     } catch (error) {
       console.error('Error starting conversation:', error);
       toast({
