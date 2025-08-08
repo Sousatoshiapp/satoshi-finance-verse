@@ -1,8 +1,10 @@
+// FASE 1: Ultra Vite Config - Configuração extrema de performance
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import viteCompression from 'vite-plugin-compression';
+// import { getViteBundleConfig } from './src/utils/bundle-splitter';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -43,6 +45,10 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "::",
       port: 8080,
+      hmr: {
+        overlay: false // Disable error overlay for better performance
+      },
+      preTransformRequests: false // Improve startup time
     },
   plugins: [
     react(),
@@ -56,153 +62,65 @@ export default defineConfig(({ mode }) => {
     },
   },
   
-  // Extreme Performance Optimizations
+  // ULTRA Performance Build Configuration
   build: {
     target: 'esnext',
     minify: 'esbuild',
     sourcemap: false,
     
+    // Ultra-optimized bundle config inline
     rollupOptions: {
       output: {
         manualChunks: {
-          // Critical vendor chunks
           'vendor-react': ['react', 'react-dom'],
           'vendor-router': ['react-router-dom'],
           'vendor-query': ['@tanstack/react-query'],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          
-          // UI vendor chunks
-          'vendor-ui-core': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-toast'
-          ],
-          'vendor-ui-forms': [
-            '@radix-ui/react-select',
-            '@radix-ui/react-checkbox',
-            '@radix-ui/react-radio-group',
-            '@radix-ui/react-avatar',
-            '@radix-ui/react-progress'
-          ],
-          'vendor-charts': ['recharts'],
-          'vendor-utils': ['date-fns', 'clsx', 'tailwind-merge'],
-          'vendor-icons': ['lucide-react'],
-          
-          // Feature-based chunks (more granular)
-          'chunk-auth': [
-            'src/pages/Auth.tsx',
-            'src/contexts/AuthContext.tsx'
-          ],
-          'dashboard-core': [
-            'src/pages/Dashboard.tsx', 
-            'src/hooks/use-dashboard-data.ts'
-          ],
-          'quiz-system': [
-            'src/components/quiz/quiz-engine.tsx'
-          ],
-          'realtime': [
-            'src/contexts/RealtimeContext.tsx', 
-            'src/hooks/use-realtime-points.ts'
-          ],
-          'chunk-quiz-core': [
-            'src/pages/Quiz.tsx',
-            'src/pages/SoloQuiz.tsx'
-          ],
-          'chunk-quiz-features': [
-            'src/pages/EnhancedQuiz.tsx'
-          ],
-          'chunk-social-core': [
-            'src/pages/Social.tsx'
-          ],
-          'chunk-social-features': [
-            'src/pages/SocialChallenges.tsx'
-          ],
-          'chunk-trading': [
-            'src/pages/SocialTrading.tsx'
-          ],
-          'chunk-admin-core': [
-            'src/pages/AdminDashboard.tsx'
-          ],
-          'chunk-admin-users': [
-            'src/pages/AdminUsers.tsx',
-            'src/pages/AdminUsersAll.tsx',
-            'src/pages/AdminUsersModeration.tsx'
-          ],
-          'chunk-admin-finance': [
-            'src/pages/AdminFinanceBeetz.tsx',
-            'src/pages/AdminFinanceReports.tsx'
-          ],
-          'chunk-leaderboard': [
-            'src/pages/Leaderboard.tsx',
-            'src/components/leaderboards.tsx'
-          ],
-          'chunk-gamification': [
-            'src/pages/Achievements.tsx',
-            'src/pages/Leagues.tsx',
-            'src/pages/Powerups.tsx'
-          ],
-          'chunk-learning': [
-            'src/pages/LearningAnalytics.tsx',
-            'src/pages/LearningPath.tsx'
-          ],
-          'chunk-ai': [
-            'src/pages/AITutor.tsx',
-            'src/pages/AISimulator.tsx'
-          ],
-          'chunk-marketplace': [
-            'src/pages/Marketplace.tsx',
-            'src/pages/Store.tsx',
-            'src/pages/VirtualStore.tsx'
-          ],
-          'chunk-virtual-scrolling': [
-            'src/components/shared/ui/virtual-list.tsx',
-            'src/hooks/use-virtual-list.ts'
-          ],
-          'chunk-image-optimization': [
-            'src/components/shared/ui/optimized-image.tsx'
-          ],
-          'chunk-web-workers': [
-            'src/utils/web-workers.ts'
-          ],
-          'chunk-performance-utils': [
-            'src/utils/bundle-optimizer.ts',
-            'src/utils/redis-cache.ts'
-          ]
-        },
-        
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+          'vendor-supabase': ['@supabase/supabase-js']
+        }
       }
     },
     
-    // Additional optimizations
+    // Extreme optimizations
     cssCodeSplit: true,
-    assetsInlineLimit: 4096, // Inline assets < 4kb
-    reportCompressedSize: false, // Faster builds
+    assetsInlineLimit: 2048, // Inline smaller assets
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 500, // Smaller chunks
     
-    // Chunk size warnings
-    chunkSizeWarningLimit: 1000
+    // Aggressive minification
+    cssMinify: 'esbuild',
+    modulePreload: {
+      polyfill: false // Remove for better performance
+    }
   },
   
-  // Development optimizations
+  // ULTRA Development optimizations
   optimizeDeps: {
     include: [
       'react',
       'react-dom',
       'react-router-dom',
       '@tanstack/react-query',
-      '@supabase/supabase-js'
+      '@supabase/supabase-js',
+      'lucide-react',
+      'framer-motion'
     ],
     exclude: [
       'src/components/admin',
-      'src/pages/AdminDashboard.tsx'
-    ]
+      'src/pages/Admin*',
+      'src/utils/web-workers'
+    ],
+    // Aggressive pre-bundling
+    force: true
   },
   
-  // CSS optimizations
+  // ULTRA CSS optimizations
   css: {
-    devSourcemap: false
+    devSourcemap: false,
+    preprocessorOptions: {
+      scss: {
+        charset: false
+      }
+    }
   }
   };
 });

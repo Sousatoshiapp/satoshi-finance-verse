@@ -1,15 +1,7 @@
+// FASE 2: ULTRA APP - Contextos otimizados e lazy loading inteligente
 import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { RealtimeProvider } from "@/contexts/RealtimeContext";
-import { SponsorThemeProvider } from "@/contexts/SponsorThemeProvider";
-import { LoadingProvider } from "@/contexts/LoadingContext";
-import { I18nProvider } from "@/contexts/I18nProvider";
-import { PointsProvider } from "@/contexts/PointsContext";
-import { NotificationProvider } from "@/contexts/NotificationContext";
-import { OnlineStatusProvider } from "@/contexts/OnlineStatusContext";
-import { GlobalDuelInviteProvider } from "@/contexts/GlobalDuelInviteContext";
-import { AvatarProvider } from "@/contexts/AvatarContext";
+import { UltraContextProvider } from "@/contexts/UltraContextProvider";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { generateRoutes } from "@/components/shared/RouteGenerator";
 import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
@@ -42,30 +34,22 @@ function AppContent() {
   );
 }
 
+// FASE 2.1: Ultra App com Context Provider consolidado
 function App() {
+  // Performance mark para App
+  React.useEffect(() => {
+    performance.mark('ultra-app-context-start');
+    return () => {
+      performance.mark('ultra-app-context-end');
+      performance.measure('ultra-app-context', 'ultra-app-context-start', 'ultra-app-context-end');
+    };
+  }, []);
+
   return (
     <GlobalErrorBoundary>
-      <I18nProvider>
-        <LoadingProvider>
-          <AuthProvider>
-            <PointsProvider>
-              <NotificationProvider>
-                <OnlineStatusProvider>
-                  <RealtimeProvider>
-                    <GlobalDuelInviteProvider>
-                      <AvatarProvider>
-                        <SponsorThemeProvider>
-                          <AppContent />
-                        </SponsorThemeProvider>
-                      </AvatarProvider>
-                    </GlobalDuelInviteProvider>
-                  </RealtimeProvider>
-                </OnlineStatusProvider>
-              </NotificationProvider>
-            </PointsProvider>
-          </AuthProvider>
-        </LoadingProvider>
-      </I18nProvider>
+      <UltraContextProvider>
+        <AppContent />
+      </UltraContextProvider>
     </GlobalErrorBoundary>
   );
 }
