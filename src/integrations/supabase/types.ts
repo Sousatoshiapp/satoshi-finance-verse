@@ -7198,7 +7198,7 @@ export type Database = {
         Returns: {
           yield_amount: number
           new_total: number
-          yield_rate: number
+          applied_rate: number
           streak_bonus: number
           subscription_bonus: number
         }[]

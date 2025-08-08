@@ -77,7 +77,8 @@ export default function Dashboard() {
   const { points: realtimePoints, isOnline } = useRealtime();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
   
-  console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });
+  // Remove logging para melhorar performance
+  // console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });
 
   // Memoize navigation handlers
   const handleNavigateToLevels = useCallback(() => navigate('/levels'), [navigate]);
@@ -137,22 +138,18 @@ export default function Dashboard() {
 
   // Show avatar selection for new users without avatar
   useEffect(() => {
-    console.log('🔍 Dashboard Avatar Data:', {
-      profile_image_url: dashboardData?.profile?.profile_image_url,
-      current_avatar_id: dashboardData?.profile?.current_avatar_id,
-      userAvatar: dashboardData?.avatar,
-      fullProfile: dashboardData?.profile
-    });
+    // Remove logging para melhorar performance
+    // console.log('🔍 Dashboard Avatar Data:', { ... });
     
     // Only show avatar selection if user has no avatar AND no profile image
     if (dashboardData && dashboardData.profile && 
         !dashboardData.profile.current_avatar_id && 
         !dashboardData.profile.profile_image_url && 
         !dashboardData.avatar) {
-      console.log('📱 Opening avatar selection modal - no avatar found');
+      // console.log('📱 Opening avatar selection modal - no avatar found');
       setShowAvatarSelection(true);
     } else if (dashboardData) {
-      console.log('✅ User has avatar, closing modal if open');
+      // console.log('✅ User has avatar, closing modal if open');
       setShowAvatarSelection(false);
     }
   }, [dashboardData]);
@@ -192,7 +189,7 @@ export default function Dashboard() {
 
   // Memoize avatar selection handler
   const handleAvatarSelected = useCallback(() => {
-    console.log('🎯 Avatar selected - closing modal and invalidating caches');
+    // console.log('🎯 Avatar selected - closing modal and invalidating caches');
     
     // Close the modal immediately
     setShowAvatarSelection(false);
@@ -216,10 +213,11 @@ export default function Dashboard() {
 
   // Memoize user stats calculation
   const userStats = useMemo(() => {
-    console.log('🔍 Dashboard Data RAW:', dashboardData);
+    // Remove logging para melhorar performance
+    // console.log('🔍 Dashboard Data RAW:', dashboardData);
     
     if (!dashboardData) {
-      console.log('🔍 No dashboard data, returning defaults');
+      // console.log('🔍 No dashboard data, returning defaults');
       return {
         level: 1,
         currentXP: 0,
@@ -235,18 +233,8 @@ export default function Dashboard() {
     const nextLevelXP = dashboardData.nextLevelXP || 100;
     const currentLevelXP = getCurrentLevelXP(currentLevel);
     
-    console.log('🔍 XP CALCULATION DEBUG:', {
-      currentLevel,
-      currentXP,
-      nextLevelXP,
-      currentLevelXP,
-      xpInCurrentLevel: currentXP - currentLevelXP,
-      xpNeededForLevel: nextLevelXP - currentLevelXP,
-      xpRemaining: nextLevelXP - currentXP,
-      progressPercentage: ((currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100,
-      dashboardDataProfile: dashboardData.profile,
-      dashboardDataNextLevelXP: dashboardData.nextLevelXP
-    });
+    // Remove debug logging para melhorar performance
+    // console.log('🔍 XP CALCULATION DEBUG:', { ... });
     
     return {
       level: currentLevel,
@@ -305,7 +293,7 @@ export default function Dashboard() {
               <LanguageSwitch />
               {shouldShowIcon && (
                 <CrisisIcon onClick={() => {
-                  console.log('CrisisIcon clicked, calling openBanner');
+                  // console.log('CrisisIcon clicked, calling openBanner');
                   openBanner();
                 }} />
               )}
@@ -328,9 +316,9 @@ export default function Dashboard() {
             crisis={crisis}
             shouldShowBanner={shouldShowBanner}
             onDismiss={() => {
-              console.log('CrisisAlert dismiss button clicked');
+              // console.log('CrisisAlert dismiss button clicked');
               dismissBanner();
-            }} 
+            }}
             onContributed={markAsContributed} 
           />
 
@@ -340,15 +328,7 @@ export default function Dashboard() {
             <div className="relative flex-shrink-0">
               {userAvatar ? (
                 <div className="relative">
-                  {(() => {
-                    console.log('🔍 Dashboard Avatar Data:', {
-                      profile_image_url: dashboardData?.profile?.profile_image_url,
-                      current_avatar_id: dashboardData?.profile?.current_avatar_id,
-                      userAvatar: userAvatar,
-                      fullProfile: dashboardData?.profile
-                    });
-                    return null;
-                  })()}
+                  {/* Remove debug console logs para melhorar performance */}
                   <AvatarDisplayUniversal
                     avatarData={{
                       profile_image_url: dashboardData?.profile?.profile_image_url,
