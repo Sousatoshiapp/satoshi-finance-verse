@@ -47,7 +47,7 @@ const getGreeting = (t: any) => {
 const getCurrentLevelXP = (level: number) => {
   if (level === 1) return 0;
   
-  // XP requirements by level
+  // XP requirements by level (XP needed to REACH each level)
   const xpTable: { [key: number]: number } = {
     1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
     6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
@@ -197,10 +197,27 @@ export default function Dashboard() {
       };
     }
     
+    const currentLevel = dashboardData.profile?.level || 1;
+    const currentXP = dashboardData.profile?.xp || 0;
+    const nextLevelXP = dashboardData.nextLevelXP || 100;
+    const currentLevelXP = getCurrentLevelXP(currentLevel);
+    
+    // Debug logs
+    console.log('🔍 XP Debug Info:', {
+      currentLevel,
+      currentXP,
+      nextLevelXP,
+      currentLevelXP,
+      xpInCurrentLevel: currentXP - currentLevelXP,
+      xpNeededForLevel: nextLevelXP - currentLevelXP,
+      xpRemaining: nextLevelXP - currentXP,
+      progressPercentage: ((currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100
+    });
+    
     return {
-      level: dashboardData.profile?.level || 1,
-      currentXP: dashboardData.profile?.xp || 0,
-      nextLevelXP: dashboardData.nextLevelXP || 100,
+      level: currentLevel,
+      currentXP,
+      nextLevelXP,
       streak: dashboardData.profile?.streak || 0,
       completedLessons: dashboardData.completedQuizzes || 0, // Use real quiz data
       points: realtimePoints || dashboardData.profile?.points || 0

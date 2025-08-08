@@ -20,7 +20,7 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
   const getCurrentLevelXP = (level: number) => {
     if (level === 1) return 0;
     
-    // XP requirements by level
+    // XP requirements by level (XP needed to REACH each level)
     const xpTable: { [key: number]: number } = {
       1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
       6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
@@ -37,6 +37,20 @@ export function XPCard({ currentXP, nextLevelXP, level, className }: XPCardProps
   const xpInCurrentLevel = currentXP - currentLevelXP;
   const xpNeededForLevel = nextLevelXP - currentLevelXP;
   const xpRemaining = nextLevelXP - currentXP;
+  
+  // Debug logs for XPCard
+  console.log('🔍 XPCard Debug:', {
+    level,
+    currentXP,
+    nextLevelXP,
+    currentLevelXP,
+    xpInCurrentLevel,
+    xpNeededForLevel,
+    xpRemaining,
+    progressValue: Math.max(0, xpInCurrentLevel),
+    progressMax: Math.max(1, xpNeededForLevel),
+    progressPercentage: (Math.max(0, xpInCurrentLevel) / Math.max(1, xpNeededForLevel)) * 100
+  });
   
   return (
     <div className={cn(
