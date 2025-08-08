@@ -37,12 +37,12 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
   const queryClient = useQueryClient();
 
   const debouncedInvalidate = useCallback(
-    debounce(() => {
-      queryClient.invalidateQueries({ queryKey: ['dashboard-data'], exact: true });
-      queryClient.invalidateQueries({ queryKey: ['user-profile'], exact: true });
-      queryClient.invalidateQueries({ queryKey: ['leaderboard-data'], exact: true });
-      queryClient.invalidateQueries({ queryKey: ['store-data'], exact: true });
-    }, 500),
+    debounce((userId: string) => {
+      // Selective invalidation based on user context
+      queryClient.invalidateQueries({ queryKey: ['dashboard-data', userId] });
+      queryClient.invalidateQueries({ queryKey: ['user-profile', userId] });
+      queryClient.invalidateQueries({ queryKey: ['leaderboard'], refetchType: 'active' });
+    }, 300), // Reduced debounce time for faster updates
     [queryClient]
   );
 
@@ -89,7 +89,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
             setPoints(newPoints);
             setLastUpdate(new Date());
             
-            debouncedInvalidate();
+            debouncedInvalidate(user.id);
             
             // Show visual feedback for large point changes
             if (Math.abs(newPoints - points) >= 100) {
@@ -106,7 +106,7 @@ export function RealtimeProvider({ children }: RealtimeProviderProps) {
       supabase.removeChannel(channel);
       setIsOnline(false);
     };
-  }, [user, queryClient, points]);
+  }, [user, queryClient]);
 
   return (
     <RealtimeContext.Provider value={{ points, isOnline, lastUpdate }}>

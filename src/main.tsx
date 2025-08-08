@@ -12,11 +12,11 @@ import "./i18n";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 2 * 60 * 1000, // Reduzir para 2 minutos
-      gcTime: 5 * 60 * 1000,    // Reduzir para 5 minutos
+      staleTime: 30 * 1000,      // 30 segundos para dados críticos
+      gcTime: 3 * 60 * 1000,     // 3 minutos para garbage collection
       refetchOnWindowFocus: false,
-      refetchOnMount: false,     // Evitar refetch desnecessário
-      retry: 1,                  // Reduzir tentativas
+      refetchOnMount: false,
+      retry: 1,
       refetchOnReconnect: true,
     },
     mutations: {
