@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { useBTZRanking } from "@/hooks/use-btz-ranking";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { useI18n } from "@/hooks/use-i18n";
+import { getAvatarImage } from '@/utils/avatar-images';
+import { resolveAvatarImage } from '@/lib/avatar-utils';
 
 const CompactLeaderboard = memo(function CompactLeaderboard() {
   const navigate = useNavigate();
@@ -108,9 +110,20 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
         {(topUsers || []).slice(0, 3).map((user) => {
           const rankStyles = getRankStyles(user.rank);
           
-          // Get avatar URL for background
-          const avatarUrl = user.profileImageUrl || 
-            (user.avatar_url ? user.avatar_url : '/avatars/the-satoshi.jpg');
+          // Resolve avatar using the avatar system
+          const avatarData = {
+            profile_image_url: user.profileImageUrl,
+            current_avatar_id: user.current_avatar_id,
+            avatars: user.avatar_url ? { 
+              name: user.avatarName || '', 
+              image_url: user.avatar_url 
+            } : null
+          };
+          
+          const resolvedAvatar = resolveAvatarImage(avatarData, user.username);
+          const avatarUrl = resolvedAvatar.source === 'avatar' || resolvedAvatar.source === 'default' 
+            ? getAvatarImage(resolvedAvatar.imageUrl) 
+            : resolvedAvatar.imageUrl;
           
           return (
             <Card 

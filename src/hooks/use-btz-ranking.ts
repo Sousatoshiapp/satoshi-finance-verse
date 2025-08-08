@@ -40,7 +40,7 @@ const fetchBTZRanking = async (): Promise<BTZUser[]> => {
 
     return (topUsers || []).map((profile, index) => ({
       id: profile.id,
-      username: profile.nickname,
+      username: profile.nickname, // Este campo continuará sendo username para compatibilidade
       avatar_url: (profile.avatars as any)?.image_url,
       avatarName: (profile.avatars as any)?.name,
       profileImageUrl: profile.profile_image_url,
