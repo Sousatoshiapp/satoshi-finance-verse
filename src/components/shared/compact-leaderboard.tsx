@@ -140,7 +140,7 @@ const CompactLeaderboard = memo(function CompactLeaderboard() {
               onClick={() => handleUserClick(user.id)}
             >
               {/* Dark overlay for text readability */}
-              <div className="absolute inset-0 bg-black/80" />
+              <div className="absolute inset-0 bg-black/20" />
               
               {/* Content overlay */}
               <div className="relative h-full p-3 flex flex-col justify-between">
