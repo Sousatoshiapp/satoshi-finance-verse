@@ -20,38 +20,52 @@ interface UltraDashboardData {
   btzYield: number;
 }
 
-// Query ultra-otimizada sem fallbacks complexos
+// Query ultra-otimizada com melhor tratamento de erro e debug
 const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardData | null> => {
+  console.log('🔍 Dashboard Query iniciada para userId:', userId);
+  
   // Tentar localStorage cache primeiro (backup instantâneo)
   const cacheKey = `ultra-dashboard-${userId}`;
   const cached = localStorage.getItem(cacheKey);
   
   try {
-    // Usar APENAS a função RPC otimizada
+    // Usar APENAS a função RPC otimizada (CORRIGIDA)
+    console.log('🚀 Executando RPC get_dashboard_data_optimized...');
+    
     const { data: superData, error } = await supabase
       .rpc('get_dashboard_data_optimized', { target_user_id: userId });
 
     if (error) {
-      console.error('Dashboard RPC Error:', error);
+      console.error('❌ Dashboard RPC Error:', error);
+      console.error('Detalhes do erro:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
       // Não lançar erro, continuar para fallback
     } else if (superData) {
+      console.log('✅ RPC retornou dados:', superData);
+      
       const parsed = superData as any;
       const result = {
         profile: parsed.profile,
         avatar: parsed.avatar,
         district: parsed.district,
         team: parsed.team,
-        points: parsed.profile?.points || 0,
-        xp: parsed.profile?.xp || 0,
-        level: parsed.profile?.level || 1,
+        points: parsed.points || parsed.profile?.points || 0,
+        xp: parsed.xp || parsed.profile?.xp || 0,
+        level: parsed.level || parsed.profile?.level || 1,
         nextLevelXP: parsed.nextLevelXP || 100,
-        streak: parsed.profile?.streak || 0,
+        streak: parsed.streak || parsed.profile?.streak || 0,
         completedQuizzes: parsed.completedQuizzes || 0,
-        dailyMissions: [],
-        leaderboard: [],
-        subscription: { tier: 'free' },
-        btzYield: 0,
+        dailyMissions: parsed.dailyMissions || [],
+        leaderboard: parsed.leaderboard || [],
+        subscription: parsed.subscription || { tier: 'free' },
+        btzYield: parsed.btzYield || 0,
       };
+      
+      console.log('✅ Dados processados com sucesso:', result);
       
       // Cache no localStorage para próxima visita
       localStorage.setItem(cacheKey, JSON.stringify({
@@ -60,9 +74,11 @@ const fetchUltraDashboardData = async (userId: string): Promise<UltraDashboardDa
       }));
       
       return result;
+    } else {
+      console.warn('⚠️ RPC retornou null/undefined, usando fallback');
     }
   } catch (error) {
-    console.error('RPC query exception:', error);
+    console.error('💥 RPC query exception:', error);
   }
 
   // Se falhou, usar cache do localStorage se disponível e não muito antigo
