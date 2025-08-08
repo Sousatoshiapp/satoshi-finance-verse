@@ -23,57 +23,57 @@ interface DashboardSuperData {
 // Ultra-optimized single query that fetches EVERYTHING
 const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperData | null> => {
   try {
-    // Try optimized RPC first (will be created)
+    // Use our new super optimized RPC function
     const { data: superData, error } = await supabase
-      .rpc('get_dashboard_data_optimized', { target_user_id: userId });
+      .rpc('get_dashboard_super_optimized', { target_user_id: userId });
 
     if (superData && !error) {
-      // Transform optimized data to super data format
-      const parsed = superData as any;
+      // Transform the JSONB response to our interface
+      const data = superData as any; // Type assertion for JSONB response
       return {
-        profile: parsed.profile,
-        avatar: parsed.avatar,
-        district: parsed.district,
-        team: parsed.team,
-        points: parsed.profile?.points || 0,
-        xp: parsed.profile?.xp || 0,
-        level: parsed.profile?.level || 1,
-        nextLevelXP: parsed.nextLevelXP || 100,
-        streak: parsed.profile?.streak || 0,
-        completedQuizzes: parsed.completedQuizzes || 0,
-        dailyMissions: [],
-        leaderboard: [],
-        subscription: { tier: 'free' },
-        btzYield: 0,
+        profile: data.profile,
+        avatar: data.avatar,
+        district: data.district,
+        team: data.team,
+        points: data.points || 0,
+        xp: data.xp || 0,
+        level: data.level || 1,
+        nextLevelXP: data.nextLevelXP || 100,
+        streak: data.streak || 0,
+        completedQuizzes: data.completedQuizzes || 0,
+        dailyMissions: data.dailyMissions || [],
+        leaderboard: data.leaderboard || [],
+        subscription: data.subscription || { tier: 'free' },
+        btzYield: data.btzYield || 0,
       };
     }
   } catch (error) {
     console.error('Super query failed, using minimal fallback:', error);
-    
-    // Minimal fallback - only profile
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
-
-    return {
-      profile,
-      avatar: null,
-      district: null,
-      team: null,
-      points: profile?.points || 0,
-      xp: profile?.xp || 0,
-      level: profile?.level || 1,
-      nextLevelXP: 100,
-      streak: profile?.streak || 0,
-      completedQuizzes: 0,
-      dailyMissions: [],
-      leaderboard: [],
-      subscription: { tier: 'free' },
-      btzYield: 0,
-    };
   }
+  
+  // Minimal fallback - only profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  return {
+    profile,
+    avatar: null,
+    district: null,
+    team: null,
+    points: profile?.points || 0,
+    xp: profile?.xp || 0,
+    level: profile?.level || 1,
+    nextLevelXP: 100,
+    streak: profile?.streak || 0,
+    completedQuizzes: 0,
+    dailyMissions: [],
+    leaderboard: [],
+    subscription: { tier: 'free' },
+    btzYield: 0,
+  };
 };
 
 export const useDashboardSuperQuery = () => {
