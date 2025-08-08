@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLevelSync } from "./use-level-sync";
 
 export interface DashboardData {
   profile: any;
@@ -121,6 +122,9 @@ export const useDashboardData = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   
+  // Enable level sync for automatic corrections
+  useLevelSync();
+  
   // Set up realtime subscription for profile and quiz updates
   useEffect(() => {
     if (!user) return;
@@ -130,33 +134,30 @@ export const useDashboardData = () => {
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: 'UPDATE', 
           schema: 'public',
           table: 'profiles',
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
           console.log('Profile updated, invalidating dashboard cache:', payload);
-          // Invalidate dashboard data when profile is updated
+          // Immediately invalidate and refetch for level changes
           queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
-          
-          // Force refresh after profile image changes with small delay
-          setTimeout(() => {
-            queryClient.refetchQueries({ queryKey: ['dashboard-data'] });
-          }, 500);
+          queryClient.refetchQueries({ queryKey: ['dashboard-data'] });
         }
       )
       .on(
         'postgres_changes',
         {
           event: 'INSERT',
-          schema: 'public',
+          schema: 'public', 
           table: 'quiz_sessions',
           filter: `user_id=eq.${user.id}`,
         },
         () => {
           // Invalidate dashboard data when new quiz is completed
           queryClient.invalidateQueries({ queryKey: ['dashboard-data'] });
+          queryClient.refetchQueries({ queryKey: ['dashboard-data'] });
         }
       )
       .subscribe();
@@ -182,9 +183,10 @@ export const useDashboardData = () => {
   return useQuery({
     queryKey: ['dashboard-data'],
     queryFn: fetchDashboardDataOptimized,
-    staleTime: 1 * 60 * 1000, // Reduced to 1 minute for faster avatar updates
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    refetchOnWindowFocus: false,
+    staleTime: 0, // Force fresh data on every fetch to prevent cache issues
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: true, // Refresh when user returns to tab
+    refetchOnMount: true, // Always refresh on component mount
     retry: 2,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });

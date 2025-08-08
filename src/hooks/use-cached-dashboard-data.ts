@@ -22,10 +22,10 @@ export const useCachedDashboardData = (userId: string) => {
 
       return data;
     },
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    gcTime: 5 * 60 * 1000,    // 5 minutes
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    staleTime: 0, // Force fresh data to prevent cache issues
+    gcTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnWindowFocus: true, // Refresh when user returns to tab
+    refetchOnMount: true, // Always refresh on mount
     retry: 1,
   });
 };
