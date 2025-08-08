@@ -22,10 +22,10 @@ export const useCachedDashboardData = (userId: string) => {
 
       return data;
     },
-    staleTime: 0, // Force fresh data to prevent cache issues
-    gcTime: 2 * 60 * 1000, // 2 minutes
-    refetchOnWindowFocus: true, // Refresh when user returns to tab
-    refetchOnMount: true, // Always refresh on mount
+    staleTime: 5 * 60 * 1000, // FASE 1: Cache agressivo de 5 minutos
+    gcTime: 15 * 60 * 1000, // 15 minutos retenção
+    refetchOnWindowFocus: false, // Sem refetch automático
+    refetchOnMount: false, // Só se stale
     retry: 1,
   });
 };

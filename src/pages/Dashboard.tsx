@@ -10,7 +10,7 @@ import { SubscriptionIndicator } from "@/components/shared/subscription-indicato
 // Removed direct import - now using LazyDailyMissions
 import { useSubscription } from "@/hooks/use-subscription";
 import { useDailyMissions } from "@/hooks/use-daily-missions";
-import { useDashboardData } from "@/hooks/use-dashboard-data";
+import { useUltraDashboardQuery } from "@/hooks/use-ultra-dashboard-query";
 import { useDashboardSuperQuery } from "@/hooks/use-dashboard-super-query";
 import { usePerformanceOptimization } from "@/hooks/use-performance-optimization";
 import { useNavigate } from "react-router-dom";
@@ -83,9 +83,9 @@ export default function Dashboard() {
   const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
   
-  // Fallback para dados antigos se super query falhar
-  const { data: fallbackData } = useDashboardData();
-  const dashboardData = superData || fallbackData;
+  // FASE 1: Usar ultra query otimizada
+  const { data: ultraData, isLoading: ultraLoading, error: ultraError } = useUltraDashboardQuery();
+  const dashboardData = ultraData || superData;
   
   // Remove logging para melhorar performance
   // console.log('Dashboard crisis state:', { shouldShowBanner, shouldShowIcon, crisis: !!crisis });

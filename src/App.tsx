@@ -1,7 +1,7 @@
 // FASE 2: ULTRA APP - Contextos otimizados e lazy loading inteligente
 import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import { UltraContextProvider } from "@/contexts/UltraContextProvider";
+import { UltraCriticalProvider } from "@/contexts/UltraCriticalProvider";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { generateRoutes } from "@/components/shared/RouteGenerator";
 import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
@@ -22,8 +22,8 @@ function NotFoundPage() {
 
 function AppContent() {
   return (
-    <div className="min-h-screen bg-background font-sans antialiased">
-      <Suspense fallback={<LoadingSpinner />}>
+    <div className="ultra-layout">
+      <Suspense fallback={<div className="ultra-loading"><div className="ultra-spinner" /></div>}>
         <Routes>
           {generateRoutes()}
           <Route path="*" element={<NotFoundPage />} />
@@ -47,9 +47,9 @@ function App() {
 
   return (
     <GlobalErrorBoundary>
-      <UltraContextProvider>
+      <UltraCriticalProvider>
         <AppContent />
-      </UltraContextProvider>
+      </UltraCriticalProvider>
     </GlobalErrorBoundary>
   );
 }
