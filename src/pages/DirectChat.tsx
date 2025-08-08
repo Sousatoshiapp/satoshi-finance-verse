@@ -105,7 +105,7 @@ export default function DirectChat() {
 
       // Load messages
       const { data: messagesData, error: messagesError } = await supabase
-        .from('messages')
+        .from('direct_messages')
         .select('*')
         .eq('conversation_id', conversationId)
         .order('created_at', { ascending: true })
@@ -130,7 +130,7 @@ export default function DirectChat() {
 
       if (unreadMessages && unreadMessages.length > 0) {
         await supabase
-          .from('messages')
+          .from('direct_messages')
           .update({ is_read: true })
           .in('id', unreadMessages.map(msg => msg.id));
       }
@@ -157,7 +157,7 @@ export default function DirectChat() {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'messages',
+          table: 'direct_messages',
           filter: `conversation_id=eq.${conversationId}`
         },
         (payload) => {
@@ -167,7 +167,7 @@ export default function DirectChat() {
           // Mark as read if not sent by current user
           if (newMessage.sender_id !== profile?.id) {
             supabase
-              .from('messages')
+              .from('direct_messages')
               .update({ is_read: true })
               .eq('id', newMessage.id)
               .then(() => {
@@ -190,7 +190,7 @@ export default function DirectChat() {
 
     try {
       const { error } = await supabase
-        .from('messages')
+        .from('direct_messages')
         .insert({
           conversation_id: conversationId,
           sender_id: profile.id,

@@ -315,10 +315,12 @@ export default function UserProfile() {
                     variant="ghost"
                     showCount
                   />
-                  <Button onClick={() => handleStartConversation(user.id)}>
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Mensagem
-                  </Button>
+                   {userId !== user.id && (
+                     <Button onClick={() => handleStartConversation(user.id)}>
+                       <MessageCircle className="h-4 w-4 mr-2" />
+                       Mensagem
+                     </Button>
+                   )}
                 </div>
               </div>
             </div>
