@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useMemo } from 'react';
+import { AVATAR_QUERY_FRAGMENT } from '@/lib/avatar-utils';
 
 export interface FastLeaderboardUser {
   id: string;
@@ -11,6 +12,10 @@ export interface FastLeaderboardUser {
   points: number;
   profile_image_url?: string;
   current_avatar_id?: string | null;
+  avatars?: {
+    name: string;
+    image_url: string;
+  } | null;
   rank: number;
 }
 
@@ -25,8 +30,7 @@ const fetchAllLeaderboardData = async (limit: number = 50) => {
       xp, 
       streak, 
       points, 
-      profile_image_url,
-      current_avatar_id
+      ${AVATAR_QUERY_FRAGMENT}
     `)
     .eq('is_bot', false)
     .order('xp', { ascending: false })
