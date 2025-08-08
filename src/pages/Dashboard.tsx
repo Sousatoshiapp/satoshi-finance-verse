@@ -343,55 +343,32 @@ export default function Dashboard() {
           <div className="flex items-center gap-4 mb-6">
             {/* Avatar with badges on the left */}
             <div className="relative flex-shrink-0">
-              {userAvatar ? (
-                <div className="relative">
-                  {/* Remove debug console logs para melhorar performance */}
-                  <AvatarDisplayUniversal
-                    avatarData={{
-                      profile_image_url: dashboardData?.profile?.profile_image_url,
-                      current_avatar_id: dashboardData?.profile?.current_avatar_id,
-                      avatars: userAvatar
-                    }}
-                    nickname={dashboardData?.profile?.nickname || 'User'}
-                    size="lg"
-                    className="cursor-pointer hover:scale-105 transition-transform duration-200"
-                    onClick={handleNavigateToProfile}
-                  />
-                  {/* Botão + Discreto (smaller) */}
-                  <div className="absolute top-0 left-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNavigateToStore();
-                      }}
-                      className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-5 h-5 rounded-full text-xs font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div 
-                  className="relative cursor-pointer hover:scale-105 transition-transform duration-200"
+              <div className="relative">
+                {/* Always render AvatarDisplayUniversal with all available data */}
+                <AvatarDisplayUniversal
+                  avatarData={{
+                    profile_image_url: dashboardData?.profile?.profile_image_url,
+                    current_avatar_id: dashboardData?.profile?.current_avatar_id,
+                    avatars: userAvatar
+                  }}
+                  nickname={dashboardData?.profile?.nickname || 'User'}
+                  size="lg"
+                  className="cursor-pointer hover:scale-105 transition-transform duration-200"
                   onClick={handleNavigateToProfile}
-                >
-                  <div className="w-16 h-16 bg-gradient-to-b from-muted to-card rounded-full flex items-center justify-center overflow-hidden shadow-elevated">
-                    <div className="text-2xl">🤖</div>
-                  </div>
-                  {/* Botão + Discreto (smaller) */}
-                  <div className="absolute top-0 left-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleNavigateToStore();
-                      }}
-                      className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-5 h-5 rounded-full text-xs font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
-                    >
-                      +
-                    </button>
-                  </div>
+                />
+                {/* Botão + Discreto (smaller) */}
+                <div className="absolute top-0 left-0">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNavigateToStore();
+                    }}
+                    className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-5 h-5 rounded-full text-xs font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
+                  >
+                    +
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
             
             {/* User information on the right */}

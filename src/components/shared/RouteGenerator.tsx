@@ -4,17 +4,17 @@ import { Route } from 'react-router-dom';
 import { LazyRoutes } from '@/utils/advanced-lazy-loading';
 import { UltraRouteWrapper } from './UltraRouteWrapper';
 import { routeConfig, RouteConfig } from '@/routes';
-import { ultraRoutePreloader } from '@/utils/ultra-route-preloader';
+// import { ultraRoutePreloader } from '@/utils/ultra-route-preloader';
 
 // Critical imports - apenas para rotas que precisam ser imediatas
 import TranslationTestPage from '@/pages/TranslationTest';
 
 // FASE 2.1: Ultra route generation com preload automático
 export function generateRoutes() {
-  // FASE 2.2: Warmup crítico no boot
-  React.useEffect(() => {
-    ultraRoutePreloader.warmupCriticalRoutes();
-  }, []);
+  // FASE 2.2: Warmup crítico no boot - disabled
+  // React.useEffect(() => {
+  //   ultraRoutePreloader.warmupCriticalRoutes();
+  // }, []);
 
   const routes = routeConfig.map((route: RouteConfig) => {
     // FASE 2.3: Lazy loading otimizado com preload

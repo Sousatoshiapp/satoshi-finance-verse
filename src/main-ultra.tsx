@@ -4,14 +4,14 @@ import { createRoot } from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { createUltraQueryClient, preloadCriticalAssets, monitorUltraPerformance } from "@/utils/ultra-performance";
-import { initUltraQueryOptimizer } from "@/utils/ultra-query-optimizer";
+// import { initUltraQueryOptimizer } from "@/utils/ultra-query-optimizer";
 import { Toaster } from "@/components/shared/ui/toaster";
 import App from "./App";
 import "./index.css";
 
 // Ultra QueryClient com optimizer
 const ultraQueryClient = createUltraQueryClient();
-const queryOptimizer = initUltraQueryOptimizer(ultraQueryClient);
+// const queryOptimizer = initUltraQueryOptimizer(ultraQueryClient);
 
 // Critical assets preload
 preloadCriticalAssets();
@@ -36,10 +36,10 @@ performance.mark('ultra-app-start');
 
 // Ultra App Component com query optimizer
 const UltraApp = () => {
-  // Initialize critical prefetching
-  useEffect(() => {
-    queryOptimizer.prefetchForRoute('dashboard');
-  }, []);
+  // Initialize critical prefetching - disabled
+  // useEffect(() => {
+  //   queryOptimizer.prefetchForRoute('dashboard');
+  // }, []);
 
   return (
     <StrictMode>

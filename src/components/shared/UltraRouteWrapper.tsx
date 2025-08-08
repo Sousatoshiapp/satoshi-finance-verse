@@ -3,7 +3,7 @@ import React, { memo, Suspense, useEffect } from 'react';
 import { RouteWrapper } from './RouteWrapper';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 import { Skeleton } from '@/components/shared/ui/skeleton';
-import { useUltraRoutePreloader } from '@/utils/ultra-route-preloader';
+// import { useUltraRoutePreloader } from '@/utils/ultra-route-preloader';
 import { useLocation } from 'react-router-dom';
 
 // FASE 2.1: Skeleton universal para todas as telas
@@ -80,7 +80,7 @@ export const UltraRouteWrapper = memo(({
   routeType = 'default'
 }: UltraRouteWrapperProps) => {
   const location = useLocation();
-  const { preloadPredictive } = useUltraRoutePreloader(location.pathname);
+  // const { preloadPredictive } = useUltraRoutePreloader(location.pathname);
   
   // FASE 2.4: Performance tracking por rota
   useEffect(() => {

@@ -50,16 +50,24 @@ const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperD
     console.warn('Super query failed, using minimal fallback:', error);
   }
   
-  // Minimal fallback - only profile
+  // Minimal fallback - fetch profile with avatar data
   const { data: profile } = await supabase
     .from('profiles')
-    .select('*')
+    .select(`
+      *,
+      current_avatar_id,
+      profile_image_url,
+      avatars!current_avatar_id (
+        name,
+        image_url
+      )
+    `)
     .eq('user_id', userId)
     .single();
 
   return {
     profile,
-    avatar: null,
+    avatar: profile?.avatars || null,
     district: null,
     team: null,
     points: profile?.points || 0,
