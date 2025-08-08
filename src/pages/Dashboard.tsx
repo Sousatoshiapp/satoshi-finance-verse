@@ -134,8 +134,23 @@ export default function Dashboard() {
 
   // Show avatar selection for new users without avatar
   useEffect(() => {
-    if (dashboardData && !dashboardData.avatar) {
+    console.log('🔍 Dashboard Avatar Data:', {
+      profile_image_url: dashboardData?.profile?.profile_image_url,
+      current_avatar_id: dashboardData?.profile?.current_avatar_id,
+      userAvatar: dashboardData?.avatar,
+      fullProfile: dashboardData?.profile
+    });
+    
+    // Only show avatar selection if user has no avatar AND no profile image
+    if (dashboardData && dashboardData.profile && 
+        !dashboardData.profile.current_avatar_id && 
+        !dashboardData.profile.profile_image_url && 
+        !dashboardData.avatar) {
+      console.log('📱 Opening avatar selection modal - no avatar found');
       setShowAvatarSelection(true);
+    } else if (dashboardData) {
+      console.log('✅ User has avatar, closing modal if open');
+      setShowAvatarSelection(false);
     }
   }, [dashboardData]);
 
@@ -174,9 +189,20 @@ export default function Dashboard() {
 
   // Memoize avatar selection handler
   const handleAvatarSelected = useCallback(() => {
+    console.log('🎯 Avatar selected - closing modal and invalidating caches');
+    
+    // Close the modal immediately
+    setShowAvatarSelection(false);
+    
     // Invalidate all avatar-related caches for real-time updates
     invalidateAvatarCaches();
-  }, [invalidateAvatarCaches]);
+    
+    // Show success message
+    toast({
+      title: "Avatar selecionado!",
+      description: "Seu avatar foi atualizado com sucesso.",
+    });
+  }, [invalidateAvatarCaches, toast]);
 
   // Memoize loading state
   const loadingComponent = useMemo(() => (
