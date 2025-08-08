@@ -228,7 +228,6 @@ export default function UserProfile() {
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold">Perfil do Usuário</h1>
         </div>
 
         {/* Profile Card */}
