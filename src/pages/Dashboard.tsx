@@ -29,6 +29,7 @@ import { LanguageSwitch } from "@/components/shared/language-switch";
 import { useI18n } from "@/hooks/use-i18n";
 // import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
+import { getLevelInfo } from "@/data/levels";
 
 
 const getGreeting = (t: any) => {
@@ -369,7 +370,10 @@ export default function Dashboard() {
             
             {/* User information on the right */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-muted-foreground mb-3">{t('common.level')} {userStats.level}</p>
+              <div className="flex items-center gap-2 mb-3">
+                <p className="text-sm text-muted-foreground">{t('common.level')} {userStats.level}</p>
+                <span className="text-sm text-success/40">{getLevelInfo(userStats.level).name}</span>
+              </div>
               
               {/* Compact Progress Bar */}
               <div className="w-full">
