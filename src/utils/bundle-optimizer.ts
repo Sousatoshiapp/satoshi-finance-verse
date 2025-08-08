@@ -112,7 +112,7 @@ export const monitorPerformance = () => {
         
         if (entry.entryType === 'navigation') {
           const navEntry = entry as PerformanceNavigationTiming;
-          console.log(`Page load time: ${navEntry.loadEventEnd - navEntry.navigationStart}ms`);
+          console.log(`Page load time: ${navEntry.loadEventEnd - navEntry.startTime}ms`);
         }
       });
     });

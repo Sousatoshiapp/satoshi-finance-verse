@@ -5,9 +5,10 @@ import { Button } from "@/components/shared/ui/button";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { levelTiers, getLevelInfo } from "@/data/levels";
+import { levelTiers as staticLevelTiers, getLevelInfo as getStaticLevelInfo } from "@/data/levels";
 import { useI18n } from "@/hooks/use-i18n";
 import { Trophy, Star, Lock, CheckCircle } from "lucide-react";
+import { useProgressionSystem } from "@/hooks/use-progression-system";
 
 interface UserProfile {
   level: number;
@@ -19,6 +20,7 @@ export default function Levels() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { levelTiers: dbLevelTiers, getNextLevelXP } = useProgressionSystem();
 
   useEffect(() => {
     loadUserProfile();
@@ -107,7 +109,7 @@ export default function Levels() {
             {user && (
               <Badge variant="secondary" className="flex items-center gap-2">
                 <Trophy className="h-4 w-4" />
-                {t(`levels.level_${user.level}.name`)}
+                {getStaticLevelInfo(user.level).name}
               </Badge>
             )}
           </div>
@@ -124,19 +126,19 @@ export default function Levels() {
                   {user.level}
                 </div>
                 <div>
-                  <h2 className="text-xl">{t(`levels.level_${user.level}.name`)}</h2>
+                  <h2 className="text-xl">{getStaticLevelInfo(user.level).name}</h2>
                   <p className="text-sm text-muted-foreground">Seu nível atual</p>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                {t(`levels.level_${user.level}.description`)}
+                {getStaticLevelInfo(user.level).description}
               </p>
               <div className="flex items-center gap-4">
                 <span className="text-sm font-medium">XP Atual: {user.xp}</span>
                 <span className="text-sm text-muted-foreground">
-                  Próximo nível: {user.level * 100} XP
+                  Próximo nível: {getNextLevelXP ? getNextLevelXP(user.level) : user.level * 100} XP
                 </span>
               </div>
             </CardContent>
@@ -148,7 +150,7 @@ export default function Levels() {
           <h2 className="text-2xl font-bold text-foreground mb-4">Todos os Níveis</h2>
           
           <div className="grid md:grid-cols-2 gap-4">
-            {levelTiers.map((tier) => {
+            {staticLevelTiers.map((tier) => {
               const status = getLevelStatus(tier.level);
               const isLocked = status === 'locked';
               
@@ -178,7 +180,7 @@ export default function Levels() {
                           {tier.level}
                         </div>
                         <div>
-                          <CardTitle className="text-lg">{t(`levels.level_${tier.level}.name`)}</CardTitle>
+                          <CardTitle className="text-lg">{getStaticLevelInfo(tier.level).name}</CardTitle>
                           <p className="text-xs text-muted-foreground">Nível {tier.level}</p>
                         </div>
                       </div>
@@ -195,17 +197,23 @@ export default function Levels() {
                   
                   <CardContent>
                     <CardDescription className={isLocked ? 'text-muted-foreground/60' : ''}>
-                      {t(`levels.level_${tier.level}.description`)}
+                      {getStaticLevelInfo(tier.level).description}
                     </CardDescription>
                     
                     <div className="mt-3 flex items-center justify-between text-sm">
                       <span className={`font-medium ${isLocked ? 'text-muted-foreground/60' : ''}`}>
-                        XP Necessário: {tier.level * 100}
+                        XP Necessário: {(dbLevelTiers.find((t: any) => t.level === tier.level)?.xp_required) ?? tier.level * 100}
                       </span>
                       
                       {status === 'current' && user && (
                         <span className="text-primary font-medium">
-                          {Math.round((user.xp / (tier.level * 100)) * 100)}% completo
+                          {(() => {
+                            const currentBase = (dbLevelTiers.find((t: any) => t.level === tier.level)?.xp_required) ?? ((tier.level - 1) * 100);
+                            const nextAbs = getNextLevelXP ? getNextLevelXP(tier.level) : tier.level * 100;
+                            const xpForThis = Math.max(1, nextAbs - currentBase);
+                            const earned = Math.max(0, user.xp - currentBase);
+                            return Math.round(Math.min(100, (earned / xpForThis) * 100));
+                          })()}% completo
                         </span>
                       )}
                     </div>

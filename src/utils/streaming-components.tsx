@@ -15,27 +15,27 @@ const createStreamingComponent = <T extends Record<string, any>>(
 };
 
 export const StreamingDashboard = createStreamingComponent(
-  () => import('../components/shared/performance-optimized-dashboard'),
+  () => import('../components/shared/performance-optimized-dashboard').then(mod => ({ default: mod.default as React.ComponentType<Record<string, any>> })),
   <LoadingSkeleton variant="card" count={3} />
 );
 
 export const StreamingLeaderboard = createStreamingComponent(
-  () => import('../components/shared/optimized-leaderboard-list'),
+  () => import('../components/shared/optimized-leaderboard-list').then(mod => ({ default: mod.default as React.ComponentType<Record<string, any>> })),
   <LoadingSkeleton variant="list" count={5} />
 );
 
 export const StreamingMissionList = createStreamingComponent(
-  () => import('../components/shared/missions/mission-list-view'),
+  () => import('../components/shared/missions/mission-list-view').then(mod => ({ default: mod.default as React.ComponentType<Record<string, any>> })),
   <LoadingSkeleton variant="card" count={4} />
 );
 
 export const StreamingSocialFeed = createStreamingComponent(
-  () => import('../components/features/social/social-feed'),
+  () => import('../components/features/social/social-feed').then(mod => ({ default: mod.default as React.ComponentType<Record<string, any>> })),
   <LoadingSkeleton variant="card" count={3} />
 );
 
 export const StreamingQuizEngine = createStreamingComponent(
-  () => import('../components/quiz/quiz-engine'),
+  () => import('../components/quiz/quiz-engine').then(mod => ({ default: mod.default as React.ComponentType<Record<string, any>> })),
   <LoadingSkeleton variant="card" count={1} />
 );
 

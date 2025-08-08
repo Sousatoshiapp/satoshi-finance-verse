@@ -20,6 +20,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useI18n } from "@/hooks/use-i18n";
+import { getLevelInfo as getStaticLevelInfo } from "@/data/levels";
+import { useProgressionSystem } from "@/hooks/use-progression-system";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { Crown, Star, Shield, Camera } from "lucide-react";
 
@@ -59,6 +61,7 @@ export default function Profile() {
   const { invalidateAvatarCaches } = useAvatarContext();
   const { subscription } = useSubscription();
   const { t } = useI18n();
+  const { getNextLevelXP } = useProgressionSystem();
   
 
   useEffect(() => {
@@ -311,7 +314,7 @@ export default function Profile() {
                 {user.nickname}
               </h2>
               <p className="text-muted-foreground mb-3 text-sm md:text-base">
-                {t(`levels.level_${user.level}.name`)} • {user.points} Beetz
+                {getStaticLevelInfo(user.level).name} • {user.points} Beetz
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
                 <StreakBadge days={user.streak} />
@@ -346,7 +349,7 @@ export default function Profile() {
           <XPCard
             level={user.level}
             currentXP={user.xp}
-            nextLevelXP={user.level * 100}
+            nextLevelXP={getNextLevelXP ? getNextLevelXP(user.level) : user.level * 100}
           />
           
           <Card className="p-4 md:p-6">
