@@ -407,19 +407,14 @@ export default function Dashboard() {
             <LazyBTZCounter />
           </div>
 
-          {/* Botão Principal Jogar - Nova Seção */}
+          {/* Botão Principal Jogar - Circular */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
             <Button 
               onClick={() => navigate('/game-mode')}
-              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white text-lg font-bold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-16 h-16 bg-transparent border border-[#adff2f] text-white text-sm font-medium rounded-full hover:bg-[#adff2f]/10 transition-all duration-300"
             >
-              🎮 Jogar Agora
+              Jogar
             </Button>
-          </div>
-
-          {/* Quick Actions - Mobile Optimized */}
-          <div className={`${isMobile ? 'mb-8' : 'mb-10'}`}>
-            <LazyQuickActions />
           </div>
 
           {/* Ranking Semanal de Beetz - Mobile Spacing */}
