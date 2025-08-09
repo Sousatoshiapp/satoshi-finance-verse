@@ -341,7 +341,7 @@ export default function UserProfile() {
                        onClick={() => handleStartConversation(user.id)}
                        variant="outline"
                        size="icon"
-                       className="rounded-full text-white border-0"
+                       className="rounded-full text-black border-0"
                        style={{ backgroundColor: '#adff2f' }}
                      >
                        <MessageCircle className="h-4 w-4" />
