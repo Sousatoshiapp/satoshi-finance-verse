@@ -60,5 +60,23 @@ export const gameRoutes = [
     element: "ConceptConnectionsPage",
     requiresAuth: true,
     showNavbar: false
+  },
+  {
+    path: "/quiz/solo",
+    element: "SoloQuiz",
+    requiresAuth: true,
+    showNavbar: false
+  },
+  {
+    path: "/quiz/study",
+    element: "StudyMode",
+    requiresAuth: true,
+    showNavbar: false
+  },
+  {
+    path: "/quiz/import",
+    element: "ImportExport",
+    requiresAuth: true,
+    showNavbar: false
   }
 ];
