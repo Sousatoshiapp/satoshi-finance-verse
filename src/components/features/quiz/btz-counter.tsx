@@ -246,8 +246,8 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           )}
         </div>
 
-        {/* P2P Transfer Icons - Outside the card */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        {/* P2P Transfer Icons - Vertical layout */}
+        <div className="flex flex-col gap-1 flex-shrink-0">
           <button
             onClick={(e) => {
               e.stopPropagation();
