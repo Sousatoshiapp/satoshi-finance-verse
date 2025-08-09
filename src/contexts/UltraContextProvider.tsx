@@ -4,6 +4,7 @@ import { AuthProvider } from './AuthContext';
 import { I18nProvider } from './I18nProvider';
 import { AvatarProvider } from './AvatarContext';
 import { SponsorThemeProvider } from './SponsorThemeProvider';
+import { OnlineStatusProvider } from './OnlineStatusContext';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 
 // Lazy load non-critical contexts
@@ -46,7 +47,9 @@ export function UltraCriticalProvider({ children }: { children: ReactNode }) {
         <AuthProvider>
           <AvatarProvider>
             <SponsorThemeProvider>
-              {children}
+              <OnlineStatusProvider>
+                {children}
+              </OnlineStatusProvider>
             </SponsorThemeProvider>
           </AvatarProvider>
         </AuthProvider>
