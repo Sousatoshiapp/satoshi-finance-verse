@@ -69,12 +69,16 @@ const getCurrentLevelXP = (level: number) => {
 };
 
 export default function Dashboard() {
-  const { t } = useI18n();
+  const { t, getCurrentLanguage } = useI18n();
   const { isReady } = useI18nContext();
   const isMobile = useIsMobile();
   
   // Debug i18n state
-  console.log('Dashboard i18n state:', { isReady, currentLang: t('common.language', { lng: 'en-US' }) });
+  console.log('Dashboard i18n state:', { 
+    isReady, 
+    currentLang: getCurrentLanguage(),
+    playTranslation: t('common.play')
+  });
   const [greeting, setGreeting] = useState(getGreeting(t));
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   

@@ -414,16 +414,30 @@ All colors MUST be HSL.
     .mobile-grid-3 { grid-template-columns: repeat(6, 1fr); }
   }
 
+  /* Pulse animation for "Jogar" button border */
+  @keyframes pulse-border {
+    0%, 100% {
+      border-color: hsl(var(--primary) / 0.6);
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+    }
+    50% {
+      border-color: hsl(var(--primary) / 0.9);
+      box-shadow: 0 0 0 4px hsl(var(--primary) / 0.15);
+    }
+  }
+
   /* Jogar Button Special Classes */
   .jogar-button {
     position: relative;
     overflow: hidden;
-    animation: breathing 2s ease-in-out infinite;
+    animation: pulse-border 2s ease-in-out infinite;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .jogar-button:hover {
-    animation: magnetic-glow 0.3s ease-out forwards;
+    animation: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.3);
     cursor: pointer;
   }
 
@@ -439,7 +453,7 @@ All colors MUST be HSL.
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(var(--jogar-glow-color), 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, hsl(var(--primary) / 0.1) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
