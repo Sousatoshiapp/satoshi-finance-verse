@@ -33,6 +33,7 @@ import { CrisisIcon } from "@/components/crisis/CrisisIcon";
 import { useCrisisState } from "@/hooks/use-crisis-state";
 import { LanguageSwitch } from "@/components/shared/language-switch";
 import { useI18n } from "@/hooks/use-i18n";
+import { useI18nContext } from "@/contexts/I18nProvider";
 // import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getLevelInfo } from "@/data/levels";
@@ -69,7 +70,11 @@ const getCurrentLevelXP = (level: number) => {
 
 export default function Dashboard() {
   const { t } = useI18n();
+  const { isReady } = useI18nContext();
   const isMobile = useIsMobile();
+  
+  // Debug i18n state
+  console.log('Dashboard i18n state:', { isReady, currentLang: t('common.language', { lng: 'en-US' }) });
   const [greeting, setGreeting] = useState(getGreeting(t));
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   
@@ -269,8 +274,8 @@ export default function Dashboard() {
   const hasAvatar = useMemo(() => !!userAvatar, [userAvatar]);
   const userDistrict = useMemo(() => dashboardData?.district, [dashboardData?.district]);
 
-  // Loading state
-  if (isLoading) {
+  // Loading state - wait for both data and i18n
+  if (isLoading || !isReady) {
     return loadingComponent;
   }
 
@@ -417,7 +422,7 @@ export default function Dashboard() {
                 <svg className="w-6 h-6 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 6v12l10-6z"/>
                 </svg>
-                <span className="text-xs">{t('common.play')}</span>
+                <span className="text-xs">{t('common.play') || 'Jogar'}</span>
               </div>
             </Button>
           </div>
