@@ -1,27 +1,59 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
-import { ArrowRight, Users, Shield } from "lucide-react";
+import { ArrowRight, Users, Shield, VolumeX, Volume2 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useRef } from "react";
 
 export default function Welcome() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const isMobile = useIsMobile();
+  const [isMuted, setIsMuted] = useState(true);
+  const [showFallback, setShowFallback] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Cyberpunk Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ 
-          backgroundImage: `url(/lovable-uploads/7e6ff88b-c066-483e-9f80-3a3f362f67ac.png)`,
-          filter: 'brightness(0.4) contrast(1.1)'
-        }}
+      {/* Video Background */}
+      {!showFallback ? (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          muted={isMuted}
+          loop
+          playsInline
+          preload="metadata"
+          onError={() => setShowFallback(true)}
+          style={{ filter: 'brightness(0.4) contrast(1.1)' }}
+        >
+          <source src="/cyberpunk-welcome-bg.mp4" type="video/mp4" />
+          <source src="/cyberpunk-welcome-bg.webm" type="video/webm" />
+        </video>
+      ) : (
+        // Fallback to original image
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ 
+            backgroundImage: `url(/lovable-uploads/7e6ff88b-c066-483e-9f80-3a3f362f67ac.png)`,
+            filter: 'brightness(0.4) contrast(1.1)'
+          }}
+        />
+      )}
+      
+      {/* Video overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
+      
+      {/* Audio Control */}
+      <button
+        onClick={() => setIsMuted(!isMuted)}
+        className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/30 text-white/70 hover:text-white hover:bg-black/50 transition-all duration-200"
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
-      </div>
+        {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+      </button>
 
       {/* Content - Centralized for mobile */}
       <div className="relative z-10 min-h-screen flex items-center justify-center">
