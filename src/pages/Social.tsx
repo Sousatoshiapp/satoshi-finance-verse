@@ -152,22 +152,19 @@ export default function Social() {
   // Show loading skeleton while main data loads
   if (isMainLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Header with back arrow */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50" style={{ paddingTop: '50px' }}>
-          <div className="flex items-center px-4 py-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/dashboard')}
-              className="mr-3"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <h1 className="text-lg font-semibold">Social</h1>
-          </div>
+      <div className="min-h-screen bg-background" style={{ paddingTop: '50px' }}>
+        {/* Botão de voltar acima da imagem do perfil - Mobile Loading */}
+        <div className="lg:hidden fixed top-14 left-4 z-50">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-full p-2"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
         </div>
-        <div className="pt-16 max-w-7xl mx-auto flex min-h-screen justify-center">
+        <div className="max-w-7xl mx-auto flex min-h-screen justify-center">
           <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 min-h-screen">
             <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-4">
               <div className="h-6 bg-muted rounded w-32 animate-pulse" />
@@ -192,24 +189,8 @@ export default function Social() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header with back arrow */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50" style={{ paddingTop: '50px' }}>
-        <div className="flex items-center px-4 py-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="mr-3"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-lg font-semibold">Social</h1>
-        </div>
-      </div>
-      
-      {/* Content with padding for fixed header */}
-      <div className="pt-16">
+    <div className="min-h-screen bg-background" style={{ paddingTop: '50px' }}>
+      {/* Content sem header fixo */}
         {/* Simplified responsive layout */}
       <div className="max-w-7xl mx-auto flex min-h-screen">
         {/* Left Sidebar - Desktop only */}
@@ -521,7 +502,19 @@ export default function Social() {
           </div>
         </div>
       </div>
+      {/* Botão de voltar acima da imagem do perfil - Mobile */}
+      <div className="lg:hidden fixed top-14 left-4 z-50">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/dashboard')}
+          className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-full p-2"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
       </div>
+      
+      <FloatingNavbar />
     </div>
   );
 }
