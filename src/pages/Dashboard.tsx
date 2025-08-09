@@ -411,7 +411,7 @@ export default function Dashboard() {
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
             <Button 
               onClick={() => navigate('/game-mode')}
-              className="w-16 h-16 bg-transparent border border-[#adff2f] text-white text-sm font-medium rounded-full hover:bg-[#adff2f]/10 transition-all duration-300"
+              className="jogar-button w-16 h-16 bg-transparent border border-[#adff2f] text-white text-sm font-medium rounded-full hover:bg-[#adff2f]/10"
             >
               Jogar
             </Button>
