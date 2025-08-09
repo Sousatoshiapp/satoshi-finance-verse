@@ -24,7 +24,7 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
 
   // Enhanced security: Only rely on proper Supabase session
   const hasValidAuth = user && session;
-  const isOnRootPath = location.pathname === '/' || location.pathname === '' || window.location.hash === '#' || location.pathname === '/intro';
+  const isOnRootPath = location.pathname === '/' || location.pathname === '' || window.location.hash === '#';
   
   if (hasValidAuth && isOnRootPath) {
     return <Navigate to="/dashboard" replace />;
@@ -33,11 +33,11 @@ export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({
   if (requiresAuth) {
     
     if (!hasValidAuth) {
-      return <Navigate to="/intro" state={{ from: location }} replace />;
+      return <Navigate to="/welcome" state={{ from: location }} replace />;
     }
     
     // If user has valid auth but is on welcome/auth pages, redirect to dashboard
-    const publicPages = ['/welcome', '/auth', '/intro'];
+    const publicPages = ['/welcome', '/auth'];
     const isOnPublicPage = publicPages.includes(location.pathname);
     
     if (hasValidAuth && isOnPublicPage) {

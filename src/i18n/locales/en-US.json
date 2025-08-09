@@ -1049,39 +1049,6 @@
       "satoshiCity": "Satoshi City"
     }
   },
-  "intro": {
-    "welcome": {
-      "title": "Welcome to Satoshi City",
-      "subtitle": "Enter the future of digital economy where gaming, cryptocurrency and community meet in a unique cyberpunk experience.",
-      "badge": "Neural System Active"
-    },
-    "features": {
-      "gaming": {
-        "title": "Immersive Gaming",
-        "description": "Participate in interactive quizzes, real-time duels and challenges that test your knowledge and skills."
-      },
-      "crypto": {
-        "title": "Digital Economy",
-        "description": "Earn and manage Beetz, our native cryptocurrency, through activities, achievements and peer-to-peer transactions."
-      },
-      "social": {
-        "title": "Global Community",
-        "description": "Connect with other inhabitants, form teams, share knowledge and build lasting relationships."
-      },
-      "districts": {
-        "title": "Unique Districts",
-        "description": "Explore different themed districts, each with their own characteristics, challenges and opportunities."
-      }
-    },
-    "cta": {
-      "title": "Ready to explore the future?",
-      "start": "Start Journey",
-      "skip": "Skip Introduction"
-    },
-    "footer": {
-      "text": "Join thousands of players in the digital revolution"
-    }
-  },
   "welcome": {
     "title": "The future of finance has arrived",
     "badges": {

@@ -1048,39 +1048,6 @@
       "satoshiCity": "Satoshi City"
     }
   },
-  "intro": {
-    "welcome": {
-      "title": "欢迎来到中本聪城",
-      "subtitle": "进入数字经济的未来，游戏、加密货币和社区在独特的赛博朋克体验中相遇。",
-      "badge": "神经系统激活"
-    },
-    "features": {
-      "gaming": {
-        "title": "沉浸式游戏",
-        "description": "参与交互式测验、实时决斗和挑战，测试您的知识和技能。"
-      },
-      "crypto": {
-        "title": "数字经济",
-        "description": "通过活动、成就和点对点交易来赚取和管理我们的原生加密货币Beetz。"
-      },
-      "social": {
-        "title": "全球社区",
-        "description": "与其他居民联系，组建团队，分享知识并建立持久的关系。"
-      },
-      "districts": {
-        "title": "独特的区域",
-        "description": "探索不同主题的区域，每个区域都有自己的特色、挑战和机遇。"
-      }
-    },
-    "cta": {
-      "title": "准备好探索未来了吗？",
-      "start": "开始旅程",
-      "skip": "跳过介绍"
-    },
-    "footer": {
-      "text": "加入数千名玩家的数字革命"
-    }
-  },
   "welcome": {
     "title": "The future of finance has arrived",
     "badges": {
