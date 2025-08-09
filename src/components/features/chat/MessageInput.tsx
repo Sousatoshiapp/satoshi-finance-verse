@@ -110,7 +110,7 @@ export function MessageInput({ onSendMessage, conversationId }: MessageInputProp
   }
 
   return (
-    <div className="border-t border-border bg-card p-4">
+    <div className="border-t border-border bg-card p-4 pb-6">
       <div className="flex items-end gap-2">
         {/* Attachment Button */}
         <div className="relative">
