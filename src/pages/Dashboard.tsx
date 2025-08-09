@@ -342,7 +342,7 @@ export default function Dashboard() {
           */}
 
           {/* Consolidated Avatar & User Info - Horizontal Layout - Mobile Optimized */}
-          <div className={`flex items-center ${isMobile ? 'gap-3 mb-4' : 'gap-4 mb-6'}`}>
+          <div className={`flex items-center ${isMobile ? 'gap-3 mb-8' : 'gap-4 mb-10'}`}>
             {/* Avatar with badges on the left - Mobile Smaller */}
             <div className="relative flex-shrink-0">
               <div className="relative">
