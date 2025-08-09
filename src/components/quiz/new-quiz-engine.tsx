@@ -40,7 +40,9 @@ export function NewQuizEngine({
 }: QuizEngineProps) {
   const { user } = useAuth();
   const { selectQuestions, selectAdaptiveQuestions, loading } = useQuestionSelector();
-  const { updateProgress } = useFSRS();
+  const { updateProgress, getDueQuestions } = useFSRS();
+  
+  const userId = user?.id;
   
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -61,21 +63,52 @@ export function NewQuizEngine({
 
   const loadQuestions = async () => {
     try {
-      let fetchedQuestions: Question[] = [];
+      console.log('🚀 Carregando questões...', { topic, difficulty, questionsCount, mode, userId });
       
-      if (mode === 'adaptive' && user) {
-        // Modo adaptativo: SRS/FSRS seleciona questões baseado no progresso
-        fetchedQuestions = await selectAdaptiveQuestions(user.id, questionsCount);
+      let fetchedQuestions: Question[] = [];
+
+      if (mode === 'adaptive') {
+        console.log('🎯 Modo adaptativo selecionado');
+        
+        // Para modo adaptativo, usar FSRS hook para buscar questões devidas
+        const dueQuestions = await getDueQuestions(userId || '', questionsCount);
+        console.log('📋 Questões FSRS encontradas:', dueQuestions.length);
+        
+        if (dueQuestions.length > 0) {
+          fetchedQuestions = dueQuestions.map(q => ({
+            id: q.question?.id || q.question_id,
+            question: q.question?.question || '',
+            options: typeof q.question?.options === 'string' 
+              ? JSON.parse(q.question.options) 
+              : Array.isArray(q.question?.options) ? q.question.options : [],
+            correct_answer: q.question?.correct_answer || '',
+            explanation: q.question?.explanation,
+            topic: q.question?.category || topic || '',
+            difficulty: q.question?.difficulty as 'basic' | 'intermediate' | 'advanced' || 'basic',
+            category: q.question?.category || topic || ''
+          }));
+          console.log('✅ Questões FSRS mapeadas:', fetchedQuestions.length);
+        } else {
+          console.log('🔄 Fallback: usando question selector adaptativo');
+          // Fallback para questões adaptativas do question selector
+          fetchedQuestions = await selectAdaptiveQuestions(userId || '', questionsCount);
+        }
       } else {
-        // Modo normal: usar categoria e dificuldade especificadas
+        console.log('📚 Modo normal selecionado');
+        // Para outros modos, usar o question selector normal
+        const mappedDifficulty = mapDifficultyToOld(difficulty);
+        console.log('🎚️ Dificuldade mapeada:', mappedDifficulty);
         fetchedQuestions = await selectQuestions({
-          category: topic, // Aceita as novas categorias
-          difficulty: mapDifficultyToOld(difficulty), // Mapear dificuldades do novo sistema
+          category: topic,
+          difficulty: mappedDifficulty,
           limit: questionsCount
         });
       }
 
+      console.log('📊 Total de questões carregadas:', fetchedQuestions.length);
+      
       if (fetchedQuestions.length === 0) {
+        console.error('❌ Nenhuma questão foi carregada!');
         toast.error('Nenhuma questão encontrada para os critérios selecionados. O sistema está sendo preparado com novas questões.');
         return;
       }
@@ -84,8 +117,17 @@ export function NewQuizEngine({
       setStartTime(Date.now());
       setQuestionStartTime(Date.now());
     } catch (error) {
-      console.error('Erro ao carregar questões:', error);
+      console.error('💥 Erro ao carregar questões:', error);
       toast.error('Erro ao carregar questões');
+      // Fallback final: tentar carregar questões básicas
+      try {
+        console.log('🆘 Tentando fallback final...');
+        const fallbackQuestions = await selectQuestions({ limit: questionsCount });
+        console.log('🔧 Questões de fallback:', fallbackQuestions.length);
+        setQuestions(fallbackQuestions);
+      } catch (fallbackError) {
+        console.error('💀 Fallback final falhou:', fallbackError);
+      }
     }
   };
 

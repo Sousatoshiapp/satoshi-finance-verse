@@ -32,7 +32,7 @@ export function useFSRS(config: FSRSConfig = defaultConfig) {
         .select('*')
         .eq('user_id', userId)
         .eq('question_id', questionId)
-        .single();
+        .maybeSingle();
 
       let newDifficulty = existingProgress?.difficulty_preference || 5.0;
       let newStability = existingProgress?.interval_days || 1.0;
