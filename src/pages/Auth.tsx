@@ -280,8 +280,8 @@ export default function Auth() {
       </div>
 
       {/* Content - Enhanced mobile with optimized iPhone spacing */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-18 sm:p-6" 
-           style={{ paddingTop: 'max(72px, env(safe-area-inset-top, 20px))' }}>
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-8 sm:p-6" 
+           style={{ paddingTop: 'max(40px, env(safe-area-inset-top, 20px))' }}>
         <div className="w-full max-w-sm sm:max-w-md">
           {/* Back Button - Mobile responsive */}
           <Button
