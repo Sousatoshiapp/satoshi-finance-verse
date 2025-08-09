@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-// Categorias financeiras válidas
+// Categorias financeiras válidas (baseadas nas categorias reais do banco)
 const FINANCE_CATEGORIES = [
+  'ABC das Finanças',
+  'Cripto', 
+  'Finanças do Dia a Dia',
+  // Categorias antigas mantidas para compatibilidade
   'finance', 'investment', 'cryptocurrency', 'trading', 'economics', 
   'banking', 'portfolio_management', 'Investimentos Básicos', 
   'Educação Financeira', 'Orçamento Pessoal', 'Mercado de Ações',
