@@ -11,14 +11,24 @@ import TranslationTestPage from '@/pages/TranslationTest';
 
 // FASE 2.1: Ultra route generation com preload automático
 export function generateRoutes() {
+  console.log('🏗️ Gerando rotas...');
+  
   // FASE 2.2: Warmup crítico no boot - disabled
   // React.useEffect(() => {
   //   ultraRoutePreloader.warmupCriticalRoutes();
   // }, []);
 
   const routes = routeConfig.map((route: RouteConfig) => {
+    console.log('🛤️ Processando rota:', route.path);
     // FASE 2.3: Lazy loading otimizado com preload
     const Component = LazyRoutes[route.element as keyof typeof LazyRoutes];
+    
+    if (!Component) {
+      console.error('❌ Componente não encontrado para rota:', route.path, route.element);
+      return null;
+    }
+    
+    console.log('✅ Componente encontrado para:', route.path);
     
     // FASE 2.4: Determinar tipo de rota para skeleton otimizado
     const routeType = route.path === '/dashboard' ? 'dashboard' :

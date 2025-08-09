@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Question {
@@ -29,6 +29,9 @@ export function useQuestionSelector() {
   const [questions, setQuestions] = useState<Question[]>([]);
 
   const selectQuestions = useCallback(async (filter: QuestionFilter = {}) => {
+    console.log('🔍 Buscando questões com filtros:', filter);
+    console.log('🌍 Supabase client disponível:', !!supabase);
+    
     setLoading(true);
     try {
       let query = supabase
@@ -159,6 +162,11 @@ export function useQuestionSelector() {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Log de inicialização
+  useEffect(() => {
+    console.log('🎯 useQuestionSelector inicializado');
   }, []);
 
   return {
