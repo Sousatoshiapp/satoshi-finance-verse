@@ -7,6 +7,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
+import { useTheme } from "@/providers/ThemeProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
 import { useKYCStatus } from "@/hooks/use-kyc-status";
@@ -19,11 +20,12 @@ import { Edit, Shield, Fingerprint, Smartphone } from "lucide-react";
 
 export default function Settings() {
   const { t } = useI18n();
+  const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState({
     notifications: true,
     dailyReminder: true,
     soundEffects: true,
-    darkMode: true,
+    darkMode: theme === 'dark',
     language: 'pt-BR',
     animationsEnabled: true,
     celebrationsEnabled: true,
@@ -90,15 +92,9 @@ export default function Settings() {
         const parsedSettings = JSON.parse(savedSettings);
         setSettings({
           ...parsedSettings,
+          darkMode: theme === 'dark',
           biometricAuth: biometricEnabled
         });
-        
-        // Aplicar modo escuro
-        if (parsedSettings.darkMode) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
       }
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
@@ -107,14 +103,10 @@ export default function Settings() {
     }
   };
 
-  // Aplicar mudanças em tempo real
+  // Sincronizar configurações com tema global
   useEffect(() => {
-    if (settings.darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [settings.darkMode]);
+    setSettings(prev => ({ ...prev, darkMode: theme === 'dark' }));
+  }, [theme]);
 
   const handleSaveSettings = async () => {
     try {
@@ -524,7 +516,10 @@ export default function Settings() {
               </div>
               <Switch
                 checked={settings.darkMode}
-                onCheckedChange={(checked) => setSettings({...settings, darkMode: checked})}
+                onCheckedChange={(checked) => {
+                  setSettings({...settings, darkMode: checked});
+                  setTheme(checked ? 'dark' : 'light');
+                }}
               />
             </div>
           </div>

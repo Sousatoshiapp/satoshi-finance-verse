@@ -3,6 +3,7 @@ import { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { createUltraQueryClient, preloadCriticalAssets, monitorUltraPerformance } from "@/utils/ultra-performance";
 // import { initUltraQueryOptimizer } from "@/utils/ultra-query-optimizer";
 import { Toaster } from "@/components/shared/ui/toaster";
@@ -45,8 +46,10 @@ const UltraApp = () => {
     <StrictMode>
       <BrowserRouter>
         <QueryClientProvider client={ultraQueryClient}>
-          <App />
-          <Toaster />
+          <ThemeProvider defaultTheme="dark" storageKey="satoshi-ui-theme">
+            <App />
+            <Toaster />
+          </ThemeProvider>
         </QueryClientProvider>
       </BrowserRouter>
     </StrictMode>
