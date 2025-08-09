@@ -70,13 +70,11 @@ export function UltraLazyProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Ultimate provider that splits critical vs non-critical
+// Ultimate provider that splits critical vs non-critical - simplified
 export function UltraContextProvider({ children }: { children: ReactNode }) {
   return (
     <UltraCriticalProvider>
-      <UltraLazyProvider>
-        {children}
-      </UltraLazyProvider>
+      {children}
     </UltraCriticalProvider>
   );
 }
