@@ -10,6 +10,7 @@ export const LazyRoutes = {
   Index: lazy(() => import('@/pages/Index')),
   Dashboard: lazy(() => import('@/pages/Dashboard')),
   GameMode: lazy(() => import('@/pages/GameMode')),
+  SatoshiCity: lazy(() => import('@/pages/SatoshiCity')),
   
   // Quiz pages
   SoloQuiz: lazy(() => import('@/pages/quiz/SoloQuiz')),
@@ -23,6 +24,19 @@ export const LazyRoutes = {
   
   // Duel pages
   BtcDuel: lazy(() => import('@/pages/BtcDuel')),
+  Duels: lazy(() => import('@/pages/Duels')),
+  DuelWaitingScreen: lazy(() => import('@/components/duels/duel-waiting-screen')),
+  EnhancedSimultaneousDuel: lazy(() => import('@/components/duels/enhanced-simultaneous-duel')),
+  
+  // Social & Chat pages
+  Social: lazy(() => import('@/pages/Social')),
+  Messages: lazy(() => import('@/pages/Messages')),
+  DirectChat: lazy(() => import('@/pages/DirectChat')),
+  DirectChatWrapper: lazy(() => import('@/pages/DirectChatWrapper')),
+  
+  // Transfer pages
+  P2PTransfer: lazy(() => import('@/pages/P2PTransfer')),
+  ProximityTransferBluetooth: lazy(() => import('@/pages/ProximityTransferBluetooth')),
   
   // Gamification pages
   Achievements: lazy(() => import('@/pages/Achievements')),
@@ -37,10 +51,9 @@ export const LazyRoutes = {
   
   // Profile pages
   UserProfile: lazy(() => import('@/pages/UserProfile')),
+  Profile: lazy(() => import('@/pages/Profile')),
   
   // Other pages
-  Profile: lazy(() => import('@/pages/Profile')),
-  Social: lazy(() => import('@/pages/Social')),
   Leaderboard: lazy(() => import('@/pages/Leaderboard')),
   Store: lazy(() => import('@/pages/Store')),
   Settings: lazy(() => import('@/pages/Settings'))
