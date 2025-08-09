@@ -154,7 +154,7 @@ export default function Social() {
     return (
       <div className="min-h-screen bg-background">
         {/* Header with back arrow */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50" style={{ paddingTop: '50px' }}>
           <div className="flex items-center px-4 py-3">
             <Button
               variant="ghost"
@@ -194,7 +194,7 @@ export default function Social() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header with back arrow */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/50" style={{ paddingTop: '50px' }}>
         <div className="flex items-center px-4 py-3">
           <Button
             variant="ghost"
