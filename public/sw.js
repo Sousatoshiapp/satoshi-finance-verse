@@ -26,15 +26,15 @@ self.addEventListener('push', (event) => {
     data = {
       title: 'Nova Notificação',
       body: event.data.text() || 'Você tem uma nova notificação',
-      icon: '/favicon.ico',
-      badge: '/favicon.ico',
+      icon: '/lovable-uploads/360967fa-b367-4de6-a8a1-bcd4545eaa61.png',
+      badge: '/lovable-uploads/360967fa-b367-4de6-a8a1-bcd4545eaa61.png',
     };
   }
 
   const options = {
     body: data.body || 'Você tem uma nova notificação',
-    icon: data.icon || '/favicon.ico',
-    badge: data.badge || '/favicon.ico',
+    icon: data.icon || '/lovable-uploads/360967fa-b367-4de6-a8a1-bcd4545eaa61.png',
+    badge: data.badge || '/lovable-uploads/360967fa-b367-4de6-a8a1-bcd4545eaa61.png',
     image: data.image,
     tag: data.tag || 'satoshi-finance',
     requireInteraction: data.requireInteraction || false,
@@ -162,7 +162,7 @@ const CACHE_NAME = 'satoshi-finance-v1';
 const urlsToCache = [
   '/',
   '/dashboard',
-  '/favicon.ico',
+  '/lovable-uploads/360967fa-b367-4de6-a8a1-bcd4545eaa61.png',
 ];
 
 self.addEventListener('fetch', (event) => {
