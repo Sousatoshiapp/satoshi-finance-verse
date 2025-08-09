@@ -670,11 +670,13 @@ export default function Store() {
     <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'} safe-area-full`} 
          style={{ paddingTop: '50px' }}>
       <div className={`mx-auto ${isMobile ? 'max-w-sm px-6' : 'max-w-md p-mobile-4'}`}>
-        {/* Header sem título */}
-        <div className={`flex items-center gap-3 ${isMobile ? 'mb-4' : 'mb-6'}`}>
+        {/* Header com título centralizado */}
+        <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-6'}`}>
           <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')} className="touch-target">
             <ArrowLeft className="h-5 w-5" />
           </Button>
+          <h1 className="text-mobile-2xl font-bold text-foreground">{t('store.header.marketplace')}</h1>
+          <div className="w-10"></div> {/* Espaço para balancear o layout */}
         </div>
 
         {/* Premium Plans Promotion Card */}
