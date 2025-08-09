@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
-import { ArrowRight, Users, Shield, VolumeX, Volume2 } from "lucide-react";
+import { ArrowRight, VolumeX, Volume2 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useRef } from "react";
@@ -89,10 +89,9 @@ export default function Welcome() {
           <div className={`flex flex-col items-center space-y-4 ${isMobile ? 'space-y-3' : ''}`}>
             <Button 
               onClick={() => navigate('/auth?mode=login')}
-              className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-6 text-sm min-h-[40px] w-64' : 'py-3 px-8 text-base w-80'}`}
+              className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-4 text-sm min-h-[40px] w-56' : 'py-3 px-6 text-base w-72'}`}
               style={{ backgroundColor: '#adff2f', color: '#000000' }}
             >
-              <Shield className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
               {t('welcome.buttons.enterGame')}
               <ArrowRight className={`ml-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
             </Button>
@@ -100,10 +99,9 @@ export default function Welcome() {
             <Button 
               onClick={() => navigate('/auth?mode=signup')}
               variant="outline"
-              className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-6 text-sm min-h-[40px] w-64' : 'py-3 px-8 text-base w-80'}`}
+              className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-4 text-sm min-h-[40px] w-56' : 'py-3 px-6 text-base w-72'}`}
               style={{ borderColor: '#adff2f', color: '#adff2f' }}
             >
-              <Users className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
               {t('welcome.buttons.createAccount')}
               <ArrowRight className={`ml-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
             </Button>
