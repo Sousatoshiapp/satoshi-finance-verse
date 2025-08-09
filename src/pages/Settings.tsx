@@ -410,27 +410,29 @@ export default function Settings() {
                   <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
                   <p className="text-sm text-muted-foreground">
                     {!pushSupported ? "Não suportado neste dispositivo" :
-                     pushPermission === 'denied' ? "Permissão negada" :
+                     pushPermission === 'denied' ? (
+                       <span>
+                         Acesse as configurações para reativar{" "}
+                         <Button 
+                           variant="link" 
+                           size="sm" 
+                           className="h-auto p-0 text-xs text-primary underline"
+                           onClick={() => {
+                             toast({
+                               title: "Como reativar notificações",
+                               description: getPlatformGuidance(),
+                             });
+                           }}
+                         >
+                           (Como fazer?)
+                         </Button>
+                       </span>
+                     ) :
                      pushSubscribed ? "Ativo - Recebendo notificações" : 
                      pushPermission === 'granted' ? "Disponível para ativar" :
                      "Clique para permitir notificações"
                     }
                   </p>
-                  {pushPermission === 'denied' && (
-                    <Button 
-                      variant="link" 
-                      size="sm" 
-                      className="h-auto p-0 text-xs text-primary"
-                      onClick={() => {
-                        toast({
-                          title: "Como reativar notificações",
-                          description: getPlatformGuidance(),
-                        });
-                      }}
-                    >
-                      Como reativar?
-                    </Button>
-                  )}
                 </div>
               </div>
               <Switch
