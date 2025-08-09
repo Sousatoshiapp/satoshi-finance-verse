@@ -2,6 +2,7 @@
 import React, { createContext, useContext, ReactNode, useMemo, lazy, Suspense } from 'react';
 import { AuthProvider } from './AuthContext';
 import { I18nProvider } from './I18nProvider';
+import { AvatarProvider } from './AvatarContext';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 
 // Lazy load non-critical contexts
@@ -42,7 +43,9 @@ export function UltraCriticalProvider({ children }: { children: ReactNode }) {
     <UltraContext.Provider value={contextValue}>
       <I18nProvider>
         <AuthProvider>
-          {children}
+          <AvatarProvider>
+            {children}
+          </AvatarProvider>
         </AuthProvider>
       </I18nProvider>
     </UltraContext.Provider>
