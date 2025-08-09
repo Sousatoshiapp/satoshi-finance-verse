@@ -668,17 +668,13 @@ export default function Store() {
 
   return (
     <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'} safe-area-full`} 
-         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
-      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6 pt-18' : 'max-w-md p-mobile-4'}`}>
-        {/* Header - Enhanced mobile spacing */}
+         style={{ paddingTop: '50px' }}>
+      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6' : 'max-w-md p-mobile-4'}`}>
+        {/* Header sem título */}
         <div className={`flex items-center gap-3 ${isMobile ? 'mb-4' : 'mb-6'}`}>
           <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')} className="touch-target">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex-1">
-            <h1 className="text-mobile-2xl font-bold text-foreground">{t('store.header.marketplace')}</h1>
-            <p className="text-muted-foreground text-mobile-sm">{t('store.header.subtitle')}</p>
-          </div>
         </div>
 
         {/* Premium Plans Promotion Card */}
