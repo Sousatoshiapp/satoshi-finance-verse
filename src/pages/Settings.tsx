@@ -408,36 +408,44 @@ export default function Settings() {
                 <div>
                   <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
                   <p className="text-sm text-muted-foreground">
-                    {pushSupported ? 
-                      (pushSubscribed ? "Ativo - Recebendo notificações" : "Receber notificações importantes") :
-                      "Não suportado neste dispositivo"
+                    {!pushSupported ? "Não suportado neste dispositivo" :
+                     pushPermission === 'denied' ? "Permissão negada - Vá em Configurações do navegador" :
+                     pushSubscribed ? "Ativo - Recebendo notificações" : 
+                     pushPermission === 'granted' ? "Disponível para ativar" :
+                     "Clique para permitir notificações"
                     }
                   </p>
+                  {pushPermission === 'denied' && (
+                    <Button 
+                      variant="link" 
+                      size="sm" 
+                      className="h-auto p-0 text-xs text-primary"
+                      onClick={() => {
+                        toast({
+                          title: "Como reativar notificações",
+                          description: "1. Clique no ícone 🔒 na barra de endereços\n2. Altere 'Notificações' para 'Permitir'\n3. Recarregue a página",
+                        });
+                      }}
+                    >
+                      Como reativar?
+                    </Button>
+                  )}
                 </div>
               </div>
               <Switch
                 checked={pushSupported && pushSubscribed}
-                disabled={!pushSupported}
+                disabled={!pushSupported || pushPermission === 'denied'}
                 onCheckedChange={async (checked) => {
                   if (checked) {
-                    if (pushPermission !== 'granted') {
-                      await requestPushPermission();
-                    }
-                    if (pushPermission === 'granted' || pushPermission === 'default') {
-                      await subscribePush();
+                    const success = await subscribePush();
+                    if (success) {
                       setSettings({...settings, notifications: true});
-                      toast({
-                        title: "Notificações ativadas!",
-                        description: "Você receberá lembretes e atualizações importantes.",
-                      });
                     }
                   } else {
-                    await unsubscribePush();
-                    setSettings({...settings, notifications: false});
-                    toast({
-                      title: "Notificações desativadas",
-                      description: "Você não receberá mais notificações push.",
-                    });
+                    const success = await unsubscribePush();
+                    if (success) {
+                      setSettings({...settings, notifications: false});
+                    }
                   }
                 }}
               />

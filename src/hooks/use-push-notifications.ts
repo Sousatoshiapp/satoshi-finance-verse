@@ -78,19 +78,36 @@ export function usePushNotifications() {
     }
 
     try {
-      const permission = await Notification.requestPermission();
-      setPermission(permission);
+      // Verificar se permissão já foi negada permanentemente
+      if (permission === 'denied') {
+        toast({
+          title: "Permissão bloqueada",
+          description: "Notificações foram bloqueadas. Vá em Configurações > Site > Notificações para reativar.",
+          variant: "destructive"
+        });
+        return false;
+      }
+
+      const newPermission = await Notification.requestPermission();
+      setPermission(newPermission);
       
-      if (permission === 'granted') {
+      if (newPermission === 'granted') {
         toast({
           title: "Permissão concedida",
           description: "Notificações ativadas com sucesso!"
         });
         return true;
-      } else {
+      } else if (newPermission === 'denied') {
         toast({
           title: "Permissão negada",
-          description: "Não foi possível ativar as notificações",
+          description: "Para ativar notificações: Configurações do navegador > Site > Notificações > Permitir",
+          variant: "destructive"
+        });
+        return false;
+      } else {
+        toast({
+          title: "Permissão pendente",
+          description: "Clique no ícone de notificação na barra de endereços para permitir",
           variant: "destructive"
         });
         return false;
@@ -107,14 +124,42 @@ export function usePushNotifications() {
   };
 
   const subscribe = async (): Promise<boolean> => {
-    if (!isSupported || permission !== 'granted') {
+    // Verificar se VAPID key está configurada
+    const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BP7t8LC0ZOH-NrYQQ6L9t9D2lJ2qQa5G9X4j6F5qR0t5lO-JzY8FtDvKO8Q8dN4NqL5sO9rV3W0J8Q2pR5xF2Ks';
+    
+    if (vapidKey === 'your-vapid-public-key-here' || !vapidKey) {
+      toast({
+        title: "Configuração pendente",
+        description: "Chaves VAPID não configuradas. Contacte o suporte.",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    if (!isSupported) {
+      toast({
+        title: "Não suportado",
+        description: "Seu dispositivo não suporta notificações push",
+        variant: "destructive"
+      });
+      return false;
+    }
+
+    if (permission !== 'granted') {
       const granted = await requestPermission();
       if (!granted) return false;
     }
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Usuário não autenticado",
+          variant: "destructive"
+        });
+        return false;
+      }
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -122,18 +167,44 @@ export function usePushNotifications() {
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return false;
+      if (!profile) {
+        toast({
+          title: "Erro",
+          description: "Perfil do usuário não encontrado",
+          variant: "destructive"
+        });
+        return false;
+      }
+
+      // Verificar se service worker está disponível
+      if (!('serviceWorker' in navigator)) {
+        toast({
+          title: "Não suportado",
+          description: "Service Worker não suportado neste navegador",
+          variant: "destructive"
+        });
+        return false;
+      }
 
       // Register service worker
       const registration = await navigator.serviceWorker.register('/sw.js');
+      await registration.update(); // Força atualização
       
+      // Aguardar service worker estar ativo
+      if (registration.installing) {
+        await new Promise((resolve) => {
+          registration.installing!.addEventListener('statechange', () => {
+            if (registration.installing!.state === 'activated') {
+              resolve(undefined);
+            }
+          });
+        });
+      }
+
       // Subscribe to push notifications
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(
-          // VAPID public key - you'll need to generate this
-          'your-vapid-public-key-here'
-        )
+        applicationServerKey: urlBase64ToUint8Array(vapidKey)
       });
 
       // Save subscription to database
@@ -150,6 +221,11 @@ export function usePushNotifications() {
 
       if (error) {
         console.warn('Failed to save push notification settings:', error.message, error.code);
+        toast({
+          title: "Aviso",
+          description: "Notificações ativadas, mas configurações não foram salvas",
+          variant: "destructive"
+        });
       }
 
       setIsSubscribed(true);
@@ -158,11 +234,22 @@ export function usePushNotifications() {
         description: "Notificações push ativadas!"
       });
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error subscribing to push notifications:', error);
+      
+      let errorMessage = "Não foi possível ativar as notificações push";
+      
+      if (error.name === 'NotAllowedError') {
+        errorMessage = "Permissão negada. Verifique as configurações do navegador.";
+      } else if (error.name === 'NotSupportedError') {
+        errorMessage = "Notificações push não suportadas neste dispositivo.";
+      } else if (error.message?.includes('VAPID')) {
+        errorMessage = "Erro de configuração do servidor. Contacte o suporte.";
+      }
+      
       toast({
         title: "Erro",
-        description: "Não foi possível ativar as notificações push",
+        description: errorMessage,
         variant: "destructive"
       });
       return false;
