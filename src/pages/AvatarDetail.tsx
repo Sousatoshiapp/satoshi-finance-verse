@@ -7,6 +7,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { ArrowLeft, Star, Coins, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { getAvatarImage } from "@/utils/avatar-images";
 
 interface Avatar {
   id: string;
@@ -218,9 +219,12 @@ export default function AvatarDetail() {
               <CardContent className="p-6">
                 <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-4">
                   <img
-                    src={avatar.image_url}
+                    src={getAvatarImage(avatar.image_url)}
                     alt={avatar.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = getAvatarImage('/avatars/the-satoshi.jpg');
+                    }}
                   />
                 </div>
                 
