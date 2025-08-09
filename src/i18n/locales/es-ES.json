@@ -10,7 +10,8 @@
     "level": "Nivel",
     "points": "Puntos",
     "xp": "XP",
-    "beetz": "Beetz"
+    "beetz": "Beetz",
+    "play": "Jugar"
   },
   "navigation": {
     "dashboard": "Panel",

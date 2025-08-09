@@ -69,8 +69,7 @@
     "postsCreated": "Posts Created",
     "likesReceived": "Likes Received",
     "switchTo": "Switch to",
-    "playground": "Playground",
-    "explore": "Explore"
+    "play": "Play"
   },
   "duels": {
     "activeArena": "Arena",
