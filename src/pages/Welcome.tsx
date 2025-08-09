@@ -100,7 +100,7 @@ export default function Welcome() {
               onClick={() => navigate('/auth?mode=signup')}
               variant="outline"
               className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-4 text-sm min-h-[40px] w-56' : 'py-3 px-6 text-base w-72'}`}
-              style={{ borderColor: '#adff2f', color: '#adff2f', backgroundColor: 'rgba(173, 255, 47, 0.5)' }}
+              style={{ borderColor: '#adff2f', color: '#adff2f' }}
             >
               {t('welcome.buttons.createAccount')}
               <ArrowRight className={`ml-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
