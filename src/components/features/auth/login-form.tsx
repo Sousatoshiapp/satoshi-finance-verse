@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
 import { Label } from "@/components/shared/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ScanFace, Fingerprint, ShieldCheck } from "lucide-react";
+import { useBiometricAuth } from "@/hooks/use-biometric-auth";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -16,7 +17,16 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [biometricLoading, setBiometricLoading] = useState(false);
   const { toast } = useToast();
+  const biometric = useBiometricAuth();
+
+  // Check for biometric login on component mount
+  useEffect(() => {
+    if (biometric.isAvailable && biometric.isEnabled && !biometric.loading) {
+      handleBiometricLogin();
+    }
+  }, [biometric.isAvailable, biometric.isEnabled, biometric.loading]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +42,15 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
         throw error;
       }
 
+      // Ask if user wants to enable biometric auth
+      if (biometric.isAvailable && !biometric.isEnabled) {
+        setTimeout(() => {
+          if (confirm(`Habilitar ${biometric.getBiometricLabel()} para login rápido?`)) {
+            biometric.enableBiometricAuth(email);
+          }
+        }, 1000);
+      }
+
       toast({
         title: "Login realizado com sucesso!",
         description: "Bem-vindo de volta!",
@@ -45,6 +64,43 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBiometricLogin = async () => {
+    setBiometricLoading(true);
+    
+    try {
+      const result = await biometric.authenticateWithBiometric();
+      
+      if (result.success) {
+        toast({
+          title: "Login realizado com sucesso!",
+          description: `Autenticado com ${biometric.getBiometricLabel()}`,
+        });
+      } else if (result.error && !result.error.includes('Cancelado')) {
+        toast({
+          title: "Erro na autenticação biométrica",
+          description: result.error,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Biometric login error:', error);
+    } finally {
+      setBiometricLoading(false);
+    }
+  };
+
+  const getBiometricIcon = () => {
+    const iconName = biometric.getBiometricIcon();
+    switch (iconName) {
+      case 'scan-face':
+        return ScanFace;
+      case 'fingerprint':
+        return Fingerprint;
+      default:
+        return ShieldCheck;
     }
   };
 
@@ -99,6 +155,30 @@ export function LoginForm({ onForgotPassword }: LoginFormProps) {
           "Entrar"
         )}
       </Button>
+
+      {/* Biometric Authentication Button */}
+      {biometric.isAvailable && (
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full flex items-center gap-2"
+          onClick={handleBiometricLogin}
+          disabled={biometricLoading || biometric.loading}
+        >
+          {biometricLoading ? (
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            (() => {
+              const IconComponent = getBiometricIcon();
+              return <IconComponent className="h-4 w-4" />;
+            })()
+          )}
+          {biometricLoading 
+            ? "Autenticando..." 
+            : `Entrar com ${biometric.getBiometricLabel()}`
+          }
+        </Button>
+      )}
 
       <div className="text-center">
         <Button
