@@ -27,9 +27,9 @@ export function FloatingNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
+    <div className="fixed bottom-0 left-0 right-0 z-50 safe-bottom" style={{ paddingTop: '55px' }}>
       <div className="flex items-center justify-center p-mobile-2 px-8">
-        <div className="bg-card/70 backdrop-blur-md border border-border rounded-3xl shadow-lg p-mobile-1">
+        <div className="bg-card/55 backdrop-blur-md border border-border rounded-3xl shadow-lg p-mobile-1">
           <div className="flex items-center justify-center gap-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path || 
