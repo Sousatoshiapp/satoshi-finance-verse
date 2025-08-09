@@ -38,6 +38,7 @@ import { useI18nContext } from "@/contexts/I18nProvider";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getLevelInfo } from "@/data/levels";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ConfettiCelebration } from "@/components/shared/animations/confetti-celebration";
 
 
 const getGreeting = (t: any) => {
@@ -69,17 +70,24 @@ const getCurrentLevelXP = (level: number) => {
 };
 
 export default function Dashboard() {
-  const { t, getCurrentLanguage } = useI18n();
+  const { t, getCurrentLanguage, i18n } = useI18n();
   const { isReady } = useI18nContext();
   const isMobile = useIsMobile();
   
-  // Debug i18n state
-  console.log('Dashboard i18n state:', { 
-    isReady, 
-    currentLang: getCurrentLanguage(),
-    playTranslation: t('common.play')
-  });
+  // Force refresh translation when language changes
+  const playText = useMemo(() => {
+    const translation = i18n.t('common.play');
+    console.log('Dashboard translation debug:', {
+      isReady,
+      currentLang: getCurrentLanguage(),
+      rawTranslation: translation,
+      fallback: translation === 'common.play' ? 'Jogar' : translation
+    });
+    return translation === 'common.play' ? 'Jogar' : translation;
+  }, [i18n.language, isReady]);
+  
   const [greeting, setGreeting] = useState(getGreeting(t));
+  const [showConfetti, setShowConfetti] = useState(false);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   
   const navigate = useNavigate();
@@ -419,24 +427,16 @@ export default function Dashboard() {
           {/* Botão Principal Jogar - Circular Transparente */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
             <Button 
-              onClick={(e) => {
-                // Trigger particle explosion
-                const rect = e.currentTarget.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
+              onClick={() => {
+                // Trigger confetti celebration
+                setShowConfetti(true);
                 
-                const particleEvent = new CustomEvent('showParticleSystem', {
-                  detail: {
-                    type: 'lightning',
-                    intensity: 2.5,
-                    duration: 1200,
-                    sourcePosition: { x: centerX, y: centerY }
-                  }
-                });
-                window.dispatchEvent(particleEvent);
-                
-                // Navigate after particle effect starts
-                setTimeout(() => navigate('/game-mode'), 200);
+                // Navigate after a brief delay
+                setTimeout(() => {
+                  navigate('/game-mode');
+                  // Reset confetti after navigation
+                  setTimeout(() => setShowConfetti(false), 100);
+                }, 600);
               }}
               className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
             >
@@ -444,7 +444,7 @@ export default function Dashboard() {
                 <svg className="w-6 h-6 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 6v12l10-6z"/>
                 </svg>
-                <span className="text-xs">{t('common.play') || 'Jogar'}</span>
+                <span className="text-xs">{playText}</span>
               </div>
             </Button>
           </div>
@@ -512,6 +512,16 @@ export default function Dashboard() {
         open={showAvatarSelection}
         onOpenChange={setShowAvatarSelection}
         onAvatarSelected={handleAvatarSelected}
+      />
+
+      {/* Confetti Celebration */}
+      <ConfettiCelebration
+        trigger={showConfetti}
+        type="achievement"
+        intensity="high"
+        colors={['#ADFF2F', '#32CD32', '#00FF00', '#FFFF00']}
+        duration={2000}
+        onComplete={() => setShowConfetti(false)}
       />
     </div>
   );
