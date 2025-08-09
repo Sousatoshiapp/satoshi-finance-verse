@@ -154,7 +154,7 @@ export default function Social() {
     return (
       <div className="min-h-screen bg-background" style={{ paddingTop: '50px' }}>
         {/* Botão de voltar acima da imagem do perfil - Mobile Loading */}
-        <div className="lg:hidden absolute top-4 left-4 z-50">
+        <div className="lg:hidden absolute top-8 left-4 z-50">
           <Button
             variant="ghost"
             size="sm"
@@ -503,7 +503,7 @@ export default function Social() {
         </div>
       </div>
       {/* Botão de voltar acima da imagem do perfil - Mobile */}
-      <div className="lg:hidden absolute top-4 left-4 z-50">
+      <div className="lg:hidden absolute top-8 left-4 z-50">
         <Button
           variant="ghost"
           size="sm"
