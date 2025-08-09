@@ -20,6 +20,20 @@ export const LazyRoutes = {
   // Duel pages
   BtcDuel: lazy(() => import('@/pages/BtcDuel')),
   
+  // Gamification pages
+  Achievements: lazy(() => import('@/pages/Achievements')),
+  Inventory: lazy(() => import('@/pages/Inventory')),
+  AvatarCollection: lazy(() => import('@/pages/AvatarCollection')),
+  Levels: lazy(() => import('@/pages/Levels')),
+  Powerups: lazy(() => import('@/pages/Powerups')),
+  BeetzInfo: lazy(() => import('@/pages/BeetzInfo')),
+  
+  // Monetization pages
+  SubscriptionPlans: lazy(() => import('@/pages/SubscriptionPlans')),
+  
+  // Profile pages
+  UserProfile: lazy(() => import('@/pages/UserProfile')),
+  
   // Other pages
   Profile: lazy(() => import('@/pages/Profile')),
   Social: lazy(() => import('@/pages/Social')),
