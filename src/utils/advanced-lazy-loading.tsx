@@ -24,5 +24,6 @@ export const LazyRoutes = {
   Profile: lazy(() => import('@/pages/Profile')),
   Social: lazy(() => import('@/pages/Social')),
   Leaderboard: lazy(() => import('@/pages/Leaderboard')),
-  Store: lazy(() => import('@/pages/Store'))
+  Store: lazy(() => import('@/pages/Store')),
+  Settings: lazy(() => import('@/pages/Settings'))
 };
