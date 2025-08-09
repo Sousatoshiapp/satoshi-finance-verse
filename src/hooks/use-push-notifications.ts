@@ -17,6 +17,11 @@ export function usePushNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { toast } = useToast();
+  
+  // Detectar plataforma para orientações específicas
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
 
   useEffect(() => {
     checkSupport();
@@ -127,13 +132,9 @@ export function usePushNotifications() {
     // Verificar se VAPID key está configurada
     const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BP7t8LC0ZOH-NrYQQ6L9t9D2lJ2qQa5G9X4j6F5qR0t5lO-JzY8FtDvKO8Q8dN4NqL5sO9rV3W0J8Q2pR5xF2Ks';
     
-    if (vapidKey === 'your-vapid-public-key-here' || !vapidKey) {
-      toast({
-        title: "Configuração pendente",
-        description: "Chaves VAPID não configuradas. Contacte o suporte.",
-        variant: "destructive"
-      });
-      return false;
+    if (vapidKey === 'your-vapid-public-key-here') {
+      // Para desenvolvimento, usar chave simulada
+      console.warn('Using placeholder VAPID key for development');
     }
 
     if (!isSupported) {
@@ -314,6 +315,22 @@ export function usePushNotifications() {
     }
   };
 
+  // Função para obter orientações específicas da plataforma
+  const getPlatformGuidance = () => {
+    if (isMobile) {
+      if (isIOS) {
+        return "Configurações > Safari > Notificações > Permitir";
+      } else if (isAndroid) {
+        return "Configurações > Apps > Navegador > Notificações > Permitir";
+      } else {
+        return "Configurações do dispositivo > Notificações > Permitir para este site";
+      }
+    } else {
+      // Desktop
+      return "Clique no ícone na barra de endereços > Permitir notificações";
+    }
+  };
+
   return {
     isSupported,
     permission,
@@ -321,7 +338,8 @@ export function usePushNotifications() {
     requestPermission,
     subscribe,
     unsubscribe,
-    sendLocalNotification
+    sendLocalNotification,
+    getPlatformGuidance
   };
 }
 

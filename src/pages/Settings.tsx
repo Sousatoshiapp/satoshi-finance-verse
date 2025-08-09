@@ -61,7 +61,8 @@ export default function Settings() {
     isSubscribed: pushSubscribed, 
     requestPermission: requestPushPermission,
     subscribe: subscribePush,
-    unsubscribe: unsubscribePush
+    unsubscribe: unsubscribePush,
+    getPlatformGuidance
   } = usePushNotifications();
 
   useEffect(() => {
@@ -409,7 +410,7 @@ export default function Settings() {
                   <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
                   <p className="text-sm text-muted-foreground">
                     {!pushSupported ? "Não suportado neste dispositivo" :
-                     pushPermission === 'denied' ? "Permissão negada - Vá em Configurações do navegador" :
+                     pushPermission === 'denied' ? "Permissão negada" :
                      pushSubscribed ? "Ativo - Recebendo notificações" : 
                      pushPermission === 'granted' ? "Disponível para ativar" :
                      "Clique para permitir notificações"
@@ -423,7 +424,7 @@ export default function Settings() {
                       onClick={() => {
                         toast({
                           title: "Como reativar notificações",
-                          description: "1. Clique no ícone 🔒 na barra de endereços\n2. Altere 'Notificações' para 'Permitir'\n3. Recarregue a página",
+                          description: getPlatformGuidance(),
                         });
                       }}
                     >
