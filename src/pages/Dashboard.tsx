@@ -285,7 +285,7 @@ export default function Dashboard() {
       <div className={`${isMobile ? 'px-6 pb-4' : 'px-4 pt-8 pb-4'}`} style={isMobile ? { paddingTop: '50px' } : {}}>
         <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-md'}`}>
           {/* Simplified Header - Mobile Optimized */}
-          <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-6'}`}>
+          <div className={`flex items-center justify-between ${isMobile ? 'mb-8' : 'mb-10'}`}>
             <div>
               <p className={`text-muted-foreground mb-1 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                 <span>{greeting.icon}</span> <span>{greeting.text}</span>
