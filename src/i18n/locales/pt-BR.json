@@ -1036,9 +1036,9 @@
       }
     },
     "cta": {
-      "title": "Escolha sua forma de entrar:",
-      "start": "Entrar no Jogo",
-      "skip": "Criar Conta"
+      "title": "Pronto para explorar o futuro?",
+      "start": "Iniciar Jornada",
+      "skip": "Pular Introdução"
     },
     "footer": {
       "text": "Junte-se a milhares de jogadores na revolução digital"
