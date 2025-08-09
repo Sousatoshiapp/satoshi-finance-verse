@@ -58,7 +58,7 @@ export function CircularTimer({
   
   // Color based on time remaining
   const getColor = () => {
-    if (progress > 0.6) return "hsl(var(--success))"; // Green
+    if (progress > 0.6) return "hsl(var(--timer))"; // Verde #adff2f
     if (progress > 0.3) return "hsl(var(--warning))"; // Yellow
     return "hsl(var(--destructive))"; // Red
   };

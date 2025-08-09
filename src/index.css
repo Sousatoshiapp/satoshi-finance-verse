@@ -45,6 +45,7 @@ All colors MUST be HSL.
     --info: 221 83% 53%;
     --level: 280 100% 70%;
     --beetz: 15 80% 45%;
+    --timer: 84 100% 59%;
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(81 100% 59%), hsl(81 100% 69%));
