@@ -72,11 +72,11 @@
     "play": "开始游戏"
   },
   "duels": {
-    "activeArena": "Arena",
-    "online": "players online",
-    "searching": "Finding Opponent...",
-    "moreBotsAvailable": "More bots available",
-    "lastUpdate": "Last update"
+    "activeArena": "竞技场",
+    "online": "在线玩家",
+    "searching": "寻找对手中...",
+    "moreBotsAvailable": "更多机器人可用",
+    "lastUpdate": "最近更新"
   },
   "quiz": {
     "title": "Quiz",

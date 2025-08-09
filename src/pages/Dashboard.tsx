@@ -76,61 +76,6 @@ export default function Dashboard() {
   
   const [greeting, setGreeting] = useState(getGreeting(t));
   const [showConfetti, setShowConfetti] = useState(false);
-  const [playText, setPlayText] = useState('Jogar');
-  
-  // Advanced i18n monitoring with cache clearing
-  useEffect(() => {
-    const updatePlayText = () => {
-      // Force reload translations and clear cache
-      if (i18n.isInitialized && isReady) {
-        // Check if translation exists
-        const hasTranslation = i18n.exists('common.play');
-        let translation = i18n.t('common.play');
-        
-        // Robust fallback system
-        if (!hasTranslation || translation === 'common.play') {
-          const langFallbacks = {
-            'pt-BR': 'Jogar',
-            'en-US': 'Play',
-            'es-ES': 'Jugar', 
-            'hi-IN': 'खेलें',
-            'zh-CN': '玩',
-            'ar-SA': 'العب'
-          };
-          translation = langFallbacks[getCurrentLanguage()] || 'Jogar';
-        }
-        
-        console.log('🎮 Play button translation update:', {
-          isReady,
-          isInitialized: i18n.isInitialized,
-          currentLang: getCurrentLanguage(),
-          hasTranslation,
-          finalTranslation: translation,
-          rawT: i18n.t('common.play')
-        });
-        
-        setPlayText(translation);
-      }
-    };
-
-    // Initial update
-    updatePlayText();
-    
-    // Listen for language changes
-    const handleLanguageChanged = () => {
-      console.log('🔄 Language changed, updating play text...');
-      // Small delay to ensure translations are loaded
-      setTimeout(updatePlayText, 100);
-    };
-
-    i18n.on('languageChanged', handleLanguageChanged);
-    i18n.on('loaded', updatePlayText);
-    
-    return () => {
-      i18n.off('languageChanged', handleLanguageChanged);
-      i18n.off('loaded', updatePlayText);
-    };
-  }, [i18n, isReady, getCurrentLanguage]);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   
   const navigate = useNavigate();
@@ -487,7 +432,7 @@ export default function Dashboard() {
                 <svg className="w-6 h-6 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 6v12l10-6z"/>
                 </svg>
-                <span className="text-xs">{playText}</span>
+                <span className="text-xs">{t('common.play')}</span>
               </div>
             </Button>
           </div>
@@ -504,10 +449,6 @@ export default function Dashboard() {
           </div>
           */}
 
-          {/* Enhanced Daily Summary */}
-          <div className={`${isMobile ? 'mb-10' : 'mb-12'}`}>
-            <LazyDashboardSummary userStats={userStats} subscription={subscription} />
-          </div>
 
 
           {/* Core Actions - PERFORMANCE: Daily Missions removidas temporariamente */}
