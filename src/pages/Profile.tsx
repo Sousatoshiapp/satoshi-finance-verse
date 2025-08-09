@@ -249,7 +249,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background pb-24" 
-         style={{ paddingTop: 'env(safe-area-inset-top, 20px)' }}>
+         style={{ paddingTop: '50px' }}>
       {/* Header - Enhanced mobile spacing */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b px-6 py-4 pt-18" 
            style={{ top: 'env(safe-area-inset-top, 0px)' }}>
