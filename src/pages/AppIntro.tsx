@@ -124,7 +124,7 @@ export default function AppIntro() {
             
             <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'flex-row justify-center space-x-4'}`}>
               <Button 
-                onClick={() => navigate('/welcome')}
+                onClick={() => navigate('/auth')}
                 className={`font-bold transition-all duration-300 bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 text-white border-0 ${isMobile ? 'py-3 text-base min-h-[48px]' : 'py-4 text-lg px-8'}`}
               >
                 <Zap className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
@@ -134,7 +134,7 @@ export default function AppIntro() {
 
               {!isMobile && (
                 <Button 
-                  onClick={() => navigate('/welcome')}
+                  onClick={() => navigate('/auth')}
                   variant="outline"
                   className="font-bold transition-all duration-300 border-white/20 text-white hover:bg-white/10 py-4 text-lg px-8"
                 >
@@ -145,7 +145,7 @@ export default function AppIntro() {
 
             {isMobile && (
               <Button 
-                onClick={() => navigate('/welcome')}
+                onClick={() => navigate('/auth')}
                 variant="ghost"
                 className="text-muted-foreground text-sm underline"
               >
