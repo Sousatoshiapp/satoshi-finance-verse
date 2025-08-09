@@ -7,6 +7,7 @@ import { generateRoutes } from "@/components/shared/RouteGenerator";
 import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
 import { GlobalErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
 import { useI18n } from "@/hooks/use-i18n";
+import { useSplashScreen } from "@/hooks/use-splash-screen";
 
 function NotFoundPage() {
   const { t } = useI18n();
@@ -21,6 +22,8 @@ function NotFoundPage() {
 }
 
 function AppContent() {
+  useSplashScreen();
+  
   return (
     <div className="min-h-screen bg-background font-sans antialiased">
       <Suspense fallback={<LoadingSpinner />}>
