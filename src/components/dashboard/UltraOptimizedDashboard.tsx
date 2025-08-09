@@ -2,7 +2,7 @@
 import React, { memo, useMemo } from 'react';
 import { useDashboardSuperQuery } from '@/hooks/use-dashboard-super-query';
 import { UltraBTZCounter } from './UltraBTZCounter';
-import { DashboardSkeleton } from './DashboardSkeleton';
+import { ProfileStyleLoader } from '@/components/shared/ui/profile-style-loader';
 import { useI18n } from '@/hooks/use-i18n';
 
 // Ultra-minimalist dashboard that renders skeleton immediately
@@ -39,9 +39,9 @@ const UltraOptimizedDashboard = memo(() => {
     };
   }, [data, t]);
 
-  // Always render skeleton first for immediate paint
+  // Always render loading for immediate paint
   if (isLoading || !data) {
-    return <DashboardSkeleton greeting={greeting} />;
+    return <ProfileStyleLoader />;
   }
 
   return (

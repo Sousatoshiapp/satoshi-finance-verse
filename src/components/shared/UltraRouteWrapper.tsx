@@ -1,66 +1,26 @@
-// FASE 2: Ultra Route Wrapper - Skeleton-first rendering para todas as telas
+// FASE 2: Ultra Route Wrapper - ProfileStyleLoader for all screens
 import React, { memo, Suspense, useEffect } from 'react';
 import { RouteWrapper } from './RouteWrapper';
-import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
-import { Skeleton } from '@/components/shared/ui/skeleton';
+import { ProfileStyleLoader } from '@/components/shared/ui/profile-style-loader';
 // import { useUltraRoutePreloader } from '@/utils/ultra-route-preloader';
 import { useLocation } from 'react-router-dom';
 
-// FASE 2.1: Skeleton universal para todas as telas
-const UniversalSkeleton = memo(() => (
-  <div className="min-h-screen bg-background pb-20">
-    <div className="px-4 pt-8 pb-4">
-      <div className="max-w-md mx-auto space-y-6">
-        {/* Header skeleton */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-6 w-32" />
-          </div>
-          <Skeleton className="h-10 w-10 rounded-full" />
-        </div>
-        
-        {/* Main content skeleton */}
-        <div className="space-y-4">
-          <Skeleton className="h-24 w-full rounded-lg" />
-          <Skeleton className="h-16 w-full rounded-lg" />
-          
-          {/* Grid skeleton */}
-          <div className="grid grid-cols-2 gap-3">
-            <Skeleton className="h-20 w-full rounded-lg" />
-            <Skeleton className="h-20 w-full rounded-lg" />
-          </div>
-          
-          {/* List skeleton */}
-          <div className="space-y-3">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-3">
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
-                </div>
-                <Skeleton className="h-8 w-16 rounded" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+// Universal loader for all screens
+const UniversalLoader = memo(() => (
+  <ProfileStyleLoader size="lg" />
 ));
 
-UniversalSkeleton.displayName = 'UniversalSkeleton';
+UniversalLoader.displayName = 'UniversalLoader';
 
-// FASE 2.2: Skeleton específico por tipo de tela
-const SkeletonMap = {
-  dashboard: UniversalSkeleton,
-  profile: UniversalSkeleton, 
-  social: UniversalSkeleton,
-  quiz: UniversalSkeleton,
-  store: UniversalSkeleton,
-  leaderboard: UniversalSkeleton,
-  default: UniversalSkeleton
+// Loader map for different route types
+const LoaderMap = {
+  dashboard: UniversalLoader,
+  profile: UniversalLoader, 
+  social: UniversalLoader,
+  quiz: UniversalLoader,
+  store: UniversalLoader,
+  leaderboard: UniversalLoader,
+  default: UniversalLoader
 };
 
 interface UltraRouteWrapperProps {
@@ -68,7 +28,7 @@ interface UltraRouteWrapperProps {
   requiresAuth?: boolean;
   showNavbar?: boolean;
   adminOnly?: boolean;
-  routeType?: keyof typeof SkeletonMap;
+  routeType?: keyof typeof LoaderMap;
 }
 
 // FASE 2.3: Ultra Route Wrapper com preload inteligente
@@ -105,8 +65,8 @@ export const UltraRouteWrapper = memo(({
     };
   }, [location.pathname]);
 
-  // FASE 2.5: Skeleton otimizado por tipo de rota
-  const SkeletonComponent = SkeletonMap[routeType] || SkeletonMap.default;
+  // Loader component for route type
+  const LoaderComponent = LoaderMap[routeType] || LoaderMap.default;
 
   return (
     <RouteWrapper
@@ -114,7 +74,7 @@ export const UltraRouteWrapper = memo(({
       showNavbar={showNavbar}
       adminOnly={adminOnly}
     >
-      <Suspense fallback={<SkeletonComponent />}>
+      <Suspense fallback={<LoaderComponent />}>
         {children}
       </Suspense>
     </RouteWrapper>
@@ -130,7 +90,7 @@ export const withUltraRoute = (
     requiresAuth?: boolean;
     showNavbar?: boolean;
     adminOnly?: boolean;
-    routeType?: keyof typeof SkeletonMap;
+    routeType?: keyof typeof LoaderMap;
   } = {}
 ) => {
   const WrappedComponent = memo((props: any) => (

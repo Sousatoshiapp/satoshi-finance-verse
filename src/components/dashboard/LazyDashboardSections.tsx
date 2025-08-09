@@ -1,5 +1,5 @@
 import { memo, lazy, Suspense } from 'react';
-import { Skeleton } from '@/components/shared/ui/skeleton';
+import { ProfileStyleLoader } from '@/components/shared/ui/profile-style-loader';
 
 // Lazy load dashboard sections
 const DashboardSummaryOptimized = lazy(() => 
@@ -32,48 +32,38 @@ const BtcDuelCard = lazy(() =>
   }))
 );
 
-// Skeleton components
-const SectionSkeleton = memo(() => (
-  <div className="space-y-4">
-    <Skeleton className="h-6 w-32" />
-    <Skeleton className="h-24 w-full rounded-lg" />
-  </div>
-));
-
-const GridSkeleton = memo(() => (
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <SectionSkeleton />
-    <SectionSkeleton />
-  </div>
+// Standardized loader for all sections
+const StandardLoader = memo(() => (
+  <ProfileStyleLoader size="md" />
 ));
 
 // Lazy section components
 export const LazyDashboardSummary = memo(({ userStats, subscription }: any) => (
-  <Suspense fallback={<SectionSkeleton />}>
+  <Suspense fallback={<StandardLoader />}>
     <DashboardSummaryOptimized userStats={userStats} subscription={subscription} />
   </Suspense>
 ));
 
 export const LazyQuickActions = memo(() => (
-  <Suspense fallback={<GridSkeleton />}>
+  <Suspense fallback={<StandardLoader />}>
     <QuickActionsOptimized />
   </Suspense>
 ));
 
 export const LazyLeaderboard = memo(() => (
-  <Suspense fallback={<SectionSkeleton />}>
+  <Suspense fallback={<StandardLoader />}>
     <CompactLeaderboard />
   </Suspense>
 ));
 
 export const LazyDailyMissions = memo(() => (
-  <Suspense fallback={<SectionSkeleton />}>
+  <Suspense fallback={<StandardLoader />}>
     <CarouselDailyMissions />
   </Suspense>
 ));
 
 export const LazyBtcDuelCard = memo(() => (
-  <Suspense fallback={<SectionSkeleton />}>
+  <Suspense fallback={<StandardLoader />}>
     <BtcDuelCard />
   </Suspense>
 ));

@@ -9,7 +9,7 @@ import { Button } from "@/components/shared/ui/button"
 import { Input } from "@/components/shared/ui/input"
 import { Separator } from "@/components/shared/ui/separator"
 import { Sheet, SheetContent } from "@/components/shared/ui/sheet"
-import { Skeleton } from "@/components/shared/ui/skeleton"
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader"
 import {
   Tooltip,
   TooltipContent,
@@ -661,13 +661,13 @@ const SidebarMenuSkeleton = React.forwardRef<
       {...props}
     >
       {showIcon && (
-        <Skeleton
-          className="size-4 rounded-md"
+        <div
+          className="size-4 rounded-md animate-pulse bg-muted"
           data-sidebar="menu-skeleton-icon"
         />
       )}
-      <Skeleton
-        className="h-4 flex-1 max-w-[--skeleton-width]"
+      <div
+        className="h-4 flex-1 max-w-[--skeleton-width] animate-pulse bg-muted rounded"
         data-sidebar="menu-skeleton-text"
         style={
           {

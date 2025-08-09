@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import { UltraContextProvider } from "@/contexts/UltraContextProvider";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { GlobalErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
-import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 // FASE 3: Micro-Frontend Approach - Dashboard como bundle independente
 const UltraOptimizedDashboard = lazy(() => 
@@ -17,9 +17,9 @@ const LazyQuiz = lazy(() => import("@/pages/Quiz"));
 const LazyStore = lazy(() => import("@/pages/Store"));
 const LazySubscription = lazy(() => import("@/pages/SubscriptionPlans"));
 
-// Skeleton personalizado para dashboard
-const DashboardSkeletonFallback = () => (
-  <DashboardSkeleton greeting={{ text: "Carregando...", icon: "⚡" }} />
+// Standard loader for dashboard
+const StandardLoader = () => (
+  <ProfileStyleLoader />
 );
 
 // Ultra-fast NotFound
@@ -39,11 +39,11 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-background font-sans antialiased">
       <Routes>
-        {/* Dashboard route with custom skeleton */}
+        {/* All routes with standardized loading */}
         <Route 
           path="/" 
           element={
-            <Suspense fallback={<DashboardSkeletonFallback />}>
+            <Suspense fallback={<StandardLoader />}>
               <UltraOptimizedDashboard />
             </Suspense>
           } 
@@ -51,17 +51,16 @@ function AppContent() {
         <Route 
           path="/dashboard" 
           element={
-            <Suspense fallback={<DashboardSkeletonFallback />}>
+            <Suspense fallback={<StandardLoader />}>
               <UltraOptimizedDashboard />
             </Suspense>
           } 
         />
         
-        {/* Other routes with regular loading */}
         <Route 
           path="/profile" 
           element={
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<StandardLoader />}>
               <LazyProfile />
             </Suspense>
           } 
@@ -69,7 +68,7 @@ function AppContent() {
         <Route 
           path="/quiz" 
           element={
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<StandardLoader />}>
               <LazyQuiz />
             </Suspense>
           } 
@@ -77,7 +76,7 @@ function AppContent() {
         <Route 
           path="/store" 
           element={
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<StandardLoader />}>
               <LazyStore />
             </Suspense>
           } 
@@ -85,7 +84,7 @@ function AppContent() {
         <Route 
           path="/subscription-plans" 
           element={
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<StandardLoader />}>
               <LazySubscription />
             </Suspense>
           } 

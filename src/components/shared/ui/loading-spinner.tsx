@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { ProfileStyleLoader } from "./profile-style-loader";
 
 interface LoadingSpinnerProps {
   className?: string;
@@ -6,21 +6,5 @@ interface LoadingSpinnerProps {
 }
 
 export function LoadingSpinner({ className, size = "md" }: LoadingSpinnerProps) {
-  const sizes = {
-    sm: "h-4 w-4",
-    md: "h-8 w-8", 
-    lg: "h-12 w-12"
-  };
-
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50">
-      <div
-        className={cn(
-          "animate-spin rounded-full border-2 border-muted border-t-primary",
-          sizes[size],
-          className
-        )}
-      />
-    </div>
-  );
+  return <ProfileStyleLoader className={className} size={size} />;
 }
