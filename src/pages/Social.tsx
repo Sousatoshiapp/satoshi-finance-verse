@@ -368,7 +368,7 @@ export default function Social() {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="feed" className="pb-16 min-h-screen">
+              <TabsContent value="feed" className="pb-16 min-h-screen px-6">
                 <CreatePostCard 
                   variant="mobile"
                   currentUser={currentUser}
@@ -378,7 +378,7 @@ export default function Social() {
                 <TwitterSocialFeed />
               </TabsContent>
 
-              <TabsContent value="search" className="pb-16">
+              <TabsContent value="search" className="pb-16 px-6">
                 <div className="p-4 space-y-4">
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -426,7 +426,7 @@ export default function Social() {
               </TabsContent>
 
 
-              <TabsContent value="messages" className="pb-16">
+              <TabsContent value="messages" className="pb-16 px-6">
                 <div className="p-4">
                   <ConversationsList onSelectConversation={setSelectedConversationId} />
                 </div>
