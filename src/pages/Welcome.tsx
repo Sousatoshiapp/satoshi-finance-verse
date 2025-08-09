@@ -86,10 +86,10 @@ export default function Welcome() {
           </div>
 
           {/* Auth Options with optimal touch targets */}
-          <div className={`space-y-4 ${isMobile ? 'space-y-3' : ''}`}>
+          <div className={`flex flex-col items-center space-y-4 ${isMobile ? 'space-y-3' : ''}`}>
             <Button 
               onClick={() => navigate('/auth?mode=login')}
-              className={`w-full font-bold transition-all duration-300 ${isMobile ? 'py-3 text-base min-h-[48px]' : 'py-4 text-lg'}`}
+              className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-6 text-sm min-h-[40px] w-64' : 'py-3 px-8 text-base w-80'}`}
               style={{ backgroundColor: '#adff2f', color: '#000000' }}
             >
               <Shield className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
@@ -100,7 +100,7 @@ export default function Welcome() {
             <Button 
               onClick={() => navigate('/auth?mode=signup')}
               variant="outline"
-              className={`w-full font-bold transition-all duration-300 ${isMobile ? 'py-3 text-base min-h-[48px]' : 'py-4 text-lg'}`}
+              className={`font-bold transition-all duration-300 ${isMobile ? 'py-2 px-6 text-sm min-h-[40px] w-64' : 'py-3 px-8 text-base w-80'}`}
               style={{ borderColor: '#adff2f', color: '#adff2f' }}
             >
               <Users className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
