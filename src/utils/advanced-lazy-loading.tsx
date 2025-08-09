@@ -38,6 +38,12 @@ export const LazyRoutes = {
   P2PTransfer: lazy(() => import('@/pages/P2PTransfer')),
   ProximityTransferBluetooth: lazy(() => import('@/pages/ProximityTransferBluetooth')),
   
+  // Detail pages
+  AvatarDetail: lazy(() => import('@/pages/AvatarDetail')),
+  BoostDetail: lazy(() => import('@/pages/BoostDetail')),
+  SkinDetail: lazy(() => import('@/pages/SkinDetail')),
+  AccessoryDetail: lazy(() => import('@/pages/AccessoryDetail')),
+  
   // Gamification pages
   Achievements: lazy(() => import('@/pages/Achievements')),
   Inventory: lazy(() => import('@/pages/Inventory')),
