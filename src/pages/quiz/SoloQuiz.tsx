@@ -1,6 +1,6 @@
 import React, { useEffect, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { NewQuizEngine } from '@/components/quiz/new-quiz-engine';
+import { QuizEngine } from '@/components/features/quiz/quiz-engine';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -82,11 +82,9 @@ export default function SoloQuiz() {
         </div>
       }>
         <div className="min-h-screen">
-          <NewQuizEngine
-            topic={category}
-            difficulty={difficulty}
+          <QuizEngine
+            mode="solo"
             questionsCount={questionsCount}
-            mode={mode}
             onComplete={handleQuizComplete}
           />
         </div>
