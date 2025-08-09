@@ -59,7 +59,7 @@ const UltraOptimizedDashboard = memo(() => {
           </div>
 
           {/* Critical BTZ Counter - ultra-light version */}
-          <div className="mb-6">
+          <div className="mb-10">
             <UltraBTZCounter 
               points={userStats.points} 
               level={userStats.level}

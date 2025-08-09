@@ -403,7 +403,7 @@ export default function Dashboard() {
           </div>
 
           {/* BTZ Counter - Separate section - Mobile Adjusted */}
-          <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
+          <div className={`${isMobile ? 'mb-8' : 'mb-10'}`}>
             <LazyBTZCounter />
           </div>
 
