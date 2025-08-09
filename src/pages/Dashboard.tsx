@@ -304,7 +304,7 @@ export default function Dashboard() {
                   )}
                 </span>
               </p>
-              <h1 className={`font-bold text-foreground ml-[1.5ch] ${isMobile ? 'text-lg' : 'text-xl'}`}>{userNickname}</h1>
+              <h1 className={`font-bold text-foreground ml-[1.2ch] ${isMobile ? 'text-lg' : 'text-xl'}`}>{userNickname}</h1>
             </div>
             <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
               <LanguageSwitch />
