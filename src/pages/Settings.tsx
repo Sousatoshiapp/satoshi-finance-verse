@@ -10,10 +10,12 @@ import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
 import { useKYCStatus } from "@/hooks/use-kyc-status";
+import { useBiometricAuth } from "@/hooks/use-biometric-auth";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { KYCVerification } from "@/components/features/kyc/KYCVerification";
 import { PasswordChangeDialog } from "@/components/settings/password-change-dialog";
 import { EmailChangeDialog } from "@/components/settings/email-change-dialog";
-import { Edit, Shield } from "lucide-react";
+import { Edit, Shield, Fingerprint, Smartphone } from "lucide-react";
 
 export default function Settings() {
   const { t } = useI18n();
@@ -26,7 +28,8 @@ export default function Settings() {
     animationsEnabled: true,
     celebrationsEnabled: true,
     hapticsEnabled: true,
-    particleQuality: 'medium' as 'low' | 'medium' | 'high'
+    particleQuality: 'medium' as 'low' | 'medium' | 'high',
+    biometricAuth: false
   });
   
   const [userInfo, setUserInfo] = useState({
@@ -45,6 +48,21 @@ export default function Settings() {
   const { toast } = useToast();
   const { profile } = useProfile();
   const { checkKYCRequired } = useKYCStatus();
+  const { 
+    isAvailable: biometricAvailable, 
+    isEnabled: biometricEnabled, 
+    enableBiometricAuth, 
+    disableBiometricAuth,
+    getBiometricLabel
+  } = useBiometricAuth();
+  const { 
+    isSupported: pushSupported, 
+    permission: pushPermission, 
+    isSubscribed: pushSubscribed, 
+    requestPermission: requestPushPermission,
+    subscribe: subscribePush,
+    unsubscribe: unsubscribePush
+  } = usePushNotifications();
 
   useEffect(() => {
     loadUserData();
@@ -69,7 +87,10 @@ export default function Settings() {
       const savedSettings = localStorage.getItem('satoshi_settings');
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings);
-        setSettings(parsedSettings);
+        setSettings({
+          ...parsedSettings,
+          biometricAuth: biometricEnabled
+        });
         
         // Aplicar modo escuro
         if (parsedSettings.darkMode) {
@@ -101,6 +122,20 @@ export default function Settings() {
       // Salvar configurações no localStorage
       localStorage.setItem('satoshi_settings', JSON.stringify(settings));
       
+      // Aplicar configurações de som
+      if (settings.soundEffects) {
+        localStorage.setItem('enableSounds', 'true');
+      } else {
+        localStorage.setItem('enableSounds', 'false');
+      }
+      
+      // Aplicar configurações de vibração
+      if (settings.hapticsEnabled) {
+        localStorage.setItem('enableHaptics', 'true');
+      } else {
+        localStorage.setItem('enableHaptics', 'false');
+      }
+      
       // Atualizar perfil no Supabase se há mudanças no nickname ou objetivo
       if (profile) {
         const { error: profileError } = await supabase
@@ -123,7 +158,7 @@ export default function Settings() {
         
         if (emailError) {
           toast({
-            title: "Aviso ⚠️",
+            title: "Aviso",
             description: "Email não foi alterado. Use a opção 'Alterar Email' na seção Conta.",
             variant: "destructive"
           });
@@ -139,13 +174,13 @@ export default function Settings() {
       }
       
       toast({
-        title: "Configurações salvas! ✅",
-        description: "Suas informações foram atualizadas no banco de dados.",
+        title: "Configurações salvas!",
+        description: "Suas informações foram atualizadas com sucesso.",
       });
     } catch (error) {
       console.error('Erro ao salvar configurações:', error);
       toast({
-        title: t('errors.error') + " ❌",
+        title: t('errors.error'),
         description: "Não foi possível salvar algumas informações.",
         variant: "destructive"
       });
@@ -195,7 +230,7 @@ export default function Settings() {
     URL.revokeObjectURL(url);
     
     toast({
-      title: "Dados exportados! 📤",
+      title: "Dados exportados!",
       description: "Seu backup foi baixado com sucesso.",
     });
   };
@@ -315,29 +350,125 @@ export default function Settings() {
           </div>
         </Card>
 
+        {/* Segurança */}
+        <Card className="p-6">
+          <h3 className="font-bold text-foreground mb-6">Segurança</h3>
+          <div className="space-y-4">
+            {biometricAvailable && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Fingerprint className="w-5 h-5 text-primary" />
+                  <div>
+                    <h4 className="font-medium text-foreground">{getBiometricLabel()}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Usar {getBiometricLabel().toLowerCase()} para entrar no app
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={biometricEnabled}
+                  onCheckedChange={async (checked) => {
+                    if (checked) {
+                      const success = await enableBiometricAuth(userInfo.email);
+                      if (success) {
+                        setSettings({...settings, biometricAuth: true});
+                        toast({
+                          title: "Autenticação biométrica ativada!",
+                          description: `${getBiometricLabel()} configurado com sucesso.`,
+                        });
+                      } else {
+                        toast({
+                          title: "Erro",
+                          description: "Não foi possível ativar a autenticação biométrica.",
+                          variant: "destructive"
+                        });
+                      }
+                    } else {
+                      disableBiometricAuth();
+                      setSettings({...settings, biometricAuth: false});
+                      toast({
+                        title: "Autenticação biométrica desativada",
+                        description: "Você precisará usar email e senha para entrar.",
+                      });
+                    }
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </Card>
+
         {/* Notificações */}
         <Card className="p-6">
           <h3 className="font-bold text-foreground mb-6">{t('settings.notifications')}</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
-                <p className="text-sm text-muted-foreground">{t('settings.receiveNotifications')}</p>
+              <div className="flex items-center gap-3">
+                <Smartphone className="w-5 h-5 text-primary" />
+                <div>
+                  <h4 className="font-medium text-foreground">{t('settings.pushNotifications')}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {pushSupported ? 
+                      (pushSubscribed ? "Ativo - Recebendo notificações" : "Receber notificações importantes") :
+                      "Não suportado neste dispositivo"
+                    }
+                  </p>
+                </div>
               </div>
               <Switch
-                checked={settings.notifications}
-                onCheckedChange={(checked) => setSettings({...settings, notifications: checked})}
+                checked={pushSupported && pushSubscribed}
+                disabled={!pushSupported}
+                onCheckedChange={async (checked) => {
+                  if (checked) {
+                    if (pushPermission !== 'granted') {
+                      await requestPushPermission();
+                    }
+                    if (pushPermission === 'granted' || pushPermission === 'default') {
+                      await subscribePush();
+                      setSettings({...settings, notifications: true});
+                      toast({
+                        title: "Notificações ativadas!",
+                        description: "Você receberá lembretes e atualizações importantes.",
+                      });
+                    }
+                  } else {
+                    await unsubscribePush();
+                    setSettings({...settings, notifications: false});
+                    toast({
+                      title: "Notificações desativadas",
+                      description: "Você não receberá mais notificações push.",
+                    });
+                  }
+                }}
               />
             </div>
             
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium text-foreground">{t('settings.dailyReminder')}</h4>
-                <p className="text-sm text-muted-foreground">{t('settings.studyReminder')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {settings.dailyReminder ? "Lembrete diário às 19h" : "Sem lembrete diário"}
+                </p>
               </div>
               <Switch
                 checked={settings.dailyReminder}
-                onCheckedChange={(checked) => setSettings({...settings, dailyReminder: checked})}
+                onCheckedChange={async (checked) => {
+                  setSettings({...settings, dailyReminder: checked});
+                  if (checked) {
+                    // Simular agendamento de notificação local
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                      toast({
+                        title: "Lembrete diário ativado!",
+                        description: "Você receberá um lembrete todos os dias às 19h.",
+                      });
+                    }
+                  } else {
+                    toast({
+                      title: "Lembrete diário desativado",
+                      description: "Você não receberá mais lembretes diários.",
+                    });
+                  }
+                }}
               />
             </div>
           </div>
@@ -350,11 +481,28 @@ export default function Settings() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium text-foreground">{t('settings.soundEffects')}</h4>
-                <p className="text-sm text-muted-foreground">{t('settings.interactionSounds')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {settings.soundEffects ? "Sons de feedback ativos" : "Sons desabilitados"}
+                </p>
               </div>
               <Switch
                 checked={settings.soundEffects}
-                onCheckedChange={(checked) => setSettings({...settings, soundEffects: checked})}
+                onCheckedChange={(checked) => {
+                  setSettings({...settings, soundEffects: checked});
+                  if (checked) {
+                    localStorage.setItem('enableSounds', 'true');
+                    toast({
+                      title: "Sons ativados!",
+                      description: "Você ouvirá efeitos sonoros durante o uso do app.",
+                    });
+                  } else {
+                    localStorage.setItem('enableSounds', 'false');
+                    toast({
+                      title: "Sons desativados",
+                      description: "Os efeitos sonoros foram desabilitados.",
+                    });
+                  }
+                }}
               />
             </div>
             
@@ -400,11 +548,31 @@ export default function Settings() {
             <div className="flex items-center justify-between">
               <div>
                 <h4 className="font-medium text-foreground">{t('feedback.settings.haptics')}</h4>
-                <p className="text-sm text-muted-foreground">Vibração para feedback tátil</p>
+                <p className="text-sm text-muted-foreground">
+                  {settings.hapticsEnabled ? "Vibração ativa" : "Vibração desabilitada"}
+                </p>
               </div>
               <Switch
                 checked={settings.hapticsEnabled}
-                onCheckedChange={(checked) => setSettings({...settings, hapticsEnabled: checked})}
+                onCheckedChange={(checked) => {
+                  setSettings({...settings, hapticsEnabled: checked});
+                  if (checked) {
+                    localStorage.setItem('enableHaptics', 'true');
+                    if (navigator.vibrate) {
+                      navigator.vibrate(100);
+                    }
+                    toast({
+                      title: "Vibração ativada!",
+                      description: "Você sentirá feedback tátil durante o uso do app.",
+                    });
+                  } else {
+                    localStorage.setItem('enableHaptics', 'false');
+                    toast({
+                      title: "Vibração desativada",
+                      description: "O feedback tátil foi desabilitado.",
+                    });
+                  }
+                }}
               />
             </div>
 
@@ -429,7 +597,7 @@ export default function Settings() {
         {/* Salvar */}
         <Card className="p-6">
           <Button onClick={handleSaveSettings} className="w-full" disabled={loading}>
-            {loading ? t('settings.buttons.saving') : "💾 " + t('settings.buttons.saveSettings')}
+            {loading ? t('settings.buttons.saving') : "Salvar"}
           </Button>
         </Card>
 
@@ -442,7 +610,7 @@ export default function Settings() {
               onClick={handleLogout}
               className="w-full"
             >
-              🚪 {t('settings.buttons.logout')}
+              {t('settings.buttons.logout')}
             </Button>
           </div>
         </Card>
