@@ -50,9 +50,6 @@ const config: CapacitorConfig = {
       style: 'dark',
       resizeOnFullScreen: true,
     },
-    BiometricAuth: {
-      allowDeviceCredential: true
-    },
   },
 };
 
