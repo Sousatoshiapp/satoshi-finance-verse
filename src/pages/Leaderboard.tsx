@@ -92,9 +92,10 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="px-4 py-4">
+    <div className="min-h-screen bg-background pb-24" 
+         style={{ paddingTop: 'env(safe-area-inset-top, 20px)' }}>
+      {/* Header - Enhanced mobile spacing */}
+      <div className="px-6 py-4 pt-20">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -110,7 +111,7 @@ export default function Leaderboard() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-6 py-4">
         {/* Tab Navigation */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="mb-8">
           <TabsList className="grid w-full grid-cols-4">

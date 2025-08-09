@@ -202,9 +202,10 @@ export default function Settings() {
 
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="px-4 py-4">
+    <div className="min-h-screen bg-background pb-24" 
+         style={{ paddingTop: 'env(safe-area-inset-top, 20px)' }}>
+      {/* Header - Enhanced mobile spacing */}
+      <div className="px-6 py-4 pt-20">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
@@ -215,7 +216,7 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-2xl mx-auto px-6 py-4 space-y-6">
         {/* Informações Pessoais */}
         <Card className="p-6">
           <h3 className="font-bold text-foreground mb-6">{t('settings.personalInfo')}</h3>

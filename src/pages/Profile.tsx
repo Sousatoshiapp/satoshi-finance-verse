@@ -248,9 +248,11 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b px-4 py-3">
+    <div className="min-h-screen bg-background pb-24" 
+         style={{ paddingTop: 'env(safe-area-inset-top, 20px)' }}>
+      {/* Header - Enhanced mobile spacing */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b px-6 py-4" 
+           style={{ top: 'env(safe-area-inset-top, 0px)' }}>
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -266,7 +268,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-4 space-y-6">
+      <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
         {/* Profile Header - Enhanced Mobile Design */}
         <Card className="p-4 md:p-6">
           <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">

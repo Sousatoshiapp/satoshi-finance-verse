@@ -279,14 +279,15 @@ export default function Auth() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-md">
+      {/* Content - Enhanced mobile with 20% more top spacing for iPhone */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-20 sm:p-6" 
+           style={{ paddingTop: 'max(80px, env(safe-area-inset-top, 20px))' }}>
+        <div className="w-full max-w-sm sm:max-w-md">
           {/* Back Button - Mobile responsive */}
           <Button
             variant="ghost"
             onClick={() => navigate('/welcome')}
-            className="mb-4 sm:mb-6 text-gray-300 hover:text-white text-sm sm:text-base"
+            className="mb-6 text-gray-300 hover:text-white text-sm sm:text-base"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t('auth.buttons.back')}

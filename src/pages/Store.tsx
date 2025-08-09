@@ -13,6 +13,7 @@ import { CryptoCheckout } from "@/components/crypto/crypto-checkout";
 import { useCryptoPayments } from "@/hooks/use-crypto-payments";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield, Infinity, Eye, Sparkles } from "lucide-react";
 import { ComingSoonOverlay } from "@/components/shared/coming-soon-overlay";
 
@@ -166,6 +167,7 @@ export default function Store() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useI18n();
+  const isMobile = useIsMobile();
   const { createCryptoPayment, redirectToCryptoPayment, isLoading: cryptoLoading } = useCryptoPayments();
 
   useEffect(() => {
