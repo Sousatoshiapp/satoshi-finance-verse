@@ -49,7 +49,7 @@ const UltraOptimizedDashboard = memo(() => {
       <div className="px-4 pt-8 pb-4">
         <div className="max-w-md mx-auto">
           {/* Ultra-fast header */}
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-14">
             <div>
               <p className="text-sm text-muted-foreground mb-1">
                 <span>{greeting.icon}</span> <span>{greeting.text}</span>
