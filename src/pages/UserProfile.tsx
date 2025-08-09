@@ -228,11 +228,11 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 pb-20">
+    <div className="min-h-screen bg-background p-4 pb-20" style={{ paddingTop: '50px' }}>
       <FloatingNavbar />
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-3">
+        {/* Header com seta posicionada sem invadir o card */}
+        <div className="flex items-center gap-3 mb-6">
           <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
