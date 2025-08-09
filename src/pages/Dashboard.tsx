@@ -407,20 +407,18 @@ export default function Dashboard() {
             <LazyBTZCounter />
           </div>
 
-          {/* Botão Principal Jogar - Circular Gamer */}
+          {/* Botão Principal Jogar - Circular Transparente */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
             <Button 
               onClick={() => navigate('/game-mode')}
-              className="jogar-button w-20 h-20 bg-gradient-to-br from-green-400 via-emerald-500 to-cyan-500 text-white text-sm font-bold rounded-full shadow-xl hover:shadow-2xl hover:shadow-green-500/50 border-2 border-green-300/50 relative overflow-hidden group"
+              className="w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-border hover:border-primary/50 hover:bg-muted/30 transition-all duration-300 group"
             >
-              <div className="relative z-10 flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-1">
                 <svg className="w-6 h-6 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 6v12l10-6z"/>
                 </svg>
                 <span className="text-xs">{t('common.play')}</span>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-cyan-500 rounded-full blur opacity-25 group-hover:opacity-75 transition-opacity duration-300 animate-pulse"></div>
             </Button>
           </div>
 
