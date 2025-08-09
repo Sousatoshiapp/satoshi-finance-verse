@@ -15,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { ArrowLeft, Crown, Star, Gem, Zap, Clock, Gift, Shield, Infinity, Eye, Sparkles } from "lucide-react";
 import { ComingSoonOverlay } from "@/components/shared/coming-soon-overlay";
-import { AvatarFallbackImage } from "@/components/features/store/avatar-fallback-image";
 
 // Import cyberpunk avatar images
 import neoTrader from "@/assets/avatars/neo-trader.jpg";

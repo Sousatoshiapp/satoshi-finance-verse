@@ -251,12 +251,13 @@ export default function AvatarShop() {
                       <CardHeader className="pb-2">
                         <div className="flex flex-col items-center gap-2">
                           <div className="relative">
-                            <AvatarDisplayUniversal
-                              avatarName={avatar.name}
-                              avatarUrl={avatar.image_url}
-                              nickname={avatar.name}
-                              size="lg"
-                            />
+                            <div className="w-16 h-16 relative rounded-full overflow-hidden">
+                              <img 
+                                src={avatar.image_url} 
+                                alt={avatar.name}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
                             {avatar.is_active && (
                               <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                                 <Crown className="w-3 h-3 text-primary-foreground" />
