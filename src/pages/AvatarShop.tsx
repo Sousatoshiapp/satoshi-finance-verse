@@ -253,9 +253,15 @@ export default function AvatarShop() {
                           <div className="relative">
                             <div className="w-16 h-16 relative rounded-full overflow-hidden">
                               <img 
-                                src={avatar.image_url} 
+                                src={avatar.image_url.startsWith('/avatars/') 
+                                  ? `/src/assets${avatar.image_url}` 
+                                  : avatar.image_url
+                                } 
                                 alt={avatar.name}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src = '/src/assets/avatars/the-satoshi.jpg';
+                                }}
                               />
                             </div>
                             {avatar.is_active && (
