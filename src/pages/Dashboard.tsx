@@ -288,7 +288,7 @@ export default function Dashboard() {
           <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-6'}`}>
             <div>
               <p className={`text-muted-foreground mb-1 ${isMobile ? 'text-xs' : 'text-sm'}`}>
-                {greeting.icon} {greeting.text}
+                <span>{greeting.icon}</span> <span>{greeting.text}</span>
                 {/* Realtime connection indicator */}
                 <span className="ml-2">
                   {isOnline ? (
@@ -304,7 +304,7 @@ export default function Dashboard() {
                   )}
                 </span>
               </p>
-              <h1 className={`font-bold text-foreground ${isMobile ? 'text-lg' : 'text-xl'}`}>{userNickname}</h1>
+              <h1 className={`font-bold text-foreground ml-[2.2ch] ${isMobile ? 'text-lg' : 'text-xl'}`}>{userNickname}</h1>
             </div>
             <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
               <LanguageSwitch />
