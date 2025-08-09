@@ -5,12 +5,12 @@ export const gameRoutes = [
     requiresAuth: true,
     showNavbar: true
   },
-  {
-    path: "/solo-quiz",
-    element: "SoloQuiz",
-    requiresAuth: true,
-    showNavbar: false
-  },
+  // {
+  //   path: "/solo-quiz", // LEGACY - COMENTADO
+  //   element: "SoloQuiz",
+  //   requiresAuth: true,
+  //   showNavbar: false
+  // },
   {
     path: "/enhanced-quiz",
     element: "EnhancedQuiz",

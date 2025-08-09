@@ -1,6 +1,7 @@
-import { QuizEngine } from "@/components/quiz/quiz-engine";
+import { Navigate } from "react-router-dom";
 
-// Quiz genérico - redirecionado para o QuizEngine
+// Quiz genérico - redirecionado para o novo sistema
 export default function Quiz() {
-  return <QuizEngine mode="solo" questionsCount={7} />;
+  console.warn('⚠️ Legacy Quiz page accessed - redirecting to new system');
+  return <Navigate to="/quiz/solo" replace />;
 }

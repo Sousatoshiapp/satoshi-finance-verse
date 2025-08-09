@@ -1,6 +1,7 @@
-import { QuizEngine } from "@/components/quiz/quiz-engine";
+import { Navigate } from "react-router-dom";
 
-// Enhanced Quiz - agora usa o QuizEngine unificado
+// Enhanced Quiz - redirecionado para o novo sistema
 export default function EnhancedQuiz() {
-  return <QuizEngine mode="solo" questionsCount={7} />;
+  console.warn('⚠️ Legacy EnhancedQuiz page accessed - redirecting to new system');
+  return <Navigate to="/quiz/solo" replace />;
 }

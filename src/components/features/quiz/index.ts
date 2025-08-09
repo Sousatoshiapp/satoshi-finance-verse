@@ -11,7 +11,7 @@ export { StreakAnimation } from './streak-animation';
 export { BeetzAnimation } from './beetz-animation';
 export { LootInventory } from './loot-inventory';
 export { ThemeSelectionModal } from './theme-selection-modal';
-export { ThemedQuizEngine } from './themed-quiz-engine';
+// export { ThemedQuizEngine } from './themed-quiz-engine'; // LEGACY - COMENTADO
 export { QuizAnalyticsDashboard } from './quiz-analytics-dashboard';
 export { QuizQualityManager } from './quiz-quality-manager';
 export { StagedQuestionGenerator } from './staged-question-generator';
