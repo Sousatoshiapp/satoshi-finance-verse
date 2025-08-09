@@ -73,15 +73,15 @@ export default function Welcome() {
             
             {/* Responsive badges layout */}
             <div className={`flex justify-center mb-6 lg:mb-8 ${isMobile ? 'flex-wrap gap-2' : 'space-x-2'}`}>
-              <Badge variant="outline" className={`border-cyan-400 text-cyan-400 ${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-3 py-1'}`}>
-                {t('welcome.badges.neuralSystem')}
-              </Badge>
-              <Badge variant="outline" className={`border-purple-400 text-purple-400 ${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-3 py-1'}`}>
-                {t('welcome.badges.districts')}
-              </Badge>
-              <Badge variant="outline" className={`border-pink-400 text-pink-400 ${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-3 py-1'}`}>
+              <span className={`text-cyan-400 ${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-3 py-1'}`}>
+                Neural System
+              </span>
+              <span className={`text-purple-400 ${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-3 py-1'}`}>
+                8 Districts
+              </span>
+              <span className={`text-pink-400 ${isMobile ? 'text-xs px-2 py-1' : 'text-xs px-3 py-1'}`}>
                 {t('welcome.badges.multiplayer')}
-              </Badge>
+              </span>
             </div>
           </div>
 
