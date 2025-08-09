@@ -5,6 +5,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 interface Conversation {
   id: string;
@@ -175,11 +176,7 @@ export function ConversationsList({ onSelectConversation }: ConversationsListPro
   };
 
   if (loading) {
-    return (
-      <div className="text-center text-muted-foreground py-8">
-        Carregando conversas...
-      </div>
-    );
+    return <ProfileStyleLoader size="lg" />;
   }
 
   if (conversations.length === 0) {

@@ -7,6 +7,7 @@ import { Button } from "@/components/shared/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Trophy, TrendingUp, Users, Heart, MessageSquare, Award, Crown, Medal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 interface LeaderboardUser {
   id: string;
@@ -245,30 +246,7 @@ export function SocialLeaderboard() {
   };
 
   if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5" />
-            Rankings
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="flex items-center gap-3 animate-pulse">
-                <div className="h-10 w-10 bg-muted rounded-full" />
-                <div className="flex-1">
-                  <div className="h-4 bg-muted rounded w-32 mb-1" />
-                  <div className="h-3 bg-muted rounded w-24" />
-                </div>
-                <div className="h-6 w-12 bg-muted rounded" />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <ProfileStyleLoader size="lg" />;
   }
 
   return (

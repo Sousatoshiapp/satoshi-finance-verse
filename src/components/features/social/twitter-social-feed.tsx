@@ -16,6 +16,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { useNavigate } from "react-router-dom";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 interface SocialPost {
   id: string;
@@ -351,22 +352,7 @@ export function TwitterSocialFeed() {
   };
 
   if (loading) {
-    return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="border-b border-border/50 p-4 animate-pulse">
-            <div className="flex space-x-3">
-              <div className="w-12 h-12 bg-muted rounded-full" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 bg-muted rounded w-32" />
-                <div className="h-4 bg-muted rounded w-full" />
-                <div className="h-4 bg-muted rounded w-3/4" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <ProfileStyleLoader size="lg" />;
   }
 
   if (posts.length === 0) {

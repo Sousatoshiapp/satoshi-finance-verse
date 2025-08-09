@@ -10,6 +10,7 @@ import { Trophy, Target, Calendar, Award, Flame, Users, MessageSquare, Heart } f
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 interface Challenge {
   id: string;
@@ -218,24 +219,7 @@ export function SocialChallenges() {
   };
 
   if (loading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3].map(i => (
-          <Card key={i} className="animate-pulse">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="h-10 w-10 bg-muted rounded-full" />
-                <div className="flex-1">
-                  <div className="h-4 bg-muted rounded w-32 mb-1" />
-                  <div className="h-3 bg-muted rounded w-24" />
-                </div>
-              </div>
-              <div className="h-2 bg-muted rounded w-full" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
+    return <ProfileStyleLoader size="lg" />;
   }
 
   return (

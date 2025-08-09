@@ -19,6 +19,7 @@ import { useSocialNavigation } from "@/hooks/use-social-navigation";
 import { useSocialLoadingState } from "@/hooks/use-social-loading-state";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
+import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 interface User {
   id: string;
@@ -149,43 +150,9 @@ export default function Social() {
     );
   }
 
-  // Show loading skeleton while main data loads
+  // Show loading while main data loads
   if (isMainLoading) {
-    return (
-      <div className="min-h-screen bg-background" style={{ paddingTop: '50px' }}>
-        {/* Botão de voltar acima da imagem do perfil - Mobile Loading */}
-        <div className="lg:hidden absolute top-8 left-4 z-50">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-full p-2"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </div>
-        <div className="max-w-7xl mx-auto flex min-h-screen justify-center">
-          <div className="flex-1 max-w-2xl min-w-0 border-x border-border/50 min-h-screen">
-            <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border/50 p-4">
-              <div className="h-6 bg-muted rounded w-32 animate-pulse" />
-            </div>
-            <div className="p-4 space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="border-b border-border/50 pb-4 animate-pulse">
-                  <div className="flex space-x-3">
-                    <div className="w-12 h-12 bg-muted rounded-full" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 bg-muted rounded w-32" />
-                      <div className="h-4 bg-muted rounded w-full" />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <ProfileStyleLoader size="lg" />;
   }
 
   return (
