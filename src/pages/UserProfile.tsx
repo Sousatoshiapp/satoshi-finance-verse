@@ -341,7 +341,8 @@ export default function UserProfile() {
                        onClick={() => handleStartConversation(user.id)}
                        variant="outline"
                        size="icon"
-                       className="bg-green-500 hover:bg-green-600 border-green-500 text-white"
+                       className="rounded-full text-white border-0"
+                       style={{ backgroundColor: '#adff2f' }}
                      >
                        <MessageCircle className="h-4 w-4" />
                      </Button>
