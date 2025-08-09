@@ -3959,6 +3959,8 @@ export type Database = {
           points: number
           profile_image_url: string | null
           protected_btz: number | null
+          skill_rating: number | null
+          srs_enabled: boolean | null
           streak: number | null
           streak_session_active: boolean | null
           subscription_expires_at: string | null
@@ -3992,6 +3994,8 @@ export type Database = {
           points?: number
           profile_image_url?: string | null
           protected_btz?: number | null
+          skill_rating?: number | null
+          srs_enabled?: boolean | null
           streak?: number | null
           streak_session_active?: boolean | null
           subscription_expires_at?: string | null
@@ -4025,6 +4029,8 @@ export type Database = {
           points?: number
           profile_image_url?: string | null
           protected_btz?: number | null
+          skill_rating?: number | null
+          srs_enabled?: boolean | null
           streak?: number | null
           streak_session_active?: boolean | null
           subscription_expires_at?: string | null
@@ -4257,6 +4263,95 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      question_stats: {
+        Row: {
+          avg_time_ms: number
+          correct: number
+          plays: number
+          question_id: string
+          updated_at: string
+          wrong: number
+        }
+        Insert: {
+          avg_time_ms?: number
+          correct?: number
+          plays?: number
+          question_id: string
+          updated_at?: string
+          wrong?: number
+        }
+        Update: {
+          avg_time_ms?: number
+          correct?: number
+          plays?: number
+          question_id?: string
+          updated_at?: string
+          wrong?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_stats_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: true
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          created_at: string
+          difficulty: Database["public"]["Enums"]["quiz_difficulty"]
+          explanation: string
+          id: string
+          is_active: boolean
+          lang: string
+          option_a: string
+          option_b: string
+          option_c: string
+          question: string
+          slug: string | null
+          source: string | null
+          subtopic: string | null
+          tags: string[] | null
+          topic: Database["public"]["Enums"]["quiz_topic"]
+        }
+        Insert: {
+          created_at?: string
+          difficulty: Database["public"]["Enums"]["quiz_difficulty"]
+          explanation: string
+          id?: string
+          is_active?: boolean
+          lang?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          question: string
+          slug?: string | null
+          source?: string | null
+          subtopic?: string | null
+          tags?: string[] | null
+          topic: Database["public"]["Enums"]["quiz_topic"]
+        }
+        Update: {
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["quiz_difficulty"]
+          explanation?: string
+          id?: string
+          is_active?: boolean
+          lang?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          question?: string
+          slug?: string | null
+          source?: string | null
+          subtopic?: string | null
+          tags?: string[] | null
+          topic?: Database["public"]["Enums"]["quiz_topic"]
+        }
+        Relationships: []
       }
       quiz_questions: {
         Row: {
@@ -6540,6 +6635,9 @@ export type Database = {
           quality_responses: number[] | null
           question_id: string
           repetition_count: number
+          srs_difficulty: number | null
+          srs_retrievability: number | null
+          srs_stability: number | null
           streak: number
           total_reviews: number
           updated_at: string
@@ -6561,6 +6659,9 @@ export type Database = {
           quality_responses?: number[] | null
           question_id: string
           repetition_count?: number
+          srs_difficulty?: number | null
+          srs_retrievability?: number | null
+          srs_stability?: number | null
           streak?: number
           total_reviews?: number
           updated_at?: string
@@ -6582,6 +6683,9 @@ export type Database = {
           quality_responses?: number[] | null
           question_id?: string
           repetition_count?: number
+          srs_difficulty?: number | null
+          srs_retrievability?: number | null
+          srs_stability?: number | null
           streak?: number
           total_reviews?: number
           updated_at?: string
@@ -7793,6 +7897,8 @@ export type Database = {
         | "powerup"
         | "loot_box"
         | "course_access"
+      quiz_difficulty: "EASY" | "MEDIUM" | "HARD" | "INSANE"
+      quiz_topic: "DIA_A_DIA" | "ABC" | "CRIPTO"
       season_status: "upcoming" | "active" | "ended"
       subscription_tier: "free" | "pro" | "elite"
       transaction_status:
@@ -7977,6 +8083,8 @@ export const Constants = {
         "loot_box",
         "course_access",
       ],
+      quiz_difficulty: ["EASY", "MEDIUM", "HARD", "INSANE"],
+      quiz_topic: ["DIA_A_DIA", "ABC", "CRIPTO"],
       season_status: ["upcoming", "active", "ended"],
       subscription_tier: ["free", "pro", "elite"],
       transaction_status: [
