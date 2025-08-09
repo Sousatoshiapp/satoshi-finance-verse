@@ -251,7 +251,7 @@ export default function DirectChat() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen bg-background pt-[50px]">
       <DirectChatHeader 
         otherUser={otherUser}
         onBack={handleBack}
