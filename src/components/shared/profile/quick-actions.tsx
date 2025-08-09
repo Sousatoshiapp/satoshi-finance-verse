@@ -18,22 +18,16 @@ export function QuickActions({ subscription }: QuickActionsProps) {
 
   const quickActions = [
     { 
-      label: 'Lições', 
+      label: 'Jogar', 
       icon: <BookOpen className="h-4 w-4" />, 
-      route: '/levels',
+      route: '/game-mode',
       color: 'bg-blue-500 hover:bg-blue-600'
     },
     { 
       label: 'Loja', 
       icon: <ShoppingCart className="h-4 w-4" />, 
-      route: '/shop',
+      route: '/store',
       color: 'bg-green-500 hover:bg-green-600'
-    },
-    { 
-      label: 'Torneios', 
-      icon: <Trophy className="h-4 w-4" />, 
-      route: '/tournaments',
-      color: 'bg-yellow-500 hover:bg-yellow-600'
     },
     { 
       label: 'Social', 
@@ -67,7 +61,7 @@ export function QuickActions({ subscription }: QuickActionsProps) {
           )}
         </div>
         
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
           {quickActions.map((action) => (
             <Button
               key={action.label}

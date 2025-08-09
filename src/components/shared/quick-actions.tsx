@@ -8,9 +8,9 @@ export function QuickActions() {
   const actions = [
     {
       icon: Calendar,
-      label: "Missões",
-      description: "Desafios diários",
-      route: "/missions",
+      label: "Jogar",
+      description: "Modos de jogo",
+      route: "/game-mode",
       color: "bg-gradient-to-r from-blue-500 to-purple-500"
     },
     {
@@ -22,9 +22,9 @@ export function QuickActions() {
     },
     {
       icon: Trophy,
-      label: "Torneios",
-      description: "Competições",
-      route: "/tournaments",
+      label: "Missões",
+      description: "Desafios diários",
+      route: "/missions",
       color: "bg-gradient-to-r from-yellow-500 to-orange-500"
     },
     {

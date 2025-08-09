@@ -30,31 +30,13 @@ const QuickActionsOptimized = memo(function QuickActionsOptimized() {
   // Memoize actions configuration
   const actions = useMemo<QuickAction[]>(() => [
     {
-      id: 'solo-quiz',
-      title: 'Quiz Solo',
-      description: 'Teste seus conhecimentos',
+      id: 'game-mode',
+      title: 'Jogar',
+      description: 'Escolha seu modo de jogo',
       icon: BookOpen,
-      route: '/solo-quiz',
+      route: '/game-mode',
       color: 'text-blue-600',
       bgGradient: 'from-blue-500/10 to-blue-600/5'
-    },
-    {
-      id: 'duels',
-      title: 'Duelos',
-      description: 'Desafie outros jogadores',
-      icon: Gamepad2,
-      route: '/find-opponent',
-      color: 'text-red-600',
-      bgGradient: 'from-red-500/10 to-red-600/5'
-    },
-    {
-      id: 'tournaments',
-      title: 'Torneios',
-      description: 'Competições semanais',
-      icon: Trophy,
-      route: '/tournaments',
-      color: 'text-yellow-600',
-      bgGradient: 'from-yellow-500/10 to-yellow-600/5'
     },
     {
       id: 'social',
@@ -122,7 +104,7 @@ const QuickActionsOptimized = memo(function QuickActionsOptimized() {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-foreground">Ações Rápidas</h2>
         <Badge variant="outline" className="text-xs">
-          6 opções
+          4 opções
         </Badge>
       </div>
       
