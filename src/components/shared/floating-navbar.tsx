@@ -27,10 +27,10 @@ export function FloatingNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-4 left-0 right-0 z-50">
-      <div className="flex items-center justify-center px-4">
-        <div className="bg-card/50 backdrop-blur-md border border-border rounded-full shadow-lg px-1 py-1 md:px-2">
-          <div className="flex items-center justify-center gap-0.5 md:gap-1">
+    <div className="fixed bottom-0 left-0 right-0 z-50 safe-bottom">
+      <div className="flex items-center justify-center p-mobile-2">
+        <div className="bg-card/95 backdrop-blur-md border border-border rounded-2xl shadow-lg p-mobile-1">
+          <div className="flex items-center justify-center gap-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path || 
                              (location.pathname === '/' && item.path === '/dashboard');
@@ -39,13 +39,13 @@ export function FloatingNavbar() {
                 <button
                   key={item.path}
                   onClick={() => navigate(item.path)}
-                    className={cn(
-                     "flex flex-col items-center gap-0.5 p-1.5 md:p-2 rounded-full transition-all duration-200",
-                     isActive 
-                       ? "bg-gray-900 text-white scale-110" 
-                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                   )}
-                  >
+                  className={cn(
+                    "touch-target flex flex-col items-center gap-1 p-mobile-2 rounded-xl transition-all duration-200",
+                    isActive 
+                      ? "bg-primary text-primary-foreground scale-105" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
                     <div className="relative">
                       <IconSystem 
                         emoji={item.icon} 
@@ -60,7 +60,7 @@ export function FloatingNavbar() {
                       )}
                     </div>
                     <span className={cn(
-                      "text-[10px] md:text-xs font-medium leading-none",
+                      "text-mobile-xs font-medium leading-none",
                       isArabic && "hidden md:block"
                     )}>{item.label}</span>
                   </button>

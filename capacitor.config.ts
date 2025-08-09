@@ -37,11 +37,21 @@ const config: CapacitorConfig = {
       showSpinner: true,
       androidSpinnerStyle: "large",
       iosSpinnerStyle: "small",
-      spinnerColor: "#999999",
+      spinnerColor: "#adff2f",
       splashFullScreen: true,
       splashImmersive: true,
       layoutName: "launch_screen",
       useDialog: true,
+    },
+    StatusBar: {
+      style: 'dark',
+      backgroundColor: '#000000',
+      overlaysWebView: false,
+    },
+    Keyboard: {
+      resize: 'body',
+      style: 'dark',
+      resizeOnFullScreen: true,
     },
   },
 };

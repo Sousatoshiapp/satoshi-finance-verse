@@ -665,53 +665,53 @@ export default function Store() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="max-w-md mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background pb-20 safe-area-full">
+      <div className="max-w-md mx-auto p-mobile-4">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="ghost" onClick={() => navigate('/dashboard')}>
-            <ArrowLeft className="h-4 w-4" />
+        <div className="flex items-center gap-3 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')} className="touch-target">
+            <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold text-foreground">{t('store.header.marketplace')}</h1>
-            <p className="text-muted-foreground text-sm">{t('store.header.subtitle')}</p>
+            <h1 className="text-mobile-2xl font-bold text-foreground">{t('store.header.marketplace')}</h1>
+            <p className="text-muted-foreground text-mobile-sm">{t('store.header.subtitle')}</p>
           </div>
         </div>
 
         {/* Premium Plans Promotion Card */}
-        <Card className="p-4 mb-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+        <Card className="mobile-card mb-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                <Crown className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <Crown className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-foreground mb-1">{t('store.premium.title')}</h3>
-                <p className="text-xs text-muted-foreground">{t('store.premium.subtitle')}</p>
+                <h3 className="text-mobile-sm font-bold text-foreground mb-1">{t('store.premium.title')}</h3>
+                <p className="text-mobile-xs text-muted-foreground">{t('store.premium.subtitle')}</p>
               </div>
             </div>
             <Button 
               variant="outline"
               size="sm"
               onClick={() => navigate('/subscription-plans')}
-              className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-xs"
+              className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 text-mobile-xs touch-target"
             >
               {t('store.premium.viewPlans')}
             </Button>
           </div>
           
-          <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+          <div className="grid grid-cols-3 gap-2 mt-3">
             <div className="text-center">
-              <div className="text-purple-400 font-bold">∞</div>
-              <div className="text-muted-foreground text-xs">{t('store.premium.duels')}</div>
+              <div className="text-purple-400 font-bold text-mobile-base">∞</div>
+              <div className="text-muted-foreground text-mobile-xs">{t('store.premium.duels')}</div>
             </div>
             <div className="text-center">
-              <div className="text-purple-400 font-bold">3x</div>
-              <div className="text-muted-foreground text-xs">{t('store.premium.xpBoost')}</div>
+              <div className="text-purple-400 font-bold text-mobile-base">3x</div>
+              <div className="text-muted-foreground text-mobile-xs">{t('store.premium.xpBoost')}</div>
             </div>
             <div className="text-center">
-              <div className="text-purple-400 font-bold">100</div>
-              <div className="text-muted-foreground text-xs">{t('store.premium.beetzPerMonth')}</div>
+              <div className="text-purple-400 font-bold text-mobile-base">100</div>
+              <div className="text-muted-foreground text-mobile-xs">{t('store.premium.beetzPerMonth')}</div>
             </div>
           </div>
         </Card>
@@ -720,16 +720,16 @@ export default function Store() {
         {userProfile && (
           <div className="flex justify-center mb-6">
             <div 
-              className="relative cursor-pointer hover:scale-105 transition-all duration-200"
+              className="relative cursor-pointer hover:scale-105 transition-all duration-200 touch-target"
               onClick={() => navigate('/beetz-info')}
             >
-              <div className="bg-transparent backdrop-blur-sm text-white font-bold text-4xl px-8 py-4 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20 transition-all duration-300">
+              <div className="bg-transparent backdrop-blur-sm text-white font-bold p-mobile-4 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.2)] border border-[#adff2f]/20 transition-all duration-300">
                 <div className="flex items-center space-x-3">
                   {/* Logo Beetz simples */}
-                  <div className="w-8 h-8 rounded-full bg-[#adff2f] flex items-center justify-center">
-                    <span className="text-black font-bold text-lg">B</span>
+                  <div className="w-6 h-6 rounded-full bg-[#adff2f] flex items-center justify-center">
+                    <span className="text-black font-bold text-mobile-sm">B</span>
                   </div>
-                  <span className="font-mono text-3xl">
+                  <span className="font-mono text-mobile-2xl">
                     {userProfile.points.toLocaleString()} BTZ
                   </span>
                 </div>
