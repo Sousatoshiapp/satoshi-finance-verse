@@ -44,10 +44,10 @@ export default function GameMode() {
   };
 
   return (
-    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+    <div className={`min-h-screen bg-background flex items-center justify-center ${isMobile ? 'pb-24' : 'pb-20'}`} 
          style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
-      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6 py-4 pt-18' : 'max-w-md px-4 py-6'}`}>
-        {/* Header */}
+      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6' : 'max-w-md px-4'}`}>
+        {/* Header com apenas botões de navegação */}
         <div className="flex items-center justify-between mb-8">
           <Button
             variant="ghost"
@@ -57,9 +57,7 @@ export default function GameMode() {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-xl font-bold text-foreground">
-            {t('gameMode.title')}
-          </h1>
+          <div></div> {/* Espaço vazio onde estava o título */}
           <Button
             variant="ghost"
             size="sm"
