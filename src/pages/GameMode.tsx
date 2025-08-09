@@ -23,16 +23,20 @@ export default function GameMode() {
   }, []);
 
   const handleModeSelect = (mode: 'solo' | 'duelo' | 'torneio') => {
+    console.log('🎮 Modo selecionado:', mode);
     setSelectedMode(mode);
     setTimeout(() => {
       switch (mode) {
         case 'solo':
+          console.log('🎯 Abrindo modal de temas...');
           setShowThemeModal(true);
           break;
         case 'duelo':
+          console.log('🥊 Navegando para duelo...');
           navigate('/find-opponent');
           break;
         case 'torneio':
+          console.log('🏆 Navegando para torneios...');
           navigate('/tournaments');
           break;
       }
@@ -40,8 +44,11 @@ export default function GameMode() {
   };
 
   const handleThemeSelect = (category: string) => {
+    console.log('🎨 Tema selecionado:', category);
     // Navegar para o novo sistema de quiz com categoria e modo adaptativo
-    navigate(`/quiz/solo?category=${encodeURIComponent(category)}&mode=adaptive`);
+    const url = `/quiz/solo?category=${encodeURIComponent(category)}&mode=adaptive`;
+    console.log('🚀 Navegando para:', url);
+    navigate(url);
   };
 
   return (

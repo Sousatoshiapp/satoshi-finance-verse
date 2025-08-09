@@ -45,16 +45,23 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleCategorySelect = (categoryId: string) => {
+    console.log('🎯 Categoria clicada:', categoryId);
     const category = QUIZ_CATEGORIES.find(c => c.id === categoryId);
     
-    if (!category) return;
+    if (!category) {
+      console.error('❌ Categoria não encontrada:', categoryId);
+      return;
+    }
     
+    console.log('✅ Categoria encontrada:', category);
     setSelectedCategory(categoryId);
     
     // Delay para feedback visual
     setTimeout(() => {
+      console.log('🎭 Enviando categoria:', category.category);
       // Passar categoria real para o sistema novo
       onSelectTheme(category.category);
+      console.log('🚪 Fechando modal...');
       onClose();
     }, 200);
   };
