@@ -408,7 +408,7 @@ export default function Dashboard() {
           </div>
 
           {/* Ranking Semanal de Beetz - Mobile Spacing */}
-          <div className={`${isMobile ? 'mb-6' : 'mb-8'}`}>
+          <div className={`${isMobile ? 'mb-8' : 'mb-10'}`}>
             <LazyLeaderboard />
           </div>
 
