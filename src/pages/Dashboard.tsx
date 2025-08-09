@@ -36,6 +36,7 @@ import { useI18n } from "@/hooks/use-i18n";
 // import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getLevelInfo } from "@/data/levels";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 
 const getGreeting = (t: any) => {
@@ -68,6 +69,7 @@ const getCurrentLevelXP = (level: number) => {
 
 export default function Dashboard() {
   const { t } = useI18n();
+  const isMobile = useIsMobile();
   const [greeting, setGreeting] = useState(getGreeting(t));
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   
@@ -278,14 +280,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Optimized Header with Consolidated Profile */}
-      <div className="px-4 pt-8 pb-4">
-        <div className="max-w-md mx-auto">
-          {/* Simplified Header */}
-          <div className="flex items-center justify-between mb-6">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-safe-area-bottom pb-24' : 'pb-20'}`} style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      {/* Optimized Header with Consolidated Profile - Mobile Adjusted */}
+      <div className={`${isMobile ? 'px-6 pt-20 pb-4' : 'px-4 pt-8 pb-4'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-md'}`}>
+          {/* Simplified Header - Mobile Optimized */}
+          <div className={`flex items-center justify-between ${isMobile ? 'mb-4' : 'mb-6'}`}>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">
+              <p className={`text-muted-foreground mb-1 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                 {greeting.icon} {greeting.text}
                 {/* Realtime connection indicator */}
                 <span className="ml-2">
@@ -302,9 +304,9 @@ export default function Dashboard() {
                   )}
                 </span>
               </p>
-              <h1 className="text-xl font-bold text-foreground">{userNickname}</h1>
+              <h1 className={`font-bold text-foreground ${isMobile ? 'text-lg' : 'text-xl'}`}>{userNickname}</h1>
             </div>
-            <div className="flex items-center gap-3">
+            <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
               <LanguageSwitch />
               {shouldShowIcon && (
                 <CrisisIcon onClick={() => {
@@ -316,9 +318,9 @@ export default function Dashboard() {
               {subscription.tier === 'free' && (
                 <Button 
                   variant="outline" 
-                  size="sm" 
+                  size="sm"
                   onClick={handleNavigateToSubscription}
-                  className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0"
+                  className={`bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0 ${isMobile ? 'text-xs px-2 py-1 h-7' : 'text-xs'}`}
                 >
                   ⭐ {t('common.pro')}
                 </Button>
@@ -339,9 +341,9 @@ export default function Dashboard() {
           />
           */}
 
-          {/* Consolidated Avatar & User Info - Horizontal Layout */}
-          <div className="flex items-center gap-4 mb-6">
-            {/* Avatar with badges on the left */}
+          {/* Consolidated Avatar & User Info - Horizontal Layout - Mobile Optimized */}
+          <div className={`flex items-center ${isMobile ? 'gap-3 mb-4' : 'gap-4 mb-6'}`}>
+            {/* Avatar with badges on the left - Mobile Smaller */}
             <div className="relative flex-shrink-0">
               <div className="relative">
                 {/* Always render AvatarDisplayUniversal with all available data */}
@@ -352,18 +354,18 @@ export default function Dashboard() {
                     avatars: userAvatar
                   }}
                   nickname={dashboardData?.profile?.nickname || 'User'}
-                  size="lg"
+                  size={isMobile ? "md" : "lg"}
                   className="cursor-pointer hover:scale-105 transition-transform duration-200"
                   onClick={handleNavigateToProfile}
                 />
-                {/* Botão + Discreto (smaller) */}
+                {/* Botão + Discreto (smaller for mobile) */}
                 <div className="absolute top-0 left-0">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleNavigateToStore();
                     }}
-                    className="bg-gradient-to-r from-success/80 to-primary/80 text-white w-5 h-5 rounded-full text-xs font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center"
+                    className={`bg-gradient-to-r from-success/80 to-primary/80 text-white rounded-full font-bold hover:from-success hover:to-primary transition-all duration-200 shadow-md flex items-center justify-center ${isMobile ? 'w-4 h-4 text-xs' : 'w-5 h-5 text-xs'}`}
                   >
                     +
                   </button>
@@ -371,28 +373,28 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {/* User information on the right */}
+            {/* User information on the right - Mobile Optimized */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-3">
-                <p className="text-sm text-muted-foreground">{t('common.level')} {userStats.level}</p>
-                <span className="text-sm" style={{ color: '#adff2f', opacity: 0.2 }}>{getLevelInfo(userStats.level).name}</span>
+              <div className={`flex items-center gap-2 ${isMobile ? 'mb-2' : 'mb-3'}`}>
+                <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>{t('common.level')} {userStats.level}</p>
+                <span className={`${isMobile ? 'text-xs' : 'text-sm'}`} style={{ color: '#adff2f', opacity: 0.2 }}>{getLevelInfo(userStats.level).name}</span>
               </div>
               
-              {/* Compact Progress Bar */}
+              {/* Compact Progress Bar - Mobile Adjusted */}
               <div className="w-full">
                 <div 
-                  className="w-full bg-muted rounded-full h-1.5 mb-2 cursor-pointer hover:bg-muted/80 transition-colors"
+                  className={`w-full bg-muted rounded-full cursor-pointer hover:bg-muted/80 transition-colors ${isMobile ? 'h-1 mb-1.5' : 'h-1.5 mb-2'}`}
                   onClick={handleNavigateToLevels}
                 >
                   <div 
-                    className="bg-gradient-to-r from-success to-primary h-1.5 rounded-full transition-all duration-300"
+                    className={`bg-gradient-to-r from-success to-primary rounded-full transition-all duration-300 ${isMobile ? 'h-1' : 'h-1.5'}`}
                     style={{ 
                       width: `${Math.min(((userStats.currentXP - getCurrentLevelXP(userStats.level)) / Math.max(1, userStats.nextLevelXP - getCurrentLevelXP(userStats.level))) * 100, 100)}%` 
                     }}
                   ></div>
                 </div>
                 
-                <div className="flex justify-between items-center text-xs text-muted-foreground">
+                <div className={`flex justify-between items-center text-muted-foreground ${isMobile ? 'text-xs' : 'text-xs'}`}>
                   <span>{t('common.xp')}: {userStats.currentXP}</span>
                   <span>Faltam: {Math.max(0, userStats.nextLevelXP - userStats.currentXP)} XP</span>
                 </div>
@@ -400,15 +402,13 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* BTZ Counter - Separate section */}
-          <div className="mb-6">
+          {/* BTZ Counter - Separate section - Mobile Adjusted */}
+          <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
             <LazyBTZCounter />
           </div>
 
-
-
-          {/* Ranking Semanal de Beetz */}
-          <div className="mb-4">
+          {/* Ranking Semanal de Beetz - Mobile Spacing */}
+          <div className={`${isMobile ? 'mb-3' : 'mb-4'}`}>
             <LazyLeaderboard />
           </div>
 
@@ -430,17 +430,17 @@ export default function Dashboard() {
           </div>
           */}
 
-          {/* Torneios Épicos - Coming Soon Card */}
-          <div className="mb-6">
-            <div className="bg-card border border-border rounded-lg p-6 text-center">
-              <div className="text-4xl mb-3">🏆</div>
-              <h3 className="font-semibold text-foreground mb-2">Torneios Épicos</h3>
-              <p className="text-muted-foreground text-sm mb-3">
+          {/* Torneios Épicos - Coming Soon Card - Mobile Optimized */}
+          <div className={`${isMobile ? 'mb-4' : 'mb-6'}`}>
+            <div className={`bg-card border border-border rounded-lg text-center ${isMobile ? 'p-4' : 'p-6'}`}>
+              <div className={`mb-3 ${isMobile ? 'text-3xl' : 'text-4xl'}`}>🏆</div>
+              <h3 className={`font-semibold text-foreground mb-2 ${isMobile ? 'text-sm' : ''}`}>Torneios Épicos</h3>
+              <p className={`text-muted-foreground mb-3 ${isMobile ? 'text-xs' : 'text-sm'}`}>
                 Prepare-se para batalhas épicas e prêmios incríveis!
               </p>
-              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 px-3 py-1.5 rounded-full">
+              <div className={`inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full ${isMobile ? 'px-2 py-1' : 'px-3 py-1.5'}`}>
                 <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-primary">Em breve!</span>
+                <span className={`font-medium text-primary ${isMobile ? 'text-xs' : 'text-sm'}`}>Em breve!</span>
               </div>
             </div>
           </div>
