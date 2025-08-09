@@ -4,15 +4,21 @@ import { Badge } from "@/components/shared/ui/badge";
 import { ArrowRight, VolumeX, Volume2 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePlatformDetection } from "@/hooks/use-platform-detection";
 import { useState, useRef } from "react";
 
 export default function Welcome() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const isMobile = useIsMobile();
+  const { platform } = usePlatformDetection();
   const [isMuted, setIsMuted] = useState(true);
   const [showFallback, setShowFallback] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Escolhe o melhor formato baseado na plataforma
+  const isIOSDevice = platform === 'ios' || /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const preferWebM = !isIOSDevice; // Android e web preferem WebM
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -25,12 +31,22 @@ export default function Welcome() {
           muted={isMuted}
           loop
           playsInline
-          preload="metadata"
+          preload={isMobile ? "none" : "metadata"}
           onError={() => setShowFallback(true)}
           style={{ filter: 'brightness(0.4) contrast(1.1)' }}
         >
-          <source src="/cyberpunk-welcome-bg.mp4" type="video/mp4" />
-          <source src="/cyberpunk-welcome-bg.webm" type="video/webm" />
+          {/* Prioriza WebM para Android/Web, MP4 para iOS */}
+          {preferWebM ? (
+            <>
+              <source src="/cyberpunk-welcome-bg.webm" type="video/webm" />
+              <source src="/cyberpunk-welcome-bg.mp4" type="video/mp4" />
+            </>
+          ) : (
+            <>
+              <source src="/cyberpunk-welcome-bg.mp4" type="video/mp4" />
+              <source src="/cyberpunk-welcome-bg.webm" type="video/webm" />
+            </>
+          )}
         </video>
       ) : (
         // Fallback to original image
