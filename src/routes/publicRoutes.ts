@@ -1,7 +1,13 @@
 export const publicRoutes = [
   {
     path: "/",
-    element: "Welcome",
+    element: "AppIntro",
+    requiresAuth: false,
+    showNavbar: false
+  },
+  {
+    path: "/intro",
+    element: "AppIntro",
     requiresAuth: false,
     showNavbar: false
   },
