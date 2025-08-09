@@ -2,6 +2,10 @@ import { lazy } from 'react';
 
 // Lazy loaded components
 export const LazyRoutes = {
+  // Public pages
+  Welcome: lazy(() => import('@/pages/Welcome')),
+  Auth: lazy(() => import('@/pages/Auth')),
+  
   // Main pages
   Index: lazy(() => import('@/pages/Index')),
   Dashboard: lazy(() => import('@/pages/Dashboard')),
