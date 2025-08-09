@@ -6,6 +6,11 @@ import { cn } from "@/lib/utils";
 import { Lock } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 
+// Import background images
+import survivalBg from "@/assets/survival-mode-bg.jpg";
+import trainingBg from "@/assets/training-mode-bg.jpg";
+import blockchainBg from "@/assets/blockchain-mode-bg.jpg";
+
 interface ThemeSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,7 +26,8 @@ const QUIZ_CATEGORIES = [
     description: "Finanças aplicadas ao seu cotidiano",
     category: "Finanças do Dia a Dia",
     icon: "🏠",
-    color: "bg-green-500/20 text-green-700 border-green-300"
+    color: "bg-green-500/20 text-green-700 border-green-300",
+    backgroundImage: survivalBg
   },
   {
     id: "abc_financas",
@@ -29,7 +35,8 @@ const QUIZ_CATEGORIES = [
     description: "ABC das finanças",
     category: "ABC das Finanças",
     icon: "📚",
-    color: "bg-blue-500/20 text-blue-700 border-blue-300"
+    color: "bg-blue-500/20 text-blue-700 border-blue-300",
+    backgroundImage: trainingBg
   },
   {
     id: "cripto",
@@ -37,7 +44,8 @@ const QUIZ_CATEGORIES = [
     description: "Tudo sobre o mundo cripto",
     category: "Cripto",
     icon: "₿",
-    color: "bg-orange-500/20 text-orange-700 border-orange-300"
+    color: "bg-orange-500/20 text-orange-700 border-orange-300",
+    backgroundImage: blockchainBg
   }
 ];
 
@@ -71,7 +79,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
       <DialogContent className="max-w-md max-h-[85vh] overflow-hidden">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold text-center">
-            Escolha seu Modo de Jogo
+            Escolha seu jogo
           </DialogTitle>
           <p className="text-sm text-muted-foreground text-center">
             A dificuldade será ajustada automaticamente pelo sistema SRS
@@ -87,33 +95,49 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                 <div
                   key={category.id}
                   className={cn(
-                    "p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer",
+                    "relative overflow-hidden rounded-lg border-2 transition-all duration-200 cursor-pointer",
                     "hover:shadow-lg hover:scale-[1.02]",
                     isSelected 
-                      ? "border-primary bg-primary/5 shadow-md" 
+                      ? "border-primary shadow-md" 
                       : "border-border hover:border-primary/50"
                   )}
                   onClick={() => handleCategorySelect(category.id)}
+                  style={{
+                    backgroundImage: `url(${category.backgroundImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    minHeight: '140px'
+                  }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-3xl">{category.icon}</div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg text-foreground mb-1">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">
-                        {category.description}
-                      </p>
-                    </div>
-                  </div>
+                  {/* Overlay with 50% transparency */}
+                  <div className="absolute inset-0 bg-background/50 backdrop-blur-[1px]"></div>
                   
-                  <div className="mt-3">
-                    <Badge 
-                      variant="outline"
-                      className={cn("text-xs font-medium", category.color)}
-                    >
-                      {category.category}
-                    </Badge>
+                  {/* Content over image */}
+                  <div className="relative z-10 p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="text-3xl drop-shadow-lg">{category.icon}</div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-foreground mb-1 drop-shadow-md">
+                          {category.name}
+                        </h3>
+                        <p className="text-sm text-foreground/90 drop-shadow-sm">
+                          {category.description}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3">
+                      <Badge 
+                        variant="outline"
+                        className={cn(
+                          "text-xs font-medium backdrop-blur-sm",
+                          "bg-background/80 border-foreground/20",
+                          category.color
+                        )}
+                      >
+                        {category.category}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               );
