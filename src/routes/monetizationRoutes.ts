@@ -6,6 +6,12 @@ export const monetizationRoutes = [
     showNavbar: true
   },
   {
+    path: "/subscription-plans",
+    element: "SubscriptionPlans",
+    requiresAuth: false,
+    showNavbar: true
+  },
+  {
     path: "/affiliate-program",
     element: "AffiliateProgram",
     requiresAuth: true,
