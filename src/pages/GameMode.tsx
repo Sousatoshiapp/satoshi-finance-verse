@@ -39,8 +39,9 @@ export default function GameMode() {
     }, 300);
   };
 
-  const handleThemeSelect = (theme: string) => {
-    navigate(`/solo-quiz?theme=${theme}`);
+  const handleThemeSelect = (category: string) => {
+    // Navegar para o novo sistema de quiz com categoria e modo adaptativo
+    navigate(`/quiz/solo?category=${encodeURIComponent(category)}&mode=adaptive`);
   };
 
   return (

@@ -10,10 +10,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
 interface QuizEngineProps {
-  topic?: string;
-  difficulty?: 'basic' | 'intermediate' | 'advanced';
+  topic?: string; // Agora aceita: "Finanças do Dia a Dia", "ABC das Finanças", "Cripto"
+  difficulty?: 'facil' | 'medio' | 'dificil' | 'muito_dificil'; // Novo sistema de dificuldades
   questionsCount?: number;
-  mode?: 'practice' | 'study' | 'adaptive';
+  mode?: 'practice' | 'study' | 'adaptive'; // Adaptive é o padrão para SRS/FSRS
   onComplete?: (results: QuizResults) => void;
 }
 
@@ -35,7 +35,7 @@ export function NewQuizEngine({
   topic,
   difficulty,
   questionsCount = 10,
-  mode = 'practice',
+  mode = 'adaptive', // Padrão mudou para adaptive (SRS/FSRS)
   onComplete
 }: QuizEngineProps) {
   const { user } = useAuth();
@@ -64,17 +64,19 @@ export function NewQuizEngine({
       let fetchedQuestions: Question[] = [];
       
       if (mode === 'adaptive' && user) {
+        // Modo adaptativo: SRS/FSRS seleciona questões baseado no progresso
         fetchedQuestions = await selectAdaptiveQuestions(user.id, questionsCount);
       } else {
+        // Modo normal: usar categoria e dificuldade especificadas
         fetchedQuestions = await selectQuestions({
-          category: topic,
-          difficulty,
+          category: topic, // Aceita as novas categorias
+          difficulty: mapDifficultyToOld(difficulty), // Mapear dificuldades do novo sistema
           limit: questionsCount
         });
       }
 
       if (fetchedQuestions.length === 0) {
-        toast.error('Nenhuma questão encontrada para os critérios selecionados');
+        toast.error('Nenhuma questão encontrada para os critérios selecionados. O sistema está sendo preparado com novas questões.');
         return;
       }
 
@@ -85,6 +87,17 @@ export function NewQuizEngine({
       console.error('Erro ao carregar questões:', error);
       toast.error('Erro ao carregar questões');
     }
+  };
+
+  // Mapear dificuldades do novo sistema para o antigo (temporariamente)
+  const mapDifficultyToOld = (newDifficulty?: string) => {
+    const mapping: Record<string, 'basic' | 'intermediate' | 'advanced'> = {
+      'facil': 'basic',
+      'medio': 'intermediate', 
+      'dificil': 'advanced',
+      'muito_dificil': 'advanced'
+    };
+    return newDifficulty ? mapping[newDifficulty] || 'basic' : undefined;
   };
 
   const handleAnswerSelect = (answer: string) => {
@@ -111,8 +124,8 @@ export function NewQuizEngine({
 
     setResults(prev => [...prev, questionResult]);
 
-    // Atualizar progresso FSRS se o usuário estiver logado
-    if (user && mode === 'study') {
+    // Atualizar progresso FSRS se o usuário estiver logado (adaptive ou study mode)
+    if (user && (mode === 'adaptive' || mode === 'study')) {
       try {
         await updateProgress(user.id, currentQuestion.id, isCorrect, timeSpent);
       } catch (error) {
@@ -177,7 +190,7 @@ export function NewQuizEngine({
             <XCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Nenhuma questão encontrada</h3>
             <p className="text-muted-foreground mb-4">
-              Não foi possível encontrar questões para os critérios selecionados.
+              Não foi possível encontrar questões para os critérios selecionados. O sistema está sendo atualizado com novas questões nas categorias: Finanças do Dia a Dia, ABC das Finanças e Cripto.
             </p>
             <Button onClick={() => window.history.back()}>
               Voltar

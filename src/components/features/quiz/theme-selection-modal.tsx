@@ -12,75 +12,51 @@ interface ThemeSelectionModalProps {
   onSelectTheme: (theme: string) => void;
 }
 
-const QUIZ_THEMES = [
+// NOVO SISTEMA: Categorias baseadas nas especificações do usuário
+// Sistema SRS/FSRS determina a dificuldade automaticamente
+const QUIZ_CATEGORIES = [
   {
-    id: "basic_finance",
-    name: "Finanças Básicas",
-    difficulty: "Fácil",
-    difficultyLevel: 1,
-    requiredLevel: 1,
-    consolidatedThemes: ["financial_education", "budgeting", "basic_investments"]
+    id: "financas_dia_a_dia",
+    name: "Modo Sobrevivência",
+    description: "Finanças aplicadas ao seu cotidiano",
+    category: "Finanças do Dia a Dia",
+    icon: "🏠",
+    color: "bg-green-500/20 text-green-700 border-green-300"
   },
   {
-    id: "intermediate_finance", 
-    name: "Finanças Intermediária",
-    difficulty: "Médio",
-    difficultyLevel: 2,
-    requiredLevel: 5,
-    consolidatedThemes: ["portfolio", "trading"]
+    id: "abc_financas",
+    name: "Treinamento Básico", 
+    description: "ABC das finanças",
+    category: "ABC das Finanças",
+    icon: "📚",
+    color: "bg-blue-500/20 text-blue-700 border-blue-300"
   },
   {
-    id: "cryptocurrency",
-    name: "Cripto",
-    difficulty: "Difícil", 
-    difficultyLevel: 3,
-    requiredLevel: 10,
-    consolidatedThemes: ["cryptocurrency"]
-  },
-  {
-    id: "economics",
-    name: "Finanças Hard Core",
-    difficulty: "Muito Difícil",
-    difficultyLevel: 4,
-    requiredLevel: 20,
-    consolidatedThemes: ["economics"]
+    id: "cripto",
+    name: "Missão Blockchain",
+    description: "Tudo sobre o mundo cripto",
+    category: "Cripto",
+    icon: "₿",
+    color: "bg-orange-500/20 text-orange-700 border-orange-300"
   }
 ];
 
 export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSelectionModalProps) {
-  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
-  const { profile, loading } = useProfile();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const handleThemeSelect = (themeId: string) => {
-    const theme = QUIZ_THEMES.find(t => t.id === themeId);
-    const userLevel = profile?.level || 1;
+  const handleCategorySelect = (categoryId: string) => {
+    const category = QUIZ_CATEGORIES.find(c => c.id === categoryId);
     
-    // Verificar se o tema está desbloqueado
-    if (theme && userLevel < theme.requiredLevel) {
-      return; // Bloquear seleção
-    }
+    if (!category) return;
     
-    setSelectedTheme(themeId);
-    // Small delay for visual feedback
+    setSelectedCategory(categoryId);
+    
+    // Delay para feedback visual
     setTimeout(() => {
-      onSelectTheme(themeId);
+      // Passar categoria real para o sistema novo
+      onSelectTheme(category.category);
       onClose();
     }, 200);
-  };
-
-  const isThemeLocked = (requiredLevel: number) => {
-    const userLevel = profile?.level || 1;
-    return userLevel < requiredLevel;
-  };
-
-  const getDifficultyBadge = (difficultyLevel: number, difficulty: string) => {
-    switch (difficultyLevel) {
-      case 1: return "bg-success/20 text-success border-success/30";
-      case 2: return "bg-warning/20 text-warning border-warning/30";
-      case 3: return "bg-destructive/20 text-destructive border-destructive/30";
-      case 4: return "bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white border-none animate-pulse shadow-lg shadow-orange-500/50";
-      default: return "bg-muted text-muted-foreground border-border";
-    }
   };
 
   return (
@@ -88,54 +64,59 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
       <DialogContent className="max-w-md max-h-[85vh] overflow-hidden">
         <DialogHeader className="pb-4">
           <DialogTitle className="text-xl font-bold text-center">
-            Níveis
+            Escolha seu Modo de Jogo
           </DialogTitle>
+          <p className="text-sm text-muted-foreground text-center">
+            A dificuldade será ajustada automaticamente pelo sistema SRS
+          </p>
         </DialogHeader>
 
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
-          <div className="space-y-3">
-            {QUIZ_THEMES.map((theme) => {
-              const isSelected = selectedTheme === theme.id;
-              const locked = isThemeLocked(theme.requiredLevel);
+          <div className="space-y-4">
+            {QUIZ_CATEGORIES.map((category) => {
+              const isSelected = selectedCategory === category.id;
               
               return (
                 <div
-                  key={theme.id}
+                  key={category.id}
                   className={cn(
-                    "flex items-center justify-between p-4 rounded-lg transition-all duration-200",
-                    "border border-border",
-                    !locked && "cursor-pointer hover:bg-accent/50 hover:shadow-md",
-                    locked && "opacity-50 cursor-not-allowed",
-                    isSelected && !locked && "bg-primary/10 border-primary ring-2 ring-primary/20"
+                    "p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer",
+                    "hover:shadow-lg hover:scale-[1.02]",
+                    isSelected 
+                      ? "border-primary bg-primary/5 shadow-md" 
+                      : "border-border hover:border-primary/50"
                   )}
-                  onClick={() => !locked && handleThemeSelect(theme.id)}
+                  onClick={() => handleCategorySelect(category.id)}
                 >
-                  <div className="flex items-center gap-3">
-                    {locked && <Lock className="w-4 h-4 text-muted-foreground" />}
-                    <div>
-                      <h3 className="font-semibold text-base text-foreground">
-                        {theme.name}
+                  <div className="flex items-center gap-4">
+                    <div className="text-3xl">{category.icon}</div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-foreground mb-1">
+                        {category.name}
                       </h3>
-                      {locked && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Desbloqueie no nível {theme.requiredLevel}
-                        </p>
-                      )}
+                      <p className="text-sm text-muted-foreground">
+                        {category.description}
+                      </p>
                     </div>
                   </div>
                   
-                  <Badge 
-                    variant="outline"
-                    className={cn(
-                      "font-medium text-xs px-3 py-1",
-                      getDifficultyBadge(theme.difficultyLevel, theme.difficulty)
-                    )}
-                  >
-                    {theme.difficulty}
-                  </Badge>
+                  <div className="mt-3">
+                    <Badge 
+                      variant="outline"
+                      className={cn("text-xs font-medium", category.color)}
+                    >
+                      {category.category}
+                    </Badge>
+                  </div>
                 </div>
               );
             })}
+          </div>
+          
+          <div className="mt-6 p-4 bg-muted/30 rounded-lg">
+            <p className="text-xs text-muted-foreground text-center">
+              💡 <strong>Dica:</strong> O sistema SRS monitora seu desempenho e ajusta automaticamente a dificuldade das questões para otimizar seu aprendizado.
+            </p>
           </div>
         </div>
 

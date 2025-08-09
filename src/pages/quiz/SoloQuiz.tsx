@@ -5,10 +5,10 @@ import { NewQuizEngine } from '@/components/quiz/new-quiz-engine';
 export default function SoloQuiz() {
   const [searchParams] = useSearchParams();
   
-  const topic = searchParams.get('topic') || undefined;
-  const difficulty = searchParams.get('difficulty') as 'basic' | 'intermediate' | 'advanced' || undefined;
+  const category = searchParams.get('category') || undefined;
+  const difficulty = searchParams.get('difficulty') as 'facil' | 'medio' | 'dificil' | 'muito_dificil' || undefined;
   const questionsCount = parseInt(searchParams.get('count') || '10');
-  const mode = searchParams.get('mode') as 'practice' | 'study' | 'adaptive' || 'practice';
+  const mode = searchParams.get('mode') as 'practice' | 'study' | 'adaptive' || 'adaptive';
 
   const handleQuizComplete = (results: any) => {
     console.log('Quiz completed:', results);
@@ -17,7 +17,7 @@ export default function SoloQuiz() {
 
   return (
     <NewQuizEngine
-      topic={topic}
+      topic={category}
       difficulty={difficulty}
       questionsCount={questionsCount}
       mode={mode}

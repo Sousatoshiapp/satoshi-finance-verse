@@ -4467,6 +4467,102 @@ export type Database = {
           },
         ]
       }
+      quiz_questions_legacy: {
+        Row: {
+          approved_by: string | null
+          author_notes: string | null
+          avg_response_time: number | null
+          backup_date: string | null
+          backup_reason: string | null
+          category: string
+          cognitive_level: string | null
+          concepts: string[] | null
+          correct_answer: string
+          created_at: string
+          difficulty: string
+          difficulty_level: number | null
+          district_id: string | null
+          estimated_time_seconds: number | null
+          explanation: string | null
+          id: string
+          is_approved: boolean | null
+          learning_module_id: string | null
+          learning_objectives: string[] | null
+          migrated_from_original: boolean | null
+          options: Json
+          question: string
+          question_type: string | null
+          source_material: string | null
+          success_rate: number | null
+          tags: string[] | null
+          updated_at: string
+          usage_count: number | null
+          version: number | null
+        }
+        Insert: {
+          approved_by?: string | null
+          author_notes?: string | null
+          avg_response_time?: number | null
+          backup_date?: string | null
+          backup_reason?: string | null
+          category: string
+          cognitive_level?: string | null
+          concepts?: string[] | null
+          correct_answer: string
+          created_at?: string
+          difficulty: string
+          difficulty_level?: number | null
+          district_id?: string | null
+          estimated_time_seconds?: number | null
+          explanation?: string | null
+          id?: string
+          is_approved?: boolean | null
+          learning_module_id?: string | null
+          learning_objectives?: string[] | null
+          migrated_from_original?: boolean | null
+          options?: Json
+          question: string
+          question_type?: string | null
+          source_material?: string | null
+          success_rate?: number | null
+          tags?: string[] | null
+          updated_at?: string
+          usage_count?: number | null
+          version?: number | null
+        }
+        Update: {
+          approved_by?: string | null
+          author_notes?: string | null
+          avg_response_time?: number | null
+          backup_date?: string | null
+          backup_reason?: string | null
+          category?: string
+          cognitive_level?: string | null
+          concepts?: string[] | null
+          correct_answer?: string
+          created_at?: string
+          difficulty?: string
+          difficulty_level?: number | null
+          district_id?: string | null
+          estimated_time_seconds?: number | null
+          explanation?: string | null
+          id?: string
+          is_approved?: boolean | null
+          learning_module_id?: string | null
+          learning_objectives?: string[] | null
+          migrated_from_original?: boolean | null
+          options?: Json
+          question?: string
+          question_type?: string | null
+          source_material?: string | null
+          success_rate?: number | null
+          tags?: string[] | null
+          updated_at?: string
+          usage_count?: number | null
+          version?: number | null
+        }
+        Relationships: []
+      }
       quiz_sessions: {
         Row: {
           combo_count: number | null

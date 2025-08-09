@@ -42,12 +42,15 @@ interface QuizQuestion {
   updated_at?: string;
 }
 
+// NOVO SISTEMA: Categorias baseadas nas especificações do usuário
 const CATEGORIES = [
-  'financas', 'crypto', 'investimentos', 'economia', 
-  'mercado', 'educacao', 'tecnologia', 'geral'
+  'Finanças do Dia a Dia', 
+  'ABC das Finanças', 
+  'Cripto'
 ];
 
-const DIFFICULTIES = ['easy', 'medium', 'hard'];
+// NOVO SISTEMA: 4 níveis de dificuldade conforme especificado
+const DIFFICULTIES = ['facil', 'medio', 'dificil', 'muito_dificil'];
 const COGNITIVE_LEVELS = ['knowledge', 'comprehension', 'application', 'analysis', 'synthesis', 'evaluation'];
 
 export function UnifiedQuestionManager() {
@@ -67,8 +70,8 @@ export function UnifiedQuestionManager() {
     options: ["", "", "", ""],
     correct_answer: "",
     explanation: "",
-    category: "geral",
-    difficulty: "easy",
+    category: "Finanças do Dia a Dia", // Categoria padrão do novo sistema
+    difficulty: "facil", // Dificuldade padrão do novo sistema
     difficulty_level: 1,
     tags: [],
     concepts: [],
