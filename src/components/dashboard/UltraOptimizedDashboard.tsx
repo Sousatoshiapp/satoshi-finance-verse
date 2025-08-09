@@ -54,7 +54,7 @@ const UltraOptimizedDashboard = memo(() => {
               <p className="text-sm text-muted-foreground mb-1">
                 <span>{greeting.icon}</span> <span>{greeting.text}</span>
               </p>
-              <h1 className="text-xl font-bold text-foreground ml-[1.8ch]">{userStats.nickname}</h1>
+              <h1 className="text-xl font-bold text-foreground ml-[1.5ch]">{userStats.nickname}</h1>
             </div>
           </div>
 
