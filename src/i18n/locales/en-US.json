@@ -234,6 +234,7 @@
     "tryAgain": "Try Again"
   },
   "navigation": {
+    "home": "Home",
     "dashboard": "Dashboard",
     "quiz": "Quiz",
     "social": "Social",

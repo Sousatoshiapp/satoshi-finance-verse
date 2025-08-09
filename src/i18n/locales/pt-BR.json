@@ -233,6 +233,7 @@
     "tryAgain": "Tentar Novamente"
   },
   "navigation": {
+    "home": "Home",
     "dashboard": "Dashboard",
     "quiz": "Quiz",
     "social": "Social",

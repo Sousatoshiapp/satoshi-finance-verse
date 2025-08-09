@@ -13,6 +13,7 @@
     "beetz": "Beetz"
   },
   "navigation": {
+    "home": "الصفحة الرئيسية",
     "dashboard": "لوحة التحكم",
     "quiz": "اختبار",
     "social": "اجتماعي",
