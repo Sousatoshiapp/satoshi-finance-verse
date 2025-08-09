@@ -8,10 +8,12 @@ import { useDailyChallenges } from "@/hooks/use-daily-challenges";
 import { Check, Clock, Trophy, Zap, ArrowLeft, Filter } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Missions() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | 'missions' | 'challenges' | 'completed'>('all');
+  const isMobile = useIsMobile();
   const { 
     missions, 
     loading: missionsLoading, 
@@ -97,8 +99,9 @@ export default function Missions() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background p-4">
-        <div className="max-w-2xl mx-auto">
+      <div className={`min-h-screen bg-background ${isMobile ? 'p-6 pb-24 pt-18' : 'p-4 pb-20'}`} 
+           style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-2xl'}`}>
           <div className="animate-pulse space-y-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="bg-muted/30 rounded-lg p-4">
@@ -113,9 +116,10 @@ export default function Missions() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="p-4">
-        <div className="max-w-2xl mx-auto">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      <div className={`${isMobile ? 'p-6 pt-18' : 'p-4'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-2xl'}`}>
           {/* Header */}
           <div className="flex items-center gap-4 mb-6">
             <Button 

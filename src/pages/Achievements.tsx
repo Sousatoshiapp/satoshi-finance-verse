@@ -8,11 +8,13 @@ import { Trophy, Medal, Star, Crown, ArrowLeft, Filter } from "lucide-react";
 import { useGamification } from "@/hooks/use-gamification";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Achievements() {
   const navigate = useNavigate();
   const { achievements, loading, getRarityColor } = useGamification();
   const [filter, setFilter] = useState<'all' | 'earned' | 'available'>('all');
+  const isMobile = useIsMobile();
 
   const filteredAchievements = achievements.filter(achievement => {
     switch (filter) {
@@ -42,8 +44,9 @@ export default function Achievements() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background p-4">
-        <div className="max-w-4xl mx-auto">
+      <div className={`min-h-screen bg-background ${isMobile ? 'p-6 pb-24' : 'p-4 pb-20'}`} 
+           style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
           <div className="animate-pulse space-y-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="bg-muted/30 rounded-lg p-6">
@@ -59,9 +62,10 @@ export default function Achievements() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 pb-20">
-      <div className="p-4">
-        <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen bg-gradient-to-br from-background to-muted/20 ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      <div className={`${isMobile ? 'p-6 pt-18' : 'p-4'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
           {/* Header */}
           <div className="flex items-center gap-4 mb-6">
             <Button 

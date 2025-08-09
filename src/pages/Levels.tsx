@@ -9,6 +9,7 @@ import { levelTiers as staticLevelTiers, getLevelInfo as getStaticLevelInfo } fr
 import { useI18n } from "@/hooks/use-i18n";
 import { Trophy, Star, Lock, CheckCircle } from "lucide-react";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface UserProfile {
   level: number;
@@ -21,6 +22,7 @@ export default function Levels() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const { levelTiers: dbLevelTiers, getNextLevelXP } = useProgressionSystem();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     loadUserProfile();
@@ -88,23 +90,25 @@ export default function Levels() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center pb-20">
+      <div className={`min-h-screen bg-background flex items-center justify-center ${isMobile ? 'pb-24' : 'pb-20'}`} 
+           style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="px-4 py-4">
-        <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      {/* Header - Enhanced mobile spacing */}
+      <div className={`${isMobile ? 'px-6 py-4 pt-18' : 'px-4 py-4'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
                 ← Dashboard
               </Button>
-              <h1 className="text-xl font-bold text-foreground">Níveis & Progressão</h1>
+              <h1 className={`font-bold text-foreground ${isMobile ? 'text-lg' : 'text-xl'}`}>Níveis & Progressão</h1>
             </div>
             {user && (
               <Badge variant="secondary" className="flex items-center gap-2">
@@ -116,7 +120,7 @@ export default function Levels() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6 py-4' : 'max-w-4xl px-4 py-4'}`}>
         {/* Current Level Card */}
         {user && (
           <Card className="mb-8 border-primary/20 bg-primary/5">

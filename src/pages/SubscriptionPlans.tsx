@@ -7,6 +7,7 @@ import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { Check, Star, Crown, ArrowLeft, Zap, Shield, Trophy, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SubscriptionPlan {
   tier: 'free' | 'pro' | 'elite';
@@ -26,6 +27,7 @@ export default function SubscriptionPlans() {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [currentTier, setCurrentTier] = useState<'free' | 'pro' | 'elite'>('free');
   const [loading, setLoading] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     loadPlansAndCurrentTier();
@@ -126,10 +128,11 @@ export default function SubscriptionPlans() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="px-4 pt-8 pb-6">
-        <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      {/* Header - Enhanced mobile spacing */}
+      <div className={`${isMobile ? 'px-6 pt-18 pb-6' : 'px-4 pt-8 pb-6'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
           <div className="flex items-center justify-between mb-6">
             <Button variant="ghost" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4 mr-2" />

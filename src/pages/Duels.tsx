@@ -9,6 +9,7 @@ import { UsersList } from "@/components/duels/users-list";
 import { DuelInvites } from "@/components/duels/duel-invites";
 import EnhancedSimultaneousDuel from "@/components/duels/enhanced-simultaneous-duel";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Duels() {
   const [currentView, setCurrentView] = useState<'main' | 'users' | 'active'>('main');
@@ -17,6 +18,7 @@ export default function Duels() {
   const [pendingInvites, setPendingInvites] = useState<any[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Reset all states when component mounts (when user returns to the screen)
@@ -197,8 +199,9 @@ export default function Duels() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted pb-20">
-      <div className="max-w-4xl mx-auto px-4 py-8 overflow-x-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-background to-muted ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      <div className={`mx-auto overflow-x-hidden ${isMobile ? 'max-w-sm px-6 py-4 pt-18' : 'max-w-4xl px-4 py-8'}`}>
         {/* Header with Back Button */}
         <div className="flex items-center gap-4 mb-6">
           <Button 

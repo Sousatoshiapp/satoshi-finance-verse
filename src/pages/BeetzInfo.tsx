@@ -4,15 +4,18 @@ import { BeetzIcon } from "@/components/shared/ui/beetz-icon";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { ArrowLeft, Coins, Gift, ShoppingCart, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function BeetzInfo() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="px-4 py-4">
-        <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      {/* Header - Enhanced mobile spacing */}
+      <div className={`${isMobile ? 'px-6 py-4 pt-18' : 'px-4 py-4'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
           <div className="flex items-center gap-4 mb-6">
             <Button 
               variant="ghost" 
@@ -33,7 +36,7 @@ export default function BeetzInfo() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4">
+      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6' : 'max-w-4xl px-4'}`}>
         {/* Main Info Card */}
         <Card className="p-6 mb-6 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border-orange-500/20">
           <div className="text-center mb-6">

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Zap, Clock, Shield, Sparkles, ArrowLeft, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface UserProduct {
   id: string;
@@ -28,6 +29,7 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     loadInventory();
@@ -113,9 +115,10 @@ export default function Inventory() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-20">
-        <div className="px-4 py-4">
-          <div className="max-w-4xl mx-auto">
+      <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+           style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+        <div className={`${isMobile ? 'px-6 py-4 pt-18' : 'px-4 py-4'}`}>
+          <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
             <div className="flex items-center gap-3 mb-6">
               <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
                 <ArrowLeft className="w-4 h-4" />
@@ -135,9 +138,10 @@ export default function Inventory() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="px-4 py-4">
-        <div className="max-w-4xl mx-auto">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      <div className={`${isMobile ? 'px-6 py-4 pt-18' : 'px-4 py-4'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
           <div className="flex items-center gap-3 mb-6">
             <Button variant="outline" size="sm" onClick={() => navigate(-1)}>
               <ArrowLeft className="w-4 h-4" />

@@ -667,10 +667,11 @@ export default function Store() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 safe-area-full">
-      <div className="max-w-md mx-auto p-mobile-4">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'} safe-area-full`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6 pt-18' : 'max-w-md p-mobile-4'}`}>
+        {/* Header - Enhanced mobile spacing */}
+        <div className={`flex items-center gap-3 ${isMobile ? 'mb-4' : 'mb-6'}`}>
           <Button variant="ghost" size="icon" onClick={() => navigate('/dashboard')} className="touch-target">
             <ArrowLeft className="h-5 w-5" />
           </Button>

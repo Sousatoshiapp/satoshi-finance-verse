@@ -95,7 +95,7 @@ export default function Leaderboard() {
     <div className="min-h-screen bg-background pb-24" 
          style={{ paddingTop: 'env(safe-area-inset-top, 20px)' }}>
       {/* Header - Enhanced mobile spacing */}
-      <div className="px-6 py-4 pt-20">
+      <div className="px-6 py-4 pt-18">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">

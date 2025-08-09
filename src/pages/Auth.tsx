@@ -279,9 +279,9 @@ export default function Auth() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
       </div>
 
-      {/* Content - Enhanced mobile with 20% more top spacing for iPhone */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-20 sm:p-6" 
-           style={{ paddingTop: 'max(80px, env(safe-area-inset-top, 20px))' }}>
+      {/* Content - Enhanced mobile with optimized iPhone spacing */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-18 sm:p-6" 
+           style={{ paddingTop: 'max(72px, env(safe-area-inset-top, 20px))' }}>
         <div className="w-full max-w-sm sm:max-w-md">
           {/* Back Button - Mobile responsive */}
           <Button

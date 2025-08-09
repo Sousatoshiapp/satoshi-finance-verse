@@ -4,11 +4,13 @@ import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { ArrowLeft, Settings, Zap, Users, Trophy, Gamepad2 } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
 
 export default function GameMode() {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const isMobile = useIsMobile();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [hologramRotation, setHologramRotation] = useState(0);
   const [showThemeModal, setShowThemeModal] = useState(false);
@@ -42,8 +44,9 @@ export default function GameMode() {
   };
 
   return (
-    <div className="min-h-screen pb-20 bg-background">
-      <div className="max-w-md mx-auto px-4 py-6">
+    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6 py-4 pt-18' : 'max-w-md px-4 py-6'}`}>
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <Button
