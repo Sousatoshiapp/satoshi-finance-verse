@@ -420,7 +420,9 @@ export default function Dashboard() {
           */}
 
           {/* Enhanced Daily Summary */}
-          <LazyDashboardSummary userStats={userStats} subscription={subscription} />
+          <div className={`${isMobile ? 'mb-10' : 'mb-12'}`}>
+            <LazyDashboardSummary userStats={userStats} subscription={subscription} />
+          </div>
 
 
           {/* Core Actions - PERFORMANCE: Daily Missions removidas temporariamente */}
