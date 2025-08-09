@@ -1,8 +1,9 @@
 // FASE 1: Context Splitting Radical - Contextos consolidados e lazy
-import React, { createContext, useContext, ReactNode, useMemo, lazy, Suspense } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo, lazy, Suspense, useState, useEffect } from 'react';
 import { AuthProvider } from './AuthContext';
 import { I18nProvider } from './I18nProvider';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
+import { AppLoader } from '@/components/shared/ui/AppLoader';
 
 // Lazy load non-critical contexts
 const LazyRealtimeProvider = lazy(() => import('./RealtimeContext').then(mod => ({ default: mod.RealtimeProvider })));
@@ -31,12 +32,27 @@ export const useUltraContext = () => useContext(UltraContext);
 
 // Ultra-fast critical context provider
 export function UltraCriticalProvider({ children }: { children: ReactNode }) {
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  
   const contextValue = useMemo(() => ({
     points: 0,
     isOnline: true,
     notifications: [],
     lastUpdate: null,
   }), []);
+
+  // Simular carregamento inicial dos contextos críticos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoading(false);
+    }, 1500); // 1.5s para loading inicial
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isInitialLoading) {
+    return <AppLoader />;
+  }
 
   return (
     <UltraContext.Provider value={contextValue}>
