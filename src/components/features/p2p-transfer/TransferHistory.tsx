@@ -127,7 +127,7 @@ export function TransferHistory() {
     }
   };
 
-  if (loading) return <div>{t('common.loading')}</div>;
+  if (loading) return <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50"><div className="text-lg">{t('common.loading')}</div></div>;
 
   return (
     <div className="max-w-md mx-auto">

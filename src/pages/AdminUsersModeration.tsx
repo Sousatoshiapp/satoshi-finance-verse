@@ -137,7 +137,7 @@ export default function AdminUsersModeration() {
                 </CardHeader>
                 <CardContent>
                   {loading ? (
-                    <div className="text-center py-8">{t('common.loading')}...</div>
+                    <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50"><div className="text-lg">{t('common.loading')}...</div></div>
                   ) : (
                     <div className="space-y-4">
                       {reports.map((report) => (

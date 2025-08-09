@@ -341,7 +341,7 @@ export default function AdminQuizCategories() {
               {/* Categories Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loading ? (
-                  <div className="col-span-full text-center py-8">{t('common.loading')}...</div>
+                  <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50"><div className="text-lg">{t('common.loading')}...</div></div>
                 ) : (
                   categories.map((category) => (
                     <Card key={category.id} className={`relative ${!category.isActive ? 'opacity-60' : ''}`}>
