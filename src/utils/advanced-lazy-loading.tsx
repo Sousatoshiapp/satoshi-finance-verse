@@ -15,10 +15,6 @@ export const LazyRoutes = {
   Quiz: lazy(() => import('@/pages/Quiz')),
   EnhancedQuiz: lazy(() => import('@/pages/EnhancedQuiz')),
   
-  // New quiz pages
-  StudyMode: lazy(() => import('@/pages/quiz/StudyMode')),
-  ImportExport: lazy(() => import('@/pages/quiz/ImportExport')),
-  
   // Other pages
   Profile: lazy(() => import('@/pages/Profile')),
   Social: lazy(() => import('@/pages/Social')),
