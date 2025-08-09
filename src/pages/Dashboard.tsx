@@ -415,8 +415,26 @@ export default function Dashboard() {
           {/* Botão Principal Jogar - Circular Transparente */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
             <Button 
-              onClick={() => navigate('/game-mode')}
-              className="w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-border hover:border-primary/50 hover:bg-muted/30 transition-all duration-300 group"
+              onClick={(e) => {
+                // Trigger particle explosion
+                const rect = e.currentTarget.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const particleEvent = new CustomEvent('showParticleSystem', {
+                  detail: {
+                    type: 'lightning',
+                    intensity: 2.5,
+                    duration: 1200,
+                    sourcePosition: { x: centerX, y: centerY }
+                  }
+                });
+                window.dispatchEvent(particleEvent);
+                
+                // Navigate after particle effect starts
+                setTimeout(() => navigate('/game-mode'), 200);
+              }}
+              className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
             >
               <div className="flex flex-col items-center gap-1">
                 <svg className="w-6 h-6 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
