@@ -50,14 +50,35 @@ export default function UserProfile() {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState<UserProfileData | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     if (userId) {
       loadUserProfile(userId);
+      loadCurrentUser();
     }
   }, [userId]);
+
+  const loadCurrentUser = async () => {
+    try {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', currentUser.id)
+        .single();
+
+      if (profile) {
+        setCurrentUserId(profile.id);
+      }
+    } catch (error) {
+      console.error('Error loading current user:', error);
+    }
+  };
 
   const loadUserProfile = async (profileId: string) => {
     try {
@@ -315,10 +336,14 @@ export default function UserProfile() {
                     variant="ghost"
                     showCount
                   />
-                   {userId !== user.id && (
-                     <Button onClick={() => handleStartConversation(user.id)}>
-                       <MessageCircle className="h-4 w-4 mr-2" />
-                       Mensagem
+                   {currentUserId && currentUserId !== user.id && (
+                     <Button 
+                       onClick={() => handleStartConversation(user.id)}
+                       variant="outline"
+                       size="icon"
+                       className="bg-green-500 hover:bg-green-600 border-green-500 text-white"
+                     >
+                       <MessageCircle className="h-4 w-4" />
                      </Button>
                    )}
                 </div>
