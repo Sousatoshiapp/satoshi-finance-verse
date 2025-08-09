@@ -203,7 +203,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background pb-24" 
-         style={{ paddingTop: 'env(safe-area-inset-top, 20px)' }}>
+         style={{ paddingTop: '50px' }}>
       {/* Header - Enhanced mobile spacing */}
       <div className="px-6 py-4 pt-18">
         <div className="max-w-4xl mx-auto">
