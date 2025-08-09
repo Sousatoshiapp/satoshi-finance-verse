@@ -282,7 +282,7 @@ export default function Dashboard() {
   return (
     <div className={`min-h-screen bg-background ${isMobile ? 'pb-safe-area-bottom pb-24' : 'pb-20'}`}>
       {/* Optimized Header with Consolidated Profile - Mobile Adjusted */}
-      <div className={`${isMobile ? 'px-6 pb-4' : 'px-4 pt-8 pb-4'}`} style={isMobile ? { paddingTop: '50px' } : {}}>
+      <div className={`${isMobile ? 'px-8 pb-4' : 'px-6 pt-8 pb-4'}`} style={isMobile ? { paddingTop: '50px' } : {}}>
         <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-md'}`}>
           {/* Simplified Header - Mobile Optimized */}
           <div className={`flex items-center justify-between ${isMobile ? 'mb-12' : 'mb-14'}`}>
