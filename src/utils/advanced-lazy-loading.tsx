@@ -19,10 +19,5 @@ export const LazyRoutes = {
   Profile: lazy(() => import('@/pages/Profile')),
   Social: lazy(() => import('@/pages/Social')),
   Leaderboard: lazy(() => import('@/pages/Leaderboard')),
-  Store: lazy(() => import('@/pages/Store')),
-  Admin: lazy(() => import('@/pages/Admin')),
-  
-  // Auth pages
-  Login: lazy(() => import('@/pages/Login')),
-  Register: lazy(() => import('@/pages/Register'))
+  Store: lazy(() => import('@/pages/Store'))
 };
