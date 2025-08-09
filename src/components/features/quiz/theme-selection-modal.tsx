@@ -81,9 +81,6 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
           <DialogTitle className="text-xl font-bold text-center">
             Escolha seu jogo
           </DialogTitle>
-          <p className="text-sm text-muted-foreground text-center">
-            A dificuldade será ajustada automaticamente pelo sistema SRS
-          </p>
         </DialogHeader>
 
         <div className="overflow-y-auto flex-1 -mx-6 px-6">
