@@ -553,24 +553,6 @@ export default function Auth() {
                   </Button>
                 </div>
 
-                {/* Narrative Text */}
-                <div className="mt-6 p-4 bg-slate-700/30 rounded-lg border border-cyan-400/20">
-                  <p className="text-sm text-gray-300 text-center leading-relaxed">
-                    {isLogin ? (
-                      <>
-                        <span className="text-cyan-400 font-semibold">{t('auth.narrative.satoshiCity')}</span> {t('auth.narrative.loginText')}
-                        <br />
-                        {t('auth.narrative.loginSubtext')}
-                      </>
-                    ) : (
-                      <>
-                        {t('auth.narrative.signupText')} <span className="text-purple-400 font-semibold">{t('auth.narrative.satoshiCity')}</span>.
-                        <br />
-                        {t('auth.narrative.signupSubtext')}
-                      </>
-                    )}
-                  </p>
-                </div>
               </form>
               )}
             </CardContent>
