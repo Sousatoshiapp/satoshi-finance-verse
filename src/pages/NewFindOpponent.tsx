@@ -162,13 +162,14 @@ export default function NewFindOpponent() {
             <button
               onClick={handleStartDuel}
               disabled={isLoading || points < selectedBet}
-              className="casino-start-button w-full py-2 px-6 font-bold text-lg rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="casino-start-button w-full py-1 px-6 font-bold text-base rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative"
               style={{ 
                 backgroundColor: '#adff2f',
                 color: 'black',
                 border: '2px solid #adff2f',
                 boxShadow: '0 0 20px rgba(173, 255, 47, 0.4)',
-                zIndex: 20 
+                zIndex: 60,
+                minHeight: '40px'
               }}
             >
               {isLoading ? "Carregando..." : "BUSCAR OPONENTE"}
