@@ -55,9 +55,24 @@ export default function SelectOpponentScreen() {
       navigate('/find-opponent');
       return;
     }
-    loadFriends();
     loadRandomUsers();
   }, []);
+
+  // Separate useEffect for loading friends only after profile is loaded
+  useEffect(() => {
+    console.log('🔍 Profile loading state:', { 
+      profileExists: !!profile, 
+      profileId: profile?.id,
+      profileLoading: !profile 
+    });
+    
+    if (profile?.id) {
+      console.log('✅ Profile loaded, now loading friends');
+      loadFriends();
+    } else {
+      console.log('⏳ Waiting for profile to load before loading friends');
+    }
+  }, [profile?.id, state?.betAmount]);
 
   const loadFriends = async () => {
     if (!profile?.id) {
@@ -458,7 +473,11 @@ export default function SelectOpponentScreen() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 pt-0">
-            {loadingFriends ? (
+            {!profile ? (
+              <div className="text-center py-2 text-blue-400 text-sm">
+                Aguardando perfil carregar...
+              </div>
+            ) : loadingFriends ? (
               <div className="text-center py-2 text-[#adff2f] text-sm">
                 Carregando amigos...
               </div>
