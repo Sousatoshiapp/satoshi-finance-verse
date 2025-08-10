@@ -58,11 +58,10 @@ const betAmounts = [10, 25, 50, 100, 250, 500];
 export default function NewFindOpponent() {
   const navigate = useNavigate();
   const { profile } = useProfile();
-  const { isSearching, findOpponent, cancelSearch } = useCasinoDuels();
+  const { } = useCasinoDuels();
   
   const [selectedTopic, setSelectedTopic] = useState(duelTopics[0]);
   const [selectedBet, setSelectedBet] = useState(25);
-  const [showBettingScreen, setShowBettingScreen] = useState(false);
 
   const handleStartDuel = () => {
     if (!profile) {
@@ -75,27 +74,14 @@ export default function NewFindOpponent() {
       return;
     }
 
-    setShowBettingScreen(true);
+    navigate('/select-opponent', { 
+      state: { 
+        topic: selectedTopic.id,
+        betAmount: selectedBet 
+      }
+    });
   };
 
-  const handleConfirmBet = async () => {
-    try {
-      await findOpponent(selectedTopic.id, selectedBet);
-      setShowBettingScreen(false);
-    } catch (error) {
-      console.error("Erro ao procurar oponente:", error);
-      toast.error("Erro ao iniciar duelo");
-    }
-  };
-
-  const handleCancelSearch = async () => {
-    try {
-      await cancelSearch();
-      setShowBettingScreen(false);
-    } catch (error) {
-      console.error("Erro ao cancelar busca:", error);
-    }
-  };
 
   return (
     <div className="min-h-screen relative overflow-hidden casino-futuristic">
@@ -153,15 +139,11 @@ export default function NewFindOpponent() {
       </motion.div>
 
       <div className="relative z-10 container mx-auto px-6 py-4 pb-24 space-y-4">
-        <AnimatePresence mode="wait">
-          {!showBettingScreen ? (
-            <motion.div
-              key="topic-selection"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-4"
-            >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
               {/* Topic Selection with casino styling - Reduced height */}
               <Card className="border-white/20 bg-black/30 backdrop-blur-md overflow-hidden relative casino-card">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-pink-500/10" />
@@ -269,7 +251,7 @@ export default function NewFindOpponent() {
                     transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                   />
                   <Zap className="mr-2 h-4 w-4" />
-                  Iniciar Duelo
+                  Buscar Oponente
                 </Button>
                 
                 {profile && profile.points < selectedBet && (
@@ -279,122 +261,7 @@ export default function NewFindOpponent() {
                 )}
               </motion.div>
             </motion.div>
-          ) : (
-            <motion.div
-              key="betting-screen"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="max-w-2xl mx-auto"
-            >
-              {/* Betting Confirmation Screen with casino styling */}
-              <Card className="border-white/20 bg-black/30 backdrop-blur-md overflow-hidden relative casino-card">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/15 to-pink-500/15" />
-                <div className="absolute inset-0 casino-card-glow" />
-                <CardContent className="relative z-10 p-8 text-center space-y-8">
-                  <div className="space-y-4">
-                    <motion.div
-                      animate={{ 
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="inline-block p-4 bg-gradient-to-br from-primary to-pink-500 rounded-full"
-                    >
-                      <Crown className="h-12 w-12 text-white" />
-                    </motion.div>
-                    
-                    <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                      Preparando Duelo
-                    </h2>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-                        <span className="text-muted-foreground">Tópico:</span>
-                        <div className="flex items-center gap-2">
-                          <div className={`p-1 rounded bg-gradient-to-br ${selectedTopic.color} text-white`}>
-                            <selectedTopic.icon className="h-4 w-4" />
-                          </div>
-                          <span className="font-bold text-white">{selectedTopic.name}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-                        <span className="text-muted-foreground">Aposta:</span>
-                        <div className="flex items-center gap-2">
-                          <Coins className="h-5 w-5 text-amber-400" />
-                          <span className="font-bold text-amber-300">{selectedBet} BTZ</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl border border-green-400/30">
-                        <span className="text-green-300">Prêmio:</span>
-                        <div className="flex items-center gap-2">
-                          <TrendingUp className="h-5 w-5 text-green-400" />
-                          <span className="font-bold text-green-300">{selectedBet * 2} BTZ</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {!isSearching ? (
-                    <div className="space-y-4">
-                      <Button
-                        onClick={() => navigate('/select-opponent', { 
-                          state: { 
-                            topic: selectedTopic.name,
-                            betAmount: selectedBet 
-                          }
-                        })}
-                        className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg shadow-green-500/25"
-                      >
-                        <Zap className="mr-2 h-5 w-5" />
-                        Buscar Oponente
-                      </Button>
-                      
-                      <Button
-                        onClick={() => setShowBettingScreen(false)}
-                        variant="outline"
-                        className="w-full border-white/20 bg-white/5 hover:bg-white/10"
-                      >
-                        Voltar
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <div className="flex items-center justify-center">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                          className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full"
-                        />
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <h3 className="text-xl font-bold text-white">Procurando Oponente</h3>
-                        <p className="text-muted-foreground">Aguarde enquanto encontramos um adversário à altura...</p>
-                        
-                        <div className="flex items-center justify-center gap-2 text-primary">
-                          <Users className="h-5 w-5" />
-                          <Timer className="h-5 w-5" />
-                          <Target className="h-5 w-5" />
-                        </div>
-                      </div>
-                      
-                      <Button
-                        onClick={handleCancelSearch}
-                        variant="outline"
-                        className="w-full border-red-400/30 bg-red-500/10 hover:bg-red-500/20 text-red-300"
-                      >
-                        Cancelar Busca
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   );
