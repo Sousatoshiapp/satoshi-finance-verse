@@ -88,7 +88,7 @@ export default function NewFindOpponent() {
   return (
     <div className="min-h-screen casino-futuristic">
       {/* Main content with proper spacing to avoid navbar overlap */}
-      <div className="relative z-10 p-6 pb-32">
+      <div className="relative z-10 p-6 pb-40">
         {/* Header with casino styling */}
         <div className="flex items-center justify-between mb-8">
           <Button
@@ -161,14 +161,13 @@ export default function NewFindOpponent() {
           <div className="text-center space-y-4">
             <button
               onClick={() => navigate('/select-opponent')}
-              className="w-full py-3 px-6 font-bold text-base rounded-lg transition-all duration-300 border-2 hover:bg-red-500/20"
+              className="relative z-60 w-full py-3 px-6 font-bold text-base rounded-lg transition-all duration-300 border-2 hover:brightness-110"
               style={{ 
-                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                backgroundColor: 'transparent',
                 color: '#adff2f',
                 borderColor: '#adff2f',
                 boxShadow: '0 0 10px rgba(173, 255, 47, 0.5)',
-                minHeight: '40px',
-                outline: '3px solid red'
+                minHeight: '40px'
               }}
             >
               BUSCAR OPONENTE
