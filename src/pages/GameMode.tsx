@@ -142,7 +142,10 @@ export default function GameMode() {
         {/* Modal de Seleção de Tema */}
         <ThemeSelectionModal
           isOpen={showThemeModal}
-          onClose={() => setShowThemeModal(false)}
+          onClose={() => {
+            setShowThemeModal(false);
+            setSelectedMode(null);
+          }}
           onSelectTheme={handleThemeSelect}
         />
       </div>
