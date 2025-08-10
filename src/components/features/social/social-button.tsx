@@ -42,8 +42,15 @@ export function SocialButton({
 
   const checkStatus = async () => {
     try {
+      console.log('🔍 SocialButton checkStatus called:', { actionType, targetType, targetId, targetUserId });
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log('❌ No authenticated user found');
+        return;
+      }
+
+      console.log('👤 Authenticated user:', user.id);
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -51,30 +58,58 @@ export function SocialButton({
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return;
+      if (!profile) {
+        console.log('❌ No profile found for user');
+        return;
+      }
+
+      console.log('👤 User profile ID:', profile.id);
 
       if (actionType === 'like') {
-        const { data } = await supabase
+        console.log('💝 Checking like status...');
+        const { data, error } = await supabase
           .from('user_likes')
           .select('id')
           .eq('user_id', profile.id)
           .eq('target_type', targetType)
           .eq('target_id', targetId)
-          .single();
+          .maybeSingle();
 
+        if (error) {
+          console.error('❌ Error checking like status:', error);
+          return;
+        }
+
+        console.log('💝 Like status result:', !!data);
         setIsActive(!!data);
       } else if (actionType === 'follow' && targetUserId) {
-        const { data } = await supabase
+        console.log('👥 Checking follow status...', { follower_id: profile.id, following_id: targetUserId });
+        
+        const { data, error } = await supabase
           .from('user_follows')
           .select('id')
           .eq('follower_id', profile.id)
           .eq('following_id', targetUserId)
-          .single();
+          .maybeSingle();
 
-        setIsActive(!!data);
+        if (error) {
+          console.error('❌ Error checking follow status:', error);
+          return;
+        }
+
+        const isFollowing = !!data;
+        console.log('👥 Follow status result:', isFollowing);
+        setIsActive(isFollowing);
+      } else {
+        console.log('⚠️ Missing targetUserId for follow action');
       }
     } catch (error) {
-      console.error('Error checking status:', error);
+      console.error('❌ Error in checkStatus:', error);
+      // Retry once after a delay
+      setTimeout(() => {
+        console.log('🔄 Retrying checkStatus...');
+        checkStatus();
+      }, 1000);
     }
   };
 
