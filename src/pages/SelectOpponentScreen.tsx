@@ -61,22 +61,36 @@ export default function SelectOpponentScreen() {
     
     setLoadingFriends(true);
     try {
+      console.log('Loading friends for profile:', profile.id);
+      
+      // Simplified query for better performance
       const { data, error } = await supabase
         .from('user_follows')
         .select(`
           following:profiles!following_id (
             id, nickname, level, points, profile_image_url, 
-            current_avatar_id, is_bot,
-            avatars!current_avatar_id (id, name, image_url)
+            current_avatar_id, is_bot
           )
         `)
         .eq('follower_id', profile.id)
-        .limit(20);
+        .limit(10);
 
-      if (error) throw error;
-      setFriends(data?.map(item => item.following).filter(Boolean) || []);
+      if (error) {
+        console.error('Friends query error:', error);
+        throw error;
+      }
+      
+      console.log('Friends data received:', data);
+      const friendsList = data?.map(item => item.following).filter(Boolean) || [];
+      console.log('Processed friends list:', friendsList);
+      setFriends(friendsList);
     } catch (error) {
       console.error('Error loading friends:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar amigos. Tente novamente.",
+        variant: "destructive"
+      });
     } finally {
       setLoadingFriends(false);
     }
@@ -153,8 +167,12 @@ export default function SelectOpponentScreen() {
   const handleRandomMatch = async () => {
     if (!state) return;
     
+    console.log('Starting random match search...');
+    console.log('Topic:', state.topic, 'Bet Amount:', state.betAmount);
+    
     try {
       await findOpponent(state.topic, state.betAmount);
+      console.log('Random match request sent successfully');
     } catch (error) {
       console.error('Error finding random opponent:', error);
       toast({
@@ -288,7 +306,7 @@ export default function SelectOpponentScreen() {
         {/* Search Section */}
         <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30 mb-4">
           <CardHeader className="p-3">
-            <CardTitle className="flex items-center gap-2 text-green-400 text-lg">
+            <CardTitle className="flex items-center gap-2 text-white text-lg">
               <Search className="h-4 w-4" />
               Buscar Jogadores
             </CardTitle>
@@ -332,14 +350,14 @@ export default function SelectOpponentScreen() {
         {/* Friends Section */}
         <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30 mb-4">
           <CardHeader className="p-3">
-            <CardTitle className="flex items-center gap-2 text-green-400 text-lg">
+            <CardTitle className="flex items-center gap-2 text-white text-lg">
               <Users className="h-4 w-4" />
               Amigos e Seguindo
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 pt-0">
             {loadingFriends ? (
-              <div className="text-center py-2 text-green-400 text-sm">
+              <div className="text-center py-2 text-[#adff2f] text-sm">
                 Carregando amigos...
               </div>
             ) : (
@@ -362,7 +380,7 @@ export default function SelectOpponentScreen() {
         {/* Random Match Section */}
         <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
           <CardHeader className="p-3">
-            <CardTitle className="flex items-center gap-2 text-green-400 text-lg">
+            <CardTitle className="flex items-center gap-2 text-white text-lg">
               <Shuffle className="h-4 w-4" />
               Busca Aleatória
             </CardTitle>
