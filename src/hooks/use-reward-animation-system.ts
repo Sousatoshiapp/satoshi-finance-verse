@@ -51,10 +51,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
 
     if (amount >= 100) {
       confetti({
-        particleCount: 50,
+        particleCount: 200,
         spread: 70,
         origin: { x: position.x / window.innerWidth, y: position.y / window.innerHeight },
-        colors: ['#FFD700', '#FFA500', '#FF6347']
+        colors: ['#FFD700', '#FFA500', '#FF6347'],
+        scalar: 0.25
       });
     }
   }, [playCashRegisterSound]);
@@ -74,10 +75,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
 
     if (levelUp) {
       confetti({
-        particleCount: 100,
+        particleCount: 400,
         spread: 160,
         origin: { y: 0.6 },
-        colors: ['#9333EA', '#C084FC', '#E879F9']
+        colors: ['#9333EA', '#C084FC', '#E879F9'],
+        scalar: 0.25
       });
     }
   }, [playCorrectSound]);
@@ -107,10 +109,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
                    ['#87CEEB', '#4169E1'];
 
     confetti({
-      particleCount: 150,
+      particleCount: 600,
       spread: 180,
       origin: { y: 0.5 },
-      colors
+      colors,
+      scalar: 0.25
     });
   }, [playStreakSound]);
 
@@ -139,10 +142,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 200,
+      particleCount: 800,
       spread: 200,
       origin: { y: 0.4 },
-      colors: ['#FFD700', '#FFA500', '#FF6347', '#FF1493']
+      colors: ['#FFD700', '#FFA500', '#FF6347', '#FF1493'],
+      scalar: 0.25
     });
   }, [addNotification]);
 
@@ -171,10 +175,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 300,
+      particleCount: 1200,
       spread: 360,
       origin: { y: 0.3 },
-      colors: ['#9333EA', '#C084FC', '#E879F9', '#FFD700']
+      colors: ['#9333EA', '#C084FC', '#E879F9', '#FFD700'],
+      scalar: 0.25
     });
   }, [addNotification]);
 
@@ -197,10 +202,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 250,
+      particleCount: 1000,
       spread: 180,
       origin: { y: 0.5 },
-      colors: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3']
+      colors: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'],
+      scalar: 0.25
     });
   }, []);
 
@@ -241,10 +247,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 30,
+      particleCount: 120,
       spread: 50,
       origin: { x: 0.8, y: 0.2 },
-      colors: ['#00FF00', '#32CD32']
+      colors: ['#00FF00', '#32CD32'],
+      scalar: 0.25
     });
   }, []);
 

@@ -26,13 +26,13 @@ export function ConfettiCelebration({
     const getIntensityConfig = () => {
       switch (intensity) {
         case 'low':
-          return { particleCount: 50, spread: 60 };
+          return { particleCount: 200, spread: 60, scalar: 0.25 };
         case 'medium':
-          return { particleCount: 100, spread: 90 };
+          return { particleCount: 400, spread: 90, scalar: 0.25 };
         case 'high':
-          return { particleCount: 200, spread: 120 };
+          return { particleCount: 800, spread: 120, scalar: 0.25 };
         default:
-          return { particleCount: 100, spread: 90 };
+          return { particleCount: 400, spread: 90, scalar: 0.25 };
       }
     };
 
@@ -80,7 +80,8 @@ export function ConfettiCelebration({
           confetti({
             ...intensityConfig,
             colors: typeConfig.colors,
-            origin: typeConfig.origin
+            origin: typeConfig.origin,
+            scalar: intensityConfig.scalar
           });
           break;
           
@@ -91,7 +92,8 @@ export function ConfettiCelebration({
                 ...intensityConfig,
                 colors: typeConfig.colors,
                 origin: { x: 0.3 + (i * 0.2), y: typeConfig.origin.y },
-                spread: intensityConfig.spread / 2
+                spread: intensityConfig.spread / 2,
+                scalar: intensityConfig.scalar
               });
             }, i * 200);
           }
@@ -107,7 +109,8 @@ export function ConfettiCelebration({
                   x: 0.2 + (index * 0.1), 
                   y: typeConfig.origin.y 
                 },
-                spread: intensityConfig.spread
+                spread: intensityConfig.spread,
+                scalar: intensityConfig.scalar
               });
             }, index * 100);
           });
@@ -122,7 +125,8 @@ export function ConfettiCelebration({
                 x: Math.random() * 0.6 + 0.2, 
                 y: typeConfig.origin.y 
               },
-              spread: intensityConfig.spread / 2
+              spread: intensityConfig.spread / 2,
+              scalar: intensityConfig.scalar
             });
           }, 300);
           

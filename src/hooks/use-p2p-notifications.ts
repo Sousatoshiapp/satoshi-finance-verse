@@ -14,32 +14,32 @@ export function useP2PNotifications() {
     
     // First burst
     confetti({
-      particleCount: 150,
+      particleCount: 600,
       spread: 90,
       origin: { y: 0.5 },
       colors: colors,
-      scalar: 1.2
+      scalar: 0.3
     });
     
     // Second burst with delay
     setTimeout(() => {
       confetti({
-        particleCount: 100,
+        particleCount: 400,
         spread: 60,
         origin: { y: 0.7 },
         colors: colors,
-        scalar: 0.8
+        scalar: 0.2
       });
     }, 250);
     
     // Third burst
     setTimeout(() => {
       confetti({
-        particleCount: 50,
+        particleCount: 200,
         spread: 45,
         origin: { y: 0.4 },
         colors: colors,
-        scalar: 1.5
+        scalar: 0.35
       });
     }, 500);
 

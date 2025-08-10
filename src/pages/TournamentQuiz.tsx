@@ -137,7 +137,7 @@ const fireChampionConfetti = () => {
       return clearInterval(interval);
     }
 
-    const particleCount = 50 * (timeLeft / duration);
+    const particleCount = 200 * (timeLeft / duration);
 
     confetti({
       particleCount,
@@ -147,7 +147,8 @@ const fireChampionConfetti = () => {
         x: randomInRange(0.1, 0.3),
         y: Math.random() - 0.2
       },
-      colors: colors
+      colors: colors,
+      scalar: 0.25
     });
     confetti({
       particleCount,
@@ -157,7 +158,8 @@ const fireChampionConfetti = () => {
         x: randomInRange(0.7, 0.9),
         y: Math.random() - 0.2
       },
-      colors: colors
+      colors: colors,
+      scalar: 0.25
     });
   }, 250);
 };
@@ -188,10 +190,11 @@ export default function TournamentQuiz() {
     if (isCorrect) {
       setScore(score + 1);
       confetti({
-        particleCount: 100,
+        particleCount: 400,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#adff2f', '#32cd32', '#00ff00']
+        colors: ['#adff2f', '#32cd32', '#00ff00'],
+        scalar: 0.25
       });
     }
 
