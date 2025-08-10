@@ -55,8 +55,12 @@ export default function SelectOpponentScreen() {
       navigate('/find-opponent');
       return;
     }
-    loadRandomUsers();
-  }, []);
+    
+    // Only load random users if profile is available
+    if (profile?.id) {
+      loadRandomUsers();
+    }
+  }, [profile?.id, state]);
 
   // Separate useEffect for loading friends only after profile is loaded
   useEffect(() => {
@@ -176,8 +180,17 @@ export default function SelectOpponentScreen() {
   };
 
   const loadRandomUsers = async () => {
+    if (!profile?.id) {
+      console.log('⚠️ Profile ID não encontrado, não é possível carregar usuários aleatórios');
+      setLoadingRandom(false);
+      setRandomUsers([]);
+      return;
+    }
+
     setLoadingRandom(true);
     try {
+      console.log('🎲 Loading random users, excluding profile:', profile.id);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select(`
@@ -185,15 +198,18 @@ export default function SelectOpponentScreen() {
           current_avatar_id, is_bot,
           avatars!current_avatar_id (id, name, image_url)
         `)
-        .neq('id', profile?.id)
+        .neq('id', profile.id)
         .gte('points', state?.betAmount || 5)
         .order('last_login_date', { ascending: false })
         .limit(10);
 
       if (error) throw error;
+      
+      console.log('✅ Random users loaded:', data?.length || 0);
       setRandomUsers(data || []);
     } catch (error) {
-      console.error('Error loading random users:', error);
+      console.error('❌ Error loading random users:', error);
+      setRandomUsers([]);
     } finally {
       setLoadingRandom(false);
     }
