@@ -86,189 +86,94 @@ export default function NewFindOpponent() {
 
 
   return (
-    <div className="min-h-screen relative overflow-hidden casino-futuristic">
-      {/* Futuristic Casino Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${casinoFuturisticBg})` }}
-      />
-      
-      {/* Overlay with cyberpunk effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/80" />
-      
-      {/* Holographic Grid Overlay */}
-      <div className="absolute inset-0 cyber-grid opacity-30" />
-      
-      {/* Floating Particles - COM pointer-events-none */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="floating-particle particle-1 pointer-events-none" />
-        <div className="floating-particle particle-2 pointer-events-none" />
-        <div className="floating-particle particle-3 pointer-events-none" />
-        <div className="floating-particle particle-4 pointer-events-none" />
-        <div className="floating-particle particle-5 pointer-events-none" />
-        
-        {/* Neon Glow Effects - COM pointer-events-none */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl neon-pulse pointer-events-none" />
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl neon-pulse pointer-events-none" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-purple-500/20 rounded-full blur-xl neon-pulse pointer-events-none" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-1/3 left-1/4 w-36 h-36 bg-green-500/20 rounded-full blur-2xl neon-pulse pointer-events-none" style={{ animationDelay: '3s' }} />
-      </div>
-
-      {/* Header - Minimalist without title */}
-      <motion.div 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="relative z-10 flex items-center justify-between p-6 backdrop-blur-sm border-b border-white/10"
-      >
+    <div className="min-h-screen bg-background p-6">
+      {/* Header super simples */}
+      <div className="flex items-center justify-between mb-6">
         <Button
           variant="outline"
           size="sm"
           onClick={() => navigate(-1)}
-          className="border-white/20 bg-black/30 backdrop-blur-sm hover:bg-white/10 casino-button"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
         
-        {/* User BTZ Display with casino styling */}
-        <motion.div 
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/30 to-yellow-500/30 rounded-full border border-amber-400/50 casino-btz-display backdrop-blur-sm"
-          whileHover={{ scale: 1.05 }}
-        >
-          <Coins className="h-5 w-5 text-amber-300 casino-coin-glow" />
-          <span className="font-bold text-amber-200 text-lg">{isLoading ? "..." : points.toFixed(2)}</span>
-          <span className="text-amber-300/80 text-sm font-medium">BTZ</span>
-        </motion.div>
-      </motion.div>
+        <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-full border">
+          <Coins className="h-5 w-5 text-amber-400" />
+          <span className="font-bold">{isLoading ? "..." : points.toFixed(2)}</span>
+          <span className="text-sm">BTZ</span>
+        </div>
+      </div>
 
-      <div className="relative z-10 container mx-auto px-6 py-4 pb-24 space-y-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-4"
-        >
-              {/* Topic Selection with casino styling - Reduced height */}
-              <Card className="border-white/20 bg-black/30 backdrop-blur-md overflow-hidden relative casino-card">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-pink-500/10" />
-                <div className="absolute inset-0 casino-card-glow" />
-                <CardContent className="relative z-10 p-4">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Target className="h-5 w-5 text-primary" />
-                    <h2 className="text-lg font-bold text-white">Selecione o Campo de Batalha</h2>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {duelTopics.map((topic) => {
-                      const IconComponent = topic.icon;
-                      return (
-                        <motion.div
-                          key={topic.id}
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setSelectedTopic(topic)}
-                          className={`relative p-2 rounded-xl cursor-pointer border-2 transition-all duration-300 casino-topic-card ${
-                            selectedTopic.id === topic.id
-                              ? 'border-primary bg-primary/20 shadow-lg shadow-primary/40 casino-selected'
-                              : 'border-white/20 bg-white/10 hover:border-primary/50 hover:bg-primary/10 casino-hover'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className={`p-1 rounded-lg bg-gradient-to-br ${topic.color} text-white`}>
-                              <IconComponent className="h-4 w-4" />
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="text-sm font-bold text-white">{topic.name}</h3>
-                            </div>
-                            {selectedTopic.id === topic.id && (
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                className="p-1 bg-primary rounded-full"
-                              >
-                                <Sparkles className="h-3 w-3 text-white" />
-                              </motion.div>
-                            )}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Bet Selection with casino styling - Reduced height */}
-              <Card className="border-white/20 bg-black/30 backdrop-blur-md overflow-hidden relative casino-card max-w-md mx-auto">
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10" />
-                <div className="absolute inset-0 casino-card-glow" />
-                <CardContent className="relative z-10 p-2">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Coins className="h-4 w-4 text-amber-400" />
-                    <h2 className="text-base font-bold text-white">Defina sua Aposta</h2>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-1 mb-2">
-                    {betAmounts.map((amount) => (
-                      <motion.button
-                        key={amount}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setSelectedBet(amount)}
-                        className={`p-1 rounded-lg border-2 font-bold text-xs transition-all duration-300 casino-bet-button ${
-                          selectedBet === amount
-                            ? 'border-amber-300 bg-amber-400/20 text-amber-200 shadow-lg shadow-amber-400/40 casino-bet-selected'
-                            : 'border-white/20 bg-white/10 text-white hover:border-amber-300/60 hover:bg-amber-400/15 casino-bet-hover'
-                        } ${points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        disabled={points < amount}
-                      >
-                        {amount}
-                      </motion.button>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between p-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-400/30">
-                    <div className="flex items-center gap-1">
-                      <TrendingUp className="h-3 w-3 text-green-400" />
-                      <span className="text-green-300 font-medium text-xs">Prêmio:</span>
-                    </div>
-                    <span className="text-sm font-bold text-green-300">{selectedBet * 2} BTZ</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Action Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="text-center"
-              >
-                <div className="space-y-2 relative z-50">
+      <div className="max-w-md mx-auto space-y-6">
+        {/* Topic Selection - SIMPLES */}
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-lg font-bold mb-4">Selecione o Tópico</h2>
+            <div className="grid grid-cols-2 gap-2">
+              {duelTopics.map((topic) => {
+                const IconComponent = topic.icon;
+                return (
                   <button
-                    onClick={handleStartDuel}
-                    disabled={isLoading || points < selectedBet}
-                    className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed rounded-md flex items-center justify-center z-50"
+                    key={topic.id}
+                    onClick={() => setSelectedTopic(topic)}
+                    className={`p-3 rounded-lg border-2 transition-colors ${
+                      selectedTopic.id === topic.id
+                        ? 'border-primary bg-primary/20'
+                        : 'border-border hover:border-primary/50'
+                    }`}
                   >
-                    <Zap className="mr-2 h-4 w-4 relative z-10" />
-                    <span className="relative z-10">{isLoading ? "Carregando..." : "Buscar Oponente"}</span>
+                    <IconComponent className="h-4 w-4 mb-1" />
+                    <div className="text-sm font-medium">{topic.name}</div>
                   </button>
-                
-                </div>
-                
-                {/* insufficient BTZ warning */}
-                <div className="mt-2 text-center space-y-1">
-                  {points < selectedBet && !isLoading && (
-                    <div className="text-center">
-                      <p className="text-destructive text-sm">
-                        Saldo: <span className="font-semibold">{points.toFixed(2)} BTZ</span> | 
-                        Necessário: <span className="font-semibold">{selectedBet} BTZ</span>
-                      </p>
-                      <p className="text-muted-foreground text-xs">
-                        Faltam {(selectedBet - points).toFixed(2)} BTZ
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-        </motion.div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bet Selection - SIMPLES */}
+        <Card>
+          <CardContent className="p-4">
+            <h2 className="text-lg font-bold mb-4">Escolha a Aposta</h2>
+            <div className="grid grid-cols-3 gap-2">
+              {betAmounts.map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setSelectedBet(amount)}
+                  className={`p-2 rounded border-2 font-bold transition-colors ${
+                    selectedBet === amount
+                      ? 'border-amber-400 bg-amber-400/20'
+                      : 'border-border hover:border-amber-400/50'
+                  } ${points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={points < amount}
+                >
+                  {amount} BTZ
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* BOTÃO ULTRA SIMPLES */}
+        <div className="text-center space-y-4">
+          <button
+            onClick={() => {
+              console.log('🚀 ULTRA SIMPLES CLICADO!');
+              handleStartDuel();
+            }}
+            disabled={isLoading || points < selectedBet}
+            className="w-full py-4 px-6 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-lg transition-colors"
+            style={{ zIndex: 9999, position: 'relative' }}
+          >
+            {isLoading ? "Carregando..." : "BUSCAR OPONENTE"}
+          </button>
+
+          {points < selectedBet && !isLoading && (
+            <p className="text-destructive text-sm">
+              Saldo insuficiente. Você tem {points.toFixed(2)} BTZ mas precisa de {selectedBet} BTZ
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Modal de BTZ Insuficiente */}
