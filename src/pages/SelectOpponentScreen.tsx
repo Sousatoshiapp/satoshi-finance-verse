@@ -66,16 +66,34 @@ export default function SelectOpponentScreen() {
     try {
       console.log('🔍 Loading friends for profile:', profile.id);
       
-      // Use JOIN approach to avoid .in() subquery issue
+      // First try to get friends through user_follows relationship
+      const { data: followsData, error: followsError } = await supabase
+        .from('user_follows')
+        .select('following_id')
+        .eq('follower_id', profile.id);
+
+      let friendIds: string[] = [];
+      if (!followsError && followsData?.length) {
+        friendIds = followsData.map(f => f.following_id);
+      }
+
+      console.log('👥 Found', friendIds.length, 'friends to query');
+
+      if (friendIds.length === 0) {
+        console.log('❌ No friends found, loading recent users');
+        setFriends([]);
+        return;
+      }
+
+      // Now get the profile data for these friends
       const { data, error } = await supabase
         .from('profiles')
         .select(`
           id, nickname, level, points, profile_image_url, 
           current_avatar_id, is_bot,
-          avatars!current_avatar_id (id, name, image_url),
-          user_follows!following_id!inner (follower_id)
+          avatars!current_avatar_id (id, name, image_url)
         `)
-        .eq('user_follows.follower_id', profile.id)
+        .in('id', friendIds)
         .gte('points', state?.betAmount || 5)
         .order('level', { ascending: false })
         .limit(20);
@@ -196,12 +214,13 @@ export default function SelectOpponentScreen() {
       console.log('🎯 Opponent found, creating duel with specific opponent:', opponent.id);
       console.log('🎯 Topic:', state.topic, 'Bet Amount:', state.betAmount);
       
-      // Use the specific opponent ID found by the modal
-      const result = await findOpponent(state.topic, state.betAmount, opponent.id);
-      console.log('✅ Duel creation completed:', result);
+      // Close modal first to prevent navigation issues
+      setShowSearchModal(false);
+      setSearchingOpponent(false);
       
-      // The findOpponent function should handle navigation internally
-      // If it doesn't, we can add navigation logic here if needed
+      // Use the specific opponent ID found by the modal
+      await findOpponent(state.topic, state.betAmount, opponent.id);
+      console.log('✅ Duel creation completed and navigation should happen automatically');
       
     } catch (error) {
       console.error('❌ Error finding random opponent:', error);
@@ -222,9 +241,11 @@ export default function SelectOpponentScreen() {
         variant: "destructive"
       });
     } finally {
-      // Always close the modal and reset searching state
-      setShowSearchModal(false);
-      setSearchingOpponent(false);
+      // Only close modal if not already closed above
+      if (showSearchModal) {
+        setShowSearchModal(false);
+        setSearchingOpponent(false);
+      }
     }
   };
 

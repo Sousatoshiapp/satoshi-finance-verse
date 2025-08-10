@@ -211,11 +211,9 @@ export function useCasinoDuels() {
       console.log('✅ Duel created successfully:', duelData);
       toast.success(`🎮 Oponente encontrado! Duelo iniciado.`);
       
-      // Add slight delay to ensure state is updated
-      setTimeout(() => {
-        console.log('🚀 Navigating to duel screen:', `/casino-duel/${duelData.id}`);
-        navigate(`/casino-duel/${duelData.id}`);
-      }, 1000);
+      // Navigate immediately to duel screen
+      console.log('🚀 Navigating to duel screen:', `/casino-duel/${duelData.id}`);
+      navigate(`/casino-duel/${duelData.id}`);
 
     } catch (error: any) {
       console.error('Erro ao encontrar oponente:', error);
