@@ -7,10 +7,6 @@ import { Lock } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { IconSystem } from "@/components/icons/icon-system";
 
-// Import background images
-import survivalBg from "@/assets/survival-mode-bg.jpg";
-import trainingBg from "@/assets/training-mode-bg.jpg";
-import blockchainBg from "@/assets/blockchain-mode-bg.jpg";
 
 interface ThemeSelectionModalProps {
   isOpen: boolean;
@@ -27,8 +23,7 @@ const QUIZ_CATEGORIES = [
     description: "Finanças aplicadas ao seu cotidiano",
     category: "Finanças do Dia a Dia",
     icon: "💰",
-    color: "bg-green-500/20 text-green-700 border-green-300",
-    backgroundImage: survivalBg
+    color: "border-green-400/40 hover:border-green-400/70"
   },
   {
     id: "abc_financas",
@@ -36,8 +31,7 @@ const QUIZ_CATEGORIES = [
     description: "ABC das finanças",
     category: "ABC das Finanças",
     icon: "👓",
-    color: "bg-blue-500/20 text-blue-700 border-blue-300",
-    backgroundImage: trainingBg
+    color: "border-blue-400/40 hover:border-blue-400/70"
   },
   {
     id: "cripto",
@@ -45,8 +39,7 @@ const QUIZ_CATEGORIES = [
     description: "Tudo sobre o mundo cripto",
     category: "Cripto",
     icon: "₿",
-    color: "bg-orange-500/20 text-orange-700 border-orange-300",
-    backgroundImage: blockchainBg
+    color: "border-orange-400/40 hover:border-orange-400/70"
   }
 ];
 
@@ -93,34 +86,26 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                 <div
                   key={category.id}
                   className={cn(
-                    "relative overflow-hidden rounded-lg border-2 transition-all duration-200 cursor-pointer",
+                    "relative overflow-hidden rounded-lg border transition-all duration-200 cursor-pointer bg-transparent",
                     "hover:shadow-lg hover:scale-[1.02]",
+                    category.color,
                     isSelected 
                       ? "border-primary shadow-md" 
-                      : "border-border hover:border-primary/50"
+                      : ""
                   )}
                   onClick={() => handleCategorySelect(category.id)}
-                  style={{
-                    backgroundImage: `url(${category.backgroundImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    minHeight: '100px'
-                  }}
                 >
-                  {/* Overlay with 50% transparency */}
-                  <div className="absolute inset-0 bg-background/50 backdrop-blur-[1px]"></div>
-                  
-                  {/* Content over image */}
-                  <div className="relative z-10 p-3">
+                  {/* Content */}
+                  <div className="relative z-10 p-4">
                     <div className="flex items-center gap-4">
                       <div className="drop-shadow-lg">
                         <IconSystem emoji={category.icon as "💰" | "👓" | "₿"} size="xl" variant="glow" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-lg text-foreground mb-1 drop-shadow-md">
+                        <h3 className="font-bold text-lg text-foreground mb-1">
                           {category.name}
                         </h3>
-                        <p className="text-sm text-foreground/90 drop-shadow-sm">
+                        <p className="text-sm text-muted-foreground">
                           {category.description}
                         </p>
                       </div>
@@ -129,11 +114,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                     <div className="mt-3">
                       <Badge 
                         variant="outline"
-                        className={cn(
-                          "text-xs font-medium backdrop-blur-sm text-white",
-                          "bg-background/80 border-foreground/20",
-                          category.color
-                        )}
+                        className="text-xs font-medium text-foreground border-foreground/20"
                       >
                         {category.category}
                       </Badge>
