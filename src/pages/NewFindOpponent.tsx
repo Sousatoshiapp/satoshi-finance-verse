@@ -161,13 +161,14 @@ export default function NewFindOpponent() {
           <div className="text-center space-y-4">
             <button
               onClick={() => navigate('/select-opponent')}
-              className="w-full py-3 px-6 font-bold text-base rounded-lg transition-all duration-300 border-2"
+              className="w-full py-3 px-6 font-bold text-base rounded-lg transition-all duration-300 border-2 hover:bg-red-500/20"
               style={{ 
-                backgroundColor: 'transparent',
+                backgroundColor: 'rgba(255, 0, 0, 0.1)',
                 color: '#adff2f',
                 borderColor: '#adff2f',
                 boxShadow: '0 0 10px rgba(173, 255, 47, 0.5)',
-                minHeight: '40px'
+                minHeight: '40px',
+                outline: '3px solid red'
               }}
             >
               BUSCAR OPONENTE
