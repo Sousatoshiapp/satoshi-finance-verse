@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useI18n } from '@/hooks/use-i18n';
+import { useNavigate } from 'react-router-dom';
 
 interface DuelInvite {
   id: string;
@@ -57,6 +58,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
   const [userProfileId, setUserProfileId] = useState<string | null>(null);
   const { toast } = useToast();
   const { t } = useI18n();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (currentInvite) {
@@ -149,32 +151,37 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
     
     try {
       const updatedInvite = payload.new;
+      const profileId = userProfileId;
       
       if (updatedInvite.status === 'accepted') {
         console.log('✅ Convite aceito:', updatedInvite.id);
         
-        const { data: duel, error: duelError } = await supabase
-          .from('duels')
+        // Aguardar um pouco para garantir que o duelo foi criado
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Buscar por duelo criado na tabela casino_duels
+        const { data: duel } = await supabase
+          .from('casino_duels')
           .select('id')
-          .eq('invite_id', updatedInvite.id)
+          .eq('player1_id', updatedInvite.challenger_id)
+          .eq('player2_id', updatedInvite.challenged_id)
+          .eq('status', 'waiting')
+          .order('created_at', { ascending: false })
+          .limit(1)
           .single();
 
-        if (duelError) {
-          console.error('❌ Error fetching duel for accepted invite:', duelError);
-          return;
-        }
-
         if (duel) {
-          console.log('🎮 Redirecting challenger to waiting room:', duel.id);
-          
+          console.log('🎮 Casino duelo encontrado para o challenger:', duel.id);
           toast({
             title: "🎉 Convite Aceito!",
-            description: "Seu convite foi aceito! Redirecionando para o duelo...",
+            description: "Seu convite foi aceito! Entrando no duelo...",
           });
 
           setTimeout(() => {
-            window.location.href = `/duel/${duel.id}`;
-          }, 2000);
+            window.location.href = `/casino-duel/${duel.id}`;
+          }, 1500);
+        } else {
+          console.log('⏳ Casino duelo ainda não criado, aguardando...');
         }
       } else if (updatedInvite.status === 'rejected') {
         console.log('❌ Convite recusado:', updatedInvite.id);
@@ -199,7 +206,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
       return;
     }
 
-    let channel: any = null;
+    let channel: any[] = [];
 
     const setupSubscription = async () => {
       try {
@@ -224,7 +231,8 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
         console.log('✅ Profile ID found:', profile.id);
         setUserProfileId(profile.id);
 
-        channel = supabase
+        // Subscription para novos convites recebidos
+        const inviteChannel = supabase
           .channel('global-duel-invites')
           .on(
             'postgres_changes',
@@ -247,9 +255,63 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
             handleInviteStatusUpdate
           )
           .subscribe((status) => {
-            console.log('📱 Subscription status:', status);
+            console.log('📱 Invite subscription status:', status);
             setIsOnline(status === 'SUBSCRIBED');
           });
+
+        // Subscription para criação de casino duels (quando challenger)
+        const duelChannel = supabase
+          .channel(`casino-duel-status-${user.id}`)
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'casino_duels',
+              filter: `player1_id=eq.${profile.id}`
+            },
+            async (payload) => {
+              console.log('🎮 Novo casino duelo detectado para challenger:', payload.new);
+              
+              toast({
+                title: "🎯 Duelo iniciado!",
+                description: "Entrando no duelo...",
+                duration: 2000
+              });
+              
+              // Redirect to casino duel screen
+              setTimeout(() => {
+                navigate(`/casino-duel/${payload.new.id}`);
+              }, 1000);
+            }
+          )
+          .on(
+            'postgres_changes',
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'casino_duels',
+              filter: `player1_id=eq.${profile.id}`
+            },
+            async (payload) => {
+              if (payload.new.status === 'active') {
+                console.log('🎮 Casino duelo ativado para challenger:', payload.new);
+                
+                toast({
+                  title: "🎯 Duelo ativo!",
+                  description: "Entrando no duelo...",
+                  duration: 2000
+                });
+                
+                setTimeout(() => {
+                  navigate(`/casino-duel/${payload.new.id}`);
+                }, 1000);
+              }
+            }
+          )
+          .subscribe();
+
+        channel = [inviteChannel, duelChannel];
 
         console.log('🔄 Duel invite subscription setup complete');
       } catch (error) {
@@ -260,9 +322,9 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
     setupSubscription();
 
     return () => {
-      if (channel) {
-        console.log('🧹 Cleaning up duel invite subscription');
-        supabase.removeChannel(channel);
+      if (channel && channel.length > 0) {
+        console.log('🧹 Cleaning up duel invite subscriptions');
+        channel.forEach(ch => supabase.removeChannel(ch));
         setIsOnline(false);
       }
     };
