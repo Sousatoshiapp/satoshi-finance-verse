@@ -7,6 +7,7 @@ interface ConfettiCelebrationProps {
   intensity: 'low' | 'medium' | 'high';
   colors?: string[];
   duration?: number;
+  customOrigin?: { x: number; y: number };
   onComplete?: () => void;
 }
 
@@ -16,6 +17,7 @@ export function ConfettiCelebration({
   intensity, 
   colors, 
   duration = 3000,
+  customOrigin,
   onComplete 
 }: ConfettiCelebrationProps) {
   const timeoutRef = useRef<NodeJS.Timeout>();
@@ -74,13 +76,16 @@ export function ConfettiCelebration({
     const intensityConfig = getIntensityConfig();
     const typeConfig = getTypeConfig();
 
+    // Use custom origin if provided, otherwise use type default
+    const origin = customOrigin || typeConfig.origin;
+
     const fireConfetti = () => {
       switch (typeConfig.pattern) {
         case 'burst':
           confetti({
             ...intensityConfig,
             colors: typeConfig.colors,
-            origin: typeConfig.origin,
+            origin: origin,
             scalar: intensityConfig.scalar
           });
           break;
@@ -91,7 +96,7 @@ export function ConfettiCelebration({
               confetti({
                 ...intensityConfig,
                 colors: typeConfig.colors,
-                origin: { x: 0.3 + (i * 0.2), y: typeConfig.origin.y },
+                origin: customOrigin ? origin : { x: 0.3 + (i * 0.2), y: origin.y },
                 spread: intensityConfig.spread / 2,
                 scalar: intensityConfig.scalar
               });
@@ -105,9 +110,9 @@ export function ConfettiCelebration({
               confetti({
                 particleCount: intensityConfig.particleCount / typeConfig.colors.length,
                 colors: [color],
-                origin: { 
+                origin: customOrigin ? origin : { 
                   x: 0.2 + (index * 0.1), 
-                  y: typeConfig.origin.y 
+                  y: origin.y 
                 },
                 spread: intensityConfig.spread,
                 scalar: intensityConfig.scalar
@@ -121,9 +126,9 @@ export function ConfettiCelebration({
             confetti({
               particleCount: intensityConfig.particleCount / 4,
               colors: typeConfig.colors,
-              origin: { 
+              origin: customOrigin ? origin : { 
                 x: Math.random() * 0.6 + 0.2, 
-                y: typeConfig.origin.y 
+                y: origin.y 
               },
               spread: intensityConfig.spread / 2,
               scalar: intensityConfig.scalar
@@ -152,7 +157,7 @@ export function ConfettiCelebration({
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [trigger, type, intensity, colors, duration, onComplete]);
+  }, [trigger, type, intensity, colors, duration, customOrigin, onComplete]);
 
   return null; // This component doesn't render anything visible
 }

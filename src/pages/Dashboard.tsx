@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Button } from "@/components/shared/ui/button";
 import { LazyBTZCounter } from "@/components/dashboard/LazyBTZCounter";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
@@ -76,7 +76,10 @@ export default function Dashboard() {
   
   const [greeting, setGreeting] = useState(getGreeting(t));
   const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiOrigin, setConfettiOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
+  
+  const jogarButtonRef = useRef<HTMLButtonElement>(null);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -415,7 +418,23 @@ export default function Dashboard() {
           {/* Botão Principal Jogar - Circular Transparente */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
             <Button 
+              ref={jogarButtonRef}
               onClick={() => {
+                // Calculate button position for confetti origin
+                if (jogarButtonRef.current) {
+                  const buttonRect = jogarButtonRef.current.getBoundingClientRect();
+                  const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+                  const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+                  
+                  // Convert to confetti coordinate system (0-1)
+                  const origin = {
+                    x: buttonCenterX / window.innerWidth,
+                    y: buttonCenterY / window.innerHeight
+                  };
+                  
+                  setConfettiOrigin(origin);
+                }
+                
                 // Trigger confetti celebration
                 setShowConfetti(true);
                 
@@ -423,7 +442,10 @@ export default function Dashboard() {
                 setTimeout(() => {
                   navigate('/game-mode');
                   // Reset confetti after navigation
-                  setTimeout(() => setShowConfetti(false), 100);
+                  setTimeout(() => {
+                    setShowConfetti(false);
+                    setConfettiOrigin(undefined);
+                  }, 100);
                 }, 600);
               }}
               className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
@@ -505,6 +527,7 @@ export default function Dashboard() {
         intensity="high"
         colors={['#ADFF2F', '#32CD32', '#00FF00', '#FFFF00']}
         duration={2000}
+        customOrigin={confettiOrigin}
         onComplete={() => setShowConfetti(false)}
       />
     </div>
