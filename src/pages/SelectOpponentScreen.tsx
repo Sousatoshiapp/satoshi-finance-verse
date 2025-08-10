@@ -70,6 +70,7 @@ export default function SelectOpponentScreen() {
     setLoadingFriends(true);
     try {
       console.log('🔍 Loading friends for profile:', profile.id);
+      console.log('💰 Required BTZ for bet:', state?.betAmount || 5);
       
       // First try to get friends through user_follows relationship
       const { data: followsData, error: followsError } = await supabase
@@ -82,15 +83,34 @@ export default function SelectOpponentScreen() {
         friendIds = followsData.map(f => f.following_id);
       }
 
-      console.log('👥 Found', friendIds.length, 'friends to query');
+      console.log('👥 Total friends found in follows:', friendIds.length);
 
       if (friendIds.length === 0) {
-        console.log('❌ No friends found, loading recent users');
+        console.log('❌ No friends found in user_follows table');
         setFriends([]);
         return;
       }
 
-      // Now get the profile data for these friends
+      // First, get ALL friends without BTZ filter to see the complete picture
+      const { data: allFriendsData, error: allFriendsError } = await supabase
+        .from('profiles')
+        .select(`
+          id, nickname, level, points, profile_image_url, 
+          current_avatar_id, is_bot,
+          avatars!current_avatar_id (id, name, image_url)
+        `)
+        .in('id', friendIds)
+        .order('level', { ascending: false });
+
+      console.log('👥 All friends data (before BTZ filter):', allFriendsData?.length || 0);
+      
+      if (allFriendsData) {
+        allFriendsData.forEach(friend => {
+          console.log(`👤 Friend: ${friend.nickname} - ${friend.points} BTZ (${friend.points >= (state?.betAmount || 5) ? '✅ Sufficient' : '❌ Insufficient'})`);
+        });
+      }
+
+      // Now apply BTZ filter
       const { data, error } = await supabase
         .from('profiles')
         .select(`
@@ -123,7 +143,13 @@ export default function SelectOpponentScreen() {
         return;
       }
       
-      console.log('✅ Friends data received:', data?.length, 'friends');
+      console.log('✅ Friends with sufficient BTZ:', data?.length || 0);
+      const totalFriends = allFriendsData?.length || 0;
+      const friendsWithBTZ = data?.length || 0;
+      const filteredOut = totalFriends - friendsWithBTZ;
+      
+      console.log(`📊 Friend filter summary: ${totalFriends} total → ${friendsWithBTZ} with enough BTZ (${filteredOut} filtered out)`);
+      
       setFriends(data || []);
       
     } catch (error) {
@@ -443,8 +469,13 @@ export default function SelectOpponentScreen() {
                 emptyMessage={
                   <div className="text-center py-4 text-green-400">
                     <Users className="h-6 w-6 mx-auto mb-1 opacity-50" />
-                    <p className="text-sm">Você ainda não segue ninguém</p>
-                    <p className="text-xs opacity-70">Siga outros jogadores para duelar com eles!</p>
+                    <p className="text-sm">Nenhum amigo disponível para duelos</p>
+                    <p className="text-xs opacity-70">
+                      Seus amigos precisam ter pelo menos {state?.betAmount || 5} BTZ para participar desta aposta.
+                    </p>
+                    <p className="text-xs opacity-50 mt-1">
+                      Verifique os logs do console para detalhes sobre o filtro aplicado.
+                    </p>
                   </div>
                 }
                 dropdownLabel="Ver mais amigos"
