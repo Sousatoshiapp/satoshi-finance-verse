@@ -116,7 +116,7 @@ export default function BoostDetail() {
         <div className="mb-6">
           <Button
             variant="ghost"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/store')}
             className="mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
