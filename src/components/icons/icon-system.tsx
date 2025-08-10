@@ -14,6 +14,7 @@ import {
   HomeIcon,
   ChatIcon,
   GameIcon,
+  GlassesIcon,
   CityIcon,
   ShopIcon,
   UserIcon,
@@ -45,6 +46,7 @@ const emojiIconMap = {
   '🏠': HomeIcon,
   '💬': ChatIcon,
   '🎮': GameIcon,
+  '👓': GlassesIcon,
   '🌃': CityIcon,
   '🛒': ShopIcon,
   '👤': UserIcon,
@@ -116,7 +118,7 @@ export function EmojiReplace({
   variant = 'default' 
 }: EmojiReplaceProps) {
   // Procura por emojis no texto e os substitui
-  const parts = children.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|🌃|🛒|👤|📚|₿|🎉|📊|💰|📈|😔)/);
+  const parts = children.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|👓|🌃|🛒|👤|📚|₿|🎉|📊|💰|📈|😔)/);
   
   return (
     <>
@@ -156,7 +158,7 @@ export function SmartText({
   className 
 }: SmartTextProps) {
   const processText = (text: string) => {
-    const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|🌃|🛒|👤|📚|₿|🎉|📊|💰|📈|😔)/);
+    const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|👓|🌃|🛒|👤|📚|₿|🎉|📊|💰|📈|😔)/);
     
     return parts.map((part, index) => {
       if (part in emojiIconMap) {
@@ -208,7 +210,7 @@ export function replaceEmojisInText(
   } = {}
 ): React.ReactNode {
   const { size = 'md', variant = 'default', animated = false } = options;
-  const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|🌃|🛒|👤|📚|₿|🎉|📊|💰|📈|😔)/);
+  const parts = text.split(/(🔥|🏆|⚡|🎁|⭐|💎|⚔️|👑|🎯|🛡️|🚀|🏠|💬|🎮|👓|🌃|🛒|👤|📚|₿|🎉|📊|💰|📈|😔)/);
   
   return parts.map((part, index) => {
     if (part in emojiIconMap) {
@@ -242,6 +244,7 @@ export {
   HomeIcon,
   ChatIcon,
   GameIcon,
+  GlassesIcon,
   CityIcon,
   ShopIcon,
   UserIcon,

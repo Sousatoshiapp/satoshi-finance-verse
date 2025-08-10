@@ -499,9 +499,77 @@ export function GameIcon({ size = 'md', className, animated = false, variant = '
         stroke="#adff2f" 
         strokeWidth="0.5"
       />
-      <rect x="8" y="6" width="8" height="6" rx="2" fill="url(#game-gradient)" stroke="#adff2f" strokeWidth="0.5" />
-      <circle cx="10" cy="8" r="0.5" fill="#ffffff" opacity="0.9" />
-      <circle cx="14" cy="8" r="0.5" fill="#ffffff" opacity="0.9" />
+      <rect x="8" y="8" width="2" height="2" rx="0.5" fill="#ffffff" opacity="0.9" />
+      <rect x="14" y="8" width="2" height="2" rx="0.5" fill="#ffffff" opacity="0.9" />
+      <circle cx="16" cy="14" r="1" fill="#adff2f" />
+      <circle cx="18" cy="12" r="1" fill="#adff2f" />
+    </svg>
+  );
+}
+
+// Glasses Icon - Substitui 👓
+export function GlassesIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="glasses-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4169e1" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#32cd32" />
+        </linearGradient>
+      </defs>
+      {/* Left lens */}
+      <circle 
+        cx="7" 
+        cy="12" 
+        r="4" 
+        fill="url(#glasses-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.8"
+        opacity="0.3"
+      />
+      {/* Right lens */}
+      <circle 
+        cx="17" 
+        cy="12" 
+        r="4" 
+        fill="url(#glasses-gradient)" 
+        stroke="#adff2f" 
+        strokeWidth="0.8"
+        opacity="0.3"
+      />
+      {/* Bridge */}
+      <path 
+        d="M11 12h2" 
+        stroke="#adff2f" 
+        strokeWidth="1.5"
+      />
+      {/* Left temple */}
+      <path 
+        d="M3 12h1" 
+        stroke="#adff2f" 
+        strokeWidth="1.5"
+      />
+      {/* Right temple */}
+      <path 
+        d="M20 12h1" 
+        stroke="#adff2f" 
+        strokeWidth="1.5"
+      />
+      {/* Lens reflections */}
+      <circle cx="6" cy="10" r="1" fill="#ffffff" opacity="0.7" />
+      <circle cx="16" cy="10" r="1" fill="#ffffff" opacity="0.7" />
     </svg>
   );
 }

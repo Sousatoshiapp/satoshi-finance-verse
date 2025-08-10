@@ -26,7 +26,7 @@ const QUIZ_CATEGORIES = [
     name: "Modo Sobrevivência",
     description: "Finanças aplicadas ao seu cotidiano",
     category: "Finanças do Dia a Dia",
-    icon: "🏠",
+    icon: "💰",
     color: "bg-green-500/20 text-green-700 border-green-300",
     backgroundImage: survivalBg
   },
@@ -35,7 +35,7 @@ const QUIZ_CATEGORIES = [
     name: "Treinamento Básico", 
     description: "ABC das finanças",
     category: "ABC das Finanças",
-    icon: "📚",
+    icon: "👓",
     color: "bg-blue-500/20 text-blue-700 border-blue-300",
     backgroundImage: trainingBg
   },
@@ -114,7 +114,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                   <div className="relative z-10 p-3">
                     <div className="flex items-center gap-4">
                       <div className="drop-shadow-lg">
-                        <IconSystem emoji={category.icon as "🏠" | "📚" | "₿"} size="xl" variant="glow" />
+                        <IconSystem emoji={category.icon as "💰" | "👓" | "₿"} size="xl" variant="glow" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-bold text-lg text-foreground mb-1 drop-shadow-md">
@@ -142,12 +142,6 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                 </div>
               );
             })}
-          </div>
-          
-          <div className="mt-6 p-4 bg-muted/30 rounded-lg">
-            <p className="text-xs text-muted-foreground text-center">
-              💡 <strong>Dica:</strong> O sistema SRS monitora seu desempenho e ajusta automaticamente a dificuldade das questões para otimizar seu aprendizado.
-            </p>
           </div>
         </div>
 
