@@ -451,7 +451,7 @@ export default function Dashboard() {
               className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
             >
               <div className="flex flex-col items-center gap-1">
-                <svg className="w-12 h-12 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-24 h-24 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 6v12l10-6z"/>
                 </svg>
                 <span className="text-xs">{t('common.play')}</span>
