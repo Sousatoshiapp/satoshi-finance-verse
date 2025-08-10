@@ -50,10 +50,8 @@ export function RealtimeDuelInvitePopup() {
         const questions = await generateDuelQuestions(currentInvite.quiz_topic);
 
         const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
-          p_challenger_id: currentInvite.challenger_id,
-          p_challenged_id: currentInvite.challenged_id,
-          p_quiz_topic: currentInvite.quiz_topic,
-          p_questions: questions as any
+          p_invite_id: currentInvite.id,
+          p_challenger_id: currentInvite.challenged_id
         });
 
         if (duelError) {

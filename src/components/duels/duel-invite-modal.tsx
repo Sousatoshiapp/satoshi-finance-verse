@@ -93,13 +93,13 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
         if (typeof resultData === 'string') {
           // Direct UUID string
           duelId = resultData;
-        } else if (resultData && typeof resultData === 'object' && resultData.duel_id) {
+        } else if (resultData && typeof resultData === 'object' && (resultData as any).duel_id) {
           // JSONB object with duel_id
-          duelId = resultData.duel_id;
+          duelId = (resultData as any).duel_id;
           console.log('📋 Dados adicionais do duelo:', {
-            topic: resultData.topic,
-            bet_amount: resultData.bet_amount,
-            success: resultData.success
+            topic: (resultData as any).topic,
+            bet_amount: (resultData as any).bet_amount,
+            success: (resultData as any).success
           });
         } else {
           console.error('❌ RPC não retornou um resultado válido:', resultData);

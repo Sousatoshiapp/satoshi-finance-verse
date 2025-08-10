@@ -224,17 +224,9 @@ export function useEnhancedDuelMatchmaking() {
       // Generate 10 random questions for the duel
       const questions = await generateDuelQuestions(topic, 10);
       
-      // Use RPC function to create duel with proper permissions
-      const { data: duelId, error: duelError } = await supabase.rpc('create_duel_with_invite', {
-        p_challenger_id: profile.id,
-        p_challenged_id: opponentId,
-        p_quiz_topic: topic,
-        p_questions: questions
-      });
-
-      if (duelError) throw duelError;
-
-      return { id: duelId };
+      // This hook appears to be using an old pattern - let's redirect to casino duels  
+      // For now, we'll disable this function as it conflicts with the new system
+      throw new Error('Este sistema de duelos foi atualizado. Use o sistema de casino duels.');
     } catch (error) {
       console.error('Error creating duel:', error);
       throw error;
