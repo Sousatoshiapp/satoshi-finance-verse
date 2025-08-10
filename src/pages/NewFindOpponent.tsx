@@ -160,23 +160,20 @@ export default function NewFindOpponent() {
           {/* Main action button with proper spacing from navbar */}
           <div className="text-center space-y-4">
             <button
-              onClick={handleStartDuel}
-              disabled={isLoading || points < selectedBet}
-              className="w-full py-1 px-6 font-bold text-base rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => navigate('/select-opponent')}
+              className="w-full py-3 px-6 font-bold text-base rounded-lg transition-all duration-300 border-2"
               style={{ 
-                backgroundColor: '#adff2f',
-                color: 'black',
-                border: '2px solid #adff2f',
-                boxShadow: '0 0 20px rgba(173, 255, 47, 0.4)',
-                zIndex: 60,
-                minHeight: '40px',
-                position: 'relative'
+                backgroundColor: 'transparent',
+                color: '#adff2f',
+                borderColor: '#adff2f',
+                boxShadow: '0 0 10px rgba(173, 255, 47, 0.5)',
+                minHeight: '40px'
               }}
             >
-              {isLoading ? "Carregando..." : "BUSCAR OPONENTE"}
+              BUSCAR OPONENTE
             </button>
 
-            {points < selectedBet && !isLoading && (
+            {points < selectedBet && (
               <p className="text-red-400 text-sm bg-black/40 backdrop-blur-sm p-3 rounded-lg border border-red-400/30">
                 Saldo insuficiente. Você tem {points.toFixed(2)} BTZ mas precisa de {selectedBet} BTZ
               </p>
