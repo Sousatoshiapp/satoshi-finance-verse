@@ -26,8 +26,15 @@ export const LazyRoutes = {
   BtcDuel: lazy(() => import('@/pages/BtcDuel')),
   Duels: lazy(() => import('@/pages/Duels')),
   FindOpponent: lazy(() => import('@/pages/FindOpponent')),
+  SelectOpponentScreen: lazy(() => import('@/pages/SelectOpponentScreen')),
+  CasinoDuelScreen: lazy(() => import('@/pages/CasinoDuelScreen')),
   DuelWaitingScreen: lazy(() => import('@/components/duels/duel-waiting-screen')),
   EnhancedSimultaneousDuel: lazy(() => import('@/components/duels/enhanced-simultaneous-duel')),
+  
+  // Tournament pages
+  Tournaments: lazy(() => import('@/pages/Tournaments')),
+  TournamentDetail: lazy(() => import('@/pages/TournamentDetail')),
+  TournamentQuizSpecific: lazy(() => import('@/pages/TournamentQuizSpecific')),
   
   // Social & Chat pages
   Social: lazy(() => import('@/pages/Social')),
