@@ -56,7 +56,7 @@ export default function GameMode() {
          style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 8px)' } : {}}>
       <div className={`mx-auto ${isMobile ? 'max-w-sm px-4' : 'max-w-md px-4'}`}>
         {/* Header simplificado */}
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-start mb-4">
           <Button
             variant="ghost"
             size="sm"
