@@ -86,93 +86,107 @@ export default function NewFindOpponent() {
 
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      {/* Header super simples */}
-      <div className="flex items-center justify-between mb-6">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        
-        <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-full border">
-          <Coins className="h-5 w-5 text-amber-400" />
-          <span className="font-bold">{isLoading ? "..." : points.toFixed(2)}</span>
-          <span className="text-sm">BTZ</span>
-        </div>
-      </div>
+    <div className="min-h-screen casino-futuristic cyber-grid">
+      {/* Floating particles for casino effect */}
+      <div className="floating-particle particle-1"></div>
+      <div className="floating-particle particle-2"></div>
+      <div className="floating-particle particle-3"></div>
+      <div className="floating-particle particle-4"></div>
+      <div className="floating-particle particle-5"></div>
 
-      <div className="max-w-md mx-auto space-y-6">
-        {/* Topic Selection - SIMPLES */}
-        <Card>
-          <CardContent className="p-4">
-            <h2 className="text-lg font-bold mb-4">Selecione o Tópico</h2>
-            <div className="grid grid-cols-2 gap-2">
-              {duelTopics.map((topic) => {
-                const IconComponent = topic.icon;
-                return (
-                  <button
-                    key={topic.id}
-                    onClick={() => setSelectedTopic(topic)}
-                    className={`p-3 rounded-lg border-2 transition-colors ${
-                      selectedTopic.id === topic.id
-                        ? 'border-primary bg-primary/20'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <IconComponent className="h-4 w-4 mb-1" />
-                    <div className="text-sm font-medium">{topic.name}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Bet Selection - SIMPLES */}
-        <Card>
-          <CardContent className="p-4">
-            <h2 className="text-lg font-bold mb-4">Escolha a Aposta</h2>
-            <div className="grid grid-cols-3 gap-2">
-              {betAmounts.map((amount) => (
-                <button
-                  key={amount}
-                  onClick={() => setSelectedBet(amount)}
-                  className={`p-2 rounded border-2 font-bold transition-colors ${
-                    selectedBet === amount
-                      ? 'border-amber-400 bg-amber-400/20'
-                      : 'border-border hover:border-amber-400/50'
-                  } ${points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={points < amount}
-                >
-                  {amount} BTZ
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* BOTÃO ULTRA SIMPLES */}
-        <div className="text-center space-y-4">
-          <button
-            onClick={() => {
-              console.log('🚀 ULTRA SIMPLES CLICADO!');
-              handleStartDuel();
-            }}
-            disabled={isLoading || points < selectedBet}
-            className="w-full py-4 px-6 bg-green-500 hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold text-lg rounded-lg transition-colors"
-            style={{ zIndex: 9999, position: 'relative' }}
+      {/* Main content with proper spacing to avoid navbar overlap */}
+      <div className="relative z-10 p-6 pb-32">
+        {/* Header with casino styling */}
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="casino-button border-purple-500/40 text-white bg-black/20 backdrop-blur-sm hover:bg-purple-500/20"
           >
-            {isLoading ? "Carregando..." : "BUSCAR OPONENTE"}
-          </button>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          
+          <div className="casino-btz-display flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-sm rounded-full border border-amber-400/40">
+            <Coins className="h-5 w-5 text-amber-400 casino-coin-glow" />
+            <span className="font-bold text-white">{isLoading ? "..." : points.toFixed(2)}</span>
+            <span className="text-sm text-amber-400">BTZ</span>
+          </div>
+        </div>
 
-          {points < selectedBet && !isLoading && (
-            <p className="text-destructive text-sm">
-              Saldo insuficiente. Você tem {points.toFixed(2)} BTZ mas precisa de {selectedBet} BTZ
-            </p>
-          )}
+        <div className="max-w-md mx-auto space-y-8">
+          {/* Topic Selection with casino styling */}
+          <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-bold mb-6 text-white text-center">Selecione o Tópico</h2>
+              <div className="grid grid-cols-2 gap-4">
+                {duelTopics.map((topic) => {
+                  const IconComponent = topic.icon;
+                  return (
+                    <button
+                      key={topic.id}
+                      onClick={() => setSelectedTopic(topic)}
+                      className={`p-4 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                        selectedTopic.id === topic.id
+                          ? 'casino-selected border-purple-500 bg-purple-500/20 text-white'
+                          : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10'
+                      }`}
+                    >
+                      <IconComponent className="h-6 w-6 mb-2 mx-auto" />
+                      <div className="text-sm font-medium">{topic.name}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Bet Selection with casino styling */}
+          <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-bold mb-6 text-white text-center">Escolha a Aposta</h2>
+              <div className="grid grid-cols-3 gap-3">
+                {betAmounts.map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setSelectedBet(amount)}
+                    className={`p-3 rounded-lg border-2 font-bold transition-all duration-300 casino-bet-button ${
+                      selectedBet === amount
+                        ? 'casino-bet-selected border-amber-400 bg-amber-400/20 text-white'
+                        : 'border-amber-400/30 bg-black/20 text-gray-300 casino-bet-hover hover:border-amber-400/60'
+                    } ${points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={points < amount}
+                  >
+                    {amount} BTZ
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Main action button with proper spacing from navbar */}
+          <div className="text-center space-y-4">
+            <button
+              onClick={handleStartDuel}
+              disabled={isLoading || points < selectedBet}
+              className="casino-start-button w-full py-2 px-6 font-bold text-lg rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ 
+                backgroundColor: '#adff2f',
+                color: 'black',
+                border: '2px solid #adff2f',
+                boxShadow: '0 0 20px rgba(173, 255, 47, 0.4)',
+                zIndex: 20 
+              }}
+            >
+              {isLoading ? "Carregando..." : "BUSCAR OPONENTE"}
+            </button>
+
+            {points < selectedBet && !isLoading && (
+              <p className="text-red-400 text-sm bg-black/40 backdrop-blur-sm p-3 rounded-lg border border-red-400/30">
+                Saldo insuficiente. Você tem {points.toFixed(2)} BTZ mas precisa de {selectedBet} BTZ
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
