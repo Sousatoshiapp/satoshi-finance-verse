@@ -82,15 +82,33 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           throw new Error(`Erro ao criar duelo: ${rpcResult.error.message}`);
         }
 
-        // Parse result - the RPC should return a string (duel ID) directly
-        const duelId = rpcResult.data;
+        // Parse result - the RPC returns a jsonb object
+        const resultData = rpcResult.data;
         
-        console.log('🔍 Tipo do resultado da RPC:', typeof duelId);
-        console.log('🔍 Valor do resultado:', duelId);
+        console.log('🔍 Tipo do resultado da RPC:', typeof resultData);
+        console.log('🔍 Valor do resultado completo:', resultData);
         
-        if (!duelId || typeof duelId !== 'string') {
-          console.error('❌ RPC não retornou um ID válido:', duelId);
-          throw new Error('Erro ao criar duelo: ID inválido retornado');
+        let duelId: string;
+        
+        if (typeof resultData === 'string') {
+          // Direct UUID string
+          duelId = resultData;
+        } else if (resultData && typeof resultData === 'object' && resultData.duel_id) {
+          // JSONB object with duel_id
+          duelId = resultData.duel_id;
+          console.log('📋 Dados adicionais do duelo:', {
+            topic: resultData.topic,
+            bet_amount: resultData.bet_amount,
+            success: resultData.success
+          });
+        } else {
+          console.error('❌ RPC não retornou um resultado válido:', resultData);
+          throw new Error('Erro ao criar duelo: Formato de resposta inválido');
+        }
+        
+        if (!duelId) {
+          console.error('❌ ID do duelo não foi extraído:', resultData);
+          throw new Error('Erro ao criar duelo: ID não encontrado na resposta');
         }
 
         console.log('✅ Duelo criado com ID:', duelId);

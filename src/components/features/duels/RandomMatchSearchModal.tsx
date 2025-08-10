@@ -71,17 +71,24 @@ export function RandomMatchSearchModal({
     return () => clearInterval(cycleInterval);
   }, [isOpen, searchState, candidates.length]);
 
-  // Simulate finding opponent (random between 5-20 seconds)
+  // Simulate finding opponent (random between 3-8 seconds for better UX)
   useEffect(() => {
     if (!isOpen || searchState !== 'searching') return;
 
-    const findTime = Math.random() * 15000 + 5000; // 5-20 seconds
+    const findTime = Math.random() * 5000 + 3000; // 3-8 seconds
     const findTimer = setTimeout(() => {
       if (candidates.length > 0 && searchState === 'searching') {
         const randomOpponent = candidates[Math.floor(Math.random() * candidates.length)];
+        console.log('🎯 Random opponent found:', randomOpponent);
         setFoundOpponent(randomOpponent);
         setSearchState('found');
-        onFoundOpponent?.(randomOpponent);
+        
+        // Call the callback with more complete data
+        onFoundOpponent?.({
+          ...randomOpponent,
+          id: randomOpponent.id,
+          nickname: randomOpponent.nickname
+        });
         
         // Auto close after showing found opponent for 2 seconds
         setTimeout(() => {

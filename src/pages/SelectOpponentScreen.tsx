@@ -60,7 +60,12 @@ export default function SelectOpponentScreen() {
   }, []);
 
   const loadFriends = async () => {
-    if (!profile?.id) return;
+    if (!profile?.id) {
+      console.log('⚠️ Profile ID não encontrado, não é possível carregar amigos');
+      setLoadingFriends(false);
+      setFriends([]);
+      return;
+    }
     
     setLoadingFriends(true);
     try {
