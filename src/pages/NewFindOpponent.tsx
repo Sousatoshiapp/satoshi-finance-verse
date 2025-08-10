@@ -65,52 +65,17 @@ export default function NewFindOpponent() {
   const [selectedBet, setSelectedBet] = useState(10);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
 
-  // Debug logs - Remove after fixing
-  useEffect(() => {
-    console.log('🔍 DEBUG NewFindOpponent:', {
-      points,
-      isLoading,
-      selectedBet,
-      hasEnoughBTZ: points >= selectedBet,
-      buttonDisabled: isLoading || points < selectedBet
-    });
-  }, [points, isLoading, selectedBet]);
-
   const handleStartDuel = () => {
-    console.log('🚀 handleStartDuel called:', {
-      points,
-      isLoading,
-      selectedBet,
-      hasEnoughBTZ: points >= selectedBet
-    });
-
     if (isLoading) {
       toast.error("Carregando saldo...");
       return;
     }
 
     if (points < selectedBet) {
-      console.log('❌ Insufficient BTZ, showing modal');
       setShowInsufficientModal(true);
       return;
     }
 
-    console.log('✅ Navigating to select-opponent with:', {
-      topic: selectedTopic.id,
-      betAmount: selectedBet
-    });
-
-    navigate('/select-opponent', { 
-      state: { 
-        topic: selectedTopic.id,
-        betAmount: selectedBet 
-      }
-    });
-  };
-
-  // Test navigation function - Remove after fixing
-  const handleTestNavigation = () => {
-    console.log('🧪 Test navigation - forcing navigate');
     navigate('/select-opponent', { 
       state: { 
         topic: selectedTopic.id,
@@ -292,23 +257,10 @@ export default function NewFindOpponent() {
                     {isLoading ? "Carregando..." : "Buscar Oponente"}
                   </Button>
                   
-                  {/* Test button - Remove after fixing */}
-                  <Button
-                    onClick={handleTestNavigation}
-                    variant="outline"
-                    className="w-full max-w-md h-6 text-sm border-red-500 text-red-500 hover:bg-red-500/10"
-                  >
-                    🧪 Teste: Forçar Navegação
-                  </Button>
                 </div>
                 
-                {/* Debug info and insufficient BTZ warning */}
+                {/* insufficient BTZ warning */}
                 <div className="mt-2 text-center space-y-1">
-                  <div className="text-xs text-muted-foreground bg-black/30 p-2 rounded border border-white/20">
-                    <p>Debug: Pontos={points.toFixed(2)} | Loading={isLoading ? 'Sim' : 'Não'} | Aposta={selectedBet}</p>
-                    <p>Botão Habilitado: {(!isLoading && points >= selectedBet) ? 'Sim' : 'Não'}</p>
-                  </div>
-                  
                   {points < selectedBet && !isLoading && (
                     <div className="text-center">
                       <p className="text-destructive text-sm">
