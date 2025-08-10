@@ -7658,6 +7658,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_inactive_users: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       complete_btc_duel: {
         Args: { p_duel_id: string; p_final_price: number }
         Returns: {
