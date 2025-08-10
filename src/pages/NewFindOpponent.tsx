@@ -65,17 +65,39 @@ export default function NewFindOpponent() {
   const [selectedBet, setSelectedBet] = useState(10);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
 
+  // Temporary debug logs to identify the issue
+  useEffect(() => {
+    console.log('🔍 NewFindOpponent State:', {
+      points,
+      isLoading,
+      selectedBet,
+      hasEnoughBTZ: points >= selectedBet,
+      buttonDisabled: isLoading || points < selectedBet
+    });
+  }, [points, isLoading, selectedBet]);
+
   const handleStartDuel = () => {
+    console.log('🚀 handleStartDuel CLICKED!', {
+      points,
+      isLoading,
+      selectedBet,
+      hasEnoughBTZ: points >= selectedBet,
+      buttonDisabled: isLoading || points < selectedBet
+    });
+
     if (isLoading) {
+      console.log('❌ Still loading, showing toast');
       toast.error("Carregando saldo...");
       return;
     }
 
     if (points < selectedBet) {
+      console.log('❌ Insufficient BTZ, showing modal');
       setShowInsufficientModal(true);
       return;
     }
 
+    console.log('✅ All conditions met, navigating to select-opponent');
     navigate('/select-opponent', { 
       state: { 
         topic: selectedTopic.id,
