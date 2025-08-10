@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent } from "@/components/shared/ui/card";
-import { ArrowLeft, Settings } from "lucide-react";
+import { ArrowLeft, Settings, User, Users } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
@@ -87,7 +87,10 @@ export default function GameMode() {
                 className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 bg-transparent border border-purple-400/30 hover:border-purple-400/60`}
                 disabled={selectedMode !== null}
               >
-                <span className="text-foreground">Solo Mission</span>
+                <div className="flex items-center justify-center gap-2">
+                  <User className="h-4 w-4 text-white" />
+                  <span className="text-foreground">Solo Mission</span>
+                </div>
               </Button>
 
               {/* Modo Duelo */}
@@ -97,7 +100,10 @@ export default function GameMode() {
                 className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 bg-transparent border border-pink-400/30 hover:border-pink-400/60`}
                 disabled={selectedMode !== null}
               >
-                <span className="text-foreground">1v1 Me Bro</span>
+                <div className="flex items-center justify-center gap-2">
+                  <Users className="h-4 w-4 text-white" />
+                  <span className="text-foreground">1 vs 1</span>
+                </div>
               </Button>
 
               {/* Torneio */}
