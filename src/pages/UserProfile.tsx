@@ -347,20 +347,20 @@ export default function UserProfile() {
                        >
                          <MessageCircle className="h-4 w-4" />
                        </Button>
-                       <Button
-                         onClick={() => navigate('/select-opponent', { 
-                           state: { 
-                             topic: 'Finanças',
-                             betAmount: 10,
-                             targetOpponent: user.id
-                           }
-                         })}
-                         variant="outline"
-                         className="bg-orange-500 hover:bg-orange-600 text-white border-0"
-                       >
-                         <Swords className="h-4 w-4 mr-1" />
-                         Desafiar
-                       </Button>
+                        <Button
+                          onClick={() => navigate('/select-opponent', { 
+                            state: { 
+                              topic: 'Finanças',
+                              betAmount: 10,
+                              targetOpponent: user.id
+                            }
+                          })}
+                          variant="outline"
+                          size="icon"
+                          className="rounded-full bg-orange-500 hover:bg-orange-600 text-white border-0"
+                        >
+                          <Swords className="h-4 w-4" />
+                        </Button>
                      </>
                    )}
                 </div>
