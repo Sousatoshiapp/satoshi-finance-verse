@@ -264,6 +264,17 @@ export default function NewFindOpponent() {
                 className="text-center"
               >
                 <div className="space-y-2">
+                  {/* Teste direto */}
+                  <button 
+                    onClick={() => {
+                      console.log('🧪 TESTE SIMPLES CLICADO!');
+                      handleStartDuel();
+                    }}
+                    className="w-full max-w-md h-12 bg-red-500 text-white font-bold rounded mb-2"
+                  >
+                    TESTE SIMPLES
+                  </button>
+
                   <Button
                     onClick={handleStartDuel}
                     disabled={isLoading || points < selectedBet}
