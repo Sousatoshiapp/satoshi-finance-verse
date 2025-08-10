@@ -80,7 +80,7 @@ export default function GameMode() {
         <Card className="mb-8 backdrop-blur-xl bg-background/30 border border-white/10 shadow-2xl shadow-purple-500/20">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-3">
+              <h2 className="text-2xl font-bold text-white mb-3">
                 Como você quer arrasar hoje?
               </h2>
               <p className="text-muted-foreground text-base">
@@ -93,7 +93,7 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('solo')}
                 variant={selectedMode === 'solo' ? 'default' : 'outline'}
-                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 bg-gradient-to-r from-purple-600/10 to-pink-600/10 border-purple-400/30 hover:border-purple-400/60"
+                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 bg-transparent border-purple-400/30 hover:border-purple-400/60"
                 disabled={selectedMode !== null}
               >
                 <div className="flex items-center justify-center gap-4">
@@ -106,7 +106,7 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('duelo')}
                 variant={selectedMode === 'duelo' ? 'default' : 'outline'}
-                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 bg-gradient-to-r from-pink-600/10 to-red-600/10 border-pink-400/30 hover:border-pink-400/60"
+                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 bg-transparent border-pink-400/30 hover:border-pink-400/60"
                 disabled={selectedMode !== null}
               >
                 <div className="flex items-center justify-center gap-4">
@@ -134,7 +134,7 @@ export default function GameMode() {
               <Button
                 onClick={() => navigate('/concept-connections?theme=basic_finance')}
                 variant="outline"
-                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border-cyan-400/40 hover:border-cyan-400/70"
+                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 bg-transparent border-cyan-400/40 hover:border-cyan-400/70"
               >
                 <div className="flex items-center justify-center gap-4">
                   <Zap className="h-6 w-6 group-hover:scale-110 transition-transform text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
