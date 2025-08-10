@@ -160,7 +160,7 @@ export default function NewFindOpponent() {
           {/* Main action button with proper spacing from navbar */}
           <div className="text-center space-y-4">
             <button
-              onClick={() => navigate('/select-opponent')}
+              onClick={handleStartDuel}
               className="relative z-60 w-full py-2 px-6 font-bold text-sm rounded-lg transition-all duration-300 border-2 hover:brightness-110"
               style={{ 
                 backgroundColor: 'transparent',
@@ -172,12 +172,6 @@ export default function NewFindOpponent() {
             >
               BUSCAR OPONENTE
             </button>
-
-            {points < selectedBet && (
-              <p className="text-red-400 text-sm bg-black/40 backdrop-blur-sm p-3 rounded-lg border border-red-400/30">
-                Saldo insuficiente. Você tem {points.toFixed(2)} BTZ mas precisa de {selectedBet} BTZ
-              </p>
-            )}
           </div>
         </div>
       </div>
