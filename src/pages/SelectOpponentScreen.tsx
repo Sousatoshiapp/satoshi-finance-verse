@@ -13,6 +13,7 @@ import { Search, Users, Shuffle, ArrowLeft, Swords, ChevronDown } from "lucide-r
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
+import { RandomMatchSearchModal } from "@/components/features/duels/RandomMatchSearchModal";
 
 interface LocationState {
   topic: string;
@@ -47,6 +48,7 @@ export default function SelectOpponentScreen() {
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [loadingRandom, setLoadingRandom] = useState(true);
   const [searchingOpponent, setSearchingOpponent] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   useEffect(() => {
     if (!state?.topic || !state?.betAmount) {
@@ -175,14 +177,15 @@ export default function SelectOpponentScreen() {
   const handleRandomMatch = async () => {
     if (!state || searchingOpponent) return;
     
+    // Open search modal immediately
+    setShowSearchModal(true);
     setSearchingOpponent(true);
     console.log('🎲 Starting random match search...');
     console.log('Topic:', state.topic, 'Bet Amount:', state.betAmount);
-    
-    toast({
-      title: "Procurando Oponente",
-      description: "Aguarde enquanto encontramos um adversário para você...",
-    });
+  };
+
+  const handleOpponentFound = async (opponent: any) => {
+    if (!state) return;
     
     try {
       console.log('🎯 Initiating random opponent search...');
@@ -206,9 +209,12 @@ export default function SelectOpponentScreen() {
         description: errorMessage + " Que tal tentar de novo?",
         variant: "destructive"
       });
-    } finally {
-      setSearchingOpponent(false);
     }
+  };
+
+  const handleCloseSearchModal = () => {
+    setShowSearchModal(false);
+    setSearchingOpponent(false);
   };
 
   const UserCard = ({ user, onChallenge }: { user: UserData, onChallenge: () => void }) => (
@@ -449,6 +455,45 @@ export default function SelectOpponentScreen() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Random Match Search Modal */}
+      <RandomMatchSearchModal
+        isOpen={showSearchModal}
+        onClose={handleCloseSearchModal}
+        candidates={[
+          ...randomUsers.map(user => ({
+            id: user.id,
+            nickname: user.nickname,
+            avatar_url: user.profile_image_url,
+            level: user.level,
+            is_bot: user.is_bot
+          })),
+          // Add some bot candidates
+          {
+            id: 'bot1',
+            nickname: 'AlphaBot',
+            avatar_url: undefined,
+            level: Math.floor(Math.random() * 50) + 1,
+            is_bot: true
+          },
+          {
+            id: 'bot2', 
+            nickname: 'BetaBot',
+            avatar_url: undefined,
+            level: Math.floor(Math.random() * 50) + 1,
+            is_bot: true
+          },
+          {
+            id: 'bot3',
+            nickname: 'GammaBot', 
+            avatar_url: undefined,
+            level: Math.floor(Math.random() * 50) + 1,
+            is_bot: true
+          }
+        ]}
+        onFoundOpponent={handleOpponentFound}
+        searchDuration={30}
+      />
     </div>
   );
 }
