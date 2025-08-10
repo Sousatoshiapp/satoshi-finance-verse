@@ -448,7 +448,7 @@ export default function Dashboard() {
                   }, 100);
                 }, 600);
               }}
-              className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
+              className="jogar-button w-28 h-28 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
             >
               <div className="flex flex-col items-center gap-1">
                 <svg className="w-24 h-24 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
