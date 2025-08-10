@@ -86,14 +86,7 @@ export default function NewFindOpponent() {
 
 
   return (
-    <div className="min-h-screen casino-futuristic cyber-grid">
-      {/* Floating particles for casino effect */}
-      <div className="floating-particle particle-1"></div>
-      <div className="floating-particle particle-2"></div>
-      <div className="floating-particle particle-3"></div>
-      <div className="floating-particle particle-4"></div>
-      <div className="floating-particle particle-5"></div>
-
+    <div className="min-h-screen casino-futuristic">
       {/* Main content with proper spacing to avoid navbar overlap */}
       <div className="relative z-10 p-6 pb-32">
         {/* Header with casino styling */}
