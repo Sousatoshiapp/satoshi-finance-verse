@@ -13,12 +13,14 @@ interface OnlineStatusContextType {
   onlineUsers: OnlineUser[];
   isOnline: boolean;
   updateOnlineStatus: () => Promise<void>;
+  markOffline: () => Promise<void>;
 }
 
 const OnlineStatusContext = createContext<OnlineStatusContextType>({
   onlineUsers: [],
   isOnline: false,
   updateOnlineStatus: async () => {},
+  markOffline: async () => {},
 });
 
 export const useOnlineStatus = () => useContext(OnlineStatusContext);
@@ -27,20 +29,29 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [userProfileId, setUserProfileId] = useState<string | null>(null);
 
   const updateOnlineStatus = useCallback(async () => {
     if (!user) return;
     
     try {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
+      let profileId = userProfileId;
+      
+      // Cache profile ID to avoid repeated queries
+      if (!profileId) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
 
-      if (profileError || !profile) {
-        console.error('Error fetching profile for online status:', profileError);
-        return;
+        if (profileError || !profile) {
+          console.error('Error fetching profile for online status:', profileError);
+          return;
+        }
+        
+        profileId = profile.id;
+        setUserProfileId(profileId);
       }
 
       // Primeiro tenta atualizar um registro existente
@@ -50,7 +61,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
           last_seen: new Date().toISOString(),
           is_online: true,
         })
-        .eq('user_id', profile.id);
+        .eq('user_id', profileId);
 
       // Se não houver erro no update, significa que o registro foi atualizado
       if (!updateError) {
@@ -61,7 +72,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
       const { error: insertError } = await supabase
         .from('user_presence')
         .insert({
-          user_id: profile.id,
+          user_id: profileId,
           last_seen: new Date().toISOString(),
           is_online: true,
         });
@@ -75,7 +86,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
             last_seen: new Date().toISOString(),
             is_online: true,
           })
-          .eq('user_id', profile.id);
+          .eq('user_id', profileId);
           
         if (secondUpdateError) throw secondUpdateError;
       } else if (insertError) {
@@ -84,28 +95,62 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error updating online status:', error);
     }
-  }, [user]);
+  }, [user, userProfileId]);
+
+  const markOffline = useCallback(async () => {
+    if (!user || !userProfileId) return;
+    
+    try {
+      console.log('🔴 Marking user offline:', userProfileId);
+      
+      const { error } = await supabase.rpc('mark_user_offline', {
+        target_user_id: userProfileId
+      });
+      
+      if (error) {
+        console.error('Error marking user offline:', error);
+      }
+    } catch (error) {
+      console.error('Error in markOffline:', error);
+    }
+  }, [user, userProfileId]);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
+    
+    const handleBeforeUnload = () => {
+      console.log('⚠️ Browser closing, marking offline');
+      markOffline();
+    };
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []);
+  }, [markOffline]);
 
   useEffect(() => {
     if (!user) return;
 
     updateOnlineStatus();
 
-    // Otimização: Reduzir frequência de update para 60s
-    const interval = setInterval(updateOnlineStatus, 60000);
+    // Heartbeat mais frequente para presença real (30s)
+    const interval = setInterval(updateOnlineStatus, 30000);
+    
+    // Limpeza automática a cada minuto
+    const cleanupInterval = setInterval(async () => {
+      try {
+        await supabase.rpc('cleanup_inactive_users');
+      } catch (error) {
+        console.error('Error in automatic cleanup:', error);
+      }
+    }, 60000);
 
     const channel = supabase
       .channel('online-users')
@@ -120,6 +165,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
 
     const fetchOnlineUsers = async () => {
       try {
+        // Critério mais rigoroso: usuários com last_seen < 2 minutos
         const { data, error } = await supabase
           .from('user_presence')
           .select(`
@@ -127,7 +173,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
             last_seen,
             profiles!inner(nickname, profile_image_url)
           `)
-          .gte('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString())
+          .gte('last_seen', new Date(Date.now() - 2 * 60 * 1000).toISOString())
           .eq('is_online', true);
         
         if (error) throw error;
@@ -139,6 +185,7 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
           last_seen: item.last_seen,
         })) || [];
         
+        console.log(`✅ Found ${formattedUsers.length} truly online users`);
         setOnlineUsers(formattedUsers);
       } catch (error) {
         console.error('Error fetching online users:', error);
@@ -148,13 +195,16 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
     fetchOnlineUsers();
 
     return () => {
+      console.log('🧹 Cleaning up OnlineStatus effect');
       clearInterval(interval);
+      clearInterval(cleanupInterval);
+      markOffline(); // Mark offline when component unmounts
       supabase.removeChannel(channel);
     };
-  }, [user, updateOnlineStatus]);
+  }, [user, updateOnlineStatus, markOffline]);
 
   return (
-    <OnlineStatusContext.Provider value={{ onlineUsers, isOnline, updateOnlineStatus }}>
+    <OnlineStatusContext.Provider value={{ onlineUsers, isOnline, updateOnlineStatus, markOffline }}>
       {children}
     </OnlineStatusContext.Provider>
   );

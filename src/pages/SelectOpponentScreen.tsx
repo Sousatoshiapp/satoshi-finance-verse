@@ -30,6 +30,16 @@ interface UserData {
   avatars?: any;
   is_bot: boolean;
   is_online?: boolean;
+  last_login_date?: string;
+  xp?: number;
+  streak?: number;
+  user_presence?: Array<{
+    last_seen: string;
+    is_online: boolean;
+  }> | {
+    last_seen: string;
+    is_online: boolean;
+  };
 }
 
 export default function SelectOpponentScreen() {
@@ -194,19 +204,58 @@ export default function SelectOpponentScreen() {
       const { data, error } = await supabase
         .from('profiles')
         .select(`
-          id, nickname, level, points, profile_image_url, 
-          current_avatar_id, is_bot,
-          avatars!current_avatar_id (id, name, image_url)
+          id, nickname, level, xp, streak, points,
+          current_avatar_id, is_bot, last_login_date,
+          avatars!current_avatar_id (id, name, image_url),
+          user_presence!left (last_seen, is_online)
         `)
         .neq('id', profile.id)
         .gte('points', state?.betAmount || 5)
         .order('last_login_date', { ascending: false })
-        .limit(10);
+        .limit(20);
 
       if (error) throw error;
       
-      console.log('✅ Random users loaded:', data?.length || 0);
-      setRandomUsers(data || []);
+      // Filtrar usuários realmente online (last_seen < 2 minutos)
+      const now = new Date();
+      const twoMinutesAgo = new Date(now.getTime() - 2 * 60 * 1000);
+      
+      const filteredUsers = data?.filter(user => {
+        if (user.user_presence) {
+          const presence = Array.isArray(user.user_presence) ? user.user_presence[0] : user.user_presence;
+          if (presence) {
+            const lastSeen = new Date(presence.last_seen);
+            return presence.is_online && lastSeen > twoMinutesAgo;
+          }
+        }
+        // Se não tem presence, incluir se fez login nas últimas 24h
+        if (user.last_login_date) {
+          const lastLogin = new Date(user.last_login_date);
+          const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+          return lastLogin > twentyFourHoursAgo;
+        }
+        return false;
+      }) || [];
+      
+      // Separar usuários online dos offline
+      const onlineUsers = filteredUsers.filter(user => {
+        if (user.user_presence) {
+          const presence = Array.isArray(user.user_presence) ? user.user_presence[0] : user.user_presence;
+          if (presence) {
+            const lastSeen = new Date(presence.last_seen);
+            return presence.is_online && lastSeen > twoMinutesAgo;
+          }
+        }
+        return false;
+      });
+      
+      const offlineUsers = filteredUsers.filter(user => !onlineUsers.includes(user));
+      
+      // Priorizar usuários online, depois offline
+      const sortedUsers = [...onlineUsers, ...offlineUsers].slice(0, 10);
+      
+      console.log(`✅ Found ${onlineUsers.length} online users, ${offlineUsers.length} offline users (total: ${sortedUsers.length})`);
+      setRandomUsers(sortedUsers);
     } catch (error) {
       console.error('❌ Error loading random users:', error);
       setRandomUsers([]);

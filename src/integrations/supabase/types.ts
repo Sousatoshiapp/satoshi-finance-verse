@@ -7934,6 +7934,10 @@ export type Database = {
         Args: { profile_id: string }
         Returns: boolean
       }
+      mark_user_offline: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
       monitor_yield_anomalies: {
         Args: Record<PropertyKey, never>
         Returns: {
