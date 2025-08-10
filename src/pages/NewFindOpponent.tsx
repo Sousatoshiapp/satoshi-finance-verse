@@ -108,25 +108,25 @@ export default function NewFindOpponent() {
         </div>
 
         <div className="max-w-md mx-auto space-y-8">
-          {/* Topic Selection with casino styling */}
+          {/* Topic Selection with casino styling - reduced size */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-bold mb-6 text-white text-center">Selecione o Tópico</h2>
-              <div className="grid grid-cols-2 gap-4">
+            <CardContent className="p-3">
+              <h2 className="text-sm font-bold mb-3 text-white text-center">Selecione o Tópico</h2>
+              <div className="grid grid-cols-2 gap-2">
                 {duelTopics.map((topic) => {
                   const IconComponent = topic.icon;
                   return (
                     <button
                       key={topic.id}
                       onClick={() => setSelectedTopic(topic)}
-                      className={`p-4 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                      className={`p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
                         selectedTopic.id === topic.id
                           ? 'casino-selected border-purple-500 bg-purple-500/20 text-white'
                           : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10'
                       }`}
                     >
-                      <IconComponent className="h-6 w-6 mb-2 mx-auto" />
-                      <div className="text-sm font-medium">{topic.name}</div>
+                      <IconComponent className="h-3 w-3 mb-1 mx-auto" />
+                      <div className="text-xs font-medium">{topic.name}</div>
                     </button>
                   );
                 })}
