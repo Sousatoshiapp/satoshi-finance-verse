@@ -9,11 +9,10 @@ import { VideoTeaser } from "@/components/3d/VideoTeaser";
 export default function SatoshiCity() {
   return (
     <div className="relative">
-      <FloatingNavbar />
-      <VideoTeaser 
-        title="Satoshi City - Em Breve"
-        description="Uma experiência imersiva em desenvolvimento. Em breve você poderá explorar os distritos financeiros de Satoshi City em 3D!"
-      />
+      <VideoTeaser />
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <FloatingNavbar />
+      </div>
     </div>
   );
 }
