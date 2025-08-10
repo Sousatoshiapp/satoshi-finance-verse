@@ -264,21 +264,10 @@ export default function NewFindOpponent() {
                 className="text-center"
               >
                 <div className="space-y-2">
-                  {/* Teste direto */}
-                  <button 
-                    onClick={() => {
-                      console.log('🧪 TESTE SIMPLES CLICADO!');
-                      handleStartDuel();
-                    }}
-                    className="w-full max-w-md h-12 bg-red-500 text-white font-bold rounded mb-2"
-                  >
-                    TESTE SIMPLES
-                  </button>
-
-                  <Button
+                  <button
                     onClick={handleStartDuel}
                     disabled={isLoading || points < selectedBet}
-                    className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed rounded-md flex items-center justify-center"
                   >
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 pointer-events-none"
@@ -288,7 +277,7 @@ export default function NewFindOpponent() {
                     />
                     <Zap className="mr-2 h-4 w-4" />
                     {isLoading ? "Carregando..." : "Buscar Oponente"}
-                  </Button>
+                  </button>
                   
                 </div>
                 
