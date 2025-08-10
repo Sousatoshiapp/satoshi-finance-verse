@@ -211,24 +211,24 @@ export default function NewFindOpponent() {
                 </CardContent>
               </Card>
 
-              {/* Bet Selection with casino styling - Reduced to 1/3 size */}
+              {/* Bet Selection with casino styling - Reduced height */}
               <Card className="border-white/20 bg-black/30 backdrop-blur-md overflow-hidden relative casino-card max-w-md mx-auto">
                 <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10" />
                 <div className="absolute inset-0 casino-card-glow" />
-                <CardContent className="relative z-10 p-4">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Coins className="h-5 w-5 text-amber-400" />
-                    <h2 className="text-lg font-bold text-white">Defina sua Aposta</h2>
+                <CardContent className="relative z-10 p-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Coins className="h-4 w-4 text-amber-400" />
+                    <h2 className="text-base font-bold text-white">Defina sua Aposta</h2>
                   </div>
                   
-                  <div className="grid grid-cols-3 gap-2 mb-4">
+                  <div className="grid grid-cols-3 gap-1 mb-2">
                     {betAmounts.map((amount) => (
                       <motion.button
                         key={amount}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setSelectedBet(amount)}
-                        className={`p-2 rounded-lg border-2 font-bold text-sm transition-all duration-300 casino-bet-button ${
+                        className={`p-1 rounded-lg border-2 font-bold text-xs transition-all duration-300 casino-bet-button ${
                           selectedBet === amount
                             ? 'border-amber-300 bg-amber-400/20 text-amber-200 shadow-lg shadow-amber-400/40 casino-bet-selected'
                             : 'border-white/20 bg-white/10 text-white hover:border-amber-300/60 hover:bg-amber-400/15 casino-bet-hover'
@@ -240,12 +240,12 @@ export default function NewFindOpponent() {
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-400/30">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-green-400" />
-                      <span className="text-green-300 font-medium text-sm">Prêmio:</span>
+                  <div className="flex items-center justify-between p-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-400/30">
+                    <div className="flex items-center gap-1">
+                      <TrendingUp className="h-3 w-3 text-green-400" />
+                      <span className="text-green-300 font-medium text-xs">Prêmio:</span>
                     </div>
-                    <span className="text-lg font-bold text-green-300">{selectedBet * 2} BTZ</span>
+                    <span className="text-sm font-bold text-green-300">{selectedBet * 2} BTZ</span>
                   </div>
                 </CardContent>
               </Card>
@@ -260,7 +260,7 @@ export default function NewFindOpponent() {
                 <Button
                   onClick={handleStartDuel}
                   disabled={!profile || profile.points < selectedBet}
-                  className="w-full max-w-md h-16 text-xl font-bold bg-gradient-to-r from-primary to-pink-500 hover:from-primary/90 hover:to-pink-500/90 text-white shadow-lg shadow-primary/40 border-0 relative overflow-hidden group casino-start-button"
+                  className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button"
                 >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
@@ -268,7 +268,7 @@ export default function NewFindOpponent() {
                     animate={{ x: '100%' }}
                     transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                   />
-                  <Zap className="mr-3 h-6 w-6" />
+                  <Zap className="mr-2 h-4 w-4" />
                   Iniciar Duelo
                 </Button>
                 
