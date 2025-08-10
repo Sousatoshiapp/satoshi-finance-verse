@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui
 import { Button } from "@/components/shared/ui/button";
 import { Input } from "@/components/shared/ui/input";
 import { Badge } from "@/components/shared/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/shared/ui/dropdown-menu";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
 import { useCasinoDuels } from "@/hooks/use-casino-duels";
-import { Search, Users, Shuffle, ArrowLeft, Swords } from "lucide-react";
+import { Search, Users, Shuffle, ArrowLeft, Swords, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { normalizeAvatarData } from "@/lib/avatar-utils";
@@ -203,6 +204,63 @@ export default function SelectOpponentScreen() {
     </motion.div>
   );
 
+  const UserListWithDropdown = ({ 
+    users, 
+    onChallenge, 
+    emptyMessage, 
+    dropdownLabel 
+  }: { 
+    users: UserData[], 
+    onChallenge: (userId: string) => void, 
+    emptyMessage: React.ReactNode,
+    dropdownLabel: string 
+  }) => {
+    const visibleUsers = users.slice(0, 3);
+    const hiddenUsers = users.slice(3);
+
+    if (users.length === 0) {
+      return emptyMessage;
+    }
+
+    return (
+      <div className="space-y-1">
+        {visibleUsers.map(user => (
+          <UserCard
+            key={user.id}
+            user={user}
+            onChallenge={() => onChallenge(user.id)}
+          />
+        ))}
+        
+        {hiddenUsers.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full bg-black/20 border-purple-500/30 text-green-400 hover:bg-black/40"
+              >
+                {dropdownLabel} (+{hiddenUsers.length})
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-80 bg-black/90 backdrop-blur-sm border-purple-500/30 max-h-60 overflow-y-auto">
+              {hiddenUsers.map(user => (
+                <DropdownMenuItem key={user.id} className="p-0 focus:bg-purple-500/20">
+                  <div className="w-full p-2">
+                    <UserCard
+                      user={user}
+                      onChallenge={() => onChallenge(user.id)}
+                    />
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+    );
+  };
+
   if (!state) {
     return null;
   }
@@ -210,24 +268,14 @@ export default function SelectOpponentScreen() {
   return (
     <div className="min-h-screen casino-futuristic">
       <div className="relative z-10 p-6 pb-40">
-        {/* Header with BTZ display */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header */}
+        <div className="flex items-center justify-start mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="relative z-60 p-2 font-bold text-sm rounded-lg transition-all duration-300 border-2 hover:brightness-110"
-            style={{ 
-              backgroundColor: 'transparent',
-              borderColor: '#3d82f7',
-              color: '#3d82f7',
-              borderImage: 'linear-gradient(45deg, #3d82f7, #7c3aed) 1'
-            }}
+            className="p-2 text-blue-400 hover:text-blue-300 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
-          
-          <div className="casino-card p-2 px-4 border border-blue-400/50 bg-black/40 backdrop-blur-sm rounded-lg">
-            <span className="text-blue-400 font-bold">{profile?.points?.toFixed(2) || '0.00'} BTZ</span>
-          </div>
         </div>
 
         {/* Topic and bet info */}
@@ -268,15 +316,13 @@ export default function SelectOpponentScreen() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="space-y-1"
                 >
-                  {searchResults.map(user => (
-                    <UserCard
-                      key={user.id}
-                      user={user}
-                      onChallenge={() => handleDuelInvite(user.id)}
-                    />
-                  ))}
+                  <UserListWithDropdown
+                    users={searchResults}
+                    onChallenge={handleDuelInvite}
+                    emptyMessage={null}
+                    dropdownLabel="Ver mais jogadores"
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -296,22 +342,19 @@ export default function SelectOpponentScreen() {
               <div className="text-center py-2 text-green-400 text-sm">
                 Carregando amigos...
               </div>
-            ) : friends.length > 0 ? (
-              <div className="space-y-1">
-                {friends.map(user => (
-                  <UserCard
-                    key={user.id}
-                    user={user}
-                    onChallenge={() => handleDuelInvite(user.id)}
-                  />
-                ))}
-              </div>
             ) : (
-              <div className="text-center py-4 text-green-400">
-                <Users className="h-6 w-6 mx-auto mb-1 opacity-50" />
-                <p className="text-sm">Você ainda não segue ninguém</p>
-                <p className="text-xs opacity-70">Siga outros jogadores para duelar com eles!</p>
-              </div>
+              <UserListWithDropdown
+                users={friends}
+                onChallenge={handleDuelInvite}
+                emptyMessage={
+                  <div className="text-center py-4 text-green-400">
+                    <Users className="h-6 w-6 mx-auto mb-1 opacity-50" />
+                    <p className="text-sm">Você ainda não segue ninguém</p>
+                    <p className="text-xs opacity-70">Siga outros jogadores para duelar com eles!</p>
+                  </div>
+                }
+                dropdownLabel="Ver mais amigos"
+              />
             )}
           </CardContent>
         </Card>
@@ -342,15 +385,12 @@ export default function SelectOpponentScreen() {
             {!loadingRandom && randomUsers.length > 0 && (
               <div>
                 <h4 className="font-semibold mb-1 text-green-400 text-sm">Jogadores Ativos</h4>
-                <div className="space-y-1">
-                  {randomUsers.slice(0, 5).map(user => (
-                    <UserCard
-                      key={user.id}
-                      user={user}
-                      onChallenge={() => handleDuelInvite(user.id)}
-                    />
-                  ))}
-                </div>
+                <UserListWithDropdown
+                  users={randomUsers}
+                  onChallenge={handleDuelInvite}
+                  emptyMessage={null}
+                  dropdownLabel="Ver mais jogadores"
+                />
               </div>
             )}
           </CardContent>
