@@ -77,9 +77,9 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[85vh] overflow-hidden">
-        <DialogHeader className="pb-4">
-          <DialogTitle className="text-xl font-bold text-center">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-hidden">
+        <DialogHeader className="pb-2">
+          <DialogTitle className="text-lg font-bold text-center">
             Escolha seu jogo
           </DialogTitle>
         </DialogHeader>
@@ -104,14 +104,14 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                     backgroundImage: `url(${category.backgroundImage})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    minHeight: '140px'
+                    minHeight: '100px'
                   }}
                 >
                   {/* Overlay with 50% transparency */}
                   <div className="absolute inset-0 bg-background/50 backdrop-blur-[1px]"></div>
                   
                   {/* Content over image */}
-                  <div className="relative z-10 p-4">
+                  <div className="relative z-10 p-3">
                     <div className="flex items-center gap-4">
                       <div className="drop-shadow-lg">
                         <IconSystem emoji={category.icon as "🏠" | "📚" | "₿"} size="xl" variant="glow" />
