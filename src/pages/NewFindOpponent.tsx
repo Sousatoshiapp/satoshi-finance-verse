@@ -17,8 +17,9 @@ import {
   DollarSign,
   Building2
 } from "lucide-react";
-import { useProfile } from "@/hooks/use-profile";
+import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useCasinoDuels } from "@/hooks/use-casino-duels";
+import { InsufficientBTZModal } from "@/components/shared/InsufficientBTZModal";
 import { toast } from "sonner";
 import casinoFuturisticBg from "@/assets/casino-futuristic-bg.jpg";
 
@@ -57,20 +58,21 @@ const betAmounts = [10, 25, 50, 100, 250, 500];
 
 export default function NewFindOpponent() {
   const navigate = useNavigate();
-  const { profile } = useProfile();
+  const { points, isLoading } = useRealtimePoints();
   const { } = useCasinoDuels();
   
   const [selectedTopic, setSelectedTopic] = useState(duelTopics[0]);
-  const [selectedBet, setSelectedBet] = useState(25);
+  const [selectedBet, setSelectedBet] = useState(10); // Reduzido para 10 BTZ como padrão
+  const [showInsufficientModal, setShowInsufficientModal] = useState(false);
 
   const handleStartDuel = () => {
-    if (!profile) {
-      toast.error("Faça login para jogar");
+    if (isLoading) {
+      toast.error("Carregando saldo...");
       return;
     }
 
-    if (profile.points < selectedBet) {
-      toast.error("BTZ insuficiente para esta aposta");
+    if (points < selectedBet) {
+      setShowInsufficientModal(true);
       return;
     }
 
@@ -133,7 +135,7 @@ export default function NewFindOpponent() {
           whileHover={{ scale: 1.05 }}
         >
           <Coins className="h-5 w-5 text-amber-300 casino-coin-glow" />
-          <span className="font-bold text-amber-200 text-lg">{profile?.points || 0}</span>
+          <span className="font-bold text-amber-200 text-lg">{isLoading ? "..." : points.toFixed(2)}</span>
           <span className="text-amber-300/80 text-sm font-medium">BTZ</span>
         </motion.div>
       </motion.div>
@@ -214,8 +216,8 @@ export default function NewFindOpponent() {
                           selectedBet === amount
                             ? 'border-amber-300 bg-amber-400/20 text-amber-200 shadow-lg shadow-amber-400/40 casino-bet-selected'
                             : 'border-white/20 bg-white/10 text-white hover:border-amber-300/60 hover:bg-amber-400/15 casino-bet-hover'
-                        } ${profile && profile.points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        disabled={profile && profile.points < amount}
+                        } ${points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={points < amount}
                       >
                         {amount}
                       </motion.button>
@@ -241,8 +243,8 @@ export default function NewFindOpponent() {
               >
                 <Button
                   onClick={handleStartDuel}
-                  disabled={!profile || profile.points < selectedBet}
-                  className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button"
+                  disabled={isLoading || points < selectedBet}
+                  className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
@@ -251,17 +253,31 @@ export default function NewFindOpponent() {
                     transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
                   />
                   <Zap className="mr-2 h-4 w-4" />
-                  Buscar Oponente
+                  {isLoading ? "Carregando..." : "Buscar Oponente"}
                 </Button>
                 
-                {profile && profile.points < selectedBet && (
-                  <p className="text-destructive text-sm mt-2">
-                    BTZ insuficiente. Você precisa de {selectedBet - profile.points} BTZ a mais.
-                  </p>
+                {points < selectedBet && !isLoading && (
+                  <div className="mt-2 text-center">
+                    <p className="text-destructive text-sm">
+                      Saldo: <span className="font-semibold">{points.toFixed(2)} BTZ</span> | 
+                      Necessário: <span className="font-semibold">{selectedBet} BTZ</span>
+                    </p>
+                    <p className="text-muted-foreground text-xs">
+                      Faltam {(selectedBet - points).toFixed(2)} BTZ
+                    </p>
+                  </div>
                 )}
               </motion.div>
         </motion.div>
       </div>
+
+      {/* Modal de BTZ Insuficiente */}
+      <InsufficientBTZModal
+        isOpen={showInsufficientModal}
+        onClose={() => setShowInsufficientModal(false)}
+        currentBTZ={points}
+        requiredBTZ={selectedBet}
+      />
     </div>
   );
 }
