@@ -62,20 +62,55 @@ export default function NewFindOpponent() {
   const { } = useCasinoDuels();
   
   const [selectedTopic, setSelectedTopic] = useState(duelTopics[0]);
-  const [selectedBet, setSelectedBet] = useState(10); // Reduzido para 10 BTZ como padrão
+  const [selectedBet, setSelectedBet] = useState(10);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
 
+  // Debug logs - Remove after fixing
+  useEffect(() => {
+    console.log('🔍 DEBUG NewFindOpponent:', {
+      points,
+      isLoading,
+      selectedBet,
+      hasEnoughBTZ: points >= selectedBet,
+      buttonDisabled: isLoading || points < selectedBet
+    });
+  }, [points, isLoading, selectedBet]);
+
   const handleStartDuel = () => {
+    console.log('🚀 handleStartDuel called:', {
+      points,
+      isLoading,
+      selectedBet,
+      hasEnoughBTZ: points >= selectedBet
+    });
+
     if (isLoading) {
       toast.error("Carregando saldo...");
       return;
     }
 
     if (points < selectedBet) {
+      console.log('❌ Insufficient BTZ, showing modal');
       setShowInsufficientModal(true);
       return;
     }
 
+    console.log('✅ Navigating to select-opponent with:', {
+      topic: selectedTopic.id,
+      betAmount: selectedBet
+    });
+
+    navigate('/select-opponent', { 
+      state: { 
+        topic: selectedTopic.id,
+        betAmount: selectedBet 
+      }
+    });
+  };
+
+  // Test navigation function - Remove after fixing
+  const handleTestNavigation = () => {
+    console.log('🧪 Test navigation - forcing navigate');
     navigate('/select-opponent', { 
       state: { 
         topic: selectedTopic.id,
@@ -241,32 +276,51 @@ export default function NewFindOpponent() {
                 transition={{ delay: 0.3 }}
                 className="text-center"
               >
-                <Button
-                  onClick={handleStartDuel}
-                  disabled={isLoading || points < selectedBet}
-                  className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
-                    initial={{ x: '-100%' }}
-                    animate={{ x: '100%' }}
-                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                  />
-                  <Zap className="mr-2 h-4 w-4" />
-                  {isLoading ? "Carregando..." : "Buscar Oponente"}
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    onClick={handleStartDuel}
+                    disabled={isLoading || points < selectedBet}
+                    className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                      initial={{ x: '-100%' }}
+                      animate={{ x: '100%' }}
+                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                    />
+                    <Zap className="mr-2 h-4 w-4" />
+                    {isLoading ? "Carregando..." : "Buscar Oponente"}
+                  </Button>
+                  
+                  {/* Test button - Remove after fixing */}
+                  <Button
+                    onClick={handleTestNavigation}
+                    variant="outline"
+                    className="w-full max-w-md h-6 text-sm border-red-500 text-red-500 hover:bg-red-500/10"
+                  >
+                    🧪 Teste: Forçar Navegação
+                  </Button>
+                </div>
                 
-                {points < selectedBet && !isLoading && (
-                  <div className="mt-2 text-center">
-                    <p className="text-destructive text-sm">
-                      Saldo: <span className="font-semibold">{points.toFixed(2)} BTZ</span> | 
-                      Necessário: <span className="font-semibold">{selectedBet} BTZ</span>
-                    </p>
-                    <p className="text-muted-foreground text-xs">
-                      Faltam {(selectedBet - points).toFixed(2)} BTZ
-                    </p>
+                {/* Debug info and insufficient BTZ warning */}
+                <div className="mt-2 text-center space-y-1">
+                  <div className="text-xs text-muted-foreground bg-black/30 p-2 rounded border border-white/20">
+                    <p>Debug: Pontos={points.toFixed(2)} | Loading={isLoading ? 'Sim' : 'Não'} | Aposta={selectedBet}</p>
+                    <p>Botão Habilitado: {(!isLoading && points >= selectedBet) ? 'Sim' : 'Não'}</p>
                   </div>
-                )}
+                  
+                  {points < selectedBet && !isLoading && (
+                    <div className="text-center">
+                      <p className="text-destructive text-sm">
+                        Saldo: <span className="font-semibold">{points.toFixed(2)} BTZ</span> | 
+                        Necessário: <span className="font-semibold">{selectedBet} BTZ</span>
+                      </p>
+                      <p className="text-muted-foreground text-xs">
+                        Faltam {(selectedBet - points).toFixed(2)} BTZ
+                      </p>
+                    </div>
+                  )}
+                </div>
               </motion.div>
         </motion.div>
       </div>
