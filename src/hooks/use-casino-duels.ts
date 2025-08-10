@@ -53,7 +53,7 @@ export function useCasinoDuels() {
   const navigate = useNavigate();
 
   // Find opponent and create duel
-  const findOpponent = async (topic: string, betAmount: number) => {
+  const findOpponent = async (topic: string, betAmount: number, targetOpponentId?: string) => {
     if (!profile?.id) {
       toast.error("Perfil não encontrado");
       return;
@@ -68,45 +68,59 @@ export function useCasinoDuels() {
     setLoading(true);
 
     try {
-      // First, try to find an existing opponent in the casino duel queue
-      const { data: queuedOpponent, error: queueError } = await (supabase as any)
-        .from('casino_duel_queue')
-        .select('user_id, topic, bet_amount')
-        .eq('topic', topic)
-        .eq('bet_amount', betAmount)
-        .neq('user_id', profile.id)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .single();
-
       let opponentId: string;
       let isBot = false;
 
-      if (queuedOpponent && !queueError) {
-        // Found a human opponent
-        opponentId = queuedOpponent.user_id;
+      if (targetOpponentId) {
+        // Direct challenge to specific opponent
+        opponentId = targetOpponentId;
         
-        // Remove opponent from queue
-        await (supabase as any)
-          .from('casino_duel_queue')
-          .delete()
-          .eq('user_id', opponentId);
-      } else {
-        // No human opponent found, find a bot
-        const { data: botOpponent, error: botError } = await supabase
+        // Check if target is a bot
+        const { data: targetData } = await supabase
           .from('profiles')
-          .select('id, nickname, level')
-          .eq('is_bot', true)
-          .order('RANDOM()')
+          .select('is_bot')
+          .eq('id', targetOpponentId)
+          .single();
+        
+        isBot = targetData?.is_bot || false;
+      } else {
+        // First, try to find an existing opponent in the casino duel queue
+        const { data: queuedOpponent, error: queueError } = await (supabase as any)
+          .from('casino_duel_queue')
+          .select('user_id, topic, bet_amount')
+          .eq('topic', topic)
+          .eq('bet_amount', betAmount)
+          .neq('user_id', profile.id)
+          .order('created_at', { ascending: true })
           .limit(1)
           .single();
 
-        if (botError || !botOpponent) {
-          throw new Error('Nenhum oponente disponível');
-        }
+        if (queuedOpponent && !queueError) {
+          // Found a human opponent
+          opponentId = queuedOpponent.user_id;
+          
+          // Remove opponent from queue
+          await (supabase as any)
+            .from('casino_duel_queue')
+            .delete()
+            .eq('user_id', opponentId);
+        } else {
+          // No human opponent found, find a bot
+          const { data: botOpponent, error: botError } = await supabase
+            .from('profiles')
+            .select('id, nickname, level')
+            .eq('is_bot', true)
+            .order('RANDOM()')
+            .limit(1)
+            .single();
 
-        opponentId = botOpponent.id;
-        isBot = true;
+          if (botError || !botOpponent) {
+            throw new Error('Nenhum oponente disponível');
+          }
+
+          opponentId = botOpponent.id;
+          isBot = true;
+        }
       }
 
       // Generate questions for this topic

@@ -78,5 +78,17 @@ export const gameRoutes = [
     element: "ImportExport",
     requiresAuth: true,
     showNavbar: false
+  },
+  {
+    path: "/casino-duel/:id",
+    element: "CasinoDuelScreen",
+    requiresAuth: true,
+    showNavbar: false
+  },
+  {
+    path: "/select-opponent",
+    element: "SelectOpponentScreen",
+    requiresAuth: true,
+    showNavbar: true
   }
 ];

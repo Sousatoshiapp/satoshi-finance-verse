@@ -5,7 +5,7 @@ import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
 import { SocialButton } from "@/components/features/social/social-button";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Trophy, Medal, Star, TrendingUp, Users, MessageCircle } from "lucide-react";
+import { ArrowLeft, Trophy, Medal, Star, TrendingUp, Users, MessageCircle, Swords } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
@@ -337,15 +337,31 @@ export default function UserProfile() {
                     showCount
                   />
                    {currentUserId && currentUserId !== user.id && (
-                     <Button 
-                       onClick={() => handleStartConversation(user.id)}
-                       variant="outline"
-                       size="icon"
-                       className="rounded-full text-black border-0"
-                       style={{ backgroundColor: '#adff2f' }}
-                     >
-                       <MessageCircle className="h-4 w-4" />
-                     </Button>
+                     <>
+                       <Button 
+                         onClick={() => handleStartConversation(user.id)}
+                         variant="outline"
+                         size="icon"
+                         className="rounded-full text-black border-0"
+                         style={{ backgroundColor: '#adff2f' }}
+                       >
+                         <MessageCircle className="h-4 w-4" />
+                       </Button>
+                       <Button
+                         onClick={() => navigate('/select-opponent', { 
+                           state: { 
+                             topic: 'Finanças',
+                             betAmount: 10,
+                             targetOpponent: user.id
+                           }
+                         })}
+                         variant="outline"
+                         className="bg-orange-500 hover:bg-orange-600 text-white border-0"
+                       >
+                         <Swords className="h-4 w-4 mr-1" />
+                         Desafiar
+                       </Button>
+                     </>
                    )}
                 </div>
               </div>

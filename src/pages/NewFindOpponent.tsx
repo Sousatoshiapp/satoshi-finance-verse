@@ -340,11 +340,16 @@ export default function NewFindOpponent() {
                   {!isSearching ? (
                     <div className="space-y-4">
                       <Button
-                        onClick={handleConfirmBet}
+                        onClick={() => navigate('/select-opponent', { 
+                          state: { 
+                            topic: selectedTopic.name,
+                            betAmount: selectedBet 
+                          }
+                        })}
                         className="w-full h-14 text-lg font-bold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg shadow-green-500/25"
                       >
                         <Zap className="mr-2 h-5 w-5" />
-                        Confirmar Aposta
+                        Buscar Oponente
                       </Button>
                       
                       <Button
