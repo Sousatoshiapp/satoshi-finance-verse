@@ -64,43 +64,42 @@ export default function SelectOpponentScreen() {
     
     setLoadingFriends(true);
     try {
-      console.log('Loading friends for profile:', profile.id);
+      console.log('🔍 Loading friends for profile:', profile.id);
       
-      // Optimized query with avatar data and bet filtering
+      // Simplified and optimized query
       const { data, error } = await supabase
-        .from('user_follows')
+        .from('profiles')
         .select(`
-          following:profiles!following_id (
-            id, nickname, level, points, profile_image_url, 
-            current_avatar_id, is_bot,
-            avatars!current_avatar_id (id, name, image_url)
-          )
+          id, nickname, level, points, profile_image_url, 
+          current_avatar_id, is_bot,
+          avatars!current_avatar_id (id, name, image_url)
         `)
-        .eq('follower_id', profile.id)
-        .order('created_at', { ascending: false })
-        .limit(15);
+        .in('id', 
+          // Subquery to get followed user IDs
+          supabase
+            .from('user_follows')
+            .select('following_id')
+            .eq('follower_id', profile.id)
+        )
+        .gte('points', state?.betAmount || 5)
+        .order('level', { ascending: false })
+        .limit(20);
 
       if (error) {
-        console.error('Friends query error:', error);
-        throw error;
+        console.error('❌ Friends query error:', error);
+        
+        // Fallback to empty friends list if error
+        console.log('🔄 Using fallback: empty friends list');
+        setFriends([]);
+        return;
       }
       
-      console.log('Friends data received:', data);
+      console.log('✅ Friends data received:', data?.length, 'friends');
+      setFriends(data || []);
       
-      // Filter friends with enough BTZ for the bet
-      const friendsList = data?.map(item => item.following)
-        .filter(Boolean)
-        .filter(friend => friend.points >= (state?.betAmount || 5)) || [];
-      
-      console.log('Processed friends list:', friendsList);
-      setFriends(friendsList);
     } catch (error) {
-      console.error('Error loading friends:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível carregar amigos. Tente novamente.",
-        variant: "destructive"
-      });
+      console.error('❌ Error loading friends:', error);
+      setFriends([]); // Fallback to empty list
     } finally {
       setLoadingFriends(false);
     }
@@ -189,8 +188,15 @@ export default function SelectOpponentScreen() {
     
     try {
       console.log('🎯 Initiating random opponent search...');
-      await findOpponent(state.topic, state.betAmount);
-      console.log('✅ Random match request sent successfully');
+      console.log('🎯 Searching with topic:', state.topic, 'bet amount:', state.betAmount);
+      
+      // Wait for duel creation to complete
+      const result = await findOpponent(state.topic, state.betAmount);
+      console.log('✅ Random match request completed:', result);
+      
+      // The findOpponent function should handle navigation internally
+      // If it doesn't, we can add navigation logic here if needed
+      
     } catch (error) {
       console.error('❌ Error finding random opponent:', error);
       
@@ -209,6 +215,10 @@ export default function SelectOpponentScreen() {
         description: errorMessage + " Que tal tentar de novo?",
         variant: "destructive"
       });
+    } finally {
+      // Always close the modal and reset searching state
+      setShowSearchModal(false);
+      setSearchingOpponent(false);
     }
   };
 

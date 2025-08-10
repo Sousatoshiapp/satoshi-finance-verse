@@ -8,13 +8,14 @@ import { Swords, Clock, Target, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
-import { generateDuelQuestions } from "@/utils/duel-questions";
+import { useNavigate } from "react-router-dom";
 
 interface DuelInvite {
   id: string;
   challenger_id: string;
   challenged_id: string;
   quiz_topic: string;
+  bet_amount?: number;
   status: string;
   created_at: string;
   challenger?: {
@@ -47,6 +48,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
   const [isResponding, setIsResponding] = useState(false);
   const { toast } = useToast();
   const { dismissCurrentInvite } = useGlobalDuelInvites();
+  const navigate = useNavigate();
 
   if (!invite || !invite.challenger) return null;
 
@@ -61,93 +63,33 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           challenger_id: invite.challenger_id,
           challenged_id: invite.challenged_id,
           quiz_topic: invite.quiz_topic,
+          bet_amount: invite.bet_amount,
           challenger_nickname: invite.challenger?.nickname
         });
 
         dismissCurrentInvite();
 
-        console.log('🎯 Gerando perguntas para:', invite.quiz_topic);
-        const questions = await generateDuelQuestions(invite.quiz_topic);
-        console.log('✅ Perguntas geradas:', questions.length, 'perguntas', questions);
-
-        console.log('🚀 Chamando RPC create_duel_with_invite...');
-        console.log('📤 Parâmetros da RPC:', {
-          p_challenger_id: invite.challenger_id,
-          p_challenged_id: invite.challenged_id,
-          p_quiz_topic: invite.quiz_topic,
-          questions_count: questions.length
-        });
-
+        console.log('🚀 Chamando nova RPC create_duel_with_invite...');
         const rpcResult = await supabase.rpc('create_duel_with_invite', {
-          p_challenger_id: invite.challenger_id,
-          p_challenged_id: invite.challenged_id,
-          p_quiz_topic: invite.quiz_topic,
-          p_questions: questions as any
+          p_invite_id: invite.id,
+          p_challenger_id: invite.challenged_id
         });
 
-        let duelId = rpcResult.data;
-        const duelError = rpcResult.error;
+        console.log('📊 Resultado da RPC:', rpcResult);
 
-        console.log('📊 Resultado da RPC:', { duelId, duelError });
-
-        if (duelError) {
-          console.error('❌ Erro na RPC create_duel_with_invite:', duelError);
-          console.error('❌ Detalhes do erro:', {
-            message: duelError.message,
-            details: duelError.details,
-            hint: duelError.hint,
-            code: duelError.code
-          });
-          
-          console.log('🔄 Tentando criação direta na tabela como fallback...');
-          try {
-            const { data: directDuel, error: directError } = await supabase
-              .from('duels')
-              .insert({
-                player1_id: invite.challenger_id,
-                player2_id: invite.challenged_id,
-                quiz_topic: invite.quiz_topic,
-                questions: questions as any,
-                status: 'active',
-                current_question: 1,
-                player1_current_question: 1,
-                player2_current_question: 1,
-                invite_id: invite.id
-              })
-              .select()
-              .single();
-
-            if (directError) {
-              console.error('❌ Erro na criação direta:', directError);
-              throw new Error(`Erro ao criar duelo: ${directError.message}`);
-            }
-
-            console.log('✅ Duelo criado diretamente com sucesso:', directDuel.id);
-            duelId = directDuel.id;
-          } catch (fallbackError) {
-            console.error('❌ Fallback também falhou:', fallbackError);
-            throw new Error(`Erro ao criar duelo: ${duelError.message}`);
-          }
+        if (rpcResult.error) {
+          console.error('❌ Erro na RPC:', rpcResult.error);
+          throw new Error(`Erro ao criar duelo: ${rpcResult.error.message}`);
         }
 
-        if (!duelId) {
-          console.error('❌ Nenhum ID de duelo foi obtido');
-          throw new Error('Duelo não foi criado - ID não retornado');
+        if (!rpcResult.data?.success) {
+          console.error('❌ RPC não retornou sucesso:', rpcResult.data);
+          throw new Error(rpcResult.data?.error || 'Erro desconhecido ao criar duelo');
         }
+
+        const duelId = rpcResult.data.duel_id;
 
         console.log('✅ Duelo criado com ID:', duelId);
-
-        console.log('🔄 Atualizando status do convite para "accepted"...');
-        const { error: updateError } = await supabase
-          .from('duel_invites')
-          .update({ status: 'accepted' })
-          .eq('id', invite.id);
-
-        if (updateError) {
-          console.error('❌ Erro ao atualizar status do convite:', updateError);
-        } else {
-          console.log('✅ Status do convite atualizado com sucesso');
-        }
 
         console.log('📧 Enviando notificação de aceitação...');
         try {
@@ -165,33 +107,6 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           console.error('❌ Erro ao enviar notificação:', notificationError);
         }
 
-        console.log('🔍 Verificando se o duelo foi realmente criado...');
-        const { data: createdDuel, error: fetchError } = await supabase
-          .from('duels')
-          .select('*')
-          .eq('id', duelId)
-          .single();
-
-        console.log('📋 Resultado da verificação:', { createdDuel, fetchError });
-
-        if (fetchError) {
-          console.error('❌ Erro ao buscar duelo criado:', fetchError);
-          throw new Error(`Duelo não foi encontrado após criação: ${fetchError.message}`);
-        }
-
-        if (!createdDuel) {
-          console.error('❌ Duelo não foi encontrado na base de dados');
-          throw new Error('Duelo não foi encontrado após criação');
-        }
-
-        console.log('✅ Duelo verificado com sucesso:', {
-          id: createdDuel.id,
-          status: createdDuel.status,
-          player1_id: createdDuel.player1_id,
-          player2_id: createdDuel.player2_id,
-          topic: createdDuel.quiz_topic
-        });
-
         toast({
           title: "Duelo aceito!",
           description: `Iniciando duelo contra ${invite.challenger.nickname}...`,
@@ -199,8 +114,8 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
 
         console.log('🎮 Redirecionando para duelo...');
         setTimeout(() => {
-          window.location.href = `/duel/${duelId}`;
-        }, 2000);
+          navigate(`/casino-duel/${duelId}`);
+        }, 1500);
         return;
 
       } else {
@@ -307,6 +222,16 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                 <Target className="h-4 w-4" />
                 <span>Tópico: {topicsMap[invite.quiz_topic] || invite.quiz_topic}</span>
+              </div>
+              
+              {/* Bet Amount Highlight */}
+              <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 rounded-lg p-3 my-3">
+                <div className="text-lg font-bold text-orange-400">
+                  💰 Aposta: {invite.bet_amount || 100} BTZ
+                </div>
+                <div className="text-xs text-orange-300/70">
+                  Valor da aposta em jogo
+                </div>
               </div>
               
               <div className="text-sm text-muted-foreground">
