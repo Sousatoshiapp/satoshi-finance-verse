@@ -13,7 +13,9 @@ import {
   Sparkles,
   Target,
   Timer,
-  Gamepad2
+  Gamepad2,
+  DollarSign,
+  Building2
 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { useCasinoDuels } from "@/hooks/use-casino-duels";
@@ -24,34 +26,30 @@ const duelTopics = [
   { 
     id: "financas", 
     name: "Finanças", 
-    emoji: "💰", 
+    icon: DollarSign, 
     color: "from-green-400 to-emerald-600",
-    bgColor: "bg-green-500/10",
-    description: "Teste seus conhecimentos em finanças pessoais"
+    bgColor: "bg-green-500/10"
   },
   { 
     id: "cripto", 
     name: "Criptomoedas", 
-    emoji: "₿", 
+    icon: Coins, 
     color: "from-orange-400 to-yellow-600",
-    bgColor: "bg-orange-500/10",
-    description: "Desafie-se no mundo das criptomoedas"
+    bgColor: "bg-orange-500/10"
   },
   { 
     id: "investimentos", 
     name: "Investimentos", 
-    emoji: "📈", 
+    icon: TrendingUp, 
     color: "from-blue-400 to-cyan-600",
-    bgColor: "bg-blue-500/10",
-    description: "Mostre seu expertise em investimentos"
+    bgColor: "bg-blue-500/10"
   },
   { 
     id: "economia", 
     name: "Economia", 
-    emoji: "🏦", 
+    icon: Building2, 
     color: "from-purple-400 to-pink-600",
-    bgColor: "bg-purple-500/10",
-    description: "Explore conceitos econômicos fundamentais"
+    bgColor: "bg-purple-500/10"
   }
 ];
 
@@ -174,39 +172,41 @@ export default function NewFindOpponent() {
                     <h2 className="text-lg font-bold text-white">Selecione o Campo de Batalha</h2>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {duelTopics.map((topic) => (
-                      <motion.div
-                        key={topic.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setSelectedTopic(topic)}
-                        className={`relative p-3 rounded-xl cursor-pointer border-2 transition-all duration-300 casino-topic-card ${
-                          selectedTopic.id === topic.id
-                            ? 'border-primary bg-primary/20 shadow-lg shadow-primary/40 casino-selected'
-                            : 'border-white/20 bg-white/10 hover:border-primary/50 hover:bg-primary/10 casino-hover'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`text-2xl p-2 rounded-lg bg-gradient-to-br ${topic.color} text-white`}>
-                            {topic.emoji}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {duelTopics.map((topic) => {
+                      const IconComponent = topic.icon;
+                      return (
+                        <motion.div
+                          key={topic.id}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setSelectedTopic(topic)}
+                          className={`relative p-2 rounded-xl cursor-pointer border-2 transition-all duration-300 casino-topic-card ${
+                            selectedTopic.id === topic.id
+                              ? 'border-primary bg-primary/20 shadow-lg shadow-primary/40 casino-selected'
+                              : 'border-white/20 bg-white/10 hover:border-primary/50 hover:bg-primary/10 casino-hover'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className={`p-1 rounded-lg bg-gradient-to-br ${topic.color} text-white`}>
+                              <IconComponent className="h-4 w-4" />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="text-sm font-bold text-white">{topic.name}</h3>
+                            </div>
+                            {selectedTopic.id === topic.id && (
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="p-1 bg-primary rounded-full"
+                              >
+                                <Sparkles className="h-3 w-3 text-white" />
+                              </motion.div>
+                            )}
                           </div>
-                          <div className="flex-1">
-                            <h3 className="text-sm font-bold text-white">{topic.name}</h3>
-                            <p className="text-xs text-muted-foreground line-clamp-1">{topic.description}</p>
-                          </div>
-                          {selectedTopic.id === topic.id && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="p-1 bg-primary rounded-full"
-                            >
-                              <Sparkles className="h-3 w-3 text-white" />
-                            </motion.div>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -312,7 +312,9 @@ export default function NewFindOpponent() {
                       <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
                         <span className="text-muted-foreground">Tópico:</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-2xl">{selectedTopic.emoji}</span>
+                          <div className={`p-1 rounded bg-gradient-to-br ${selectedTopic.color} text-white`}>
+                            <selectedTopic.icon className="h-4 w-4" />
+                          </div>
                           <span className="font-bold text-white">{selectedTopic.name}</span>
                         </div>
                       </div>
