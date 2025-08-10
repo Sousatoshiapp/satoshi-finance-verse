@@ -1,5 +1,26 @@
-// Redirect to new casino-style duel system
-export { default } from './NewFindOpponent';
+/*
+============================================================================
+COMMENTED OUT - OLD DUEL SYSTEM (FindOpponent.tsx)
+============================================================================
+This file was part of the old duel system and has been commented out for the
+new casino-style duel implementation. The new system will be in NewFindOpponent.tsx
+============================================================================
+*/
+
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { Input } from "@/components/shared/ui/input";
+import { Label } from "@/components/shared/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
+import { Badge } from "@/components/shared/ui/badge";
+import { ArrowLeft, Search, Users, Target, Settings, Trophy } from "lucide-react";
+import { useI18n } from "@/hooks/use-i18n";
+import { useProfile } from "@/hooks/use-profile";
+import { useDuelMatchmaking } from "@/hooks/use-duel-matchmaking";
+import { toast } from "sonner";
 
 const topics = [
   { id: "financas", name: "Finanças", emoji: "💰", color: "bg-green-500/10 text-green-700 border-green-300" },
