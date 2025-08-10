@@ -46,6 +46,7 @@ export default function SelectOpponentScreen() {
   const [loadingFriends, setLoadingFriends] = useState(true);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [loadingRandom, setLoadingRandom] = useState(true);
+  const [searchingOpponent, setSearchingOpponent] = useState(false);
 
   useEffect(() => {
     if (!state?.topic || !state?.betAmount) {
@@ -165,21 +166,45 @@ export default function SelectOpponentScreen() {
   };
 
   const handleRandomMatch = async () => {
-    if (!state) return;
+    if (!state || searchingOpponent) return;
     
-    console.log('Starting random match search...');
+    setSearchingOpponent(true);
+    console.log('🎲 Starting random match search...');
     console.log('Topic:', state.topic, 'Bet Amount:', state.betAmount);
+    
+    toast({
+      title: "Procurando Oponente",
+      description: "Aguarde enquanto encontramos um adversário para você...",
+    });
     
     try {
       await findOpponent(state.topic, state.betAmount);
-      console.log('Random match request sent successfully');
-    } catch (error) {
-      console.error('Error finding random opponent:', error);
+      console.log('✅ Random match request sent successfully');
+      
       toast({
-        title: "Erro",
-        description: "Não foi possível encontrar um oponente. Tente novamente.",
+        title: "Oponente Encontrado!",
+        description: "Preparando o duelo...",
+      });
+    } catch (error) {
+      console.error('❌ Error finding random opponent:', error);
+      
+      let errorMessage = "Não foi possível encontrar um oponente no momento.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('perguntas')) {
+          errorMessage = "Erro ao carregar perguntas do duelo. Tente outro tópico.";
+        } else if (error.message.includes('oponente')) {
+          errorMessage = "Nenhum oponente disponível agora. Tente mais tarde.";
+        }
+      }
+      
+      toast({
+        title: "Ops! 😅",
+        description: errorMessage + " Que tal tentar de novo?",
         variant: "destructive"
       });
+    } finally {
+      setSearchingOpponent(false);
     }
   };
 
@@ -388,15 +413,22 @@ export default function SelectOpponentScreen() {
           <CardContent className="space-y-3 p-3 pt-0">
             <Button
               onClick={handleRandomMatch}
-              disabled={isSearching}
-              className="w-full font-bold py-2 text-black border-2 hover:brightness-110"
+              disabled={isSearching || searchingOpponent}
+              className="w-full font-bold py-2 text-black border-2 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: '#adff2f',
                 borderColor: '#adff2f',
                 color: 'black'
               }}
             >
-              {isSearching ? 'Buscando...' : 'Encontrar Oponente Aleatório'}
+              {(isSearching || searchingOpponent) ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2"></div>
+                  Procurando Oponente...
+                </div>
+              ) : (
+                'Encontrar Oponente Aleatório'
+              )}
             </Button>
 
             {/* Recent Online Users */}

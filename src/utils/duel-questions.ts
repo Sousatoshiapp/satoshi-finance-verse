@@ -59,7 +59,21 @@ const FALLBACK_QUESTIONS: QuizQuestion[] = [
 
 export async function generateDuelQuestions(quizTopic: string): Promise<QuizQuestion[]> {
   try {
-    const districtId = DISTRICT_MAPPING[quizTopic] || '1c58cbaa-9ed2-45ba-b2f9-6b666e94e937';
+    console.log('🎯 Generating questions for topic:', quizTopic);
+    
+    // Map common topics to available districts
+    const topicToDistrict: Record<string, string> = {
+      'financas': '6add63a5-9c43-4859-8f9c-282223d6b077', // Banking Sector
+      'cripto': '5a562d56-efde-4341-8789-87fd3d4cf703', // Cripto Valley
+      'investimentos': '0645a23d-6f02-465a-b9a5-8571853ebdec', // XP Investimentos
+      'educacao': '1c58cbaa-9ed2-45ba-b2f9-6b666e94e937', // Anima Educação
+      'tech': 'e1f9ede2-3a54-4a4f-a533-4f85b9d9025c', // Tech Finance Hub
+      'imoveis': '366870a4-fc67-48c2-be47-d3b35e5b523e', // Real Estate Zone
+      'internacional': 'c04f1a05-07f2-426b-8ea6-2fb783054111' // International Trade
+    };
+    
+    const districtId = topicToDistrict[quizTopic.toLowerCase()] || DISTRICT_MAPPING[quizTopic] || '6add63a5-9c43-4859-8f9c-282223d6b077';
+    console.log('📍 Using district ID:', districtId);
     
     const { data: districtQuestions, error: questionsError } = await supabase
       .from('quiz_questions')
@@ -69,10 +83,11 @@ export async function generateDuelQuestions(quizTopic: string): Promise<QuizQues
       .limit(5);
 
     if (questionsError) {
-      console.error('Error loading questions:', questionsError);
-      throw new Error('Não foi possível carregar perguntas para o duelo');
+      console.error('❌ Error loading questions:', questionsError);
+      console.log('🔄 Falling back to default questions');
     }
 
+    console.log('📊 Found questions:', districtQuestions?.length || 0);
     const questions = (districtQuestions || []).map((q, index) => ({
       id: index + 1,
       question: q.question,
@@ -86,6 +101,7 @@ export async function generateDuelQuestions(quizTopic: string): Promise<QuizQues
 
     if (questions.length < 3) {
       const neededQuestions = 3 - questions.length;
+      console.log('📝 Adding fallback questions:', neededQuestions);
       const fallbackToAdd = FALLBACK_QUESTIONS.slice(0, neededQuestions).map((q, index) => ({
         ...q,
         id: questions.length + index + 1
@@ -93,9 +109,11 @@ export async function generateDuelQuestions(quizTopic: string): Promise<QuizQues
       questions.push(...fallbackToAdd);
     }
 
+    console.log('✅ Final questions count:', questions.length);
     return questions;
   } catch (error) {
-    console.error('Error generating duel questions:', error);
+    console.error('❌ Error generating duel questions:', error);
+    console.log('🔄 Using fallback questions');
     return FALLBACK_QUESTIONS;
   }
 }
