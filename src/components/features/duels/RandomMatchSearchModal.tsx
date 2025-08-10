@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dialog, DialogContent, DialogOverlay } from '@/components/shared/ui/dialog';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/shared/ui/avatar';
+import { Dialog, DialogContent } from '@/components/shared/ui/dialog';
+import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
 import { Clock, Search, X } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
 
@@ -101,10 +101,9 @@ export function RandomMatchSearchModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogOverlay className="bg-black/80 backdrop-blur-sm" />
-      <DialogContent className="max-w-md mx-auto bg-transparent border-none shadow-none p-0">
-        <div className="relative flex flex-col items-center justify-center min-h-[400px] text-center">
-          
+      <DialogContent className="max-w-md mx-auto bg-black/90 backdrop-blur-md border border-white/20 shadow-2xl p-0 [&>button]:hidden">
+        <div className="relative flex flex-col items-center justify-center min-h-[400px] text-center p-8">
+
           {/* Close button */}
           <Button
             variant="ghost"
@@ -114,7 +113,6 @@ export function RandomMatchSearchModal({
           >
             <X className="h-5 w-5" />
           </Button>
-
           {/* Search indicator */}
           <motion.div
             className="flex items-center gap-3 mb-8"
@@ -155,12 +153,11 @@ export function RandomMatchSearchModal({
                   
                   {/* Avatar */}
                   <div className="absolute inset-4 flex items-center justify-center">
-                    <Avatar className="w-20 h-20 border-4 border-white">
-                      <AvatarImage src={currentCandidate.avatar_url} />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-lg font-bold">
-                        {currentCandidate.nickname?.charAt(0)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <AvatarDisplayUniversal
+                      profileImageUrl={currentCandidate.avatar_url}
+                      nickname={currentCandidate.nickname}
+                      className="w-20 h-20 border-4 border-white shadow-lg"
+                    />
                   </div>
                 </div>
 
@@ -197,12 +194,11 @@ export function RandomMatchSearchModal({
                   />
                   
                   <div className="absolute inset-4 flex items-center justify-center">
-                    <Avatar className="w-20 h-20 border-4 border-green-500">
-                      <AvatarImage src={foundOpponent.avatar_url} />
-                      <AvatarFallback className="bg-green-500 text-white text-lg font-bold">
-                        {foundOpponent.nickname?.charAt(0)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <AvatarDisplayUniversal
+                      profileImageUrl={foundOpponent.avatar_url}
+                      nickname={foundOpponent.nickname}
+                      className="w-20 h-20 border-4 border-green-500 shadow-lg"
+                    />
                   </div>
                 </div>
 
