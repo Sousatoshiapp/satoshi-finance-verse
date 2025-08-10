@@ -77,28 +77,28 @@ export default function GameMode() {
         </div>
 
         {/* Game Mode Selection */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                {t('gameMode.selectMode')}
+        <Card className="mb-8 backdrop-blur-xl bg-background/30 border border-white/10 shadow-2xl shadow-purple-500/20">
+          <CardContent className="p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent mb-3">
+                Como você quer arrasar hoje?
               </h2>
-              <p className="text-muted-foreground text-sm">
-                {t('gameMode.chooseHow')}
+              <p className="text-muted-foreground text-base">
+                Escolha seu estilo de jogo
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-5">
               {/* Modo Solo */}
               <Button
                 onClick={() => handleModeSelect('solo')}
                 variant={selectedMode === 'solo' ? 'default' : 'outline'}
-                className="w-full py-4 text-base font-medium"
+                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 bg-gradient-to-r from-purple-600/10 to-pink-600/10 border-purple-400/30 hover:border-purple-400/60"
                 disabled={selectedMode !== null}
               >
-                <div className="flex items-center justify-center gap-3">
-                  <Gamepad2 className="h-5 w-5" />
-                  {t('gameMode.solo')}
+                <div className="flex items-center justify-center gap-4">
+                  <Gamepad2 className="h-6 w-6 group-hover:scale-110 transition-transform text-purple-400" />
+                  <span className="text-foreground">Solo Mission</span>
                 </div>
               </Button>
 
@@ -106,26 +106,26 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('duelo')}
                 variant={selectedMode === 'duelo' ? 'default' : 'outline'}
-                className="w-full py-4 text-base font-medium"
+                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 bg-gradient-to-r from-pink-600/10 to-red-600/10 border-pink-400/30 hover:border-pink-400/60"
                 disabled={selectedMode !== null}
               >
-                <div className="flex items-center justify-center gap-3">
-                  <Users className="h-5 w-5" />
-                  {t('gameMode.duel')}
+                <div className="flex items-center justify-center gap-4">
+                  <Users className="h-6 w-6 group-hover:scale-110 transition-transform text-pink-400" />
+                  <span className="text-foreground">1v1 Me Bro</span>
                 </div>
               </Button>
 
               {/* Torneio */}
               <Button
                 variant="outline"
-                className="w-full py-4 text-base font-medium relative opacity-75 cursor-not-allowed border-dashed"
+                className="w-full py-6 text-lg font-semibold relative opacity-60 cursor-not-allowed border-dashed border-muted-foreground/30 bg-muted/20"
                 disabled={true}
               >
-                <div className="flex items-center justify-center gap-3">
-                  <Trophy className="h-5 w-5 opacity-60" />
-                  {t('gameMode.tournament')}
-                  <span className="ml-2 px-2 py-1 text-xs bg-muted text-muted-foreground rounded-full">
-                    {t('common.comingSoon')}
+                <div className="flex items-center justify-center gap-4">
+                  <Trophy className="h-6 w-6 opacity-50 text-muted-foreground" />
+                  <span className="text-muted-foreground">Torneios</span>
+                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-orange-400 rounded-full border border-orange-400/30">
+                    Soon™
                   </span>
                 </div>
               </Button>
@@ -134,12 +134,14 @@ export default function GameMode() {
               <Button
                 onClick={() => navigate('/concept-connections?theme=basic_finance')}
                 variant="outline"
-                className="w-full py-4 text-base font-medium bg-black border-black hover:bg-gray-800 text-white"
+                className="group w-full py-6 text-lg font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 border-cyan-400/40 hover:border-cyan-400/70"
               >
-                <div className="flex items-center justify-center gap-3">
-                  <Zap className="h-5 w-5 text-white" />
-                  <span className="text-white font-semibold">Conectar Conceitos</span>
-                  <span className="px-2 py-1 text-xs bg-white text-black rounded-full">Novo</span>
+                <div className="flex items-center justify-center gap-4">
+                  <Zap className="h-6 w-6 group-hover:scale-110 transition-transform text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
+                  <span className="text-foreground font-bold">Connect the Dots</span>
+                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-cyan-400 to-blue-400 text-black rounded-full font-bold animate-pulse">
+                    Fire
+                  </span>
                 </div>
               </Button>
             </div>
