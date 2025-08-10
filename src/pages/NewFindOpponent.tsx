@@ -270,7 +270,7 @@ export default function NewFindOpponent() {
                     className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 pointer-events-none"
                       initial={{ x: '-100%' }}
                       animate={{ x: '100%' }}
                       transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
