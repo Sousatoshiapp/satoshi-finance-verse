@@ -82,12 +82,15 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
           throw new Error(`Erro ao criar duelo: ${rpcResult.error.message}`);
         }
 
-        if (!rpcResult.data?.success) {
-          console.error('❌ RPC não retornou sucesso:', rpcResult.data);
-          throw new Error(rpcResult.data?.error || 'Erro desconhecido ao criar duelo');
+        // Parse result - the RPC returns a jsonb object
+        const result: any = rpcResult.data;
+        
+        if (!result?.success) {
+          console.error('❌ RPC não retornou sucesso:', result);
+          throw new Error(result?.error || 'Erro desconhecido ao criar duelo');
         }
 
-        const duelId = rpcResult.data.duel_id;
+        const duelId = result.duel_id;
 
         console.log('✅ Duelo criado com ID:', duelId);
 

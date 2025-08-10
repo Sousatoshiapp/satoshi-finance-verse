@@ -66,21 +66,16 @@ export default function SelectOpponentScreen() {
     try {
       console.log('🔍 Loading friends for profile:', profile.id);
       
-      // Simplified and optimized query
+      // Use JOIN approach to avoid .in() subquery issue
       const { data, error } = await supabase
         .from('profiles')
         .select(`
           id, nickname, level, points, profile_image_url, 
           current_avatar_id, is_bot,
-          avatars!current_avatar_id (id, name, image_url)
+          avatars!current_avatar_id (id, name, image_url),
+          user_follows!following_id!inner (follower_id)
         `)
-        .in('id', 
-          // Subquery to get followed user IDs
-          supabase
-            .from('user_follows')
-            .select('following_id')
-            .eq('follower_id', profile.id)
-        )
+        .eq('user_follows.follower_id', profile.id)
         .gte('points', state?.betAmount || 5)
         .order('level', { ascending: false })
         .limit(20);
@@ -88,9 +83,20 @@ export default function SelectOpponentScreen() {
       if (error) {
         console.error('❌ Friends query error:', error);
         
-        // Fallback to empty friends list if error
-        console.log('🔄 Using fallback: empty friends list');
-        setFriends([]);
+        // Fallback: load some recent users instead
+        const { data: fallbackData } = await supabase
+          .from('profiles')
+          .select(`
+            id, nickname, level, points, profile_image_url, 
+            current_avatar_id, is_bot,
+            avatars!current_avatar_id (id, name, image_url)
+          `)
+          .neq('id', profile.id)
+          .gte('points', state?.betAmount || 5)
+          .limit(10);
+        
+        console.log('🔄 Using fallback users:', fallbackData?.length || 0);
+        setFriends(fallbackData || []);
         return;
       }
       
@@ -187,12 +193,12 @@ export default function SelectOpponentScreen() {
     if (!state) return;
     
     try {
-      console.log('🎯 Initiating random opponent search...');
-      console.log('🎯 Searching with topic:', state.topic, 'bet amount:', state.betAmount);
+      console.log('🎯 Opponent found, creating duel with specific opponent:', opponent.id);
+      console.log('🎯 Topic:', state.topic, 'Bet Amount:', state.betAmount);
       
-      // Wait for duel creation to complete
-      const result = await findOpponent(state.topic, state.betAmount);
-      console.log('✅ Random match request completed:', result);
+      // Use the specific opponent ID found by the modal
+      const result = await findOpponent(state.topic, state.betAmount, opponent.id);
+      console.log('✅ Duel creation completed:', result);
       
       // The findOpponent function should handle navigation internally
       // If it doesn't, we can add navigation logic here if needed
