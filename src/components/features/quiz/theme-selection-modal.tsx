@@ -5,6 +5,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { cn } from "@/lib/utils";
 import { Lock } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
+import { IconSystem } from "@/components/icons/icon-system";
 
 // Import background images
 import survivalBg from "@/assets/survival-mode-bg.jpg";
@@ -112,7 +113,9 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                   {/* Content over image */}
                   <div className="relative z-10 p-4">
                     <div className="flex items-center gap-4">
-                      <div className="text-3xl drop-shadow-lg">{category.icon}</div>
+                      <div className="drop-shadow-lg">
+                        <IconSystem emoji={category.icon as "🏠" | "📚" | "₿"} size="xl" variant="glow" />
+                      </div>
                       <div className="flex-1">
                         <h3 className="font-bold text-lg text-foreground mb-1 drop-shadow-md">
                           {category.name}
@@ -127,7 +130,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                       <Badge 
                         variant="outline"
                         className={cn(
-                          "text-xs font-medium backdrop-blur-sm",
+                          "text-xs font-medium backdrop-blur-sm text-white",
                           "bg-background/80 border-foreground/20",
                           category.color
                         )}

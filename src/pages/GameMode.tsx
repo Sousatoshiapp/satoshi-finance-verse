@@ -124,7 +124,7 @@ export default function GameMode() {
                 <div className="flex items-center justify-center gap-4">
                   <Trophy className="h-6 w-6 opacity-50 text-muted-foreground" />
                   <span className="text-muted-foreground">Torneios</span>
-                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-orange-400 rounded-full border border-orange-400/30">
+                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-white rounded-full border border-orange-400/30">
                     Soon™
                   </span>
                 </div>
@@ -139,7 +139,7 @@ export default function GameMode() {
                 <div className="flex items-center justify-center gap-4">
                   <Zap className="h-6 w-6 group-hover:scale-110 transition-transform text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
                   <span className="text-foreground font-bold">Connect the Dots</span>
-                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-cyan-400 to-blue-400 text-black rounded-full font-bold animate-pulse">
+                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
                     Fire
                   </span>
                 </div>

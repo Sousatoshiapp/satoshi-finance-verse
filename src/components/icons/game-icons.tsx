@@ -499,14 +499,81 @@ export function GameIcon({ size = 'md', className, animated = false, variant = '
         stroke="#adff2f" 
         strokeWidth="0.5"
       />
+      <rect x="8" y="6" width="8" height="6" rx="2" fill="url(#game-gradient)" stroke="#adff2f" strokeWidth="0.5" />
+      <circle cx="10" cy="8" r="0.5" fill="#ffffff" opacity="0.9" />
+      <circle cx="14" cy="8" r="0.5" fill="#ffffff" opacity="0.9" />
+    </svg>
+  );
+}
+
+// Bitcoin Icon - Substitui ₿
+export function BitcoinIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#f7931a]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="bitcoin-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#f7931a" />
+          <stop offset="50%" stopColor="#ffb347" />
+          <stop offset="100%" stopColor="#ff8c00" />
+        </linearGradient>
+      </defs>
+      <circle cx="12" cy="12" r="10" fill="url(#bitcoin-gradient)" stroke="#f7931a" strokeWidth="0.5" />
       <path 
-        d="M21.47 6.19C20.88 5.47 19.91 5 18.88 5H5.12C4.09 5 3.12 5.47 2.53 6.19 1.94 6.91 1.78 7.84 2.12 8.68l1.88 4.69C4.35 14.31 5.18 15 6.12 15h11.76c.94 0 1.77-.69 2.12-1.63l1.88-4.69c.34-.84.18-1.77-.41-2.49Z" 
-        fill="url(#game-gradient)" 
+        d="M8 6v12M16 6v12M10 9h4c1.1 0 2 .9 2 2s-.9 2-2 2M10 13h4c1.1 0 2 .9 2 2s-.9 2-2 2h-4M10 9V7M10 17v2M14 9V7M14 17v2" 
+        stroke="#ffffff" 
+        strokeWidth="1.5" 
+        fill="none"
+      />
+      <path 
+        d="M10 9h3.5c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5H10V9zM10 12.5h4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5h-4v-3z"
+        fill="#ffffff"
+        opacity="0.9"
+      />
+    </svg>
+  );
+}
+
+// Book Icon - Substitui 📚
+export function BookIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
+  return (
+    <svg 
+      className={cn(
+        sizeClasses[size], 
+        'inline-block',
+        animated && 'animate-pulse',
+        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
+        variant === 'pulse' && 'animate-pulse',
+        className
+      )} 
+      viewBox="0 0 24 24" 
+      fill="none"
+    >
+      <defs>
+        <linearGradient id="book-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4169e1" />
+          <stop offset="50%" stopColor="#adff2f" />
+          <stop offset="100%" stopColor="#32cd32" />
+        </linearGradient>
+      </defs>
+      <path 
+        d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H6.5A2.5 2.5 0 0 0 4 5.5v14Z" 
+        fill="url(#book-gradient)" 
         stroke="#adff2f" 
         strokeWidth="0.5"
       />
-      <circle cx="17" cy="9" r="1" fill="#ffffff" opacity="0.9" />
-      <circle cx="7" cy="9" r="1" fill="#ffffff" opacity="0.9" />
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="#adff2f" strokeWidth="1" fill="none" />
+      <path d="M8 7h8M8 10h6M8 13h4" stroke="#ffffff" strokeWidth="1" fill="none" opacity="0.9" />
     </svg>
   );
 }
@@ -757,38 +824,6 @@ export function TrendingIcon({ size = 'md', className, animated = false, variant
   );
 }
 
-// Book Icon - Substitui 📚
-export function BookIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
-  return (
-    <svg 
-      className={cn(
-        sizeClasses[size], 
-        'inline-block',
-        animated && 'animate-pulse',
-        variant === 'glow' && 'filter drop-shadow-[0_0_8px_#adff2f]',
-        variant === 'pulse' && 'animate-pulse',
-        className
-      )} 
-      viewBox="0 0 24 24" 
-      fill="none"
-    >
-      <defs>
-        <linearGradient id="book-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#adff2f" />
-          <stop offset="50%" stopColor="#32cd32" />
-          <stop offset="100%" stopColor="#00ff00" />
-        </linearGradient>
-      </defs>
-      <path 
-        d="M4 19.5C4 18.837 4.263 18.201 4.732 17.732C5.201 17.263 5.837 17 6.5 17H20M4 19.5C4 20.163 4.263 20.799 4.732 21.268C5.201 21.737 5.837 22 6.5 22H20V2H6.5C5.837 2 5.201 2.263 4.732 2.732C4.263 3.201 4 3.837 4 4.5V19.5Z" 
-        stroke="url(#book-gradient)" 
-        strokeWidth="2" 
-        fill="none"
-      />
-      <path d="M8 7h8M8 11h6" stroke="url(#book-gradient)" strokeWidth="1.5" />
-    </svg>
-  );
-}
 
 // Sad Icon - Substitui 😔
 export function SadIcon({ size = 'md', className, animated = false, variant = 'default' }: IconProps) {
