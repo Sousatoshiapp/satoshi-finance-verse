@@ -263,6 +263,19 @@ export default function NewFindOpponent() {
                 transition={{ delay: 0.3 }}
                 className="text-center"
               >
+                {/* TESTE ISOLADO - BOTÃO FORA DE QUALQUER EFEITO */}
+                <div className="fixed top-4 right-4 z-[9999] bg-red-500 p-2 rounded">
+                  <button
+                    onClick={() => {
+                      console.log('🔥 BOTÃO ISOLADO CLICADO!');
+                      handleStartDuel();
+                    }}
+                    className="bg-white text-red-500 px-4 py-2 rounded font-bold"
+                  >
+                    TESTE ISOLADO
+                  </button>
+                </div>
+
                 <div className="space-y-2">
                   <button
                     onClick={handleStartDuel}
@@ -278,7 +291,7 @@ export default function NewFindOpponent() {
                     <Zap className="mr-2 h-4 w-4" />
                     {isLoading ? "Carregando..." : "Buscar Oponente"}
                   </button>
-                  
+                
                 </div>
                 
                 {/* insufficient BTZ warning */}
