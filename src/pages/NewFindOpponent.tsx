@@ -134,23 +134,23 @@ export default function NewFindOpponent() {
             </CardContent>
           </Card>
 
-          {/* Bet Selection with casino styling */}
+          {/* Bet Selection with casino styling - reduced size */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
-            <CardContent className="p-6">
-              <h2 className="text-xl font-bold mb-6 text-white text-center">Escolha a Aposta</h2>
-              <div className="grid grid-cols-3 gap-3">
+            <CardContent className="p-3">
+              <h2 className="text-sm font-bold mb-3 text-white text-center">Escolha a Aposta</h2>
+              <div className="grid grid-cols-3 gap-2">
                 {betAmounts.map((amount) => (
                   <button
                     key={amount}
                     onClick={() => setSelectedBet(amount)}
-                    className={`p-3 rounded-lg border-2 font-bold transition-all duration-300 casino-bet-button ${
+                    className={`p-2 rounded-lg border-2 font-bold transition-all duration-300 casino-bet-button ${
                       selectedBet === amount
                         ? 'casino-bet-selected border-amber-400 bg-amber-400/20 text-white'
                         : 'border-amber-400/30 bg-black/20 text-gray-300 casino-bet-hover hover:border-amber-400/60'
                     } ${points < amount ? 'opacity-50 cursor-not-allowed' : ''}`}
                     disabled={points < amount}
                   >
-                    {amount} BTZ
+                    <span className="text-xs">{amount} BTZ</span>
                   </button>
                 ))}
               </div>
