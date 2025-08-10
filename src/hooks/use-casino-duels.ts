@@ -233,9 +233,16 @@ export function useCasinoDuels() {
   // Complete duel
   const completeDuel = async (duelId: string) => {
     try {
-      const { data, error } = await supabase.rpc('complete_casino_duel', {
-        p_duel_id: duelId
-      });
+      // Update duel status directly using update
+      const { data, error } = await supabase
+        .from('casino_duels')
+        .update({ 
+          status: 'completed',
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', duelId)
+        .select()
+        .single();
 
       if (error) throw error;
 
@@ -291,19 +298,23 @@ async function generateDuelQuestions(topic: string): Promise<DuelQuestion[]> {
     }
 
     // Transform questions to DuelQuestion format
-    const duelQuestions: DuelQuestion[] = questions.map(q => ({
-      id: q.id,
-      question: q.question,
-      district_id: q.district_id,
-      options: {
-        a: q.option_a || '',
-        b: q.option_b || '',
-        c: q.option_c || '',
-        d: q.option_d || ''
-      },
-      correct_answer: q.correct_answer as 'a' | 'b' | 'c' | 'd',
-      explanation: q.explanation
-    }));
+    const duelQuestions: DuelQuestion[] = questions.map((q: any) => {
+      // Parse options from the options array or create fallback structure
+      const optionsArray = q.options || [];
+      return {
+        id: q.id,
+        question: q.question,
+        district_id: q.district_id,
+        options: {
+          a: optionsArray[0] || '',
+          b: optionsArray[1] || '',
+          c: optionsArray[2] || '',
+          d: optionsArray[3] || ''
+        },
+        correct_answer: q.correct_answer as 'a' | 'b' | 'c' | 'd',
+        explanation: q.explanation
+      };
+    });
 
     return duelQuestions;
   } catch (error) {
