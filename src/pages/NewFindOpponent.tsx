@@ -65,39 +65,17 @@ export default function NewFindOpponent() {
   const [selectedBet, setSelectedBet] = useState(10);
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
 
-  // Temporary debug logs to identify the issue
-  useEffect(() => {
-    console.log('🔍 NewFindOpponent State:', {
-      points,
-      isLoading,
-      selectedBet,
-      hasEnoughBTZ: points >= selectedBet,
-      buttonDisabled: isLoading || points < selectedBet
-    });
-  }, [points, isLoading, selectedBet]);
-
   const handleStartDuel = () => {
-    console.log('🚀 handleStartDuel CLICKED!', {
-      points,
-      isLoading,
-      selectedBet,
-      hasEnoughBTZ: points >= selectedBet,
-      buttonDisabled: isLoading || points < selectedBet
-    });
-
     if (isLoading) {
-      console.log('❌ Still loading, showing toast');
       toast.error("Carregando saldo...");
       return;
     }
 
     if (points < selectedBet) {
-      console.log('❌ Insufficient BTZ, showing modal');
       setShowInsufficientModal(true);
       return;
     }
 
-    console.log('✅ All conditions met, navigating to select-opponent');
     navigate('/select-opponent', { 
       state: { 
         topic: selectedTopic.id,
@@ -263,33 +241,14 @@ export default function NewFindOpponent() {
                 transition={{ delay: 0.3 }}
                 className="text-center"
               >
-                {/* TESTE ISOLADO - BOTÃO FORA DE QUALQUER EFEITO */}
-                <div className="fixed top-4 right-4 z-[9999] bg-red-500 p-2 rounded">
-                  <button
-                    onClick={() => {
-                      console.log('🔥 BOTÃO ISOLADO CLICADO!');
-                      handleStartDuel();
-                    }}
-                    className="bg-white text-red-500 px-4 py-2 rounded font-bold"
-                  >
-                    TESTE ISOLADO
-                  </button>
-                </div>
-
-                <div className="space-y-2">
+                <div className="space-y-2 relative z-50">
                   <button
                     onClick={handleStartDuel}
                     disabled={isLoading || points < selectedBet}
-                    className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed rounded-md flex items-center justify-center"
+                    className="w-full max-w-md h-8 text-lg font-bold bg-[#adff2f] hover:bg-[#9de82a] text-black shadow-lg shadow-[#adff2f]/50 border-0 relative overflow-hidden group casino-start-button disabled:opacity-50 disabled:cursor-not-allowed rounded-md flex items-center justify-center z-50"
                   >
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 pointer-events-none"
-                      initial={{ x: '-100%' }}
-                      animate={{ x: '100%' }}
-                      transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                    />
-                    <Zap className="mr-2 h-4 w-4" />
-                    {isLoading ? "Carregando..." : "Buscar Oponente"}
+                    <Zap className="mr-2 h-4 w-4 relative z-10" />
+                    <span className="relative z-10">{isLoading ? "Carregando..." : "Buscar Oponente"}</span>
                   </button>
                 
                 </div>
