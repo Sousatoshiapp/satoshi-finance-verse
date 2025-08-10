@@ -69,7 +69,7 @@ export function useCasinoDuels() {
 
     try {
       // First, try to find an existing opponent in the casino duel queue
-      const { data: queuedOpponent, error: queueError } = await supabase
+      const { data: queuedOpponent, error: queueError } = await (supabase as any)
         .from('casino_duel_queue')
         .select('user_id, topic, bet_amount')
         .eq('topic', topic)
@@ -87,7 +87,7 @@ export function useCasinoDuels() {
         opponentId = queuedOpponent.user_id;
         
         // Remove opponent from queue
-        await supabase
+        await (supabase as any)
           .from('casino_duel_queue')
           .delete()
           .eq('user_id', opponentId);
@@ -117,7 +117,7 @@ export function useCasinoDuels() {
       }
 
       // Create the duel
-      const { data: duelData, error: duelError } = await supabase
+      const { data: duelData, error: duelError } = await (supabase as any)
         .from('casino_duels')
         .insert({
           player1_id: profile.id,
@@ -148,7 +148,7 @@ export function useCasinoDuels() {
       if (!isBot) {
         await supabase
           .from('profiles')
-          .update({ points: supabase.raw('points - ?', [betAmount]) })
+          .update({ points: (supabase as any).sql`points - ${betAmount}` })
           .eq('id', opponentId);
       }
 
@@ -173,7 +173,7 @@ export function useCasinoDuels() {
 
     try {
       // Remove from queue if exists
-      await supabase
+      await (supabase as any)
         .from('casino_duel_queue')
         .delete()
         .eq('user_id', profile.id);
@@ -190,7 +190,7 @@ export function useCasinoDuels() {
     if (!profile?.id) return;
 
     try {
-      await supabase
+      await (supabase as any)
         .from('casino_duel_queue')
         .upsert({
           user_id: profile.id,
@@ -208,7 +208,7 @@ export function useCasinoDuels() {
     if (!profile?.id) return null;
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('casino_duel_answers')
         .insert({
           duel_id: duelId,

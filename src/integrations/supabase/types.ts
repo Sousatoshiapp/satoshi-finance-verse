@@ -843,6 +843,162 @@ export type Database = {
           },
         ]
       }
+      casino_duel_answers: {
+        Row: {
+          created_at: string
+          duel_id: string
+          id: string
+          is_correct: boolean
+          question_index: number
+          response_time_ms: number
+          selected_answer: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duel_id: string
+          id?: string
+          is_correct?: boolean
+          question_index: number
+          response_time_ms: number
+          selected_answer: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duel_id?: string
+          id?: string
+          is_correct?: boolean
+          question_index?: number
+          response_time_ms?: number
+          selected_answer?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "casino_duel_answers_duel_id_fkey"
+            columns: ["duel_id"]
+            isOneToOne: false
+            referencedRelation: "casino_duels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "casino_duel_answers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      casino_duel_queue: {
+        Row: {
+          bet_amount: number
+          created_at: string
+          expires_at: string
+          id: string
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          bet_amount: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          topic: string
+          user_id: string
+        }
+        Update: {
+          bet_amount?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          topic?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "casino_duel_queue_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      casino_duels: {
+        Row: {
+          bet_amount: number
+          completed_at: string | null
+          created_at: string
+          current_question: number
+          id: string
+          player1_id: string
+          player1_score: number
+          player2_id: string
+          player2_score: number
+          questions: Json
+          started_at: string | null
+          status: string
+          topic: string
+          winner_id: string | null
+        }
+        Insert: {
+          bet_amount: number
+          completed_at?: string | null
+          created_at?: string
+          current_question?: number
+          id?: string
+          player1_id: string
+          player1_score?: number
+          player2_id: string
+          player2_score?: number
+          questions?: Json
+          started_at?: string | null
+          status?: string
+          topic: string
+          winner_id?: string | null
+        }
+        Update: {
+          bet_amount?: number
+          completed_at?: string | null
+          created_at?: string
+          current_question?: number
+          id?: string
+          player1_id?: string
+          player1_score?: number
+          player2_id?: string
+          player2_score?: number
+          questions?: Json
+          started_at?: string | null
+          status?: string
+          topic?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "casino_duels_player1_id_fkey"
+            columns: ["player1_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "casino_duels_player2_id_fkey"
+            columns: ["player2_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "casino_duels_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       city_emergency_contributions: {
         Row: {
           btz_contributed: number | null
@@ -7495,6 +7651,10 @@ export type Database = {
         Returns: number
       }
       clean_expired_btc_queue: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      clean_expired_casino_queue: {
         Args: Record<PropertyKey, never>
         Returns: number
       }
