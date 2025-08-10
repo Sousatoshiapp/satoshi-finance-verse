@@ -152,7 +152,7 @@ export default function NewFindOpponent() {
         </motion.div>
       </motion.div>
 
-      <div className="relative z-10 container mx-auto px-6 py-4 space-y-4">
+      <div className="relative z-10 container mx-auto px-6 py-4 pb-24 space-y-4">
         <AnimatePresence mode="wait">
           {!showBettingScreen ? (
             <motion.div
