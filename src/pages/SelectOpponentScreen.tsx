@@ -64,17 +64,19 @@ export default function SelectOpponentScreen() {
     try {
       console.log('Loading friends for profile:', profile.id);
       
-      // Simplified query for better performance
+      // Optimized query with avatar data and bet filtering
       const { data, error } = await supabase
         .from('user_follows')
         .select(`
           following:profiles!following_id (
             id, nickname, level, points, profile_image_url, 
-            current_avatar_id, is_bot
+            current_avatar_id, is_bot,
+            avatars!current_avatar_id (id, name, image_url)
           )
         `)
         .eq('follower_id', profile.id)
-        .limit(10);
+        .order('created_at', { ascending: false })
+        .limit(15);
 
       if (error) {
         console.error('Friends query error:', error);
@@ -82,7 +84,12 @@ export default function SelectOpponentScreen() {
       }
       
       console.log('Friends data received:', data);
-      const friendsList = data?.map(item => item.following).filter(Boolean) || [];
+      
+      // Filter friends with enough BTZ for the bet
+      const friendsList = data?.map(item => item.following)
+        .filter(Boolean)
+        .filter(friend => friend.points >= (state?.betAmount || 5)) || [];
+      
       console.log('Processed friends list:', friendsList);
       setFriends(friendsList);
     } catch (error) {
@@ -178,13 +185,9 @@ export default function SelectOpponentScreen() {
     });
     
     try {
+      console.log('🎯 Initiating random opponent search...');
       await findOpponent(state.topic, state.betAmount);
       console.log('✅ Random match request sent successfully');
-      
-      toast({
-        title: "Oponente Encontrado!",
-        description: "Preparando o duelo...",
-      });
     } catch (error) {
       console.error('❌ Error finding random opponent:', error);
       

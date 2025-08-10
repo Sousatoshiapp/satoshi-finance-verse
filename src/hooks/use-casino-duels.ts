@@ -72,10 +72,7 @@ export function useCasinoDuels() {
       let isBot = false;
 
       if (targetOpponentId) {
-        // Direct challenge to specific opponent
-        opponentId = targetOpponentId;
-        
-        // Check if target is a bot
+        // Direct challenge to specific friend/user - CREATE INVITE instead of direct duel
         const { data: targetData } = await supabase
           .from('profiles')
           .select('is_bot')
@@ -83,6 +80,50 @@ export function useCasinoDuels() {
           .single();
         
         isBot = targetData?.is_bot || false;
+
+        if (!isBot) {
+          // Create duel invite for human players
+          console.log('📧 Creating duel invite for friend:', targetOpponentId);
+          
+          const { data: invite, error: inviteError } = await supabase
+            .from('duel_invites')
+            .insert({
+              challenger_id: profile.id,
+              challenged_id: targetOpponentId,
+              quiz_topic: topic,
+              bet_amount: betAmount,
+              status: 'pending'
+            })
+            .select()
+            .single();
+
+          if (inviteError) throw inviteError;
+
+          console.log('✅ Duel invite created successfully:', invite);
+          toast.success('🎯 Convite enviado! Aguardando resposta...');
+          
+          // Add notification in activity feed
+          try {
+            await supabase.from('activity_feed').insert({
+              user_id: profile.id,
+              activity_type: 'duel_invite_sent',
+              activity_data: {
+                target_user_id: targetOpponentId,
+                topic: topic,
+                bet_amount: betAmount
+              }
+            });
+          } catch (activityError) {
+            console.warn('Failed to log activity:', activityError);
+          }
+          
+          setIsSearching(false);
+          setLoading(false);
+          return;
+        }
+        
+        // If it's a bot, continue with direct duel creation
+        opponentId = targetOpponentId;
       } else {
         // First, try to find an existing opponent in the casino duel queue
         const { data: queuedOpponent, error: queueError } = await (supabase as any)
@@ -167,10 +208,14 @@ export function useCasinoDuels() {
       }
 
       setCurrentDuel(duelData);
-      toast.success(`Oponente encontrado! Duelo iniciado.`);
+      console.log('✅ Duel created successfully:', duelData);
+      toast.success(`🎮 Oponente encontrado! Duelo iniciado.`);
       
-      // Navigate to duel screen
-      navigate(`/casino-duel/${duelData.id}`);
+      // Add slight delay to ensure state is updated
+      setTimeout(() => {
+        console.log('🚀 Navigating to duel screen:', `/casino-duel/${duelData.id}`);
+        navigate(`/casino-duel/${duelData.id}`);
+      }, 1000);
 
     } catch (error: any) {
       console.error('Erro ao encontrar oponente:', error);

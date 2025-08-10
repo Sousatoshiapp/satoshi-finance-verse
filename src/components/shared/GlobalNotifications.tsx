@@ -6,12 +6,12 @@ import { ParticleSystemContainer } from "@/components/shared/effects/particle-sy
 
 export function GlobalNotifications() {
   return (
-    <>
+    <div data-global-invites="true">
       <RealtimeDuelInvitePopup />
       <SmartNotificationContainer />
       <FloatingNumbersContainer />
       <MilestoneCelebrationContainer />
       <ParticleSystemContainer />
-    </>
+    </div>
   );
 }

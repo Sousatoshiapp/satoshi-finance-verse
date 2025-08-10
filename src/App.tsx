@@ -8,6 +8,7 @@ import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
 import { GlobalErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
 import { useI18n } from "@/hooks/use-i18n";
 import { useSplashScreen } from "@/hooks/use-splash-screen";
+import "@/utils/duel-system-debug"; // Load debug utilities
 
 function NotFoundPage() {
   const { t } = useI18n();

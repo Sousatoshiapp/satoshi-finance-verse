@@ -83,7 +83,9 @@ export function UltraLazyProvider({ children }: { children: ReactNode }) {
 export function UltraContextProvider({ children }: { children: ReactNode }) {
   return (
     <UltraCriticalProvider>
-      {children}
+      <UltraLazyProvider>
+        {children}
+      </UltraLazyProvider>
     </UltraCriticalProvider>
   );
 }
