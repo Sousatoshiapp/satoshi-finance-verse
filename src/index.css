@@ -700,6 +700,7 @@ All colors MUST be HSL.
     transparent 70%);
   transform: translateX(-100%);
   animation: casino-button-sweep 3s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes casino-button-sweep {
