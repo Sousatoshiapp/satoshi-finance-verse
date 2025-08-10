@@ -169,22 +169,22 @@ export default function SelectOpponentScreen() {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Card className="cursor-pointer hover:shadow-lg transition-all">
-        <CardContent className="p-4">
+      <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30 cursor-pointer hover:shadow-lg transition-all">
+        <CardContent className="p-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <AvatarDisplayUniversal
                 avatarData={normalizeAvatarData(user)}
                 nickname={user.nickname}
-                size="md"
+                size="sm"
               />
               <div>
-                <div className="font-semibold">{user.nickname}</div>
-                <div className="text-sm text-muted-foreground">
+                <div className="font-semibold text-green-400 text-sm">{user.nickname}</div>
+                <div className="text-xs text-blue-400">
                   Nível {user.level} • {user.points} BTZ
                 </div>
                 {user.is_bot && (
-                  <Badge variant="secondary" className="text-xs">Bot</Badge>
+                  <Badge variant="secondary" className="text-xs bg-purple-500/20 text-purple-300">Bot</Badge>
                 )}
               </div>
             </div>
@@ -192,9 +192,9 @@ export default function SelectOpponentScreen() {
               size="sm"
               onClick={onChallenge}
               disabled={isSearching}
-              className="bg-orange-500 hover:bg-orange-600 text-white"
+              className="bg-orange-500 hover:bg-orange-600 text-white text-xs px-2 py-1 h-auto"
             >
-              <Swords className="h-4 w-4 mr-1" />
+              <Swords className="h-3 w-3 mr-1" />
               Desafiar
             </Button>
           </div>
@@ -208,30 +208,44 @@ export default function SelectOpponentScreen() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 pb-24">
-      <div className="container mx-auto max-w-4xl space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+    <div className="min-h-screen casino-futuristic">
+      <div className="relative z-10 p-6 pb-40">
+        {/* Header with BTZ display */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="relative z-60 p-2 font-bold text-sm rounded-lg transition-all duration-300 border-2 hover:brightness-110"
+            style={{ 
+              backgroundColor: 'transparent',
+              borderColor: '#3d82f7',
+              color: '#3d82f7',
+              borderImage: 'linear-gradient(45deg, #3d82f7, #7c3aed) 1'
+            }}
+          >
             <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold">Selecionar Oponente</h1>
-            <p className="text-muted-foreground">
-              {state.topic} • Aposta: {state.betAmount} BTZ
-            </p>
+          </button>
+          
+          <div className="casino-card p-2 px-4 border border-blue-400/50 bg-black/40 backdrop-blur-sm rounded-lg">
+            <span className="text-blue-400 font-bold">{profile?.points?.toFixed(2) || '0.00'} BTZ</span>
           </div>
         </div>
 
+        {/* Topic and bet info */}
+        <div className="text-center mb-6">
+          <p className="text-green-400 text-sm">
+            {state.topic} • Aposta: {state.betAmount} BTZ
+          </p>
+        </div>
+
         {/* Search Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
+        <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30 mb-4">
+          <CardHeader className="p-3">
+            <CardTitle className="flex items-center gap-2 text-green-400 text-lg">
+              <Search className="h-4 w-4" />
               Buscar Jogadores
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 p-3 pt-0">
             <Input
               placeholder="Digite o nickname do jogador..."
               value={searchQuery}
@@ -239,11 +253,11 @@ export default function SelectOpponentScreen() {
                 setSearchQuery(e.target.value);
                 searchUsers(e.target.value);
               }}
-              className="w-full"
+              className="w-full bg-black/60 border-blue-400/30 text-white"
             />
             
             {loadingSearch && (
-              <div className="text-center py-4 text-muted-foreground">
+              <div className="text-center py-2 text-green-400 text-sm">
                 Buscando...
               </div>
             )}
@@ -254,7 +268,7 @@ export default function SelectOpponentScreen() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="space-y-2"
+                  className="space-y-1"
                 >
                   {searchResults.map(user => (
                     <UserCard
@@ -270,20 +284,20 @@ export default function SelectOpponentScreen() {
         </Card>
 
         {/* Friends Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
+        <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30 mb-4">
+          <CardHeader className="p-3">
+            <CardTitle className="flex items-center gap-2 text-green-400 text-lg">
+              <Users className="h-4 w-4" />
               Amigos e Seguindo
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-3 pt-0">
             {loadingFriends ? (
-              <div className="text-center py-4 text-muted-foreground">
+              <div className="text-center py-2 text-green-400 text-sm">
                 Carregando amigos...
               </div>
             ) : friends.length > 0 ? (
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {friends.map(user => (
                   <UserCard
                     key={user.id}
@@ -293,41 +307,42 @@ export default function SelectOpponentScreen() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>Você ainda não segue ninguém</p>
-                <p className="text-sm">Siga outros jogadores para duelar com eles!</p>
+              <div className="text-center py-4 text-green-400">
+                <Users className="h-6 w-6 mx-auto mb-1 opacity-50" />
+                <p className="text-sm">Você ainda não segue ninguém</p>
+                <p className="text-xs opacity-70">Siga outros jogadores para duelar com eles!</p>
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* Random Match Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shuffle className="h-5 w-5" />
+        <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
+          <CardHeader className="p-3">
+            <CardTitle className="flex items-center gap-2 text-green-400 text-lg">
+              <Shuffle className="h-4 w-4" />
               Busca Aleatória
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 p-3 pt-0">
             <Button
               onClick={handleRandomMatch}
               disabled={isSearching}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-bold py-3"
+              className="w-full font-bold py-2 text-black border-2 hover:brightness-110"
+              style={{
+                backgroundColor: '#adff2f',
+                borderColor: '#adff2f',
+                color: 'black'
+              }}
             >
               {isSearching ? 'Buscando...' : 'Encontrar Oponente Aleatório'}
             </Button>
-            
-            <div className="text-sm text-muted-foreground text-center">
-              O sistema irá buscar um oponente disponível ou um bot com nível similar
-            </div>
 
             {/* Recent Online Users */}
             {!loadingRandom && randomUsers.length > 0 && (
               <div>
-                <h4 className="font-semibold mb-2">Jogadores Ativos</h4>
-                <div className="space-y-2">
+                <h4 className="font-semibold mb-1 text-green-400 text-sm">Jogadores Ativos</h4>
+                <div className="space-y-1">
                   {randomUsers.slice(0, 5).map(user => (
                     <UserCard
                       key={user.id}
