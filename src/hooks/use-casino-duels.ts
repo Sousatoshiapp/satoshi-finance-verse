@@ -310,6 +310,63 @@ export function useCasinoDuels() {
     }
   };
 
+  // Load existing duel by ID
+  const loadDuelById = async (duelId: string) => {
+    if (!duelId) return null;
+
+    setLoading(true);
+    try {
+      console.log('🔍 Loading duel by ID:', duelId);
+      
+      const { data: duelData, error } = await supabase
+        .from('casino_duels')
+        .select(`
+          *,
+          player1:profiles!casino_duels_player1_id_fkey(id, nickname, level, profile_image_url),
+          player2:profiles!casino_duels_player2_id_fkey(id, nickname, level, profile_image_url)
+        `)
+        .eq('id', duelId)
+        .single();
+
+      if (error) {
+        console.error('❌ Error loading duel:', error);
+        throw error;
+      }
+
+      if (!duelData) {
+        throw new Error('Duelo não encontrado');
+      }
+
+      // Format the duel data with player profiles
+      const formattedDuel: CasinoDuel = {
+        ...duelData,
+        status: duelData.status as 'waiting' | 'in_progress' | 'completed' | 'cancelled',
+        questions: Array.isArray(duelData.questions) ? duelData.questions : JSON.parse(duelData.questions as string),
+        player1_profile: duelData.player1 ? {
+          nickname: duelData.player1.nickname,
+          level: duelData.player1.level,
+          avatar_url: duelData.player1.profile_image_url
+        } : undefined,
+        player2_profile: duelData.player2 ? {
+          nickname: duelData.player2.nickname,
+          level: duelData.player2.level,
+          avatar_url: duelData.player2.profile_image_url
+        } : undefined
+      };
+
+      setCurrentDuel(formattedDuel);
+      console.log('✅ Duel loaded successfully:', formattedDuel);
+      return formattedDuel;
+
+    } catch (error: any) {
+      console.error('❌ Failed to load duel:', error);
+      toast.error(error.message || 'Erro ao carregar duelo');
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     currentDuel,
     isSearching,
@@ -319,7 +376,8 @@ export function useCasinoDuels() {
     addToQueue,
     submitAnswer,
     completeDuel,
-    setCurrentDuel
+    setCurrentDuel,
+    loadDuelById
   };
 }
 

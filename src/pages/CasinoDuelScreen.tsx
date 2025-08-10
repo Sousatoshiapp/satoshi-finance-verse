@@ -33,7 +33,7 @@ interface Question {
 export default function CasinoDuelScreen() {
   const { duelId } = useParams<{ duelId: string }>();
   const navigate = useNavigate();
-  const { currentDuel, submitAnswer } = useCasinoDuels();
+  const { currentDuel, submitAnswer, loadDuelById, loading } = useCasinoDuels();
   const { profile } = useProfile();
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -45,6 +45,31 @@ export default function CasinoDuelScreen() {
 
   const currentQuestion: Question | null = 
     currentDuel?.questions?.[currentQuestionIndex] || null;
+
+  // Load duel on component mount
+  useEffect(() => {
+    const loadDuel = async () => {
+      if (duelId && !currentDuel) {
+        console.log('🚀 Loading duel from URL:', duelId);
+        const duel = await loadDuelById(duelId);
+        
+        if (!duel) {
+          console.log('❌ Duel not found, redirecting to dashboard');
+          navigate('/dashboard');
+          return;
+        }
+
+        // Verify user is part of this duel
+        if (profile?.id && duel.player1_id !== profile.id && duel.player2_id !== profile.id) {
+          console.log('❌ User not part of this duel, redirecting');
+          navigate('/dashboard');
+          return;
+        }
+      }
+    };
+
+    loadDuel();
+  }, [duelId, currentDuel, loadDuelById, navigate, profile?.id]);
 
   // Timer effect
   useEffect(() => {
@@ -92,13 +117,15 @@ export default function CasinoDuelScreen() {
     }, 2000);
   };
 
-  if (!currentDuel || !currentQuestion) {
+  if (loading || !currentDuel || !currentQuestion) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
           <CardContent className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-white">Carregando duelo...</p>
+            <p className="text-white">
+              {loading ? 'Carregando duelo...' : 'Processando dados do duelo...'}
+            </p>
           </CardContent>
         </Card>
       </div>
