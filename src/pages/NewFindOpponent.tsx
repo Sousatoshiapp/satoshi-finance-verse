@@ -121,19 +121,19 @@ export default function NewFindOpponent() {
       {/* Holographic Grid Overlay */}
       <div className="absolute inset-0 cyber-grid opacity-30" />
       
-      {/* Floating Particles */}
+      {/* Floating Particles - COM pointer-events-none */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="floating-particle particle-1" />
-        <div className="floating-particle particle-2" />
-        <div className="floating-particle particle-3" />
-        <div className="floating-particle particle-4" />
-        <div className="floating-particle particle-5" />
+        <div className="floating-particle particle-1 pointer-events-none" />
+        <div className="floating-particle particle-2 pointer-events-none" />
+        <div className="floating-particle particle-3 pointer-events-none" />
+        <div className="floating-particle particle-4 pointer-events-none" />
+        <div className="floating-particle particle-5 pointer-events-none" />
         
-        {/* Neon Glow Effects */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl neon-pulse" />
-        <div className="absolute bottom-20 right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl neon-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-purple-500/20 rounded-full blur-xl neon-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-1/3 left-1/4 w-36 h-36 bg-green-500/20 rounded-full blur-2xl neon-pulse" style={{ animationDelay: '3s' }} />
+        {/* Neon Glow Effects - COM pointer-events-none */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl neon-pulse pointer-events-none" />
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl neon-pulse pointer-events-none" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/3 right-1/4 w-24 h-24 bg-purple-500/20 rounded-full blur-xl neon-pulse pointer-events-none" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-1/3 left-1/4 w-36 h-36 bg-green-500/20 rounded-full blur-2xl neon-pulse pointer-events-none" style={{ animationDelay: '3s' }} />
       </div>
 
       {/* Header - Minimalist without title */}
