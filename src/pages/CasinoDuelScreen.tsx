@@ -43,28 +43,73 @@ export default function CasinoDuelScreen() {
   const [playerScore, setPlayerScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
 
-  const currentQuestion: Question | null = 
-    currentDuel?.questions?.[currentQuestionIndex] || null;
+  // Transform question to expected format if needed
+  const currentQuestion: Question | null = (() => {
+    if (!currentDuel?.questions?.[currentQuestionIndex]) {
+      console.log('⚠️ CasinoDuelScreen: No question found at index:', currentQuestionIndex);
+      return null;
+    }
+    
+    const rawQuestion = currentDuel.questions[currentQuestionIndex];
+    console.log('🔄 CasinoDuelScreen: Raw question data:', rawQuestion);
+    
+    // Handle both formats: RPC format and expected format
+    if (rawQuestion.options && Array.isArray(rawQuestion.options)) {
+      // RPC format: options is an array
+      const transformedQuestion = {
+        id: rawQuestion.id,
+        question: rawQuestion.question,
+        options: {
+          a: rawQuestion.options[0] || '',
+          b: rawQuestion.options[1] || '',
+          c: rawQuestion.options[2] || '',
+          d: rawQuestion.options[3] || ''
+        },
+        correct_answer: rawQuestion.correct_answer,
+        explanation: rawQuestion.explanation
+      };
+      console.log('✅ CasinoDuelScreen: Transformed question:', transformedQuestion);
+      return transformedQuestion;
+    } else if (rawQuestion.options && typeof rawQuestion.options === 'object') {
+      // Already in expected format
+      console.log('✅ CasinoDuelScreen: Question already in correct format');
+      return rawQuestion as Question;
+    }
+    
+    console.log('❌ CasinoDuelScreen: Invalid question format:', rawQuestion);
+    return null;
+  })();
 
   // Load duel on component mount
   useEffect(() => {
     const loadDuel = async () => {
       if (duelId && !currentDuel) {
-        console.log('🚀 Loading duel from URL:', duelId);
+        console.log('🚀 CasinoDuelScreen: Loading duel from URL:', duelId);
+        console.log('📋 CasinoDuelScreen: Current profile:', profile?.id);
+        
         const duel = await loadDuelById(duelId);
+        console.log('📦 CasinoDuelScreen: Loaded duel data:', duel);
         
         if (!duel) {
-          console.log('❌ Duel not found, redirecting to dashboard');
+          console.log('❌ CasinoDuelScreen: Duel not found, redirecting to dashboard');
           navigate('/dashboard');
           return;
         }
 
+        console.log('🔍 CasinoDuelScreen: Duel questions format:', duel.questions);
+        console.log('🎯 CasinoDuelScreen: First question:', duel.questions?.[0]);
+
         // Verify user is part of this duel
         if (profile?.id && duel.player1_id !== profile.id && duel.player2_id !== profile.id) {
-          console.log('❌ User not part of this duel, redirecting');
+          console.log('❌ CasinoDuelScreen: User not part of this duel, redirecting');
+          console.log('👤 CasinoDuelScreen: Profile ID:', profile.id);
+          console.log('🥊 CasinoDuelScreen: Player1 ID:', duel.player1_id);
+          console.log('🥊 CasinoDuelScreen: Player2 ID:', duel.player2_id);
           navigate('/dashboard');
           return;
         }
+
+        console.log('✅ CasinoDuelScreen: Duel loaded successfully and user verified');
       }
     };
 
@@ -117,7 +162,8 @@ export default function CasinoDuelScreen() {
     }, 2000);
   };
 
-  if (loading || !currentDuel || !currentQuestion) {
+  if (loading || !currentDuel) {
+    console.log('🔄 CasinoDuelScreen: Loading state - loading:', loading, 'currentDuel:', !!currentDuel);
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
@@ -126,6 +172,28 @@ export default function CasinoDuelScreen() {
             <p className="text-white">
               {loading ? 'Carregando duelo...' : 'Processando dados do duelo...'}
             </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!currentQuestion) {
+    console.log('❌ CasinoDuelScreen: No current question available');
+    console.log('📋 CasinoDuelScreen: Questions array:', currentDuel?.questions);
+    console.log('📍 CasinoDuelScreen: Question index:', currentQuestionIndex);
+    
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
+        <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
+          <CardContent className="text-center">
+            <p className="text-white mb-4">Erro ao carregar pergunta do duelo</p>
+            <Button 
+              onClick={() => navigate('/dashboard')}
+              className="bg-primary hover:bg-primary/80"
+            >
+              Voltar ao Dashboard
+            </Button>
           </CardContent>
         </Card>
       </div>
