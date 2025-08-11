@@ -460,7 +460,7 @@ export default function Dashboard() {
               </div>
             </Button>
             
-            {/* Joysticks Icon - Positioned absolutely */}
+            {/* Joysticks Icon - Positioned absolutely with overlap */}
             <div 
               onClick={() => {
                 setFlashActive(true);
@@ -469,30 +469,32 @@ export default function Dashboard() {
                   navigate('/find-opponent');
                 }, 150);
               }}
-              className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-8'} flex items-center gap-1 cursor-pointer transition-all duration-200 hover:scale-110`}
+              className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-8'} cursor-pointer transition-all duration-200 hover:scale-110`}
             >
-              <Gamepad2 
-                className={`h-8 w-8 text-purple-400 transition-all duration-200 ${
-                  flashActive ? 'animate-ping' : 'animate-pulse'
-                }`}
-                style={{
-                  filter: 'drop-shadow(0 0 2px rgb(168 85 247 / 0.8))',
-                  stroke: 'rgb(168 85 247)',
-                  strokeWidth: 1,
-                  animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                }}
-              />
-              <Gamepad2 
-                className={`h-8 w-8 text-purple-400 transition-all duration-200 ${
-                  flashActive ? 'animate-ping' : 'animate-pulse'
-                }`}
-                style={{
-                  filter: 'drop-shadow(0 0 2px rgb(168 85 247 / 0.8))',
-                  stroke: 'rgb(168 85 247)',
-                  strokeWidth: 1,
-                  animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                }}
-              />
+              <div className="relative w-12 h-8">
+                <Gamepad2 
+                  className={`absolute top-0 left-0 h-8 w-8 text-purple-400 transition-all duration-200 ${
+                    flashActive ? 'animate-ping' : 'animate-pulse'
+                  }`}
+                  style={{
+                    filter: 'drop-shadow(0 0 2px rgb(168 85 247 / 0.8))',
+                    stroke: 'rgb(168 85 247)',
+                    strokeWidth: 1,
+                    animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                  }}
+                />
+                <Gamepad2 
+                  className={`absolute top-0 left-4 h-8 w-8 text-purple-400 transition-all duration-200 ${
+                    flashActive ? 'animate-ping' : 'animate-pulse'
+                  }`}
+                  style={{
+                    filter: 'drop-shadow(0 0 2px rgb(168 85 247 / 0.8))',
+                    stroke: 'rgb(168 85 247)',
+                    strokeWidth: 1,
+                    animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                  }}
+                />
+              </div>
             </div>
           </div>
 
