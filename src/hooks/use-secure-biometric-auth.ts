@@ -57,8 +57,8 @@ export function useSecureBiometricAuth() {
       }
       
       // Check if biometric is enabled using secure storage
-      const enabled = SecureStorage.getSecureItem('biometric_auth_enabled') === 'true';
-      setState(prev => ({ ...prev, isEnabled: enabled }));
+      const enabled = await SecureStorage.getSecureItem('biometric_auth_enabled');
+      setState(prev => ({ ...prev, isEnabled: enabled === 'true' }));
     } catch (error) {
       console.warn('Biometric check failed:', error);
       logSuspiciousActivity('biometric_check_failed', { error: error instanceof Error ? error.message : 'Unknown error' });
@@ -81,14 +81,15 @@ export function useSecureBiometricAuth() {
       }
 
       // Get stored credentials from secure storage
-      const storedEmail = SecureStorage.getSecureItem('biometric_user_email');
-      const storedSession = SecureStorage.getSecureItem('biometric_session_token');
+      const storedEmail = await SecureStorage.getSecureItem('biometric_user_email');
+      const storedSession = await SecureStorage.getSecureItem('biometric_session_token');
       
       if (storedEmail && storedSession) {
         // Restore session
+        const refreshToken = await SecureStorage.getSecureItem('biometric_refresh_token');
         const { data, error } = await supabase.auth.setSession({
           access_token: storedSession,
-          refresh_token: SecureStorage.getSecureItem('biometric_refresh_token') || ''
+          refresh_token: refreshToken || ''
         });
         
         if (error) {
