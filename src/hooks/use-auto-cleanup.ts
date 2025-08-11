@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { ultraCleanup } from '@/utils/ultra-performance';
 
-// Hook for automatic cleanup to prevent memory leaks
-export const useAutoCleanup = (intervalMs: number = 30000) => {
+// Ultra-aggressive cleanup hook for critical performance
+export const useAutoCleanup = (intervalMs: number = 15000) => {
   const cleanupRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {

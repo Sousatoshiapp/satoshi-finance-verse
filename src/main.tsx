@@ -11,7 +11,7 @@ import { criticalPathOptimizer } from "@/utils/critical-path-optimizer";
 import { bundleSplitter } from "@/utils/bundle-splitter";
 import { initializePerformanceOptimizations } from "@/utils/performance-manager";
 import { createUltraQueryClient, preloadCriticalAssets, monitorUltraPerformance } from "@/utils/ultra-performance";
-import UltraApp from "./main-ultra";
+import { UltraApp } from "./UltraApp";
 import "./index.css";
 import "./i18n";
 
@@ -27,7 +27,7 @@ initializePerformanceOptimizations();
 
 // FASE 1.2: Service Worker para cache instantâneo
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  navigator.serviceWorker.register('/ultra-sw.js').catch(() => {
+  navigator.serviceWorker.register('/sw.js').catch(() => {
     // Silent fail - no blocking
   });
 }
