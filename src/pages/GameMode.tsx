@@ -68,7 +68,7 @@ export default function GameMode() {
         </div>
 
         {/* Game Mode Selection */}
-        <Card className="mb-6 bg-transparent border border-white/10 shadow-2xl shadow-purple-500/20">
+        <Card className="mb-6 bg-transparent border border-white/30 shadow-2xl shadow-white/10 ring-2 ring-white/20">
           <CardContent className={`${isMobile ? 'p-4' : 'p-6'}`}>
             <div className="text-center mb-4">
               <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-white mb-2`}>
@@ -84,7 +84,7 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('solo')}
                 variant={selectedMode === 'solo' ? 'default' : 'outline'}
-                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/30 transition-all duration-300 bg-transparent border border-purple-400/30 hover:border-purple-400/60`}
+                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 bg-transparent border border-purple-400/60 hover:border-purple-400/80 ring-2 ring-purple-400/30 hover:ring-purple-400/50`}
                 disabled={selectedMode !== null}
               >
                 <div className="flex items-center justify-center gap-2">
@@ -97,7 +97,7 @@ export default function GameMode() {
               <Button
                 onClick={() => handleModeSelect('duelo')}
                 variant={selectedMode === 'duelo' ? 'default' : 'outline'}
-                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/30 transition-all duration-300 bg-transparent border border-pink-400/30 hover:border-pink-400/60`}
+                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 bg-transparent border border-pink-400/60 hover:border-pink-400/80 ring-2 ring-pink-400/30 hover:ring-pink-400/50`}
                 disabled={selectedMode !== null}
               >
                 <div className="flex items-center justify-center gap-2">
@@ -114,7 +114,7 @@ export default function GameMode() {
               >
                 <div className="flex items-center justify-center gap-4">
                   <span className="text-muted-foreground">Torneios</span>
-                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-orange-500/20 to-yellow-500/20 text-white rounded-full border border-orange-400/30">
+                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 10px rgba(251,146,60,0.8))' }}>
                     Soon™
                   </span>
                 </div>
@@ -124,7 +124,7 @@ export default function GameMode() {
               <Button
                 onClick={() => navigate('/concept-connections?theme=basic_finance')}
                 variant="outline"
-                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300 bg-transparent border border-cyan-400/40 hover:border-cyan-400/70`}
+                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 bg-transparent border border-cyan-400/60 hover:border-cyan-400/80 ring-2 ring-cyan-400/30 hover:ring-cyan-400/50`}
               >
                 <div className="flex items-center justify-center gap-4">
                   <span className="text-foreground font-bold">Connect the Dots</span>
