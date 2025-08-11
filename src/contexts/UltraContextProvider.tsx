@@ -1,19 +1,16 @@
-// FASE 1: Context Splitting Radical - Contextos consolidados e lazy
+// FASE 3: Ultra-Aggressive Memory Management - Consolidated subscriptions
 import React, { createContext, useContext, ReactNode, useMemo, lazy, Suspense } from 'react';
 import { AuthProvider } from './AuthContext';
 import { I18nProvider } from './I18nProvider';
 import { AvatarProvider } from './AvatarContext';
 import { SponsorThemeProvider } from './SponsorThemeProvider';
-import { OnlineStatusProvider } from './OnlineStatusContext';
+import { UltraRealtimeProvider } from './UltraOptimizedRealtimeContext';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
+import { ultraMemoryManager } from '@/utils/ultra-memory-manager';
 
-// Lazy load non-critical contexts
-const LazyRealtimeProvider = lazy(() => import('./RealtimeContext').then(mod => ({ default: mod.RealtimeProvider })));
+// Ultra-lazy load ONLY truly non-critical contexts (reduced from 6 to 2)
 const LazyLoadingProvider = lazy(() => import('./LoadingContext').then(mod => ({ default: mod.LoadingProvider })));
-const LazySponsorThemeProvider = lazy(() => import('./SponsorThemeProvider').then(mod => ({ default: mod.SponsorThemeProvider })));
-const LazyAvatarProvider = lazy(() => import('./AvatarContext').then(mod => ({ default: mod.AvatarProvider })));
 const LazyGlobalDuelInviteProvider = lazy(() => import('./GlobalDuelInviteContext').then(mod => ({ default: mod.GlobalDuelInviteProvider })));
-const LazyOnlineStatusProvider = lazy(() => import('./OnlineStatusContext').then(mod => ({ default: mod.OnlineStatusProvider })));
 
 // Consolidated Points & Notifications Context
 interface UltraContextType {
@@ -32,7 +29,7 @@ const UltraContext = createContext<UltraContextType>({
 
 export const useUltraContext = () => useContext(UltraContext);
 
-// Ultra-fast critical context provider
+// Ultra-optimized critical context provider with consolidated realtime
 export function UltraCriticalProvider({ children }: { children: ReactNode }) {
   const contextValue = useMemo(() => ({
     points: 0,
@@ -47,9 +44,9 @@ export function UltraCriticalProvider({ children }: { children: ReactNode }) {
         <AuthProvider>
           <AvatarProvider>
             <SponsorThemeProvider>
-              <OnlineStatusProvider>
+              <UltraRealtimeProvider>
                 {children}
-              </OnlineStatusProvider>
+              </UltraRealtimeProvider>
             </SponsorThemeProvider>
           </AvatarProvider>
         </AuthProvider>
@@ -58,22 +55,14 @@ export function UltraCriticalProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Lazy non-critical providers
+// Ultra-minimal lazy providers (reduced from 6 contexts to 2)
 export function UltraLazyProvider({ children }: { children: ReactNode }) {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<LoadingSpinner size="sm" />}>
       <LazyLoadingProvider>
-        <LazyOnlineStatusProvider>
-          <LazyRealtimeProvider>
-            <LazyAvatarProvider>
-              <LazyGlobalDuelInviteProvider>
-                <LazySponsorThemeProvider>
-                  {children}
-                </LazySponsorThemeProvider>
-              </LazyGlobalDuelInviteProvider>
-            </LazyAvatarProvider>
-          </LazyRealtimeProvider>
-        </LazyOnlineStatusProvider>
+        <LazyGlobalDuelInviteProvider>
+          {children}
+        </LazyGlobalDuelInviteProvider>
       </LazyLoadingProvider>
     </Suspense>
   );
@@ -81,21 +70,38 @@ export function UltraLazyProvider({ children }: { children: ReactNode }) {
 
 // Ultimate provider that splits critical vs non-critical - simplified with auto-cleanup
 export function UltraContextProvider({ children }: { children: ReactNode }) {
-  // Auto cleanup on mount/unmount to prevent memory leaks
+  // Ultra-aggressive memory management on mount/unmount
   React.useEffect(() => {
+    // Start global memory monitoring
+    ultraMemoryManager.startMonitoring();
+    
     const cleanup = () => {
+      // Perform aggressive cleanup
+      ultraMemoryManager.performCleanup('aggressive');
+      
       // Clear any orphaned DOM nodes
       const orphanedElements = document.querySelectorAll('[data-context-orphaned="true"]');
-      orphanedElements.forEach(el => el.remove());
+      orphanedElements.forEach(el => {
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
+      });
       
       // Clear stale localStorage entries
       const keys = Object.keys(localStorage);
       keys.forEach(key => {
-        if (key.includes('context-temp-') || key.includes('ultra-temp-')) {
+        if (key.includes('context-temp-') || key.includes('ultra-temp-') || key.includes('cache-')) {
           try {
-            localStorage.removeItem(key);
+            const item = localStorage.getItem(key);
+            if (item) {
+              const parsed = JSON.parse(item);
+              // Remove if older than 1 hour or no timestamp
+              if (!parsed.timestamp || Date.now() - parsed.timestamp > 3600000) {
+                localStorage.removeItem(key);
+              }
+            }
           } catch (e) {
-            console.debug('Error removing temp storage:', key);
+            localStorage.removeItem(key); // Remove invalid JSON
           }
         }
       });
@@ -105,6 +111,7 @@ export function UltraContextProvider({ children }: { children: ReactNode }) {
     
     return () => {
       cleanup(); // Cleanup on unmount
+      ultraMemoryManager.stopMonitoring();
     };
   }, []);
 
