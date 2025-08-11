@@ -8,7 +8,6 @@ import { useI18n } from "@/hooks/use-i18n";
 import { OptimizedImage } from "@/components/shared/ui/optimized-image";
 import { motion, AnimatePresence } from "framer-motion";
 import QRCode from 'qrcode';
-import { useP2PNotifications } from "@/hooks/use-p2p-notifications";
 import { supabase } from "@/integrations/supabase/client";
 
 export function ReceiveBTZ() {

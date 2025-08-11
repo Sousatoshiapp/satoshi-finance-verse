@@ -1,12 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from '@/hooks/use-profile';
 import confetti from 'canvas-confetti';
 import { useI18n } from '@/hooks/use-i18n';
 
+interface P2PNotification {
+  amount: number;
+  senderNickname: string;
+}
+
 export function useP2PNotifications() {
   const { profile } = useProfile();
   const { t } = useI18n();
+  const [currentNotification, setCurrentNotification] = useState<P2PNotification | null>(null);
+
+  const showP2PModal = (amount: number, senderNickname: string) => {
+    setCurrentNotification({ amount, senderNickname });
+  };
+
+  const dismissP2PModal = () => {
+    setCurrentNotification(null);
+  };
 
   const triggerReceiveNotification = async (amount: number, senderNickname: string) => {
     // Enhanced confetti effect - multiple bursts
@@ -113,12 +127,21 @@ export function useP2PNotifications() {
                 payload.new.amount_cents,
                 senderProfile?.nickname || 'Unknown'
               );
+              
+              // Show P2P modal
+              showP2PModal(
+                payload.new.amount_cents,
+                senderProfile?.nickname || 'Unknown'
+              );
             } catch (error) {
               console.error('P2P Notifications: Exception fetching sender profile:', error);
               await triggerReceiveNotification(
                 payload.new.amount_cents,
                 'Unknown'
               );
+              
+              // Show P2P modal
+              showP2PModal(payload.new.amount_cents, 'Unknown');
             }
           };
           
@@ -132,5 +155,9 @@ export function useP2PNotifications() {
     };
   }, [profile?.id]);
 
-  return { triggerReceiveNotification };
+  return { 
+    triggerReceiveNotification,
+    currentNotification,
+    dismissP2PModal
+  };
 }

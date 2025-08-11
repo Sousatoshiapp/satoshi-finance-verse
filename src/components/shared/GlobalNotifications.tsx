@@ -3,10 +3,13 @@ import { FloatingNumbersContainer } from "@/components/shared/animations/floatin
 import { MilestoneCelebrationContainer } from "@/components/shared/celebrations/milestone-celebration";
 import { ParticleSystemContainer } from "@/components/shared/effects/particle-system";
 import { DuelInviteModal } from "@/components/duels/duel-invite-modal";
+import { P2PReceiveModal } from "@/components/features/p2p/P2PReceiveModal";
 import { useGlobalDuelInvites } from "@/contexts/GlobalDuelInviteContext";
+import { useP2PNotifications } from "@/hooks/use-p2p-notifications";
 
 export function GlobalNotifications() {
   const { currentInvite, dismissCurrentInvite } = useGlobalDuelInvites();
+  const { currentNotification, dismissP2PModal } = useP2PNotifications();
 
   return (
     <div data-global-invites="true">
@@ -24,6 +27,14 @@ export function GlobalNotifications() {
           console.log(`🎯 Invite ${accepted ? 'accepted' : 'rejected'}`);
           dismissCurrentInvite();
         }}
+      />
+      
+      {/* Global P2P Receive Modal */}
+      <P2PReceiveModal
+        open={!!currentNotification}
+        onClose={dismissP2PModal}
+        amount={currentNotification?.amount || 0}
+        senderNickname={currentNotification?.senderNickname || ''}
       />
     </div>
   );
