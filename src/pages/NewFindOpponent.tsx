@@ -86,7 +86,7 @@ export default function NewFindOpponent() {
 
 
   return (
-    <div className="min-h-screen casino-futuristic">
+    <div className="min-h-screen casino-futuristic overflow-hidden">
       {/* Main content with proper spacing to avoid navbar overlap */}
       <div className="relative z-10 p-6 pb-40">
         {/* Header with casino styling */}

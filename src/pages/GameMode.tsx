@@ -52,7 +52,7 @@ export default function GameMode() {
   };
 
   return (
-    <div className={`min-h-screen casino-futuristic ${isMobile ? 'flex flex-col' : 'flex items-center justify-center'}`} 
+    <div className={`min-h-screen casino-futuristic overflow-hidden ${isMobile ? 'flex flex-col' : 'flex items-center justify-center'}`} 
          style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 8px)' } : {}}>
       {/* Cyber grid background */}
       <div className="fixed inset-0 cyber-grid opacity-30 pointer-events-none"></div>
