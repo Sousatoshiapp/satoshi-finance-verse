@@ -471,15 +471,15 @@ export default function Dashboard() {
               }}
               className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-8'} cursor-pointer transition-all duration-200 hover:scale-110`}
             >
-              <div className="relative w-14 h-8">
+              <div className="relative w-15 h-8">
                 {/* First joystick */}
                 <Gamepad2 
-                  className={`absolute top-0 left-0 h-8 w-8 text-purple-400 transition-all duration-200 ${
+                  className={`absolute top-0 left-0 h-8 w-8 text-pink-400 transition-all duration-200 ${
                     flashActive ? 'animate-ping' : 'animate-pulse'
                   }`}
                   style={{
-                    filter: 'drop-shadow(0 0 2px rgb(168 85 247 / 0.8))',
-                    stroke: 'rgb(168 85 247)',
+                    filter: 'drop-shadow(0 0 2px rgb(236 72 153 / 0.8))',
+                    stroke: 'rgb(236 72 153)',
                     strokeWidth: 1,
                     animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
                   }}
@@ -487,12 +487,12 @@ export default function Dashboard() {
                 
                 {/* Second joystick */}
                 <Gamepad2 
-                  className={`absolute top-0 left-6 h-8 w-8 text-purple-400 transition-all duration-200 ${
+                  className={`absolute top-0 left-7 h-8 w-8 text-pink-400 transition-all duration-200 ${
                     flashActive ? 'animate-ping' : 'animate-pulse'
                   }`}
                   style={{
-                    filter: 'drop-shadow(0 0 2px rgb(168 85 247 / 0.8))',
-                    stroke: 'rgb(168 85 247)',
+                    filter: 'drop-shadow(0 0 2px rgb(236 72 153 / 0.8))',
+                    stroke: 'rgb(236 72 153)',
                     strokeWidth: 1,
                     animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
                   }}
