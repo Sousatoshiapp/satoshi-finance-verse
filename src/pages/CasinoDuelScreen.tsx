@@ -84,24 +84,25 @@ export default function CasinoDuelScreen() {
   useEffect(() => {
     const loadDuel = async () => {
       if (duelId && !currentDuel) {
-        console.log('🚀 CasinoDuelScreen: Loading duel from URL:', duelId);
-        console.log('📋 CasinoDuelScreen: Current profile:', profile?.id);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loading duel from URL:', duelId);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Current profile:', profile?.id);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: loadDuelById function available:', !!loadDuelById);
         
         const duel = await loadDuelById(duelId);
-        console.log('📦 CasinoDuelScreen: Loaded duel data:', duel);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loaded duel data:', !!duel);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Questions in loaded duel:', duel?.questions?.length || 0);
         
         if (!duel) {
-          console.log('❌ CasinoDuelScreen: Duel not found, redirecting to dashboard');
+          console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Duel not found, redirecting to dashboard');
           navigate('/dashboard');
           return;
         }
 
-        console.log('🔍 CasinoDuelScreen: Duel questions format:', duel.questions);
-        console.log('🎯 CasinoDuelScreen: First question:', duel.questions?.[0]);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Duel questions array:', JSON.stringify(duel.questions, null, 2));
 
         // Verify user is part of this duel
         if (profile?.id && duel.player1_id !== profile.id && duel.player2_id !== profile.id) {
-          console.log('❌ CasinoDuelScreen: User not part of this duel, redirecting');
+          console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: User not part of this duel, redirecting');
           console.log('👤 CasinoDuelScreen: Profile ID:', profile.id);
           console.log('🥊 CasinoDuelScreen: Player1 ID:', duel.player1_id);
           console.log('🥊 CasinoDuelScreen: Player2 ID:', duel.player2_id);
@@ -109,7 +110,7 @@ export default function CasinoDuelScreen() {
           return;
         }
 
-        console.log('✅ CasinoDuelScreen: Duel loaded successfully and user verified');
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Duel loaded successfully and user verified');
       }
     };
 
