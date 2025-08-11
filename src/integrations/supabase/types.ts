@@ -8032,6 +8032,10 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      is_following_user: {
+        Args: { target_profile_id: string }
+        Returns: boolean
+      }
       is_guild_leader_or_officer: {
         Args: { p_user_id: string; p_guild_id: string }
         Returns: boolean
@@ -8042,6 +8046,10 @@ export type Database = {
       }
       is_master_admin: {
         Args: { email_check: string }
+        Returns: boolean
+      }
+      is_profile_owner: {
+        Args: { profile_user_id: string }
         Returns: boolean
       }
       is_user_available_for_duel: {
