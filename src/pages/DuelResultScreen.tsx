@@ -9,6 +9,7 @@ import { useCasinoDuels } from "@/hooks/use-casino-duels";
 import { useProfile } from "@/hooks/use-profile";
 import { useUnifiedRewards } from "@/hooks/use-unified-rewards";
 import { BeetzAnimation } from "@/components/features/quiz/beetz-animation";
+import { LossAnimation } from "@/components/features/duels/LossAnimation";
 import { formatBTZDisplay } from "@/utils/btz-formatter";
 
 interface DuelResult {
@@ -29,6 +30,7 @@ export default function DuelResultScreen() {
   
   const [result, setResult] = useState<DuelResult | null>(null);
   const [showAnimation, setShowAnimation] = useState(false);
+  const [showLossAnimation, setShowLossAnimation] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -80,7 +82,12 @@ export default function DuelResultScreen() {
 
         // Show animation after a delay
         setTimeout(() => {
-          setShowAnimation(true);
+          const playerBtzChange = profile.id === currentDuel.player1_id ? player1BtzChange : player2BtzChange;
+          if (playerBtzChange > 0) {
+            setShowAnimation(true);
+          } else if (playerBtzChange < 0) {
+            setShowLossAnimation(true);
+          }
         }, 1000);
       }
       
@@ -247,16 +254,25 @@ export default function DuelResultScreen() {
         </div>
       </div>
 
-      {/* BTZ Animation */}
-      {showAnimation && playerBtzChange !== 0 && (
+      {/* BTZ Gain Animation */}
+      {showAnimation && playerBtzChange > 0 && (
         <BeetzAnimation
           isVisible={true}
           amount={Math.abs(playerBtzChange)}
           onComplete={() => {
             setShowAnimation(false);
-            if (playerBtzChange > 0) {
-              showRewardAnimation('btz', Math.abs(playerBtzChange));
-            }
+            showRewardAnimation('btz', Math.abs(playerBtzChange));
+          }}
+        />
+      )}
+
+      {/* BTZ Loss Animation */}
+      {showLossAnimation && playerBtzChange < 0 && (
+        <LossAnimation
+          isVisible={true}
+          amount={Math.abs(playerBtzChange)}
+          onComplete={() => {
+            setShowLossAnimation(false);
           }}
         />
       )}
