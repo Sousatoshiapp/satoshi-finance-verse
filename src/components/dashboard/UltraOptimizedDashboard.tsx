@@ -18,21 +18,46 @@ const UltraOptimizedDashboard = memo(() => {
     return { text: t('dashboard.goodNight'), icon: "🌙" };
   }, [t]);
 
-  // User stats memoized
+  // Helper function to get XP requirement for a specific level
+  const getCurrentLevelXP = (level: number) => {
+    if (level === 1) return 0;
+    
+    // XP requirements by level (XP needed to REACH each level)
+    const xpTable: { [key: number]: number } = {
+      1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
+      6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
+      11: 3250, 12: 3850, 13: 4500, 14: 5200, 15: 5950,
+      16: 6750, 17: 7600, 18: 8500, 19: 9450, 20: 10450,
+      21: 10500, 22: 11000, 23: 11500, 24: 12000, 25: 12500
+    };
+    
+    return xpTable[level] || 0;
+  };
+
+  // User stats memoized with correct progress calculation
   const userStats = useMemo(() => {
     if (!data) return {
       level: 1,
       currentXP: 0,
       nextLevelXP: 100,
+      currentLevelXP: 0,
+      xpProgress: 0,
       streak: 0,
       points: 0,
       nickname: t('dashboard.student')
     };
 
+    const currentLevelXP = getCurrentLevelXP(data.level);
+    const xpInCurrentLevel = data.xp - currentLevelXP;
+    const xpNeededForLevel = data.nextLevelXP - currentLevelXP;
+    const progressPercentage = xpNeededForLevel > 0 ? (xpInCurrentLevel / xpNeededForLevel) * 100 : 0;
+
     return {
       level: data.level,
       currentXP: data.xp,
       nextLevelXP: data.nextLevelXP,
+      currentLevelXP,
+      xpProgress: Math.min(Math.max(progressPercentage, 0), 100),
       streak: data.streak,
       points: data.points,
       nickname: data.profile?.nickname || t('dashboard.student')
@@ -66,19 +91,19 @@ const UltraOptimizedDashboard = memo(() => {
             />
           </div>
 
-          {/* Minimal progress bar */}
+          {/* Corrected progress bar - shows progress between levels */}
           <div className="mb-6">
             <div className="w-full bg-muted rounded-full h-2">
               <div 
-                className="bg-gradient-to-r from-success to-primary h-2 rounded-full"
+                className="bg-gradient-to-r from-success to-primary h-2 rounded-full transition-all duration-300"
                 style={{ 
-                  width: `${Math.min((userStats.currentXP / userStats.nextLevelXP) * 100, 100)}%` 
+                  width: `${userStats.xpProgress}%` 
                 }}
               />
             </div>
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
               <span>Level {userStats.level}</span>
-              <span>{userStats.currentXP}/{userStats.nextLevelXP} XP</span>
+              <span>{userStats.currentXP - userStats.currentLevelXP}/{userStats.nextLevelXP - userStats.currentLevelXP} XP</span>
             </div>
           </div>
 
