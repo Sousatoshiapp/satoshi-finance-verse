@@ -4067,6 +4067,36 @@ export type Database = {
         }
         Relationships: []
       }
+      privacy_access_log: {
+        Row: {
+          access_type: string
+          accessed_table: string
+          accessed_user_id: string | null
+          accessor_user_id: string | null
+          created_at: string | null
+          denied: boolean | null
+          id: string
+        }
+        Insert: {
+          access_type: string
+          accessed_table: string
+          accessed_user_id?: string | null
+          accessor_user_id?: string | null
+          created_at?: string | null
+          denied?: boolean | null
+          id?: string
+        }
+        Update: {
+          access_type?: string
+          accessed_table?: string
+          accessed_user_id?: string | null
+          accessor_user_id?: string | null
+          created_at?: string | null
+          denied?: boolean | null
+          id?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
@@ -7872,6 +7902,13 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: string
       }
+      get_anonymized_user_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total_online_users: number
+          total_active_users: number
+        }[]
+      }
       get_arena_users: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -8005,6 +8042,10 @@ export type Database = {
       }
       is_master_admin: {
         Args: { email_check: string }
+        Returns: boolean
+      }
+      is_user_available_for_duel: {
+        Args: { target_user_id: string }
         Returns: boolean
       }
       log_security_event: {
