@@ -51,8 +51,22 @@ export function useRealtimeDuelInvites() {
       return;
     }
 
-    const fetchInitialInvites = async () => {
+    const setupRealtimeInvites = async () => {
       try {
+        // Buscar perfil do usuário primeiro
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (!userProfile) {
+          console.error('User profile not found');
+          setIsLoading(false);
+          return;
+        }
+
+        // Buscar convites iniciais
         const { data: invites, error } = await supabase
           .from('duel_invites')
           .select(`
@@ -67,7 +81,7 @@ export function useRealtimeDuelInvites() {
               )
             )
           `)
-          .eq('challenged_id', user.id)
+          .eq('challenged_id', userProfile.id)
           .eq('status', 'pending')
           .order('created_at', { ascending: true });
 
@@ -75,58 +89,68 @@ export function useRealtimeDuelInvites() {
           setCurrentInvite(invites[0]);
           setInviteQueue(invites.slice(1));
         }
+
+        // Configurar canal real-time
+        const channel = supabase
+          .channel(`duel-invites-${userProfile.id}`)
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'duel_invites',
+              filter: `challenged_id=eq.${userProfile.id}`,
+            },
+            async (payload) => {
+              if (payload.new.status === 'pending') {
+                const { data: fullInvite } = await supabase
+                  .from('duel_invites')
+                  .select(`
+                    *,
+                    challenger:profiles!challenger_id(
+                      id,
+                      nickname,
+                      level,
+                      xp,
+                      user_avatars (
+                        avatars(name, image_url)
+                      )
+                    )
+                  `)
+                  .eq('id', payload.new.id)
+                  .single();
+
+                if (fullInvite) {
+                  if (!currentInvite) {
+                    setCurrentInvite(fullInvite);
+                  } else {
+                    setInviteQueue(prev => [...prev, fullInvite]);
+                  }
+                }
+              }
+            }
+          )
+          .subscribe();
+
+        return channel;
       } catch (error) {
-        console.error('Error fetching initial invites:', error);
+        console.error('Error setting up realtime invites:', error);
+        return null;
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchInitialInvites();
-
-    const channel = supabase
-      .channel(`duel-invites-${user.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'duel_invites',
-          filter: `challenged_id=eq.${user.id}`,
-        },
-        async (payload) => {
-          if (payload.new.status === 'pending') {
-            const { data: fullInvite } = await supabase
-              .from('duel_invites')
-              .select(`
-                *,
-                challenger:profiles!challenger_id(
-                  id,
-                  nickname,
-                  level,
-                  xp,
-                  user_avatars (
-                    avatars(name, image_url)
-                  )
-                )
-              `)
-              .eq('id', payload.new.id)
-              .single();
-
-            if (fullInvite) {
-              if (!currentInvite) {
-                setCurrentInvite(fullInvite);
-              } else {
-                setInviteQueue(prev => [...prev, fullInvite]);
-              }
-            }
-          }
-        }
-      )
-      .subscribe();
+    let cleanup: (() => void) | null = null;
+    
+    setupRealtimeInvites().then((channel) => {
+      if (channel) {
+        cleanup = () => supabase.removeChannel(channel);
+      }
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      if (cleanup) cleanup();
     };
   }, [user?.id, currentInvite, processNextInvite]);
 

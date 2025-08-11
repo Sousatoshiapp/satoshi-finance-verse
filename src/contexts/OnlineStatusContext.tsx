@@ -7,6 +7,7 @@ interface OnlineUser {
   username: string;
   avatar_url?: string;
   last_seen: string;
+  available_for_duel?: boolean;
 }
 
 interface OnlineStatusContextType {
@@ -35,67 +36,16 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     
     try {
-      let profileId = userProfileId;
+      // Usar a nova função do banco que gerencia heartbeat automaticamente
+      const { error } = await supabase.rpc('update_user_heartbeat');
       
-      // Cache profile ID to avoid repeated queries
-      if (!profileId) {
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('user_id', user.id)
-          .single();
-
-        if (profileError || !profile) {
-          console.error('Error fetching profile for online status:', profileError);
-          return;
-        }
-        
-        profileId = profile.id;
-        setUserProfileId(profileId);
-      }
-
-      // Primeiro tenta atualizar um registro existente
-      const { error: updateError } = await supabase
-        .from('user_presence')
-        .update({
-          last_seen: new Date().toISOString(),
-          is_online: true,
-        })
-        .eq('user_id', profileId);
-
-      // Se não houver erro no update, significa que o registro foi atualizado
-      if (!updateError) {
-        return;
-      }
-
-      // Se o update falhou (provavelmente porque não existe registro), tenta inserir
-      const { error: insertError } = await supabase
-        .from('user_presence')
-        .insert({
-          user_id: profileId,
-          last_seen: new Date().toISOString(),
-          is_online: true,
-        });
-
-      // Se o insert também falhar (porque outro processo criou o registro), 
-      // tenta update novamente
-      if (insertError && insertError.code === '23505') {
-        const { error: secondUpdateError } = await supabase
-          .from('user_presence')
-          .update({
-            last_seen: new Date().toISOString(),
-            is_online: true,
-          })
-          .eq('user_id', profileId);
-          
-        if (secondUpdateError) throw secondUpdateError;
-      } else if (insertError) {
-        throw insertError;
+      if (error) {
+        console.error('Error updating heartbeat:', error);
       }
     } catch (error) {
-      console.error('Error updating online status:', error);
+      console.error('Error in heartbeat update:', error);
     }
-  }, [user, userProfileId]);
+  }, [user]);
 
   const markOffline = useCallback(async () => {
     if (!user || !userProfileId) return;
@@ -140,17 +90,17 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
 
     updateOnlineStatus();
 
-    // Heartbeat mais frequente para presença real (30s)
-    const interval = setInterval(updateOnlineStatus, 30000);
+    // Heartbeat mais frequente para presença real (15s)
+    const interval = setInterval(updateOnlineStatus, 15000);
     
-    // Limpeza automática a cada minuto
+    // Limpeza automática a cada 2 minutos usando nova função
     const cleanupInterval = setInterval(async () => {
       try {
-        await supabase.rpc('cleanup_inactive_users');
+        await supabase.rpc('cleanup_inactive_presence');
       } catch (error) {
         console.error('Error in automatic cleanup:', error);
       }
-    }, 60000);
+    }, 120000);
 
     const channel = supabase
       .channel('online-users')
@@ -165,16 +115,18 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
 
     const fetchOnlineUsers = async () => {
       try {
-        // Critério mais rigoroso: usuários com last_seen < 2 minutos
+        // Agora com nova política RLS que permite ver usuários disponíveis para duelo
         const { data, error } = await supabase
           .from('user_presence')
           .select(`
             user_id,
             last_seen,
+            available_for_duel,
             profiles!inner(nickname, profile_image_url)
           `)
-          .gte('last_seen', new Date(Date.now() - 2 * 60 * 1000).toISOString())
-          .eq('is_online', true);
+          .eq('is_online', true)
+          .eq('available_for_duel', true)
+          .gte('last_heartbeat', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // 5 minutos
         
         if (error) throw error;
         
@@ -183,9 +135,10 @@ export function OnlineStatusProvider({ children }: { children: ReactNode }) {
           username: item.profiles?.nickname || 'Anonymous',
           avatar_url: item.profiles?.profile_image_url || null,
           last_seen: item.last_seen,
+          available_for_duel: item.available_for_duel,
         })) || [];
         
-        console.log(`✅ Found ${formattedUsers.length} truly online users`);
+        console.log(`✅ Found ${formattedUsers.length} users available for duel`);
         setOnlineUsers(formattedUsers);
       } catch (error) {
         console.error('Error fetching online users:', error);

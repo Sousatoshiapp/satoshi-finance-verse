@@ -6829,24 +6829,30 @@ export type Database = {
       }
       user_presence: {
         Row: {
+          available_for_duel: boolean | null
           id: string
           is_online: boolean
+          last_heartbeat: string | null
           last_seen: string
           status: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          available_for_duel?: boolean | null
           id?: string
           is_online?: boolean
+          last_heartbeat?: string | null
           last_seen?: string
           status?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          available_for_duel?: boolean | null
           id?: string
           is_online?: boolean
+          last_heartbeat?: string | null
           last_seen?: string
           status?: string | null
           updated_at?: string
@@ -7751,6 +7757,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_inactive_presence: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_inactive_users: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -8241,6 +8251,10 @@ export type Database = {
           p_response_time_ms?: number
         }
         Returns: Json
+      }
+      update_user_heartbeat: {
+        Args: { target_user_id?: string }
+        Returns: undefined
       }
       update_user_league: {
         Args: { p_user_id: string; p_points_gained: number }
