@@ -1,19 +1,26 @@
-// FASE 3 FIXED: Simplified Context Structure for Stability
-import React, { createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
+// FASE 1: Context Splitting Radical - Contextos consolidados e lazy
+import React, { createContext, useContext, ReactNode, useMemo, lazy, Suspense } from 'react';
 import { AuthProvider } from './AuthContext';
 import { I18nProvider } from './I18nProvider';
 import { AvatarProvider } from './AvatarContext';
 import { SponsorThemeProvider } from './SponsorThemeProvider';
+import { OnlineStatusProvider } from './OnlineStatusContext';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
-import { ultraMemoryManager } from '@/utils/ultra-memory-manager';
 
-// Simplified consolidated context
+// Lazy load non-critical contexts
+const LazyRealtimeProvider = lazy(() => import('./RealtimeContext').then(mod => ({ default: mod.RealtimeProvider })));
+const LazyLoadingProvider = lazy(() => import('./LoadingContext').then(mod => ({ default: mod.LoadingProvider })));
+const LazySponsorThemeProvider = lazy(() => import('./SponsorThemeProvider').then(mod => ({ default: mod.SponsorThemeProvider })));
+const LazyAvatarProvider = lazy(() => import('./AvatarContext').then(mod => ({ default: mod.AvatarProvider })));
+const LazyGlobalDuelInviteProvider = lazy(() => import('./GlobalDuelInviteContext').then(mod => ({ default: mod.GlobalDuelInviteProvider })));
+const LazyOnlineStatusProvider = lazy(() => import('./OnlineStatusContext').then(mod => ({ default: mod.OnlineStatusProvider })));
+
+// Consolidated Points & Notifications Context
 interface UltraContextType {
   points: number;
   isOnline: boolean;
   notifications: any[];
   lastUpdate: Date | null;
-  isReady: boolean;
 }
 
 const UltraContext = createContext<UltraContextType>({
@@ -21,39 +28,18 @@ const UltraContext = createContext<UltraContextType>({
   isOnline: true,
   notifications: [],
   lastUpdate: null,
-  isReady: false,
 });
 
 export const useUltraContext = () => useContext(UltraContext);
 
-// Simplified critical provider - NO LAZY LOADING for critical contexts
+// Ultra-fast critical context provider
 export function UltraCriticalProvider({ children }: { children: ReactNode }) {
-  const [isReady, setIsReady] = useState(false);
-  
   const contextValue = useMemo(() => ({
     points: 0,
     isOnline: true,
     notifications: [],
     lastUpdate: null,
-    isReady,
-  }), [isReady]);
-
-  // Ensure all contexts are ready before rendering
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 100);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!isReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
+  }), []);
 
   return (
     <UltraContext.Provider value={contextValue}>
@@ -61,7 +47,9 @@ export function UltraCriticalProvider({ children }: { children: ReactNode }) {
         <AuthProvider>
           <AvatarProvider>
             <SponsorThemeProvider>
-              {children}
+              <OnlineStatusProvider>
+                {children}
+              </OnlineStatusProvider>
             </SponsorThemeProvider>
           </AvatarProvider>
         </AuthProvider>
@@ -70,25 +58,61 @@ export function UltraCriticalProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Simplified main provider - NO complex lazy loading for now
+// Lazy non-critical providers
+export function UltraLazyProvider({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <LazyLoadingProvider>
+        <LazyOnlineStatusProvider>
+          <LazyRealtimeProvider>
+            <LazyAvatarProvider>
+              <LazyGlobalDuelInviteProvider>
+                <LazySponsorThemeProvider>
+                  {children}
+                </LazySponsorThemeProvider>
+              </LazyGlobalDuelInviteProvider>
+            </LazyAvatarProvider>
+          </LazyRealtimeProvider>
+        </LazyOnlineStatusProvider>
+      </LazyLoadingProvider>
+    </Suspense>
+  );
+}
+
+// Ultimate provider that splits critical vs non-critical - simplified with auto-cleanup
 export function UltraContextProvider({ children }: { children: ReactNode }) {
-  // Simplified memory management on mount/unmount
+  // Auto cleanup on mount/unmount to prevent memory leaks
   React.useEffect(() => {
-    // Start memory monitoring (but simplified)
-    if (typeof ultraMemoryManager !== 'undefined') {
-      ultraMemoryManager.startMonitoring?.();
-    }
+    const cleanup = () => {
+      // Clear any orphaned DOM nodes
+      const orphanedElements = document.querySelectorAll('[data-context-orphaned="true"]');
+      orphanedElements.forEach(el => el.remove());
+      
+      // Clear stale localStorage entries
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.includes('context-temp-') || key.includes('ultra-temp-')) {
+          try {
+            localStorage.removeItem(key);
+          } catch (e) {
+            console.debug('Error removing temp storage:', key);
+          }
+        }
+      });
+    };
+
+    cleanup(); // Initial cleanup
     
     return () => {
-      if (typeof ultraMemoryManager !== 'undefined') {
-        ultraMemoryManager.stopMonitoring?.();
-      }
+      cleanup(); // Cleanup on unmount
     };
   }, []);
 
   return (
     <UltraCriticalProvider>
-      {children}
+      <UltraLazyProvider>
+        {children}
+      </UltraLazyProvider>
     </UltraCriticalProvider>
   );
 }
