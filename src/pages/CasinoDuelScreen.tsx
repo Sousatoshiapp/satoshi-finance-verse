@@ -33,15 +33,13 @@ interface Question {
 export default function CasinoDuelScreen() {
   const { duelId } = useParams<{ duelId: string }>();
   const navigate = useNavigate();
-  const { currentDuel, submitAnswer, loadDuelById, loading } = useCasinoDuels();
+  const { currentDuel, submitAnswer, loadDuelById, loading, completeDuel } = useCasinoDuels();
   const { profile } = useProfile();
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [answered, setAnswered] = useState(false);
-  const [playerScore, setPlayerScore] = useState(0);
-  const [opponentScore, setOpponentScore] = useState(0);
 
   // Transform question to expected format if needed
   const currentQuestion: Question | null = (() => {
@@ -173,25 +171,16 @@ export default function CasinoDuelScreen() {
       await submitAnswer(duelId, currentQuestionIndex, answer, responseTime);
     }
 
-    // Update score if correct
-    if (answer === currentQuestion.correct_answer) {
-      setPlayerScore(prev => prev + 1);
-    }
-
-    // Simulate opponent score (for demo)
-    if (Math.random() > 0.3) {
-      setOpponentScore(prev => prev + 1);
-    }
-
     // Move to next question after delay
-    setTimeout(() => {
+    setTimeout(async () => {
       if (currentQuestionIndex < (currentDuel?.questions?.length || 0) - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
         setSelectedAnswer(null);
         setAnswered(false);
         setTimeLeft(30);
       } else {
-        // Duel completed
+        // Duel completed - finalize and navigate
+        await completeDuel(duelId);
         navigate(`/duel-result/${duelId}`);
       }
     }, 2000);
@@ -249,80 +238,81 @@ export default function CasinoDuelScreen() {
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
-      {/* Header */}
+        {/* Header - Mobile Optimized */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="relative z-10 flex items-center justify-between p-6 backdrop-blur-sm border-b border-white/10"
+        className="relative z-10 flex items-center justify-between p-3 md:p-6 backdrop-blur-sm border-b border-white/10"
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <Button
             variant="outline"
             size="sm"
             onClick={() => navigate(-1)}
-            className="border-white/20 bg-black/20 backdrop-blur-sm hover:bg-white/10"
+            className="border-white/20 bg-black/20 backdrop-blur-sm hover:bg-white/10 h-8 w-8 p-0 md:h-10 md:w-auto md:px-4"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-primary to-pink-500 rounded-xl">
-              <Target className="h-6 w-6 text-white" />
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="p-1.5 md:p-2 bg-gradient-to-br from-primary to-pink-500 rounded-lg md:rounded-xl">
+              <Target className="h-4 w-4 md:h-6 md:w-6 text-white" />
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">Duelo em Andamento</h1>
-              <p className="text-sm text-muted-foreground">
+            <div className="hidden md:block">
+              <p className="text-xs md:text-sm text-muted-foreground">
                 Pergunta {currentQuestionIndex + 1} de {currentDuel.questions?.length || 0}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Timer */}
+        {/* Timer - Mobile Optimized */}
         <motion.div 
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-full border border-red-400/30"
+          className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1 md:py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-full border border-red-400/30"
           animate={{ scale: timeLeft <= 5 ? [1, 1.1, 1] : 1 }}
           transition={{ duration: 0.5, repeat: timeLeft <= 5 ? Infinity : 0 }}
         >
-          <Timer className="h-5 w-5 text-red-400" />
-          <span className="font-bold text-red-300">{timeLeft}s</span>
+          <Timer className="h-3 w-3 md:h-5 md:w-5 text-red-400" />
+          <span className="font-bold text-red-300 text-sm md:text-base">{timeLeft}s</span>
         </motion.div>
       </motion.div>
 
-      <div className="relative z-10 container mx-auto px-6 py-8 space-y-8">
-        {/* Score Display */}
+      <div className="relative z-10 container mx-auto px-3 md:px-6 py-4 md:py-8 space-y-4 md:space-y-8">
+        {/* Score Display - Mobile Optimized */}
         <Card className="border-white/10 bg-black/20 backdrop-blur-md">
-          <CardContent className="p-6">
-            <div className="grid grid-cols-3 gap-6 items-center">
+          <CardContent className="p-3 md:p-6">
+            <div className="grid grid-cols-3 gap-3 md:gap-6 items-center">
               {/* Player */}
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <User className="h-5 w-5 text-primary" />
-                  <span className="font-bold text-white">Você</span>
+                <div className="flex items-center justify-center gap-1 md:gap-2 mb-1 md:mb-2">
+                  <User className="h-3 w-3 md:h-5 md:w-5 text-primary" />
+                  <span className="font-bold text-white text-xs md:text-base">Você</span>
                 </div>
-                <div className="text-3xl font-bold text-primary">{playerScore}</div>
+                <div className="text-xl md:text-3xl font-bold text-primary">{currentDuel.player1_score}</div>
               </div>
 
               {/* VS */}
               <div className="text-center">
-                <div className="p-3 bg-gradient-to-br from-primary to-pink-500 rounded-full inline-block">
-                  <Zap className="h-6 w-6 text-white" />
+                <div className="p-2 md:p-3 bg-gradient-to-br from-primary to-pink-500 rounded-full inline-block">
+                  <Zap className="h-3 w-3 md:h-6 md:w-6 text-white" />
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">VS</p>
+                <p className="text-xs md:text-sm text-muted-foreground mt-1 md:mt-2">VS</p>
               </div>
 
               {/* Opponent */}
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Users className="h-5 w-5 text-amber-400" />
-                  <span className="font-bold text-white">Oponente</span>
+                <div className="flex items-center justify-center gap-1 md:gap-2 mb-1 md:mb-2">
+                  <Users className="h-3 w-3 md:h-5 md:w-5 text-amber-400" />
+                  <span className="font-bold text-white text-xs md:text-base">
+                    {currentDuel.player2_profile?.nickname || 'Oponente'}
+                  </span>
                 </div>
-                <div className="text-3xl font-bold text-amber-400">{opponentScore}</div>
+                <div className="text-xl md:text-3xl font-bold text-amber-400">{currentDuel.player2_score}</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Question Card */}
+        {/* Question Card - Mobile Optimized */}
         <motion.div
           key={currentQuestionIndex}
           initial={{ x: 100, opacity: 0 }}
@@ -331,13 +321,13 @@ export default function CasinoDuelScreen() {
           transition={{ duration: 0.3 }}
         >
           <Card className="border-white/10 bg-black/20 backdrop-blur-md">
-            <CardContent className="p-8">
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-white leading-relaxed">
+            <CardContent className="p-4 md:p-8">
+              <div className="space-y-4 md:space-y-6">
+                <h2 className="text-lg md:text-2xl font-bold text-white leading-relaxed">
                   {currentQuestion.question}
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-3 md:gap-4">
                   {Object.entries(currentQuestion.options).map(([key, option]) => (
                     <motion.button
                       key={key}
@@ -345,7 +335,7 @@ export default function CasinoDuelScreen() {
                       whileTap={{ scale: answered ? 1 : 0.98 }}
                       onClick={() => !answered && handleAnswerSubmit(key)}
                       disabled={answered}
-                      className={`p-6 rounded-xl border-2 text-left transition-all duration-300 ${
+                      className={`p-3 md:p-6 rounded-xl border-2 text-left transition-all duration-300 ${
                         answered
                           ? key === currentQuestion.correct_answer
                             ? 'border-green-400 bg-green-500/20 text-green-300'
@@ -357,8 +347,8 @@ export default function CasinoDuelScreen() {
                           : 'border-white/20 bg-white/5 text-white hover:border-primary/50 hover:bg-primary/5'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center font-bold ${
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full border-2 flex items-center justify-center font-bold text-sm md:text-base ${
                           answered
                             ? key === currentQuestion.correct_answer
                               ? 'border-green-400 bg-green-500/20 text-green-300'
@@ -369,9 +359,9 @@ export default function CasinoDuelScreen() {
                         }`}>
                           {key.toUpperCase()}
                         </div>
-                        <span className="flex-1">{option}</span>
+                        <span className="flex-1 text-sm md:text-base">{option}</span>
                         {answered && key === currentQuestion.correct_answer && (
-                          <CheckCircle2 className="h-5 w-5 text-green-400" />
+                          <CheckCircle2 className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
                         )}
                       </div>
                     </motion.button>
@@ -382,9 +372,9 @@ export default function CasinoDuelScreen() {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-blue-500/10 border border-blue-400/30 rounded-xl"
+                    className="p-3 md:p-4 bg-blue-500/10 border border-blue-400/30 rounded-xl"
                   >
-                    <p className="text-blue-300 text-sm">
+                    <p className="text-blue-300 text-xs md:text-sm">
                       <strong>Explicação:</strong> {currentQuestion.explanation}
                     </p>
                   </motion.div>
@@ -394,12 +384,12 @@ export default function CasinoDuelScreen() {
           </Card>
         </motion.div>
 
-        {/* Progress Bar */}
+        {/* Progress Bar - Mobile Optimized */}
         <Card className="border-white/10 bg-black/20 backdrop-blur-md">
-          <CardContent className="p-4">
+          <CardContent className="p-3 md:p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Progresso</span>
-              <span className="text-sm text-white">
+              <span className="text-xs md:text-sm text-muted-foreground">Progresso</span>
+              <span className="text-xs md:text-sm text-white">
                 {currentQuestionIndex + 1} / {currentDuel.questions?.length || 0}
               </span>
             </div>

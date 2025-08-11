@@ -86,6 +86,12 @@ export const gameRoutes = [
     showNavbar: false
   },
   {
+    path: "/duel-result/:duelId",
+    element: "DuelResultScreen",
+    requiresAuth: true,
+    showNavbar: false
+  },
+  {
     path: "/select-opponent",
     element: "SelectOpponentScreen",
     requiresAuth: true,

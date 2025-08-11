@@ -333,9 +333,10 @@ export function useCasinoDuels() {
   };
 
   const submitAnswer = async (duelId: string, questionIndex: number, selectedAnswer: string, responseTime: number) => {
-    if (!profile?.id) return;
+    if (!profile?.id) return null;
 
     try {
+      // First insert the answer
       const { error } = await supabase
         .from('casino_duel_answers')
         .insert({
@@ -350,27 +351,51 @@ export function useCasinoDuels() {
       if (error) {
         console.error('❌ Error submitting answer:', error);
         toast.error('Erro ao enviar resposta');
+        return null;
       }
+
+      // Process the answer and update scores
+      const { data: result, error: processError } = await supabase.functions.invoke('process-duel-answer', {
+        body: {
+          duelId,
+          userId: profile.id,
+          questionIndex,
+          selectedAnswer
+        }
+      });
+
+      if (processError) {
+        console.error('❌ Error processing answer:', processError);
+        return null;
+      }
+
+      // Reload the duel to get updated scores
+      await loadDuelById(duelId);
+
+      return result;
     } catch (error) {
       console.error('❌ Error in submitAnswer:', error);
+      return null;
     }
   };
 
   const completeDuel = async (duelId: string) => {
     try {
-      const { error } = await supabase
-        .from('casino_duels')
-        .update({ 
-          status: 'completed',
-          completed_at: new Date().toISOString()
-        })
-        .eq('id', duelId);
+      // Call the edge function to complete the duel and handle BTZ transfers
+      const { data: result, error } = await supabase.functions.invoke('complete-casino-duel', {
+        body: { duelId }
+      });
 
       if (error) {
         console.error('❌ Error completing duel:', error);
+        return null;
       }
+
+      console.log('✅ Duel completed:', result);
+      return result;
     } catch (error) {
       console.error('❌ Error in completeDuel:', error);
+      return null;
     }
   };
 
