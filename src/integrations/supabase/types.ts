@@ -7714,6 +7714,10 @@ export type Database = {
         Args: { profile_id: string }
         Returns: boolean
       }
+      check_user_is_admin: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
       check_user_team_membership: {
         Args: { p_user_id: string; p_district_id: string }
         Returns: boolean
