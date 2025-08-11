@@ -102,7 +102,7 @@ export default function GameMode() {
               >
                 <div className="flex items-center justify-center gap-2">
                   <Users className="h-4 w-4 text-white" />
-                  <span className="text-foreground">1 vs 1</span>
+                  <span className="text-foreground">Multiplayer</span>
                 </div>
               </Button>
 
