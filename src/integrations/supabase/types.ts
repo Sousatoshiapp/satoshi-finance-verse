@@ -7694,7 +7694,13 @@ export type Database = {
         Returns: string
       }
       create_duel_with_invite: {
-        Args: { p_invite_id: string; p_challenger_id: string }
+        Args:
+          | {
+              p_challenger_id: string
+              p_challenged_id: string
+              p_topic: string
+            }
+          | { p_invite_id: string; p_challenger_id: string }
         Returns: Json
       }
       daitch_mokotoff: {
