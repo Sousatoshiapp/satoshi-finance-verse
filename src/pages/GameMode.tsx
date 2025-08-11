@@ -52,7 +52,8 @@ export default function GameMode() {
   };
 
   return (
-    <div className="min-h-screen casino-futuristic">
+    <div className={`min-h-screen casino-futuristic ${isMobile ? 'flex flex-col' : 'flex items-center justify-center'}`} 
+         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 8px)' } : {}}>
       {/* Cyber grid background */}
       <div className="fixed inset-0 cyber-grid opacity-30 pointer-events-none"></div>
       
@@ -64,9 +65,9 @@ export default function GameMode() {
       <div className="floating-particle particle-5"></div>
 
       {/* Main content with proper spacing */}
-      <div className="relative z-10 p-6 pb-40">
+      <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-20' : 'p-6'}`}>
         {/* Header with casino styling */}
-        <div className="flex items-center justify-start mb-8">
+        <div className={`flex items-center justify-start ${isMobile ? 'mb-6' : 'mb-8'}`}>
           <Button
             variant="outline"
             size="sm"
@@ -77,7 +78,7 @@ export default function GameMode() {
           </Button>
         </div>
 
-        <div className="max-w-md mx-auto space-y-8">
+        <div className={`${isMobile ? 'max-w-sm mx-auto' : 'max-w-md mx-auto'} space-y-6`}>
 
           {/* Game Mode Selection with casino styling */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
