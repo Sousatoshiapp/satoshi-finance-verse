@@ -40,6 +40,7 @@ import { useAvatarContext } from "@/contexts/AvatarContext";
 import { getLevelInfo } from "@/data/levels";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ConfettiCelebration } from "@/components/shared/animations/confetti-celebration";
+import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
 
 
 const getGreeting = (t: any) => {
@@ -80,6 +81,7 @@ export default function Dashboard() {
   const [confettiOrigin, setConfettiOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   const [flashActive, setFlashActive] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
   
   const jogarButtonRef = useRef<HTMLButtonElement>(null);
   
@@ -230,6 +232,12 @@ export default function Dashboard() {
       description: "Seu avatar foi atualizado com sucesso.",
     });
   }, [invalidateAvatarCaches, toast]);
+
+  // Handle theme selection
+  const handleThemeSelect = useCallback((theme: string) => {
+    setShowThemeModal(false);
+    navigate(`/quiz?theme=${encodeURIComponent(theme)}`);
+  }, [navigate]);
 
   // Memoize loading state
   const loadingComponent = useMemo(() => (
@@ -419,6 +427,21 @@ export default function Dashboard() {
 
           {/* Botão Principal Jogar - Circular Transparente */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center relative`}>
+            {/* Joystick roxo à esquerda do botão Jogar */}
+            <div 
+              onClick={() => setShowThemeModal(true)}
+              className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-4' : 'left-8'} cursor-pointer transition-all duration-200 hover:scale-110`}
+            >
+              <Gamepad2 
+                className="h-8 w-8 text-purple-400 animate-pulse transition-all duration-200 hover:animate-none"
+                style={{
+                  filter: 'drop-shadow(0 0 8px rgb(168 85 247 / 0.8))',
+                  stroke: 'rgb(168 85 247)',
+                  strokeWidth: 1.5
+                }}
+              />
+            </div>
+
             <Button 
               ref={jogarButtonRef}
               onClick={() => {
@@ -560,6 +583,13 @@ export default function Dashboard() {
         open={showAvatarSelection}
         onOpenChange={setShowAvatarSelection}
         onAvatarSelected={handleAvatarSelected}
+      />
+
+      {/* Theme Selection Modal */}
+      <ThemeSelectionModal
+        isOpen={showThemeModal}
+        onClose={() => setShowThemeModal(false)}
+        onSelectTheme={handleThemeSelect}
       />
 
       {/* Confetti Celebration */}
