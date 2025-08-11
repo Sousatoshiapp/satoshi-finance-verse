@@ -12,6 +12,25 @@ export const LazyRoutes = {
   GameMode: lazy(() => import('@/pages/GameMode')),
   SatoshiCity: lazy(() => import('@/pages/SatoshiCity')),
   
+  // Admin pages
+  AdminDashboard: lazy(() => import('@/pages/AdminDashboard')),
+  AdminSettings: lazy(() => import('@/pages/AdminSettings')),
+  AdminUsersAll: lazy(() => import('@/pages/AdminUsersAll')),
+  AdminUsersPremium: lazy(() => import('@/pages/AdminUsersPremium')),
+  AdminUsersModeration: lazy(() => import('@/pages/AdminUsersModeration')),
+  AdminFinanceRevenue: lazy(() => import('@/pages/admin/AdminFinanceRevenue')),
+  AdminFinanceBeetz: lazy(() => import('@/pages/admin/AdminFinanceBeetz')),
+  AdminFinanceSubscriptions: lazy(() => import('@/pages/admin/AdminFinanceSubscriptions')),
+  AdminFinanceReports: lazy(() => import('@/pages/admin/AdminFinanceReports')),
+  AdminQuizQuestions: lazy(() => import('@/pages/admin/AdminQuizQuestions')),
+  AdminQuizCategories: lazy(() => import('@/pages/admin/AdminQuizCategories')),
+  AdminPanel: lazy(() => import('@/pages/AdminPanel')),
+  AdminSocialPosts: lazy(() => import('@/pages/admin/AdminSocialPosts')),
+  AdminGamification: lazy(() => import('@/pages/admin/AdminGamification')),
+  AdminAIContent: lazy(() => import('@/pages/admin/AdminAIContent')),
+  AdminMonetization: lazy(() => import('@/pages/admin/AdminMonetization')),
+  AdminEducationalSystem: lazy(() => import('@/pages/admin/AdminEducationalSystem')),
+  
   // Quiz pages
   SoloQuiz: lazy(() => import('@/pages/quiz/SoloQuiz')),
   StudyMode: lazy(() => import('@/pages/quiz/StudyMode')),
