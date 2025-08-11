@@ -113,19 +113,50 @@ export const preloadCriticalAssets = () => {
   });
 };
 
-// Ultra-fast component cleanup
+// Ultra-fast component cleanup with memory optimization
 export const ultraCleanup = () => {
-  // Remove unused DOM nodes
-  const unusedElements = document.querySelectorAll('[data-ultra-cleanup="true"]');
-  unusedElements.forEach(el => el.remove());
+  // Remove any lingering DOM nodes
+  const staleNodes = document.querySelectorAll('[data-stale="true"]');
+  staleNodes.forEach(node => node.remove());
+  
+  // Clean up any orphaned event listeners
+  const orphanedElements = document.querySelectorAll('[data-cleanup-needed="true"]');
+  orphanedElements.forEach(element => {
+    element.removeAttribute('data-cleanup-needed');
+    // Clone and replace to remove all event listeners
+    const newElement = element.cloneNode(true);
+    element.parentNode?.replaceChild(newElement, element);
+  });
   
   // Force garbage collection if available
-  if ('gc' in window) {
-    (window as any).gc();
+  if (window.gc) {
+    try {
+      window.gc();
+    } catch (e) {
+      console.debug('GC not available');
+    }
   }
   
   // Clear request cache
   requestCache.clear();
+  
+  // Clear any cached queries older than 5 minutes
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const now = Date.now();
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('query-cache-')) {
+        try {
+          const item = JSON.parse(localStorage.getItem(key) || '{}');
+          if (item.timestamp && now - item.timestamp > 300000) { // 5 minutes
+            localStorage.removeItem(key);
+          }
+        } catch (e) {
+          localStorage.removeItem(key);
+        }
+      }
+    });
+  }
 };
 
 // Performance monitoring for sub-0.2s target

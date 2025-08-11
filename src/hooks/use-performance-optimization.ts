@@ -103,21 +103,55 @@ export const usePerformanceOptimization = (config: PerformanceConfig = {}) => {
     trackPerformanceMetric('cache_invalidation', performance.now());
   }, [smartInvalidator, trackPerformanceMetric]);
 
-  // Memory pressure detection
+  // Enhanced memory pressure detection and emergency cleanup
   const detectMemoryPressure = useCallback(() => {
     if ('memory' in performance) {
       const memory = (performance as any).memory;
-      const pressureRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
+      const usageRatio = memory.usedJSHeapSize / memory.jsHeapSizeLimit;
       
-      if (pressureRatio > 0.9) {
-        console.warn('🚨 High memory pressure detected:', `${(pressureRatio * 100).toFixed(1)}%`);
+      console.log(`Memory usage: ${(usageRatio * 100).toFixed(2)}%`);
+      
+      // Progressive cleanup at different thresholds
+      if (usageRatio > 0.85) { // 85% memory usage - start aggressive cleanup
+        console.warn('High memory pressure detected, triggering progressive cleanup');
+        
+        // Clean stale queries first
+        queryClient.removeQueries({
+          predicate: (query) => {
+            const lastUpdated = query.state.dataUpdatedAt;
+            const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+            return lastUpdated < fiveMinutesAgo && query.getObserversCount() === 0;
+          }
+        });
+        
+        // Clean localStorage cache
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const keys = Object.keys(localStorage);
+          keys.forEach(key => {
+            if (key.includes('temp-') || key.includes('cache-')) {
+              try {
+                localStorage.removeItem(key);
+              } catch (e) {
+                console.debug('Error removing localStorage item:', key);
+              }
+            }
+          });
+        }
+      }
+      
+      if (usageRatio > 0.9) { // 90% memory usage - emergency cleanup
+        console.error('Critical memory pressure, emergency cleanup');
         
         // Emergency cache clearing
-        queryClient.getQueryCache().clear();
+        queryClient.clear();
         
-        // Trigger garbage collection if available
-        if ('gc' in window) {
-          (window as any).gc();
+        // Force garbage collection if available
+        if (window.gc) {
+          try {
+            window.gc();
+          } catch (e) {
+            console.debug('GC not available');
+          }
         }
         
         return true;

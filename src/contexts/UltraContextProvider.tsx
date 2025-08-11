@@ -79,8 +79,35 @@ export function UltraLazyProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Ultimate provider that splits critical vs non-critical - simplified
+// Ultimate provider that splits critical vs non-critical - simplified with auto-cleanup
 export function UltraContextProvider({ children }: { children: ReactNode }) {
+  // Auto cleanup on mount/unmount to prevent memory leaks
+  React.useEffect(() => {
+    const cleanup = () => {
+      // Clear any orphaned DOM nodes
+      const orphanedElements = document.querySelectorAll('[data-context-orphaned="true"]');
+      orphanedElements.forEach(el => el.remove());
+      
+      // Clear stale localStorage entries
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.includes('context-temp-') || key.includes('ultra-temp-')) {
+          try {
+            localStorage.removeItem(key);
+          } catch (e) {
+            console.debug('Error removing temp storage:', key);
+          }
+        }
+      });
+    };
+
+    cleanup(); // Initial cleanup
+    
+    return () => {
+      cleanup(); // Cleanup on unmount
+    };
+  }, []);
+
   return (
     <UltraCriticalProvider>
       <UltraLazyProvider>

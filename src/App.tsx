@@ -38,14 +38,27 @@ function AppContent() {
   );
 }
 
-// FASE 2.1: Ultra App com Context Provider consolidado
+// FASE 2.1: Ultra App com Context Provider consolidado e otimizações de performance
 function App() {
   // Performance mark para App
   React.useEffect(() => {
     performance.mark('ultra-app-context-start');
+    
+    // Cleanup timeout para evitar vazamentos de memória
+    const cleanupTimeout = setTimeout(() => {
+      // Remove any stale performance marks older than 30 seconds
+      try {
+        performance.clearMarks();
+        performance.clearMeasures();
+      } catch (e) {
+        console.debug('Performance cleanup error:', e);
+      }
+    }, 30000);
+    
     return () => {
       performance.mark('ultra-app-context-end');
       performance.measure('ultra-app-context', 'ultra-app-context-start', 'ultra-app-context-end');
+      clearTimeout(cleanupTimeout);
     };
   }, []);
 
