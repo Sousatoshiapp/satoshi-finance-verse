@@ -40,8 +40,8 @@ export function GlobalNotifications() {
         senderNickname={currentNotification?.senderNickname || ''}
       />
       
-      {/* Test Button - only in development */}
-      {process.env.NODE_ENV === 'development' && <P2PTestButton />}
+      {/* Test Button - commented out for security
+      {process.env.NODE_ENV === 'development' && <P2PTestButton />} */}
     </div>
   );
 }
