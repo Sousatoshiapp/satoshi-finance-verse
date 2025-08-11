@@ -23,7 +23,7 @@ const QUIZ_CATEGORIES = [
     description: "Finanças aplicadas ao seu cotidiano",
     category: "Finanças do Dia a Dia",
     icon: "💰",
-    color: "border-green-400/40 hover:border-green-400/70"
+    color: "border-purple-500/30 hover:border-purple-500/60"
   },
   {
     id: "abc_financas",
@@ -31,7 +31,7 @@ const QUIZ_CATEGORIES = [
     description: "ABC das finanças",
     category: "ABC das Finanças",
     icon: "👓",
-    color: "border-blue-400/40 hover:border-blue-400/70"
+    color: "border-pink-500/30 hover:border-pink-500/60"
   },
   {
     id: "cripto",
@@ -39,7 +39,7 @@ const QUIZ_CATEGORIES = [
     description: "Tudo sobre o mundo cripto",
     category: "Cripto",
     icon: "₿",
-    color: "border-orange-400/40 hover:border-orange-400/70"
+    color: "border-yellow-500/30 hover:border-yellow-500/60"
   }
 ];
 
@@ -70,9 +70,9 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-hidden casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
         <DialogHeader className="pb-2">
-          <DialogTitle className="text-lg font-bold text-center">
+          <DialogTitle className="text-lg font-bold text-center text-white">
             Escolha seu jogo
           </DialogTitle>
         </DialogHeader>
@@ -86,11 +86,12 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                 <div
                   key={category.id}
                   className={cn(
-                    "relative overflow-hidden rounded-lg border transition-all duration-200 cursor-pointer bg-transparent",
-                    "hover:shadow-lg hover:scale-[1.02]",
+                    "relative overflow-hidden rounded-lg border transition-all duration-300 cursor-pointer casino-topic-card casino-sweep",
+                    "hover:shadow-[0_0_20px_rgba(139,69,255,0.3)] hover:-translate-y-1 hover:scale-[1.02] casino-hover",
+                    "bg-black/20 backdrop-blur-sm",
                     category.color,
                     isSelected 
-                      ? "border-primary shadow-md" 
+                      ? "border-yellow-500/80 shadow-[0_0_25px_rgba(255,215,0,0.4)]" 
                       : ""
                   )}
                   onClick={() => handleCategorySelect(category.id)}
@@ -102,10 +103,10 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                         <IconSystem emoji={category.icon as "💰" | "👓" | "₿"} size="xl" variant="glow" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-lg text-foreground mb-1">
+                        <h3 className="font-bold text-lg text-white mb-1">
                           {category.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-gray-300">
                           {category.description}
                         </p>
                       </div>
@@ -114,7 +115,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                     <div className="mt-3">
                       <Badge 
                         variant="outline"
-                        className="text-xs font-medium text-foreground border-foreground/20"
+                        className="text-xs font-medium text-white bg-black/20 border-purple-500/30"
                       >
                         {category.category}
                       </Badge>
@@ -126,11 +127,11 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
           </div>
         </div>
 
-        <div className="flex justify-center pt-4 border-t border-border">
+        <div className="flex justify-center pt-4 border-t border-purple-500/20">
           <Button
             variant="outline"
             onClick={onClose}
-            className="min-w-32"
+            className="min-w-32 casino-button border-purple-500/40 text-white hover:border-purple-500/60 hover:bg-purple-500/10"
           >
             Cancelar
           </Button>
