@@ -471,7 +471,7 @@ export default function Dashboard() {
               }}
               className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-8'} cursor-pointer transition-all duration-200 hover:scale-110`}
             >
-              <div className="relative w-15 h-8">
+              <div className="relative w-14 h-8">
                 {/* First joystick */}
                 <Gamepad2 
                   className={`absolute top-0 left-0 h-8 w-8 text-pink-400 transition-all duration-200 ${
