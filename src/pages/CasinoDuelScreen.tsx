@@ -133,7 +133,7 @@ export default function CasinoDuelScreen() {
     }
   }, [duelId, loadDuelById, navigate, currentDuel]);
 
-  // Separate effect to verify user access once both profile and duel are loaded
+  // Separate effect to verify user access and check if duel is already completed
   useEffect(() => {
     if (currentDuel && profile?.id) {
       // Verify user is part of this duel
@@ -146,8 +146,18 @@ export default function CasinoDuelScreen() {
         return;
       }
       console.log('✅ CasinoDuelScreen: User access verified');
+      
+      // Check if duel is already completed
+      if (currentDuel.status === 'completed') {
+        console.log('🏁 CasinoDuelScreen: Duel already completed, navigating to result screen');
+        console.log('🏆 CasinoDuelScreen: Final scores - Player1:', currentDuel.player1_score, 'Player2:', currentDuel.player2_score);
+        navigate(`/duel-result/${duelId}`, { replace: true });
+        return;
+      }
+      
+      console.log('🎮 CasinoDuelScreen: Duel status:', currentDuel.status);
     }
-  }, [currentDuel, profile?.id, navigate]);
+  }, [currentDuel, profile?.id, navigate, duelId]);
 
   // Timer effect
   useEffect(() => {
