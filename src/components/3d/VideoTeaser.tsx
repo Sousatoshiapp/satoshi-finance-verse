@@ -3,45 +3,39 @@ import { Button } from '@/components/shared/ui/button';
 import { Play, Pause, Volume2, VolumeX, Loader2 } from 'lucide-react';
 
 export function VideoTeaser() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [showControls, setShowControls] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    // Auto-play muted on mount
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {
-        // Ignore auto-play errors
-      });
-    }
+    // YouTube iframe loads automatically
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
+    // Note: YouTube iframe controls are limited without API
+    // This is mainly for UI feedback
+    setIsPlaying(!isPlaying);
   };
 
   const handleMuteToggle = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    // Note: YouTube iframe mute control is limited without API
+    // This is mainly for UI feedback
+    setIsMuted(!isMuted);
   };
 
-  const handleVideoLoad = () => {
+  const handleIframeLoad = () => {
     setIsLoading(false);
   };
 
-  const handleVideoError = () => {
+  const handleIframeError = () => {
     setIsLoading(false);
     setHasError(true);
   };
@@ -68,24 +62,18 @@ export function VideoTeaser() {
           </div>
         </div>
       ) : (
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          poster="/videos/teaser-poster.jpg"
-          muted={isMuted}
-          loop
-          playsInline
-          autoPlay
-          onLoadedData={handleVideoLoad}
-          onError={handleVideoError}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
+        <iframe
+          ref={iframeRef}
+          className="w-full h-full"
+          src="https://www.youtube-nocookie.com/embed/69XDnqnRO9U?autoplay=1&mute=1&loop=1&playlist=69XDnqnRO9U&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&disablekb=1"
+          title="YouTube video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          onLoad={handleIframeLoad}
+          onError={handleIframeError}
           onClick={handlePlayPause}
-        >
-          <source src="/videos/teaser-hd.mp4" type="video/mp4" />
-          <source src="/videos/teaser-hd.webm" type="video/webm" />
-          <source src="/videos/teaser-sd.mp4" type="video/mp4" />
-        </video>
+        />
       )}
 
       {/* Video Controls Overlay */}
