@@ -7637,17 +7637,20 @@ export type Database = {
           level: number | null
           nickname: string | null
           points: number | null
-          rank_position: number | null
+          rank: number | null
           xp: number | null
         }
         Relationships: []
       }
       public_activities: {
         Row: {
+          activity_data: Json | null
           activity_type: string | null
           created_at: string | null
-          nickname: string | null
-          safe_activity_data: Json | null
+          id: string | null
+          user_avatar: string | null
+          user_level: number | null
+          user_nickname: string | null
         }
         Relationships: []
       }
@@ -7682,13 +7685,8 @@ export type Database = {
         Returns: boolean
       }
       award_xp: {
-        Args: { profile_id: string; xp_amount: number; activity_type?: string }
-        Returns: {
-          new_xp: number
-          new_level: number
-          level_up: boolean
-          rewards: Json
-        }[]
+        Args: { profile_id: string; xp_amount: number; source?: string }
+        Returns: undefined
       }
       calculate_correct_level: {
         Args: { user_xp: number }
