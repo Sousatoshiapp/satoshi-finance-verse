@@ -2382,6 +2382,7 @@ export type Database = {
           id: string
           quiz_topic: string
           status: string
+          topic: string
         }
         Insert: {
           bet_amount?: number | null
@@ -2394,6 +2395,7 @@ export type Database = {
           id?: string
           quiz_topic: string
           status?: string
+          topic?: string
         }
         Update: {
           bet_amount?: number | null
@@ -2406,6 +2408,7 @@ export type Database = {
           id?: string
           quiz_topic?: string
           status?: string
+          topic?: string
         }
         Relationships: [
           {
@@ -2482,6 +2485,7 @@ export type Database = {
           questions: Json
           quiz_topic: string
           status: string
+          topic: string
           winner_id: string | null
           winner_prize: number | null
         }
@@ -2509,6 +2513,7 @@ export type Database = {
           questions: Json
           quiz_topic: string
           status?: string
+          topic?: string
           winner_id?: string | null
           winner_prize?: number | null
         }
@@ -2536,6 +2541,7 @@ export type Database = {
           questions?: Json
           quiz_topic?: string
           status?: string
+          topic?: string
           winner_id?: string | null
           winner_prize?: number | null
         }
