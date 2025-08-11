@@ -81,6 +81,7 @@ export default function Dashboard() {
   const [confettiOrigin, setConfettiOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
   const [flashActive, setFlashActive] = useState(false);
+  const [flashActiveTheme, setFlashActiveTheme] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
   
   const jogarButtonRef = useRef<HTMLButtonElement>(null);
@@ -429,15 +430,20 @@ export default function Dashboard() {
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center relative`}>
             {/* Joystick roxo à esquerda do botão Jogar */}
             <div 
-              onClick={() => setShowThemeModal(true)}
+              onClick={() => {
+                setFlashActiveTheme(true);
+                setTimeout(() => setFlashActiveTheme(false), 150);
+                setShowThemeModal(true);
+              }}
               className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-4' : 'left-8'} cursor-pointer transition-all duration-200 hover:scale-110`}
             >
               <Gamepad2 
-                className="h-8 w-8 text-purple-400 animate-pulse transition-all duration-200 hover:animate-none"
+                className={`h-10 w-10 text-purple-400 transition-all duration-200 hover:animate-none ${flashActiveTheme ? 'animate-ping' : ''}`}
                 style={{
                   filter: 'drop-shadow(0 0 8px rgb(168 85 247 / 0.8))',
                   stroke: 'rgb(168 85 247)',
-                  strokeWidth: 1.5
+                  strokeWidth: 1.5,
+                  animation: flashActiveTheme ? undefined : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
                 }}
               />
             </div>
