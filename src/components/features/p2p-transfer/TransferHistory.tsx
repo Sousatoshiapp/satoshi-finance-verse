@@ -39,19 +39,19 @@ export function TransferHistory() {
     try {
       console.log('Loading transfers for profile:', profile.id, 'user_id:', profile.user_id);
       
-      // Get sent transfers (where current user is sender)
+      // Get sent transfers (where current user is sender) - using profile.id consistently
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select(`
           id, amount_cents, created_at, user_id, receiver_id, transfer_type
         `)
-        .eq('user_id', profile.user_id)
+        .eq('user_id', profile.id)
         .eq('transfer_type', 'p2p')
         .order('created_at', { ascending: false });
 
       if (sentError) throw sentError;
 
-      // Get received transfers (where current user is receiver)
+      // Get received transfers (where current user is receiver) - using profile.id consistently
       const { data: receivedTransfers, error: receivedError } = await supabase
         .from('transactions')
         .select(`
@@ -99,7 +99,7 @@ export function TransferHistory() {
           const { data: senderProfile } = await supabase
             .from('profiles')
             .select('nickname, id')
-            .eq('user_id', transfer.user_id)
+            .eq('id', transfer.user_id)
             .single();
 
           transfers.push({

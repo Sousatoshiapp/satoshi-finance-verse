@@ -107,70 +107,50 @@ export function useP2PNotifications() {
 
   useEffect(() => {
     if (!profile?.id) {
-      console.log('P2P Notifications: No profile ID found');
+      console.log('🔄 P2P Notifications: No profile ID found');
       return;
     }
     
-    console.log('P2P Notifications: Setting up channel for profile:', profile.id);
+    console.log('🔄 P2P Notifications: Setting up realtime subscription for profile.id:', profile.id);
     
     const channel = supabase
-      .channel(`p2p-transfers-${profile.id}`)
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'transactions',
-        filter: `receiver_id=eq.${profile.id}`
-      }, (payload) => {
-        console.log('P2P Notifications: Received transaction:', payload);
-        
-        if (payload.new.transfer_type === 'p2p') {
-          const fetchSenderProfile = async () => {
-            try {
-              console.log('P2P Notifications: Fetching sender profile for user_id:', payload.new.user_id);
-              
-              const { data: senderProfile, error } = await supabase
-                .from('profiles')
-                .select('nickname, id, user_id')
-                .eq('user_id', payload.new.user_id)
-                .single();
-              
-              if (error) {
-                console.error('P2P Notifications: Error fetching sender profile:', error);
-              }
-              
-              console.log('P2P Notifications: Sender profile found:', senderProfile);
-              
-              await triggerReceiveNotification(
-                payload.new.amount_cents,
-                senderProfile?.nickname || 'Unknown'
-              );
-              
-              // Show P2P modal
-              showP2PModal(
-                payload.new.amount_cents,
-                senderProfile?.nickname || 'Unknown'
-              );
-            } catch (error) {
-              console.error('P2P Notifications: Exception fetching sender profile:', error);
-              await triggerReceiveNotification(
-                payload.new.amount_cents,
-                'Unknown'
-              );
-              
-              // Show P2P modal
-              showP2PModal(payload.new.amount_cents, 'Unknown');
-            }
-          };
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'transactions',
+          filter: `receiver_id=eq.${profile.id}`
+        },
+        async (payload) => {
+          console.log('📨 P2P Notification: New transaction detected:', payload);
           
-          fetchSenderProfile();
+          if (payload.new?.transfer_type === 'p2p') {
+            // Since both user_id and receiver_id are now profile.id values consistently
+            const { data: senderProfile } = await supabase
+              .from('profiles')
+              .select('nickname')
+              .eq('id', payload.new.user_id)
+              .single();
+              
+            const senderNickname = senderProfile?.nickname || 'Unknown User';
+            const amount = payload.new.amount_cents;
+            
+            console.log('💰 P2P Notification: Triggering notification for amount:', amount, 'from:', senderNickname);
+            
+            await triggerReceiveNotification(amount, senderNickname);
+            showP2PModal(amount, senderNickname);
+          }
         }
-      })
+      )
       .subscribe();
 
     return () => {
+      console.log('🔌 P2P Notifications: Cleaning up realtime subscription');
       supabase.removeChannel(channel);
     };
-  }, [profile?.id]);
+  }, [profile?.id, triggerReceiveNotification]);
 
   return { 
     triggerReceiveNotification,
