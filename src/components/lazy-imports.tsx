@@ -40,6 +40,7 @@ export const Wallet = lazy(() => import('@/pages/Wallet'));
 
 
 // Duel Components
+export const DuelResultScreen = lazy(() => import('@/pages/DuelResultScreen'));
 
 // Chat Components
 export const Messages = lazy(() => import('@/pages/Messages'));
