@@ -93,7 +93,8 @@ export class SecurityValidation {
   }
   
   private static getAttempts(key: string): number {
-    const stored = localStorage.getItem(`rate_limit_${key}`);
+    // SECURITY FIX: Use sessionStorage instead of localStorage for rate limiting
+    const stored = sessionStorage.getItem(`rate_limit_${key}`);
     if (!stored) return 0;
     
     const data = JSON.parse(stored);
@@ -101,7 +102,7 @@ export class SecurityValidation {
     
     // Reset if older than 15 minutes
     if (now - data.timestamp > 15 * 60 * 1000) {
-      localStorage.removeItem(`rate_limit_${key}`);
+      sessionStorage.removeItem(`rate_limit_${key}`);
       return 0;
     }
     
@@ -114,20 +115,18 @@ export class SecurityValidation {
       count: current + 1,
       timestamp: Date.now()
     };
-    localStorage.setItem(`rate_limit_${key}`, JSON.stringify(data));
+    sessionStorage.setItem(`rate_limit_${key}`, JSON.stringify(data));
   }
   
-  // CSRF token generation and validation
+  // CSRF token generation and validation - moved to SecureStorage
   static generateCSRFToken(): string {
-    const token = crypto.getRandomValues(new Uint8Array(32));
-    const tokenString = Array.from(token, byte => byte.toString(16).padStart(2, '0')).join('');
-    sessionStorage.setItem('csrf_token', tokenString);
-    return tokenString;
+    const { SecureStorage } = require('./secure-storage');
+    return SecureStorage.generateCSRFToken();
   }
   
   static validateCSRFToken(token: string): boolean {
-    const storedToken = sessionStorage.getItem('csrf_token');
-    return storedToken === token;
+    const { SecureStorage } = require('./secure-storage');
+    return SecureStorage.validateCSRFToken(token);
   }
   
   // Admin session validation

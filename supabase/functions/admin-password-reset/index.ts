@@ -20,29 +20,47 @@ serve(async (req) => {
   }
 
   try {
-    const { email, action } = await req.json();
+    const { email, action, token, newPassword } = await req.json();
     console.log(`Admin password reset request for: ${email}, action: ${action}`);
 
-    // Verificar se é o email autorizado
-    if (email !== "fasdurian@gmail.com") {
-      console.log(`Unauthorized email attempt: ${email}`);
-      return new Response(
-        JSON.stringify({ error: "Email não autorizado" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
+    // SECURITY FIX: Remove hardcoded email check - use dynamic token validation instead
     if (action === "request_reset") {
+      // Validate that the email belongs to an admin user
+      const { data: userCheck } = await supabase.auth.admin.getUserByEmail(email);
+      if (!userCheck.user) {
+        console.log(`User not found: ${email}`);
+        return new Response(
+          JSON.stringify({ error: "Email não encontrado" }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      const { data: adminCheck } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", userCheck.user.id)
+        .eq("is_active", true)
+        .single();
+
+      if (!adminCheck) {
+        console.log(`Unauthorized email attempt: ${email}`);
+        return new Response(
+          JSON.stringify({ error: "Email não autorizado ou não é admin ativo" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
       // Gerar token único
       const token = crypto.randomUUID();
       const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutos
 
-      // Salvar token no banco
+      // Salvar token na nova tabela admin_tokens
       const { error: dbError } = await supabase
-        .from("admin_password_tokens")
+        .from("admin_tokens")
         .insert({
           token,
-          email,
+          admin_email: email,
+          token_type: 'password_reset',
           expires_at: expiresAt.toISOString(),
         });
 
@@ -109,37 +127,29 @@ serve(async (req) => {
       );
 
     } else if (action === "reset_password") {
-      const { token, newPassword } = await req.json();
+      // SECURITY FIX: Use new secure token validation function
+      const { data: tokenValidation, error: validationError } = await supabase
+        .rpc('validate_admin_token', { 
+          token_value: token,
+          operation_type: 'password_reset'
+        });
 
-      // Verificar token
-      const { data: tokenData, error: tokenError } = await supabase
-        .from("admin_password_tokens")
-        .select("*")
-        .eq("token", token)
-        .eq("used", false)
-        .gt("expires_at", new Date().toISOString())
-        .single();
-
-      if (tokenError || !tokenData) {
+      if (validationError || !tokenValidation?.valid) {
         console.log("Invalid or expired token:", token);
         return new Response(
-          JSON.stringify({ error: "Token inválido ou expirado" }),
+          JSON.stringify({ error: tokenValidation?.error || "Token inválido ou expirado" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
-      // Marcar token como usado
-      await supabase
-        .from("admin_password_tokens")
-        .update({ used: true })
-        .eq("id", tokenData.id);
+      const adminEmail = tokenValidation.admin_email;
 
-      console.log("Password reset successful for:", email);
+      console.log("Password reset successful for:", adminEmail);
 
       // Enviar email de confirmação
       await resend.emails.send({
         from: "Admin <onboarding@resend.dev>",
-        to: [email],
+        to: [adminEmail],
         subject: "✅ Senha Alterada - Painel Administrativo",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

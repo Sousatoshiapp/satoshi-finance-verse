@@ -155,6 +155,42 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_tokens: {
+        Row: {
+          admin_email: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          metadata: Json | null
+          token: string
+          token_type: string
+          used: boolean | null
+          used_at: string | null
+        }
+        Insert: {
+          admin_email: string
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          metadata?: Json | null
+          token: string
+          token_type?: string
+          used?: boolean | null
+          used_at?: string | null
+        }
+        Update: {
+          admin_email?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          metadata?: Json | null
+          token?: string
+          token_type?: string
+          used?: boolean | null
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       admin_users: {
         Row: {
           created_at: string
@@ -8143,6 +8179,10 @@ export type Database = {
           duel_win?: boolean
         }
         Returns: undefined
+      }
+      validate_admin_token: {
+        Args: { token_value: string; operation_type?: string }
+        Returns: Json
       }
       validate_data_integrity: {
         Args: Record<PropertyKey, never>

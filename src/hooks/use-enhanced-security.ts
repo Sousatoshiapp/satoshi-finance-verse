@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { SecurityAudit } from '@/lib/security-audit';
 import { SecurityValidation } from '@/lib/security-validation';
+import { SecureStorage } from '@/lib/secure-storage';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function useEnhancedSecurity() {
@@ -9,8 +10,11 @@ export function useEnhancedSecurity() {
   const [securityEvents, setSecurityEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    // Generate CSRF token on mount
-    const token = SecurityValidation.generateCSRFToken();
+    // Migrate existing data to secure storage
+    SecureStorage.migrateToSecureStorage();
+
+    // Generate CSRF token using secure storage
+    const token = SecureStorage.generateCSRFToken();
     setCsrfToken(token);
 
     // Set up security monitoring
@@ -51,6 +55,26 @@ export function useEnhancedSecurity() {
       });
     };
 
+    // Monitor for suspicious network activity
+    const originalFetch = window.fetch;
+    window.fetch = async function(...args) {
+      const url = args[0] as string;
+      
+      // Log suspicious requests
+      if (url.includes('admin') || url.includes('password') || url.includes('token')) {
+        SecurityAudit.logEvent({
+          event_type: 'sensitive_api_call',
+          event_data: { 
+            url: url.substring(0, 100), // Truncate for privacy
+            timestamp: Date.now() 
+          },
+          severity: 'medium'
+        });
+      }
+      
+      return originalFetch.apply(this, args);
+    };
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener('error', handleError);
@@ -59,28 +83,41 @@ export function useEnhancedSecurity() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('error', handleError);
+      // Restore original fetch
+      window.fetch = originalFetch;
     };
   }, []);
 
-  const logSecurityAction = useCallback((action: string, details?: any) => {
+  const logSecurityAction = async (action: string, details?: any) => {
+    // Add rate limiting for security actions
+    if (!user || !SecurityValidation.checkRateLimit(action, user.id)) {
+      SecurityAudit.logEvent({
+        event_type: 'rate_limit_exceeded',
+        event_data: { action, userId: user?.id },
+        severity: 'high'
+      });
+      return false;
+    }
+
     SecurityAudit.logEvent({
       event_type: action,
       event_data: details,
       severity: 'low'
     });
-  }, []);
+    return true;
+  };
 
-  const validateAction = useCallback((action: string): boolean => {
+  const validateAction = (action: string): boolean => {
     if (!user) return false;
     
     return SecurityValidation.checkRateLimit(action, user.id);
-  }, [user]);
+  };
 
-  const validateCSRF = useCallback((token: string): boolean => {
-    return SecurityValidation.validateCSRFToken(token);
-  }, []);
+  const validateCSRF = (token: string): boolean => {
+    return SecureStorage.validateCSRFToken(token);
+  };
 
-  const logSuspiciousActivity = useCallback((reason: string, details: any) => {
+  const logSuspiciousActivity = (reason: string, details: any) => {
     SecurityAudit.logEvent({
       event_type: 'suspicious_activity',
       event_data: {
@@ -91,7 +128,32 @@ export function useEnhancedSecurity() {
       },
       severity: 'high'
     });
-  }, []);
+  };
+
+  // Enhanced financial transaction validation
+  const validateFinancialTransaction = (amount: number, recipientId: string): boolean => {
+    if (!user) return false;
+
+    // Validate amount
+    if (amount <= 0 || amount > 1000000) { // Max 1M BTZ per transaction
+      logSuspiciousActivity('invalid_transaction_amount', { amount, recipientId });
+      return false;
+    }
+
+    // Check rate limiting for financial transactions
+    if (!SecurityValidation.checkRateLimit('financial_transaction', user.id, 10)) {
+      logSuspiciousActivity('financial_transaction_rate_limit', { amount, recipientId });
+      return false;
+    }
+
+    // Validate recipient
+    if (!recipientId || recipientId === user.id) {
+      logSuspiciousActivity('invalid_transaction_recipient', { amount, recipientId });
+      return false;
+    }
+
+    return true;
+  };
 
   return {
     csrfToken,
@@ -99,6 +161,7 @@ export function useEnhancedSecurity() {
     validateAction,
     validateCSRF,
     logSuspiciousActivity,
+    validateFinancialTransaction,
     securityEvents
   };
 }
