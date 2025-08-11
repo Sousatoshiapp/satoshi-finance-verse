@@ -8087,7 +8087,7 @@ export type Database = {
         Returns: boolean
       }
       log_security_event: {
-        Args: { event_type: string; user_id: string; event_data?: Json }
+        Args: { event_type: string; user_id?: string; event_data?: Json }
         Returns: undefined
       }
       mark_daily_login_safe: {
