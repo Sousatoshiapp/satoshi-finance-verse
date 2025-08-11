@@ -396,7 +396,12 @@ export default function Dashboard() {
             <div className="flex-1 min-w-0">
               <div className={`flex items-center gap-2 ${isMobile ? 'mb-2' : 'mb-3'}`}>
                 <p className={`text-muted-foreground ${isMobile ? 'text-xs' : 'text-sm'}`}>{t('common.level')} {userStats.level}</p>
-                <span className={`${isMobile ? 'text-xs' : 'text-sm'}`} style={{ color: '#adff2f', opacity: 0.2 }}>{getLevelInfo(userStats.level).name}</span>
+                <span 
+                  className={`${isMobile ? 'text-xs' : 'text-sm'} transition-opacity duration-300 ease-in-out hover:opacity-100 active:opacity-100 cursor-pointer`} 
+                  style={{ color: '#adff2f', opacity: 0.2 }}
+                >
+                  {getLevelInfo(userStats.level).name}
+                </span>
               </div>
               
               {/* Compact Progress Bar - Mobile Adjusted */}
