@@ -80,7 +80,7 @@ export const gameRoutes = [
     showNavbar: false
   },
   {
-    path: "/casino-duel/:id",
+    path: "/casino-duel/:duelId",
     element: "CasinoDuelScreen",
     requiresAuth: true,
     showNavbar: false
