@@ -1,29 +1,31 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
-import { Badge } from "@/components/shared/ui/badge";
-import { ArrowUpRight, ArrowDownLeft, History } from "lucide-react";
-import { supabase } from '@/integrations/supabase/client';
-import { useProfile } from '@/hooks/use-profile';
-import { useI18n } from '@/hooks/use-i18n';
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
+import { Button } from "@/components/shared/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useProfile } from "@/hooks/use-profile";
+import { formatBTZDisplay } from "@/utils/btz-formatter";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { ArrowUpRight, ArrowDownLeft, Loader2 } from "lucide-react";
 
 interface Transfer {
   id: string;
-  amount_cents: number;
+  amount: number;
   created_at: string;
   user_id: string;
   receiver_id: string;
   type: 'sent' | 'received';
-  otherUser?: {
-    id: string;
-    nickname: string;
-  };
+  sender_nickname?: string;
+  receiver_nickname?: string;
 }
+
+type FilterType = 'all' | 'sent' | 'received';
 
 export function TransferHistory() {
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<FilterType>('all');
   const { profile } = useProfile();
-  const { t } = useI18n();
 
   useEffect(() => {
     if (profile?.id) {
@@ -46,9 +48,8 @@ export function TransferHistory() {
           filter: `user_id=eq.${profile.id}`
         },
         (payload) => {
-          console.log('📊 TransferHistory: New sent transaction detected, refreshing...');
           if (payload.new?.transfer_type === 'p2p') {
-            setTimeout(() => loadTransfers(), 1000); // Small delay to ensure transaction is committed
+            setTimeout(() => loadTransfers(), 1000);
           }
         }
       )
@@ -61,9 +62,8 @@ export function TransferHistory() {
           filter: `receiver_id=eq.${profile.id}`
         },
         (payload) => {
-          console.log('📊 TransferHistory: New received transaction detected, refreshing...');
           if (payload.new?.transfer_type === 'p2p') {
-            setTimeout(() => loadTransfers(), 1000); // Small delay to ensure transaction is committed
+            setTimeout(() => loadTransfers(), 1000);
           }
         }
       )
@@ -80,9 +80,7 @@ export function TransferHistory() {
     setLoading(true);
 
     try {
-      console.log('📊 TransferHistory: Loading transfers for profile:', profile.id, 'user_id:', profile.user_id, 'nickname:', profile.nickname);
-      
-      // Get sent transfers (where current user is sender) - using profile.id consistently
+      // Get sent transfers (where current user is sender)
       const { data: sentTransfers, error: sentError } = await supabase
         .from('transactions')
         .select(`
@@ -94,7 +92,7 @@ export function TransferHistory() {
 
       if (sentError) throw sentError;
 
-      // Get received transfers (where current user is receiver) - using profile.id consistently
+      // Get received transfers (where current user is receiver)
       const { data: receivedTransfers, error: receivedError } = await supabase
         .from('transactions')
         .select(`
@@ -105,11 +103,6 @@ export function TransferHistory() {
         .order('created_at', { ascending: false });
 
       if (receivedError) throw receivedError;
-      
-      console.log('📊 TransferHistory: Sent transfers found:', sentTransfers?.length || 0);
-      console.log('📊 TransferHistory: Received transfers found:', receivedTransfers?.length || 0);
-      console.log('📊 TransferHistory: Sent transfers:', sentTransfers);
-      console.log('📊 TransferHistory: Received transfers:', receivedTransfers);
 
       // Combine and format transfers
       const transfers: Transfer[] = [];
@@ -125,15 +118,12 @@ export function TransferHistory() {
 
           transfers.push({
             id: transfer.id,
-            amount_cents: transfer.amount_cents,
+            amount: transfer.amount_cents,
             created_at: transfer.created_at,
             user_id: transfer.user_id,
             receiver_id: transfer.receiver_id,
             type: 'sent',
-            otherUser: {
-              id: transfer.receiver_id,
-              nickname: receiverProfile?.nickname || 'Unknown'
-            }
+            receiver_nickname: receiverProfile?.nickname || 'Unknown'
           });
         }
       }
@@ -143,21 +133,18 @@ export function TransferHistory() {
         for (const transfer of receivedTransfers) {
           const { data: senderProfile } = await supabase
             .from('profiles')
-            .select('nickname, id')
+            .select('nickname')
             .eq('id', transfer.user_id)
             .single();
 
           transfers.push({
             id: transfer.id,
-            amount_cents: transfer.amount_cents,
+            amount: transfer.amount_cents,
             created_at: transfer.created_at,
             user_id: transfer.user_id,
             receiver_id: transfer.receiver_id,
             type: 'received',
-            otherUser: {
-              id: transfer.user_id,
-              nickname: senderProfile?.nickname || 'Unknown'
-            }
+            sender_nickname: senderProfile?.nickname || 'Unknown'
           });
         }
       }
@@ -165,7 +152,6 @@ export function TransferHistory() {
       // Sort by date (newest first)
       transfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       
-      console.log('📊 TransferHistory: Final transfer list:', transfers.length, 'transfers');
       setTransfers(transfers);
     } catch (error) {
       console.error('Error loading P2P transfers:', error);
@@ -174,53 +160,105 @@ export function TransferHistory() {
     }
   };
 
-  if (loading) return <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm z-50"><div className="text-lg">{t('common.loading')}</div></div>;
+  const filteredTransfers = transfers.filter(transfer => {
+    if (filter === 'all') return true;
+    if (filter === 'sent') return transfer.type === 'sent';
+    if (filter === 'received') return transfer.type === 'received';
+    return true;
+  });
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <div className="max-w-md mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <History className="h-5 w-5" />
-            {t('p2p.history.title')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {transfers.length === 0 ? (
-            <p className="text-muted-foreground text-center py-4">
-              {t('p2p.history.noTransfers')}
+    <Card>
+      <CardHeader>
+        <CardTitle>Histórico de Transferências</CardTitle>
+        <CardDescription>
+          Suas transferências P2P mais recentes
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {/* Filtros */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Button
+            variant={filter === 'all' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('all')}
+            className="text-xs"
+          >
+            Todos
+          </Button>
+          <Button
+            variant={filter === 'sent' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('sent')}
+            className="text-xs"
+          >
+            Enviados
+          </Button>
+          <Button
+            variant={filter === 'received' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setFilter('received')}
+            className="text-xs"
+          >
+            Recebidos
+          </Button>
+        </div>
+
+        {filteredTransfers.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">
+              {filter === 'all' 
+                ? 'Nenhuma transferência encontrada' 
+                : `Nenhuma transferência ${filter === 'sent' ? 'enviada' : 'recebida'} encontrada`
+              }
             </p>
-          ) : (
-            <div className="space-y-3">
-              {transfers.map((transfer) => (
-                <div key={transfer.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    {transfer.type === 'sent' ? (
-                      <ArrowUpRight className="h-4 w-4 text-red-500" />
-                    ) : (
-                      <ArrowDownLeft className="h-4 w-4 text-green-500" />
-                    )}
-                    <div>
-                      <p className="font-medium">
-                        {transfer.type === 'sent' 
-                          ? t('p2p.history.sentTo', { user: transfer.otherUser?.nickname || 'Unknown' })
-                          : t('p2p.history.receivedFrom', { user: transfer.otherUser?.nickname || 'Unknown' })
-                        }
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredTransfers.map((transfer) => {
+              const isSent = transfer.type === 'sent';
+              const otherUser = isSent ? transfer.receiver_nickname : transfer.sender_nickname;
+              
+              return (
+                <div key={transfer.id} className="flex items-center justify-between p-3 md:p-4 border rounded-lg">
+                  <div className="flex items-center space-x-3 min-w-0 flex-1">
+                    <div className={`p-2 rounded-full ${isSent ? 'bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400' : 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400'}`}>
+                      {isSent ? (
+                        <ArrowUpRight className="h-4 w-4" />
+                      ) : (
+                        <ArrowDownLeft className="h-4 w-4" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm md:text-base truncate">
+                        {isSent ? 'Enviado para' : 'Recebido de'} {otherUser}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(transfer.created_at).toLocaleString()}
+                      <p className="text-xs md:text-sm text-muted-foreground">
+                        {format(new Date(transfer.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
                       </p>
                     </div>
                   </div>
-                  <Badge variant={transfer.type === 'sent' ? 'destructive' : 'default'}>
-                    {transfer.type === 'sent' ? '-' : '+'}{transfer.amount_cents} BTZ
-                  </Badge>
+                  <div className="text-right flex-shrink-0">
+                    <p className={`font-semibold text-sm md:text-base ${isSent ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                      {isSent ? '-' : '+'}{formatBTZDisplay(transfer.amount)}
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+              );
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

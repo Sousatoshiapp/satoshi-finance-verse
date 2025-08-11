@@ -10,8 +10,6 @@ import { KYCVerification } from "@/components/features/kyc/KYCVerification";
 import { ProximityDetection } from "@/components/proximity/ProximityDetection";
 import { useI18n } from "@/hooks/use-i18n";
 import { useKYCStatus } from "@/hooks/use-kyc-status";
-import { Bluetooth, Zap } from "lucide-react";
-
 export default function P2PTransfer() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,16 +41,6 @@ export default function P2PTransfer() {
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold">{t('p2p.title')}</h1>
         <p className="text-muted-foreground">{t('p2p.subtitle')}</p>
-        
-        {/* Botão para transferência por Bluetooth */}
-        <Button 
-          onClick={() => navigate('/proximity-transfer-bluetooth')}
-          className="mt-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-        >
-          <Bluetooth className="h-4 w-4 mr-2" />
-          {t('bluetooth.proximityTransfer')}
-          <Zap className="h-4 w-4 ml-2" />
-        </Button>
       </div>
 
       {isKYCRequired ? (
