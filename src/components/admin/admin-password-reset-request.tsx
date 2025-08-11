@@ -11,7 +11,7 @@ interface AdminPasswordResetRequestProps {
 }
 
 export function AdminPasswordResetRequest({ onBack }: AdminPasswordResetRequestProps) {
-  const [email, setEmail] = useState('fasdurian@gmail.com');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const { toast } = useToast();
@@ -81,7 +81,7 @@ export function AdminPasswordResetRequest({ onBack }: AdminPasswordResetRequestP
           <Button 
             onClick={() => {
               setEmailSent(false);
-              setEmail('fasdurian@gmail.com');
+              setEmail('');
             }}
             variant="outline"
             className="w-full"
@@ -122,11 +122,10 @@ export function AdminPasswordResetRequest({ onBack }: AdminPasswordResetRequestP
               onChange={(e) => setEmail(e.target.value)}
               required
               autoFocus
-              readOnly
-              className="bg-muted"
+              className="focus:ring-2 focus:ring-primary"
             />
             <p className="text-xs text-muted-foreground">
-              Apenas o email autorizado pode solicitar reset administrativo
+              Digite o email do administrador para enviar o link de redefinição
             </p>
           </div>
           

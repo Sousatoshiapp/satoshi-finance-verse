@@ -58,10 +58,9 @@ export default function AdminPasswordReset() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('unified-email', {
+      const { data, error } = await supabase.functions.invoke('admin-password-reset', {
         body: {
-          type: 'admin_password_reset',
-          email: 'fasdurian@gmail.com',
+          action: 'reset_password',
           token: token,
           newPassword: newPassword
         }
