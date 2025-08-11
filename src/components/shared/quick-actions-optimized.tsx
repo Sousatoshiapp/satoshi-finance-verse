@@ -1,9 +1,8 @@
-import { memo, useMemo, useCallback, useState } from "react";
+import { memo, useMemo, useCallback } from "react";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
 import { 
-  Gamepad2, 
   Users, 
   Trophy, 
   Zap, 
@@ -26,7 +25,6 @@ interface QuickAction {
 const QuickActionsOptimized = memo(function QuickActionsOptimized() {
   useRenderPerformance('QuickActionsOptimized');
   const navigate = useNavigate();
-  const [flashActive, setFlashActive] = useState(false);
 
   // Memoize actions configuration
   const actions = useMemo<QuickAction[]>(() => [
@@ -73,25 +71,15 @@ const QuickActionsOptimized = memo(function QuickActionsOptimized() {
     navigate(route);
   }, [navigate]);
 
-  // Handle duel navigation with flash effect
-  const handleDuelNavigation = useCallback(() => {
-    setFlashActive(true);
-    setTimeout(() => {
-      setFlashActive(false);
-      navigate('/find-opponent');
-    }, 150);
-  }, [navigate]);
-
   // Memoize action cards
   const actionCards = useMemo(() => {
     return actions.map((action) => {
       const Icon = action.icon;
-      const isGameMode = action.id === 'game-mode';
       
       return (
         <Card 
           key={action.id}
-          className={`relative cursor-pointer hover:scale-105 transition-all duration-200 border-0 bg-gradient-to-br ${action.bgGradient} hover:shadow-md`}
+          className={`cursor-pointer hover:scale-105 transition-all duration-200 border-0 bg-gradient-to-br ${action.bgGradient} hover:shadow-md`}
           onClick={() => handleNavigation(action.route)}
         >
           <CardContent className="p-4 text-center">
@@ -105,31 +93,10 @@ const QuickActionsOptimized = memo(function QuickActionsOptimized() {
               </div>
             </div>
           </CardContent>
-          
-          {/* Duel Icon - Only on Jogar card */}
-          {isGameMode && (
-            <div 
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDuelNavigation();
-              }}
-              className={`absolute -top-2 -right-2 w-10 h-10 rounded-full bg-transparent border-2 border-purple-500 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 hover:border-purple-400 ${
-                flashActive ? 'animate-ping bg-purple-500/50' : 'animate-pulse'
-              }`}
-              style={{
-                animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-              }}
-            >
-              <div className="flex items-center gap-0.5">
-                <Gamepad2 className="h-3 w-3 text-purple-400" />
-                <Gamepad2 className="h-3 w-3 text-purple-400" />
-              </div>
-            </div>
-          )}
         </Card>
       );
     });
-  }, [actions, handleNavigation, handleDuelNavigation, flashActive]);
+  }, [actions, handleNavigation]);
 
   return (
     <div className="space-y-4">

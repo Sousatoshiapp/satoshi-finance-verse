@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCircleBadge } from "@/components/features/gamification/district-circle-badge";
+import { Gamepad2 } from "lucide-react";
 import { 
   LazyDashboardSummary, 
   LazyQuickActions, 
@@ -78,6 +79,7 @@ export default function Dashboard() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiOrigin, setConfettiOrigin] = useState<{ x: number; y: number } | undefined>(undefined);
   const [showAvatarSelection, setShowAvatarSelection] = useState(false);
+  const [flashActive, setFlashActive] = useState(false);
   
   const jogarButtonRef = useRef<HTMLButtonElement>(null);
   
@@ -417,46 +419,68 @@ export default function Dashboard() {
 
           {/* Botão Principal Jogar - Circular Transparente */}
           <div className={`${isMobile ? 'mb-6' : 'mb-8'} text-center`}>
-            <Button 
-              ref={jogarButtonRef}
-              onClick={() => {
-                // Calculate button position for confetti origin
-                if (jogarButtonRef.current) {
-                  const buttonRect = jogarButtonRef.current.getBoundingClientRect();
-                  const buttonCenterX = buttonRect.left + buttonRect.width / 2;
-                  const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+            <div className="flex items-center justify-center gap-4">
+              <Button 
+                ref={jogarButtonRef}
+                onClick={() => {
+                  // Calculate button position for confetti origin
+                  if (jogarButtonRef.current) {
+                    const buttonRect = jogarButtonRef.current.getBoundingClientRect();
+                    const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+                    const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+                    
+                    // Convert to confetti coordinate system (0-1)
+                    const origin = {
+                      x: buttonCenterX / window.innerWidth,
+                      y: buttonCenterY / window.innerHeight
+                    };
+                    
+                    setConfettiOrigin(origin);
+                  }
                   
-                  // Convert to confetti coordinate system (0-1)
-                  const origin = {
-                    x: buttonCenterX / window.innerWidth,
-                    y: buttonCenterY / window.innerHeight
-                  };
+                  // Trigger confetti celebration
+                  setShowConfetti(true);
                   
-                  setConfettiOrigin(origin);
-                }
-                
-                // Trigger confetti celebration
-                setShowConfetti(true);
-                
-                // Navigate after a brief delay
-                setTimeout(() => {
-                  navigate('/game-mode');
-                  // Reset confetti after navigation
+                  // Navigate after a brief delay
                   setTimeout(() => {
-                    setShowConfetti(false);
-                    setConfettiOrigin(undefined);
-                  }, 100);
-                }, 600);
-              }}
-              className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
-            >
-              <div className="flex flex-col items-center gap-1">
-                <svg className="w-24 h-24 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M7 6v12l10-6z"/>
-                </svg>
-                <span className="text-xs">{t('common.play')}</span>
+                    navigate('/game-mode');
+                    // Reset confetti after navigation
+                    setTimeout(() => {
+                      setShowConfetti(false);
+                      setConfettiOrigin(undefined);
+                    }, 100);
+                  }, 600);
+                }}
+                className="jogar-button w-20 h-20 bg-transparent text-foreground text-sm font-bold rounded-full border-2 border-primary/60 hover:border-primary transition-all duration-300 group"
+              >
+                <div className="flex flex-col items-center gap-1">
+                  <svg className="w-24 h-24 group-hover:animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M7 6v12l10-6z"/>
+                  </svg>
+                  <span className="text-xs">{t('common.play')}</span>
+                </div>
+              </Button>
+              
+              {/* Joysticks Icon */}
+              <div 
+                onClick={() => {
+                  setFlashActive(true);
+                  setTimeout(() => {
+                    setFlashActive(false);
+                    navigate('/find-opponent');
+                  }, 150);
+                }}
+                className={`flex items-center gap-1 cursor-pointer transition-all duration-200 hover:scale-110 border-2 border-purple-500 rounded-lg p-2 ${
+                  flashActive ? 'animate-ping bg-purple-500/50' : 'animate-pulse'
+                }`}
+                style={{
+                  animation: flashActive ? 'ping 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                }}
+              >
+                <Gamepad2 className="h-4 w-4 text-purple-400" />
+                <Gamepad2 className="h-4 w-4 text-purple-400" />
               </div>
-            </Button>
+            </div>
           </div>
 
           {/* Ranking Semanal de Beetz - Mobile Spacing */}
