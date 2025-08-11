@@ -7894,6 +7894,18 @@ export type Database = {
           is_bot: boolean
         }[]
       }
+      get_public_profile_data: {
+        Args: { profile_ids: string[] }
+        Returns: {
+          id: string
+          nickname: string
+          level: number
+          xp: number
+          current_avatar_id: string
+          subscription_tier: string
+          created_at: string
+        }[]
+      }
       get_user_evolution_data: {
         Args:
           | { user_id_param: string; start_date: string; end_date: string }
@@ -7905,6 +7917,26 @@ export type Database = {
           btz: number
           streak: number
           quizzes_completed: number
+        }[]
+      }
+      get_user_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          user_id: string
+          nickname: string
+          level: number
+          xp: number
+          points: number
+          streak: number
+          consecutive_login_days: number
+          last_login_date: string
+          current_avatar_id: string
+          profile_image_url: string
+          subscription_tier: string
+          created_at: string
+          updated_at: string
+          is_bot: boolean
         }[]
       }
       get_user_profile_id: {
