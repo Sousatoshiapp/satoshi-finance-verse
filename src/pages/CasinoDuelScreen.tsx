@@ -45,14 +45,23 @@ export default function CasinoDuelScreen() {
 
   // Transform question to expected format if needed
   const currentQuestion: Question | null = (() => {
+    // Early return if essential data is missing
+    if (!currentDuel || loading) {
+      return null;
+    }
+
     const questions = currentDuel?.questions;
-    if (!questions || !Array.isArray(questions) || !questions[currentQuestionIndex]) {
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+      console.log('⚠️ CasinoDuelScreen: No questions array found');
+      return null;
+    }
+
+    if (!questions[currentQuestionIndex]) {
       console.log('⚠️ CasinoDuelScreen: No question found at index:', currentQuestionIndex);
       return null;
     }
     
     const rawQuestion = questions[currentQuestionIndex];
-    console.log('🔄 CasinoDuelScreen: Raw question data:', rawQuestion);
     
     // Handle both formats: RPC format and expected format
     if (rawQuestion.options && Array.isArray(rawQuestion.options)) {
@@ -86,7 +95,7 @@ export default function CasinoDuelScreen() {
     console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: duelId from URL:', duelId);
     console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: currentDuel exists:', !!currentDuel);
     console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: profile exists:', !!profile);
-    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: loadDuelById function:', !!loadDuelById);
+    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: loading:', loading);
     
     if (!duelId) {
       console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: No duelId in URL, redirecting to dashboard');
@@ -99,41 +108,48 @@ export default function CasinoDuelScreen() {
       return;
     }
 
-    // Always load the duel if we have a duelId
-    const loadDuel = async () => {
-      console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Starting to load duel:', duelId);
-      
-      try {
-        const duel = await loadDuelById(duelId);
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loaded duel result:', !!duel);
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Questions in loaded duel:', duel?.questions?.length || 0);
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Full duel object:', JSON.stringify(duel, null, 2));
+    // Only load if we don't already have the duel loaded
+    if (!currentDuel || currentDuel.id !== duelId) {
+      const loadDuel = async () => {
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Starting to load duel:', duelId);
         
-        if (!duel) {
-          console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Duel not found, redirecting to dashboard');
-          navigate('/dashboard');
-          return;
-        }
+        try {
+          const duel = await loadDuelById(duelId);
+          console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loaded duel result:', !!duel);
+          console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Questions in loaded duel:', duel?.questions?.length || 0);
+          
+          if (!duel) {
+            console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Duel not found, redirecting to dashboard');
+            navigate('/dashboard');
+            return;
+          }
 
-        // Verify user is part of this duel
-        if (profile?.id && duel.player1_id !== profile.id && duel.player2_id !== profile.id) {
-          console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: User not part of this duel, redirecting');
-          console.log('👤 CasinoDuelScreen: Profile ID:', profile.id);
-          console.log('🥊 CasinoDuelScreen: Player1 ID:', duel.player1_id);
-          console.log('🥊 CasinoDuelScreen: Player2 ID:', duel.player2_id);
+          console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Duel loaded successfully');
+        } catch (error) {
+          console.error('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Error loading duel:', error);
           navigate('/dashboard');
-          return;
         }
+      };
 
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Duel loaded successfully and user verified');
-      } catch (error) {
-        console.error('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Error loading duel:', error);
+      loadDuel();
+    }
+  }, [duelId, loadDuelById, navigate, currentDuel]);
+
+  // Separate effect to verify user access once both profile and duel are loaded
+  useEffect(() => {
+    if (currentDuel && profile?.id) {
+      // Verify user is part of this duel
+      if (currentDuel.player1_id !== profile.id && currentDuel.player2_id !== profile.id) {
+        console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: User not part of this duel, redirecting');
+        console.log('👤 CasinoDuelScreen: Profile ID:', profile.id);
+        console.log('🥊 CasinoDuelScreen: Player1 ID:', currentDuel.player1_id);
+        console.log('🥊 CasinoDuelScreen: Player2 ID:', currentDuel.player2_id);
         navigate('/dashboard');
+        return;
       }
-    };
-
-    loadDuel();
-  }, [duelId, loadDuelById, navigate, profile?.id]);
+      console.log('✅ CasinoDuelScreen: User access verified');
+    }
+  }, [currentDuel, profile?.id, navigate]);
 
   // Timer effect
   useEffect(() => {
@@ -181,15 +197,21 @@ export default function CasinoDuelScreen() {
     }, 2000);
   };
 
-  if (loading || !currentDuel) {
-    console.log('🔄 CasinoDuelScreen: Loading state - loading:', loading, 'currentDuel:', !!currentDuel);
+  // Show loading if still loading or essential data is missing
+  if (loading || !currentDuel || !profile) {
+    console.log('🔄 CasinoDuelScreen: Loading state - loading:', loading, 'currentDuel:', !!currentDuel, 'profile:', !!profile);
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
           <CardContent className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-white">
-              {loading ? 'Carregando duelo...' : 'Processando dados do duelo...'}
+              {loading 
+                ? 'Carregando duelo...' 
+                : !currentDuel 
+                ? 'Processando dados do duelo...'
+                : 'Carregando perfil...'
+              }
             </p>
           </CardContent>
         </Card>
