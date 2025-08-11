@@ -42,26 +42,41 @@ export const UltraRouteWrapper = memo(({
   const location = useLocation();
   // const { preloadPredictive } = useUltraRoutePreloader(location.pathname);
   
-  // FASE 2.4: Performance tracking por rota
+  // FASE 2.4: Performance tracking por rota com validação defensiva
   useEffect(() => {
     const routeName = location.pathname.replace('/', '') || 'dashboard';
-    performance.mark(`ultra-route-${routeName}-start`);
+    const startMarkName = `ultra-route-${routeName}-start`;
+    const endMarkName = `ultra-route-${routeName}-end`;
+    const measureName = `ultra-route-${routeName}`;
+    
+    try {
+      performance.mark(startMarkName);
+    } catch (e) {
+      console.debug(`Failed to create start mark for ${routeName}:`, e);
+    }
     
     return () => {
-      performance.mark(`ultra-route-${routeName}-end`);
-      performance.measure(
-        `ultra-route-${routeName}`, 
-        `ultra-route-${routeName}-start`, 
-        `ultra-route-${routeName}-end`
-      );
-      
-      // Log route performance
-      setTimeout(() => {
-        const measure = performance.getEntriesByName(`ultra-route-${routeName}`)[0];
-        if (measure) {
-          console.log(`🚀 Route ${routeName} Load Time: ${measure.duration.toFixed(2)}ms`);
+      try {
+        performance.mark(endMarkName);
+        
+        // Verificar se a marca de início existe antes de medir
+        const startMarks = performance.getEntriesByName(startMarkName, 'mark');
+        if (startMarks.length > 0) {
+          performance.measure(measureName, startMarkName, endMarkName);
+          
+          // Log route performance
+          setTimeout(() => {
+            const measures = performance.getEntriesByName(measureName);
+            if (measures.length > 0) {
+              console.log(`🚀 Route ${routeName} Load Time: ${measures[0].duration.toFixed(2)}ms`);
+            }
+          }, 100);
+        } else {
+          console.debug(`Start mark not found for route ${routeName}, skipping measurement`);
         }
-      }, 100);
+      } catch (e) {
+        console.debug(`Failed to measure performance for ${routeName}:`, e);
+      }
     };
   }, [location.pathname]);
 

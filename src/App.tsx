@@ -40,24 +40,44 @@ function AppContent() {
 
 // FASE 2.1: Ultra App com Context Provider consolidado e otimizações de performance
 function App() {
-  // Performance mark para App
+  // Performance mark para App com cleanup seletivo
   React.useEffect(() => {
-    performance.mark('ultra-app-context-start');
+    try {
+      performance.mark('ultra-app-context-start');
+    } catch (e) {
+      console.debug('Failed to create app context start mark:', e);
+    }
     
-    // Cleanup timeout para evitar vazamentos de memória
+    // Cleanup seletivo que preserva marcas ativas de rotas
     const cleanupTimeout = setTimeout(() => {
-      // Remove any stale performance marks older than 30 seconds
       try {
-        performance.clearMarks();
-        performance.clearMeasures();
+        // Limpar apenas medidas antigas, preservar marcas ativas
+        const measures = performance.getEntriesByType('measure');
+        measures.forEach(measure => {
+          if (measure.name.startsWith('ultra-') && 
+              performance.now() - measure.startTime > 60000) { // 1 minuto
+            try {
+              performance.clearMeasures(measure.name);
+            } catch (e) {
+              console.debug(`Failed to clear measure ${measure.name}:`, e);
+            }
+          }
+        });
       } catch (e) {
-        console.debug('Performance cleanup error:', e);
+        console.debug('Performance selective cleanup error:', e);
       }
-    }, 30000);
+    }, 60000); // Aumentado para 1 minuto
     
     return () => {
-      performance.mark('ultra-app-context-end');
-      performance.measure('ultra-app-context', 'ultra-app-context-start', 'ultra-app-context-end');
+      try {
+        performance.mark('ultra-app-context-end');
+        const startMarks = performance.getEntriesByName('ultra-app-context-start', 'mark');
+        if (startMarks.length > 0) {
+          performance.measure('ultra-app-context', 'ultra-app-context-start', 'ultra-app-context-end');
+        }
+      } catch (e) {
+        console.debug('Failed to measure app context performance:', e);
+      }
       clearTimeout(cleanupTimeout);
     };
   }, []);
