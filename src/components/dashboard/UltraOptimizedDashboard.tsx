@@ -18,23 +18,7 @@ const UltraOptimizedDashboard = memo(() => {
     return { text: t('dashboard.goodNight'), icon: "🌙" };
   }, [t]);
 
-  // Helper function to get XP requirement for a specific level
-  const getCurrentLevelXP = (level: number) => {
-    if (level === 1) return 0;
-    
-    // XP requirements by level (XP needed to REACH each level)
-    const xpTable: { [key: number]: number } = {
-      1: 0, 2: 100, 3: 250, 4: 450, 5: 700,
-      6: 1000, 7: 1350, 8: 1750, 9: 2200, 10: 2700,
-      11: 3250, 12: 3850, 13: 4500, 14: 5200, 15: 5950,
-      16: 6750, 17: 7600, 18: 8500, 19: 9450, 20: 10450,
-      21: 10500, 22: 11000, 23: 11500, 24: 12000, 25: 12500
-    };
-    
-    return xpTable[level] || 0;
-  };
-
-  // User stats memoized with correct progress calculation
+  // User stats memoized - using ONLY database data as source of truth
   const userStats = useMemo(() => {
     if (!data) return {
       level: 1,
@@ -47,10 +31,21 @@ const UltraOptimizedDashboard = memo(() => {
       nickname: t('dashboard.student')
     };
 
-    const currentLevelXP = getCurrentLevelXP(data.level);
+    // Use currentLevelXP from database (RPC now returns it)
+    const currentLevelXP = data.currentLevelXP || 0;
     const xpInCurrentLevel = data.xp - currentLevelXP;
     const xpNeededForLevel = data.nextLevelXP - currentLevelXP;
     const progressPercentage = xpNeededForLevel > 0 ? (xpInCurrentLevel / xpNeededForLevel) * 100 : 0;
+
+    // Debug logging para verificar cálculos
+    console.log('XP Progress Debug:', {
+      currentXP: data.xp,
+      currentLevelXP,
+      nextLevelXP: data.nextLevelXP,
+      xpInCurrentLevel,
+      xpNeededForLevel,
+      progressPercentage: Math.min(Math.max(progressPercentage, 0), 100)
+    });
 
     return {
       level: data.level,

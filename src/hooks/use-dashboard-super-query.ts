@@ -12,6 +12,7 @@ interface DashboardSuperData {
   xp: number;
   level: number;
   nextLevelXP: number;
+  currentLevelXP: number; // Added for correct progress calculation
   streak: number;
   completedQuizzes: number;
   dailyMissions: any[];
@@ -38,6 +39,7 @@ const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperD
         xp: parsed.profile?.xp || 0,
         level: parsed.profile?.level || 1,
         nextLevelXP: parsed.nextLevelXP || 100,
+        currentLevelXP: parsed.currentLevelXP || 0,
         streak: parsed.profile?.streak || 0,
         completedQuizzes: parsed.completedQuizzes || 0,
         dailyMissions: [],
@@ -74,6 +76,7 @@ const fetchDashboardSuperQuery = async (userId: string): Promise<DashboardSuperD
     xp: profile?.xp || 0,
     level: profile?.level || 1,
     nextLevelXP: 100,
+    currentLevelXP: 0,
     streak: profile?.streak || 0,
     completedQuizzes: 0,
     dailyMissions: [],
