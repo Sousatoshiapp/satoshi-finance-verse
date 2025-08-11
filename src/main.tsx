@@ -11,7 +11,7 @@ import { criticalPathOptimizer } from "@/utils/critical-path-optimizer";
 import { bundleSplitter } from "@/utils/bundle-splitter";
 import { initializePerformanceOptimizations } from "@/utils/performance-manager";
 import { createUltraQueryClient, preloadCriticalAssets, monitorUltraPerformance } from "@/utils/ultra-performance";
-import { UltraApp } from "./UltraApp";
+import UltraApp from "./main-ultra";
 import "./index.css";
 import "./i18n";
 
@@ -25,17 +25,9 @@ criticalPathOptimizer.init();
 bundleSplitter.init();
 initializePerformanceOptimizations();
 
-// FASE 2: Resource optimizer e tree shaking
-import('./utils/resource-optimizer').then(({ resourceOptimizer }) => {
-  resourceOptimizer.initializeOptimizations(window.location.pathname);
-});
-import('./utils/tree-shaking-optimizer').then(({ initTreeShaking }) => {
-  initTreeShaking();
-});
-
 // FASE 1.2: Service Worker para cache instantâneo
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  navigator.serviceWorker.register('/sw.js').catch(() => {
+  navigator.serviceWorker.register('/ultra-sw.js').catch(() => {
     // Silent fail - no blocking
   });
 }

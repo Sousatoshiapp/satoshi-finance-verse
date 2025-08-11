@@ -157,111 +157,25 @@ self.addEventListener('unhandledrejection', (event) => {
   console.error('Service Worker Unhandled Rejection:', event.reason);
 });
 
-// Ultra Performance Cache Management
-const CACHE_NAME = 'satoshi-ultra-v2';
-const STATIC_CACHE = 'satoshi-static-v2';
-const DYNAMIC_CACHE = 'satoshi-dynamic-v2';
-
-// Critical resources to cache immediately
-const criticalResources = [
+// Cache management (opcional, para melhor performance)
+const CACHE_NAME = 'satoshi-finance-v1';
+const urlsToCache = [
   '/',
   '/dashboard',
-  '/select-opponent',
-  '/src/index.css',
   '/lovable-uploads/360967fa-b367-4de6-a8a1-bcd4545eaa61.png',
-  'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap'
 ];
 
-// Ultra-fast cache-first strategy for static assets
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-  
-  // Skip non-GET requests
-  if (request.method !== 'GET') return;
-  
-  // Critical assets - cache first with ultra-fast response
-  if (criticalResources.some(resource => request.url.includes(resource)) ||
-      request.url.includes('/assets/') ||
-      request.url.includes('.woff2') ||
-      request.url.includes('.ico') ||
-      request.url.includes('.png') ||
-      request.url.includes('.jpg') ||
-      request.url.includes('.css')) {
+  // Só fazer cache de requests importantes
+  if (event.request.method === 'GET' && 
+      (event.request.url.includes('/assets/') || 
+       event.request.url.includes('.ico') ||
+       event.request.url.includes('.png'))) {
     
     event.respondWith(
-      caches.open(STATIC_CACHE).then(cache => 
-        cache.match(request).then(response => {
-          if (response) return response;
-          
-          return fetch(request).then(fetchResponse => {
-            if (fetchResponse && fetchResponse.status === 200) {
-              cache.put(request, fetchResponse.clone());
-            }
-            return fetchResponse;
-          }).catch(() => {
-            // Ultra-fast fallback for critical images
-            if (request.url.includes('.png') || request.url.includes('.jpg')) {
-              return new Response('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f3f4f6"/></svg>', {
-                headers: { 'Content-Type': 'image/svg+xml' }
-              });
-            }
-            return new Response('', { status: 404 });
-          });
-        })
-      )
-    );
-  }
-  
-  // Dynamic content - network first with quick fallback
-  else if (request.url.includes('/api/') || request.url.includes('supabase.co')) {
-    event.respondWith(
-      fetch(request, { timeout: 3000 }).then(response => {
-        if (response && response.status === 200) {
-          caches.open(DYNAMIC_CACHE).then(cache => {
-            cache.put(request, response.clone());
-          });
-        }
-        return response;
-      }).catch(() => {
-        return caches.match(request).then(cachedResponse => {
-          return cachedResponse || new Response('{"error": "offline"}', {
-            headers: { 'Content-Type': 'application/json' }
-          });
-        });
+      caches.match(event.request).then((response) => {
+        return response || fetch(event.request);
       })
     );
   }
-});
-
-// Aggressive cache cleanup on install
-self.addEventListener('install', (event) => {
-  console.log('SW: Ultra Performance Install');
-  event.waitUntil(
-    Promise.all([
-      caches.open(STATIC_CACHE).then(cache => cache.addAll(criticalResources)),
-      self.skipWaiting()
-    ])
-  );
-});
-
-// Ultra-fast cache cleanup on activate
-self.addEventListener('activate', (event) => {
-  console.log('SW: Ultra Performance Activate');
-  event.waitUntil(
-    Promise.all([
-      // Clean old caches aggressively
-      caches.keys().then(cacheNames => 
-        Promise.all(
-          cacheNames.map(cacheName => {
-            if (!cacheName.includes('v2')) {
-              return caches.delete(cacheName);
-            }
-          })
-        )
-      ),
-      // Claim all clients immediately
-      clients.claim()
-    ])
-  );
 });
