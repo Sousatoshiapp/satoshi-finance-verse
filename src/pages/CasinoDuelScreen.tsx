@@ -45,12 +45,13 @@ export default function CasinoDuelScreen() {
 
   // Transform question to expected format if needed
   const currentQuestion: Question | null = (() => {
-    if (!currentDuel?.questions?.[currentQuestionIndex]) {
+    const questions = currentDuel?.questions;
+    if (!questions || !Array.isArray(questions) || !questions[currentQuestionIndex]) {
       console.log('⚠️ CasinoDuelScreen: No question found at index:', currentQuestionIndex);
       return null;
     }
     
-    const rawQuestion = currentDuel.questions[currentQuestionIndex];
+    const rawQuestion = questions[currentQuestionIndex];
     console.log('🔄 CasinoDuelScreen: Raw question data:', rawQuestion);
     
     // Handle both formats: RPC format and expected format
@@ -80,25 +81,39 @@ export default function CasinoDuelScreen() {
     return null;
   })();
 
-  // Load duel on component mount
   useEffect(() => {
+    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: useEffect triggered');
+    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: duelId from URL:', duelId);
+    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: currentDuel exists:', !!currentDuel);
+    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: profile exists:', !!profile);
+    console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: loadDuelById function:', !!loadDuelById);
+    
+    if (!duelId) {
+      console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: No duelId in URL, redirecting to dashboard');
+      navigate('/dashboard');
+      return;
+    }
+
+    if (!loadDuelById) {
+      console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: loadDuelById function not available');
+      return;
+    }
+
+    // Always load the duel if we have a duelId
     const loadDuel = async () => {
-      if (duelId && !currentDuel) {
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loading duel from URL:', duelId);
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Current profile:', profile?.id);
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: loadDuelById function available:', !!loadDuelById);
-        
+      console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Starting to load duel:', duelId);
+      
+      try {
         const duel = await loadDuelById(duelId);
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loaded duel data:', !!duel);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Loaded duel result:', !!duel);
         console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Questions in loaded duel:', duel?.questions?.length || 0);
+        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Full duel object:', JSON.stringify(duel, null, 2));
         
         if (!duel) {
           console.log('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Duel not found, redirecting to dashboard');
           navigate('/dashboard');
           return;
         }
-
-        console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Duel questions array:', JSON.stringify(duel.questions, null, 2));
 
         // Verify user is part of this duel
         if (profile?.id && duel.player1_id !== profile.id && duel.player2_id !== profile.id) {
@@ -111,11 +126,14 @@ export default function CasinoDuelScreen() {
         }
 
         console.log('🚨🚨🚨 ULTRA CRITICAL CasinoDuelScreen: Duel loaded successfully and user verified');
+      } catch (error) {
+        console.error('💥💥💥 ULTRA CRITICAL CasinoDuelScreen: Error loading duel:', error);
+        navigate('/dashboard');
       }
     };
 
     loadDuel();
-  }, [duelId, currentDuel, loadDuelById, navigate, profile?.id]);
+  }, [duelId, loadDuelById, navigate, profile?.id]);
 
   // Timer effect
   useEffect(() => {

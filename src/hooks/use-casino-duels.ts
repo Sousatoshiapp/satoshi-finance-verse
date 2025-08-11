@@ -374,82 +374,93 @@ export function useCasinoDuels() {
     }
   };
 
-  // Load existing duel by ID
   const loadDuelById = async (duelId: string) => {
-    if (!duelId) {
-      console.log('💥 CRITICAL loadDuelById: No duelId provided');
-      return null;
-    }
-
+    console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Starting to load duel:', duelId);
     setLoading(true);
-    console.log('🚨 CRITICAL useCasinoDuels: Loading duel by ID:', duelId);
     
     try {
-      console.log('🚨 CRITICAL useCasinoDuels: Fetching duel directly from casino_duels table...');
-      
-      // Try direct table access first to see the raw data
-      const { data: duelData, error } = await supabase
+      const { data: duel, error } = await supabase
         .from('casino_duels')
-        .select('*')
+        .select(`
+          *,
+          player1:profiles!casino_duels_player1_id_fkey(id, nickname, current_avatar_id),
+          player2:profiles!casino_duels_player2_id_fkey(id, nickname, current_avatar_id)
+        `)
         .eq('id', duelId)
         .single();
 
+      console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Query response error:', error);
+      console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Query response data:', !!duel);
+      
       if (error) {
-        console.error('💥 CRITICAL useCasinoDuels: Error loading duel:', error);
+        console.error('💥💥💥 ULTRA CRITICAL loadDuelById: Database error:', error);
         toast.error('Erro ao carregar duelo');
         return null;
       }
 
-      if (!duelData) {
-        console.error('💥 CRITICAL useCasinoDuels: No duel data found');
+      if (!duel) {
+        console.error('💥💥💥 ULTRA CRITICAL loadDuelById: Duel not found');
+        toast.error('Duelo não encontrado');
         return null;
       }
 
-      console.log('🚨 CRITICAL useCasinoDuels: Raw duel data loaded:', JSON.stringify(duelData, null, 2));
-      console.log('🚨 CRITICAL useCasinoDuels: Raw questions field:', JSON.stringify(duelData.questions, null, 2));
-
-      // Parse questions more safely
+      // Parse questions safely
       let questions = [];
       try {
-        if (Array.isArray(duelData.questions)) {
-          questions = duelData.questions;
-          console.log('🚨 CRITICAL useCasinoDuels: Questions already array, count:', questions.length);
-        } else if (typeof duelData.questions === 'string') {
-          questions = JSON.parse(duelData.questions);
-          console.log('🚨 CRITICAL useCasinoDuels: Questions parsed from string, count:', questions.length);
-        } else if (duelData.questions) {
-          questions = [duelData.questions];
-          console.log('🚨 CRITICAL useCasinoDuels: Questions converted to array, count:', questions.length);
+        if (Array.isArray(duel.questions)) {
+          questions = duel.questions;
+        } else if (typeof duel.questions === 'string') {
+          questions = JSON.parse(duel.questions);
+        } else if (duel.questions) {
+          questions = [duel.questions];
         }
-        console.log('🚨 CRITICAL useCasinoDuels: Final parsed questions:', JSON.stringify(questions, null, 2));
-        console.log('🚨 CRITICAL useCasinoDuels: First question preview:', JSON.stringify(questions[0], null, 2));
       } catch (parseError) {
-        console.error('💥 CRITICAL useCasinoDuels: Error parsing questions:', parseError);
+        console.error('Error parsing questions:', parseError);
         questions = [];
       }
 
-      // Format the duel data with minimal processing for now
+      console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Parsed questions count:', questions.length);
+      console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Full duel data:', JSON.stringify(duel, null, 2));
+
+      // Format the duel with proper typing
       const formattedDuel: CasinoDuel = {
-        ...duelData,
-        status: duelData.status as 'waiting' | 'in_progress' | 'completed' | 'cancelled',
+        id: duel.id,
+        player1_id: duel.player1_id,
+        player2_id: duel.player2_id,
+        topic: duel.topic,
+        bet_amount: duel.bet_amount,
+        status: duel.status as 'waiting' | 'in_progress' | 'completed' | 'cancelled',
+        winner_id: duel.winner_id,
+        player1_score: duel.player1_score,
+        player2_score: duel.player2_score,
         questions,
-        player1_profile: undefined, // Simplified for now to focus on questions
-        player2_profile: undefined
+        current_question: duel.current_question,
+        created_at: duel.created_at,
+        started_at: duel.started_at,
+        completed_at: duel.completed_at,
+        player1_profile: duel.player1 ? {
+          nickname: duel.player1.nickname,
+          level: 1,
+          avatar_url: undefined
+        } : undefined,
+        player2_profile: duel.player2 ? {
+          nickname: duel.player2.nickname,
+          level: 1,
+          avatar_url: undefined
+        } : undefined
       };
 
-      console.log('🚨 CRITICAL useCasinoDuels: Final formatted duel questions count:', formattedDuel.questions?.length);
-      console.log('🚨 CRITICAL useCasinoDuels: Setting currentDuel...');
-
+      console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Setting currentDuel');
       setCurrentDuel(formattedDuel);
       return formattedDuel;
-
-    } catch (error: any) {
-      console.error('💥 CRITICAL useCasinoDuels: Failed to load duel:', error);
-      toast.error(error.message || 'Erro ao carregar duelo');
+      
+    } catch (error) {
+      console.error('💥💥💥 ULTRA CRITICAL loadDuelById: Unexpected error:', error);
+      toast.error('Erro inesperado ao carregar duelo');
       return null;
     } finally {
+      console.log('🚨🚨🚨 ULTRA CRITICAL loadDuelById: Setting loading to false');
       setLoading(false);
-      console.log('🚨 CRITICAL useCasinoDuels: loadDuelById finished');
     }
   };
 
