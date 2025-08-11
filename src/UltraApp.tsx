@@ -1,27 +1,23 @@
-import { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// No theme provider needed for ultra performance
+import { Suspense, lazy, memo, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useAutoCleanup } from '@/hooks/use-auto-cleanup';
 import { ProfileStyleLoader } from '@/components/shared/ui/profile-style-loader';
+import { LazyRoutes } from '@/utils/intelligent-code-splitter';
+import { resourceOptimizer } from '@/utils/resource-optimizer';
+import { initTreeShaking } from '@/utils/tree-shaking-optimizer';
 
-// Ultra-optimized lazy loading with preloading hints
-const Dashboard = lazy(() => import('@/pages/Dashboard'));
-const SelectOpponentScreen = lazy(() => 
-  import('@/pages/SelectOpponentScreen').then(module => {
-    // Preload likely next routes
-    import('@/pages/BtcDuel');
-    import('@/pages/FindOpponent');
-    return module;
-  })
-);
-
-// Other critical routes
-const BtcDuel = lazy(() => import('@/pages/BtcDuel'));
-const FindOpponent = lazy(() => import('@/pages/FindOpponent'));
-const Profile = lazy(() => import('@/pages/Profile'));
-const Quiz = lazy(() => import('@/pages/Quiz'));
-const Leaderboard = lazy(() => import('@/pages/Leaderboard'));
+// Route performance optimizer component
+const RouteOptimizer = memo(() => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    resourceOptimizer.prefetchRoutes(location.pathname);
+    initTreeShaking();
+  }, [location.pathname]);
+  
+  return null;
+});
 
 // Ultra-fast error fallback
 const ErrorFallback = ({ error }: { error: Error }) => (
@@ -45,28 +41,38 @@ const UltraLoader = () => (
   </div>
 );
 
-export function UltraApp() {
+export const UltraApp = memo(() => {
   // Ultra-aggressive cleanup every 15 seconds
   useAutoCleanup(15000);
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <BrowserRouter>
-        <div className="min-h-screen bg-background">
+        <RouteOptimizer />
+        <div className="min-h-screen bg-background font-satoshi">
           <Suspense fallback={<UltraLoader />}>
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/select-opponent" element={<SelectOpponentScreen />} />
-              <Route path="/btc-duel" element={<BtcDuel />} />
-              <Route path="/find-opponent" element={<FindOpponent />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/quiz" element={<Quiz />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/" element={<LazyRoutes.Dashboard />} />
+              <Route path="/dashboard" element={<LazyRoutes.Dashboard />} />
+              <Route path="/profile" element={<LazyRoutes.Profile />} />
+              <Route path="/quiz" element={<LazyRoutes.SoloQuiz />} />
+              <Route path="/social" element={<LazyRoutes.Social />} />
+              <Route path="/btc-duel" element={<LazyRoutes.BtcDuel />} />
+              <Route path="/leaderboard" element={<LazyRoutes.Leaderboard />} />
+              <Route path="/settings" element={<LazyRoutes.Settings />} />
+              <Route path="/achievements" element={<LazyRoutes.Achievements />} />
+              <Route path="/messages" element={<LazyRoutes.Messages />} />
+              <Route path="/direct-chat" element={<LazyRoutes.DirectChat />} />
+              <Route path="/store" element={<LazyRoutes.Store />} />
+              <Route path="/inventory" element={<LazyRoutes.Inventory />} />
+              <Route path="/tournaments" element={<LazyRoutes.Tournaments />} />
+              <Route path="/welcome" element={<LazyRoutes.Welcome />} />
+              <Route path="/auth" element={<LazyRoutes.Auth />} />
+              <Route path="*" element={<div className="flex items-center justify-center min-h-screen"><h1 className="text-2xl font-bold text-foreground">404 - Page Not Found</h1></div>} />
             </Routes>
           </Suspense>
         </div>
       </BrowserRouter>
     </ErrorBoundary>
   );
-}
+});

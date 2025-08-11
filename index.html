@@ -28,22 +28,39 @@
     
     <!-- Critical inline CSS -->
     <style>
-      html, body { margin: 0; padding: 0; font-family: Nunito, system-ui, sans-serif; }
+      html, body { margin: 0; padding: 0; font-family: 'Satoshi', Nunito, system-ui, sans-serif; }
       #root { min-height: 100vh; background: hsl(210 40% 98%); }
       .loading-skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
       @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
       .critical-loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+      
+      /* Satoshi font fallback - load sync to avoid 404 */
+      @font-face {
+        font-family: 'Satoshi';
+        src: url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        font-display: swap;
+        font-weight: 400 800;
+        fallback: Nunito, system-ui, sans-serif;
+      }
     </style>
     
+    <!-- Optimized font loading with font-display swap -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Resource hints for next pages -->
-    <link rel="prefetch" href="/quiz">
-    <link rel="prefetch" href="/duels">
-    <link rel="prefetch" href="/leaderboard">
+    <!-- Intelligent resource hints for critical routes -->
+    <link rel="prefetch" href="/dashboard" importance="high">
+    <link rel="prefetch" href="/quiz" importance="high">
+    <link rel="prefetch" href="/duels" importance="medium">
+    <link rel="prefetch" href="/social" importance="medium">
+    <link rel="prefetch" href="/profile" importance="low">
+    <link rel="prefetch" href="/leaderboard" importance="low">
+    
+    <!-- Preload critical route components -->
+    <link rel="modulepreload" href="/src/pages/Dashboard.tsx">
+    <link rel="modulepreload" href="/src/pages/Profile.tsx">
 
     <meta property="og:title" content="Satoshi - Aprenda Finanças Jogando" />
     <meta property="og:description" content="O Duolingo das finanças - Aprenda educação financeira de forma gamificada e divertida" />

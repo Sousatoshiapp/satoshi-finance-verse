@@ -25,6 +25,14 @@ criticalPathOptimizer.init();
 bundleSplitter.init();
 initializePerformanceOptimizations();
 
+// FASE 2: Resource optimizer e tree shaking
+import('./utils/resource-optimizer').then(({ resourceOptimizer }) => {
+  resourceOptimizer.initializeOptimizations(window.location.pathname);
+});
+import('./utils/tree-shaking-optimizer').then(({ initTreeShaking }) => {
+  initTreeShaking();
+});
+
 // FASE 1.2: Service Worker para cache instantâneo
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   navigator.serviceWorker.register('/sw.js').catch(() => {

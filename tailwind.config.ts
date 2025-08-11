@@ -20,6 +20,8 @@ export default {
 		extend: {
 			fontFamily: {
 				nunito: ['Nunito', 'sans-serif'],
+				satoshi: ['Satoshi', 'Nunito', 'sans-serif'],
+				system: ['system-ui', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
