@@ -1331,8 +1331,8 @@
     },
     "notifications": {
       "received": {
-        "title": "WOW! Você acabou de receber {{amount}} BTZ",
-        "body": "WOW! Você acabou de receber {{amount}} BTZ"
+        "title": "Você recebeu {{amount}} BTZ!",
+        "body": "{{senderNickname}} enviou {{amount}} BTZ para você"
       }
     },
     "errors": {

@@ -1390,8 +1390,8 @@
     },
     "notifications": {
       "received": {
-        "title": "WOW! You just received {{amount}} BTZ",
-        "body": "WOW! You just received {{amount}} BTZ"
+        "title": "You received {{amount}} BTZ!",
+        "body": "{{senderNickname}} sent you {{amount}} BTZ"
       }
     },
     "errors": {

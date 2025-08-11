@@ -23,6 +23,8 @@ export function useP2PNotifications() {
   };
 
   const triggerReceiveNotification = async (amount: number, senderNickname: string) => {
+    console.log('🎉 P2P Notification: Triggering receive notification', { amount, senderNickname });
+    
     // Enhanced confetti effect - multiple bursts
     const colors = ['#adff2f', '#32cd32', '#00ff00', '#90EE90', '#98FB98'];
     
@@ -60,31 +62,46 @@ export function useP2PNotifications() {
     // Vibration for mobile devices - enhanced pattern
     if ('vibrate' in navigator) {
       navigator.vibrate([200, 100, 200, 100, 300]);
+      console.log('📱 P2P Notification: Mobile vibration triggered');
     }
 
-    // Browser notification
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification(t('p2p.notifications.received.title', { amount }), {
-        body: t('p2p.notifications.received.body', { amount }),
-        icon: '/icon-192.png',
-        tag: 'p2p-received'
-      });
+    // Browser notification with error handling
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        const notificationTitle = t('p2p.notifications.received.title', { amount }) || `You received ${amount} BTZ!`;
+        const notificationBody = t('p2p.notifications.received.body', { amount, senderNickname }) || `${senderNickname} sent you ${amount} BTZ`;
+        
+        new Notification(notificationTitle, {
+          body: notificationBody,
+          icon: '/icon-192.png',
+          tag: 'p2p-received'
+        });
+        console.log('🔔 P2P Notification: Browser notification sent', { notificationTitle, notificationBody });
+      }
+    } catch (error) {
+      console.error('🚨 P2P Notification: Browser notification error:', error);
     }
 
     if (profile?.id) {
       try {
+        const notificationTitle = t('p2p.notifications.received.title', { amount }) || `You received ${amount} BTZ!`;
+        const notificationMessage = t('p2p.notifications.received.body', { amount, senderNickname }) || `${senderNickname} sent you ${amount} BTZ`;
+        
         await supabase
           .from('notifications')
           .insert({
             user_id: profile.id,
             type: 'p2p_received',
-            title: t('p2p.notifications.received.title', { amount }),
-            message: t('p2p.notifications.received.body', { amount, senderNickname }),
+            title: notificationTitle,
+            message: notificationMessage,
             is_read: false
           });
+        console.log('💾 P2P Notification: Database notification saved');
       } catch (error) {
-        console.error('Error saving P2P notification to database:', error);
+        console.error('🚨 P2P Notification: Error saving to database:', error);
       }
+    } else {
+      console.warn('⚠️ P2P Notification: No profile ID found, skipping database save');
     }
   };
 
