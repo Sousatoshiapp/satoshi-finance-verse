@@ -181,30 +181,37 @@ export function useUnifiedRewards(): UnifiedRewardSystem {
         .single();
 
       if (profile) {
-        const { data, error } = await supabase.rpc('award_xp', {
+        const { error } = await supabase.rpc('award_xp', {
           profile_id: profile.id,
           xp_amount: amount,
-          activity_type: source
+          source: source
         });
 
-        if (!error && data?.[0]) {
-          const result = data[0];
-          setState(prev => ({
-            ...prev,
-            currentXP: result.new_xp,
-            currentLevel: result.new_level,
-            nextLevelXP: prev.nextLevelXP
-          }));
+        if (!error) {
+          // Reload profile to get updated XP and level
+          const { data: updatedProfile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
 
-          // Level up toast mantida - importante para o usuário
-          if (result.level_up) {
-            toast({
-              title: "🎉 Level Up!",
-              description: `Parabéns! Você alcançou o nível ${result.new_level}!`,
-              duration: 5000,
-            });
+          if (updatedProfile) {
+            const oldLevel = state.currentLevel;
+            setState(prev => ({
+              ...prev,
+              currentXP: updatedProfile.xp,
+              currentLevel: updatedProfile.level
+            }));
+
+            // Check for level up
+            if (updatedProfile.level > oldLevel) {
+              toast({
+                title: "🎉 Level Up!",
+                description: `Parabéns! Você alcançou o nível ${updatedProfile.level}!`,
+                duration: 5000,
+              });
+            }
           }
-          // XP toast removida - só animação visual agora
         }
       }
     } catch (error) {

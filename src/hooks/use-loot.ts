@@ -251,7 +251,7 @@ export function useLoot() {
           await supabase.rpc('award_xp', {
             profile_id: userId,
             xp_amount: item.amount || 0,
-            activity_type: 'loot_box'
+            source: 'loot_box'
           });
           break;
 

@@ -159,7 +159,7 @@ export default function DistrictQuizPage() {
         await supabase.rpc('award_xp', {
           profile_id: profile.id,
           xp_amount: xpGained,
-          activity_type: 'district_quiz'
+          source: 'district_quiz'
         });
 
         // Update district user progress

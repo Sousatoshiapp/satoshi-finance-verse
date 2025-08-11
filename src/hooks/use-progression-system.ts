@@ -59,41 +59,23 @@ export function useProgressionSystem() {
       const { data, error } = await supabase.rpc('award_xp', {
         profile_id: currentProfile.id,
         xp_amount: amount,
-        activity_type: activityType
+        source: activityType
       });
 
       if (error) throw error;
 
-      const result = data?.[0] as ProgressionResult;
-      
-      if (result?.level_up) {
-        toast({
-          title: "🎉 Level Up!",
-          description: `Parabéns! Você alcançou o nível ${result.new_level}!`,
-          duration: 5000,
-        });
-
-        // Show rewards if any
-        if (result.rewards?.beetz) {
-          toast({
-            title: "💰 Recompensa!",
-            description: `Você ganhou ${result.rewards.beetz} Beetz!`,
-            duration: 3000,
-          });
-        }
-      } else {
-        const activityDisplayName = activityType === 'quiz_correct' ? 'resposta correta' : activityType;
-        toast({
-          title: `+${amount} XP`,
-          description: `Atividade: ${activityDisplayName}`,
-          duration: 2000,
-        });
-      }
-
-      // Reload profile to get updated data
+      // Since award_xp returns undefined, we need to reload the profile
       await loadUserProfile();
       
-      return result;
+      // Show simple XP gained toast
+      const activityDisplayName = activityType === 'quiz_correct' ? 'resposta correta' : activityType;
+      toast({
+        title: `+${amount} XP`,
+        description: `Atividade: ${activityDisplayName}`,
+        duration: 2000,
+      });
+      
+      return null;
     } catch (error) {
       console.error('Error awarding XP:', error);
       return null;
