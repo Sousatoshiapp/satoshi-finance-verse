@@ -112,9 +112,10 @@ export function useP2PNotifications() {
     }
     
     console.log('🔄 P2P Notifications: Setting up realtime subscription for profile.id:', profile.id);
+    console.log('🔄 P2P Notifications: Current user nickname:', profile.nickname);
     
     const channel = supabase
-      .channel('schema-db-changes')
+      .channel(`p2p-notifications-${profile.id}`)
       .on(
         'postgres_changes',
         {
@@ -125,9 +126,24 @@ export function useP2PNotifications() {
         },
         async (payload) => {
           console.log('📨 P2P Notification: New transaction detected:', payload);
+          console.log('📨 P2P Notification: Current profile.id:', profile.id);
+          console.log('📨 P2P Notification: Transaction receiver_id:', payload.new?.receiver_id);
+          console.log('📨 P2P Notification: Transaction user_id (sender):', payload.new?.user_id);
+          
+          // CRITICAL VALIDATION: Only trigger if current user is actually the receiver
+          if (payload.new?.receiver_id !== profile.id) {
+            console.warn('⚠️ P2P Notification: Receiver ID mismatch! Current:', profile.id, 'Transaction:', payload.new?.receiver_id);
+            return;
+          }
+          
+          // Additional validation: Make sure current user is NOT the sender
+          if (payload.new?.user_id === profile.id) {
+            console.warn('⚠️ P2P Notification: User is sender, not receiver. Skipping notification.');
+            return;
+          }
           
           if (payload.new?.transfer_type === 'p2p') {
-            // Since both user_id and receiver_id are now profile.id values consistently
+            // Get sender profile info
             const { data: senderProfile } = await supabase
               .from('profiles')
               .select('nickname')
@@ -137,7 +153,8 @@ export function useP2PNotifications() {
             const senderNickname = senderProfile?.nickname || 'Unknown User';
             const amount = payload.new.amount_cents;
             
-            console.log('💰 P2P Notification: Triggering notification for amount:', amount, 'from:', senderNickname);
+            console.log('💰 P2P Notification: ✅ VALID RECEIVE - Triggering notification');
+            console.log('💰 P2P Notification: Amount:', amount, 'from:', senderNickname, 'to:', profile.nickname);
             
             await triggerReceiveNotification(amount, senderNickname);
             showP2PModal(amount, senderNickname);
@@ -147,10 +164,10 @@ export function useP2PNotifications() {
       .subscribe();
 
     return () => {
-      console.log('🔌 P2P Notifications: Cleaning up realtime subscription');
+      console.log('🔌 P2P Notifications: Cleaning up realtime subscription for:', profile.id);
       supabase.removeChannel(channel);
     };
-  }, [profile?.id, triggerReceiveNotification]);
+  }, [profile?.id, profile?.nickname, triggerReceiveNotification]);
 
   return { 
     triggerReceiveNotification,

@@ -31,13 +31,56 @@ export function TransferHistory() {
     }
   }, [profile?.id]);
 
+  // Auto-refresh transfers when new P2P transactions occur
+  useEffect(() => {
+    if (!profile?.id) return;
+
+    const channel = supabase
+      .channel(`transfer-history-${profile.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'transactions',
+          filter: `user_id=eq.${profile.id}`
+        },
+        (payload) => {
+          console.log('📊 TransferHistory: New sent transaction detected, refreshing...');
+          if (payload.new?.transfer_type === 'p2p') {
+            setTimeout(() => loadTransfers(), 1000); // Small delay to ensure transaction is committed
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'transactions',
+          filter: `receiver_id=eq.${profile.id}`
+        },
+        (payload) => {
+          console.log('📊 TransferHistory: New received transaction detected, refreshing...');
+          if (payload.new?.transfer_type === 'p2p') {
+            setTimeout(() => loadTransfers(), 1000); // Small delay to ensure transaction is committed
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile?.id]);
+
   const loadTransfers = async () => {
     if (!profile?.id) return;
     
     setLoading(true);
 
     try {
-      console.log('Loading transfers for profile:', profile.id, 'user_id:', profile.user_id);
+      console.log('📊 TransferHistory: Loading transfers for profile:', profile.id, 'user_id:', profile.user_id, 'nickname:', profile.nickname);
       
       // Get sent transfers (where current user is sender) - using profile.id consistently
       const { data: sentTransfers, error: sentError } = await supabase
@@ -63,8 +106,10 @@ export function TransferHistory() {
 
       if (receivedError) throw receivedError;
       
-      console.log('Sent transfers:', sentTransfers);
-      console.log('Received transfers:', receivedTransfers);
+      console.log('📊 TransferHistory: Sent transfers found:', sentTransfers?.length || 0);
+      console.log('📊 TransferHistory: Received transfers found:', receivedTransfers?.length || 0);
+      console.log('📊 TransferHistory: Sent transfers:', sentTransfers);
+      console.log('📊 TransferHistory: Received transfers:', receivedTransfers);
 
       // Combine and format transfers
       const transfers: Transfer[] = [];
@@ -119,6 +164,8 @@ export function TransferHistory() {
 
       // Sort by date (newest first)
       transfers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      
+      console.log('📊 TransferHistory: Final transfer list:', transfers.length, 'transfers');
       setTransfers(transfers);
     } catch (error) {
       console.error('Error loading P2P transfers:', error);
