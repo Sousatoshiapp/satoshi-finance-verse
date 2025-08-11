@@ -52,101 +52,118 @@ export default function GameMode() {
   };
 
   return (
-    <div className={`min-h-screen bg-background flex items-center justify-center ${isMobile ? 'pb-16' : 'pb-20'}`} 
-         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 8px)' } : {}}>
-      <div className={`mx-auto ${isMobile ? 'max-w-sm px-4' : 'max-w-md px-4'}`}>
-        {/* Header simplificado */}
-        <div className="flex items-center justify-start mb-4">
+    <div className="min-h-screen casino-futuristic">
+      {/* Cyber grid background */}
+      <div className="fixed inset-0 cyber-grid opacity-30 pointer-events-none"></div>
+      
+      {/* Floating particles */}
+      <div className="floating-particle particle-1"></div>
+      <div className="floating-particle particle-2"></div>
+      <div className="floating-particle particle-3"></div>
+      <div className="floating-particle particle-4"></div>
+      <div className="floating-particle particle-5"></div>
+
+      {/* Main content with proper spacing */}
+      <div className="relative z-10 p-6 pb-40">
+        {/* Header with casino styling */}
+        <div className="flex items-center justify-start mb-8">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-foreground hover:bg-muted"
+            className="casino-button border-purple-500/40 text-white bg-black/20 backdrop-blur-sm hover:bg-purple-500/20"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Game Mode Selection */}
-        <Card className="mb-6 bg-transparent border border-white/30 shadow-2xl shadow-white/10 ring-2 ring-white/20">
-          <CardContent className={`${isMobile ? 'p-4' : 'p-6'}`}>
-            <div className="text-center mb-4">
-              <h2 className={`${isMobile ? 'text-xl' : 'text-2xl'} font-bold text-white mb-2`}>
-                Como você quer arrasar hoje?
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Escolha seu estilo de jogo
-              </p>
-            </div>
+        <div className="max-w-md mx-auto space-y-8">
 
-            <div className="space-y-3">
-              {/* Modo Solo */}
-              <Button
-                onClick={() => handleModeSelect('solo')}
-                variant={selectedMode === 'solo' ? 'default' : 'outline'}
-                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 bg-transparent border border-purple-400/60 hover:border-purple-400/80 ring-2 ring-purple-400/30 hover:ring-purple-400/50`}
-                disabled={selectedMode !== null}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <User className="h-4 w-4 text-white" />
-                  <span className="text-foreground">Solo Mission</span>
-                </div>
-              </Button>
+          {/* Game Mode Selection with casino styling */}
+          <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
+            <CardContent className="p-3">
+              <div className="text-center mb-4">
+                <h2 className="text-sm font-bold text-white mb-2">
+                  Como você quer arrasar hoje?
+                </h2>
+                <p className="text-muted-foreground text-xs">
+                  Escolha seu estilo de jogo
+                </p>
+              </div>
 
-              {/* Modo Duelo */}
-              <Button
-                onClick={() => handleModeSelect('duelo')}
-                variant={selectedMode === 'duelo' ? 'default' : 'outline'}
-                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-2xl hover:shadow-pink-500/50 transition-all duration-300 bg-transparent border border-pink-400/60 hover:border-pink-400/80 ring-2 ring-pink-400/30 hover:ring-pink-400/50`}
-                disabled={selectedMode !== null}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <Users className="h-4 w-4 text-white" />
-                  <span className="text-foreground">Multiplayer</span>
-                </div>
-              </Button>
+              <div className="space-y-2">
+                {/* Modo Solo */}
+                <button
+                  onClick={() => handleModeSelect('solo')}
+                  className={`group w-full p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                    selectedMode === 'solo'
+                      ? 'casino-selected border-purple-500 bg-purple-500/20 text-white'
+                      : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10'
+                  }`}
+                  disabled={selectedMode !== null}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <User className="h-3 w-3 text-white" />
+                    <span className="text-xs font-medium">Solo Mission</span>
+                  </div>
+                </button>
 
-              {/* Torneio */}
-              <Button
-                variant="outline"
-                className={`w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold relative opacity-60 cursor-not-allowed bg-transparent border border-muted-foreground/30`}
-                disabled={true}
-              >
-                <div className="flex items-center justify-center gap-4">
-                  <span className="text-muted-foreground">Torneios</span>
-                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 10px rgba(251,146,60,0.8))' }}>
-                    Soon™
-                  </span>
-                </div>
-              </Button>
+                {/* Modo Duelo */}
+                <button
+                  onClick={() => handleModeSelect('duelo')}
+                  className={`group w-full p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                    selectedMode === 'duelo'
+                      ? 'casino-selected border-pink-500 bg-pink-500/20 text-white'
+                      : 'border-pink-500/30 bg-black/20 text-gray-300 casino-hover hover:border-pink-500/60 hover:bg-pink-500/10'
+                  }`}
+                  disabled={selectedMode !== null}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <Users className="h-3 w-3 text-white" />
+                    <span className="text-xs font-medium">Multiplayer</span>
+                  </div>
+                </button>
 
-              {/* Conectar Conceitos */}
-              <Button
-                onClick={() => navigate('/concept-connections?theme=basic_finance')}
-                variant="outline"
-                className={`group w-full ${isMobile ? 'py-4 text-base' : 'py-6 text-lg'} font-semibold hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/50 transition-all duration-300 bg-transparent border border-cyan-400/60 hover:border-cyan-400/80 ring-2 ring-cyan-400/30 hover:ring-cyan-400/50`}
-              >
-                <div className="flex items-center justify-center gap-4">
-                  <span className="text-foreground font-bold">Connect the Dots</span>
-                  <span className="ml-3 px-3 py-1 text-sm bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
-                    Fire
-                  </span>
-                </div>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                {/* Torneio */}
+                <button
+                  className="w-full p-2 rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30"
+                  disabled={true}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-xs text-muted-foreground">Torneios</span>
+                    <span className="px-2 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
+                      Soon™
+                    </span>
+                  </div>
+                </button>
 
-        {/* Modal de Seleção de Tema */}
-        <ThemeSelectionModal
-          isOpen={showThemeModal}
-          onClose={() => {
-            setShowThemeModal(false);
-            setSelectedMode(null);
-          }}
-          onSelectTheme={handleThemeSelect}
-        />
+                {/* Conectar Conceitos */}
+                <button
+                  onClick={() => navigate('/concept-connections?theme=basic_finance')}
+                  className="group w-full p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card border-cyan-500/30 bg-black/20 text-gray-300 casino-hover hover:border-cyan-500/60 hover:bg-cyan-500/10"
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-xs font-bold text-white">Connect the Dots</span>
+                    <span className="px-2 py-0.5 text-xs bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
+                      Fire
+                    </span>
+                  </div>
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+
+      {/* Modal de Seleção de Tema */}
+      <ThemeSelectionModal
+        isOpen={showThemeModal}
+        onClose={() => {
+          setShowThemeModal(false);
+          setSelectedMode(null);
+        }}
+        onSelectTheme={handleThemeSelect}
+      />
     </div>
   );
 }
