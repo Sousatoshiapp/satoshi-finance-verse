@@ -460,7 +460,7 @@ export default function Dashboard() {
               </div>
             </Button>
             
-            {/* Joysticks Icon - Positioned absolutely with spacing and connecting line */}
+            {/* Joysticks Icon - Positioned absolutely with close spacing */}
             <div 
               onClick={() => {
                 setFlashActive(true);
@@ -471,7 +471,7 @@ export default function Dashboard() {
               }}
               className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'right-4' : 'right-8'} cursor-pointer transition-all duration-200 hover:scale-110`}
             >
-              <div className="relative w-16 h-8">
+              <div className="relative w-14 h-8">
                 {/* First joystick */}
                 <Gamepad2 
                   className={`absolute top-0 left-0 h-8 w-8 text-purple-400 transition-all duration-200 ${
@@ -485,21 +485,9 @@ export default function Dashboard() {
                   }}
                 />
                 
-                {/* Connecting line */}
-                <div 
-                  className={`absolute top-1/2 left-4 w-4 h-0.5 bg-purple-400 opacity-60 transition-all duration-200 ${
-                    flashActive ? 'animate-pulse' : ''
-                  }`}
-                  style={{
-                    transform: 'translateY(-50%)',
-                    boxShadow: '0 0 4px rgb(168 85 247 / 0.6)',
-                    animation: flashActive ? 'pulse 0.15s ease-out' : 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                  }}
-                />
-                
                 {/* Second joystick */}
                 <Gamepad2 
-                  className={`absolute top-0 left-8 h-8 w-8 text-purple-400 transition-all duration-200 ${
+                  className={`absolute top-0 left-6 h-8 w-8 text-purple-400 transition-all duration-200 ${
                     flashActive ? 'animate-ping' : 'animate-pulse'
                   }`}
                   style={{
