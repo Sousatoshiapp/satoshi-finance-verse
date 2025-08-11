@@ -5,7 +5,8 @@ import { Input } from "@/components/shared/ui/input";
 import { Label } from "@/components/shared/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, XCircle } from "lucide-react";
+import { SecurityValidation } from "@/lib/security-validation";
 
 export function SignupForm() {
   const [email, setEmail] = useState("");
@@ -14,11 +15,29 @@ export function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<{ isValid: boolean; errors: string[] }>({ isValid: false, errors: [] });
   const { toast } = useToast();
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    const strength = SecurityValidation.validatePasswordStrength(value);
+    setPasswordStrength(strength);
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Enhanced password validation
+    const passwordValidation = SecurityValidation.validatePasswordStrength(password);
+    if (!passwordValidation.isValid) {
+      toast({
+        title: "Senha não atende aos requisitos",
+        description: passwordValidation.errors.join(", "),
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (password !== confirmPassword) {
       toast({
         title: "Senhas não coincidem",
@@ -28,10 +47,12 @@ export function SignupForm() {
       return;
     }
 
-    if (password.length < 6) {
+    // Email validation
+    const emailValidation = SecurityValidation.validateEmail(email);
+    if (!emailValidation.isValid) {
       toast({
-        title: "Senha muito curta",
-        description: "A senha deve ter pelo menos 6 caracteres.",
+        title: "Email inválido",
+        description: emailValidation.error,
         variant: "destructive",
       });
       return;
@@ -40,9 +61,13 @@ export function SignupForm() {
     setLoading(true);
 
     try {
+      // SECURITY FIX: Add email redirect URL for proper authentication
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`
+        }
       });
 
       if (error) {
@@ -91,13 +116,13 @@ export function SignupForm() {
           <Input
             id="signup-password"
             type={showPassword ? "text" : "password"}
-            placeholder="Digite sua senha"
+            placeholder="Digite sua senha (mínimo 8 caracteres)"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handlePasswordChange(e.target.value)}
             required
             disabled={loading}
             className="pr-10"
-            minLength={6}
+            minLength={8}
           />
           <Button
             type="button"
@@ -110,6 +135,32 @@ export function SignupForm() {
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </Button>
         </div>
+        
+        {/* Password Strength Indicator */}
+        {password && (
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center gap-2">
+              {passwordStrength.isValid ? (
+                <CheckCircle className="h-4 w-4 text-green-500" />
+              ) : (
+                <XCircle className="h-4 w-4 text-red-500" />
+              )}
+              <span className={passwordStrength.isValid ? "text-green-600" : "text-red-600"}>
+                {passwordStrength.isValid ? "Senha forte" : "Senha fraca"}
+              </span>
+            </div>
+            {!passwordStrength.isValid && passwordStrength.errors.length > 0 && (
+              <ul className="space-y-1 text-red-600">
+                {passwordStrength.errors.map((error, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <XCircle className="h-3 w-3" />
+                    {error}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -124,7 +175,7 @@ export function SignupForm() {
             required
             disabled={loading}
             className="pr-10"
-            minLength={6}
+            minLength={8}
           />
           <Button
             type="button"
