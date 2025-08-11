@@ -28,6 +28,7 @@ export const LazyRoutes = {
   FindOpponent: lazy(() => import('@/pages/FindOpponent')),
   SelectOpponentScreen: lazy(() => import('@/pages/SelectOpponentScreen')),
   CasinoDuelScreen: lazy(() => import('@/pages/CasinoDuelScreen')),
+  DuelResultScreen: lazy(() => import('@/pages/DuelResultScreen')),
   DuelWaitingScreen: lazy(() => import('@/components/duels/duel-waiting-screen')),
   EnhancedSimultaneousDuel: lazy(() => import('@/components/duels/enhanced-simultaneous-duel')),
   
