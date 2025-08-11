@@ -487,7 +487,7 @@ export default function Dashboard() {
                 
                 {/* Second joystick */}
                 <Gamepad2 
-                  className={`absolute top-0 left-7 h-8 w-8 text-pink-400 transition-all duration-200 ${
+                  className={`absolute top-0 left-8 h-8 w-8 text-pink-400 transition-all duration-200 ${
                     flashActive ? 'animate-ping' : 'animate-pulse'
                   }`}
                   style={{
