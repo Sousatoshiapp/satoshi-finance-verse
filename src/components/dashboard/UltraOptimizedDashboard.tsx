@@ -1,5 +1,5 @@
 // FASE 4: Loading Strategy Revolucionária - Skeleton-First Rendering
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useEffect } from 'react';
 import { useDashboardSuperQuery } from '@/hooks/use-dashboard-super-query';
 import { UltraBTZCounter } from './UltraBTZCounter';
 import { ProfileStyleLoader } from '@/components/shared/ui/profile-style-loader';
@@ -58,6 +58,15 @@ const UltraOptimizedDashboard = memo(() => {
       nickname: data.profile?.nickname || t('dashboard.student')
     };
   }, [data, t]);
+
+  // FASE 5: Performance optimization - Remove problematic external CSS
+  useEffect(() => {
+    const removeExternalCSS = () => {
+      const links = document.querySelectorAll('link[href*="quizconomy.com"]');
+      links.forEach(link => link.remove());
+    };
+    removeExternalCSS();
+  }, []);
 
   // Always render loading for immediate paint
   if (isLoading || !data) {

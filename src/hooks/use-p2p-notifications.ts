@@ -111,14 +111,22 @@ export function useP2PNotifications() {
       return;
     }
     
-    console.log('🔄 P2P Notifications: Setting up realtime subscription for profile.id:', profile.id);
+    console.log('🔄 P2P Notifications: Setting up stable realtime subscription for profile.id:', profile.id);
     console.log('🔄 P2P Notifications: Current user nickname:', profile.nickname);
     
-    // Use a stable channel name to prevent constant reconnections
-    const channelName = `p2p-notifications-${profile.id}`;
+    // Use a stable channel name and debounce to prevent constant reconnections
+    const channelName = `p2p-stable-${profile.id}`;
+    let timeoutId: NodeJS.Timeout;
     
     const channel = supabase
-      .channel(channelName)
+      .channel(channelName, {
+        config: {
+          presence: {
+            key: profile.id,
+          },
+          broadcast: { self: false },
+        },
+      })
       .on(
         'postgres_changes',
         {
@@ -148,26 +156,34 @@ export function useP2PNotifications() {
           }
           
           if (payload.new?.transfer_type === 'p2p') {
-            // Get sender profile info
-            const { data: senderProfile, error: senderError } = await supabase
-              .from('profiles')
-              .select('nickname')
-              .eq('id', payload.new.user_id)
-              .single();
-              
-            if (senderError) {
-              console.error('❌ P2P Notification: Error fetching sender profile:', senderError);
-              return;
-            }
-              
-            const senderNickname = senderProfile?.nickname || 'Unknown User';
-            const amount = payload.new.amount_cents;
-            
-            console.log('💰 P2P Notification: ✅ VALID RECEIVE - Triggering notification');
-            console.log('💰 P2P Notification: Amount:', amount, 'from:', senderNickname, 'to:', profile.nickname);
-            
-            await triggerReceiveNotification(amount, senderNickname);
-            showP2PModal(amount, senderNickname);
+            // Debounce to prevent duplicate notifications
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(async () => {
+              try {
+                // Get sender profile info
+                const { data: senderProfile, error: senderError } = await supabase
+                  .from('profiles')
+                  .select('nickname')
+                  .eq('id', payload.new.user_id)
+                  .single();
+                  
+                if (senderError) {
+                  console.error('❌ P2P Notification: Error fetching sender profile:', senderError);
+                  return;
+                }
+                  
+                const senderNickname = senderProfile?.nickname || 'Unknown User';
+                const amount = payload.new.amount_cents;
+                
+                console.log('💰 P2P Notification: ✅ VALID RECEIVE - Triggering notification');
+                console.log('💰 P2P Notification: Amount:', amount, 'from:', senderNickname, 'to:', profile.nickname);
+                
+                await triggerReceiveNotification(amount, senderNickname);
+                showP2PModal(amount, senderNickname);
+              } catch (error) {
+                console.error('❌ P2P Notification: Error processing notification:', error);
+              }
+            }, 300); // 300ms debounce
           } else {
             console.log('📨 P2P Notification: Not a P2P transaction, skipping');
           }
@@ -175,13 +191,19 @@ export function useP2PNotifications() {
       )
       .subscribe((status) => {
         console.log('📡 P2P Notification subscription status:', status);
+        if (status === 'SUBSCRIBED') {
+          console.log('✅ P2P Notifications: Successfully subscribed to realtime updates');
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('❌ P2P Notifications: Channel error, will retry');
+        }
       });
 
     return () => {
       console.log('🔌 P2P Notifications: Cleaning up realtime subscription for:', profile.id);
+      clearTimeout(timeoutId);
       supabase.removeChannel(channel);
     };
-  }, [profile?.id]);
+  }, [profile?.id, triggerReceiveNotification, showP2PModal]);
 
   return { 
     triggerReceiveNotification,
