@@ -186,10 +186,10 @@ export function BTZCounter({ className = "" }: BTZCounterProps) {
           {/* Compact view */}
           {!showDetails && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
-              {analytics?.current.yield_applied_today ? (
+              {analytics?.current?.yield_applied_today ? (
                 <span className="text-[#adff2f]">✓ {t('btz.yieldedToday')}</span>
               ) : (
-                <span className="text-orange-500">⏰ {t('btz.next')}: {analytics ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
+                <span className="text-orange-500">⏰ {t('btz.next')}: {analytics?.current ? formatTimeUntilYield(analytics.current.time_until_next_yield_ms) : '--'}</span>
               )}
             </div>
           )}
