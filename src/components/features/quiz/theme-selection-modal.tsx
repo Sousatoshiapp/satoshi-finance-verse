@@ -93,12 +93,11 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
         )}>
           <div className={cn(
             isMobile 
-              ? "grid grid-cols-2 gap-2" 
-              : "space-y-4"
+              ? "space-y-2" 
+              : "space-y-3"
           )}>
             {QUIZ_CATEGORIES.map((category, index) => {
               const isSelected = selectedCategory === category.id;
-              const isThirdCard = index === 2;
               
               return (
                 <div
@@ -111,9 +110,8 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                     isSelected 
                       ? "border-yellow-500/80 shadow-[0_0_25px_rgba(255,215,0,0.4)]" 
                       : "",
-                    isMobile && isThirdCard ? "col-span-2" : "",
                     isMobile 
-                      ? "h-16 hover:scale-[1.01]" 
+                      ? "h-12 hover:scale-[1.01]" 
                       : "hover:-translate-y-1 hover:scale-[1.02]"
                   )}
                   onClick={() => handleCategorySelect(category.id)}
