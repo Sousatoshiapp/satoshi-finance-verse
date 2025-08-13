@@ -18,12 +18,7 @@ export function MobileEnhancedFeed({ onPostLike }: MobileEnhancedFeedProps) {
     // Simulate refresh
     await new Promise(resolve => setTimeout(resolve, 1000));
     setRefreshKey(prev => prev + 1);
-    
-    toast({
-      title: "Feed atualizado",
-      description: "Posts mais recentes carregados",
-    });
-  }, [toast]);
+  }, []);
 
   const handleInfiniteScroll = useCallback(async () => {
     // Simulate loading more
@@ -59,7 +54,7 @@ export function MobileEnhancedFeed({ onPostLike }: MobileEnhancedFeedProps) {
     onPullToRefresh: handlePullToRefresh,
     onInfiniteScroll: handleInfiniteScroll,
     onDoubleTap: handleDoubleTap,
-    pullThreshold: 80,
+    pullThreshold: 120,
     scrollThreshold: 200
   });
 
@@ -69,7 +64,7 @@ export function MobileEnhancedFeed({ onPostLike }: MobileEnhancedFeedProps) {
       <div className="absolute top-0 left-0 right-0 z-10">
         <MobilePullIndicator
           pullDistance={pullDistance}
-          pullThreshold={80}
+          pullThreshold={120}
           isRefreshing={isRefreshing}
         />
       </div>

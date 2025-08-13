@@ -15,12 +15,9 @@ interface UniversalPullRefreshConfig {
 
 export function useUniversalPullRefresh({
   onRefresh,
-  refreshMessage = {
-    title: "Atualizado",
-    description: "Dados atualizados com sucesso"
-  },
+  refreshMessage,
   invalidateQueries = [],
-  pullThreshold = 80
+  pullThreshold = 120
 }: UniversalPullRefreshConfig = {}) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -39,11 +36,13 @@ export function useUniversalPullRefresh({
         });
       }
       
-      // Show success message
-      toast({
-        title: refreshMessage.title,
-        description: refreshMessage.description,
-      });
+      // Show success message only if provided
+      if (refreshMessage) {
+        toast({
+          title: refreshMessage.title,
+          description: refreshMessage.description,
+        });
+      }
     } catch (error) {
       console.error('Pull to refresh error:', error);
       toast({

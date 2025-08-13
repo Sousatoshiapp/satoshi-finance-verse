@@ -25,10 +25,7 @@ export default function GameMode() {
     indicators,
     pullThreshold
   } = useUniversalPullRefresh({
-    refreshMessage: {
-      title: "Modos de jogo atualizados",
-      description: "Verifique novos recursos disponíveis"
-    }
+    pullThreshold: 120
   });
 
   useEffect(() => {

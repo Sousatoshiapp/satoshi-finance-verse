@@ -112,10 +112,7 @@ export default function Dashboard() {
       await refetch();
       refreshSubscription();
     },
-    refreshMessage: {
-      title: "Dashboard atualizado",
-      description: "Dados mais recentes carregados"
-    },
+    pullThreshold: 120,
     invalidateQueries: ['dashboard-data', 'subscription-status']
   });
   

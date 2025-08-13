@@ -28,9 +28,9 @@ export function useMobileGestures(config: MobileGesturesConfig) {
     onSwipeLeft,
     onSwipeRight,
     onDoubleTap,
-    pullThreshold = 80,
-    swipeThreshold = 100,
-    scrollThreshold = 200
+  pullThreshold = 120,
+  swipeThreshold = 100,
+  scrollThreshold = 200
   } = config;
 
   // Pull-to-refresh
@@ -55,10 +55,10 @@ export function useMobileGestures(config: MobileGesturesConfig) {
     const deltaY = currentY - startY;
     const deltaX = currentX - startX;
     
-    // Pull-to-refresh (only when at top)
-    if (container.scrollTop === 0 && deltaY > 0 && Math.abs(deltaX) < 50) {
+    // Pull-to-refresh (only when at top with more restrictive conditions)
+    if (container.scrollTop === 0 && deltaY > 15 && Math.abs(deltaX) < 30) {
       e.preventDefault();
-      const distance = Math.min(deltaY * 0.6, pullThreshold * 1.5);
+      const distance = Math.min(deltaY * 0.4, pullThreshold * 1.2);
       setPullDistance(distance);
       
       if (distance > pullThreshold) {
