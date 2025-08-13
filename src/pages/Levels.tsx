@@ -55,29 +55,29 @@ export default function Levels() {
   }
 
   return (
-    <div className={`min-h-screen bg-background overflow-x-hidden ${isMobile ? 'pb-28' : 'pb-20'}`} 
+    <div className={`min-h-screen bg-background overflow-x-hidden w-full ${isMobile ? 'pb-28' : 'pb-20'}`} 
          style={isMobile ? { paddingTop: 'max(env(safe-area-inset-top, 0px), 20px)' } : {}}>
       
       {/* Header */}
-      <div className={`${isMobile ? 'px-3 py-3 pt-6' : 'px-6 py-6'}`}>
-        <div className={`mx-auto ${isMobile ? 'max-w-full' : 'max-w-7xl'}`}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size={isMobile ? "sm" : "sm"} onClick={() => navigate('/dashboard')}>
-                <ArrowLeft className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'} mr-1`} />
-                {isMobile ? 'Voltar' : 'Dashboard'}
+      <div className={`${isMobile ? 'px-3 py-3 pt-4' : 'px-6 py-6'} w-full max-w-full overflow-hidden`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-full' : 'max-w-7xl'} w-full`}>
+          <div className={`flex items-center justify-between mb-4 ${isMobile ? 'flex-wrap gap-2' : ''}`}>
+            <div className={`flex items-center ${isMobile ? 'gap-1.5 min-w-0 flex-1' : 'gap-2'}`}>
+              <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')} className="shrink-0">
+                <ArrowLeft className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'} ${isMobile ? '' : 'mr-1'}`} />
+                {isMobile ? '' : 'Dashboard'}
               </Button>
-              <h1 className={`font-bold text-foreground ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+              <h1 className={`font-bold text-foreground truncate ${isMobile ? 'text-base' : 'text-2xl'}`}>
                 {isMobile ? 'Níveis' : 'Níveis & Progressão'}
               </h1>
             </div>
             
-            <div className="flex items-center gap-1.5">
-              <Button variant="outline" size="sm">
+            <div className={`flex items-center ${isMobile ? 'gap-1 shrink-0' : 'gap-1.5'}`}>
+              <Button variant="outline" size="sm" className="shrink-0">
                 <Filter className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
                 {!isMobile && <span className="ml-1">Filtrar</span>}
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="shrink-0">
                 <Settings className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
                 {!isMobile && <span className="ml-1">Config</span>}
               </Button>
@@ -95,7 +95,7 @@ export default function Levels() {
       </div>
 
       {/* Main Content */}
-      <div className={`mx-auto ${isMobile ? 'max-w-full px-3' : 'max-w-7xl px-6'}`}>
+      <div className={`mx-auto ${isMobile ? 'max-w-full px-3' : 'max-w-7xl px-6'} w-full overflow-hidden`}>
         {isMobile ? (
           // Mobile Layout: Single Column
           <div className="space-y-4">

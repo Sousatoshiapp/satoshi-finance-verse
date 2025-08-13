@@ -61,7 +61,7 @@ export function LevelHeroSection({
             </div>
             
             <div className="flex-1 min-w-0">
-              <h1 className="text-base font-bold text-foreground truncate">{currentLevelInfo.name}</h1>
+              <h1 className="text-sm font-bold text-foreground truncate">{currentLevelInfo.name}</h1>
               <p className="text-xs text-muted-foreground">Nível {user.level}</p>
               {user.streak && user.streak > 0 && (
                 <div className="mt-1">
@@ -80,18 +80,14 @@ export function LevelHeroSection({
           />
 
           {/* Quick Stats - 2 columns on very small screens */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <Card className="p-2.5 text-center bg-card/60 backdrop-blur-sm min-h-[56px]">
-              <div className="text-lg font-bold text-primary">{user.xp}</div>
+          <div className="grid grid-cols-2 gap-2 max-w-full">
+            <Card className="p-2 text-center bg-card/60 backdrop-blur-sm min-h-[52px] overflow-hidden">
+              <div className="text-base font-bold text-primary truncate">{user.xp}</div>
               <div className="text-[10px] text-muted-foreground">XP Total</div>
             </Card>
-            <Card className="p-2.5 text-center bg-card/60 backdrop-blur-sm min-h-[56px]">
-              <div className="text-lg font-bold text-secondary">{progressPercentage.toFixed(0)}%</div>
+            <Card className="p-2 text-center bg-card/60 backdrop-blur-sm min-h-[52px] overflow-hidden">
+              <div className="text-base font-bold text-secondary">{progressPercentage.toFixed(0)}%</div>
               <div className="text-[10px] text-muted-foreground">Progresso</div>
-            </Card>
-            <Card className="p-2.5 text-center bg-card/60 backdrop-blur-sm min-h-[56px] col-span-2 sm:col-span-1">
-              <div className="text-lg font-bold text-accent">{100 - user.level}</div>
-              <div className="text-[10px] text-muted-foreground">Restantes</div>
             </Card>
           </div>
         </div>
