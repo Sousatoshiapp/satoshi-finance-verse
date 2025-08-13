@@ -277,10 +277,10 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
 
           {/* Completed State */}
           {(isCompleted || quizCompleted) && (
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-2 border-green-200 dark:border-green-700">
+            <Card className="bg-gradient-to-br from-[#adff2f]/10 to-[#adff2f]/20 dark:from-[#adff2f]/5 dark:to-[#adff2f]/10 border-2 border-[#adff2f]/30 dark:border-[#adff2f]/50">
               <CardContent className="p-4 sm:p-6 text-center">
                 <div className="text-4xl sm:text-5xl mb-3">🎉</div>
-                <h3 className="font-bold text-lg sm:text-xl mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                <h3 className="font-bold text-lg sm:text-xl mb-3 bg-gradient-to-r from-[#adff2f] to-green-600 bg-clip-text text-transparent">
                   Lição Concluída!
                 </h3>
                 
