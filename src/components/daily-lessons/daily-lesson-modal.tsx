@@ -4,7 +4,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { useDailyLessons } from "@/hooks/use-daily-lessons";
 import { useState, useEffect } from "react";
-import { X, BookOpen, Award, Zap, ArrowRight } from "lucide-react";
+import { X, BookOpen, Award, Zap, ArrowRight, Trophy } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface DailyLessonModalProps {
@@ -279,7 +279,7 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
           {(isCompleted || quizCompleted) && (
             <Card className="bg-gradient-to-br from-[#adff2f]/10 to-[#adff2f]/20 dark:from-[#adff2f]/5 dark:to-[#adff2f]/10 border-2 border-[#adff2f]/30 dark:border-[#adff2f]/50">
               <CardContent className="p-4 sm:p-6 text-center">
-                <div className="text-4xl sm:text-5xl mb-3">🎉</div>
+                <Trophy className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 text-yellow-500 drop-shadow-lg filter drop-shadow-[0_0_20px_rgba(255,215,0,0.8)] animate-pulse" />
                 <h3 className="font-bold text-lg sm:text-xl mb-3 bg-gradient-to-r from-[#adff2f] to-green-600 bg-clip-text text-transparent">
                   Lição Concluída!
                 </h3>
