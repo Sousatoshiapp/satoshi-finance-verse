@@ -154,7 +154,8 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
             <div className="text-center space-y-3">
               <Button 
                 onClick={handleStartQuiz}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                style={{ backgroundColor: '#ADFF2F', color: '#000000' }}
+                className="hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-sm sm:text-base font-semibold"
                 size="lg"
               >
                 🎯 Fazer Quiz e Ganhar BTZ
@@ -170,7 +171,7 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
               <CardContent className="p-4 sm:p-6">
                 <div className="text-center mb-4">
                   <h3 className="font-bold text-lg sm:text-xl mb-2">🧠 Quiz Time!</h3>
-                  <p className="font-medium text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                  <p className="font-medium text-sm sm:text-base text-white">
                     {currentLesson.quiz_question}
                   </p>
                 </div>
@@ -182,9 +183,10 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
                       variant={selectedAnswer === index ? "default" : "outline"}
                       className={`w-full text-left justify-start h-auto p-3 sm:p-4 transition-all duration-200 ${
                         selectedAnswer === index 
-                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white border-purple-500 shadow-md transform scale-[1.02]" 
+                          ? "text-black shadow-md transform scale-[1.02] border-[#ADFF2F]" 
                           : "hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:border-purple-300"
                       }`}
+                      style={selectedAnswer === index ? { backgroundColor: '#ADFF2F' } : {}}
                       onClick={() => setSelectedAnswer(index)}
                     >
                       <div className="flex items-center gap-2 sm:gap-3 w-full">
@@ -202,7 +204,8 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
                 <Button
                   onClick={handleSubmitQuiz}
                   disabled={selectedAnswer === null}
-                  className="w-full mt-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 disabled:from-gray-400 disabled:to-gray-500 shadow-lg disabled:shadow-none transition-all duration-300"
+                  style={selectedAnswer !== null ? { backgroundColor: '#ADFF2F', color: '#000000' } : {}}
+                  className="w-full mt-4 hover:opacity-90 disabled:bg-gray-400 disabled:text-gray-600 shadow-lg disabled:shadow-none transition-all duration-300 text-sm sm:text-base font-semibold"
                   size="lg"
                 >
                   ✅ Confirmar Resposta

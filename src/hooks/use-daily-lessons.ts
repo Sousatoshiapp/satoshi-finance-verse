@@ -260,19 +260,26 @@ export function useDailyLessons() {
 
       // Trigger animations and effects for quiz completion
       if (isCorrect) {
-        // Show XP and BTZ gains with animations
-        rewardSystem.showXPGain(lesson.xp_reward);
-        if (btzEarned > 0) {
-          rewardSystem.showBTZGain(btzEarned, { x: window.innerWidth / 2, y: window.innerHeight * 0.4 });
-        }
+        // Show XP and BTZ gains with animations with delays for better UX
+        setTimeout(() => {
+          rewardSystem.showXPGain(lesson.xp_reward);
+        }, 500);
+        
+        setTimeout(() => {
+          if (btzEarned > 0) {
+            rewardSystem.showBTZGain(btzEarned, { x: window.innerWidth / 2, y: window.innerHeight * 0.4 });
+          }
+        }, 1000);
         
         // Trigger confetti
-        confetti({
-          particleCount: 150,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ['#8B5CF6', '#EC4899', '#F59E0B']
-        });
+        setTimeout(() => {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#8B5CF6', '#EC4899', '#F59E0B']
+          });
+        }, 200);
 
         toast({
           title: "🎉 Resposta correta!",
@@ -297,8 +304,11 @@ export function useDailyLessons() {
           });
         }
       } else {
-        // Show XP gain even for wrong answers
-        rewardSystem.showXPGain(1);
+        // Show XP gain even for wrong answers and incorrect answer feedback
+        setTimeout(() => {
+          rewardSystem.showXPGain(1);
+          rewardSystem.showIncorrectAnswer("Resposta incorreta");
+        }, 300);
         
         toast({
           title: "🤔 Resposta incorreta",

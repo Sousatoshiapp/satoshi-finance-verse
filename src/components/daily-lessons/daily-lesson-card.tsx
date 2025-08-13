@@ -68,22 +68,22 @@ export function DailyLessonCard() {
 
   return (
     <>
-      <Card className="h-20 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 hover:shadow-md transition-all duration-300 overflow-hidden">
-        <CardContent className="p-3 h-full">
+      <Card className="h-16 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 hover:shadow-md transition-all duration-300 overflow-hidden">
+        <CardContent className="p-2 h-full">
           <div className="flex items-center justify-between h-full">
             {/* Left side - Title and Progress */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-semibold truncate">💸 Pílulas de Conhecimento</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="text-xs font-semibold truncate">💸 Pílulas de Conhecimento</span>
                 {userStreak && userStreak.current_streak > 0 && (
-                  <Badge variant="secondary" className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 text-xs px-1.5 py-0.5">
+                  <Badge variant="secondary" className="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 text-[10px] px-1 py-0">
                     🔥 {userStreak.current_streak}
                   </Badge>
                 )}
               </div>
-              <div className="space-y-1">
-                <Progress value={progressPercentage} className="h-1.5 w-full" />
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+              <div className="space-y-0.5">
+                <Progress value={progressPercentage} className="h-1 w-full" />
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
                   <span>{completedLessons}/{totalLessons} completas</span>
                   <span>2-3 min</span>
                 </div>
@@ -91,17 +91,18 @@ export function DailyLessonCard() {
             </div>
 
             {/* Right side - Main lesson or status */}
-            <div className="ml-3 flex-shrink-0">
+            <div className="ml-2 flex-shrink-0">
               {mainLesson ? (
                 <Button
                   onClick={() => setSelectedLesson(mainLesson.id)}
                   size="sm"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-3 py-1.5 text-xs"
+                  style={{ backgroundColor: '#ADFF2F', color: '#000000' }}
+                  className="hover:opacity-90 px-2 py-1 text-[10px] font-semibold"
                 >
                   {isLessonCompleted(mainLesson.id) ? "✓ Ver" : "Começar"}
                 </Button>
               ) : (
-                <div className="text-xs text-muted-foreground">
+                <div className="text-[10px] text-muted-foreground">
                   Nenhuma lição
                 </div>
               )}
