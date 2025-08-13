@@ -4,7 +4,8 @@ import { Badge } from "@/components/shared/ui/badge";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { useDailyLessons } from "@/hooks/use-daily-lessons";
 import { useState, useEffect } from "react";
-import { X, BookOpen, Award, Zap } from "lucide-react";
+import { X, BookOpen, Award, Zap, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface DailyLessonModalProps {
   lessonId?: string;
@@ -13,6 +14,7 @@ interface DailyLessonModalProps {
 }
 
 export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModalProps) {
+  const navigate = useNavigate();
   const {
     lessons,
     mainLesson,
@@ -32,6 +34,8 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState<Array<{ text: string; originalIndex: number }>>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [countdown, setCountdown] = useState(4);
 
   // Determinar qual lição mostrar
   const currentLesson = lessonId 
@@ -46,6 +50,8 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
       setShowQuiz(false);
       setSelectedAnswer(null);
       setQuizCompleted(false);
+      setIsRedirecting(false);
+      setCountdown(4);
       
       // Shuffle quiz options
       const options = currentLesson.quiz_options.map((text, index) => ({
@@ -62,6 +68,32 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
       setShuffledOptions(options);
     }
   }, [currentLesson]);
+
+  // Auto redirect after quiz completion
+  useEffect(() => {
+    if (quizCompleted && !isRedirecting) {
+      const timer = setTimeout(() => {
+        setIsRedirecting(true);
+        setCountdown(4);
+      }, 2000); // Wait 2 seconds to show rewards
+
+      return () => clearTimeout(timer);
+    }
+  }, [quizCompleted, isRedirecting]);
+
+  // Countdown timer for redirection
+  useEffect(() => {
+    if (isRedirecting && countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(prev => prev - 1);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else if (isRedirecting && countdown === 0) {
+      navigate('/dashboard');
+      handleClose();
+    }
+  }, [isRedirecting, countdown, navigate]);
 
   const handleViewLesson = async () => {
     if (!currentLesson || isLessonViewed(currentLesson.id)) return;
@@ -240,6 +272,16 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
                 <h3 className="font-bold text-lg sm:text-xl mb-3 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                   Lição Concluída!
                 </h3>
+                
+                {/* Redirection countdown */}
+                {isRedirecting && (
+                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-700">
+                    <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
+                      🚀 Redirecionando para o Dashboard em {countdown}s...
+                    </p>
+                  </div>
+                )}
+                
                 {lessonProgress && (
                   <div className="space-y-3">
                     <p className="text-sm text-muted-foreground font-medium">
@@ -262,6 +304,23 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
                         Resposta incorreta, mas você ganhou XP por tentar! 💪
                       </p>
                     )}
+                  </div>
+                )}
+
+                {/* Immediate navigation button */}
+                {!isRedirecting && quizCompleted && (
+                  <div className="mt-4">
+                    <Button
+                      onClick={() => {
+                        navigate('/dashboard');
+                        handleClose();
+                      }}
+                      style={{ backgroundColor: '#ADFF2F', color: '#000000' }}
+                      className="hover:opacity-90 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] text-sm font-semibold"
+                    >
+                      <ArrowRight className="w-4 h-4 mr-2" />
+                      Continuar no Dashboard
+                    </Button>
                   </div>
                 )}
               </CardContent>
