@@ -148,8 +148,8 @@ export function useCasinoDuels() {
           const opponent = queuedUsers[0];
           console.log('🎯 Found opponent:', opponent.user_id);
 
-          // Generate questions for the duel
-          const questions = await generateDuelQuestions(topic);
+          // Generate questions for the duel using standardized system
+          const questions = await generateDuelQuestions(topic, profile?.level, 1);
 
           // Create the duel
           const { data: duelData, error: duelError } = await supabase
@@ -503,59 +503,29 @@ export function useCasinoDuels() {
   };
 }
 
-// Generate questions for a specific topic using the existing quiz_questions table
-async function generateDuelQuestions(topic: string): Promise<DuelQuestion[]> {
+// Generate questions for a specific topic using the standardized system
+async function generateDuelQuestions(topic: string, playerLevel1?: number, playerLevel2?: number): Promise<DuelQuestion[]> {
   try {
-    // Map topic to district_id if needed
-    const topicDistrictMap: Record<string, string> = {
-      'financas': 'financas',
-      'cripto': 'cripto', 
-      'investimentos': 'investimentos',
-      'economia': 'economia'
-    };
-
-    const districtKey = topicDistrictMap[topic] || topic;
-
-    // Fetch questions from quiz_questions table
-    const { data: questions, error } = await supabase
-      .from('quiz_questions')
-      .select('*')
-      .or(`district_id.eq.${districtKey},topic.ilike.%${topic}%`)
-      .order('RANDOM()')
-      .limit(5); // 5 questions per duel
-
-    if (error) {
-      console.error('Erro ao buscar perguntas:', error);
-      return getFallbackQuestions();
-    }
-
-    if (!questions || questions.length === 0) {
-      console.log('Nenhuma pergunta encontrada, usando fallback');
-      return getFallbackQuestions();
-    }
-
-    // Transform questions to DuelQuestion format
-    const duelQuestions: DuelQuestion[] = questions.map((q: any) => {
-      // Parse options from the options array or create fallback structure
-      const optionsArray = q.options || [];
-      return {
-        id: q.id,
-        question: q.question,
-        district_id: q.district_id,
-        options: {
-          a: optionsArray[0] || '',
-          b: optionsArray[1] || '',
-          c: optionsArray[2] || '',
-          d: optionsArray[3] || ''
-        },
-        correct_answer: q.correct_answer as 'a' | 'b' | 'c' | 'd',
-        explanation: q.explanation
-      };
-    });
-
-    return duelQuestions;
+    // Import and use the standardized function
+    const { generateDuelQuestions: getQuestions } = await import('../utils/duel-questions');
+    const standardQuestions = await getQuestions(topic, playerLevel1, playerLevel2);
+    
+    // Convert to the format expected by casino duels
+    return standardQuestions.map((q, index) => ({
+      id: q.id.toString(),
+      question: q.question,
+      options: {
+        a: q.options[0]?.text || '',
+        b: q.options[1]?.text || '',
+        c: q.options[2]?.text || '',
+        d: q.options[3]?.text || ''
+      },
+      correct_answer: (['a', 'b', 'c', 'd'][q.options.findIndex(opt => opt.isCorrect)] || 'a') as 'a' | 'b' | 'c' | 'd',
+      explanation: q.explanation
+    }));
   } catch (error) {
-    console.error('Erro ao gerar perguntas:', error);
+    console.error('Error generating duel questions:', error);
+    // Return fallback questions
     return getFallbackQuestions();
   }
 }

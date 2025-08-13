@@ -67,6 +67,46 @@ export function useUnifiedSRS() {
     return { newEasiness, newRepetition, newInterval };
   };
 
+  // Lista de dificuldades em ordem de preferência (fallback)
+  const DIFFICULTY_FALLBACK = ['hard', 'medium', 'easy'];
+
+  // Função para buscar questões com fallback de dificuldade
+  const getQuestionsWithDifficultyFallback = async (
+    targetDifficulty: string,
+    queryBuilder: any,
+    limit: number
+  ): Promise<any[]> => {
+    console.log('🔍 Trying to find questions with difficulty fallback:', targetDifficulty);
+    
+    // Tentar buscar questões na dificuldade desejada primeiro, depois fazer fallback
+    for (const difficulty of DIFFICULTY_FALLBACK) {
+      if (DIFFICULTY_FALLBACK.indexOf(difficulty) < DIFFICULTY_FALLBACK.indexOf(targetDifficulty)) {
+        continue; // Pular dificuldades mais altas que a desejada
+      }
+      
+      const { data: questions, error } = await queryBuilder.eq('difficulty', difficulty).limit(limit);
+      
+      if (!error && questions && questions.length > 0) {
+        console.log(`✅ Found ${questions.length} questions with difficulty: ${difficulty}`);
+        return questions;
+      }
+      
+      console.log(`⚠️ No questions found for difficulty: ${difficulty}`);
+    }
+    
+    // Se não encontrou nenhuma questão, tentar sem filtro de dificuldade
+    console.log('🔄 Trying without difficulty filter...');
+    const { data: anyQuestions, error } = await queryBuilder.limit(limit);
+    
+    if (!error && anyQuestions && anyQuestions.length > 0) {
+      console.log(`✅ Found ${anyQuestions.length} questions without difficulty filter`);
+      return anyQuestions;
+    }
+    
+    console.log('❌ No questions found at all');
+    return [];
+  };
+
   // NOVA LÓGICA: Buscar questões evitando repetições recentes + rotação inteligente
   const getDueQuestions = async (
     difficulty?: string, 
@@ -117,21 +157,42 @@ export function useUnifiedSRS() {
         neverAnsweredQuery = neverAnsweredQuery.not('id', 'in', `(${allExcludeIds.join(',')})`);
       }
 
+      // Aplicar fallback de dificuldade se especificado
+      let neverAnsweredQuestions: any[] = [];
       if (difficulty) {
-        neverAnsweredQuery = neverAnsweredQuery.eq('difficulty', difficulty);
+        neverAnsweredQuestions = await getQuestionsWithDifficultyFallback(
+          difficulty,
+          neverAnsweredQuery,
+          limit
+        );
+      } else {
+        const { data } = await neverAnsweredQuery.limit(limit);
+        neverAnsweredQuestions = data || [];
       }
 
-      // Filtrar questões que NÃO têm progresso registrado
-      const { data: allQuestions } = await neverAnsweredQuery;
-      const { data: questionsWithProgress } = await supabase
-        .from('user_question_progress')
-        .select('question_id')
-        .eq('user_id', profile.id);
+      // Filtrar questões que NÃO têm progresso registrado (apenas se não aplicamos fallback acima)
+      if (!difficulty) {
+        const { data: questionsWithProgress } = await supabase
+          .from('user_question_progress')
+          .select('question_id')
+          .eq('user_id', profile.id);
 
-      const questionsWithProgressIds = questionsWithProgress?.map(q => q.question_id) || [];
-      const neverAnsweredQuestions = allQuestions?.filter(q => 
-        !questionsWithProgressIds.includes(q.id)
-      ) || [];
+        const questionsWithProgressIds = questionsWithProgress?.map(q => q.question_id) || [];
+        neverAnsweredQuestions = neverAnsweredQuestions.filter(q => 
+          !questionsWithProgressIds.includes(q.id)
+        );
+      } else {
+        // Para questões com fallback de dificuldade, filtrar baseado no progresso
+        const { data: questionsWithProgress } = await supabase
+          .from('user_question_progress')
+          .select('question_id')
+          .eq('user_id', profile.id);
+
+        const questionsWithProgressIds = questionsWithProgress?.map(q => q.question_id) || [];
+        neverAnsweredQuestions = neverAnsweredQuestions.filter(q => 
+          !questionsWithProgressIds.includes(q.id)
+        );
+      }
 
       console.log('✨ Questões nunca respondidas encontradas:', neverAnsweredQuestions.length);
 
@@ -167,21 +228,28 @@ export function useUnifiedSRS() {
         oldQuestionsQuery = oldQuestionsQuery.not('id', 'in', `(${allExcludeIds.join(',')})`);
       }
 
+      // Aplicar fallback de dificuldade para questões antigas também
+      let oldQuestions: any[] = [];
       if (difficulty) {
-        oldQuestionsQuery = oldQuestionsQuery.eq('difficulty', difficulty);
+        oldQuestions = await getQuestionsWithDifficultyFallback(
+          difficulty,
+          oldQuestionsQuery,
+          remainingCount
+        );
+      } else {
+        const { data } = await oldQuestionsQuery.limit(remainingCount);
+        oldQuestions = data || [];
       }
-
-      const { data: oldQuestions } = await oldQuestionsQuery.limit(remainingCount);
 
       // 5. Combinar questões nunca respondidas + antigas
       const combinedQuestions = [
         ...neverAnsweredQuestions,
-        ...(oldQuestions || [])
+        ...oldQuestions
       ];
 
       console.log('📋 Resultado final:', {
         neverAnswered: neverAnsweredQuestions.length,
-        oldQuestions: oldQuestions?.length || 0,
+        oldQuestions: oldQuestions.length,
         total: combinedQuestions.length
       });
 
@@ -201,8 +269,13 @@ export function useUnifiedSRS() {
           randomQuery = randomQuery.not('id', 'in', `(${finalExcludeIds.join(',')})`);
         }
 
-        const { data: randomQuestions } = await randomQuery.limit(stillNeeded);
-        combinedQuestions.push(...(randomQuestions || []));
+        // Aplicar fallback de dificuldade para questões aleatórias também
+        const randomQuestions = await getQuestionsWithDifficultyFallback(
+          difficulty || 'easy',
+          randomQuery,
+          stillNeeded
+        );
+        combinedQuestions.push(...randomQuestions);
       }
 
       const finalQuestions = combinedQuestions

@@ -11,15 +11,19 @@ export interface QuizQuestion {
   explanation: string;
 }
 
-const DISTRICT_MAPPING: Record<string, string> = {
-  'XP Investimentos District': '0645a23d-6f02-465a-b9a5-8571853ebdec',
-  'Banking Sector': '6add63a5-9c43-4859-8f9c-282223d6b077',
-  'Cripto Valley': '5a562d56-efde-4341-8789-87fd3d4cf703',
-  'Tech Finance Hub': 'e1f9ede2-3a54-4a4f-a533-4f85b9d9025c',
-  'International Trade': 'c04f1a05-07f2-426b-8ea6-2fb783054111',
-  'Real Estate Zone': '366870a4-fc67-48c2-be47-d3b35e5b523e',
-  'Anima Educação District': '1c58cbaa-9ed2-45ba-b2f9-6b666e94e937'
+// Mapeamento de tópicos de duelo para categorias da base de dados
+const TOPIC_TO_CATEGORY: Record<string, string> = {
+  'financas': 'Finanças do Dia a Dia',
+  'cripto': 'Cripto',
+  'investimentos': 'ABC das Finanças',
+  'educacao': 'ABC das Finanças',
+  'tech': 'ABC das Finanças',
+  'imoveis': 'Finanças do Dia a Dia',
+  'internacional': 'ABC das Finanças'
 };
+
+// Lista de dificuldades em ordem de preferência (fallback)
+const DIFFICULTY_FALLBACK = ['hard', 'medium', 'easy'];
 
 const FALLBACK_QUESTIONS: QuizQuestion[] = [
   {
@@ -57,63 +61,106 @@ const FALLBACK_QUESTIONS: QuizQuestion[] = [
   }
 ];
 
-export async function generateDuelQuestions(quizTopic: string): Promise<QuizQuestion[]> {
-  try {
-    console.log('🎯 Generating questions for topic:', quizTopic);
+// Função para determinar dificuldade baseada no nível dos jogadores
+function determineDuelDifficulty(playerLevel1: number = 1, playerLevel2: number = 1): string {
+  const avgLevel = (playerLevel1 + playerLevel2) / 2;
+  if (avgLevel >= 10) return 'hard';
+  if (avgLevel >= 5) return 'medium';
+  return 'easy';
+}
+
+// Função para buscar questões com fallback de dificuldade
+async function getQuestionsWithDifficultyFallback(
+  category: string, 
+  targetDifficulty: string, 
+  limit: number = 5
+): Promise<any[]> {
+  console.log('🔍 Trying to find questions:', { category, targetDifficulty, limit });
+  
+  // Tentar buscar questões na dificuldade desejada primeiro
+  for (const difficulty of DIFFICULTY_FALLBACK) {
+    if (DIFFICULTY_FALLBACK.indexOf(difficulty) < DIFFICULTY_FALLBACK.indexOf(targetDifficulty)) {
+      continue; // Pular dificuldades mais altas que a desejada
+    }
     
-    // Map common topics to available districts
-    const topicToDistrict: Record<string, string> = {
-      'financas': '6add63a5-9c43-4859-8f9c-282223d6b077', // Banking Sector
-      'cripto': '5a562d56-efde-4341-8789-87fd3d4cf703', // Cripto Valley
-      'investimentos': '0645a23d-6f02-465a-b9a5-8571853ebdec', // XP Investimentos
-      'educacao': '1c58cbaa-9ed2-45ba-b2f9-6b666e94e937', // Anima Educação
-      'tech': 'e1f9ede2-3a54-4a4f-a533-4f85b9d9025c', // Tech Finance Hub
-      'imoveis': '366870a4-fc67-48c2-be47-d3b35e5b523e', // Real Estate Zone
-      'internacional': 'c04f1a05-07f2-426b-8ea6-2fb783054111' // International Trade
-    };
-    
-    const districtId = topicToDistrict[quizTopic.toLowerCase()] || DISTRICT_MAPPING[quizTopic] || '6add63a5-9c43-4859-8f9c-282223d6b077';
-    console.log('📍 Using district ID:', districtId);
-    
-    const { data: districtQuestions, error: questionsError } = await supabase
+    const { data: questions, error } = await supabase
       .from('quiz_questions')
       .select('*')
-      .eq('district_id', districtId)
-      .order('difficulty', { ascending: false })
-      .limit(5);
+      .eq('category', category)
+      .eq('difficulty', difficulty)
+      .limit(limit);
 
-    if (questionsError) {
-      console.error('❌ Error loading questions:', questionsError);
-      console.log('🔄 Falling back to default questions');
+    if (!error && questions && questions.length > 0) {
+      console.log(`✅ Found ${questions.length} questions with difficulty: ${difficulty}`);
+      return questions;
     }
+    
+    console.log(`⚠️ No questions found for difficulty: ${difficulty}`);
+  }
+  
+  // Se não encontrou nenhuma questão, tentar sem filtro de dificuldade
+  console.log('🔄 Trying without difficulty filter...');
+  const { data: anyQuestions, error } = await supabase
+    .from('quiz_questions')
+    .select('*')
+    .eq('category', category)
+    .limit(limit);
+  
+  if (!error && anyQuestions && anyQuestions.length > 0) {
+    console.log(`✅ Found ${anyQuestions.length} questions without difficulty filter`);
+    return anyQuestions;
+  }
+  
+  console.log('❌ No questions found at all for category:', category);
+  return [];
+}
 
-    console.log('📊 Found questions:', districtQuestions?.length || 0);
-    const questions = (districtQuestions || []).map((q, index) => ({
-      id: index + 1,
-      question: q.question,
-      options: JSON.parse(q.options as string).map((opt: string, optIndex: number) => ({
-        id: String.fromCharCode(97 + optIndex),
-        text: opt,
-        isCorrect: opt === q.correct_answer
-      })),
-      explanation: q.explanation || 'Explicação não disponível'
-    }));
+// Função para formatar questões do banco para o formato esperado
+function formatQuestions(data: any[]): QuizQuestion[] {
+  return data.map((q, index) => ({
+    id: index + 1,
+    question: q.question,
+    options: (typeof q.options === 'string' ? JSON.parse(q.options) : q.options).map((opt: string, optIndex: number) => ({
+      id: String.fromCharCode(97 + optIndex),
+      text: opt,
+      isCorrect: opt === q.correct_answer
+    })),
+    explanation: q.explanation || 'Explicação não disponível'
+  }));
+}
 
-    if (questions.length < 3) {
-      const neededQuestions = 3 - questions.length;
-      console.log('📝 Adding fallback questions:', neededQuestions);
-      const fallbackToAdd = FALLBACK_QUESTIONS.slice(0, neededQuestions).map((q, index) => ({
-        ...q,
-        id: questions.length + index + 1
-      }));
-      questions.push(...fallbackToAdd);
+export async function generateDuelQuestions(
+  quizTopic: string, 
+  playerLevel1?: number, 
+  playerLevel2?: number
+): Promise<QuizQuestion[]> {
+  try {
+    console.log('🎯 Generating duel questions for topic:', quizTopic);
+    
+    // Mapear tópico para categoria
+    const category = TOPIC_TO_CATEGORY[quizTopic.toLowerCase()] || 'Finanças do Dia a Dia';
+    console.log('📂 Using category:', category);
+    
+    // Determinar dificuldade baseada no nível dos jogadores
+    const targetDifficulty = determineDuelDifficulty(playerLevel1, playerLevel2);
+    console.log('🎚️ Target difficulty:', targetDifficulty);
+    
+    // Buscar questões com fallback de dificuldade
+    const questionsData = await getQuestionsWithDifficultyFallback(category, targetDifficulty, 5);
+    
+    if (questionsData.length > 0) {
+      const questions = formatQuestions(questionsData);
+      console.log('✅ Successfully loaded real questions:', questions.length);
+      return questions;
     }
-
-    console.log('✅ Final questions count:', questions.length);
-    return questions;
+    
+    // Se não encontrou questões reais, usar fallback
+    console.log('🔄 No real questions found, using fallback questions');
+    return FALLBACK_QUESTIONS;
+    
   } catch (error) {
     console.error('❌ Error generating duel questions:', error);
-    console.log('🔄 Using fallback questions');
+    console.log('🔄 Using fallback questions due to error');
     return FALLBACK_QUESTIONS;
   }
 }
