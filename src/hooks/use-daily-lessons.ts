@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import confetti from 'canvas-confetti';
+import { useRewardAnimationSystem } from './use-reward-animation-system';
 
 export interface DailyLesson {
   id: string;
@@ -47,6 +48,7 @@ export function useDailyLessons() {
   const [loading, setLoading] = useState(true);
   const [shouldShowModal, setShouldShowModal] = useState(false);
   const { toast } = useToast();
+  const rewardSystem = useRewardAnimationSystem();
 
   // Carregar lições do dia
   const loadTodaysLessons = async () => {
@@ -256,11 +258,20 @@ export function useDailyLessons() {
 
       await loadUserProgress();
 
+      // Trigger animations and effects for quiz completion
       if (isCorrect) {
+        // Show XP and BTZ gains with animations
+        rewardSystem.showXPGain(lesson.xp_reward);
+        if (btzEarned > 0) {
+          rewardSystem.showBTZGain(btzEarned, { x: window.innerWidth / 2, y: window.innerHeight * 0.4 });
+        }
+        
+        // Trigger confetti
         confetti({
-          particleCount: 50,
+          particleCount: 150,
           spread: 70,
-          origin: { y: 0.6 }
+          origin: { y: 0.6 },
+          colors: ['#8B5CF6', '#EC4899', '#F59E0B']
         });
 
         toast({
@@ -286,6 +297,9 @@ export function useDailyLessons() {
           });
         }
       } else {
+        // Show XP gain even for wrong answers
+        rewardSystem.showXPGain(1);
+        
         toast({
           title: "🤔 Resposta incorreta",
           description: "Mas você ganhou +1 XP por tentar! Tente novamente amanhã.",
