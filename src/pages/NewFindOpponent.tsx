@@ -25,32 +25,31 @@ import casinoFuturisticBg from "@/assets/casino-futuristic-bg.jpg";
 
 const duelTopics = [
   { 
-    id: "financas", 
-    name: "Finanças", 
+    id: "financas_dia_a_dia", 
+    name: "Modo Sobrevivência", 
+    category: "Finanças do Dia a Dia",
     icon: DollarSign, 
-    color: "from-green-400 to-emerald-600",
-    bgColor: "bg-green-500/10"
+    emoji: "💰",
+    color: "from-purple-400 to-purple-600",
+    bgColor: "bg-purple-500/10"
+  },
+  { 
+    id: "abc_financas", 
+    name: "Treinamento Básico", 
+    category: "ABC das Finanças",
+    icon: Target, 
+    emoji: "👓",
+    color: "from-pink-400 to-pink-600",
+    bgColor: "bg-pink-500/10"
   },
   { 
     id: "cripto", 
-    name: "Criptomoedas", 
+    name: "Missão Blockchain", 
+    category: "Cripto",
     icon: Coins, 
-    color: "from-orange-400 to-yellow-600",
-    bgColor: "bg-orange-500/10"
-  },
-  { 
-    id: "investimentos", 
-    name: "Investimentos", 
-    icon: TrendingUp, 
-    color: "from-blue-400 to-cyan-600",
-    bgColor: "bg-blue-500/10"
-  },
-  { 
-    id: "economia", 
-    name: "Economia", 
-    icon: Building2, 
-    color: "from-purple-400 to-pink-600",
-    bgColor: "bg-purple-500/10"
+    emoji: "₿",
+    color: "from-yellow-400 to-yellow-600",
+    bgColor: "bg-yellow-500/10"
   }
 ];
 
@@ -78,7 +77,7 @@ export default function NewFindOpponent() {
 
     navigate('/select-opponent', { 
       state: { 
-        topic: selectedTopic.id,
+        topic: selectedTopic.category, // Usar categoria padronizada
         betAmount: selectedBet 
       }
     });
@@ -112,7 +111,7 @@ export default function NewFindOpponent() {
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
             <CardContent className="p-3">
               <h2 className="text-sm font-bold mb-3 text-white text-center">Selecione o Tópico</h2>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {duelTopics.map((topic) => {
                   const IconComponent = topic.icon;
                   return (
