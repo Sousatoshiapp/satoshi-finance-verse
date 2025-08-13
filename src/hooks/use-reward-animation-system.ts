@@ -51,11 +51,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
 
     if (amount >= 100) {
       confetti({
-        particleCount: 200,
+        particleCount: 800,
         spread: 70,
         origin: { x: position.x / window.innerWidth, y: position.y / window.innerHeight },
         colors: ['#FFD700', '#FFA500', '#FF6347'],
-        scalar: 0.25
+        scalar: 0.06
       });
     }
   }, [playCashRegisterSound]);
@@ -75,11 +75,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
 
     if (levelUp) {
       confetti({
-        particleCount: 400,
+        particleCount: 1600,
         spread: 160,
         origin: { y: 0.6 },
         colors: ['#9333EA', '#C084FC', '#E879F9'],
-        scalar: 0.25
+        scalar: 0.06
       });
     }
   }, [playCorrectSound]);
@@ -109,11 +109,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
                    ['#87CEEB', '#4169E1'];
 
     confetti({
-      particleCount: 600,
+      particleCount: 2400,
       spread: 180,
       origin: { y: 0.5 },
       colors,
-      scalar: 0.25
+      scalar: 0.06
     });
   }, [playStreakSound]);
 
@@ -142,11 +142,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 800,
+      particleCount: 3200,
       spread: 200,
       origin: { y: 0.4 },
       colors: ['#FFD700', '#FFA500', '#FF6347', '#FF1493'],
-      scalar: 0.25
+      scalar: 0.06
     });
   }, [addNotification]);
 
@@ -175,11 +175,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 1200,
+      particleCount: 4800,
       spread: 360,
       origin: { y: 0.3 },
       colors: ['#9333EA', '#C084FC', '#E879F9', '#FFD700'],
-      scalar: 0.25
+      scalar: 0.06
     });
   }, [addNotification]);
 
@@ -202,11 +202,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 1000,
+      particleCount: 4000,
       spread: 180,
       origin: { y: 0.5 },
       colors: ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'],
-      scalar: 0.25
+      scalar: 0.06
     });
   }, []);
 
@@ -247,11 +247,11 @@ export function useRewardAnimationSystem(): RewardAnimationSystem {
     window.dispatchEvent(event);
 
     confetti({
-      particleCount: 120,
+      particleCount: 480,
       spread: 50,
       origin: { x: 0.8, y: 0.2 },
       colors: ['#00FF00', '#32CD32'],
-      scalar: 0.25
+      scalar: 0.06
     });
   }, []);
 

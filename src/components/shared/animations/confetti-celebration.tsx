@@ -28,13 +28,13 @@ export function ConfettiCelebration({
     const getIntensityConfig = () => {
       switch (intensity) {
         case 'low':
-          return { particleCount: 200, spread: 60, scalar: 0.25 };
+          return { particleCount: 800, spread: 60, scalar: 0.06 };
         case 'medium':
-          return { particleCount: 400, spread: 90, scalar: 0.25 };
+          return { particleCount: 1600, spread: 90, scalar: 0.06 };
         case 'high':
-          return { particleCount: 800, spread: 120, scalar: 0.25 };
+          return { particleCount: 3200, spread: 120, scalar: 0.06 };
         default:
-          return { particleCount: 400, spread: 90, scalar: 0.25 };
+          return { particleCount: 1600, spread: 90, scalar: 0.06 };
       }
     };
 
