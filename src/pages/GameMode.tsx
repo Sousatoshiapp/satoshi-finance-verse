@@ -92,7 +92,7 @@ export default function GameMode() {
                 </p>
               </div>
 
-              <div className={`${isMobile ? 'space-y-1.5' : 'space-y-2'}`}>
+              <div className={`grid grid-cols-2 ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
                 {/* Modo Solo */}
                 <button
                   onClick={() => handleModeSelect('solo')}
@@ -103,9 +103,9 @@ export default function GameMode() {
                   }`}
                   disabled={selectedMode !== null}
                 >
-                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
                     <User className="h-3 w-3 text-white" />
-                    <span className="text-xs font-medium">Solo Mission</span>
+                    <span className="text-xs font-medium text-center">Solo Mission</span>
                   </div>
                 </button>
 
@@ -119,9 +119,9 @@ export default function GameMode() {
                   }`}
                   disabled={selectedMode !== null}
                 >
-                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
                     <Users className="h-3 w-3 text-white" />
-                    <span className="text-xs font-medium">Multiplayer</span>
+                    <span className="text-xs font-medium text-center">Multiplayer</span>
                   </div>
                 </button>
 
@@ -130,9 +130,9 @@ export default function GameMode() {
                   className={`w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30`}
                   disabled={true}
                 >
-                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
-                    <span className="text-xs text-muted-foreground">Torneios</span>
-                    <span className="px-2 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
+                    <span className="text-xs text-muted-foreground text-center">Torneios</span>
+                    <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
                       Soon™
                     </span>
                   </div>
@@ -143,9 +143,9 @@ export default function GameMode() {
                   onClick={() => navigate('/concept-connections?theme=basic_finance')}
                   className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card border-cyan-500/30 bg-black/20 text-gray-300 casino-hover hover:border-cyan-500/60 hover:bg-cyan-500/10`}
                 >
-                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
-                    <span className="text-xs font-bold text-white">Connect the Dots</span>
-                    <span className="px-2 py-0.5 text-xs bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
+                    <span className="text-xs font-bold text-white text-center">Connect the Dots</span>
+                    <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
                       Fire
                     </span>
                   </div>
