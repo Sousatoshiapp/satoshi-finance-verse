@@ -92,13 +92,6 @@ export function MobileEnhancedFeed({ onPostLike }: MobileEnhancedFeedProps) {
         />
       </div>
 
-      {/* Instructions overlay for first-time users */}
-      <div className="lg:hidden absolute top-4 right-4 z-20">
-        <div className="bg-primary/10 text-primary text-xs px-3 py-2 rounded-lg backdrop-blur-sm border border-primary/20">
-          <p className="font-medium">💡 Toque duas vezes para curtir</p>
-          <p className="opacity-75">Puxe para atualizar</p>
-        </div>
-      </div>
     </div>
   );
 }
