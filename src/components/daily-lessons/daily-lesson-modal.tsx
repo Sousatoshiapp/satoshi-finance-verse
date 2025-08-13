@@ -31,6 +31,7 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [shuffledOptions, setShuffledOptions] = useState<Array<{ text: string; originalIndex: number }>>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Determinar qual lição mostrar
   const currentLesson = lessonId 
@@ -73,21 +74,30 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
   };
 
   const handleSubmitQuiz = async () => {
-    if (!currentLesson || selectedAnswer === null) {
-      console.log('Cannot submit: selectedAnswer or currentLesson is null');
+    if (!currentLesson || selectedAnswer === null || isSubmitting) {
+      console.log('Cannot submit: selectedAnswer or currentLesson is null or already submitting');
       return;
     }
 
-    console.log('Submitting quiz:', { lessonId: currentLesson.id, selectedAnswer });
-    
-    const originalAnswer = shuffledOptions[selectedAnswer].originalIndex;
-    console.log('Original answer index:', originalAnswer);
-    
-    const result = await completeLessonQuiz(currentLesson.id, originalAnswer);
-    console.log('Quiz submission result:', result);
-    
-    if (result.success) {
-      setQuizCompleted(true);
+    console.log('Starting quiz submission...');
+    setIsSubmitting(true);
+
+    try {
+      console.log('Submitting quiz:', { lessonId: currentLesson.id, selectedAnswer });
+      
+      const originalAnswer = shuffledOptions[selectedAnswer].originalIndex;
+      console.log('Original answer index:', originalAnswer);
+      
+      const result = await completeLessonQuiz(currentLesson.id, originalAnswer);
+      console.log('Quiz submission result:', result);
+      
+      if (result.success) {
+        setQuizCompleted(true);
+      }
+    } catch (error) {
+      console.error('Error submitting quiz:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -211,12 +221,12 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
 
                 <Button
                   onClick={handleSubmitQuiz}
-                  disabled={selectedAnswer === null}
-                  style={selectedAnswer !== null ? { backgroundColor: '#ADFF2F', color: '#000000' } : {}}
+                  disabled={selectedAnswer === null || isSubmitting}
+                  style={selectedAnswer !== null && !isSubmitting ? { backgroundColor: '#ADFF2F', color: '#000000' } : {}}
                   className="w-full mt-4 hover:opacity-90 disabled:bg-gray-400 disabled:text-gray-600 shadow-lg disabled:shadow-none transition-all duration-300 text-sm sm:text-base font-semibold"
                   size="lg"
                 >
-                  ✅ Confirmar Resposta
+                  {isSubmitting ? '⏳ Enviando...' : '✅ Confirmar Resposta'}
                 </Button>
               </CardContent>
             </Card>

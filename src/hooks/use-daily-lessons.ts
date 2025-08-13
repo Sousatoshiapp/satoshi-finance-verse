@@ -201,6 +201,8 @@ export function useDailyLessons() {
   // Completar quiz da lição
   const completeLessonQuiz = async (lessonId: string, selectedAnswer: number) => {
     try {
+      console.log('Submitting quiz:', { lessonId, selectedAnswer });
+      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return { success: false, correct: false };
 
@@ -215,23 +217,49 @@ export function useDailyLessons() {
       const lesson = lessons.find(l => l.id === lessonId);
       if (!lesson) return { success: false, correct: false };
 
+      console.log('Original answer index:', lesson.correct_answer);
+      
       const isCorrect = selectedAnswer === lesson.correct_answer;
       const xpEarned = isCorrect ? lesson.xp_reward : 1;
       const btzEarned = isCorrect ? lesson.btz_reward : 0;
 
-      // Atualizar progresso
-      const { error } = await supabase
+      // Verificar se já existe progresso para esta lição
+      const { data: existingProgress } = await supabase
         .from('user_lesson_progress')
-        .upsert({
-          user_id: profile.id,
-          lesson_id: lessonId,
-          quiz_completed: true,
-          quiz_correct: isCorrect,
-          xp_earned: xpEarned,
-          btz_earned: btzEarned
-        });
+        .select('*')
+        .eq('user_id', profile.id)
+        .eq('lesson_id', lessonId)
+        .single();
 
-      if (error) throw error;
+      // Se já existe, atualizar. Se não existe, inserir.
+      if (existingProgress) {
+        const { error } = await supabase
+          .from('user_lesson_progress')
+          .update({
+            quiz_completed: true,
+            quiz_correct: isCorrect,
+            xp_earned: xpEarned,
+            btz_earned: btzEarned,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', profile.id)
+          .eq('lesson_id', lessonId);
+
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('user_lesson_progress')
+          .insert({
+            user_id: profile.id,
+            lesson_id: lessonId,
+            quiz_completed: true,
+            quiz_correct: isCorrect,
+            xp_earned: xpEarned,
+            btz_earned: btzEarned
+          });
+
+        if (error) throw error;
+      }
 
       // Atualizar XP e BTZ do usuário
       if (isCorrect) {
