@@ -1,92 +1,36 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
-import { Badge } from "@/components/shared/ui/badge";
 import { Button } from "@/components/shared/ui/button";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { levelTiers as staticLevelTiers, getLevelInfo as getStaticLevelInfo } from "@/data/levels";
 import { useI18n } from "@/hooks/use-i18n";
-import { Trophy, Star, Lock, CheckCircle } from "lucide-react";
+import { ArrowLeft, Settings, Filter } from "lucide-react";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-interface UserProfile {
-  level: number;
-  xp: number;
-}
+import { useProfile } from "@/hooks/use-profile";
+import { LevelHeroSection } from "@/components/features/levels/level-hero-section";
+import { LevelCategoryView } from "@/components/features/levels/level-category-view";
+import { LevelStatsPanel } from "@/components/features/levels/level-stats-panel";
 
 export default function Levels() {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useI18n();
   const { levelTiers: dbLevelTiers, getNextLevelXP } = useProgressionSystem();
+  const { profile, loading } = useProfile();
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    loadUserProfile();
-  }, []);
+  // Derived data
+  const user = profile ? {
+    level: profile.level,
+    xp: profile.xp,
+    streak: profile.streak || 0,
+    avatar_url: profile.profile_image_url,
+    nickname: profile.nickname
+  } : null;
 
-  const loadUserProfile = async () => {
-    try {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-
-      // Load user profile from Supabase or fallback to localStorage
-      let profile = null;
-      if (authUser) {
-        const { data: supabaseProfile } = await supabase
-          .from('profiles')
-          .select('level, xp')
-          .eq('user_id', authUser.id)
-          .single();
-        profile = supabaseProfile;
-      }
-
-      // If no Supabase profile, use localStorage data
-      if (!profile) {
-        const userData = localStorage.getItem('satoshi_user');
-        if (userData) {
-          const localUser = JSON.parse(userData);
-          profile = {
-            level: localUser.level || 1,
-            xp: localUser.xp || 0,
-          };
-        }
-      }
-
-      if (profile) {
-        setUser(profile);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getLevelStatus = (level: number) => {
-    if (!user) return 'locked';
-    if (level < user.level) return 'completed';
-    if (level === user.level) return 'current';
-    return 'locked';
-  };
-
-  const getLevelIcon = (status: string) => {
-    switch (status) {
-      case 'completed': return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'current': return <Star className="h-5 w-5 text-primary" />;
-      default: return <Lock className="h-5 w-5 text-muted-foreground" />;
-    }
-  };
-
-  const getLevelBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'completed': return 'default';
-      case 'current': return 'secondary';
-      default: return 'outline';
-    }
-  };
+  const currentLevelInfo = user ? getStaticLevelInfo(user.level) : { name: "", description: "" };
+  const nextLevelXP = user ? (getNextLevelXP ? getNextLevelXP(user.level) : user.level * 100) : 0;
 
   if (loading) {
     return (
@@ -97,136 +41,130 @@ export default function Levels() {
     );
   }
 
+  if (!user) {
+    return (
+      <div className={`min-h-screen bg-background flex items-center justify-center ${isMobile ? 'pb-24' : 'pb-20'}`}>
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Não foi possível carregar seus dados</p>
+          <Button onClick={() => navigate('/dashboard')}>
+            Voltar ao Dashboard
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
          style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
-      {/* Header - Enhanced mobile spacing */}
-      <div className={`${isMobile ? 'px-6 py-4 pt-18' : 'px-4 py-4'}`}>
-        <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-4xl'}`}>
-          <div className="flex items-center justify-between">
+      
+      {/* Header */}
+      <div className={`${isMobile ? 'px-4 py-4 pt-8' : 'px-6 py-6'}`}>
+        <div className={`mx-auto ${isMobile ? 'max-w-full' : 'max-w-7xl'}`}>
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                ← Dashboard
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Dashboard
               </Button>
-              <h1 className={`font-bold text-foreground ${isMobile ? 'text-lg' : 'text-xl'}`}>Níveis & Progressão</h1>
+              <h1 className={`font-bold text-foreground ${isMobile ? 'text-xl' : 'text-2xl'}`}>
+                Níveis & Progressão
+              </h1>
             </div>
-            {user && (
-              <Badge variant="secondary" className="flex items-center gap-2">
-                <Trophy className="h-4 w-4" />
-                {getStaticLevelInfo(user.level).name}
-              </Badge>
-            )}
+            
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Filter className="w-4 h-4" />
+                {!isMobile && <span className="ml-1">Filtrar</span>}
+              </Button>
+              <Button variant="outline" size="sm">
+                <Settings className="w-4 h-4" />
+                {!isMobile && <span className="ml-1">Config</span>}
+              </Button>
+            </div>
           </div>
+
+          {/* Hero Section */}
+          <LevelHeroSection 
+            user={user}
+            currentLevelInfo={currentLevelInfo}
+            nextLevelXP={nextLevelXP}
+            className="mb-8"
+          />
         </div>
       </div>
 
-      <div className={`mx-auto ${isMobile ? 'max-w-sm px-6 py-4' : 'max-w-4xl px-4 py-4'}`}>
-        {/* Current Level Card */}
-        {user && (
-          <Card className="mb-8 border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center text-lg font-bold">
-                  {user.level}
-                </div>
-                <div>
-                  <h2 className="text-xl">{getStaticLevelInfo(user.level).name}</h2>
-                  <p className="text-sm text-muted-foreground">Seu nível atual</p>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                {getStaticLevelInfo(user.level).description}
-              </p>
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium">XP Atual: {user.xp}</span>
-                <span className="text-sm text-muted-foreground">
-                  Próximo nível: {getNextLevelXP ? getNextLevelXP(user.level) : user.level * 100} XP
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* All Levels Grid */}
-        <div className="grid gap-4">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Todos os Níveis</h2>
-          
-          <div className="grid md:grid-cols-2 gap-4">
-            {staticLevelTiers.map((tier) => {
-              const status = getLevelStatus(tier.level);
-              const isLocked = status === 'locked';
-              
-              return (
-                <Card 
-                  key={tier.level} 
-                  className={`transition-all ${
-                    status === 'current' 
-                      ? 'border-primary bg-primary/5' 
-                      : status === 'completed'
-                      ? 'border-green-500/20 bg-green-500/5'
-                      : isLocked 
-                      ? 'opacity-60' 
-                      : ''
-                  }`}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                          status === 'current' 
-                            ? 'bg-primary text-white' 
-                            : status === 'completed'
-                            ? 'bg-green-500 text-white'
-                            : 'bg-muted text-muted-foreground'
-                        }`}>
-                          {tier.level}
-                        </div>
-                        <div>
-                          <CardTitle className="text-lg">{getStaticLevelInfo(tier.level).name}</CardTitle>
-                          <p className="text-xs text-muted-foreground">Nível {tier.level}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        {getLevelIcon(status)}
-                        <Badge variant={getLevelBadgeVariant(status) as any}>
-                          {status === 'completed' ? 'Concluído' : 
-                           status === 'current' ? 'Atual' : 'Bloqueado'}
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <CardDescription className={isLocked ? 'text-muted-foreground/60' : ''}>
-                      {getStaticLevelInfo(tier.level).description}
-                    </CardDescription>
-                    
-                    <div className="mt-3 flex items-center justify-between text-sm">
-                      <span className={`font-medium ${isLocked ? 'text-muted-foreground/60' : ''}`}>
-                        XP Necessário: {(dbLevelTiers.find((t: any) => t.level === tier.level)?.xp_required) ?? tier.level * 100}
-                      </span>
-                      
-                      {status === 'current' && user && (
-                        <span className="text-primary font-medium">
-                          {(() => {
-                            const currentBase = (dbLevelTiers.find((t: any) => t.level === tier.level)?.xp_required) ?? ((tier.level - 1) * 100);
-                            const nextAbs = getNextLevelXP ? getNextLevelXP(tier.level) : tier.level * 100;
-                            const xpForThis = Math.max(1, nextAbs - currentBase);
-                            const earned = Math.max(0, user.xp - currentBase);
-                            return Math.round(Math.min(100, (earned / xpForThis) * 100));
-                          })()}% completo
-                        </span>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+      {/* Main Content */}
+      <div className={`mx-auto ${isMobile ? 'max-w-full px-4' : 'max-w-7xl px-6'}`}>
+        {isMobile ? (
+          // Mobile Layout: Single Column
+          <div className="space-y-6">
+            <LevelCategoryView 
+              levels={staticLevelTiers}
+              userLevel={user.level}
+              userXP={user.xp}
+              getNextLevelXP={getNextLevelXP}
+            />
           </div>
-        </div>
+        ) : (
+          // Desktop Layout: Three Columns
+          <div className="grid grid-cols-12 gap-6">
+            {/* Left: Quick Stats */}
+            <div className="col-span-3">
+              <LevelStatsPanel 
+                user={user}
+                totalLevels={100}
+                averageXPPerLevel={150}
+                estimatedTimeToNext="2-3 dias"
+              />
+            </div>
+            
+            {/* Center: Main Level Grid */}
+            <div className="col-span-6">
+              <LevelCategoryView 
+                levels={staticLevelTiers}
+                userLevel={user.level}
+                userXP={user.xp}
+                getNextLevelXP={getNextLevelXP}
+              />
+            </div>
+            
+            {/* Right: Additional Info */}
+            <div className="col-span-3">
+              <div className="space-y-4">
+                {/* Quick Tips */}
+                <div className="bg-card rounded-lg p-4 border">
+                  <h3 className="font-semibold mb-3">💡 Dicas Rápidas</h3>
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <p>• Complete quizzes diários para ganhar XP</p>
+                    <p>• Mantenha seu streak para bônus</p>
+                    <p>• Participe de desafios especiais</p>
+                    <p>• Convide amigos para ganhar recompensas</p>
+                  </div>
+                </div>
+
+                {/* Next Rewards */}
+                <div className="bg-card rounded-lg p-4 border">
+                  <h3 className="font-semibold mb-3">🎁 Próximas Recompensas</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Nível {user.level + 1}</span>
+                      <span className="text-primary">+50 BTZ</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Nível {user.level + 5}</span>
+                      <span className="text-secondary">Badge Especial</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Nível {user.level + 10}</span>
+                      <span className="text-accent">Funcionalidade Nova</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       
       <FloatingNavbar />
