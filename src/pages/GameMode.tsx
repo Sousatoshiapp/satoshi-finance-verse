@@ -6,6 +6,8 @@ import { ArrowLeft, Settings, User, Users } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
+import { useUniversalPullRefresh } from "@/hooks/use-universal-pull-refresh";
+import { MobilePullIndicator } from "@/components/shared/ui/mobile-pull-indicator";
 
 export default function GameMode() {
   const navigate = useNavigate();
@@ -14,6 +16,20 @@ export default function GameMode() {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [hologramRotation, setHologramRotation] = useState(0);
   const [showThemeModal, setShowThemeModal] = useState(false);
+  
+  // Pull to refresh functionality
+  const {
+    containerRef,
+    isRefreshing,
+    pullDistance,
+    indicators,
+    pullThreshold
+  } = useUniversalPullRefresh({
+    refreshMessage: {
+      title: "Modos de jogo atualizados",
+      description: "Verifique novos recursos disponíveis"
+    }
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,8 +68,28 @@ export default function GameMode() {
   };
 
   return (
-    <div className={`min-h-screen casino-futuristic overflow-hidden ${isMobile ? 'flex flex-col' : 'flex items-center justify-center'}`} 
-         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 8px)' } : {}}>
+    <div className="relative">
+      {/* Pull to refresh indicator */}
+      {isMobile && (
+        <div className="absolute top-0 left-0 right-0 z-50">
+          <MobilePullIndicator
+            pullDistance={pullDistance}
+            pullThreshold={pullThreshold}
+            isRefreshing={isRefreshing}
+          />
+        </div>
+      )}
+      
+      <div 
+        ref={isMobile ? containerRef : undefined}
+        className={`min-h-screen casino-futuristic overflow-hidden ${isMobile ? 'flex flex-col' : 'flex items-center justify-center'}`} 
+        style={isMobile ? { 
+          paddingTop: indicators.pullToRefresh 
+            ? `${Math.max(Math.min(pullDistance, 60), 16)}px` 
+            : 'env(safe-area-inset-top, 8px)',
+          transition: 'padding-top 0.1s ease-out'
+        } : {}}
+      >
       {/* Cyber grid background */}
       <div className="fixed inset-0 cyber-grid opacity-30 pointer-events-none"></div>
       
@@ -165,6 +201,7 @@ export default function GameMode() {
         }}
         onSelectTheme={handleThemeSelect}
       />
+      </div>
     </div>
   );
 }

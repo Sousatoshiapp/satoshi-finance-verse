@@ -41,6 +41,8 @@ import { getLevelInfo } from "@/data/levels";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ConfettiCelebration } from "@/components/shared/animations/confetti-celebration";
 import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
+import { useUniversalPullRefresh } from "@/hooks/use-universal-pull-refresh";
+import { MobilePullIndicator } from "@/components/shared/ui/mobile-pull-indicator";
 
 
 const getGreeting = (t: any) => {
@@ -92,10 +94,29 @@ export default function Dashboard() {
   const { subscription, refreshSubscription } = useSubscription();
   const { markDailyLogin } = useDailyMissions();
   // ULTRA PERFORMANCE: Usar super query unificado
-  const { data: superData, isLoading, error } = useDashboardSuperQuery();
+  const { data: superData, isLoading, error, refetch } = useDashboardSuperQuery();
   const { points: realtimePoints } = useRealtime();
   const { isOnline } = useOnlineStatus();
   const { crisis, shouldShowBanner, shouldShowIcon, dismissBanner, openBanner, markAsContributed } = useCrisisState();
+  
+  // Pull to refresh functionality
+  const {
+    containerRef,
+    isRefreshing,
+    pullDistance,
+    indicators,
+    pullThreshold
+  } = useUniversalPullRefresh({
+    onRefresh: async () => {
+      await refetch();
+      refreshSubscription();
+    },
+    refreshMessage: {
+      title: "Dashboard atualizado",
+      description: "Dados mais recentes carregados"
+    },
+    invalidateQueries: ['dashboard-data', 'subscription-status']
+  });
   
   // Fallback para dados antigos se super query falhar
   const { data: fallbackData } = useDashboardData();
@@ -299,7 +320,26 @@ export default function Dashboard() {
   }
 
   return (
-    <div className={`min-h-screen bg-background ${isMobile ? 'pb-safe-area-bottom pb-24' : 'pb-20'}`}>
+    <div className="relative">
+      {/* Pull to refresh indicator */}
+      {isMobile && (
+        <div className="absolute top-0 left-0 right-0 z-50">
+          <MobilePullIndicator
+            pullDistance={pullDistance}
+            pullThreshold={pullThreshold}
+            isRefreshing={isRefreshing}
+          />
+        </div>
+      )}
+      
+      <div 
+        ref={isMobile ? containerRef : undefined}
+        className={`min-h-screen bg-background ${isMobile ? 'pb-safe-area-bottom pb-24' : 'pb-20'}`}
+        style={isMobile && indicators.pullToRefresh ? { 
+          paddingTop: `${Math.min(pullDistance, 60)}px`,
+          transition: 'padding-top 0.1s ease-out'
+        } : {}}
+      >
       {/* Optimized Header with Consolidated Profile - Mobile Adjusted */}
       <div className={`${isMobile ? 'px-8 pb-4' : 'px-6 pt-8 pb-4'}`} style={isMobile ? { paddingTop: '50px' } : {}}>
         <div className={`mx-auto ${isMobile ? 'max-w-sm' : 'max-w-md'}`}>
@@ -613,6 +653,7 @@ export default function Dashboard() {
         customOrigin={confettiOrigin}
         onComplete={() => setShowConfetti(false)}
       />
+      </div>
     </div>
   );
 }
