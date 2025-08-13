@@ -169,7 +169,7 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
             <X className="w-4 h-4" />
           </Button>
           <div className="text-center space-y-3 pt-2">
-            <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-2xl shadow-lg">
+            <div className="text-5xl drop-shadow-lg filter drop-shadow-[0_0_15px_rgba(255,255,0,0.6)] animate-pulse">
               {getCategoryIcon(currentLesson.category)}
             </div>
             <div>
