@@ -45,24 +45,24 @@ export function LevelHeroSection({
       
       <div className="relative p-6 md:p-8">
         {/* Mobile Layout */}
-        <div className="md:hidden space-y-6">
+        <div className="md:hidden space-y-4">
           {/* User Info */}
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Avatar className="w-16 h-16 ring-2 ring-primary/30">
+          <div className="flex items-center gap-3">
+            <div className="relative shrink-0">
+              <Avatar className="w-12 h-12 ring-2 ring-primary/30">
                 <AvatarImage src={user.avatar_url} alt={user.nickname || "User"} />
-                <AvatarFallback className="bg-primary text-primary-foreground text-xl font-bold">
+                <AvatarFallback className="bg-primary text-primary-foreground text-sm font-bold">
                   {user.nickname?.charAt(0)?.toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
+              <div className="absolute -bottom-0.5 -right-0.5 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-white text-xs font-bold">
                 {user.level}
               </div>
             </div>
             
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-foreground">{currentLevelInfo.name}</h1>
-              <p className="text-sm text-muted-foreground">Nível {user.level}</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-base font-bold text-foreground truncate">{currentLevelInfo.name}</h1>
+              <p className="text-xs text-muted-foreground">Nível {user.level}</p>
               {user.streak && user.streak > 0 && (
                 <div className="mt-1">
                   <StreakBadge days={user.streak} className="text-xs" />
@@ -79,19 +79,19 @@ export function LevelHeroSection({
             className="bg-card/80 backdrop-blur-sm"
           />
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-3">
-            <Card className="p-3 text-center bg-card/60 backdrop-blur-sm">
-              <div className="text-xl font-bold text-primary">{user.xp}</div>
-              <div className="text-xs text-muted-foreground">XP Total</div>
+          {/* Quick Stats - 2 columns on very small screens */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <Card className="p-2.5 text-center bg-card/60 backdrop-blur-sm min-h-[56px]">
+              <div className="text-lg font-bold text-primary">{user.xp}</div>
+              <div className="text-[10px] text-muted-foreground">XP Total</div>
             </Card>
-            <Card className="p-3 text-center bg-card/60 backdrop-blur-sm">
-              <div className="text-xl font-bold text-secondary">{progressPercentage.toFixed(0)}%</div>
-              <div className="text-xs text-muted-foreground">Progresso</div>
+            <Card className="p-2.5 text-center bg-card/60 backdrop-blur-sm min-h-[56px]">
+              <div className="text-lg font-bold text-secondary">{progressPercentage.toFixed(0)}%</div>
+              <div className="text-[10px] text-muted-foreground">Progresso</div>
             </Card>
-            <Card className="p-3 text-center bg-card/60 backdrop-blur-sm">
-              <div className="text-xl font-bold text-accent">{100 - user.level}</div>
-              <div className="text-xs text-muted-foreground">Restantes</div>
+            <Card className="p-2.5 text-center bg-card/60 backdrop-blur-sm min-h-[56px] col-span-2 sm:col-span-1">
+              <div className="text-lg font-bold text-accent">{100 - user.level}</div>
+              <div className="text-[10px] text-muted-foreground">Restantes</div>
             </Card>
           </div>
         </div>

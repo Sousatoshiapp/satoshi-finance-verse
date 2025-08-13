@@ -55,30 +55,30 @@ export default function Levels() {
   }
 
   return (
-    <div className={`min-h-screen bg-background ${isMobile ? 'pb-24' : 'pb-20'}`} 
-         style={isMobile ? { paddingTop: 'env(safe-area-inset-top, 20px)' } : {}}>
+    <div className={`min-h-screen bg-background overflow-x-hidden ${isMobile ? 'pb-28' : 'pb-20'}`} 
+         style={isMobile ? { paddingTop: 'max(env(safe-area-inset-top, 0px), 20px)' } : {}}>
       
       {/* Header */}
-      <div className={`${isMobile ? 'px-4 py-4 pt-8' : 'px-6 py-6'}`}>
+      <div className={`${isMobile ? 'px-3 py-3 pt-6' : 'px-6 py-6'}`}>
         <div className={`mx-auto ${isMobile ? 'max-w-full' : 'max-w-7xl'}`}>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Dashboard
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size={isMobile ? "sm" : "sm"} onClick={() => navigate('/dashboard')}>
+                <ArrowLeft className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'} mr-1`} />
+                {isMobile ? 'Voltar' : 'Dashboard'}
               </Button>
-              <h1 className={`font-bold text-foreground ${isMobile ? 'text-xl' : 'text-2xl'}`}>
-                Níveis & Progressão
+              <h1 className={`font-bold text-foreground ${isMobile ? 'text-lg' : 'text-2xl'}`}>
+                {isMobile ? 'Níveis' : 'Níveis & Progressão'}
               </h1>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <Button variant="outline" size="sm">
-                <Filter className="w-4 h-4" />
+                <Filter className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
                 {!isMobile && <span className="ml-1">Filtrar</span>}
               </Button>
               <Button variant="outline" size="sm">
-                <Settings className="w-4 h-4" />
+                <Settings className={`${isMobile ? 'w-3.5 h-3.5' : 'w-4 h-4'}`} />
                 {!isMobile && <span className="ml-1">Config</span>}
               </Button>
             </div>
@@ -89,16 +89,16 @@ export default function Levels() {
             user={user}
             currentLevelInfo={currentLevelInfo}
             nextLevelXP={nextLevelXP}
-            className="mb-8"
+            className={isMobile ? "mb-6" : "mb-8"}
           />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className={`mx-auto ${isMobile ? 'max-w-full px-4' : 'max-w-7xl px-6'}`}>
+      <div className={`mx-auto ${isMobile ? 'max-w-full px-3' : 'max-w-7xl px-6'}`}>
         {isMobile ? (
           // Mobile Layout: Single Column
-          <div className="space-y-6">
+          <div className="space-y-4">
             <LevelCategoryView 
               levels={staticLevelTiers}
               userLevel={user.level}

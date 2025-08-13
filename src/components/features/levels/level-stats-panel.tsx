@@ -62,32 +62,32 @@ export function LevelStatsPanel({
   const earnedAchievements = achievements.filter(a => a.earned);
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn("space-y-4 md:space-y-4", className)}>
       {/* Progress Overview */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-primary" />
+        <CardHeader className="pb-3 md:pb-4">
+          <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+            <Trophy className="w-4 h-4 md:w-5 md:h-5 text-primary" />
             Visão Geral
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 md:space-y-4">
           <div>
-            <div className="flex justify-between text-sm mb-2">
+            <div className="flex justify-between text-xs md:text-sm mb-2">
               <span>Progresso Geral</span>
               <span className="font-medium">{completionPercentage.toFixed(1)}%</span>
             </div>
             <Progress value={completionPercentage} className="h-2" />
           </div>
           
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{user.level}</div>
-              <div className="text-muted-foreground">Nível Atual</div>
+          <div className="grid grid-cols-2 gap-2 md:gap-3 text-sm">
+            <div className="text-center p-2 bg-muted/50 rounded-lg">
+              <div className="text-lg md:text-2xl font-bold text-primary">{user.level}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">Nível Atual</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-secondary">{levelsRemaining}</div>
-              <div className="text-muted-foreground">Restantes</div>
+            <div className="text-center p-2 bg-muted/50 rounded-lg">
+              <div className="text-lg md:text-2xl font-bold text-secondary">{levelsRemaining}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">Restantes</div>
             </div>
           </div>
         </CardContent>

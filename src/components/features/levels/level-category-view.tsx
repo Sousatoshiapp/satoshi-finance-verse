@@ -167,7 +167,7 @@ export function LevelCategoryView({
               
               <CollapsibleContent>
                 <CardContent className="pt-0">
-                  <div className="grid gap-3 md:grid-cols-2">
+                  <div className="grid gap-4 grid-cols-1">
                     {categoryLevels.map((level) => {
                       const status = getLevelStatus(level.level);
                       const isLocked = status === 'locked';
@@ -176,50 +176,53 @@ export function LevelCategoryView({
                         <Card 
                           key={level.level}
                           className={cn(
-                            "transition-all hover:shadow-md",
+                            "transition-all hover:shadow-md touch-manipulation min-h-[88px]",
+                            "active:scale-[0.98] active:shadow-sm",
                             status === 'current' && "ring-2 ring-primary/30 bg-primary/5",
                             status === 'completed' && "bg-green-500/5 border-green-500/20",
                             isLocked && "opacity-60"
                           )}
                         >
-                          <CardHeader className="pb-2">
+                          <CardHeader className="pb-3">
                             <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-3">
                                 <div className={cn(
-                                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
+                                  "w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0",
                                   status === 'current' && "bg-primary text-primary-foreground",
                                   status === 'completed' && "bg-green-500 text-white",
                                   isLocked && "bg-muted text-muted-foreground"
                                 )}>
                                   {level.level}
                                 </div>
-                                <div>
-                                  <CardTitle className="text-sm">{level.name}</CardTitle>
-                                  <p className="text-xs text-muted-foreground">Nível {level.level}</p>
+                                <div className="min-w-0 flex-1">
+                                  <CardTitle className="text-base truncate">{level.name}</CardTitle>
+                                  <p className="text-sm text-muted-foreground">Nível {level.level}</p>
                                 </div>
                               </div>
-                              {getLevelIcon(status)}
+                              <div className="shrink-0 ml-2">
+                                {getLevelIcon(status)}
+                              </div>
                             </div>
                           </CardHeader>
                           
                           <CardContent className="pt-0">
                             <CardDescription className={cn(
-                              "text-xs mb-2",
+                              "text-sm mb-3 line-clamp-2",
                               isLocked && "text-muted-foreground/60"
                             )}>
                               {level.description}
                             </CardDescription>
                             
-                            <div className="text-xs">
+                            <div className="text-sm">
                               <span className={cn(
                                 "font-medium",
                                 isLocked && "text-muted-foreground/60"
                               )}>
-                                XP: {level.xp_required || level.level * 100}
+                                XP necessário: {level.xp_required || level.level * 100}
                               </span>
                               
                               {status === 'current' && (
-                                <div className="mt-1">
+                                <div className="mt-2">
                                   <span className="text-primary font-medium">
                                     {(() => {
                                       const currentXP = level.xp_required || (level.level - 1) * 100;
