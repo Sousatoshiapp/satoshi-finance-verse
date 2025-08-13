@@ -9,6 +9,7 @@ import { Slider } from "@/components/shared/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { useI18n } from "@/hooks/use-i18n";
 import { supabase } from "@/integrations/supabase/client";
+import { useOnboardingQuiz } from "@/hooks/use-onboarding-quiz";
 import { 
   Brain, 
   Target, 
@@ -50,7 +51,10 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
     motivation_factors: []
   });
   const [loading, setLoading] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [questionStartTime, setQuestionStartTime] = useState(0);
   const { toast } = useToast();
+  const quiz = useOnboardingQuiz();
 
   const updateProfile = (field: keyof UserProfile, value: any) => {
     setProfile(prev => ({ ...prev, [field]: value }));
@@ -63,6 +67,40 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
         ? prev[field].filter(item => item !== value)
         : [...prev[field], value]
     }));
+  };
+
+  const startQuizForStep = async (stepId: string) => {
+    setShowQuiz(true);
+    setQuestionStartTime(Date.now());
+    await quiz.fetchQuestionsForStep(stepId, 3);
+  };
+
+  const handleQuizAnswer = (selectedAnswer: string) => {
+    const currentQuestion = quiz.questions[quiz.currentQuestion];
+    if (!currentQuestion) return;
+
+    const responseTime = Date.now() - questionStartTime;
+    const result = quiz.submitAnswer(currentQuestion.id, selectedAnswer, responseTime);
+    
+    // Auto-advance to next question or finish quiz
+    setTimeout(() => {
+      if (quiz.currentQuestion < quiz.questions.length - 1) {
+        quiz.nextQuestion();
+        setQuestionStartTime(Date.now());
+      } else {
+        // Finish quiz and calculate profile
+        const calculatedProfile = quiz.calculateProfile();
+        if (calculatedProfile) {
+          updateProfile('experience_level', calculatedProfile.experience_level);
+          updateProfile('preferred_difficulty', calculatedProfile.preferred_difficulty);
+          updateProfile('learning_style', calculatedProfile.learning_style);
+        }
+        setShowQuiz(false);
+        quiz.resetQuiz();
+      }
+    }, 1500); // Show result briefly before continuing
+
+    return result;
   };
 
   const steps: OnboardingStep[] = [
@@ -102,49 +140,85 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
     },
     {
       id: 'experience',
-      title: 'Qual seu nível de experiência?',
-      description: 'Isso nos ajuda a calibrar a dificuldade inicial',
+      title: 'Vamos avaliar seu conhecimento atual',
+      description: 'Responda algumas perguntas para calibrarmos a dificuldade',
       icon: <BookOpen className="h-6 w-6" />,
-      component: (
-        <RadioGroup 
-          value={profile.experience_level} 
-          onValueChange={(value) => updateProfile('experience_level', value)}
-          className="space-y-4"
-        >
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="beginner" id="beginner" />
-            <Label htmlFor="beginner" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Iniciante</div>
-                <div className="text-sm text-muted-foreground">
-                  Pouco ou nenhum conhecimento sobre investimentos
+      component: showQuiz ? (
+        <div className="space-y-6">
+          {quiz.loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Carregando questões...</p>
+            </div>
+          ) : quiz.questions.length > 0 ? (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <Badge variant="outline">
+                  Questão {quiz.currentQuestion + 1} de {quiz.questions.length}
+                </Badge>
+                <Badge variant="secondary">
+                  {quiz.questions[quiz.currentQuestion]?.category}
+                </Badge>
+              </div>
+              
+              <div className="space-y-4">
+                <h4 className="text-lg font-medium">
+                  {quiz.questions[quiz.currentQuestion]?.question}
+                </h4>
+                
+                <div className="space-y-2">
+                  {quiz.questions[quiz.currentQuestion]?.options.map((option, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      onClick={() => handleQuizAnswer(option)}
+                      className="w-full text-left justify-start h-auto p-4"
+                    >
+                      {option}
+                    </Button>
+                  ))}
                 </div>
               </div>
-            </Label>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">
+                Não há questões disponíveis no momento.
+              </p>
+              <Button onClick={() => setShowQuiz(false)} variant="outline">
+                Continuar sem quiz
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              Faremos algumas perguntas rápidas para avaliar seu nível de conhecimento atual.
+              Isso nos ajuda a personalizar a experiência de aprendizado.
+            </p>
+            <Button onClick={() => startQuizForStep('experience')} className="w-full">
+              Começar Avaliação
+            </Button>
           </div>
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="intermediate" id="intermediate" />
-            <Label htmlFor="intermediate" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Intermediário</div>
-                <div className="text-sm text-muted-foreground">
-                  Tenho alguns conhecimentos básicos sobre finanças
+          
+          {profile.experience_level && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span className="font-medium">
+                    Nível detectado: {
+                      profile.experience_level === 'beginner' ? 'Iniciante' :
+                      profile.experience_level === 'intermediate' ? 'Intermediário' : 'Avançado'
+                    }
+                  </span>
                 </div>
-              </div>
-            </Label>
-          </div>
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="advanced" id="advanced" />
-            <Label htmlFor="advanced" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Avançado</div>
-                <div className="text-sm text-muted-foreground">
-                  Já invisto e quero aprofundar meus conhecimentos
-                </div>
-              </div>
-            </Label>
-          </div>
-        </RadioGroup>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )
     },
     {
@@ -235,60 +309,86 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
     },
     {
       id: 'learning_style',
-      title: 'Como você aprende melhor?',
-      description: 'Escolha seu estilo de aprendizado preferido',
+      title: 'Teste seu estilo de aprendizado',
+      description: 'Questões de diferentes níveis para identificar sua preferência',
       icon: <Brain className="h-6 w-6" />,
-      component: (
-        <RadioGroup 
-          value={profile.learning_style} 
-          onValueChange={(value) => updateProfile('learning_style', value)}
-          className="space-y-4"
-        >
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="visual" id="visual" />
-            <Label htmlFor="visual" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Visual</div>
-                <div className="text-sm text-muted-foreground">
-                  Gráficos, diagramas e conteúdo visual
+      component: showQuiz ? (
+        <div className="space-y-6">
+          {quiz.loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Carregando questões...</p>
+            </div>
+          ) : quiz.questions.length > 0 ? (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <Badge variant="outline">
+                  Questão {quiz.currentQuestion + 1} de {quiz.questions.length}
+                </Badge>
+                <Badge variant="secondary">
+                  {quiz.questions[quiz.currentQuestion]?.difficulty}
+                </Badge>
+              </div>
+              
+              <div className="space-y-4">
+                <h4 className="text-lg font-medium">
+                  {quiz.questions[quiz.currentQuestion]?.question}
+                </h4>
+                
+                <div className="space-y-2">
+                  {quiz.questions[quiz.currentQuestion]?.options.map((option, index) => (
+                    <Button
+                      key={index}
+                      variant="outline"
+                      onClick={() => handleQuizAnswer(option)}
+                      className="w-full text-left justify-start h-auto p-4"
+                    >
+                      {option}
+                    </Button>
+                  ))}
                 </div>
               </div>
-            </Label>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">
+                Não há questões disponíveis no momento.
+              </p>
+              <Button onClick={() => setShowQuiz(false)} variant="outline">
+                Continuar sem quiz
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              Vamos testar como você se adapta a diferentes tipos de questões
+              para identificar seu estilo de aprendizado preferido.
+            </p>
+            <Button onClick={() => startQuizForStep('learning_style')} className="w-full">
+              Começar Teste
+            </Button>
           </div>
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="practical" id="practical" />
-            <Label htmlFor="practical" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Prático</div>
-                <div className="text-sm text-muted-foreground">
-                  Exercícios, quizzes e aplicação direta
+          
+          {profile.learning_style && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-primary" />
+                  <span className="font-medium">
+                    Estilo detectado: {
+                      profile.learning_style === 'practical' ? 'Prático' :
+                      profile.learning_style === 'theoretical' ? 'Teórico' :
+                      profile.learning_style === 'visual' ? 'Visual' : 'Misto'
+                    }
+                  </span>
                 </div>
-              </div>
-            </Label>
-          </div>
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="theoretical" id="theoretical" />
-            <Label htmlFor="theoretical" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Teórico</div>
-                <div className="text-sm text-muted-foreground">
-                  Conceitos, explicações detalhadas e fundamentos
-                </div>
-              </div>
-            </Label>
-          </div>
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-muted/50">
-            <RadioGroupItem value="mixed" id="mixed" />
-            <Label htmlFor="mixed" className="flex-1 cursor-pointer">
-              <div>
-                <div className="font-medium">Misto</div>
-                <div className="text-sm text-muted-foreground">
-                  Combinação de todas as abordagens
-                </div>
-              </div>
-            </Label>
-          </div>
-        </RadioGroup>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )
     },
     {
@@ -357,6 +457,14 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
 
       if (error) throw error;
 
+      // Auto-apply detected profile from quiz if available
+      const quizProfile = quiz.calculateProfile();
+      if (quizProfile) {
+        profile.experience_level = quizProfile.experience_level;
+        profile.preferred_difficulty = quizProfile.preferred_difficulty;
+        profile.learning_style = quizProfile.learning_style;
+      }
+
       // Generate initial AI recommendations based on profile
       await supabase.rpc('generate_ai_recommendations', {
         p_user_id: userProfile.id
@@ -383,10 +491,10 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
   const canProceed = () => {
     switch (currentStep) {
       case 0: return true; // Welcome step
-      case 1: return profile.experience_level !== '';
+      case 1: return !showQuiz && (profile.experience_level !== '' || quiz.answers.length > 0);
       case 2: return profile.study_goals.length > 0;
       case 3: return profile.available_time > 0;
-      case 4: return profile.learning_style !== '';
+      case 4: return !showQuiz && (profile.learning_style !== '' || quiz.answers.length > 0);
       case 5: return profile.motivation_factors.length > 0;
       default: return false;
     }
