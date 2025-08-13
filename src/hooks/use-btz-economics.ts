@@ -213,12 +213,12 @@ export function useBTZEconomics() {
 
   // Calculate corrected next yield using centralized config
   const getCorrectNextYield = () => {
-    if (!analytics) return 0;
+    if (!analytics?.current) return 0;
     
     const result = calculateDailyYield(
       analytics.current.total_btz,
       analytics.current.consecutive_login_days,
-      analytics.bonuses.subscription_tier as 'free' | 'pro' | 'elite'
+      analytics.bonuses?.subscription_tier as 'free' | 'pro' | 'elite'
     );
     
     return result.appliedYield;
