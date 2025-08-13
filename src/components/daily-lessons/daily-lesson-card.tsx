@@ -4,8 +4,9 @@ import { Button } from "@/components/shared/ui/button";
 import { Progress } from "@/components/shared/ui/progress";
 import { useDailyLessons } from "@/hooks/use-daily-lessons";
 import { Clock, BookOpen, Zap } from "lucide-react";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { DailyLessonModal } from "./daily-lesson-modal";
+import { CyberpunkEmptyState3D } from "./CyberpunkEmptyState3D";
 
 export function DailyLessonCard() {
   const {
@@ -45,23 +46,33 @@ export function DailyLessonCard() {
 
   if (!mainLesson && extraLessons.length === 0) {
     return (
-      <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            💸 Pílulas de Conhecimento
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-4">
-            <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
-            <p className="text-muted-foreground">
-              Nenhuma lição disponível hoje
+      <Card className="h-32 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
+        <div className="h-full flex">
+          {/* Lado esquerdo - Texto */}
+          <div className="flex-1 p-4 flex flex-col justify-center">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">💸</span>
+              <h3 className="font-semibold text-sm">Pílulas de Conhecimento</h3>
+            </div>
+            <p className="text-xs text-muted-foreground mb-1">
+              Nada por hoje, fam
             </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              Volte amanhã para mais conhecimento financeiro!
+            <p className="text-xs text-muted-foreground">
+              Volta amanhã que tem mais 🔥
             </p>
           </div>
-        </CardContent>
+          
+          {/* Lado direito - 3D Cyberpunk */}
+          <div className="w-32 h-full">
+            <Suspense fallback={
+              <div className="w-full h-full bg-gradient-to-br from-purple-900/20 to-cyan-900/20 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+              </div>
+            }>
+              <CyberpunkEmptyState3D />
+            </Suspense>
+          </div>
+        </div>
       </Card>
     );
   }
