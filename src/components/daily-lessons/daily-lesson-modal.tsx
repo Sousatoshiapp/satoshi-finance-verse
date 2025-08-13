@@ -173,7 +173,7 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
               {getCategoryIcon(currentLesson.category)}
             </div>
             <div>
-              <DialogTitle className="text-lg sm:text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+              <DialogTitle className="text-lg sm:text-xl font-bold bg-gradient-to-r from-[#adff2f] to-green-600 bg-clip-text text-transparent leading-tight">
                 {currentLesson.title}
               </DialogTitle>
               <Badge variant="secondary" className="mt-2 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 dark:from-purple-900/30 dark:to-pink-900/30 dark:text-purple-300">
