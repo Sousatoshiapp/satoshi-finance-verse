@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Search, MessageCircle, Home, Hash, Bell, Mail, ArrowLeft } from "lucide-react";
 import { FloatingNavbar } from "@/components/shared/floating-navbar";
 import { TwitterSocialFeed } from "@/components/features/social/twitter-social-feed";
+import { MobileEnhancedFeed } from "@/components/features/social/mobile-enhanced-feed";
 import { SocialChallenges } from "@/components/features/social/social-challenges";
 import { SocialLeaderboard } from "@/components/features/social/social-leaderboard";
 import { useI18n } from "@/hooks/use-i18n";
@@ -246,8 +247,13 @@ export default function Social() {
                   currentUser={currentUser}
                   currentUserId={currentUserId}
                   onPostCreated={handlePostCreated}
-                />
-                <TwitterSocialFeed />
+                 />
+                <div className="hidden lg:block">
+                  <TwitterSocialFeed />
+                </div>
+                <div className="lg:hidden">
+                  <MobileEnhancedFeed />
+                </div>
               </>
             )}
 
@@ -320,17 +326,17 @@ export default function Social() {
           {/* Mobile Content with Tabs */}
           <div className="lg:hidden">
             <Tabs value={activeTab} onValueChange={(value) => navigateToTab(value as any)} className="w-full">
-              <TabsList className="fixed bottom-0 left-1/2 transform -translate-x-1/2 z-50 bg-background/50 backdrop-blur-md border-t border-border/50 rounded-lg h-12 w-64 grid grid-cols-3">
-                <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-10 text-xs">
-                  <Home className="h-4 w-4 mb-1" />
+              <TabsList className="fixed bottom-0 left-1/2 transform -translate-x-1/2 z-50 bg-background/80 backdrop-blur-md border-t border-border/50 rounded-lg h-16 w-80 grid grid-cols-3">
+                <TabsTrigger value="feed" className="flex flex-col items-center justify-center h-14 text-sm font-medium">
+                  <Home className="h-5 w-5 mb-1" />
                   <span>{t('social.tabs.feed')}</span>
                 </TabsTrigger>
-                <TabsTrigger value="search" className="flex flex-col items-center justify-center h-10 text-xs">
-                  <Search className="h-4 w-4 mb-1" />
+                <TabsTrigger value="search" className="flex flex-col items-center justify-center h-14 text-sm font-medium">
+                  <Search className="h-5 w-5 mb-1" />
                   <span>{t('social.tabs.search')}</span>
                 </TabsTrigger>
-                <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-10 text-xs">
-                  <Mail className="h-4 w-4 mb-1" />
+                <TabsTrigger value="messages" className="flex flex-col items-center justify-center h-14 text-sm font-medium">
+                  <Mail className="h-5 w-5 mb-1" />
                   <span>{t('social.tabs.chat')}</span>
                 </TabsTrigger>
               </TabsList>
@@ -341,51 +347,57 @@ export default function Social() {
                   currentUser={currentUser}
                   currentUserId={currentUserId}
                   onPostCreated={handlePostCreated}
-                />
-                <TwitterSocialFeed />
+                 />
+                <MobileEnhancedFeed />
               </TabsContent>
 
-              <TabsContent value="search" className="pb-16 px-6">
-                <div className="p-4 space-y-4">
+              <TabsContent value="search" className="pb-20 px-4">
+                <div className="p-4 space-y-6">
                   <div className="relative">
-                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
                     <Input
                       placeholder={t('social.placeholders.searchUsers')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-9"
+                      className="pl-12 h-12 text-base"
                     />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {loading.search ? (
-                      <div className="text-center text-muted-foreground">
-                        {t('social.messages.searchingUsers')}
+                      <div className="text-center text-muted-foreground py-8">
+                        <div className="text-base font-medium">
+                          {t('social.messages.searchingUsers')}
+                        </div>
                       </div>
                     ) : searchResults.length > 0 ? (
                       searchResults.map((user) => (
                         <div 
                           key={user.id}
-                          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 cursor-pointer border"
+                          className="flex items-center space-x-4 p-4 rounded-xl hover:bg-muted/50 cursor-pointer border bg-card/50 backdrop-blur-sm min-h-[80px]"
                           onClick={() => navigate(`/user/${user.id}`)}
                         >
                           <AvatarDisplayUniversal
                             avatarData={normalizeAvatarData(user)}
                             nickname={user.nickname}
-                            size="md"
+                            size="lg"
                           />
                           <div className="flex-1 overflow-hidden">
-                            <p className="font-medium text-sm truncate">@{user.nickname}</p>
-                            <p className="text-xs text-muted-foreground">{t('common.level')} {user.level}</p>
+                            <p className="font-semibold text-base truncate">@{user.nickname}</p>
+                            <p className="text-sm text-muted-foreground">{t('common.level')} {user.level}</p>
                           </div>
                         </div>
                       ))
                     ) : searchQuery ? (
-                      <div className="text-center text-muted-foreground">
-                        {t('social.messages.noResults')}
+                      <div className="text-center text-muted-foreground py-8">
+                        <div className="text-base">
+                          {t('social.messages.noResults')}
+                        </div>
                       </div>
                     ) : (
-                      <div className="text-center text-muted-foreground">
-                        {t('social.placeholders.searchUsers')}
+                      <div className="text-center text-muted-foreground py-8">
+                        <div className="text-base">
+                          {t('social.placeholders.searchUsers')}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -393,7 +405,7 @@ export default function Social() {
               </TabsContent>
 
 
-              <TabsContent value="messages" className="pb-16 px-6">
+              <TabsContent value="messages" className="pb-20 px-4">
                 <div className="p-4">
                   <ConversationsList onSelectConversation={setSelectedConversationId} />
                 </div>

@@ -373,45 +373,50 @@ export function TwitterSocialFeed() {
   return (
     <div className="divide-y divide-border/50">
       {posts.map((post) => (
-        <article key={post.id} className="p-2 hover:bg-muted/30 transition-colors duration-200">
-          <div className="flex space-x-1.5">
+        <article 
+          key={post.id} 
+          data-post-id={post.id}
+          className="lg:p-2 p-4 hover:bg-muted/30 transition-colors duration-200"
+        >
+          <div className="flex lg:space-x-1.5 space-x-3">
             {/* Avatar */}
             <AvatarDisplayUniversal
               avatarData={normalizeAvatarData(post.profiles)}
               nickname={post.profiles.nickname}
-              size="xs-plus"
+              size="md"
+              className="lg:w-6 lg:h-6"
               onClick={() => handleUserClick(post.profiles.id)}
             />
 
             <div className="flex-1 min-w-0">
               {/* Header */}
-              <div className="flex items-center space-x-1.5 mb-1">
+              <div className="flex items-center lg:space-x-1.5 space-x-3 mb-2">
                 <span 
-                  className="font-bold hover:underline cursor-pointer text-[9px]"
+                  className="font-bold hover:underline cursor-pointer lg:text-[9px] text-sm"
                   onClick={() => handleUserClick(post.profiles.id)}
                 >
                   @{post.profiles.nickname}
                 </span>
-                <Badge variant="secondary" className="text-[8px] px-1.5 py-0.5">
+                <Badge variant="secondary" className="lg:text-[8px] text-xs lg:px-1.5 px-2 lg:py-0.5 py-1">
                   Nv.{post.profiles.level}
                 </Badge>
                 {post.is_following && (
-                  <Badge variant="outline" className="text-[8px] px-1.5 py-0.5">
+                  <Badge variant="outline" className="lg:text-[8px] text-xs lg:px-1.5 px-2 lg:py-0.5 py-1">
                     Seguindo
                   </Badge>
                 )}
-                <span className="text-[9px] text-muted-foreground">·</span>
-                <span className="text-[9px] text-muted-foreground">
+                <span className="lg:text-[9px] text-xs text-muted-foreground">·</span>
+                <span className="lg:text-[9px] text-xs text-muted-foreground">
                   {formatPostDate(post.created_at)}
                 </span>
-                <Button variant="ghost" size="sm" className="ml-auto p-1 h-auto">
-                  <MoreHorizontal className="h-3 w-3" />
+                <Button variant="ghost" size="sm" className="ml-auto lg:p-1 p-2 h-auto">
+                  <MoreHorizontal className="lg:h-3 lg:w-3 h-4 w-4" />
                 </Button>
               </div>
 
               {/* Content */}
-              <div className="mb-1.5">
-                <p className="text-[10px] leading-[13px] whitespace-pre-wrap">
+              <div className="lg:mb-1.5 mb-3">
+                <p className="lg:text-[10px] text-sm lg:leading-[13px] leading-relaxed whitespace-pre-wrap">
                   {post.content}
                 </p>
                 
@@ -430,36 +435,36 @@ export function TwitterSocialFeed() {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center lg:space-x-1 space-x-3">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary lg:p-1 p-2 lg:h-auto h-11 transition-colors duration-150 min-w-[44px]"
                   onClick={() => toggleComments(post.id)}
                 >
-                  <MessageCircle className="h-4 w-4 mr-1" />
-                  <span className="text-[10px]">{post.comments_count}</span>
+                  <MessageCircle className="lg:h-4 lg:w-4 h-5 w-5 lg:mr-1 mr-2" />
+                  <span className="lg:text-[10px] text-sm">{post.comments_count}</span>
                 </Button>
 
                 <Button
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "text-muted-foreground hover:bg-muted/50 hover:text-red-500 p-1 h-auto transition-colors duration-150",
+                    "text-muted-foreground hover:bg-muted/50 hover:text-red-500 lg:p-1 p-2 lg:h-auto h-11 transition-colors duration-150 min-w-[44px]",
                     post.user_liked && "text-red-500"
                   )}
                   onClick={() => handleLikePost(post.id, !!post.user_liked)}
                 >
-                  <Heart className={cn("h-4 w-4 mr-1", post.user_liked && "fill-current")} />
-                  <span className="text-[10px]">{post.likes_count}</span>
+                  <Heart className={cn("lg:h-4 lg:w-4 h-5 w-5 lg:mr-1 mr-2", post.user_liked && "fill-current")} />
+                  <span className="lg:text-[10px] text-sm">{post.likes_count}</span>
                 </Button>
 
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
+                  className="text-muted-foreground hover:bg-muted/50 hover:text-primary lg:p-1 p-2 lg:h-auto h-11 transition-colors duration-150 min-w-[44px]"
                 >
-                  <Share2 className="h-4 w-4" />
+                  <Share2 className="lg:h-4 lg:w-4 h-5 w-5" />
                 </Button>
 
                 {/* Follow Button - only show if not following */}
@@ -472,7 +477,7 @@ export function TwitterSocialFeed() {
                     actionType="follow"
                     variant="ghost"
                     size="sm"
-                    className="text-muted-foreground hover:bg-muted/50 hover:text-primary p-1 h-auto transition-colors duration-150"
+                    className="text-muted-foreground hover:bg-muted/50 hover:text-primary lg:p-1 p-2 lg:h-auto h-11 transition-colors duration-150 min-w-[44px]"
                     showCount={false}
                   />
                 )}

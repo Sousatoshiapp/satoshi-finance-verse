@@ -87,14 +87,14 @@ export function CreatePostCard({
   };
 
   const isDesktop = variant === 'desktop';
-  const textareaSize = isDesktop ? 'text-xl placeholder:text-xl' : 'text-base placeholder:text-base';
-  const minHeight = isDesktop ? 'min-h-[80px]' : 'min-h-[60px]';
-  const buttonSize = isDesktop ? undefined : 'sm';
-  const avatarSize = isDesktop ? 'lg' : 'md';
+  const textareaSize = isDesktop ? 'text-xl placeholder:text-xl' : 'text-lg placeholder:text-lg';
+  const minHeight = isDesktop ? 'min-h-[80px]' : 'min-h-[80px]';
+  const buttonSize = isDesktop ? undefined : 'default';
+  const avatarSize = isDesktop ? 'lg' : 'lg';
 
   return (
-    <div className="border-b border-border/50 p-3 lg:p-4">
-      <div className="flex space-x-3">
+    <div className="border-b border-border/50 lg:p-3 p-4">
+      <div className="lg:flex lg:space-x-3 space-y-4 lg:space-y-0">
         {currentUser && (
           <AvatarDisplayUniversal
             avatarData={normalizeAvatarData(currentUser)}
@@ -109,16 +109,17 @@ export function CreatePostCard({
             onChange={(e) => setNewPost(e.target.value)}
             className={`${minHeight} resize-none border-none shadow-none ${textareaSize} focus-visible:ring-0`}
             maxLength={500}
+            rows={isDesktop ? 3 : 4}
           />
-          <div className={`flex items-center justify-between ${isDesktop ? 'mt-3' : 'mt-2'}`}>
-            <span className={`${isDesktop ? 'text-sm' : 'text-xs'} text-muted-foreground`}>
+          <div className={`flex items-center justify-between ${isDesktop ? 'mt-3' : 'mt-4'}`}>
+            <span className={`${isDesktop ? 'text-sm' : 'text-sm'} text-muted-foreground font-medium`}>
               {newPost.length}/500
             </span>
             <Button 
               onClick={handleCreatePost}
               disabled={!newPost.trim() || posting}
               size={buttonSize}
-              className="rounded-full px-6"
+              className={`rounded-full px-6 ${!isDesktop ? 'h-11 min-w-[120px] text-base font-medium' : ''}`}
             >
               {posting ? t('social.buttons.publishing') : t('social.buttons.publish')}
             </Button>
