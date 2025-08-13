@@ -73,10 +73,18 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
   };
 
   const handleSubmitQuiz = async () => {
-    if (!currentLesson || selectedAnswer === null) return;
+    if (!currentLesson || selectedAnswer === null) {
+      console.log('Cannot submit: selectedAnswer or currentLesson is null');
+      return;
+    }
 
+    console.log('Submitting quiz:', { lessonId: currentLesson.id, selectedAnswer });
+    
     const originalAnswer = shuffledOptions[selectedAnswer].originalIndex;
+    console.log('Original answer index:', originalAnswer);
+    
     const result = await completeLessonQuiz(currentLesson.id, originalAnswer);
+    console.log('Quiz submission result:', result);
     
     if (result.success) {
       setQuizCompleted(true);
