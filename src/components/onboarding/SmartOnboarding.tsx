@@ -106,7 +106,7 @@ export function SmartOnboarding({ onComplete }: { onComplete: () => void }) {
   const steps: OnboardingStep[] = [
     {
       id: 'welcome',
-      title: 'Bem-vindo ao BeetzQuiz!',
+      title: 'Boas Vindas a Satoshi!',
       description: 'Vamos personalizar sua experiência de aprendizado',
       icon: <Sparkles className="h-6 w-6" />,
       component: (
