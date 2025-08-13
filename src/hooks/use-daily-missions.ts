@@ -61,6 +61,8 @@ export interface MissionProgress {
 export function useDailyMissions() {
   // PERFORMANCE: Hook de missões completamente desabilitado para melhorar performance
   // Este hook estava fazendo queries complexas com analytics e atualizações frequentes (5min)
+  // NOTA: Sistema foi substituído pelo novo sistema de Daily Lessons independente
+  // Mantendo compatibilidade para evitar quebras no código existente
   
   /* CÓDIGO ORIGINAL COMENTADO PARA PERFORMANCE:
   

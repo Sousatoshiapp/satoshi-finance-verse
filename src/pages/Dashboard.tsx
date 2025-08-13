@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DistrictCircleBadge } from "@/components/features/gamification/district-circle-badge";
 import { Gamepad2 } from "lucide-react";
+import { DailyLessonCard, AutoDailyLessonModal } from "@/components/daily-lessons";
 import { 
   LazyDashboardSummary, 
   LazyQuickActions, 
@@ -576,8 +577,13 @@ export default function Dashboard() {
           </div>
 
           {/* Ranking Semanal de Beetz - Mobile Spacing */}
-          <div className={`${isMobile ? 'mb-10' : 'mb-12'}`}>
+          <div className={`${isMobile ? 'mb-6' : 'mb-8'}`}>
             <LazyLeaderboard />
+          </div>
+
+          {/* Daily Lessons Card */}
+          <div className={`${isMobile ? 'mb-10' : 'mb-12'}`}>
+            <DailyLessonCard />
           </div>
 
           {/* BTC Duelo Rápido Card - PERFORMANCE: Removido temporariamente */}
@@ -628,6 +634,9 @@ export default function Dashboard() {
       </div>
       
       <FloatingNavbar />
+      
+      {/* Auto Daily Lesson Modal */}
+      <AutoDailyLessonModal />
       
       {/* Avatar Selection Dialog */}
       <AvatarSelection 

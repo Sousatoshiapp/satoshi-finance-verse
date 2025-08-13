@@ -1630,6 +1630,57 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_lessons: {
+        Row: {
+          btz_reward: number
+          category: string
+          content: string
+          correct_answer: number
+          created_at: string
+          id: string
+          is_active: boolean
+          is_main_lesson: boolean
+          lesson_date: string
+          quiz_options: Json
+          quiz_question: string
+          title: string
+          updated_at: string
+          xp_reward: number
+        }
+        Insert: {
+          btz_reward?: number
+          category: string
+          content: string
+          correct_answer: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_main_lesson?: boolean
+          lesson_date?: string
+          quiz_options?: Json
+          quiz_question: string
+          title: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Update: {
+          btz_reward?: number
+          category?: string
+          content?: string
+          correct_answer?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_main_lesson?: boolean
+          lesson_date?: string
+          quiz_options?: Json
+          quiz_question?: string
+          title?: string
+          updated_at?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       daily_missions: {
         Row: {
           beetz_reward: number
@@ -3324,6 +3375,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      lesson_streaks: {
+        Row: {
+          created_at: string
+          current_streak: number
+          id: string
+          last_lesson_date: string | null
+          last_weekly_combo: string | null
+          longest_streak: number
+          total_lessons_completed: number
+          updated_at: string
+          user_id: string
+          weekly_combo_count: number
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_lesson_date?: string | null
+          last_weekly_combo?: string | null
+          longest_streak?: number
+          total_lessons_completed?: number
+          updated_at?: string
+          user_id: string
+          weekly_combo_count?: number
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_lesson_date?: string | null
+          last_weekly_combo?: string | null
+          longest_streak?: number
+          total_lessons_completed?: number
+          updated_at?: string
+          user_id?: string
+          weekly_combo_count?: number
+        }
+        Relationships: []
       }
       level_tiers: {
         Row: {
@@ -6188,6 +6278,27 @@ export type Database = {
           },
         ]
       }
+      user_daily_lesson_modal: {
+        Row: {
+          created_at: string
+          id: string
+          last_shown_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_shown_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_shown_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_districts: {
         Row: {
           daily_streak: number | null
@@ -6374,6 +6485,50 @@ export type Database = {
             columns: ["season_id"]
             isOneToOne: false
             referencedRelation: "league_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_lesson_progress: {
+        Row: {
+          btz_earned: number
+          created_at: string
+          id: string
+          lesson_id: string
+          quiz_completed: boolean
+          quiz_correct: boolean | null
+          user_id: string
+          viewed_at: string | null
+          xp_earned: number
+        }
+        Insert: {
+          btz_earned?: number
+          created_at?: string
+          id?: string
+          lesson_id: string
+          quiz_completed?: boolean
+          quiz_correct?: boolean | null
+          user_id: string
+          viewed_at?: string | null
+          xp_earned?: number
+        }
+        Update: {
+          btz_earned?: number
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          quiz_completed?: boolean
+          quiz_correct?: boolean | null
+          user_id?: string
+          viewed_at?: string | null
+          xp_earned?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_lesson_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "daily_lessons"
             referencedColumns: ["id"]
           },
         ]
@@ -8214,6 +8369,10 @@ export type Database = {
       }
       update_learning_streak: {
         Args: { p_user_id: string; p_module_id?: string }
+        Returns: Json
+      }
+      update_lesson_streak: {
+        Args: { p_user_id: string; p_lesson_date: string }
         Returns: Json
       }
       update_login_streak: {
