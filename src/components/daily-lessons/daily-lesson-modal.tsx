@@ -71,25 +71,36 @@ export function DailyLessonModal({ lessonId, isOpen, onClose }: DailyLessonModal
 
   // Auto redirect after quiz completion
   useEffect(() => {
+    console.log('🎯 [MODAL DEBUG] useEffect - auto redirect:', { quizCompleted, isRedirecting });
+    
     if (quizCompleted && !isRedirecting) {
+      console.log('⏱️ [MODAL DEBUG] Iniciando timer para redirecionamento em 2s...');
       const timer = setTimeout(() => {
+        console.log('🚀 [MODAL DEBUG] Timer expirado - iniciando redirecionamento');
         setIsRedirecting(true);
         setCountdown(4);
       }, 2000); // Wait 2 seconds to show rewards
 
-      return () => clearTimeout(timer);
+      return () => {
+        console.log('🧹 [MODAL DEBUG] Limpando timer de redirecionamento');
+        clearTimeout(timer);
+      };
     }
   }, [quizCompleted, isRedirecting]);
 
   // Countdown timer for redirection
   useEffect(() => {
+    console.log('⏰ [MODAL DEBUG] useEffect - countdown:', { isRedirecting, countdown });
+    
     if (isRedirecting && countdown > 0) {
+      console.log(`⏳ [MODAL DEBUG] Countdown: ${countdown}s`);
       const timer = setTimeout(() => {
         setCountdown(prev => prev - 1);
       }, 1000);
 
       return () => clearTimeout(timer);
     } else if (isRedirecting && countdown === 0) {
+      console.log('🎯 [MODAL DEBUG] Redirecionando para dashboard...');
       navigate('/dashboard');
       handleClose();
     }

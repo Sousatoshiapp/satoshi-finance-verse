@@ -198,13 +198,18 @@ export function useDailyLessons() {
     }
   };
 
-  // Completar quiz da lição
+  // Completar quiz de lição
   const completeLessonQuiz = async (lessonId: string, selectedAnswer: number) => {
     try {
-      console.log('Submitting quiz:', { lessonId, selectedAnswer });
+      console.log('🎯 [DEBUG] Iniciando completeLessonQuiz...', { lessonId, selectedAnswer });
       
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return { success: false, correct: false };
+      if (!user) {
+        console.log('❌ [DEBUG] Usuário não encontrado');
+        return { success: false, correct: false };
+      }
+      
+      console.log('✅ [DEBUG] Usuário logado:', user.id);
 
       const { data: profile } = await supabase
         .from('profiles')
@@ -212,16 +217,31 @@ export function useDailyLessons() {
         .eq('user_id', user.id)
         .single();
 
-      if (!profile) return { success: false, correct: false };
+      if (!profile) {
+        console.log('❌ [DEBUG] Profile não encontrado');
+        return { success: false, correct: false };
+      }
+      
+      console.log('✅ [DEBUG] Profile encontrado:', profile.id);
 
       const lesson = lessons.find(l => l.id === lessonId);
-      if (!lesson) return { success: false, correct: false };
-
-      console.log('Original answer index:', lesson.correct_answer);
+      if (!lesson) {
+        console.log('❌ [DEBUG] Lição não encontrada');
+        return { success: false, correct: false };
+      }
+      
+      console.log('✅ [DEBUG] Lição encontrada:', lesson.title);
+      console.log('🎯 [DEBUG] Quiz details:', {
+        options: lesson.quiz_options,
+        selectedAnswer,
+        correctAnswer: lesson.correct_answer
+      });
       
       const isCorrect = selectedAnswer === lesson.correct_answer;
       const xpEarned = isCorrect ? lesson.xp_reward : 1;
       const btzEarned = isCorrect ? lesson.btz_reward : 0;
+      
+      console.log('🎯 [DEBUG] Resultado:', { isCorrect, xpEarned, btzEarned });
 
       // Verificar se já existe progresso para esta lição
       const { data: existingProgress } = await supabase
@@ -230,23 +250,30 @@ export function useDailyLessons() {
         .eq('user_id', profile.id)
         .eq('lesson_id', lessonId)
         .single();
+      
+      console.log('🎯 [DEBUG] Progress existente:', existingProgress);
 
       // Se já existe, atualizar. Se não existe, inserir.
       if (existingProgress) {
+        console.log('🔄 [DEBUG] Atualizando progresso existente...');
         const { error } = await supabase
           .from('user_lesson_progress')
           .update({
             quiz_completed: true,
             quiz_correct: isCorrect,
             xp_earned: xpEarned,
-            btz_earned: btzEarned,
-            updated_at: new Date().toISOString()
+            btz_earned: btzEarned
           })
           .eq('user_id', profile.id)
           .eq('lesson_id', lessonId);
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ [DEBUG] Erro ao atualizar:', error);
+          throw error;
+        }
+        console.log('✅ [DEBUG] Progresso atualizado com sucesso');
       } else {
+        console.log('➕ [DEBUG] Inserindo novo progresso...');
         const { error } = await supabase
           .from('user_lesson_progress')
           .insert({
@@ -258,7 +285,11 @@ export function useDailyLessons() {
             btz_earned: btzEarned
           });
 
-        if (error) throw error;
+        if (error) {
+          console.error('❌ [DEBUG] Erro ao inserir:', error);
+          throw error;
+        }
+        console.log('✅ [DEBUG] Novo progresso inserido com sucesso');
       }
 
       // Atualizar XP e BTZ do usuário
@@ -284,10 +315,13 @@ export function useDailyLessons() {
         p_lesson_date: today
       });
 
+      console.log('🔄 [DEBUG] Recarregando progresso do usuário...');
       await loadUserProgress();
+      console.log('✅ [DEBUG] Progresso recarregado');
 
       // Trigger animations and effects for quiz completion
       if (isCorrect) {
+        console.log('🎉 [DEBUG] Resposta correta - iniciando animações');
         // Show XP and BTZ gains with animations with delays for better UX
         setTimeout(() => {
           rewardSystem.showXPGain(lesson.xp_reward);
@@ -332,6 +366,7 @@ export function useDailyLessons() {
           });
         }
       } else {
+        console.log('❌ [DEBUG] Resposta incorreta - mostrando feedback');
         // Show XP gain even for wrong answers and incorrect answer feedback
         setTimeout(() => {
           rewardSystem.showXPGain(1);
@@ -345,9 +380,15 @@ export function useDailyLessons() {
         });
       }
 
+      console.log('🎯 [DEBUG] completeLessonQuiz finalizado com sucesso:', { success: true, correct: isCorrect });
       return { success: true, correct: isCorrect };
     } catch (error) {
-      console.error('Erro ao completar quiz:', error);
+      console.error('❌ [DEBUG] ERRO CRÍTICO em completeLessonQuiz:', error);
+      toast({
+        title: "❌ Erro",
+        description: "Houve um problema ao salvar sua resposta. Tente novamente.",
+        variant: "destructive"
+      });
       return { success: false, correct: false };
     }
   };
