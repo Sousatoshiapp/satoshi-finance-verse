@@ -165,13 +165,55 @@ export function QuizEngine({
       if (userProfile?.level >= 10) difficulty = 'medium';
       if (userProfile?.level >= 20) difficulty = 'hard';
 
-      const fetchedQuestions = await getDueQuestions(
+      console.log('🎯 Buscando questões:', {
+        userLevel: userProfile?.level,
+        selectedDifficulty: difficulty,
+        questionsCount
+      });
+
+      let fetchedQuestions = await getDueQuestions(
         difficulty,
         questionsCount,
         answeredQuestions.map(q => q.questionId)
       );
       
+      console.log('📊 Questões encontradas:', {
+        difficulty,
+        count: fetchedQuestions.length,
+        samples: fetchedQuestions.slice(0, 2).map(q => ({
+          id: q.id,
+          optionsType: Array.isArray(q.options) ? 'array' : typeof q.options
+        }))
+      });
+      
+      // Implementar fallback de dificuldade para usuários de nível alto
+      if (fetchedQuestions.length === 0 && difficulty === 'hard') {
+        console.log('⬇️ Fallback: hard → medium');
+        fetchedQuestions = await getDueQuestions(
+          'medium',
+          questionsCount,
+          answeredQuestions.map(q => q.questionId)
+        );
+        
+        if (fetchedQuestions.length === 0) {
+          console.log('⬇️ Fallback: medium → easy');
+          fetchedQuestions = await getDueQuestions(
+            'easy',
+            questionsCount,
+            answeredQuestions.map(q => q.questionId)
+          );
+        }
+      } else if (fetchedQuestions.length === 0 && difficulty === 'medium') {
+        console.log('⬇️ Fallback: medium → easy');
+        fetchedQuestions = await getDueQuestions(
+          'easy',
+          questionsCount,
+          answeredQuestions.map(q => q.questionId)
+        );
+      }
+      
       if (fetchedQuestions.length === 0) {
+        console.error('❌ Nenhuma questão encontrada mesmo com fallback');
         toast({
           title: t('quizEngine.noQuestionsAvailable'),
           description: t('quizEngine.couldNotLoadQuestions'),
@@ -180,7 +222,12 @@ export function QuizEngine({
         return;
       }
       
-      // Embaralhar as opções de cada questão
+      console.log('✅ Questões finais obtidas:', {
+        count: fetchedQuestions.length,
+        firstQuestionOptions: fetchedQuestions[0]?.options
+      });
+      
+      // CORREÇÃO CRÍTICA: Embaralhar DEPOIS da formatação
       const shuffledQuestions = shuffleQuestions(fetchedQuestions);
       
       // Aplicar traduções usando o sistema i18n principal

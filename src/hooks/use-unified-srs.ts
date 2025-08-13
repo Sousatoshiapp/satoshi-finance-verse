@@ -317,12 +317,71 @@ export function useUnifiedSRS() {
     return formatQuestions(randomQuestions || []);
   };
 
-  // Formatar questões (converter options de JSON para array)
+  // Formatar questões (converter options de JSON para array e garantir formato correto)
   const formatQuestions = (data: any[]): Question[] => {
-    return data.map(q => ({
-      ...q,
-      options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options
-    }));
+    return data.map(q => {
+      console.log('🔄 Formatando questão:', {
+        id: q.id,
+        originalOptions: q.options,
+        optionsType: typeof q.options,
+        isArray: Array.isArray(q.options)
+      });
+      
+      let formattedOptions: string[];
+      let formattedCorrectAnswer = q.correct_answer;
+      
+      // Detectar e converter diferentes formatos de options
+      if (typeof q.options === 'string') {
+        try {
+          const parsed = JSON.parse(q.options);
+          if (Array.isArray(parsed)) {
+            formattedOptions = parsed;
+          } else if (typeof parsed === 'object') {
+            // Converter objeto {"a": "texto", "b": "texto"} para array
+            const keys = Object.keys(parsed).sort();
+            formattedOptions = keys.map(key => parsed[key]);
+            
+            // Ajustar correct_answer se necessário
+            if (keys.includes(formattedCorrectAnswer)) {
+              const correctIndex = keys.indexOf(formattedCorrectAnswer);
+              formattedCorrectAnswer = formattedOptions[correctIndex];
+            }
+          } else {
+            formattedOptions = [parsed.toString()];
+          }
+        } catch (error) {
+          console.error('Erro ao parsear options:', error);
+          formattedOptions = [q.options];
+        }
+      } else if (Array.isArray(q.options)) {
+        formattedOptions = q.options;
+      } else if (typeof q.options === 'object' && q.options !== null) {
+        // Converter objeto {"a": "texto", "b": "texto"} para array
+        const keys = Object.keys(q.options).sort();
+        formattedOptions = keys.map(key => q.options[key]);
+        
+        // Ajustar correct_answer se necessário
+        if (keys.includes(formattedCorrectAnswer)) {
+          const correctIndex = keys.indexOf(formattedCorrectAnswer);
+          formattedCorrectAnswer = formattedOptions[correctIndex];
+        }
+      } else {
+        formattedOptions = [q.options?.toString() || 'Opção não disponível'];
+      }
+      
+      console.log('✅ Questão formatada:', {
+        id: q.id,
+        formattedOptions,
+        formattedCorrectAnswer,
+        originalCorrectAnswer: q.correct_answer
+      });
+      
+      return {
+        ...q,
+        options: formattedOptions,
+        correct_answer: formattedCorrectAnswer
+      };
+    });
   };
 
   // Submeter resposta e atualizar SRS
