@@ -65,9 +65,9 @@ export default function GameMode() {
       <div className="floating-particle particle-5"></div>
 
       {/* Main content with proper spacing */}
-      <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-20' : 'p-6'}`}>
+      <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-24' : 'p-6'}`}>
         {/* Header with casino styling */}
-        <div className={`flex items-center justify-start ${isMobile ? 'mb-6' : 'mb-8'}`}>
+        <div className={`flex items-center justify-start ${isMobile ? 'mb-3' : 'mb-8'}`}>
           <Button
             variant="outline"
             size="sm"
@@ -78,12 +78,12 @@ export default function GameMode() {
           </Button>
         </div>
 
-        <div className={`${isMobile ? 'max-w-sm mx-auto' : 'max-w-md mx-auto'} space-y-6`}>
+        <div className={`${isMobile ? 'max-w-sm mx-auto' : 'max-w-md mx-auto'} ${isMobile ? 'space-y-3' : 'space-y-6'}`}>
 
           {/* Game Mode Selection with casino styling */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
-            <CardContent className="p-3">
-              <div className="text-center mb-4">
+            <CardContent className={`${isMobile ? 'p-2' : 'p-3'}`}>
+              <div className={`text-center ${isMobile ? 'mb-3' : 'mb-4'}`}>
                 <h2 className="text-sm font-bold text-white mb-2">
                   Como você quer arrasar hoje?
                 </h2>
@@ -92,18 +92,18 @@ export default function GameMode() {
                 </p>
               </div>
 
-              <div className="space-y-2">
+              <div className={`${isMobile ? 'space-y-1.5' : 'space-y-2'}`}>
                 {/* Modo Solo */}
                 <button
                   onClick={() => handleModeSelect('solo')}
-                  className={`group w-full p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card ${
                     selectedMode === 'solo'
                       ? 'casino-selected border-purple-500 bg-purple-500/20 text-white'
                       : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10'
                   }`}
                   disabled={selectedMode !== null}
                 >
-                  <div className="flex items-center justify-center gap-2">
+                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
                     <User className="h-3 w-3 text-white" />
                     <span className="text-xs font-medium">Solo Mission</span>
                   </div>
@@ -112,14 +112,14 @@ export default function GameMode() {
                 {/* Modo Duelo */}
                 <button
                   onClick={() => handleModeSelect('duelo')}
-                  className={`group w-full p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card ${
                     selectedMode === 'duelo'
                       ? 'casino-selected border-pink-500 bg-pink-500/20 text-white'
                       : 'border-pink-500/30 bg-black/20 text-gray-300 casino-hover hover:border-pink-500/60 hover:bg-pink-500/10'
                   }`}
                   disabled={selectedMode !== null}
                 >
-                  <div className="flex items-center justify-center gap-2">
+                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
                     <Users className="h-3 w-3 text-white" />
                     <span className="text-xs font-medium">Multiplayer</span>
                   </div>
@@ -127,10 +127,10 @@ export default function GameMode() {
 
                 {/* Torneio */}
                 <button
-                  className="w-full p-2 rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30"
+                  className={`w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30`}
                   disabled={true}
                 >
-                  <div className="flex items-center justify-center gap-2">
+                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
                     <span className="text-xs text-muted-foreground">Torneios</span>
                     <span className="px-2 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
                       Soon™
@@ -141,9 +141,9 @@ export default function GameMode() {
                 {/* Conectar Conceitos */}
                 <button
                   onClick={() => navigate('/concept-connections?theme=basic_finance')}
-                  className="group w-full p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card border-cyan-500/30 bg-black/20 text-gray-300 casino-hover hover:border-cyan-500/60 hover:bg-cyan-500/10"
+                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card border-cyan-500/30 bg-black/20 text-gray-300 casino-hover hover:border-cyan-500/60 hover:bg-cyan-500/10`}
                 >
-                  <div className="flex items-center justify-center gap-2">
+                  <div className={`flex items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
                     <span className="text-xs font-bold text-white">Connect the Dots</span>
                     <span className="px-2 py-0.5 text-xs bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
                       Fire
