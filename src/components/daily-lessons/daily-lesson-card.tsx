@@ -46,7 +46,7 @@ export function DailyLessonCard() {
 
   if (!mainLesson && extraLessons.length === 0) {
     return (
-      <Card className="h-32 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
+      <Card className="h-26 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
         <div className="h-full flex">
           {/* Lado esquerdo - Texto */}
           <div className="flex-1 p-4 flex flex-col justify-center">
