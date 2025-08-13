@@ -168,18 +168,6 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
             })}
           </div>
         </div>
-
-        {!isMobile && (
-          <div className="flex justify-center pt-4 border-t border-purple-500/20">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="min-w-32 casino-button border-purple-500/40 text-white hover:border-purple-500/60 hover:bg-purple-500/10"
-            >
-              Cancelar
-            </Button>
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );
