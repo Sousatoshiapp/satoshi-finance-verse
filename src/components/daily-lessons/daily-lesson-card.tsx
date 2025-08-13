@@ -137,7 +137,7 @@ export function DailyLessonCard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Quiz correto:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">XP + BTZ variáveis</span>
+                      <span className="font-medium text-green-600 dark:text-green-400">+10 XP + 0,5 BTZ</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Quiz incorreto:</span>

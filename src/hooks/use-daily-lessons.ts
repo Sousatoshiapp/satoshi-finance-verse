@@ -238,8 +238,8 @@ export function useDailyLessons() {
       });
       
       const isCorrect = selectedAnswer === lesson.correct_answer;
-      const xpEarned = isCorrect ? lesson.xp_reward : 1;
-      const btzEarned = isCorrect ? lesson.btz_reward : 0;
+      const xpEarned = isCorrect ? 10 : 1;
+      const btzEarned = isCorrect ? 0.5 : 0;
       
       console.log('🎯 [DEBUG] Resultado:', { isCorrect, xpEarned, btzEarned });
 
@@ -296,13 +296,13 @@ export function useDailyLessons() {
       if (isCorrect) {
         await supabase.rpc('award_xp', {
           profile_id: profile.id,
-          xp_amount: lesson.xp_reward,
+          xp_amount: 10,
           source: 'daily_lesson_quiz'
         });
 
         const { error: btzError } = await supabase
           .from('profiles')
-          .update({ points: (profile.points || 0) + lesson.btz_reward })
+          .update({ points: (profile.points || 0) + 0.5 })
           .eq('id', profile.id);
 
         if (btzError) throw btzError;
@@ -324,7 +324,7 @@ export function useDailyLessons() {
         console.log('🎉 [DEBUG] Resposta correta - iniciando animações');
         // Show XP and BTZ gains with animations with delays for better UX
         setTimeout(() => {
-          rewardSystem.showXPGain(lesson.xp_reward);
+          rewardSystem.showXPGain(10);
         }, 500);
         
         setTimeout(() => {
@@ -345,7 +345,7 @@ export function useDailyLessons() {
 
         toast({
           title: "🎉 Resposta correta!",
-          description: `+${lesson.xp_reward} XP + ${lesson.btz_reward} BTZ`
+          description: "+10 XP + 0,5 BTZ"
         });
 
         // Verificar achievements de streak
