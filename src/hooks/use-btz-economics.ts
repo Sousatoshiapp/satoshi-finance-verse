@@ -193,15 +193,13 @@ export function useBTZEconomics() {
 
   // Calculate protection percentage
   const getProtectionPercentage = () => {
-    if (!analytics) return 0;
-    return analytics.current.total_btz > 0 
-      ? (analytics.current.protected_btz / analytics.current.total_btz) * 100 
-      : 0;
+    if (!analytics?.current?.total_btz || analytics.current.total_btz === 0) return 0;
+    return (analytics.current.protected_btz / analytics.current.total_btz) * 100;
   };
 
   // Get streak tier with corrected logic
   const getStreakTier = () => {
-    if (!analytics) return 'Iniciante';
+    if (!analytics?.current) return 'Iniciante';
     const days = analytics.current.consecutive_login_days;
     if (days >= 100) return 'Lendário';
     if (days >= 60) return 'Épico';
@@ -226,7 +224,7 @@ export function useBTZEconomics() {
 
   // Validate if current data is consistent
   const validateYieldData = () => {
-    if (!analytics) return { isValid: true, issues: [] };
+    if (!analytics?.current) return { isValid: true, issues: [] };
     
     const issues = [];
     

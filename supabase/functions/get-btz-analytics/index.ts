@@ -89,17 +89,59 @@ serve(async (req) => {
     const currentYieldRate = YIELD_CONFIG.baseRate + YIELD_CONFIG.streakBonus + YIELD_CONFIG.subscriptionBonus;
     const nextYieldAmount = profile.points * currentYieldRate;
 
+    // Check if yield was applied today
+    const today = new Date().toISOString().split('T')[0];
+    const yieldAppliedToday = yieldHistory?.some(record => 
+      record.created_at?.split('T')[0] === today
+    ) || false;
+
+    // Calculate time until next yield (24 hours from last yield or from now if no yields)
+    const lastYieldDate = yieldHistory?.[0]?.created_at ? new Date(yieldHistory[0].created_at) : new Date();
+    const nextYieldTime = new Date(lastYieldDate);
+    nextYieldTime.setHours(24, 0, 0, 0); // Next day at midnight
+    const timeUntilNextYield = Math.max(0, nextYieldTime.getTime() - new Date().getTime());
+
+    // Return data in the expected structure
     const analytics = {
-      totalYield,
-      totalPenalties,
-      netGain,
-      currentYieldRate,
-      nextYieldAmount,
-      yieldHistory: yieldHistory?.slice(0, 7) || [], // Last 7 records
-      penaltyHistory: penaltyHistory?.slice(0, 7) || [], // Last 7 records
-      streakBonus: YIELD_CONFIG.streakBonus,
-      subscriptionBonus: YIELD_CONFIG.subscriptionBonus,
-      consecutiveLoginDays: profile.consecutive_login_days,
+      current: {
+        total_btz: profile.points || 0,
+        protected_btz: profile.protected_btz || 0,
+        unprotected_btz: Math.max(0, (profile.points || 0) - (profile.protected_btz || 0)),
+        consecutive_login_days: profile.consecutive_login_days || 0,
+        current_yield_rate: currentYieldRate,
+        next_yield_amount: nextYieldAmount,
+        time_until_next_yield_ms: timeUntilNextYield,
+        yield_applied_today: yieldAppliedToday,
+      },
+      historical: {
+        total_yield_earned: totalYield,
+        yield_last_30_days: totalYield,
+        penalty_last_30_days: totalPenalties,
+        net_gain_last_30_days: netGain,
+      },
+      charts: {
+        yield_history: yieldHistory?.slice(0, 7)?.map(record => ({
+          id: record.id || '',
+          yield_amount: record.yield_amount || 0,
+          yield_rate: record.yield_rate || 0,
+          streak_bonus: record.streak_bonus || 0,
+          subscription_bonus: record.subscription_bonus || 0,
+          created_at: record.created_at || '',
+        })) || [],
+        penalty_history: penaltyHistory?.slice(0, 7)?.map(record => ({
+          id: record.id || '',
+          penalty_amount: record.penalty_amount || 0,
+          days_inactive: record.days_inactive || 0,
+          penalty_rate: record.penalty_rate || 0,
+          created_at: record.created_at || '',
+        })) || [],
+      },
+      bonuses: {
+        base_rate: YIELD_CONFIG.baseRate,
+        subscription_bonus: YIELD_CONFIG.subscriptionBonus,
+        streak_bonus: YIELD_CONFIG.streakBonus,
+        subscription_tier: profile.subscription_tier || 'free',
+      },
     };
 
     return new Response(
