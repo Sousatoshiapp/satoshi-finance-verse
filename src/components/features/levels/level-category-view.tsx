@@ -121,39 +121,39 @@ export function LevelCategoryView({
                   "bg-gradient-to-r",
                   category.gradient
                 )}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        {category.icon}
-                      </div>
-                      <div>
-                        <CardTitle className="flex items-center gap-2">
-                          {category.name}
-                          <Badge variant="outline" className="text-xs">
-                            {category.range[0]}-{category.range[1]}
-                          </Badge>
-                          {isCurrentCategory && (
-                            <Badge variant="default" className="text-xs">
-                              Atual
-                            </Badge>
-                          )}
-                        </CardTitle>
-                        <CardDescription>{category.description}</CardDescription>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <div className="text-sm font-medium">{progress.toFixed(0)}%</div>
-                        <div className="text-xs text-muted-foreground">Completo</div>
-                      </div>
-                      {isOpen ? (
-                        <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </div>
-                  </div>
+                   <div className="flex items-center justify-between min-w-0 w-full">
+                     <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
+                       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                         {category.icon}
+                       </div>
+                       <div className="min-w-0 flex-1 overflow-hidden">
+                         <CardTitle className="flex items-center gap-2 min-w-0">
+                           <span className="truncate">{category.name}</span>
+                           <Badge variant="outline" className="text-xs shrink-0">
+                             {category.range[0]}-{category.range[1]}
+                           </Badge>
+                           {isCurrentCategory && (
+                             <Badge variant="default" className="text-xs shrink-0">
+                               Atual
+                             </Badge>
+                           )}
+                         </CardTitle>
+                         <CardDescription className="truncate">{category.description}</CardDescription>
+                       </div>
+                     </div>
+                     
+                     <div className="flex items-center gap-2 shrink-0">
+                       <div className="text-right min-w-0">
+                         <div className="text-sm font-medium whitespace-nowrap">{progress.toFixed(0)}%</div>
+                         <div className="text-xs text-muted-foreground whitespace-nowrap">Completo</div>
+                       </div>
+                       {isOpen ? (
+                         <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+                       ) : (
+                         <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+                       )}
+                     </div>
+                   </div>
                   
                   {/* Progress bar */}
                   <div className="w-full bg-muted/50 rounded-full h-2 mt-2">
@@ -221,19 +221,19 @@ export function LevelCategoryView({
                                 XP: {level.xp_required || level.level * 100}
                               </span>
                               
-                              {status === 'current' && (
-                                <div className="mt-1">
-                                  <span className="text-primary font-medium text-xs">
-                                    {(() => {
-                                      const currentXP = level.xp_required || (level.level - 1) * 100;
-                                      const nextXP = getNextLevelXP ? getNextLevelXP(level.level) : level.level * 100;
-                                      const xpForLevel = Math.max(1, nextXP - currentXP);
-                                      const earned = Math.max(0, userXP - currentXP);
-                                      return Math.round(Math.min(100, (earned / xpForLevel) * 100));
-                                    })()}% completo
-                                  </span>
-                                </div>
-                              )}
+                               {status === 'current' && (
+                                 <div className="mt-1">
+                                   <span className="text-primary font-medium text-xs whitespace-nowrap">
+                                     {(() => {
+                                       const currentXP = level.xp_required || (level.level - 1) * 100;
+                                       const nextXP = getNextLevelXP ? getNextLevelXP(level.level) : level.level * 100;
+                                       const xpForLevel = Math.max(1, nextXP - currentXP);
+                                       const earned = Math.max(0, userXP - currentXP);
+                                       return Math.round(Math.min(100, (earned / xpForLevel) * 100));
+                                     })()}% completo
+                                   </span>
+                                 </div>
+                               )}
                             </div>
                           </CardContent>
                         </Card>
