@@ -1890,6 +1890,48 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_shop_items: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          expires_at: string
+          id: string
+          is_flash_sale: boolean
+          name: string
+          original_price: number | null
+          price_btz: number
+          rarity: string
+          remaining_stock: number | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          expires_at: string
+          id?: string
+          is_flash_sale?: boolean
+          name: string
+          original_price?: number | null
+          price_btz: number
+          rarity: string
+          remaining_stock?: number | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          expires_at?: string
+          id?: string
+          is_flash_sale?: boolean
+          name?: string
+          original_price?: number | null
+          price_btz?: number
+          rarity?: string
+          remaining_stock?: number | null
+        }
+        Relationships: []
+      }
       direct_messages: {
         Row: {
           content: string
@@ -2868,6 +2910,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fomo_events: {
+        Row: {
+          created_at: string
+          description: string
+          difficulty: number | null
+          expires_at: string
+          id: string
+          is_active: boolean
+          max_count: number | null
+          remaining_count: number | null
+          reward_btz: number
+          reward_items: string[] | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          difficulty?: number | null
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          max_count?: number | null
+          remaining_count?: number | null
+          reward_btz?: number
+          reward_items?: string[] | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          difficulty?: number | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          max_count?: number | null
+          remaining_count?: number | null
+          reward_btz?: number
+          reward_items?: string[] | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
       }
       game_events: {
         Row: {
@@ -7743,6 +7830,36 @@ export type Database = {
           referrer_id?: string
           rewards_claimed?: boolean | null
           status?: string | null
+        }
+        Relationships: []
+      }
+      user_secret_achievements: {
+        Row: {
+          description: string
+          discovered_at: string
+          id: string
+          reward_btz: number
+          title: string
+          trigger: string
+          user_id: string
+        }
+        Insert: {
+          description: string
+          discovered_at?: string
+          id?: string
+          reward_btz?: number
+          title: string
+          trigger: string
+          user_id: string
+        }
+        Update: {
+          description?: string
+          discovered_at?: string
+          id?: string
+          reward_btz?: number
+          title?: string
+          trigger?: string
+          user_id?: string
         }
         Relationships: []
       }

@@ -106,5 +106,11 @@ export const gamificationRoutes = [
     element: "FOMODashboard",
     requiresAuth: true,
     showNavbar: true
+  },
+  {
+    path: "/dopamine-hits",
+    element: "DopamineHitsShowcase",
+    requiresAuth: true,
+    showNavbar: true
   }
 ];
