@@ -11,6 +11,7 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/shared/ui/separator";
 import { EmailVerificationNotice } from "@/components/auth/email-verification-notice";
 import { useTranslation } from "react-i18next";
+import logoImage from "@/assets/logo.png";
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -295,8 +296,8 @@ export default function Auth() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center safe-area-full px-6 py-8 sm:p-6">
-        <div className="w-full max-w-sm sm:max-w-md">
+      <div className="relative z-10 min-h-screen flex items-center justify-center safe-area-full px-4 py-6">
+        <div className="w-full max-w-xs">
           {/* Back Button */}
           <Button
             variant="ghost"
@@ -308,16 +309,15 @@ export default function Auth() {
           </Button>
 
           {/* Logo and Branding */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center space-x-3 mb-4">
-              <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center text-background font-bold text-sm">
-                SC
-              </div>
-              <h1 className="text-xl font-bold text-gradient">
-                Satoshi City
-              </h1>
+          <div className="text-center mb-6">
+            <div className="flex justify-center mb-3">
+              <img 
+                src={logoImage} 
+                alt="Logo" 
+                className="w-16 h-16 object-contain animate-pulse-glow"
+              />
             </div>
-            <div className="flex justify-center space-x-2 mb-2">
+            <div className="flex justify-center space-x-2">
               <span className="px-2 py-1 text-xs bg-primary/20 text-primary rounded-full border border-primary/30">
                 Neural System
               </span>
@@ -328,13 +328,13 @@ export default function Auth() {
           </div>
 
           {/* Enhanced Auth Card */}
-          <Card className="cyber-card border-primary/30 shadow-glow relative overflow-hidden">
+          <Card className="space-card border-primary/30 shadow-glow relative overflow-hidden">
             {/* Card Header with Enhanced Styling */}
-            <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6 relative">
-              <CardTitle className="text-2xl sm:text-3xl font-bold text-gradient mb-2 animate-pulse-glow">
+            <CardHeader className="text-center px-4 py-4 relative">
+              <CardTitle className="text-xl font-bold text-gradient mb-1 animate-pulse-glow">
                 {isLogin ? t('auth.title.login') : t('auth.title.signup')}
               </CardTitle>
-              <CardDescription className="text-muted-foreground text-sm sm:text-base">
+              <CardDescription className="text-muted-foreground text-sm">
                 {isLogin 
                   ? t('auth.description.login')
                   : t('auth.description.signup')
@@ -342,7 +342,7 @@ export default function Auth() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+            <CardContent className="px-4 pb-4">
               {showForgotPassword ? (
                 // Forgot Password Form
                 <form onSubmit={handleForgotPassword} className="space-y-4">
@@ -471,7 +471,7 @@ export default function Auth() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full gradient-primary text-background font-bold py-3 auth-button hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full gradient-primary text-background font-bold py-2.5 game-button hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <div className="flex items-center space-x-2">
