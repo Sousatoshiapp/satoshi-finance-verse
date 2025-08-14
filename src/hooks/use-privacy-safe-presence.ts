@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useEnhancedSecurity } from './use-enhanced-security';
+import { adaptiveRateLimiter } from '@/lib/adaptive-rate-limiter';
+import { securityMonitor } from '@/lib/security-monitor';
 
 interface PrivacySafePresenceData {
   totalOnlineUsers: number;
@@ -38,6 +40,40 @@ export function usePrivacySafePresence() {
   }, []);
 
   const fetchPresenceData = async () => {
+    const startTime = performance.now();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    // Verificar rate limit adaptativo e monitoramento de segurança
+    const canProceed = adaptiveRateLimiter.canPerformAction(
+      user.id, 
+      'privacy_safe_presence_check',
+      Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24)) // dias desde criação
+    );
+
+    if (!canProceed) {
+      console.warn('Rate limit exceeded for privacy_safe_presence_check');
+      return;
+    }
+
+    // Monitoramento de segurança
+    const isAllowed = securityMonitor.checkRequest({
+      userId: user.id,
+      action: 'privacy_safe_presence_check',
+      userAgent: navigator.userAgent,
+      requestTime: startTime,
+      success: true
+    });
+
+    if (!isAllowed) {
+      console.warn('Security monitor blocked presence check');
+      return;
+    }
+
     try {
       setLoading(true);
       
@@ -47,6 +83,13 @@ export function usePrivacySafePresence() {
 
       if (statsError) {
         console.error('Error fetching anonymized stats:', statsError);
+        securityMonitor.checkRequest({
+          userId: user.id,
+          action: 'privacy_safe_presence_check',
+          userAgent: navigator.userAgent,
+          requestTime: startTime,
+          success: false
+        });
         return;
       }
 
@@ -55,13 +98,23 @@ export function usePrivacySafePresence() {
         totalActiveUsers: stats?.[0]?.total_active_users || 0
       });
 
-      logSecurityAction('privacy_safe_presence_check', {
-        totalOnlineUsers: stats?.[0]?.total_online_users || 0,
-        totalActiveUsers: stats?.[0]?.total_active_users || 0
-      });
+      // Log success de forma mais inteligente
+      if (Math.random() < 0.1) { // Log apenas 10% das requisições bem-sucedidas
+        logSecurityAction('privacy_safe_presence_check', {
+          totalOnlineUsers: stats?.[0]?.total_online_users || 0,
+          totalActiveUsers: stats?.[0]?.total_active_users || 0
+        });
+      }
 
     } catch (error) {
       console.error('Error in privacy-safe presence:', error);
+      securityMonitor.checkRequest({
+        userId: user.id,
+        action: 'privacy_safe_presence_check',
+        userAgent: navigator.userAgent,
+        requestTime: startTime,
+        success: false
+      });
     } finally {
       setLoading(false);
     }
