@@ -3,6 +3,8 @@ import { Route } from "react-router-dom";
 import { routeConfigs } from "@/config/routes";
 
 // Lazy load all page components
+const Welcome = lazy(() => import("@/pages/Welcome"));
+const Auth = lazy(() => import("@/pages/Auth"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Quiz = lazy(() => import("@/pages/Quiz"));
 const Leaderboard = lazy(() => import("@/pages/Leaderboard"));
@@ -52,6 +54,8 @@ const MemeEconomy = lazy(() => import("@/pages/MemeEconomy"));
 
 // Component mapping
 const componentMap = {
+  Welcome,
+  Auth,
   Dashboard,
   Quiz,
   Leaderboard,

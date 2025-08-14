@@ -11,6 +11,23 @@ export interface RouteConfig {
 }
 
 export const routeConfigs: RouteConfig[] = [
+  // Public routes
+  {
+    path: "/welcome",
+    component: "Welcome",
+    title: "Welcome",
+    description: "Welcome page for new users",
+    category: "main",
+    requiresAuth: false
+  },
+  {
+    path: "/auth",
+    component: "Auth",
+    title: "Authentication",
+    description: "Login and signup page",
+    category: "main",
+    requiresAuth: false
+  },
   // Main routes
   {
     path: "/",
