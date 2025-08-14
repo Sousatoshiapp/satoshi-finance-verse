@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Users, Zap, Coins } from 'lucide-react';
+import { Crown, Users, Zap, Coins, Clock, PlayCircle, TrendingUp } from 'lucide-react';
 import { Card, CardContent } from '@/components/shared/ui/card';
 import { BattleRoyaleMatchmaking } from './BattleRoyaleMatchmaking';
+import { BetConfirmDialog } from './BetConfirmDialog';
 import { useRealtimePoints } from '@/hooks/use-realtime-points';
+import { useBattleRoyaleStats } from '@/hooks/use-battle-royale-stats';
 
 interface BattleRoyaleQuickStartProps {
   onSessionJoined: (sessionId: string, sessionCode: string) => void;
@@ -14,19 +16,34 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
 }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
-  const [selectedTopic, setSelectedTopic] = useState('general');
-  const [selectedDifficulty, setSelectedDifficulty] = useState('medium');
+  const [showBetDialog, setShowBetDialog] = useState(false);
+  const [pendingMode, setPendingMode] = useState<string | null>(null);
   const { points: userBTZ, isLoading: btzLoading } = useRealtimePoints();
+  const { stats, isLoading: statsLoading } = useBattleRoyaleStats();
 
   const ENTRY_FEE = 10; // 10 BTZ entry fee
   const hasEnoughBTZ = userBTZ >= ENTRY_FEE;
 
-  const handleQuickStart = (mode: string) => {
+  const handleModeSelect = (mode: string) => {
     if (!hasEnoughBTZ && !btzLoading) {
       return; // Prevent action if insufficient BTZ
     }
-    setSelectedMode(mode);
-    setIsSearching(true);
+    setPendingMode(mode);
+    setShowBetDialog(true);
+  };
+
+  const handleBetConfirm = () => {
+    if (pendingMode) {
+      setSelectedMode(pendingMode);
+      setIsSearching(true);
+      setShowBetDialog(false);
+      setPendingMode(null);
+    }
+  };
+
+  const handleBetCancel = () => {
+    setShowBetDialog(false);
+    setPendingMode(null);
   };
 
   const handleSessionFound = (sessionId: string, sessionCode: string) => {
@@ -44,8 +61,8 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
     return (
       <BattleRoyaleMatchmaking
         mode={selectedMode}
-        topic={selectedTopic}
-        difficulty={selectedDifficulty}
+        topic="general"
+        difficulty="medium"
         onSessionFound={handleSessionFound}
         onCancel={handleCancel}
       />
@@ -141,7 +158,7 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
               return (
                 <button
                   key={mode.id}
-                  onClick={() => hasEnoughBTZ && !btzLoading && handleQuickStart(mode.id)}
+                  onClick={() => hasEnoughBTZ && !btzLoading && handleModeSelect(mode.id)}
                   className={`p-2 rounded-lg border-2 transition-all duration-300 casino-topic-card ${
                     hasEnoughBTZ && !btzLoading
                       ? 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10'
@@ -159,36 +176,33 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
         </CardContent>
       </Card>
 
-      {/* Quick Settings - Compact */}
+      {/* Real-time Statistics */}
       <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
         <CardContent className="p-3">
-          <h2 className="text-sm font-bold mb-3 text-white text-center">Configurações</h2>
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Tópico</label>
-              <select
-                value={selectedTopic}
-                onChange={(e) => setSelectedTopic(e.target.value)}
-                className="w-full h-8 bg-black/40 border border-purple-500/30 text-white text-xs rounded px-2"
-              >
-                <option value="general">Geral</option>
-                <option value="science">Ciência</option>
-                <option value="history">História</option>
-                <option value="sports">Esportes</option>
-              </select>
+          <h2 className="text-sm font-bold mb-3 text-white text-center">Estatísticas</h2>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="text-center">
+              <PlayCircle className="h-4 w-4 text-green-400 mx-auto mb-1" />
+              <div className="text-xs font-medium text-white">
+                {statsLoading ? "..." : stats.activeSessions}
+              </div>
+              <div className="text-[10px] text-muted-foreground">Sessões Ativas</div>
             </div>
             
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Dificuldade</label>
-              <select
-                value={selectedDifficulty}
-                onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full h-8 bg-black/40 border border-purple-500/30 text-white text-xs rounded px-2"
-              >
-                <option value="easy">Fácil</option>
-                <option value="medium">Médio</option>
-                <option value="hard">Difícil</option>
-              </select>
+            <div className="text-center">
+              <Users className="h-4 w-4 text-blue-400 mx-auto mb-1" />
+              <div className="text-xs font-medium text-white">
+                {statsLoading ? "..." : stats.onlinePlayers}
+              </div>
+              <div className="text-[10px] text-muted-foreground">Jogadores Online</div>
+            </div>
+            
+            <div className="text-center">
+              <Clock className="h-4 w-4 text-purple-400 mx-auto mb-1" />
+              <div className="text-xs font-medium text-white">
+                {statsLoading ? "..." : `${stats.averageWaitTime}s`}
+              </div>
+              <div className="text-[10px] text-muted-foreground">Tempo Médio</div>
             </div>
           </div>
         </CardContent>
@@ -221,6 +235,17 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
           )}
         </button>
       </div>
+
+      {/* Bet Confirmation Dialog */}
+      <BetConfirmDialog
+        isOpen={showBetDialog}
+        onClose={handleBetCancel}
+        onConfirm={handleBetConfirm}
+        mode={pendingMode || ''}
+        entryFee={ENTRY_FEE}
+        userBTZ={userBTZ}
+        isLoading={false}
+      />
     </div>
   );
 };
