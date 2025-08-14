@@ -721,6 +721,273 @@ export type Database = {
           },
         ]
       }
+      battle_royale_answers: {
+        Row: {
+          created_at: string
+          id: string
+          is_correct: boolean
+          participant_id: string
+          points_earned: number
+          power_up_used: string | null
+          question_id: string
+          response_time_ms: number
+          round_number: number
+          selected_answer: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          participant_id: string
+          points_earned?: number
+          power_up_used?: string | null
+          question_id: string
+          response_time_ms: number
+          round_number: number
+          selected_answer: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          participant_id?: string
+          points_earned?: number
+          power_up_used?: string | null
+          question_id?: string
+          response_time_ms?: number
+          round_number?: number
+          selected_answer?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_answers_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_royale_participants: {
+        Row: {
+          correct_answers: number
+          eliminated_at: string | null
+          eliminated_by_round: number | null
+          id: string
+          is_alive: boolean
+          joined_at: string
+          position: number | null
+          power_ups_used: Json
+          response_time_avg: number
+          session_id: string
+          team_id: string | null
+          total_score: number
+          user_id: string
+        }
+        Insert: {
+          correct_answers?: number
+          eliminated_at?: string | null
+          eliminated_by_round?: number | null
+          id?: string
+          is_alive?: boolean
+          joined_at?: string
+          position?: number | null
+          power_ups_used?: Json
+          response_time_avg?: number
+          session_id: string
+          team_id?: string | null
+          total_score?: number
+          user_id: string
+        }
+        Update: {
+          correct_answers?: number
+          eliminated_at?: string | null
+          eliminated_by_round?: number | null
+          id?: string
+          is_alive?: boolean
+          joined_at?: string
+          position?: number | null
+          power_ups_used?: Json
+          response_time_avg?: number
+          session_id?: string
+          team_id?: string | null
+          total_score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_participants_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_royale_powerups: {
+        Row: {
+          cost_points: number
+          created_at: string
+          description: string
+          duration_seconds: number | null
+          effect_data: Json
+          id: string
+          is_active: boolean
+          name: string
+          rarity: string
+        }
+        Insert: {
+          cost_points?: number
+          created_at?: string
+          description: string
+          duration_seconds?: number | null
+          effect_data?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          rarity?: string
+        }
+        Update: {
+          cost_points?: number
+          created_at?: string
+          description?: string
+          duration_seconds?: number | null
+          effect_data?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          rarity?: string
+        }
+        Relationships: []
+      }
+      battle_royale_sessions: {
+        Row: {
+          created_at: string
+          current_players: number
+          current_round: number
+          difficulty: string
+          elimination_percentage: number
+          entry_fee: number
+          finished_at: string | null
+          id: string
+          max_players: number
+          mode: string
+          prize_pool: number
+          question_time_limit: number
+          session_code: string
+          started_at: string | null
+          status: string
+          topic: string
+          total_rounds: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_players?: number
+          current_round?: number
+          difficulty?: string
+          elimination_percentage?: number
+          entry_fee?: number
+          finished_at?: string | null
+          id?: string
+          max_players?: number
+          mode: string
+          prize_pool?: number
+          question_time_limit?: number
+          session_code: string
+          started_at?: string | null
+          status?: string
+          topic: string
+          total_rounds?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_players?: number
+          current_round?: number
+          difficulty?: string
+          elimination_percentage?: number
+          entry_fee?: number
+          finished_at?: string | null
+          id?: string
+          max_players?: number
+          mode?: string
+          prize_pool?: number
+          question_time_limit?: number
+          session_code?: string
+          started_at?: string | null
+          status?: string
+          topic?: string
+          total_rounds?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      battle_royale_teams: {
+        Row: {
+          captain_id: string
+          created_at: string
+          id: string
+          is_alive: boolean
+          members_count: number
+          session_id: string
+          team_name: string
+          team_score: number
+        }
+        Insert: {
+          captain_id: string
+          created_at?: string
+          id?: string
+          is_alive?: boolean
+          members_count?: number
+          session_id: string
+          team_name: string
+          team_score?: number
+        }
+        Update: {
+          captain_id?: string
+          created_at?: string
+          id?: string
+          is_alive?: boolean
+          members_count?: number
+          session_id?: string
+          team_name?: string
+          team_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_teams_captain_id_fkey"
+            columns: ["captain_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_teams_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bot_activity_log: {
         Row: {
           activity_data: Json | null
@@ -8921,6 +9188,10 @@ export type Database = {
         Args: { profile_id: string; source?: string; xp_amount: number }
         Returns: undefined
       }
+      calculate_battle_royale_rewards: {
+        Args: { p_session_id: string }
+        Returns: undefined
+      }
       calculate_correct_level: {
         Args: { user_xp: number }
         Returns: number
@@ -9156,6 +9427,10 @@ export type Database = {
           tags: string
         }[]
       }
+      generate_session_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_admin_role: {
         Args: { user_uuid: string }
         Returns: string
@@ -9348,6 +9623,10 @@ export type Database = {
         Returns: {
           items: Json
         }[]
+      }
+      process_battle_royale_elimination: {
+        Args: { p_round_number: number; p_session_id: string }
+        Returns: Json
       }
       process_duel_answer: {
         Args: {
