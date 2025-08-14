@@ -10,7 +10,7 @@ import { Badge } from "@/components/shared/ui/badge";
 import { Upload, Download, CheckCircle, XCircle, AlertTriangle, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useLearningModules } from "@/hooks/use-learning-modules";
+
 
 interface ImportResult {
   success: boolean;
@@ -46,7 +46,6 @@ interface QuestionRow {
 
 export function QuestionImportTool() {
   const [file, setFile] = useState<File | null>(null);
-  const [selectedModule, setSelectedModule] = useState<string>("");
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<ImportResult | null>(null);
@@ -54,7 +53,6 @@ export function QuestionImportTool() {
   const [showPreview, setShowPreview] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { modules } = useLearningModules();
 
   const downloadTemplate = () => {
     const template = `question,option_a,option_b,option_c,option_d,correct_answer,explanation,category,difficulty
@@ -165,7 +163,7 @@ export function QuestionImportTool() {
         .insert({
           uploaded_by: profile.id,
           file_name: file.name,
-          learning_module_id: selectedModule || null,
+          learning_module_id: null,
           status: 'processing'
         })
         .select()
@@ -224,7 +222,7 @@ export function QuestionImportTool() {
               explanation: row.explanation || '',
               difficulty: row.difficulty,
               category: row.category || 'Geral',
-              learning_module_id: selectedModule || null,
+              learning_module_id: null,
               feedback_wrong_answers: feedbackMap,
               difficulty_level: row.difficulty === 'easy' ? 1 : row.difficulty === 'medium' ? 5 : 10,
               learning_objectives: learningObjectives,
@@ -341,22 +339,6 @@ export function QuestionImportTool() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="module">Módulo de Aprendizado (Opcional)</Label>
-            <Select value={selectedModule} onValueChange={setSelectedModule}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione um módulo (opcional)" />
-              </SelectTrigger>
-              <SelectContent>
-                {modules.map(module => (
-                  <SelectItem key={module.id} value={module.id}>
-                    {module.icon} {module.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="file">Arquivo CSV</Label>
             <Input
