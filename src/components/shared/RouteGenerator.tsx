@@ -32,6 +32,11 @@ const HallOfFame = lazy(() => import("@/pages/HallOfFame"));
 const AvatarEditor = lazy(() => import("@/pages/AvatarEditor"));
 const AvatarCollection = lazy(() => import("@/pages/AvatarCollection"));
 
+// FASE 3: Dopamine Hits pages
+const SoloQuiz = lazy(() => import("@/pages/quiz/SoloQuiz"));
+const FindOpponent = lazy(() => import("@/pages/FindOpponent"));
+const DopamineHitsShowcase = lazy(() => import("@/pages/gamification/DopamineHitsShowcase"));
+
 // Component mapping
 const componentMap = {
   Dashboard,
@@ -60,6 +65,10 @@ const componentMap = {
   HallOfFame,
   AvatarEditor,
   AvatarCollection,
+  // FASE 3: Dopamine Hits
+  SoloQuiz,
+  FindOpponent,
+  DopamineHitsShowcase,
 };
 
 export function generateRoutes() {

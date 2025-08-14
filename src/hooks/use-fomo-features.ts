@@ -64,8 +64,8 @@ export function useFOMOFeatures() {
 
       if (shopError) throw shopError;
 
-      setFomoEvents(events || []);
-      setDailyShop(shop || []);
+      setFomoEvents((events || []) as FOMOEvent[]);
+      setDailyShop((shop || []) as DailyShopItem[]);
 
       // Check for flash sales
       const activeFlashSale = shop?.some(item => item.is_flash_sale);
@@ -240,9 +240,9 @@ export function useFOMOFeatures() {
       if (error) throw error;
 
       // Award BTZ
-      await supabase.rpc('award_btz', {
-        user_id: user.id,
-        amount: achievement.reward_btz,
+      await supabase.rpc('award_xp', {
+        profile_id: user.id,
+        xp_amount: achievement.reward_btz,
         source: 'secret_achievement'
       });
 

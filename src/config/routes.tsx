@@ -208,6 +208,30 @@ export const routeConfigs: RouteConfig[] = [
     category: "gamification",
     requiresAuth: true
   },
+  {
+    path: "/find-opponent",
+    component: "FindOpponent",
+    title: "Find Opponent",
+    description: "Find opponents for duels",
+    category: "gamification",
+    requiresAuth: true
+  },
+  {
+    path: "/quiz/solo",
+    component: "SoloQuiz",
+    title: "Solo Quiz",
+    description: "Practice quiz mode",
+    category: "main",
+    requiresAuth: true
+  },
+  {
+    path: "/dopamine-hits",
+    component: "DopamineHitsShowcase",
+    title: "Dopamine Hits",
+    description: "FASE 3: Sistema de micro-recompensas",
+    category: "gamification",
+    requiresAuth: true
+  },
 
   // FASE 1: Social Explosion - New social routes
   {

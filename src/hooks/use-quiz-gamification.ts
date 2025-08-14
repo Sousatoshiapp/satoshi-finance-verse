@@ -132,7 +132,7 @@ export function useQuizGamification() {
       ...prev,
       showBeetzAnimation: true,
       showStreakAnimation: unifiedRewards.currentStreak > 0,
-      earnedBTZ: earnedBTZ
+      earnedBTZ: finalBTZ
     }));
 
     const currentStreak = unifiedRewards.currentStreak;
