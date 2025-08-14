@@ -5,9 +5,10 @@ import { UltraContextProvider } from "@/contexts/UltraContextProvider";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { generateRoutes } from "@/components/shared/RouteGenerator";
 import { GlobalNotifications } from "@/components/shared/GlobalNotifications";
-import { GlobalErrorBoundary } from "@/components/shared/GlobalErrorBoundary";
+import { EnhancedErrorBoundary } from "@/lib/enhanced-error-boundary";
 import { useI18n } from "@/hooks/use-i18n";
 import { useSplashScreen } from "@/hooks/use-splash-screen";
+import { usePhase5Production } from "@/hooks/use-phase5-production";
 import "@/utils/duel-system-debug"; // Load debug utilities
 
 function NotFoundPage() {
@@ -24,6 +25,9 @@ function NotFoundPage() {
 
 function AppContent() {
   useSplashScreen();
+  
+  // PHASE 5: Production Hardening Integration
+  const productionStatus = usePhase5Production();
   
   return (
     <div className="min-h-screen bg-background font-sans antialiased">
@@ -83,11 +87,17 @@ function App() {
   }, []);
 
   return (
-    <GlobalErrorBoundary>
+    <EnhancedErrorBoundary
+      maxRetries={3}
+      enableAutoRecovery={true}
+      onError={(error, errorInfo) => {
+        console.error('Production Error Boundary:', error, errorInfo);
+      }}
+    >
       <UltraContextProvider>
         <AppContent />
       </UltraContextProvider>
-    </GlobalErrorBoundary>
+    </EnhancedErrorBoundary>
   );
 }
 
