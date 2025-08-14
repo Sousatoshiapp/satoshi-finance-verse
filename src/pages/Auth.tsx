@@ -314,7 +314,7 @@ export default function Auth() {
               <img 
                 src="/lovable-uploads/3601a8a7-21e2-403a-aeea-326289b3c5b5.png" 
                 alt="Logo" 
-                className="w-12 h-12 object-contain animate-pulse-glow"
+                className="w-12 h-12 object-contain"
               />
             </div>
           </div>
@@ -323,7 +323,7 @@ export default function Auth() {
           <Card className="space-card border-primary/30 shadow-glow relative overflow-hidden" style={{height: '80%'}}>
             {/* Card Header with Enhanced Styling */}
             <CardHeader className="text-center px-4 py-3 relative">
-              <CardTitle className="text-lg font-bold text-gradient mb-1 animate-pulse-glow">
+              <CardTitle className="text-lg font-bold text-gradient mb-1">
                 {isLogin ? t('auth.title.login') : t('auth.title.signup')}
               </CardTitle>
               <CardDescription className="text-muted-foreground text-xs">
@@ -463,7 +463,7 @@ export default function Auth() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-primary text-primary-foreground font-bold py-2 hover:bg-primary/90 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
+                  className="w-full text-primary-foreground font-bold py-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <div className="flex items-center space-x-2">

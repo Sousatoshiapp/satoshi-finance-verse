@@ -274,8 +274,8 @@ All colors MUST be HSL.
   }
   
   @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 0 0 hsl(81 100% 59% / 0.4); }
-    50% { box-shadow: 0 0 20px 4px hsl(81 100% 59% / 0.2); }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
   }
   
   @keyframes shake {
