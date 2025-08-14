@@ -30,7 +30,7 @@ export function BattleRoyaleArena({ sessionId, mode, topic, difficulty }: Battle
         mode,
         topic,
         difficulty,
-        entry_fee: 100,
+        entry_fee_amount: 10,
         max_players: mode === 'solo' ? 100 : mode === 'squad' ? 50 : 80
       });
     }
