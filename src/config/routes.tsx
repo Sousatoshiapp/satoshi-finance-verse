@@ -151,6 +151,22 @@ export const routeConfigs: RouteConfig[] = [
     category: "gamification",
     requiresAuth: true
   },
+  {
+    path: "/game-mode",
+    component: "GameMode",
+    title: "Game Mode",
+    description: "Select your game mode",
+    category: "main",
+    requiresAuth: true
+  },
+  {
+    path: "/casino-duels",
+    component: "NewFindOpponent",
+    title: "Casino Duels",
+    description: "Find opponents for casino-style duels",
+    category: "gamification",
+    requiresAuth: true
+  },
 
   // FASE 1: Social Explosion - New social routes
   {

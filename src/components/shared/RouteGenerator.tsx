@@ -14,6 +14,8 @@ const SubscriptionPlans = lazy(() => import("@/pages/SubscriptionPlans"));
 const GamificationDashboard = lazy(() => import("@/pages/GamificationDashboard"));
 const Duels = lazy(() => import("@/pages/Duels"));
 const Tournaments = lazy(() => import("@/pages/Tournaments"));
+const GameMode = lazy(() => import("@/pages/GameMode"));
+const NewFindOpponent = lazy(() => import("@/pages/NewFindOpponent"));
 
 // FASE 1: Social Explosion - Lazy load social pages
 const AchievementStoriesPage = lazy(() => import("@/pages/social/AchievementStoriesPage"));
@@ -34,6 +36,8 @@ const componentMap = {
   GamificationDashboard,
   Duels,
   Tournaments,
+  GameMode,
+  NewFindOpponent,
   // FASE 1: Social pages
   AchievementStoriesPage,
   BattleRoyalePage,
