@@ -332,7 +332,7 @@ class IntelligenceDashboard {
     }, {} as Record<string, number>);
 
     return Object.entries(routeCounts)
-      .sort((a, b) => b[1] - a[1])
+      .sort((a, b) => (b[1] as number) - (a[1] as number))
       .slice(0, 10);
   }
 
@@ -348,7 +348,7 @@ class IntelligenceDashboard {
     }, {} as Record<string, number>);
 
     return Object.entries(featureCounts)
-      .sort((a, b) => b[1] - a[1])
+      .sort((a, b) => (b[1] as number) - (a[1] as number))
       .slice(0, 10);
   }
 
