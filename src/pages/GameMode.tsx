@@ -133,10 +133,10 @@ export default function GameMode() {
                 {/* Modo Solo */}
                 <button
                   onClick={() => handleModeSelect('solo')}
-                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card shadow-lg shadow-purple-500/50 animate-pulse ${
                     selectedMode === 'solo'
-                      ? 'casino-selected border-purple-500 bg-purple-500/20 text-white'
-                      : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10'
+                      ? 'casino-selected border-purple-500 bg-purple-500/20 text-white shadow-2xl shadow-purple-500/80'
+                      : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10 hover:shadow-lg hover:shadow-purple-500/80'
                   }`}
                   disabled={selectedMode !== null}
                 >
@@ -149,10 +149,10 @@ export default function GameMode() {
                 {/* Modo Duelo */}
                 <button
                   onClick={() => handleModeSelect('duelo')}
-                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card shadow-lg shadow-pink-500/50 animate-pulse ${
                     selectedMode === 'duelo'
-                      ? 'casino-selected border-pink-500 bg-pink-500/20 text-white'
-                      : 'border-pink-500/30 bg-black/20 text-gray-300 casino-hover hover:border-pink-500/60 hover:bg-pink-500/10'
+                      ? 'casino-selected border-pink-500 bg-pink-500/20 text-white shadow-2xl shadow-pink-500/80'
+                      : 'border-pink-500/30 bg-black/20 text-gray-300 casino-hover hover:border-pink-500/60 hover:bg-pink-500/10 hover:shadow-lg hover:shadow-pink-500/80'
                   }`}
                   disabled={selectedMode !== null}
                 >
@@ -184,23 +184,11 @@ export default function GameMode() {
                     <Sword className="h-3 w-3 text-muted-foreground opacity-60" />
                     <span className="text-xs text-muted-foreground text-center">Battle Royale</span>
                     <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
-                      Soon
+                      Soon™
                     </span>
                   </div>
                 </button>
 
-                {/* Conectar Conceitos */}
-                <button
-                  onClick={() => navigate('/concept-connections?theme=basic_finance')}
-                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card border-cyan-500/30 bg-black/20 text-gray-300 casino-hover hover:border-cyan-500/60 hover:bg-cyan-500/10`}
-                >
-                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
-                    <span className="text-xs font-bold text-white text-center">Connect the Dots</span>
-                    <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-cyan-400 to-blue-400 text-white rounded-full font-bold animate-pulse">
-                      Fire
-                    </span>
-                  </div>
-                </button>
               </div>
             </CardContent>
           </Card>
