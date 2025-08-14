@@ -2,22 +2,25 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Coins } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
-import { BattleRoyaleModeSelector } from '@/components/features/battle-royale/BattleRoyaleModeSelector';
+import { BattleRoyaleQuickStart } from '@/components/features/battle-royale/BattleRoyaleQuickStart';
 import { FloatingNavbar } from '@/components/shared/floating-navbar';
 import { useNavigate } from 'react-router-dom';
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function BattleRoyalePage() {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const { points, isLoading } = useRealtimePoints();
+
+  const handleSessionJoined = (sessionId: string, sessionCode: string) => {
+    navigate(`/battle-royale/session/${sessionId}`, { 
+      state: { sessionCode } 
+    });
+  };
 
   return (
     <>
       <div className="min-h-screen casino-futuristic overflow-hidden">
         <div className="relative z-10 p-6 pb-40">
-          {/* Header with casino styling */}
           <div className="flex items-center justify-between mb-8">
             <Button
               variant="outline"
@@ -35,33 +38,7 @@ export default function BattleRoyalePage() {
             </div>
           </div>
 
-          <div className="max-w-md mx-auto space-y-8">
-            {/* Title */}
-            <div className="text-center">
-              <h2 className="text-sm font-bold mb-2 text-white">Battle Royale</h2>
-              <p className="text-xs text-gray-300">Até 100 jogadores simultâneos</p>
-            </div>
-
-            {/* Mode Selector */}
-            <BattleRoyaleModeSelector />
-
-            {/* Action Button */}
-            <div className="text-center">
-              <Button
-                onClick={() => navigate('/battle-royale/arena')}
-                className="w-full py-2 px-6 font-bold text-sm rounded-lg transition-all duration-300 border-2 hover:brightness-110"
-                style={{ 
-                  backgroundColor: 'transparent',
-                  color: '#adff2f',
-                  borderColor: '#adff2f',
-                  boxShadow: '0 0 10px rgba(173, 255, 47, 0.5)',
-                  minHeight: '28px'
-                }}
-              >
-                ENTRAR NA ARENA
-              </Button>
-            </div>
-          </div>
+          <BattleRoyaleQuickStart onSessionJoined={handleSessionJoined} />
         </div>
       </div>
       
