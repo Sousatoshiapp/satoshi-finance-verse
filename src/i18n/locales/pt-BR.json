@@ -951,8 +951,8 @@
       "signup": "Torne-se um cidadão da cidade do futuro financeiro"
     },
     "form": {
-      "nickname": "Nome de Usuário",
-      "nicknamePlaceholder": "Como você quer ser conhecido?",
+      "nickname": "Nickname",
+      "nicknamePlaceholder": "Qual vai ser sua marca no rolê?",
       "email": "Email",
       "emailPlaceholder": "seu@email.com",
       "password": "Senha",
