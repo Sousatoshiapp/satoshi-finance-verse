@@ -9725,6 +9725,15 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: boolean
       }
+      monitor_query_performance: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          avg_execution_time_ms: number
+          calls_count: number
+          optimization_suggestions: string[]
+          query_type: string
+        }[]
+      }
       monitor_yield_anomalies: {
         Args: Record<PropertyKey, never>
         Returns: {

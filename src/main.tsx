@@ -23,6 +23,15 @@ preloadCriticalAssets();
 monitorUltraPerformance();
 criticalPathOptimizer.init();
 bundleSplitter.init();
+
+// FASE 2: Advanced Performance Optimizations
+import { advancedPerformanceOptimizer } from './utils/advanced-performance-optimizer';
+import { intelligentBundler } from './utils/intelligent-bundler';
+import { webWorkerManager } from './utils/web-worker-manager';
+
+// Initialize advanced optimizations
+advancedPerformanceOptimizer.initialize(ultraQueryClient);
+intelligentBundler.preloadCriticalModules();
 initializePerformanceOptimizations();
 
 // FASE 1.2: Service Worker para cache instantâneo

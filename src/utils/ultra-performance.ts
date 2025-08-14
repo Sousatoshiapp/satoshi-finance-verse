@@ -61,21 +61,42 @@ export const detectMemoryPressure = () => {
   return false;
 };
 
-// Ultra-fast localStorage with compression
+// Ultra-fast localStorage with intelligent caching
 export const ultraStorage = {
-  set: (key: string, value: any) => {
+  set: (key: string, value: any, ttl: number = 5 * 60 * 1000) => {
     try {
-      const compressed = JSON.stringify(value);
-      localStorage.setItem(`ultra_${key}`, compressed);
+      const item = {
+        data: value,
+        timestamp: Date.now(),
+        ttl
+      };
+      localStorage.setItem(`ultra_${key}`, JSON.stringify(item));
     } catch (e) {
-      // Silent fail for storage issues
+      // Silent fail for storage issues - try to make space
+      ultraStorage.cleanup();
+      try {
+        const item = { data: value, timestamp: Date.now(), ttl };
+        localStorage.setItem(`ultra_${key}`, JSON.stringify(item));
+      } catch (e2) {
+        // Final silent fail
+      }
     }
   },
   
   get: (key: string) => {
     try {
       const item = localStorage.getItem(`ultra_${key}`);
-      return item ? JSON.parse(item) : null;
+      if (!item) return null;
+      
+      const parsed = JSON.parse(item);
+      
+      // Check if expired
+      if (Date.now() - parsed.timestamp > parsed.ttl) {
+        localStorage.removeItem(`ultra_${key}`);
+        return null;
+      }
+      
+      return parsed.data;
     } catch (e) {
       return null;
     }
@@ -84,6 +105,22 @@ export const ultraStorage = {
   clear: () => {
     const keys = Object.keys(localStorage).filter(key => key.startsWith('ultra_'));
     keys.forEach(key => localStorage.removeItem(key));
+  },
+  
+  cleanup: () => {
+    const now = Date.now();
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('ultra_'));
+    
+    keys.forEach(key => {
+      try {
+        const item = JSON.parse(localStorage.getItem(key) || '{}');
+        if (item.timestamp && (now - item.timestamp > item.ttl)) {
+          localStorage.removeItem(key);
+        }
+      } catch (e) {
+        localStorage.removeItem(key);
+      }
+    });
   }
 };
 
