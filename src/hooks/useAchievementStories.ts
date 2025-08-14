@@ -146,14 +146,9 @@ export function useAchievementStories() {
     loadStories();
   }, []);
 
-  // Generate simulated bot achievement stories usando dados reais dos bots
+  // Generate simulated bot achievement stories
   const generateBotStories = (bots: any[], realStoriesCount: number): AchievementStory[] => {
-    // Se não há bots reais, não gerar stories fictícias
-    if (!bots || bots.length === 0) {
-      return [];
-    }
-    
-    // SEMPRE gerar pelo menos 6 stories de bots usando dados reais
+    // SEMPRE gerar pelo menos 6 stories de bots
     const achievements = [
       { name: 'Mestre Bitcoin', rarity: 'legendary', badge_icon: '₿' },
       { name: 'Trader Expert', rarity: 'epic', badge_icon: '📈' },
@@ -167,8 +162,20 @@ export function useAchievementStories() {
       { name: 'HODLer Supreme', rarity: 'epic', badge_icon: '💎' }
     ];
     
-    // Usar apenas bots reais do banco de dados
-    const availableBots = bots;
+    // Use bots reais ou crie bots fictícios se necessário
+    const availableBots = bots.length > 0 ? bots : Array.from({ length: 8 }, (_, i) => ({
+      id: `fake-bot-${i}`,
+      bot_id: `fake-bot-id-${i}`,
+      bot_profile: {
+        nickname: [`CryptoMaster${i + 1}`, `BitcoinPro${i + 1}`, `SatoshiFan${i + 1}`, `BlockchainKing${i + 1}`, `DeFiGuru${i + 1}`, `CryptoSage${i + 1}`][Math.floor(Math.random() * 6)],
+        level: Math.floor(Math.random() * 45) + 5,
+        points: Math.floor(Math.random() * 4000) + 500,
+        current_avatar_id: `avatar-${i + 1}`,
+        avatars: {
+          image_url: `/avatars/avatar_${(i % 8) + 1}.jpg`
+        }
+      }
+    }));
     
     return Array.from({ length: Math.max(6, 10 - realStoriesCount) }, (_, index) => {
       const bot = availableBots[index % availableBots.length];
@@ -189,7 +196,7 @@ export function useAchievementStories() {
         user: {
           nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
           current_avatar_id: bot.bot_profile?.current_avatar_id,
-          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : null
+          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : { image_url: `/avatars/avatar_${(index % 8) + 1}.jpg` }
         },
         achievement: {
           name: achievement.name,

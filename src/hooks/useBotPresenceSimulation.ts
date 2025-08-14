@@ -25,59 +25,76 @@ export function useBotPresenceSimulation() {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  // Buscar bots reais do banco de dados
+  // Buscar bots e usuários reais online
   const fetchOnlineBots = useCallback(async () => {
     if (loading) return; // Prevent concurrent calls
     
     setLoading(true);
     try {
-      // Buscar perfis de bots reais com avatares
-      const { data: profiles, error: profileError } = await supabase
-        .from('profiles')
+      // Buscar apenas bots online sem queries aninhadas
+      const { data: botData, error: botError } = await supabase
+        .from('bot_presence_simulation')
         .select(`
-          id, 
-          nickname, 
-          level, 
-          profile_image_url, 
-          current_avatar_id,
-          points,
-          avatars:avatars!current_avatar_id (
-            name,
-            image_url
-          )
+          id,
+          bot_id,
+          personality_type,
+          is_online,
+          online_probability,
+          peak_hours,
+          last_activity_at
         `)
-        .eq('is_bot', true)
-        .order('level', { ascending: false })
-        .limit(20);
+        .eq('is_online', true)
+        .limit(50);
 
-      if (profileError) throw profileError;
+      if (botError) throw botError;
 
-      if (profiles && profiles.length > 0) {
-        // Simular presença online para alguns bots
-        const activeBotsCount = Math.min(Math.floor(profiles.length * 0.6), 12);
-        const shuffledProfiles = [...profiles].sort(() => Math.random() - 0.5);
-        const activeBots = shuffledProfiles.slice(0, activeBotsCount);
+      // Buscar perfis dos bots separadamente com avatares
+      if (botData && botData.length > 0) {
+        const botIds = botData.map(bot => bot.bot_id);
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select(`
+            id, 
+            nickname, 
+            level, 
+            profile_image_url, 
+            current_avatar_id,
+            points
+          `)
+          .in('id', botIds)
+          .eq('is_bot', true);
 
-        // Mapear bots com dados reais
-        const botsWithProfiles = activeBots.map((profile, index) => ({
-          id: `presence_${profile.id}`,
-          bot_id: profile.id,
-          personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
-          is_online: true,
-          online_probability: 0.7 + Math.random() * 0.3,
-          peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
-          last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
-          bot_profile: {
-            nickname: profile.nickname,
-            level: profile.level,
-            profile_image_url: profile.profile_image_url,
-            points: profile.points || (300 + Math.floor(Math.random() * 4700)),
-            avatars: profile.avatars ? {
-              name: profile.avatars.name,
-              image_url: profile.avatars.image_url
-            } : undefined
-          }
-        }));
+        // Buscar avatares dos bots
+        const avatarIds = profiles?.map(p => p.current_avatar_id).filter(Boolean) || [];
+        const { data: avatars } = avatarIds.length > 0 ? await supabase
+          .from('avatars')
+          .select('id, name, image_url')
+          .in('id', avatarIds) : { data: [] };
+
+        // Mapear bots com perfis e avatares
+        const botsWithProfiles = botData.map((bot) => {
+          const profile = profiles?.find(p => p.id === bot.bot_id);
+          const avatar = avatars?.find(a => a.id === profile?.current_avatar_id);
+          
+          return {
+            ...bot,
+            bot_profile: profile ? {
+              nickname: profile.nickname,
+              level: profile.level,
+              profile_image_url: profile.profile_image_url,
+              points: profile.points || Math.floor(Math.random() * 3000) + 200,
+              avatars: avatar ? {
+                name: avatar.name,
+                image_url: avatar.image_url
+              } : undefined
+            } : {
+              nickname: `Bot_${Math.floor(Math.random() * 1000)}`,
+              level: Math.floor(Math.random() * 45) + 5,
+              points: Math.floor(Math.random() * 3000) + 200,
+              avatars: undefined
+            }
+          };
+        });
 
         setOnlineBots(botsWithProfiles as BotPresence[]);
       } else {
