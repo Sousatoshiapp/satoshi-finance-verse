@@ -25,12 +25,26 @@ export function useBotPresenceSimulation() {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
+  // Buscar avatares reais disponíveis
+  const fetchAvailableAvatars = useCallback(async () => {
+    const { data: avatars } = await supabase
+      .from('avatars')
+      .select('id, name, image_url, rarity')
+      .eq('is_available', true)
+      .limit(20);
+    
+    return avatars || [];
+  }, []);
+
   // Buscar bots reais do banco de dados com fallback robusto
   const fetchOnlineBots = useCallback(async () => {
     if (loading) return; // Prevent concurrent calls
     
     setLoading(true);
     try {
+      // Buscar avatares disponíveis primeiro
+      const availableAvatars = await fetchAvailableAvatars();
+      
       // Buscar perfis de bots reais com avatares
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
@@ -72,7 +86,10 @@ export function useBotPresenceSimulation() {
             avatars: profile.avatars ? {
               name: profile.avatars.name,
               image_url: profile.avatars.image_url
-            } : undefined
+            } : (availableAvatars[index % availableAvatars.length] ? {
+              name: availableAvatars[index % availableAvatars.length].name,
+              image_url: availableAvatars[index % availableAvatars.length].image_url
+            } : undefined)
           }
         }));
 
@@ -81,25 +98,35 @@ export function useBotPresenceSimulation() {
 
       // Fallback: Se não há bots suficientes, criar alguns estáticos com avatares reais
       if (finalBots.length < 8) {
-        const fallbackBots = Array.from({ length: 8 - finalBots.length }, (_, index) => ({
-          id: `fallback_bot_${index}`,
-          bot_id: `fallback_${index}`,
-          personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
-          is_online: true,
-          online_probability: 0.8,
-          peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
-          last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
-          bot_profile: {
-            nickname: ['CriptoMestre', 'BitcoinNinja', 'DataMiner', 'CodeAssassin', 'FinanceHacker', 'BlockExplorer', 'CryptoAnalyst', 'TradingBot'][index] || `CryptoBot${index}`,
-            level: 15 + Math.floor(Math.random() * 25),
-            profile_image_url: null,
-            points: 500 + Math.floor(Math.random() * 3000),
-            avatars: {
-              name: ['Code Assassin', 'Data Miner', 'Finance Hacker', 'The Satoshi', 'Crypto Analyst', 'Block Explorer', 'Trading Master', 'DeFi Pioneer'][index] || 'Crypto Explorer',
-              image_url: ['/avatars/code-assassin.jpg', '/avatars/data-miner.jpg', '/avatars/finance-hacker.jpg', '/avatars/the-satoshi.jpg', '/avatars/crypto-analyst.jpg', '/avatars/block-explorer.jpg', '/avatars/trading-master.jpg', '/avatars/defi-pioneer.jpg'][index] || '/avatars/the-satoshi.jpg'
+        const botNames = ['CriptoMestre', 'BitcoinNinja', 'DataMiner', 'CodeAssassin', 'FinanceHacker', 'BlockExplorer', 'CryptoAnalyst', 'TradingBot', 'DeFiExpert', 'SatoshiFan'];
+        
+        const fallbackBots = Array.from({ length: Math.min(8 - finalBots.length, 10) }, (_, index) => {
+          const avatarIndex = (finalBots.length + index) % availableAvatars.length;
+          const selectedAvatar = availableAvatars[avatarIndex];
+          
+          return {
+            id: `fallback_bot_${index}`,
+            bot_id: `fallback_${index}`,
+            personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
+            is_online: true,
+            online_probability: 0.8,
+            peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
+            last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+            bot_profile: {
+              nickname: botNames[index] || `CryptoBot${index}`,
+              level: 15 + Math.floor(Math.random() * 25),
+              profile_image_url: null,
+              points: 500 + Math.floor(Math.random() * 3000),
+              avatars: selectedAvatar ? {
+                name: selectedAvatar.name,
+                image_url: selectedAvatar.image_url
+              } : {
+                name: 'Code Assassin',
+                image_url: '/avatars/code-assassin.jpg'
+              }
             }
-          }
-        }));
+          };
+        });
 
         finalBots = [...finalBots, ...fallbackBots];
       }
@@ -110,31 +137,48 @@ export function useBotPresenceSimulation() {
       console.error('Erro ao buscar usuários online:', error);
       
       // Fallback completo em caso de erro - garantir que sempre tenha bots
-      const emergencyBots: BotPresence[] = Array.from({ length: 10 }, (_, index) => ({
-        id: `emergency_bot_${index}`,
-        bot_id: `emergency_${index}`,
-        personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
-        is_online: true,
-        online_probability: 0.7,
-        peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
-        last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
-        bot_profile: {
-          nickname: ['CriptoMestre', 'BitcoinNinja', 'DataMiner', 'CodeAssassin', 'FinanceHacker', 'BlockExplorer', 'CryptoAnalyst', 'TradingBot', 'DeFiExpert', 'SatoshiFan'][index],
-          level: 10 + Math.floor(Math.random() * 30),
-          profile_image_url: null,
-          points: 300 + Math.floor(Math.random() * 2500),
-          avatars: {
-            name: ['Code Assassin', 'Data Miner', 'Finance Hacker', 'The Satoshi', 'Crypto Analyst', 'Block Explorer', 'Trading Master', 'DeFi Pioneer', 'Bitcoin Pro', 'Satoshi Fan'][index],
-            image_url: ['/avatars/code-assassin.jpg', '/avatars/data-miner.jpg', '/avatars/finance-hacker.jpg', '/avatars/the-satoshi.jpg', '/avatars/crypto-analyst.jpg', '/avatars/block-explorer.jpg', '/avatars/trading-master.jpg', '/avatars/defi-pioneer.jpg', '/avatars/bitcoin-pro.jpg', '/avatars/satoshi-fan.jpg'][index] || '/avatars/the-satoshi.jpg'
+      const emergencyAvatars = [
+        { name: 'Code Assassin', image_url: '/avatars/code-assassin.jpg' },
+        { name: 'Data Miner', image_url: '/avatars/data-miner.jpg' },
+        { name: 'Finance Hacker', image_url: '/avatars/finance-hacker.jpg' },
+        { name: 'Crypto Analyst', image_url: '/avatars/crypto-analyst.jpg' },
+        { name: 'Binary Monk', image_url: '/avatars/binary-monk.jpg' },
+        { name: 'Cyber Mechanic', image_url: '/avatars/cyber-mechanic.jpg' },
+        { name: 'DeFi Samurai', image_url: '/avatars/defi-samurai.jpg' },
+        { name: 'Ghost Trader', image_url: '/avatars/ghost-trader.jpg' },
+        { name: 'Market Prophet', image_url: '/avatars/market-prophet.jpg' },
+        { name: 'Investment Scholar', image_url: '/avatars/investment-scholar.jpg' }
+      ];
+      
+      const emergencyBots: BotPresence[] = Array.from({ length: 10 }, (_, index) => {
+        const selectedAvatar = emergencyAvatars[index] || emergencyAvatars[0];
+        
+        return {
+          id: `emergency_bot_${index}`,
+          bot_id: `emergency_${index}`,
+          personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
+          is_online: true,
+          online_probability: 0.7,
+          peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
+          last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+          bot_profile: {
+            nickname: ['CriptoMestre', 'BitcoinNinja', 'DataMiner', 'CodeAssassin', 'FinanceHacker', 'BlockExplorer', 'CryptoAnalyst', 'TradingBot', 'DeFiExpert', 'SatoshiFan'][index],
+            level: 10 + Math.floor(Math.random() * 30),
+            profile_image_url: null,
+            points: 300 + Math.floor(Math.random() * 2500),
+            avatars: {
+              name: selectedAvatar.name,
+              image_url: selectedAvatar.image_url
+            }
           }
-        }
-      }));
+        };
+      });
       
       setOnlineBots(emergencyBots);
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, [loading, fetchAvailableAvatars]);
 
   // Atualizar presença dos bots
   const updateBotPresence = useCallback(async () => {
