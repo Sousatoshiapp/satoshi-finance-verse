@@ -16,6 +16,7 @@ const DirectChatWrapper = lazy(() => import("@/pages/DirectChatWrapper"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const BeetzInfo = lazy(() => import("@/pages/BeetzInfo"));
 const SubscriptionPlans = lazy(() => import("@/pages/SubscriptionPlans"));
+const Cancel = lazy(() => import("@/pages/Cancel"));
 const GamificationDashboard = lazy(() => import("@/pages/GamificationDashboard"));
 const Duels = lazy(() => import("@/pages/Duels"));
 const Tournaments = lazy(() => import("@/pages/Tournaments"));
@@ -77,6 +78,7 @@ const componentMap = {
   Settings,
   BeetzInfo,
   SubscriptionPlans,
+  Cancel,
   GamificationDashboard,
   Duels,
   Tournaments,

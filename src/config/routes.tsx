@@ -387,6 +387,15 @@ export const routeConfigs: RouteConfig[] = [
     category: "admin",
     requiresAuth: true,
     requiresAdmin: true
+  },
+  {
+    path: "/admin/quiz/questions",
+    component: "AdminQuizQuestions",
+    title: "Admin Quiz Questions",
+    description: "Manage quiz questions and import CSV data",
+    category: "admin",
+    requiresAuth: true,
+    requiresAdmin: true
   }
 ];
 
