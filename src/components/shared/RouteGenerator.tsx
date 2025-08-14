@@ -37,6 +37,12 @@ const SoloQuiz = lazy(() => import("@/pages/quiz/SoloQuiz"));
 const FindOpponent = lazy(() => import("@/pages/FindOpponent"));
 const DopamineHitsShowcase = lazy(() => import("@/pages/gamification/DopamineHitsShowcase"));
 
+// FASE 4 & 5: New features
+const InfluencerProgram = lazy(() => import("@/pages/InfluencerProgram"));
+const GuildWars = lazy(() => import("@/pages/GuildWars"));
+const ViralChallenges = lazy(() => import("@/pages/ViralChallenges"));
+const MemeEconomy = lazy(() => import("@/pages/MemeEconomy"));
+
 // Component mapping
 const componentMap = {
   Dashboard,
@@ -69,6 +75,11 @@ const componentMap = {
   SoloQuiz,
   FindOpponent,
   DopamineHitsShowcase,
+  // FASE 4 & 5: New features
+  InfluencerProgram,
+  GuildWars,
+  ViralChallenges,
+  MemeEconomy,
 };
 
 export function generateRoutes() {

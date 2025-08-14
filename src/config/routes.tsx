@@ -232,6 +232,38 @@ export const routeConfigs: RouteConfig[] = [
     category: "gamification",
     requiresAuth: true
   },
+  {
+    path: "/influencer-program",
+    component: "InfluencerProgram",
+    title: "Programa de Influenciadores",
+    description: "FASE 4: Monetize seu conhecimento",
+    category: "social",
+    requiresAuth: true
+  },
+  {
+    path: "/guild-wars",
+    component: "GuildWars",
+    title: "Guild Wars",
+    description: "FASE 4: Competições entre guilds",
+    category: "gamification",
+    requiresAuth: true
+  },
+  {
+    path: "/viral-challenges",
+    component: "ViralChallenges",
+    title: "Desafios Virais",
+    description: "FASE 5: Challenges sazonais virais",
+    category: "social",
+    requiresAuth: true
+  },
+  {
+    path: "/meme-economy",
+    component: "MemeEconomy",
+    title: "Economia de Memes",
+    description: "FASE 5: Colecione memes crypto exclusivos",
+    category: "gamification",
+    requiresAuth: true
+  },
 
   // FASE 1: Social Explosion - New social routes
   {

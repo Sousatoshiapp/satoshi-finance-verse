@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -1196,6 +1196,57 @@ export type Database = {
           },
         ]
       }
+      challenge_participation: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          completion_rate: number
+          engagement_score: number
+          id: string
+          participated_at: string
+          rewards_earned: Json
+          shares_count: number
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          completion_rate?: number
+          engagement_score?: number
+          id?: string
+          participated_at?: string
+          rewards_earned?: Json
+          shares_count?: number
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          completion_rate?: number
+          engagement_score?: number
+          id?: string
+          participated_at?: string
+          rewards_earned?: Json
+          shares_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_challenge_participation_challenge"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "viral_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_challenge_participation_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       city_emergency_contributions: {
         Row: {
           btz_contributed: number | null
@@ -1519,6 +1570,50 @@ export type Database = {
             columns: ["participant2_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_analytics: {
+        Row: {
+          analytics_date: string
+          content_views: number
+          created_at: string
+          creator_id: string
+          earnings_amount: number
+          engagement_rate: number
+          id: string
+          quiz_completions: number
+          referrals_count: number
+        }
+        Insert: {
+          analytics_date?: string
+          content_views?: number
+          created_at?: string
+          creator_id: string
+          earnings_amount?: number
+          engagement_rate?: number
+          id?: string
+          quiz_completions?: number
+          referrals_count?: number
+        }
+        Update: {
+          analytics_date?: string
+          content_views?: number
+          created_at?: string
+          creator_id?: string
+          earnings_amount?: number
+          engagement_rate?: number
+          id?: string
+          quiz_completions?: number
+          referrals_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_creator_analytics_creator"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_creators"
             referencedColumns: ["id"]
           },
         ]
@@ -3269,6 +3364,102 @@ export type Database = {
           },
         ]
       }
+      guild_war_participants: {
+        Row: {
+          guild_id: string
+          id: string
+          joined_at: string
+          quizzes_completed: number
+          user_id: string
+          war_id: string
+          xp_contributed: number
+        }
+        Insert: {
+          guild_id: string
+          id?: string
+          joined_at?: string
+          quizzes_completed?: number
+          user_id: string
+          war_id: string
+          xp_contributed?: number
+        }
+        Update: {
+          guild_id?: string
+          id?: string
+          joined_at?: string
+          quizzes_completed?: number
+          user_id?: string
+          war_id?: string
+          xp_contributed?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_guild_war_participants_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_guild_war_participants_war"
+            columns: ["war_id"]
+            isOneToOne: false
+            referencedRelation: "guild_wars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guild_wars: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string
+          id: string
+          max_participants: number
+          name: string
+          participants_count: number
+          prize_pool: Json
+          start_date: string
+          status: Database["public"]["Enums"]["guild_war_status"]
+          total_xp_earned: number
+          updated_at: string
+          winner_guild_id: string | null
+          xp_goal: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date: string
+          id?: string
+          max_participants?: number
+          name: string
+          participants_count?: number
+          prize_pool?: Json
+          start_date: string
+          status?: Database["public"]["Enums"]["guild_war_status"]
+          total_xp_earned?: number
+          updated_at?: string
+          winner_guild_id?: string | null
+          xp_goal?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          max_participants?: number
+          name?: string
+          participants_count?: number
+          prize_pool?: Json
+          start_date?: string
+          status?: Database["public"]["Enums"]["guild_war_status"]
+          total_xp_earned?: number
+          updated_at?: string
+          winner_guild_id?: string | null
+          xp_goal?: number
+        }
+        Relationships: []
+      }
       guilds: {
         Row: {
           created_at: string | null
@@ -3381,6 +3572,59 @@ export type Database = {
           },
           {
             foreignKeyName: "invite_queue_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_creators: {
+        Row: {
+          content_created: number
+          conversion_rate: number
+          created_at: string
+          engagement_score: number
+          id: string
+          is_active: boolean
+          monthly_referrals: number
+          tier: Database["public"]["Enums"]["influencer_tier"]
+          total_earnings: number
+          total_referrals: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content_created?: number
+          conversion_rate?: number
+          created_at?: string
+          engagement_score?: number
+          id?: string
+          is_active?: boolean
+          monthly_referrals?: number
+          tier?: Database["public"]["Enums"]["influencer_tier"]
+          total_earnings?: number
+          total_referrals?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content_created?: number
+          conversion_rate?: number
+          created_at?: string
+          engagement_score?: number
+          id?: string
+          is_active?: boolean
+          monthly_referrals?: number
+          tier?: Database["public"]["Enums"]["influencer_tier"]
+          total_earnings?: number
+          total_referrals?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_knowledge_creators_user"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -3924,6 +4168,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      meme_economy_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          is_animated: boolean
+          is_exclusive: boolean
+          name: string
+          price_beetz: number
+          rarity: Database["public"]["Enums"]["meme_rarity"]
+          unlock_requirements: Json
+          updated_at: string
+          usage_count: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          is_animated?: boolean
+          is_exclusive?: boolean
+          name: string
+          price_beetz?: number
+          rarity?: Database["public"]["Enums"]["meme_rarity"]
+          unlock_requirements?: Json
+          updated_at?: string
+          usage_count?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          is_animated?: boolean
+          is_exclusive?: boolean
+          name?: string
+          price_beetz?: number
+          rarity?: Database["public"]["Enums"]["meme_rarity"]
+          unlock_requirements?: Json
+          updated_at?: string
+          usage_count?: number
+        }
+        Relationships: []
       }
       mentoring_missions: {
         Row: {
@@ -7233,6 +7528,48 @@ export type Database = {
           },
         ]
       }
+      user_meme_collection: {
+        Row: {
+          id: string
+          is_favorite: boolean
+          meme_id: string
+          unlocked_at: string
+          usage_count: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_favorite?: boolean
+          meme_id: string
+          unlocked_at?: string
+          usage_count?: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_favorite?: boolean
+          meme_id?: string
+          unlocked_at?: string
+          usage_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_meme_collection_meme"
+            columns: ["meme_id"]
+            isOneToOne: false
+            referencedRelation: "meme_economy_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_user_meme_collection_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_mission_progress: {
         Row: {
           completed: boolean
@@ -8084,6 +8421,104 @@ export type Database = {
         }
         Relationships: []
       }
+      viral_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string
+          current_shares: number
+          description: string
+          end_date: string
+          hashtag: string
+          id: string
+          is_seasonal: boolean
+          rewards: Json
+          start_date: string
+          status: Database["public"]["Enums"]["challenge_status"]
+          target_shares: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string
+          current_shares?: number
+          description: string
+          end_date: string
+          hashtag: string
+          id?: string
+          is_seasonal?: boolean
+          rewards?: Json
+          start_date: string
+          status?: Database["public"]["Enums"]["challenge_status"]
+          target_shares?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string
+          current_shares?: number
+          description?: string
+          end_date?: string
+          hashtag?: string
+          id?: string
+          is_seasonal?: boolean
+          rewards?: Json
+          start_date?: string
+          status?: Database["public"]["Enums"]["challenge_status"]
+          target_shares?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      viral_shares: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          engagement_metrics: Json | null
+          hashtags: string[] | null
+          id: string
+          platform: string
+          share_url: string | null
+          user_id: string
+          viral_score: number
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          engagement_metrics?: Json | null
+          hashtags?: string[] | null
+          id?: string
+          platform: string
+          share_url?: string | null
+          user_id: string
+          viral_score?: number
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          engagement_metrics?: Json | null
+          hashtags?: string[] | null
+          id?: string
+          platform?: string
+          share_url?: string | null
+          user_id?: string
+          viral_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_viral_shares_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       virtual_assets: {
         Row: {
           category: string | null
@@ -8461,9 +8896,9 @@ export type Database = {
       apply_btz_penalty: {
         Args: { profile_id: string }
         Returns: {
-          penalty_applied: boolean
-          penalty_amount: number
           days_inactive: number
+          penalty_amount: number
+          penalty_applied: boolean
         }[]
       }
       assign_bot_achievements: {
@@ -8479,11 +8914,11 @@ export type Database = {
         Returns: string
       }
       award_duel_prize: {
-        Args: { duel_id: string; winner_id: string; prize_amount: number }
+        Args: { duel_id: string; prize_amount: number; winner_id: string }
         Returns: boolean
       }
       award_xp: {
-        Args: { profile_id: string; xp_amount: number; source?: string }
+        Args: { profile_id: string; source?: string; xp_amount: number }
         Returns: undefined
       }
       calculate_correct_level: {
@@ -8493,27 +8928,27 @@ export type Database = {
       calculate_daily_yield: {
         Args: { profile_id: string }
         Returns: {
-          yield_amount: number
-          new_total: number
           applied_rate: number
+          new_total: number
           streak_bonus: number
           subscription_bonus: number
+          yield_amount: number
         }[]
       }
       calculate_invite_priority: {
         Args: {
-          p_challenger_id: string
           p_challenged_id: string
+          p_challenger_id: string
           p_quiz_topic: string
         }
         Returns: number
       }
       calculate_league_points: {
         Args: {
+          p_combo_achieved?: number
+          p_quiz_score: number
           p_user_id: string
           p_xp_gained: number
-          p_quiz_score: number
-          p_combo_achieved?: number
         }
         Returns: number
       }
@@ -8534,7 +8969,7 @@ export type Database = {
         Returns: boolean
       }
       check_user_team_membership: {
-        Args: { p_user_id: string; p_district_id: string }
+        Args: { p_district_id: string; p_user_id: string }
         Returns: boolean
       }
       clean_duplicate_questions: {
@@ -8560,16 +8995,16 @@ export type Database = {
       complete_btc_duel: {
         Args: { p_duel_id: string; p_final_price: number }
         Returns: {
-          winner_profile_id: string
           prize_amount: number
+          winner_profile_id: string
         }[]
       }
       complete_duel_participation: {
         Args: {
-          p_duel_id: string
-          p_user_id: string
           p_answers: Json
+          p_duel_id: string
           p_participation_time_seconds: number
+          p_user_id: string
         }
         Returns: number
       }
@@ -8579,24 +9014,24 @@ export type Database = {
       }
       create_crisis_event: {
         Args: {
-          p_title: string
-          p_description: string
-          p_crisis_type?: string
           p_btz_goal?: number
-          p_xp_goal?: number
+          p_crisis_type?: string
+          p_description: string
           p_duration_hours?: number
+          p_title: string
+          p_xp_goal?: number
         }
         Returns: string
       }
       create_duel_with_invite: {
         Args:
           | {
-              p_challenger_id: string
-              p_challenged_id: string
               p_bet_amount: number
+              p_challenged_id: string
+              p_challenger_id: string
               p_topic: string
             }
-          | { p_invite_id: string; p_challenger_id: string }
+          | { p_challenger_id: string; p_invite_id: string }
         Returns: Json
       }
       daitch_mokotoff: {
@@ -8607,15 +9042,15 @@ export type Database = {
         Args: {
           p_duel_id: string
           p_player1_answers: Json
-          p_player2_answers: Json
           p_player1_time: number
+          p_player2_answers: Json
           p_player2_time: number
         }
         Returns: {
-          winner_id: string
           player1_score: number
           player2_score: number
           tie_broken_by: string
+          winner_id: string
         }[]
       }
       dmetaphone: {
@@ -8633,11 +9068,11 @@ export type Database = {
       enhance_bot_realism_batch: {
         Args: { batch_size?: number; offset_value?: number }
         Returns: {
-          processed: number
-          total_bots: number
-          has_more: boolean
-          success: boolean
           error_message: string
+          has_more: boolean
+          processed: number
+          success: boolean
+          total_bots: number
         }[]
       }
       fill_missing_bot_posts: {
@@ -8650,21 +9085,21 @@ export type Database = {
       }
       find_automatic_opponent: {
         Args:
-          | { p_user_id: string; p_topic?: string }
           | {
-              user_id_param: string
-              topic_param?: string
               max_level_diff?: number
+              topic_param?: string
+              user_id_param: string
             }
+          | { p_topic?: string; p_user_id: string }
           | { user_profile_id: string }
         Returns: string
       }
       find_btc_duel_opponent: {
-        Args: { p_user_id: string; p_bet_amount: number }
+        Args: { p_bet_amount: number; p_user_id: string }
         Returns: {
+          is_bot: boolean
           opponent_id: string
           queue_id: string
-          is_bot: boolean
         }[]
       }
       find_similar_questions: {
@@ -8683,10 +9118,10 @@ export type Database = {
         Args: { bot_count?: number }
         Returns: {
           bot_id: string
-          nickname: string
           level: number
-          xp: number
+          nickname: string
           points: number
+          xp: number
         }[]
       }
       generate_daily_challenges: {
@@ -8700,25 +9135,25 @@ export type Database = {
       generate_question_template: {
         Args: Record<PropertyKey, never>
         Returns: {
-          question: string
+          category: string
+          cognitive_level: string
+          concepts: string
+          correct_answer: string
+          difficulty: string
+          difficulty_level: number
+          district_id: string
+          estimated_time_seconds: number
+          explanation: string
+          learning_module_id: string
+          learning_objectives: string
           option_a: string
           option_b: string
           option_c: string
           option_d: string
-          correct_answer: string
-          explanation: string
-          category: string
-          difficulty: string
-          difficulty_level: number
-          district_id: string
-          learning_module_id: string
-          tags: string
-          learning_objectives: string
-          estimated_time_seconds: number
+          question: string
           question_type: string
-          cognitive_level: string
-          concepts: string
           source_material: string
+          tags: string
         }[]
       }
       get_admin_role: {
@@ -8728,28 +9163,28 @@ export type Database = {
       get_anonymized_user_stats: {
         Args: Record<PropertyKey, never>
         Returns: {
-          total_online_users: number
           total_active_users: number
+          total_online_users: number
         }[]
       }
       get_arena_users: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          nickname: string
-          level: number
           avatar_id: string
+          id: string
           is_bot: boolean
           is_online: boolean
+          level: number
+          nickname: string
           profile_image_url: string
         }[]
       }
       get_btc_queue_stats: {
         Args: { p_bet_amount: number }
         Returns: {
-          queue_count: number
-          estimated_wait_time: number
           active_duels: number
+          estimated_wait_time: number
+          queue_count: number
         }[]
       }
       get_current_season: {
@@ -8779,69 +9214,69 @@ export type Database = {
       get_profile_with_avatar: {
         Args: { profile_id: string }
         Returns: {
+          avatar_image_url: string
+          avatar_name: string
           id: string
-          nickname: string
+          is_bot: boolean
           level: number
-          xp: number
+          nickname: string
           points: number
           profile_image_url: string
-          avatar_name: string
-          avatar_image_url: string
-          is_bot: boolean
+          xp: number
         }[]
       }
       get_public_profile_data: {
         Args: { profile_ids: string[] }
         Returns: {
-          id: string
-          nickname: string
-          level: number
-          xp: number
-          current_avatar_id: string
-          subscription_tier: string
           created_at: string
+          current_avatar_id: string
+          id: string
+          level: number
+          nickname: string
+          subscription_tier: string
+          xp: number
         }[]
       }
       get_safe_leaderboard: {
         Args: { limit_count?: number }
         Returns: {
-          nickname: string
           level: number
-          xp: number
+          nickname: string
           rank_position: number
+          xp: number
         }[]
       }
       get_user_evolution_data: {
         Args:
-          | { user_id_param: string; start_date: string; end_date: string }
-          | { user_id_param: string; start_date: string; end_date: string }
+          | { end_date: string; start_date: string; user_id_param: string }
+          | { end_date: string; start_date: string; user_id_param: string }
         Returns: {
-          date: string
-          xp: number
-          level: number
           btz: number
-          streak: number
+          date: string
+          level: number
           quizzes_completed: number
+          streak: number
+          xp: number
         }[]
       }
       get_user_profile: {
         Args: Record<PropertyKey, never>
         Returns: {
-          id: string
-          user_id: string
-          nickname: string
-          level: number
-          xp: number
-          points: number
-          streak: number
           consecutive_login_days: number
-          last_login_date: string
-          current_avatar_id: string
-          profile_image_url: string
-          subscription_tier: string
           created_at: string
-          updated_at: string
+          current_avatar_id: string
+          id: string
           is_bot: boolean
+          last_login_date: string
+          level: number
+          nickname: string
+          points: number
+          profile_image_url: string
+          streak: number
+          subscription_tier: string
+          updated_at: string
+          user_id: string
+          xp: number
         }[]
       }
       get_user_profile_id: {
@@ -8869,11 +9304,11 @@ export type Database = {
         Returns: boolean
       }
       is_guild_leader_or_officer: {
-        Args: { p_user_id: string; p_guild_id: string }
+        Args: { p_guild_id: string; p_user_id: string }
         Returns: boolean
       }
       is_guild_member: {
-        Args: { p_user_id: string; p_guild_id: string }
+        Args: { p_guild_id: string; p_user_id: string }
         Returns: boolean
       }
       is_master_admin: {
@@ -8889,7 +9324,7 @@ export type Database = {
         Returns: boolean
       }
       log_security_event: {
-        Args: { event_type: string; user_id?: string; event_data?: Json }
+        Args: { event_data?: Json; event_type: string; user_id?: string }
         Returns: undefined
       }
       mark_daily_login_safe: {
@@ -8903,9 +9338,9 @@ export type Database = {
       monitor_yield_anomalies: {
         Args: Record<PropertyKey, never>
         Returns: {
+          issue_type: string
           profile_id: string
           yield_amount: number
-          issue_type: string
         }[]
       }
       open_loot_box: {
@@ -8916,32 +9351,32 @@ export type Database = {
       }
       process_duel_answer: {
         Args: {
+          p_answer_id: string
           p_duel_id: string
+          p_is_timeout?: boolean
           p_player_id: string
           p_question_number: number
-          p_answer_id: string
-          p_is_timeout?: boolean
         }
         Returns: Json
       }
       process_guild_request: {
         Args: {
+          p_approved: boolean
           p_request_id: string
           p_reviewer_id: string
-          p_approved: boolean
         }
         Returns: boolean
       }
       process_virtual_purchase: {
         Args: {
-          p_user_id: string
           p_product_id: string
           p_transaction_id: string
+          p_user_id: string
         }
         Returns: Json
       }
       request_guild_membership: {
-        Args: { p_guild_id: string; p_user_id: string; p_message?: string }
+        Args: { p_guild_id: string; p_message?: string; p_user_id: string }
         Returns: boolean
       }
       simulate_bot_presence: {
@@ -8954,8 +9389,8 @@ export type Database = {
       }
       start_district_duel: {
         Args: {
-          p_initiator_district_id: string
           p_challenged_district_id: string
+          p_initiator_district_id: string
         }
         Returns: string
       }
@@ -8966,14 +9401,14 @@ export type Database = {
       track_district_metric: {
         Args: {
           p_district_id: string
+          p_metric_data?: Json
           p_metric_type: string
           p_metric_value: number
-          p_metric_data?: Json
         }
         Returns: undefined
       }
       transfer_btz: {
-        Args: { sender_id: string; receiver_id: string; amount: number }
+        Args: { amount: number; receiver_id: string; sender_id: string }
         Returns: Json
       }
       update_bot_nicknames: {
@@ -8982,8 +9417,8 @@ export type Database = {
       }
       update_challenge_progress: {
         Args: {
-          profile_id: string
           challenge_type_param: string
+          profile_id: string
           progress_amount?: number
         }
         Returns: {
@@ -8997,33 +9432,33 @@ export type Database = {
       }
       update_learning_analytics: {
         Args: {
-          p_user_id: string
-          p_study_time: number
           p_questions_attempted: number
           p_questions_correct: number
+          p_study_time: number
+          p_user_id: string
         }
         Returns: Json
       }
       update_learning_streak: {
-        Args: { p_user_id: string; p_module_id?: string }
+        Args: { p_module_id?: string; p_user_id: string }
         Returns: Json
       }
       update_lesson_streak: {
-        Args: { p_user_id: string; p_lesson_date: string }
+        Args: { p_lesson_date: string; p_user_id: string }
         Returns: Json
       }
       update_login_streak: {
         Args: { profile_id: string }
         Returns: {
-          streak_updated: boolean
           new_streak: number
+          streak_updated: boolean
           yield_bonus: number
         }[]
       }
       update_mission_progress: {
         Args: {
-          profile_id: string
           mission_type_param: string
+          profile_id: string
           progress_amount?: number
         }
         Returns: {
@@ -9033,18 +9468,18 @@ export type Database = {
       }
       update_module_progress: {
         Args: {
-          p_user_id: string
-          p_module_id: string
           p_lesson_completed?: boolean
+          p_module_id: string
+          p_user_id: string
         }
         Returns: undefined
       }
       update_srs_with_concepts: {
         Args: {
-          p_user_id: string
-          p_question_id: string
           p_is_correct: boolean
+          p_question_id: string
           p_response_time_ms?: number
+          p_user_id: string
         }
         Returns: Json
       }
@@ -9053,32 +9488,32 @@ export type Database = {
         Returns: undefined
       }
       update_user_league: {
-        Args: { p_user_id: string; p_points_gained: number }
+        Args: { p_points_gained: number; p_user_id: string }
         Returns: Json
       }
       update_user_streak: {
-        Args: { profile_id: string; activity_date?: string }
+        Args: { activity_date?: string; profile_id: string }
         Returns: number
       }
       update_weekly_leaderboard: {
         Args: {
-          profile_id: string
-          xp_gained?: number
-          quiz_points?: number
           duel_win?: boolean
+          profile_id: string
+          quiz_points?: number
+          xp_gained?: number
         }
         Returns: undefined
       }
       validate_admin_token: {
-        Args: { token_value: string; operation_type?: string }
+        Args: { operation_type?: string; token_value: string }
         Returns: Json
       }
       validate_data_integrity: {
         Args: Record<PropertyKey, never>
         Returns: {
-          table_name: string
           issue_count: number
           issue_description: string
+          table_name: string
         }[]
       }
       verify_admin_session: {
@@ -9089,6 +9524,7 @@ export type Database = {
     Enums: {
       admin_role: "super_admin" | "admin" | "moderator"
       approval_status_type: "pending" | "approved" | "rejected"
+      challenge_status: "active" | "completed" | "upcoming"
       combo_type:
         | "perfect_streak"
         | "speed_demon"
@@ -9107,6 +9543,8 @@ export type Database = {
         | "duel_tournament"
         | "knowledge_race"
         | "community_challenge"
+      guild_war_status: "upcoming" | "active" | "completed"
+      influencer_tier: "bronze" | "silver" | "gold" | "diamond"
       league_tier:
         | "bronze"
         | "silver"
@@ -9115,6 +9553,7 @@ export type Database = {
         | "diamond"
         | "master"
         | "grandmaster"
+      meme_rarity: "common" | "rare" | "epic" | "legendary"
       mentorship_status: "pending" | "active" | "completed" | "cancelled"
       powerup_category:
         | "xp_boost"
@@ -9269,6 +9708,7 @@ export const Constants = {
     Enums: {
       admin_role: ["super_admin", "admin", "moderator"],
       approval_status_type: ["pending", "approved", "rejected"],
+      challenge_status: ["active", "completed", "upcoming"],
       combo_type: [
         "perfect_streak",
         "speed_demon",
@@ -9290,6 +9730,8 @@ export const Constants = {
         "knowledge_race",
         "community_challenge",
       ],
+      guild_war_status: ["upcoming", "active", "completed"],
+      influencer_tier: ["bronze", "silver", "gold", "diamond"],
       league_tier: [
         "bronze",
         "silver",
@@ -9299,6 +9741,7 @@ export const Constants = {
         "master",
         "grandmaster",
       ],
+      meme_rarity: ["common", "rare", "epic", "legendary"],
       mentorship_status: ["pending", "active", "completed", "cancelled"],
       powerup_category: [
         "xp_boost",
