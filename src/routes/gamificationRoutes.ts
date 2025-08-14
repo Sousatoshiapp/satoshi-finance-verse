@@ -100,5 +100,11 @@ export const gamificationRoutes = [
     element: "LearningAnalytics",
     requiresAuth: true,
     showNavbar: true
+  },
+  {
+    path: "/fomo",
+    element: "FOMODashboard",
+    requiresAuth: true,
+    showNavbar: true
   }
 ];

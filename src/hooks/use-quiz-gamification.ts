@@ -7,6 +7,10 @@ import { useBTZAnalytics } from "./use-btz-analytics";
 import { useUnifiedRewards } from "./use-unified-rewards";
 import { useRewardAnimationSystem } from "./use-reward-animation-system";
 import { useSmartNotifications } from "./use-smart-notifications";
+import { useCriticalHitSystem } from "./use-critical-hit-system";
+import { useDopamineAudio } from "./use-dopamine-audio";
+import { useAdvancedHaptics } from "./use-advanced-haptics";
+import { useFOMOFeatures } from "./use-fomo-features";
 import { XP_CONFIG } from "@/config/xp-config";
 import confetti from 'canvas-confetti';
 
@@ -45,6 +49,11 @@ export function useQuizGamification() {
     showLevelUpNotification 
   } = useSmartNotifications();
   
+  const { processCriticalHit, triggerFloatingNumbers } = useCriticalHitSystem();
+  const { playHeadshotSound, playCriticalHitSound, playComboSound } = useDopamineAudio();
+  const { correctAnswerHaptic, criticalHitHaptic, comboHaptic } = useAdvancedHaptics();
+  const { triggerSecretAchievement } = useFOMOFeatures();
+  
   const [animationState, setAnimationState] = useState({
     showBeetzAnimation: false,
     showStreakAnimation: false,
@@ -80,15 +89,42 @@ export function useQuizGamification() {
     }
 
     const baseBTZ = 0.1;
-    const earnedBTZ = baseBTZ * unifiedRewards.currentMultiplier;
+    
+    // FASE 3: Process critical hit
+    const criticalResult = processCriticalHit(baseBTZ);
+    const finalBTZ = baseBTZ * unifiedRewards.currentMultiplier * criticalResult.multiplier;
+    
+    // FASE 3: Dopamine audio effects
+    if (criticalResult.isCritical) {
+      playCriticalHitSound(criticalResult.multiplier);
+      criticalHitHaptic(criticalResult.multiplier);
+      
+      // Trigger critical hit visual
+      window.dispatchEvent(new CustomEvent('showCriticalHit', {
+        detail: {
+          type: criticalResult.visualEffect,
+          position: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+          multiplier: criticalResult.multiplier
+        }
+      }));
+    } else {
+      playHeadshotSound();
+      correctAnswerHaptic();
+    }
+    
+    // FASE 3: Combo effects
+    if (criticalResult.comboCount > 0) {
+      playComboSound(criticalResult.comboCount);
+      comboHaptic(criticalResult.comboCount);
+    }
     
     showCorrectAnswer({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
     
-    await unifiedRewards.earnBTZ(earnedBTZ, 'quiz');
+    await unifiedRewards.earnBTZ(finalBTZ, 'quiz');
     await unifiedRewards.awardXP(XP_CONFIG.QUIZ_CORRECT_ANSWER, 'quiz_correct');
-    const streakResult = await unifiedRewards.updateStreak(true);
+    await unifiedRewards.updateStreak(true);
     
-    showBTZGain(earnedBTZ, { x: window.innerWidth / 2, y: window.innerHeight / 2 }, unifiedRewards.currentMultiplier);
+    showBTZGain(finalBTZ, { x: window.innerWidth / 2, y: window.innerHeight / 2 }, criticalResult.multiplier);
     
     showXPGain(XP_CONFIG.QUIZ_CORRECT_ANSWER, false);
     
