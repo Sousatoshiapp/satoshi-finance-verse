@@ -12,6 +12,8 @@ interface LobbyPhaseProps {
   onStartGame: () => void;
 }
 
+const LOBBY_TIMER_SECONDS = 60; // 60 seconds lobby timer
+
 export function LobbyPhase({ session, participants, onStartGame }: LobbyPhaseProps) {
   if (!session) return null;
 

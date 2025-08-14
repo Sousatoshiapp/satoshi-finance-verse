@@ -877,6 +877,36 @@ export type Database = {
         }
         Relationships: []
       }
+      battle_royale_queue: {
+        Row: {
+          created_at: string
+          difficulty: string
+          expires_at: string
+          id: string
+          mode: string
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: string
+          expires_at?: string
+          id?: string
+          mode?: string
+          topic?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          difficulty?: string
+          expires_at?: string
+          id?: string
+          mode?: string
+          topic?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       battle_royale_sessions: {
         Row: {
           created_at: string
@@ -9255,6 +9285,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_expired_battle_royale_queue: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_inactive_presence: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -9365,6 +9399,15 @@ export type Database = {
           | { user_profile_id: string }
         Returns: string
       }
+      find_battle_royale_match: {
+        Args: {
+          p_difficulty?: string
+          p_mode?: string
+          p_topic?: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       find_btc_duel_opponent: {
         Args: { p_bet_amount: number; p_user_id: string }
         Returns: {
@@ -9453,6 +9496,10 @@ export type Database = {
           nickname: string
           profile_image_url: string
         }[]
+      }
+      get_battle_royale_queue_stats: {
+        Args: { p_mode?: string; p_topic?: string }
+        Returns: Json
       }
       get_btc_queue_stats: {
         Args: { p_bet_amount: number }

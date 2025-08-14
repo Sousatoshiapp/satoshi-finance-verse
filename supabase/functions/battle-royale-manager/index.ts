@@ -55,6 +55,8 @@ serve(async (req) => {
         return await submitAnswer(supabase, payload);
       case 'finish_session':
         return await finishSession(supabase, payload);
+      case 'auto_start_check':
+        return await autoStartReadySessions(supabase);
       default:
         throw new Error(`Unknown action: ${action}`);
     }
@@ -393,4 +395,77 @@ async function finishSession(supabase: any, payload: any) {
     }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
+}
+
+// Auto-start sessions that meet criteria
+async function autoStartReadySessions(supabase: any) {
+  try {
+    console.log('Checking for sessions ready to auto-start...');
+    
+    // Find waiting sessions that should start
+    const { data: readySessions, error: fetchError } = await supabase
+      .from('battle_royale_sessions')
+      .select(`
+        id,
+        session_code,
+        mode,
+        topic,
+        current_players,
+        max_players,
+        created_at
+      `)
+      .eq('status', 'waiting')
+      .gte('current_players', 2) // Minimum 2 players for testing
+      .lt('created_at', new Date(Date.now() - 45000).toISOString()); // 45 seconds old
+
+    if (fetchError) {
+      console.error('Error fetching ready sessions:', fetchError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to fetch sessions' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const startedSessions = [];
+
+    for (const session of readySessions || []) {
+      try {
+        console.log(`Auto-starting session ${session.session_code} with ${session.current_players} players`);
+        
+        // Start the session
+        const startResult = await startSession(supabase, {
+          session_id: session.id
+        });
+
+        if (startResult.ok) {
+          startedSessions.push({
+            sessionId: session.id,
+            sessionCode: session.session_code,
+            players: session.current_players
+          });
+          console.log(`Successfully auto-started session ${session.session_code}`);
+        }
+      } catch (error) {
+        console.error(`Failed to auto-start session ${session.session_code}:`, error);
+      }
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        startedSessions,
+        message: `Auto-started ${startedSessions.length} sessions`
+      }),
+      { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
+  } catch (error) {
+    console.error('Auto-start error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Auto-start failed' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
 }
