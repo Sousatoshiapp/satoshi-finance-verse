@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card';
 import { Button } from '@/components/shared/ui/button';
 import { Badge } from '@/components/shared/ui/badge';
 import { Progress } from '@/components/shared/ui/progress';
-import { supabase } from '@/integrations/supabase/client';
+import { useTournaments } from '@/hooks/useTournaments';
 import { useProfile } from '@/hooks/use-profile';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -23,183 +23,40 @@ import {
 import { formatDistanceToNow, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-interface WeeklyTournament {
-  id: string;
-  name: string;
-  description: string;
-  status: 'upcoming' | 'registration' | 'active' | 'completed';
-  start_time: string;
-  end_time: string;
-  max_participants: number;
-  current_participants: number;
-  entry_cost: number;
-  prize_pool: {
-    first: number;
-    second: number;
-    third: number;
-    participation: number;
-  };
-  tournament_type: 'weekly' | 'special' | 'seasonal';
-  registration_deadline: string;
-  participants: TournamentParticipant[];
-}
-
-interface TournamentParticipant {
-  id: string;
-  user_id: string;
-  tournament_id: string;
-  current_score: number;
-  questions_answered: number;
-  best_streak: number;
-  joined_at: string;
-  user: {
-    nickname: string;
-    level: number;
-    current_avatar_id?: string;
-    avatar?: {
-      image_url: string;
-    };
-  };
-}
 
 export function WeeklyTournament() {
-  const [tournaments, setTournaments] = useState<WeeklyTournament[]>([]);
-  const [selectedTournament, setSelectedTournament] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [registeredTournaments, setRegisteredTournaments] = useState<string[]>([]);
   const { profile } = useProfile();
   const { toast } = useToast();
+  const { 
+    tournaments, 
+    isLoading, 
+    registeredTournaments, 
+    loadUserRegistrations, 
+    registerForTournament 
+  } = useTournaments();
 
   useEffect(() => {
-    loadTournaments();
-    loadUserRegistrations();
-    const interval = setInterval(loadTournaments, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadTournaments = async () => {
-    try {
-      // Mock data until database tables are created
-      const mockTournaments: WeeklyTournament[] = [
-        {
-          id: '1',
-          name: 'Weekly Knowledge Championship',
-          description: 'Test your knowledge across all categories and compete for amazing prizes!',
-          status: 'active',
-          start_time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          end_time: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-          max_participants: 2000,
-          current_participants: 1234,
-          entry_cost: 0,
-          prize_pool: {
-            first: 5000,
-            second: 2500,
-            third: 1500,
-            participation: 1000
-          },
-          tournament_type: 'weekly',
-          registration_deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
-          participants: [
-            {
-              id: '1',
-              user_id: '1',
-              tournament_id: '1',
-              current_score: 2850,
-              questions_answered: 45,
-              best_streak: 12,
-              joined_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-              user: {
-                nickname: 'CryptoGuru',
-                level: 15,
-                current_avatar_id: '1',
-                avatar: { image_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face' }
-              }
-            },
-            {
-              id: '2',
-              user_id: '2',
-              tournament_id: '1',
-              current_score: 2740,
-              questions_answered: 42,
-              best_streak: 10,
-              joined_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-              user: {
-                nickname: 'QuizMaster',
-                level: 22,
-                current_avatar_id: '2',
-                avatar: { image_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face' }
-              }
-            },
-            {
-              id: '3',
-              user_id: '3',
-              tournament_id: '1',
-              current_score: 2680,
-              questions_answered: 40,
-              best_streak: 9,
-              joined_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-              user: {
-                nickname: 'StreakKing',
-                level: 18,
-                current_avatar_id: '3',
-                avatar: { image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face' }
-              }
-            }
-          ]
-        }
-      ];
-      
-      setTournaments(mockTournaments);
-    } catch (error) {
-      console.error('Erro ao carregar torneios:', error);
+    if (profile?.id) {
+      loadUserRegistrations(profile.id);
     }
-  };
+  }, [profile?.id]);
 
-  const loadUserRegistrations = async () => {
+  const handleRegisterForTournament = async (tournamentId: string) => {
     if (!profile?.id) return;
     
-    try {
-      const { data, error } = await supabase
-        .from('tournament_participants')
-        .select('tournament_id')
-        .eq('user_id', profile.id);
-
-      if (error) throw error;
-      setRegisteredTournaments(data?.map(p => p.tournament_id) || []);
-    } catch (error) {
-      console.error('Erro ao carregar registros:', error);
-    }
-  };
-
-  const registerForTournament = async (tournamentId: string) => {
-    if (!profile?.id) return;
+    const result = await registerForTournament(tournamentId, profile.id);
     
-    setIsLoading(true);
-    try {
-      const { error } = await supabase
-        .from('tournament_participants')
-        .insert({
-          tournament_id: tournamentId,
-          user_id: profile.id
-        });
-
-      if (error) throw error;
-
-      setRegisteredTournaments(prev => [...prev, tournamentId]);
+    if (result.success) {
       toast({
         title: "🏆 Inscrito no torneio!",
         description: "Boa sorte na competição!",
       });
-      
-      loadTournaments();
-    } catch (error: any) {
+    } else {
       toast({
         title: "Erro",
-        description: error.message || "Não foi possível se inscrever",
+        description: result.error || "Não foi possível se inscrever",
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -401,7 +258,7 @@ export function WeeklyTournament() {
                   ) : tournament.status === 'registration' ? (
                     <Button
                       className="w-full"
-                      onClick={() => registerForTournament(tournament.id)}
+                      onClick={() => handleRegisterForTournament(tournament.id)}
                       disabled={
                         isLoading || 
                         tournament.current_participants >= tournament.max_participants
