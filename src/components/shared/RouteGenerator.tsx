@@ -30,6 +30,7 @@ const TournamentsPage = lazy(() => import("@/pages/social/TournamentsPage"));
 const ProfileCustomization = lazy(() => import("@/pages/ProfileCustomization"));
 const HallOfFame = lazy(() => import("@/pages/HallOfFame"));
 const AvatarEditor = lazy(() => import("@/pages/AvatarEditor"));
+const AvatarCollection = lazy(() => import("@/pages/AvatarCollection"));
 
 // Component mapping
 const componentMap = {
@@ -58,6 +59,7 @@ const componentMap = {
   ProfileCustomization,
   HallOfFame,
   AvatarEditor,
+  AvatarCollection,
 };
 
 export function generateRoutes() {

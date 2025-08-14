@@ -105,6 +105,14 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/avatar-collection",
+    component: "AvatarCollection",
+    title: "Coleção de Avatares",
+    description: "Visualizar e gerenciar avatares coletados",
+    category: "main",
+    requiresAuth: true
+  },
+  {
     path: "/avatar-editor",
     component: "AvatarEditor", 
     title: "Editor de Avatar",

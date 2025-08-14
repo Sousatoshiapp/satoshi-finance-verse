@@ -259,7 +259,6 @@ export default function Profile() {
               <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')}>
                 ← {t('navigation.dashboard')}
               </Button>
-              
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate('/settings')}>
               {t('navigation.settings')}
@@ -284,8 +283,6 @@ export default function Profile() {
                   className="w-20 h-20 md:w-24 md:h-24"
                 />
                
-               {/* Debug info removed for performance */}
-              
               <label htmlFor="image-upload" className="absolute -bottom-1 -right-1 cursor-pointer">
                 <div className="w-7 h-7 bg-primary rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
                   <Camera className="w-3.5 h-3.5 text-primary-foreground" />
@@ -320,14 +317,12 @@ export default function Profile() {
           </div>
         </Card>
 
-
-        {/* User Evolution Chart - Nova Seção */}
+        {/* User Evolution Chart */}
         <UserEvolutionChart 
           userId={user.id} 
           timeRange={timeRange}
           onTimeRangeChange={setTimeRange}
         />
-
 
         {/* Stats Grid */}
         <StatsGrid
@@ -359,13 +354,10 @@ export default function Profile() {
           </Card>
         </div>
 
-
         {/* Carousels Section */}
         <div className="space-y-6">
-          {/* Achievements Carousel */}
           <AchievementsCarousel />
 
-          {/* Avatar Carousel */}
           <AvatarCarousel
             userProfileId={user.id}
             currentAvatarId={user.current_avatar_id}
@@ -379,15 +371,13 @@ export default function Profile() {
             }}
           />
 
-          {/* Inventory Carousel */}
           <InventoryCarousel />
         </div>
 
-        {/* Active Rewards Panel - Nova Seção */}
+        {/* Active Rewards Panel */}
         <ActiveRewardsPanel userId={user.id} showHistory={true} />
 
-
-        {/* Subscription Plan Card - Compact Design */}
+        {/* Subscription Plan Card */}
         <Card className="p-4 md:p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -403,37 +393,38 @@ export default function Profile() {
                   }
                 </p>
               </div>
-              <Button 
-                variant={subscription.tier === 'free' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => navigate('/subscription-plans')}
-                className={subscription.tier === 'free' 
-                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white' 
-                  : ''
-                }
-              >
-                {subscription.tier === 'free' ? '⭐ Upgrade' : t('subscription.subscribe')}
-              </Button>
             </div>
-          </Card>
+            <Button 
+              variant={subscription.tier === 'free' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => navigate('/subscription-plans')}
+              className={subscription.tier === 'free' 
+                ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white' 
+                : ''
+              }
+            >
+              {subscription.tier === 'free' ? '⭐ Upgrade' : t('subscription.subscribe')}
+            </Button>
+          </div>
+        </Card>
 
-          {/* FASE 2: Avatar 2.0 Button */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Palette className="h-5 w-5" />
-                Personalização Extrema
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => navigate('/profile-customization')}
-                className="w-full"
-              >
-                Customizar Avatar & Perfil
-              </Button>
-            </CardContent>
-          </Card>
+        {/* FASE 2: Avatar 2.0 Button */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Palette className="h-5 w-5" />
+              Personalização Extrema
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button 
+              onClick={() => navigate('/profile-customization')}
+              className="w-full"
+            >
+              Customizar Avatar & Perfil
+            </Button>
+          </CardContent>
+        </Card>
       </div>
       
       <FloatingNavbar />
