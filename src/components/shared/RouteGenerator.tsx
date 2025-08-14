@@ -38,6 +38,9 @@ const FindOpponent = lazy(() => import("@/pages/FindOpponent"));
 const DopamineHitsShowcase = lazy(() => import("@/pages/gamification/DopamineHitsShowcase"));
 const ConceptConnectionsPage = lazy(() => import("@/pages/ConceptConnectionsPage"));
 
+// Duels
+const SelectOpponentScreen = lazy(() => import("@/pages/SelectOpponentScreen"));
+
 // FASE 4 & 5: New features
 const InfluencerProgram = lazy(() => import("@/pages/InfluencerProgram"));
 const GuildWars = lazy(() => import("@/pages/GuildWars"));
@@ -77,6 +80,8 @@ const componentMap = {
   FindOpponent,
   DopamineHitsShowcase,
   ConceptConnectionsPage,
+  // Duels
+  SelectOpponentScreen,
   // FASE 4 & 5: New features
   InfluencerProgram,
   GuildWars,

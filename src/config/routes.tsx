@@ -217,6 +217,14 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/select-opponent",
+    component: "SelectOpponentScreen",
+    title: "Select Opponent",
+    description: "Choose your duel opponent",
+    category: "gamification",
+    requiresAuth: true
+  },
+  {
     path: "/quiz/solo",
     component: "SoloQuiz",
     title: "Solo Quiz",

@@ -351,6 +351,30 @@ export function TwitterSocialFeed() {
     navigate(`/user/${userId}`);
   };
 
+  const handleShare = async (post: SocialPost) => {
+    const shareText = `Confira este post incrível de @${post.profiles.nickname} no BeeTZ! 🔥\n\n"${post.content.slice(0, 100)}${post.content.length > 100 ? '...' : ''}"`;
+    const shareUrl = `${window.location.origin}/social/post/${post.id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'BeeTZ Community',
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        console.log('Share canceled or failed');
+      }
+    } else {
+      // Fallback to clipboard
+      navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
+      toast({
+        title: "🔗 Link copiado!",
+        description: "Post compartilhado copiado para a área de transferência",
+      });
+    }
+  };
+
   if (loading) {
     return <ProfileStyleLoader size="lg" />;
   }
@@ -463,6 +487,7 @@ export function TwitterSocialFeed() {
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground hover:bg-muted/50 hover:text-primary lg:p-1 p-2 lg:h-auto h-11 transition-colors duration-150 min-w-[44px]"
+                  onClick={() => handleShare(post)}
                 >
                   <Share2 className="lg:h-4 lg:w-4 h-5 w-5" />
                 </Button>
