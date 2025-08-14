@@ -48,26 +48,51 @@ export function useBotPresenceSimulation() {
 
       if (botError) throw botError;
 
-      // Buscar perfis dos bots separadamente
+      // Buscar perfis dos bots separadamente com avatares
       if (botData && botData.length > 0) {
         const botIds = botData.map(bot => bot.bot_id);
         const { data: profiles } = await supabase
           .from('profiles')
-          .select('id, nickname, level, profile_image_url')
+          .select(`
+            id, 
+            nickname, 
+            level, 
+            profile_image_url, 
+            current_avatar_id,
+            points
+          `)
           .in('id', botIds)
           .eq('is_bot', true);
 
-        // Mapear bots com perfis
+        // Buscar avatares dos bots
+        const avatarIds = profiles?.map(p => p.current_avatar_id).filter(Boolean) || [];
+        const { data: avatars } = avatarIds.length > 0 ? await supabase
+          .from('avatars')
+          .select('id, name, image_url')
+          .in('id', avatarIds) : { data: [] };
+
+        // Mapear bots com perfis e avatares
         const botsWithProfiles = botData.map((bot) => {
           const profile = profiles?.find(p => p.id === bot.bot_id);
+          const avatar = avatars?.find(a => a.id === profile?.current_avatar_id);
+          
           return {
             ...bot,
             bot_profile: profile ? {
               nickname: profile.nickname,
               level: profile.level,
               profile_image_url: profile.profile_image_url,
-              avatars: undefined // Simplificar, não carregar avatares
-            } : undefined
+              points: profile.points || Math.floor(Math.random() * 3000) + 200,
+              avatars: avatar ? {
+                name: avatar.name,
+                image_url: avatar.image_url
+              } : undefined
+            } : {
+              nickname: `Bot_${Math.floor(Math.random() * 1000)}`,
+              level: Math.floor(Math.random() * 45) + 5,
+              points: Math.floor(Math.random() * 3000) + 200,
+              avatars: undefined
+            }
           };
         });
 

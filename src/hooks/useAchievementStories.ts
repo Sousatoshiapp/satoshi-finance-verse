@@ -148,36 +148,55 @@ export function useAchievementStories() {
 
   // Generate simulated bot achievement stories
   const generateBotStories = (bots: any[], realStoriesCount: number): AchievementStory[] => {
-    if (realStoriesCount >= 8) return []; // Only add if we need more content
-    
+    // SEMPRE gerar pelo menos 6 stories de bots
     const achievements = [
+      { name: 'Mestre Bitcoin', rarity: 'legendary', badge_icon: '₿' },
+      { name: 'Trader Expert', rarity: 'epic', badge_icon: '📈' },
       { name: 'Quiz Master', rarity: 'rare', badge_icon: '🧠' },
       { name: 'Speed Demon', rarity: 'epic', badge_icon: '⚡' },
       { name: 'Knowledge Seeker', rarity: 'common', badge_icon: '📚' },
       { name: 'Perfect Score', rarity: 'legendary', badge_icon: '💯' },
       { name: 'Streak Champion', rarity: 'epic', badge_icon: '🔥' },
-      { name: 'Learning Enthusiast', rarity: 'rare', badge_icon: '⭐' }
+      { name: 'DeFi Pioneer', rarity: 'legendary', badge_icon: '🏦' },
+      { name: 'Crypto Analyst', rarity: 'rare', badge_icon: '📊' },
+      { name: 'HODLer Supreme', rarity: 'epic', badge_icon: '💎' }
     ];
     
-    return bots.slice(0, Math.min(6, 8 - realStoriesCount)).map((bot, index) => {
+    // Use bots reais ou crie bots fictícios se necessário
+    const availableBots = bots.length > 0 ? bots : Array.from({ length: 8 }, (_, i) => ({
+      id: `fake-bot-${i}`,
+      bot_id: `fake-bot-id-${i}`,
+      bot_profile: {
+        nickname: [`CryptoMaster${i + 1}`, `BitcoinPro${i + 1}`, `SatoshiFan${i + 1}`, `BlockchainKing${i + 1}`, `DeFiGuru${i + 1}`, `CryptoSage${i + 1}`][Math.floor(Math.random() * 6)],
+        level: Math.floor(Math.random() * 45) + 5,
+        points: Math.floor(Math.random() * 4000) + 500,
+        current_avatar_id: `avatar-${i + 1}`,
+        avatars: {
+          image_url: `/avatars/avatar_${(i % 8) + 1}.jpg`
+        }
+      }
+    }));
+    
+    return Array.from({ length: Math.max(6, 10 - realStoriesCount) }, (_, index) => {
+      const bot = availableBots[index % availableBots.length];
       const achievement = achievements[index % achievements.length];
       const now = new Date();
-      const createdAt = new Date(now.getTime() - Math.random() * 12 * 60 * 60 * 1000); // Within last 12h
+      const createdAt = new Date(now.getTime() - Math.random() * 18 * 60 * 60 * 1000); // Within last 18h
       const expiresAt = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000);
       
       return {
-        id: `bot-story-${bot.id}-${index}`,
-        user_id: bot.bot_id,
+        id: `bot-story-${bot.id || index}-${Date.now()}-${index}`,
+        user_id: bot.bot_id || `fake-bot-${index}`,
         achievement_id: `achievement-${index}`,
         story_type: 'achievement' as const,
-        caption: `Acabei de conquistar ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'}`,
+        caption: `Acabei de conquistar ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'} +${Math.floor(Math.random() * 500) + 100} BTZ`,
         created_at: createdAt.toISOString(),
         expires_at: expiresAt.toISOString(),
-        views_count: Math.floor(Math.random() * 30) + 5,
+        views_count: Math.floor(Math.random() * 60) + 10,
         user: {
-          nickname: bot.profile?.nickname || 'Bot Player',
-          current_avatar_id: bot.profile?.current_avatar_id,
-          avatar: bot.profile?.avatars ? { image_url: bot.profile.avatars.image_url } : undefined
+          nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
+          current_avatar_id: bot.bot_profile?.current_avatar_id,
+          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : { image_url: `/avatars/avatar_${(index % 8) + 1}.jpg` }
         },
         achievement: {
           name: achievement.name,
