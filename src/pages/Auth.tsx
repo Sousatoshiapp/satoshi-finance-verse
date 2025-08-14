@@ -268,38 +268,73 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Cyberpunk Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ 
-          backgroundImage: `url(/lovable-uploads/7e6ff88b-c066-483e-9f80-3a3f362f67ac.png)`,
-          filter: 'brightness(0.4) contrast(1.1)'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/70"></div>
+      {/* Enhanced Cyberpunk Background with Grid */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-slate-900 to-background">
+        {/* Animated Grid Pattern */}
+        <div className="absolute inset-0 cyber-grid opacity-20"></div>
+        
+        {/* Floating Particles */}
+        <div className="absolute inset-0">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="floating-particle opacity-60"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 8}s`,
+                animationDuration: `${8 + Math.random() * 4}s`
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Scanner Line Effect */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-60 animate-pulse" 
+             style={{ animation: 'scanner 4s ease-in-out infinite' }} />
       </div>
 
-      {/* Content - Enhanced mobile with optimized iPhone spacing */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-8 sm:p-6" 
-           style={{ paddingTop: 'max(40px, env(safe-area-inset-top, 20px))' }}>
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center safe-area-full px-6 py-8 sm:p-6">
         <div className="w-full max-w-sm sm:max-w-md">
-          {/* Back Button - Mobile responsive */}
+          {/* Back Button */}
           <Button
             variant="ghost"
             onClick={() => navigate('/welcome')}
-            className="mb-6 text-gray-300 hover:text-white text-sm sm:text-base"
+            className="mb-8 text-muted-foreground hover:text-primary transition-all duration-300 hover:translate-x-1"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {t('auth.buttons.back')}
           </Button>
 
-          {/* Auth Card - Mobile responsive */}
-          <Card className="bg-card/90 backdrop-blur-sm border-2 border-[#adff2f]/30 shadow-2xl mx-auto">
-            <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6">
-              <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#adff2f] to-[#32cd32] bg-clip-text text-transparent">
+          {/* Logo and Branding */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center space-x-3 mb-4">
+              <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center text-background font-bold text-sm">
+                SC
+              </div>
+              <h1 className="text-xl font-bold text-gradient">
+                Satoshi City
+              </h1>
+            </div>
+            <div className="flex justify-center space-x-2 mb-2">
+              <span className="px-2 py-1 text-xs bg-primary/20 text-primary rounded-full border border-primary/30">
+                Neural System
+              </span>
+              <span className="px-2 py-1 text-xs bg-accent/20 text-accent-foreground rounded-full border border-accent/30">
+                8 Districts
+              </span>
+            </div>
+          </div>
+
+          {/* Enhanced Auth Card */}
+          <Card className="cyber-card border-primary/30 shadow-glow relative overflow-hidden">
+            {/* Card Header with Enhanced Styling */}
+            <CardHeader className="text-center px-4 sm:px-6 py-4 sm:py-6 relative">
+              <CardTitle className="text-2xl sm:text-3xl font-bold text-gradient mb-2 animate-pulse-glow">
                 {isLogin ? t('auth.title.login') : t('auth.title.signup')}
               </CardTitle>
-              <CardDescription className="text-gray-300 text-sm sm:text-base px-2 sm:px-0">
+              <CardDescription className="text-muted-foreground text-sm sm:text-base">
                 {isLogin 
                   ? t('auth.description.login')
                   : t('auth.description.signup')
@@ -322,14 +357,14 @@ export default function Auth() {
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       required
-                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
+                      className="bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-primary transition-colors duration-200"
                     />
                   </div>
 
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-gradient-to-r from-[#adff2f] to-[#32cd32] hover:from-[#9aff00] hover:to-[#228b22] text-black font-bold py-3 transition-all duration-300"
+                    className="w-full gradient-primary text-background font-bold py-3 auth-button hover:scale-105 transform transition-all duration-300 disabled:opacity-50"
                   >
                     {loading ? (
                       <div className="flex items-center space-x-2">
@@ -377,7 +412,7 @@ export default function Auth() {
                       placeholder={t('auth.form.nicknamePlaceholder')}
                       value={nickname}
                       onChange={(e) => setNickname(e.target.value)}
-                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
+                      className="bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-primary transition-colors duration-200"
                     />
                   </div>
                 )}
@@ -393,7 +428,7 @@ export default function Auth() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f]"
+                    className="bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-primary transition-colors duration-200"
                   />
                 </div>
 
@@ -410,7 +445,7 @@ export default function Auth() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="bg-slate-700/50 border-slate-600 text-white placeholder:text-gray-400 focus:border-[#adff2f] pr-10"
+                      className="bg-input border-border text-foreground placeholder:text-muted-foreground focus:border-primary transition-colors duration-200 pr-10"
                     />
                     <Button
                       type="button"
@@ -436,7 +471,7 @@ export default function Auth() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-[#adff2f] to-[#32cd32] hover:from-[#9aff00] hover:to-[#228b22] text-black font-bold py-3 transition-all duration-300"
+                  className="w-full gradient-primary text-background font-bold py-3 auth-button hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <div className="flex items-center space-x-2">
@@ -455,7 +490,7 @@ export default function Auth() {
                       type="button"
                       variant="link"
                       onClick={() => setShowForgotPassword(true)}
-                      className="text-sm text-gray-400 hover:text-[#adff2f]"
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors duration-200"
                     >
                       {t('auth.buttons.forgotPassword')}
                     </Button>
@@ -469,7 +504,7 @@ export default function Auth() {
                       type="button"
                       variant="link"
                       onClick={handleResendConfirmation}
-                      className="text-sm text-gray-400 hover:text-purple-400"
+                      className="text-sm text-muted-foreground hover:text-accent transition-colors duration-200"
                     >
                       {t('auth.buttons.resendConfirmation')}
                     </Button>
