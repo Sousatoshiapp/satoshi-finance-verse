@@ -11,7 +11,7 @@ import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/shared/ui/separator";
 import { EmailVerificationNotice } from "@/components/auth/email-verification-notice";
 import { useTranslation } from "react-i18next";
-import logoImage from "@/assets/logo.png";
+import logoImage from "@/assets/new-logo.png";
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -312,7 +312,7 @@ export default function Auth() {
           <div className="text-center mb-6">
             <div className="flex justify-center mb-3">
               <img 
-                src={logoImage} 
+                src="/lovable-uploads/3601a8a7-21e2-403a-aeea-326289b3c5b5.png" 
                 alt="Logo" 
                 className="w-16 h-16 object-contain animate-pulse-glow"
               />
