@@ -152,6 +152,14 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/satoshi-city",
+    component: "SatoshiCity",
+    title: "Satoshi City",
+    description: "Explore the virtual city and districts",
+    category: "main",
+    requiresAuth: true
+  },
+  {
     path: "/game-mode",
     component: "GameMode",
     title: "Game Mode",

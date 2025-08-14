@@ -14,6 +14,7 @@ const SubscriptionPlans = lazy(() => import("@/pages/SubscriptionPlans"));
 const GamificationDashboard = lazy(() => import("@/pages/GamificationDashboard"));
 const Duels = lazy(() => import("@/pages/Duels"));
 const Tournaments = lazy(() => import("@/pages/Tournaments"));
+const SatoshiCity = lazy(() => import("@/pages/SatoshiCity"));
 const GameMode = lazy(() => import("@/pages/GameMode"));
 const NewFindOpponent = lazy(() => import("@/pages/NewFindOpponent"));
 
@@ -37,6 +38,7 @@ const componentMap = {
   GamificationDashboard,
   Duels,
   Tournaments,
+  SatoshiCity,
   GameMode,
   NewFindOpponent,
   // FASE 1: Social pages
