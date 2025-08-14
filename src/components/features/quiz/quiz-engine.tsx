@@ -8,6 +8,7 @@ import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useQuizShuffle } from '@/hooks/use-quiz-shuffle';
 import { useUnifiedSRS } from "@/hooks/use-unified-srs";
+import { useQuestionSelector } from "@/hooks/use-question-selector";
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
@@ -44,6 +45,7 @@ interface QuizEngineProps {
   districtId?: string;
   onComplete?: (results: any) => void;
   questionsCount?: number;
+  useBasicMode?: boolean; // MODO BÁSICO - bypassa SRS restritivo
 }
 
 // Agora usa o hook unificado
@@ -55,7 +57,8 @@ export function QuizEngine({
   tournamentId,
   missionId,
   districtId,
-  onComplete
+  onComplete,
+  useBasicMode = false // MODO BÁSICO por padrão desabilitado
 }: QuizEngineProps) {
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -100,6 +103,7 @@ export function QuizEngine({
   } = useQuizGamification();
 
   const { getDueQuestions, submitAnswer } = useUnifiedSRS();
+  const { selectQuestions } = useQuestionSelector(); // MODO BÁSICO
   const { } = useAdvancedQuizAudio();
   const { shuffleQuestions } = useQuizShuffle();
   const { t } = useI18n();
@@ -161,56 +165,106 @@ export function QuizEngine({
     try {
       setLoading(true);
       
-      let difficulty = 'easy';
-      if (userProfile?.level >= 10) difficulty = 'medium';
-      if (userProfile?.level >= 20) difficulty = 'hard';
-
-      console.log('🎯 Buscando questões:', {
-        userLevel: userProfile?.level,
-        selectedDifficulty: difficulty,
-        questionsCount
-      });
-
-      let fetchedQuestions = await getDueQuestions(
-        difficulty,
-        questionsCount,
-        answeredQuestions.map(q => q.questionId)
-      );
+      console.log('🎯 Modo de busca:', useBasicMode ? 'BÁSICO' : 'SRS');
       
-      console.log('📊 Questões encontradas:', {
-        difficulty,
-        count: fetchedQuestions.length,
-        samples: fetchedQuestions.slice(0, 2).map(q => ({
-          id: q.id,
-          optionsType: Array.isArray(q.options) ? 'array' : typeof q.options
-        }))
-      });
+      let fetchedQuestions: any[] = [];
       
-      // Implementar fallback de dificuldade para usuários de nível alto
-      if (fetchedQuestions.length === 0 && difficulty === 'hard') {
-        console.log('⬇️ Fallback: hard → medium');
+      if (useBasicMode) {
+        // MODO BÁSICO - usa seletor simples que bypassa SRS
+        console.log('🔄 Usando modo básico - buscando questões disponíveis');
+        
+        // Mapear dificuldades do banco para as esperadas pelo selector
+        let selectorDifficulty: 'basic' | 'intermediate' | 'advanced' = 'basic';
+        if (userProfile?.level >= 10) selectorDifficulty = 'intermediate';
+        if (userProfile?.level >= 20) selectorDifficulty = 'advanced';
+        
+        const basicQuestions = await selectQuestions({
+          difficulty: selectorDifficulty,
+          limit: questionsCount,
+          excludeIds: answeredQuestions.map(q => q.questionId)
+        });
+        
+        // Fallback para difficulty mais fácil se necessário
+        if (basicQuestions.length === 0 && selectorDifficulty === 'advanced') {
+          console.log('⬇️ Fallback básico: advanced → intermediate');
+          const fallbackQuestions = await selectQuestions({
+            difficulty: 'intermediate',
+            limit: questionsCount,
+            excludeIds: answeredQuestions.map(q => q.questionId)
+          });
+          fetchedQuestions = fallbackQuestions;
+        } else if (basicQuestions.length === 0 && selectorDifficulty === 'intermediate') {
+          console.log('⬇️ Fallback básico: intermediate → basic');
+          const fallbackQuestions = await selectQuestions({
+            difficulty: 'basic',
+            limit: questionsCount,
+            excludeIds: answeredQuestions.map(q => q.questionId)
+          });
+          fetchedQuestions = fallbackQuestions;
+        } else if (basicQuestions.length === 0) {
+          console.log('⬇️ Fallback básico: sem filtro de dificuldade');
+          const fallbackQuestions = await selectQuestions({
+            limit: questionsCount,
+            excludeIds: answeredQuestions.map(q => q.questionId)
+          });
+          fetchedQuestions = fallbackQuestions;
+        } else {
+          fetchedQuestions = basicQuestions;
+        }
+        
+      } else {
+        // MODO SRS ORIGINAL
+        let difficulty = 'easy';
+        if (userProfile?.level >= 10) difficulty = 'medium';
+        if (userProfile?.level >= 20) difficulty = 'hard';
+
+        console.log('🎯 Buscando questões SRS:', {
+          userLevel: userProfile?.level,
+          selectedDifficulty: difficulty,
+          questionsCount
+        });
+
         fetchedQuestions = await getDueQuestions(
-          'medium',
+          difficulty,
           questionsCount,
           answeredQuestions.map(q => q.questionId)
         );
         
-        if (fetchedQuestions.length === 0) {
-          console.log('⬇️ Fallback: medium → easy');
+        // Implementar fallback de dificuldade para usuários de nível alto
+        if (fetchedQuestions.length === 0 && difficulty === 'hard') {
+          console.log('⬇️ Fallback SRS: hard → medium');
+          fetchedQuestions = await getDueQuestions(
+            'medium',
+            questionsCount,
+            answeredQuestions.map(q => q.questionId)
+          );
+          
+          if (fetchedQuestions.length === 0) {
+            console.log('⬇️ Fallback SRS: medium → easy');
+            fetchedQuestions = await getDueQuestions(
+              'easy',
+              questionsCount,
+              answeredQuestions.map(q => q.questionId)
+            );
+          }
+        } else if (fetchedQuestions.length === 0 && difficulty === 'medium') {
+          console.log('⬇️ Fallback SRS: medium → easy');
           fetchedQuestions = await getDueQuestions(
             'easy',
             questionsCount,
             answeredQuestions.map(q => q.questionId)
           );
         }
-      } else if (fetchedQuestions.length === 0 && difficulty === 'medium') {
-        console.log('⬇️ Fallback: medium → easy');
-        fetchedQuestions = await getDueQuestions(
-          'easy',
-          questionsCount,
-          answeredQuestions.map(q => q.questionId)
-        );
       }
+      
+      console.log('📊 Questões encontradas:', {
+        mode: useBasicMode ? 'BÁSICO' : 'SRS',
+        count: fetchedQuestions.length,
+        samples: fetchedQuestions.slice(0, 2).map(q => ({
+          id: q.id,
+          optionsType: Array.isArray(q.options) ? 'array' : typeof q.options
+        }))
+      });
       
       if (fetchedQuestions.length === 0) {
         console.error('❌ Nenhuma questão encontrada mesmo com fallback');

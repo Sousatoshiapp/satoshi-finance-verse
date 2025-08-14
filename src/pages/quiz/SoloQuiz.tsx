@@ -85,6 +85,7 @@ export default function SoloQuiz() {
           <QuizEngine
             mode="solo"
             questionsCount={questionsCount}
+            useBasicMode={true} // MODO BÁSICO ATIVADO para garantir que questões apareçam
             onComplete={handleQuizComplete}
           />
         </div>
