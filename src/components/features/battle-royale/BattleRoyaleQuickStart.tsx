@@ -6,6 +6,7 @@ import { BattleRoyaleMatchmaking } from './BattleRoyaleMatchmaking';
 import { BetConfirmDialog } from './BetConfirmDialog';
 import { useRealtimePoints } from '@/hooks/use-realtime-points';
 import { useBattleRoyaleStats } from '@/hooks/use-battle-royale-stats';
+import { useProfile } from '@/hooks/use-profile';
 
 interface BattleRoyaleQuickStartProps {
   onSessionJoined: (sessionId: string, sessionCode: string) => void;
@@ -20,6 +21,7 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
   const [pendingMode, setPendingMode] = useState<string | null>(null);
   const { points: userBTZ, isLoading: btzLoading } = useRealtimePoints();
   const { stats, isLoading: statsLoading } = useBattleRoyaleStats();
+  const { profile, loading: profileLoading } = useProfile();
 
   const ENTRY_FEE = 10; // 10 BTZ entry fee
   const hasEnoughBTZ = userBTZ >= ENTRY_FEE;
@@ -33,7 +35,7 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
   };
 
   const handleBetConfirm = () => {
-    if (pendingMode) {
+    if (pendingMode && !profileLoading && profile) {
       setSelectedMode(pendingMode);
       setIsSearching(true);
       setShowBetDialog(false);
@@ -244,7 +246,7 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
         mode={pendingMode || ''}
         entryFee={ENTRY_FEE}
         userBTZ={userBTZ}
-        isLoading={false}
+        isLoading={profileLoading || btzLoading}
       />
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
+import { useProfile } from '@/hooks/use-profile';
 
 interface QueueStats {
   queue_count: number;
@@ -33,13 +34,7 @@ interface MatchmakingState {
 }
 
 export const useBattleRoyaleMatchmaking = () => {
-  const { data: profile } = useQuery({
-    queryKey: ['user-profile'],
-    queryFn: async () => {
-      const { data } = await supabase.rpc('get_user_profile');
-      return data?.[0];
-    },
-  });
+  const { profile, loading: profileLoading } = useProfile();
   const [state, setState] = useState<MatchmakingState>({
     isSearching: false,
     foundSession: false,
@@ -63,6 +58,11 @@ export const useBattleRoyaleMatchmaking = () => {
     topic: string = 'general',
     difficulty: string = 'medium'
   ): Promise<string | undefined> => {
+    if (profileLoading) {
+      setState(prev => ({ ...prev, error: 'Loading profile...' }));
+      return;
+    }
+    
     if (!profile?.id) {
       setState(prev => ({ ...prev, error: 'User profile not found' }));
       return;
@@ -197,7 +197,7 @@ export const useBattleRoyaleMatchmaking = () => {
         error: 'Failed to start matchmaking',
       }));
     }
-  }, [profile?.id, state.isSearching]);
+  }, [profile?.id, profileLoading, state.isSearching]);
 
   // Cancel matchmaking
   const cancelMatchmaking = useCallback(async () => {
