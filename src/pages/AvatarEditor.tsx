@@ -1,0 +1,1 @@
+export { AvatarEditor as default } from '@/components/features/avatar-customization/avatar-editor';

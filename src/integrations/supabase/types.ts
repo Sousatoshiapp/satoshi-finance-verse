@@ -442,6 +442,44 @@ export type Database = {
         }
         Relationships: []
       }
+      avatar_customizations: {
+        Row: {
+          avatar_data: Json
+          created_at: string
+          id: string
+          is_active: boolean | null
+          updated_at: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          avatar_data?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          user_id: string
+          version?: number
+        }
+        Update: {
+          avatar_data?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_avatar_customizations_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       avatar_evolutions: {
         Row: {
           bonus_changes: Json | null
@@ -482,6 +520,129 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      avatar_frames: {
+        Row: {
+          animation_type: string
+          created_at: string
+          css_class: string
+          id: string
+          is_active: boolean | null
+          is_premium: boolean | null
+          name: string
+          rarity: string
+          unlock_requirement: Json
+        }
+        Insert: {
+          animation_type: string
+          created_at?: string
+          css_class: string
+          id?: string
+          is_active?: boolean | null
+          is_premium?: boolean | null
+          name: string
+          rarity?: string
+          unlock_requirement?: Json
+        }
+        Update: {
+          animation_type?: string
+          created_at?: string
+          css_class?: string
+          id?: string
+          is_active?: boolean | null
+          is_premium?: boolean | null
+          name?: string
+          rarity?: string
+          unlock_requirement?: Json
+        }
+        Relationships: []
+      }
+      avatar_items: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean | null
+          is_premium: boolean | null
+          name: string
+          price_beetz: number | null
+          rarity: string
+          subcategory: string | null
+          unlock_requirement: Json
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          is_premium?: boolean | null
+          name: string
+          price_beetz?: number | null
+          rarity?: string
+          subcategory?: string | null
+          unlock_requirement?: Json
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          is_premium?: boolean | null
+          name?: string
+          price_beetz?: number | null
+          rarity?: string
+          subcategory?: string | null
+          unlock_requirement?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      avatar_pets: {
+        Row: {
+          created_at: string
+          evolution_name: string
+          evolution_stage: number
+          id: string
+          image_url: string
+          is_active: boolean | null
+          name: string
+          rarity: string
+          special_abilities: Json | null
+          species: string
+          unlock_streak_required: number
+        }
+        Insert: {
+          created_at?: string
+          evolution_name: string
+          evolution_stage?: number
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          name: string
+          rarity?: string
+          special_abilities?: Json | null
+          species: string
+          unlock_streak_required?: number
+        }
+        Update: {
+          created_at?: string
+          evolution_name?: string
+          evolution_stage?: number
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          name?: string
+          rarity?: string
+          special_abilities?: Json | null
+          species?: string
+          unlock_streak_required?: number
+        }
+        Relationships: []
       }
       avatars: {
         Row: {
@@ -4255,8 +4416,127 @@ export type Database = {
           },
         ]
       }
+      profile_banners: {
+        Row: {
+          animation_data: Json | null
+          created_at: string
+          id: string
+          image_url: string
+          is_active: boolean | null
+          is_animated: boolean | null
+          is_premium: boolean | null
+          name: string
+          price_beetz: number | null
+          rarity: string
+          unlock_requirement: Json
+        }
+        Insert: {
+          animation_data?: Json | null
+          created_at?: string
+          id?: string
+          image_url: string
+          is_active?: boolean | null
+          is_animated?: boolean | null
+          is_premium?: boolean | null
+          name: string
+          price_beetz?: number | null
+          rarity?: string
+          unlock_requirement?: Json
+        }
+        Update: {
+          animation_data?: Json | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean | null
+          is_animated?: boolean | null
+          is_premium?: boolean | null
+          name?: string
+          price_beetz?: number | null
+          rarity?: string
+          unlock_requirement?: Json
+        }
+        Relationships: []
+      }
+      profile_titles: {
+        Row: {
+          animation_type: string | null
+          color_scheme: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_animated: boolean | null
+          rarity: string
+          title: string
+          unlock_requirement: Json
+        }
+        Insert: {
+          animation_type?: string | null
+          color_scheme?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_animated?: boolean | null
+          rarity?: string
+          title: string
+          unlock_requirement?: Json
+        }
+        Update: {
+          animation_type?: string | null
+          color_scheme?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_animated?: boolean | null
+          rarity?: string
+          title?: string
+          unlock_requirement?: Json
+        }
+        Relationships: []
+      }
+      profile_views: {
+        Row: {
+          id: string
+          ip_address: unknown | null
+          profile_id: string
+          user_agent: string | null
+          viewed_at: string
+          viewer_id: string | null
+        }
+        Insert: {
+          id?: string
+          ip_address?: unknown | null
+          profile_id: string
+          user_agent?: string | null
+          viewed_at?: string
+          viewer_id?: string | null
+        }
+        Update: {
+          id?: string
+          ip_address?: unknown | null
+          profile_id?: string
+          user_agent?: string | null
+          viewed_at?: string
+          viewer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_profile_views_profile_id"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
+          active_banner_id: string | null
+          active_frame_id: string | null
+          active_title_id: string | null
           avatar_id: string | null
           completed_lessons: number | null
           consecutive_login_days: number | null
@@ -4276,6 +4556,7 @@ export type Database = {
           nickname: string
           points: number
           profile_image_url: string | null
+          profile_views_count: number | null
           protected_btz: number | null
           skill_rating: number | null
           srs_enabled: boolean | null
@@ -4292,6 +4573,9 @@ export type Database = {
           yield_rate: number | null
         }
         Insert: {
+          active_banner_id?: string | null
+          active_frame_id?: string | null
+          active_title_id?: string | null
           avatar_id?: string | null
           completed_lessons?: number | null
           consecutive_login_days?: number | null
@@ -4311,6 +4595,7 @@ export type Database = {
           nickname: string
           points?: number
           profile_image_url?: string | null
+          profile_views_count?: number | null
           protected_btz?: number | null
           skill_rating?: number | null
           srs_enabled?: boolean | null
@@ -4327,6 +4612,9 @@ export type Database = {
           yield_rate?: number | null
         }
         Update: {
+          active_banner_id?: string | null
+          active_frame_id?: string | null
+          active_title_id?: string | null
           avatar_id?: string | null
           completed_lessons?: number | null
           consecutive_login_days?: number | null
@@ -4346,6 +4634,7 @@ export type Database = {
           nickname?: string
           points?: number
           profile_image_url?: string | null
+          profile_views_count?: number | null
           protected_btz?: number | null
           skill_rating?: number | null
           srs_enabled?: boolean | null
@@ -4362,6 +4651,27 @@ export type Database = {
           yield_rate?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_active_banner_id_fkey"
+            columns: ["active_banner_id"]
+            isOneToOne: false
+            referencedRelation: "profile_banners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_active_frame_id_fkey"
+            columns: ["active_frame_id"]
+            isOneToOne: false
+            referencedRelation: "avatar_frames"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_active_title_id_fkey"
+            columns: ["active_title_id"]
+            isOneToOne: false
+            referencedRelation: "profile_titles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_avatar_id_fkey"
             columns: ["avatar_id"]
@@ -5983,6 +6293,87 @@ export type Database = {
           },
         ]
       }
+      user_avatar_frames: {
+        Row: {
+          frame_id: string
+          id: string
+          is_active: boolean | null
+          unlock_method: string | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          frame_id: string
+          id?: string
+          is_active?: boolean | null
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          frame_id?: string
+          id?: string
+          is_active?: boolean | null
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_avatar_frames_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_avatar_frames_frame_id_fkey"
+            columns: ["frame_id"]
+            isOneToOne: false
+            referencedRelation: "avatar_frames"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_avatar_items: {
+        Row: {
+          id: string
+          item_id: string
+          unlock_method: string | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          item_id: string
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          item_id?: string
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_avatar_items_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_avatar_items_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "avatar_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_avatars: {
         Row: {
           avatar_id: string
@@ -6950,6 +7341,54 @@ export type Database = {
         }
         Relationships: []
       }
+      user_pets: {
+        Row: {
+          acquired_at: string
+          current_evolution: number
+          evolution_date: string | null
+          id: string
+          is_active: boolean | null
+          nickname: string | null
+          pet_id: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          current_evolution?: number
+          evolution_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          nickname?: string | null
+          pet_id: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          current_evolution?: number
+          evolution_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          nickname?: string | null
+          pet_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_pets_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_pets_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "avatar_pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_power_ups: {
         Row: {
           acquired_at: string
@@ -7061,6 +7500,87 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profile_banners: {
+        Row: {
+          banner_id: string
+          id: string
+          unlock_method: string | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          banner_id: string
+          id?: string
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          banner_id?: string
+          id?: string
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_profile_banners_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_profile_banners_banner_id_fkey"
+            columns: ["banner_id"]
+            isOneToOne: false
+            referencedRelation: "profile_banners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profile_titles: {
+        Row: {
+          id: string
+          is_active: boolean | null
+          title_id: string
+          unlock_method: string | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_active?: boolean | null
+          title_id: string
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_active?: boolean | null
+          title_id?: string
+          unlock_method?: string | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_user_profile_titles_user_id"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_profile_titles_title_id_fkey"
+            columns: ["title_id"]
+            isOneToOne: false
+            referencedRelation: "profile_titles"
             referencedColumns: ["id"]
           },
         ]
