@@ -36,6 +36,7 @@ const AvatarCollection = lazy(() => import("@/pages/AvatarCollection"));
 const SoloQuiz = lazy(() => import("@/pages/quiz/SoloQuiz"));
 const FindOpponent = lazy(() => import("@/pages/FindOpponent"));
 const DopamineHitsShowcase = lazy(() => import("@/pages/gamification/DopamineHitsShowcase"));
+const ConceptConnectionsPage = lazy(() => import("@/pages/ConceptConnectionsPage"));
 
 // FASE 4 & 5: New features
 const InfluencerProgram = lazy(() => import("@/pages/InfluencerProgram"));
@@ -75,6 +76,7 @@ const componentMap = {
   SoloQuiz,
   FindOpponent,
   DopamineHitsShowcase,
+  ConceptConnectionsPage,
   // FASE 4 & 5: New features
   InfluencerProgram,
   GuildWars,

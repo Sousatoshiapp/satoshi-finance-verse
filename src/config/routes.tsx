@@ -161,9 +161,9 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
-    path: "/concept-connection",
-    component: "ConceptConnection",
-    title: "Concept Connection",
+    path: "/concept-connections",
+    component: "ConceptConnectionsPage",
+    title: "Concept Connections",
     description: "Connect related financial concepts",
     category: "gamification",
     requiresAuth: true
