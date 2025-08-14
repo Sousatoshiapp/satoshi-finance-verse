@@ -24,9 +24,9 @@ export default function OAuthCallback() {
           console.log('✅ OAuth Callback: Session found, user authenticated');
           
           // Store user data in localStorage as backup for AuthMiddleware
+          // Note: Email is excluded for security - full email only accessible via Supabase auth
           localStorage.setItem('satoshi_user', JSON.stringify({
             id: session.user.id,
-            email: session.user.email,
             authenticated_at: new Date().toISOString()
           }));
           

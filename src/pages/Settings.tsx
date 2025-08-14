@@ -16,6 +16,7 @@ import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { KYCVerification } from "@/components/features/kyc/KYCVerification";
 import { PasswordChangeDialog } from "@/components/settings/password-change-dialog";
 import { EmailChangeDialog } from "@/components/settings/email-change-dialog";
+import { maskEmailForDisplay } from "@/lib/email-mask";
 import { Edit, Shield, Fingerprint, Smartphone } from "lucide-react";
 
 export default function Settings() {
@@ -262,7 +263,7 @@ export default function Settings() {
               <div className="flex gap-2">
                 <Input
                   type="email"
-                  value={userInfo.email}
+                  value={maskEmailForDisplay(userInfo.email)}
                   readOnly
                   placeholder="seu@email.com"
                   className="flex-1"
