@@ -352,26 +352,41 @@ export function TwitterSocialFeed() {
   };
 
   const handleShare = async (post: SocialPost) => {
+    console.log('🔗 Handle share called for post:', post.id);
+    
     const shareText = `Confira este post incrível de @${post.profiles.nickname} no BeeTZ! 🔥\n\n"${post.content.slice(0, 100)}${post.content.length > 100 ? '...' : ''}"`;
     const shareUrl = `${window.location.origin}/social/post/${post.id}`;
 
     if (navigator.share) {
       try {
+        console.log('📱 Using Web Share API');
         await navigator.share({
           title: 'BeeTZ Community',
           text: shareText,
           url: shareUrl,
         });
+        console.log('✅ Share successful');
       } catch (error) {
-        console.log('Share canceled or failed');
+        console.log('❌ Share canceled or failed:', error);
       }
     } else {
       // Fallback to clipboard
-      navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
-      toast({
-        title: "🔗 Link copiado!",
-        description: "Post compartilhado copiado para a área de transferência",
-      });
+      console.log('📋 Using clipboard fallback');
+      try {
+        await navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`);
+        console.log('✅ Copied to clipboard');
+        toast({
+          title: "🔗 Link copiado!",
+          description: "Post compartilhado copiado para a área de transferência",
+        });
+      } catch (error) {
+        console.error('❌ Failed to copy to clipboard:', error);
+        toast({
+          title: "❌ Erro ao compartilhar",
+          description: "Não foi possível copiar o link",
+          variant: "destructive",
+        });
+      }
     }
   };
 

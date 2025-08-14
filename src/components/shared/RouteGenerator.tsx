@@ -7,6 +7,7 @@ const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Quiz = lazy(() => import("@/pages/Quiz"));
 const Leaderboard = lazy(() => import("@/pages/Leaderboard"));
 const Profile = lazy(() => import("@/pages/Profile"));
+const UserProfile = lazy(() => import("@/pages/UserProfile"));
 const Store = lazy(() => import("@/pages/Store"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const BeetzInfo = lazy(() => import("@/pages/BeetzInfo"));
@@ -53,6 +54,7 @@ const componentMap = {
   Quiz,
   Leaderboard,
   Profile,
+  UserProfile,
   Store,
   Settings,
   BeetzInfo,

@@ -56,6 +56,14 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/user/:userId",
+    component: "UserProfile",
+    title: "User Profile",
+    description: "View other users' profiles",
+    category: "main",
+    requiresAuth: true
+  },
+  {
     path: "/store",
     component: "Store",
     title: "Store",
