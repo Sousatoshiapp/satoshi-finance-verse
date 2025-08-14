@@ -72,12 +72,13 @@ export default function Profile() {
 
   const loadUserProfile = async () => {
     try {
+      setLoading(true);
       const { data: { user: authUser } } = await supabase.auth.getUser();
 
       // Load user profile from Supabase or fallback to localStorage
       let profile = null;
       if (authUser) {
-        const { data: supabaseProfile } = await supabase
+        const { data: supabaseProfile, error } = await supabase
           .from('profiles')
           .select(`
             id,
@@ -94,37 +95,84 @@ export default function Profile() {
             )
           `)
           .eq('user_id', authUser.id)
-          .single();
+          .maybeSingle();
         
-        console.log('🔍 DASHBOARD Profile Query Result:', supabaseProfile);
-        profile = supabaseProfile;
+        if (error) {
+          console.error('❌ Supabase Profile Query Error:', error);
+          toast({
+            title: "Erro ao carregar perfil",
+            description: "Usando dados locais como fallback",
+            variant: "destructive"
+          });
+        } else {
+          console.log('🔍 Profile Query Result:', supabaseProfile);
+          profile = supabaseProfile;
+        }
       }
 
       // If no Supabase profile, use localStorage data
       if (!profile) {
         const userData = localStorage.getItem('satoshi_user');
         if (userData) {
-          const localUser = JSON.parse(userData);
+          try {
+            const localUser = JSON.parse(userData);
+            profile = {
+              id: 'local-user',
+              nickname: localUser.nickname || 'Usuário',
+              level: localUser.level || 1,
+              xp: localUser.xp || 0,
+              streak: localUser.streak || 0,
+              points: localUser.coins || 0,
+              profile_image_url: localUser.profileImageUrl,
+              avatar_id: localUser.avatarId
+            };
+            console.log('📱 Using localStorage profile:', profile);
+          } catch (parseError) {
+            console.error('❌ Error parsing localStorage:', parseError);
+            // Create default profile
+            profile = {
+              id: 'default-user',
+              nickname: 'Usuário',
+              level: 1,
+              xp: 0,
+              streak: 0,
+              points: 0
+            };
+          }
+        } else {
+          // No local data, create minimal profile
           profile = {
-            id: 'local-user',
-            nickname: localUser.nickname || 'Usuário',
-            level: localUser.level || 1,
-            xp: localUser.xp || 0,
-            streak: localUser.streak || 0,
-            points: localUser.coins || 0,
-            profile_image_url: localUser.profileImageUrl,
-            avatar_id: localUser.avatarId
+            id: 'guest-user',
+            nickname: 'Usuário',
+            level: 1,
+            xp: 0,
+            streak: 0,
+            points: 0
           };
         }
       }
 
-      if (profile) {
-        setUser(profile);
-        // Avatar data is already included in the profile query
-        setUserAvatar(profile.avatars || null);
-      }
+      setUser(profile);
+      // Avatar data is already included in the profile query
+      setUserAvatar(profile?.avatars || null);
+      
     } catch (error) {
-      console.error('Error:', error);
+      console.error('❌ Error loading profile:', error);
+      toast({
+        title: "Erro no carregamento",
+        description: "Erro ao carregar perfil do usuário",
+        variant: "destructive"
+      });
+      
+      // Set default user to prevent crash
+      setUser({
+        id: 'error-user',
+        nickname: 'Usuário',
+        level: 1,
+        xp: 0,
+        streak: 0,
+        points: 0
+      });
     } finally {
       setLoading(false);
     }
@@ -241,11 +289,34 @@ export default function Profile() {
     }
   };
 
+  // Always render something to avoid hook violations
   if (loading) {
     return <ProfileStyleLoader />;
   }
 
-  if (!user) return null;
+  // If no user after loading, show error state instead of early return
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="p-6 max-w-md mx-auto">
+          <CardContent className="text-center">
+            <h2 className="text-xl font-bold mb-4">Perfil não encontrado</h2>
+            <p className="text-muted-foreground mb-4">
+              Não foi possível carregar seus dados.
+            </p>
+            <div className="space-y-2">
+              <Button onClick={loadUserProfile} className="w-full">
+                Tentar novamente
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/dashboard')} className="w-full">
+                Voltar ao Dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24" 
