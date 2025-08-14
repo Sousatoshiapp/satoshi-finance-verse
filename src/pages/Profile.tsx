@@ -479,7 +479,21 @@ export default function Profile() {
           </div>
         </Card>
 
-        {/* FASE 2: Avatar 2.0 Button */}
+        {/* ============================================
+        // PERSONALIZAÇÃO EXTREMA - TEMPORARIAMENTE DESABILITADA
+        // ============================================
+        // Esta funcionalidade foi temporariamente removida para 
+        // revisão e melhorias futuras. Será reativada em breve.
+        // 
+        // Funcionalidades incluídas:
+        // - Avatar 2.0 com customização avançada
+        // - Sistema de pets companions
+        // - Banners de perfil personalizados  
+        // - Títulos e badges animados
+        // - Analytics de visualizações do perfil
+        // ============================================
+        
+        {/* FASE 2: Avatar 2.0 Button - COMENTADO
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -496,6 +510,7 @@ export default function Profile() {
             </Button>
           </CardContent>
         </Card>
+        */}
       </div>
       
       <FloatingNavbar />

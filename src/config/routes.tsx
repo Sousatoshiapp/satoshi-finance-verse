@@ -128,7 +128,11 @@ export const routeConfigs: RouteConfig[] = [
     category: "gamification",
     requiresAuth: true
   },
-  // FASE 2: Avatar 2.0 & Profile Flexing routes
+  // ============================================
+  // PERSONALIZAÇÃO EXTREMA - ROTAS TEMPORARIAMENTE DESABILITADAS
+  // ============================================
+  // FASE 2: Avatar 2.0 & Profile Flexing routes - COMENTADO
+  /*
   {
     path: "/profile-customization",
     component: "ProfileCustomization",
@@ -161,6 +165,7 @@ export const routeConfigs: RouteConfig[] = [
     category: "main",
     requiresAuth: true
   },
+  */
   {
     path: "/beetz-info",
     component: "BeetzInfo",

@@ -31,11 +31,16 @@ const BattleRoyalePage = lazy(() => import("@/pages/social/BattleRoyalePage"));
 const CommunityFeedPage = lazy(() => import("@/pages/social/CommunityFeedPage"));
 const TournamentsPage = lazy(() => import("@/pages/social/TournamentsPage"));
 
-// FASE 2: Avatar 2.0 & Profile Flexing pages
+// ============================================
+// PERSONALIZAÇÃO EXTREMA - IMPORTS TEMPORARIAMENTE DESABILITADOS
+// ============================================
+// FASE 2: Avatar 2.0 & Profile Flexing pages - COMENTADO
+/*
 const ProfileCustomization = lazy(() => import("@/pages/ProfileCustomization"));
 const HallOfFame = lazy(() => import("@/pages/HallOfFame"));
 const AvatarEditor = lazy(() => import("@/pages/AvatarEditor"));
 const AvatarCollection = lazy(() => import("@/pages/AvatarCollection"));
+*/
 
 // FASE 3: Dopamine Hits pages
 const SoloQuiz = lazy(() => import("@/pages/quiz/SoloQuiz"));
@@ -80,11 +85,13 @@ const componentMap = {
   BattleRoyalePage,
   CommunityFeedPage,
   TournamentsPage,
-  // FASE 2: Avatar 2.0 & Profile Flexing
+  // FASE 2: Avatar 2.0 & Profile Flexing - COMENTADO
+  /*
   ProfileCustomization,
   HallOfFame,
   AvatarEditor,
   AvatarCollection,
+  */
   // FASE 3: Dopamine Hits
   SoloQuiz,
   FindOpponent,

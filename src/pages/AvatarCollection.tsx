@@ -1,37 +1,40 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/shared/ui/button";
-import { Card, CardContent } from "@/components/shared/ui/card";
-import { Badge } from "@/components/shared/ui/badge";
-import { Input } from "@/components/shared/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/ui/select";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useI18n } from "@/hooks/use-i18n";
-import { useAvatarContext } from "@/contexts/AvatarContext";
-import { getAvatarImage } from "@/utils/avatar-images";
-import { Search, Crown } from "lucide-react";
+// ============================================
+// PERSONALIZAÇÃO EXTREMA - TEMPORARIAMENTE DESABILITADA  
+// ============================================
+// Esta funcionalidade foi temporariamente removida para 
+// revisão e melhorias futuras. Será reativada em breve.
+// ============================================
+
+/*
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/shared/ui/card';
+import { Button } from '@/components/shared/ui/button';
+import { Badge } from '@/components/shared/ui/badge';
+import { Input } from '@/components/shared/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/shared/ui/select';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useAvatarContext } from '@/contexts/AvatarContext';
+import { Loader2, Search } from 'lucide-react';
 
 interface Avatar {
   id: string;
   name: string;
   image_url: string;
   rarity: string;
-  price: number;
-  owned: boolean;
-  is_active?: boolean;
+  price_beetz: number;
+  is_owned: boolean;
 }
 
 export default function AvatarCollection() {
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [filteredAvatars, setFilteredAvatars] = useState<Avatar[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [rarityFilter, setRarityFilter] = useState("all");
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [rarityFilter, setRarityFilter] = useState('all');
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useI18n();
   const { invalidateAvatarCaches } = useAvatarContext();
 
   useEffect(() => {
@@ -44,42 +47,46 @@ export default function AvatarCollection() {
 
   const loadAvatars = async () => {
     try {
+      setLoading(true);
+      
+      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast({
+          title: "Erro",
+          description: "Usuário não autenticado",
+          variant: "destructive"
+        });
+        return;
+      }
 
-      // Get current user's profile with avatar info
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, current_avatar_id')
-        .eq('user_id', user.id)
-        .single();
+      // Get user's owned avatars
+      const { data: userAvatars, error: userAvatarsError } = await supabase
+        .from('user_avatars')
+        .select('avatar_id')
+        .eq('user_id', user.id);
+
+      if (userAvatarsError) throw userAvatarsError;
 
       // Get all avatars
-      const { data: allAvatars } = await supabase
+      const { data: allAvatars, error: avatarsError } = await supabase
         .from('avatars')
         .select('*')
-        .order('rarity', { ascending: false });
+        .eq('is_active', true);
 
-    // Get user's owned avatars
-    const { data: ownedAvatars } = await supabase
-      .from('user_avatars')
-      .select('avatar_id')
-      .eq('user_id', profile?.id);
+      if (avatarsError) throw avatarsError;
 
-    const ownedIds = ownedAvatars?.map(ua => ua.avatar_id) || [];
-    const currentAvatarId = profile?.current_avatar_id;
+      // Combine data
+      const ownedAvatarIds = new Set(userAvatars?.map(ua => ua.avatar_id) || []);
+      
+      const avatarsWithOwnership = allAvatars?.map(avatar => ({
+        ...avatar,
+        is_owned: ownedAvatarIds.has(avatar.id)
+      })).filter(avatar => avatar.is_owned) || [];
 
-    // Only show owned avatars in the collection
-    const ownedAvatarsWithData = allAvatars?.filter(avatar => 
-      ownedIds.includes(avatar.id)
-    ).map(avatar => ({
-      ...avatar,
-      owned: true, // All avatars in collection are owned
-      is_active: avatar.id === currentAvatarId
-    })) || [];
+      setAvatars(avatarsWithOwnership);
 
-    setAvatars(ownedAvatarsWithData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading avatars:', error);
       toast({
         title: "Erro",
@@ -94,19 +101,15 @@ export default function AvatarCollection() {
   const filterAvatars = () => {
     let filtered = avatars;
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(avatar =>
         avatar.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Filter by rarity
-    if (rarityFilter !== "all") {
+    if (rarityFilter !== 'all') {
       filtered = filtered.filter(avatar => avatar.rarity === rarityFilter);
     }
-
-    // No ownership filter needed since all avatars in collection are owned
 
     setFilteredAvatars(filtered);
   };
@@ -123,18 +126,14 @@ export default function AvatarCollection() {
 
       if (error) throw error;
 
-      setAvatars(prev => prev.map(avatar => ({
-        ...avatar,
-        is_active: avatar.id === avatarId
-      })));
-
       invalidateAvatarCaches();
-
+      
       toast({
-        title: "✅ Avatar selecionado!",
-        description: "Seu avatar foi atualizado com sucesso"
+        title: "Avatar selecionado!",
+        description: "Seu avatar foi alterado com sucesso.",
       });
-    } catch (error) {
+
+    } catch (error: any) {
       console.error('Error selecting avatar:', error);
       toast({
         title: "Erro",
@@ -146,11 +145,11 @@ export default function AvatarCollection() {
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
-      case 'common': return 'text-gray-500 border-gray-300';
-      case 'rare': return 'text-blue-500 border-blue-300';
-      case 'epic': return 'text-purple-500 border-purple-300';
-      case 'legendary': return 'text-yellow-500 border-yellow-300';
-      default: return 'text-gray-500 border-gray-300';
+      case 'legendary': return 'bg-gradient-to-r from-purple-500 to-pink-500 text-white';
+      case 'epic': return 'bg-gradient-to-r from-purple-400 to-blue-500 text-white';
+      case 'rare': return 'bg-gradient-to-r from-blue-400 to-blue-600 text-white';
+      case 'uncommon': return 'bg-gradient-to-r from-green-400 to-green-600 text-white';
+      default: return 'bg-gradient-to-r from-gray-400 to-gray-600 text-white';
     }
   };
 
@@ -158,108 +157,121 @@ export default function AvatarCollection() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Carregando sua coleção...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b px-4 py-3">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
-                ← Perfil
-              </Button>
-              <h1 className="text-xl font-bold">Coleção</h1>
-            </div>
-          </div>
+    <div className="min-h-screen bg-background pb-24 pt-16">
+      <div className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+        <div className="flex items-center justify-between">
+          <Button variant="outline" onClick={() => navigate('/profile')}>
+            ← Voltar ao Perfil
+          </Button>
         </div>
-      </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-        {/* Filters */}
-        <Card className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Buscar avatares..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-2">
+            Minha Coleção de Avatares
+          </h1>
+          <p className="text-muted-foreground">
+            {avatars.length} avatares desbloqueados
+          </p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Filtros</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Input
+                  placeholder="Buscar avatares..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              <Select value={rarityFilter} onValueChange={setRarityFilter}>
+                <SelectTrigger className="w-full md:w-48">
+                  <SelectValue placeholder="Filtrar por raridade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as raridades</SelectItem>
+                  <SelectItem value="common">Comum</SelectItem>
+                  <SelectItem value="uncommon">Incomum</SelectItem>
+                  <SelectItem value="rare">Raro</SelectItem>
+                  <SelectItem value="epic">Épico</SelectItem>
+                  <SelectItem value="legendary">Lendário</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            
-            <Select value={rarityFilter} onValueChange={setRarityFilter}>
-              <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder="Filtrar por raridade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas as raridades</SelectItem>
-                <SelectItem value="common">Comum</SelectItem>
-                <SelectItem value="rare">Raro</SelectItem>
-                <SelectItem value="epic">Épico</SelectItem>
-                <SelectItem value="legendary">Lendário</SelectItem>
-              </SelectContent>
-            </Select>
-
-          </div>
+          </CardContent>
         </Card>
 
-        {/* Avatar Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {filteredAvatars.map((avatar) => (
-            <Card key={avatar.id} className={`group hover:shadow-lg transition-all duration-200 ${avatar.is_active ? 'ring-2 ring-primary' : ''}`}>
-              <CardContent className="p-3">
-                <div className="relative aspect-square mb-3">
+        {filteredAvatars.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <p className="text-muted-foreground">
+                Nenhum avatar encontrado com os filtros aplicados.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+            {filteredAvatars.map((avatar) => (
+              <Card key={avatar.id} className="overflow-hidden">
+                <div className="aspect-square relative">
                   <img
-                    src={getAvatarImage(avatar.image_url)}
+                    src={avatar.image_url}
                     alt={avatar.name}
-                    className="w-full h-full object-cover rounded-lg"
-                    onError={(e) => {
-                      e.currentTarget.src = getAvatarImage('/avatars/the-satoshi.jpg');
-                    }}
+                    className="w-full h-full object-cover"
                   />
-                  
-                  {avatar.is_active && (
-                    <div className="absolute -top-2 -right-2">
-                      <Crown className="h-6 w-6 text-yellow-500" />
-                    </div>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm text-center truncate">{avatar.name}</h3>
-                  
-                  <Badge variant="outline" className={`w-full justify-center text-xs ${getRarityColor(avatar.rarity)}`}>
+                  <Badge 
+                    className={`absolute top-2 right-2 text-xs ${getRarityColor(avatar.rarity)}`}
+                  >
                     {avatar.rarity}
                   </Badge>
-                  
-                  <Button
-                    size="sm"
-                    variant={avatar.is_active ? "default" : "outline"}
-                    className="w-full text-xs h-8"
-                    onClick={() => selectAvatar(avatar.id)}
-                    disabled={avatar.is_active}
-                  >
-                    {avatar.is_active ? "Ativo" : "Usar"}
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {filteredAvatars.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Nenhum avatar encontrado com os filtros selecionados.</p>
+                <CardContent className="p-3">
+                  <h3 className="font-semibold text-sm mb-2 truncate">
+                    {avatar.name}
+                  </h3>
+                  <Button
+                    onClick={() => selectAvatar(avatar.id)}
+                    size="sm"
+                    className="w-full"
+                    variant="outline"
+                  >
+                    Usar
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+*/
+
+// Placeholder component to prevent build errors
+export default function AvatarCollection() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-muted-foreground mb-2">
+          Coleção de Avatares
+        </h1>
+        <p className="text-muted-foreground">
+          Esta funcionalidade está sendo desenvolvida...
+        </p>
       </div>
     </div>
   );
