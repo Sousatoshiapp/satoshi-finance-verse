@@ -17,6 +17,7 @@ import {
 } from './SocialHubSections';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useI18n } from '@/hooks/use-i18n';
+import { usePrivacySafePresence } from '@/hooks/use-privacy-safe-presence';
 
 interface SocialHubProps {
   className?: string;
@@ -26,6 +27,7 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
   const { t } = useI18n();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState('stories');
+  const { presenceData, loading } = usePrivacySafePresence();
 
   const tabVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -77,7 +79,13 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
           <div className="flex items-center gap-3 ml-auto text-xs text-muted-foreground">
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4" />
-              <span>1,247 online</span>
+              <span>
+                {loading ? (
+                  <span className="animate-pulse">... online</span>
+                ) : (
+                  `${presenceData.totalOnlineUsers.toLocaleString()} online`
+                )}
+              </span>
             </div>
           </div>
         </motion.div>
