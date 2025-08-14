@@ -2,7 +2,7 @@ import React from "react";
 import { AdminAuthProtection } from "@/components/admin-auth-protection";
 import { AdminSidebar } from "@/components/features/admin/admin-sidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/shared/ui/card";
-import { QuestionImportTool } from "@/components/features/admin/question-import-tool";
+import { CSVQuestionImporter } from "@/components/features/admin/csv-question-importer";
 
 export default function AdminQuizQuestions() {
   return (
@@ -17,7 +17,7 @@ export default function AdminQuizQuestions() {
               <CardDescription>Importar e gerenciar perguntas do quiz</CardDescription>
             </CardHeader>
             <CardContent>
-              <QuestionImportTool />
+              <CSVQuestionImporter />
             </CardContent>
           </Card>
         </div>
