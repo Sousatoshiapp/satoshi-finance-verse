@@ -1,3 +1,5 @@
+// TEMPORARILY DISABLED - ONBOARDING REMOVED
+/*
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -53,3 +55,4 @@ export function useOnboardingStatus() {
     checkOnboardingStatus
   };
 }
+*/

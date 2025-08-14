@@ -5,7 +5,7 @@ export const LazyRoutes = {
   // Public pages
   Welcome: lazy(() => import('@/pages/Welcome')),
   Auth: lazy(() => import('@/pages/Auth')),
-  Onboarding: lazy(() => import('@/pages/Onboarding')),
+  // Onboarding: lazy(() => import('@/pages/Onboarding')),
   PasswordReset: lazy(() => import('@/pages/PasswordReset')),
   OAuthCallback: lazy(() => import('@/pages/OAuthCallback')),
   

@@ -30,11 +30,11 @@ export const publicRoutes = [
     showNavbar: false,
     isDirectImport: true
   },
-  {
-    path: "/onboarding",
-    element: "Onboarding",
-    requiresAuth: true,
-    showNavbar: false,
-    isDirectImport: true
-  }
+  // {
+  //   path: "/onboarding",
+  //   element: "Onboarding",
+  //   requiresAuth: true,
+  //   showNavbar: false,
+  //   isDirectImport: true
+  // }
 ];
