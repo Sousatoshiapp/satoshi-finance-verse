@@ -48,51 +48,26 @@ export function useBotPresenceSimulation() {
 
       if (botError) throw botError;
 
-      // Buscar perfis dos bots separadamente com avatares
+      // Buscar perfis dos bots separadamente
       if (botData && botData.length > 0) {
         const botIds = botData.map(bot => bot.bot_id);
         const { data: profiles } = await supabase
           .from('profiles')
-          .select(`
-            id, 
-            nickname, 
-            level, 
-            profile_image_url, 
-            current_avatar_id,
-            points
-          `)
+          .select('id, nickname, level, profile_image_url')
           .in('id', botIds)
           .eq('is_bot', true);
 
-        // Buscar avatares dos bots
-        const avatarIds = profiles?.map(p => p.current_avatar_id).filter(Boolean) || [];
-        const { data: avatars } = avatarIds.length > 0 ? await supabase
-          .from('avatars')
-          .select('id, name, image_url')
-          .in('id', avatarIds) : { data: [] };
-
-        // Mapear bots com perfis e avatares
+        // Mapear bots com perfis
         const botsWithProfiles = botData.map((bot) => {
           const profile = profiles?.find(p => p.id === bot.bot_id);
-          const avatar = avatars?.find(a => a.id === profile?.current_avatar_id);
-          
           return {
             ...bot,
             bot_profile: profile ? {
               nickname: profile.nickname,
               level: profile.level,
               profile_image_url: profile.profile_image_url,
-              points: profile.points || Math.floor(Math.random() * 3000) + 200,
-              avatars: avatar ? {
-                name: avatar.name,
-                image_url: avatar.image_url
-              } : undefined
-            } : {
-              nickname: `Bot_${Math.floor(Math.random() * 1000)}`,
-              level: Math.floor(Math.random() * 45) + 5,
-              points: Math.floor(Math.random() * 3000) + 200,
-              avatars: undefined
-            }
+              avatars: undefined // Simplificar, não carregar avatares
+            } : undefined
           };
         });
 

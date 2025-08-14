@@ -166,75 +166,52 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
 
   // Generate simulated bot wins
   const generateBotWins = (bots: any[], realWinsCount: number, currentFilter: string): RecentWin[] => {
-    // SEMPRE gerar pelo menos 8 vitórias de bots
+    if (realWinsCount >= 15) return []; // Only add if we need more content
+    
     const winTemplates = {
       all: [
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'CryptoMaster', score: 850, prize_amount: 150 } },
-        { type: 'achievement_unlock' as const, data: { achievement_name: 'Mestre Bitcoin', score: 500, prize_amount: 200 } },
-        { type: 'streak_milestone' as const, data: { streak_days: 7, prize_amount: 70 } },
-        { type: 'quiz_perfect' as const, data: { score: 1000, prize_amount: 300 } },
-        { type: 'level_up' as const, data: { level_reached: 25, prize_amount: 250 } },
-        { type: 'tournament_win' as const, data: { tournament_name: 'Copa Bitcoin', prize_amount: 500 } },
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'DeFiExpert', score: 920, prize_amount: 180 } },
-        { type: 'achievement_unlock' as const, data: { achievement_name: 'Trader Expert', score: 750, prize_amount: 350 } }
+        { type: 'duel_victory' as const, data: { opponent_nickname: 'Quiz Bot', score: 850 } },
+        { type: 'achievement_unlock' as const, data: { achievement_name: 'Speed Reader', score: 500 } },
+        { type: 'streak_milestone' as const, data: { streak_days: 7 } },
+        { type: 'quiz_perfect' as const, data: { score: 1000 } },
+        { type: 'level_up' as const, data: { level_reached: 15 } }
       ],
       duels: [
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'CryptoNinja', score: 850, prize_amount: 150 } },
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'BitcoinPro', score: 920, prize_amount: 180 } },
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'SatoshiFan', score: 780, prize_amount: 120 } },
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'BlockchainKing', score: 950, prize_amount: 200 } }
+        { type: 'duel_victory' as const, data: { opponent_nickname: 'Quiz Bot', score: 850 } },
+        { type: 'duel_victory' as const, data: { opponent_nickname: 'Speed Bot', score: 920 } }
       ],
       achievements: [
-        { type: 'achievement_unlock' as const, data: { achievement_name: 'Mestre Bitcoin', score: 500, prize_amount: 200 } },
-        { type: 'level_up' as const, data: { level_reached: 20, prize_amount: 200 } },
-        { type: 'achievement_unlock' as const, data: { achievement_name: 'DeFi Pioneer', score: 750, prize_amount: 350 } },
-        { type: 'level_up' as const, data: { level_reached: 35, prize_amount: 350 } }
+        { type: 'achievement_unlock' as const, data: { achievement_name: 'Speed Reader', score: 500 } },
+        { type: 'level_up' as const, data: { level_reached: 15 } }
       ],
       streaks: [
-        { type: 'streak_milestone' as const, data: { streak_days: 7, prize_amount: 70 } },
-        { type: 'streak_milestone' as const, data: { streak_days: 14, prize_amount: 140 } },
-        { type: 'streak_milestone' as const, data: { streak_days: 30, prize_amount: 300 } },
-        { type: 'streak_milestone' as const, data: { streak_days: 21, prize_amount: 210 } }
+        { type: 'streak_milestone' as const, data: { streak_days: 7 } },
+        { type: 'streak_milestone' as const, data: { streak_days: 14 } }
       ]
     };
 
     const templates = winTemplates[currentFilter] || winTemplates.all;
+    const botsToUse = bots.slice(0, Math.min(8, 15 - realWinsCount));
     
-    // Use bots reais ou crie bots fictícios se necessário
-    const availableBots = bots.length > 0 ? bots : Array.from({ length: 10 }, (_, i) => ({
-      id: `fake-bot-${i}`,
-      bot_id: `fake-bot-id-${i}`,
-      bot_profile: {
-        nickname: [`CryptoTrader${i + 1}`, `BitcoinExpert${i + 1}`, `SatoshiLearner${i + 1}`, `BlockchainWiz${i + 1}`, `DeFiMaster${i + 1}`, `CryptoSage${i + 1}`][Math.floor(Math.random() * 6)],
-        level: Math.floor(Math.random() * 50) + 8,
-        points: Math.floor(Math.random() * 5000) + 300,
-        current_avatar_id: `avatar-${i + 1}`,
-        avatars: {
-          image_url: `/avatars/avatar_${(i % 8) + 1}.jpg`
-        }
-      }
-    }));
-    
-    return Array.from({ length: Math.max(8, 15 - realWinsCount) }, (_, index) => {
-      const bot = availableBots[index % availableBots.length];
+    return botsToUse.map((bot, index) => {
       const template = templates[index % templates.length];
       const now = new Date();
-      const createdAt = new Date(now.getTime() - Math.random() * 8 * 60 * 60 * 1000); // Within last 8h
+      const createdAt = new Date(now.getTime() - Math.random() * 6 * 60 * 60 * 1000); // Within last 6h
       
       return {
-        id: `bot-win-${bot.id || index}-${Date.now()}-${index}`,
-        user_id: bot.bot_id || `fake-bot-${index}`,
+        id: `bot-win-${bot.id}-${index}`,
+        user_id: bot.bot_id,
         win_type: template.type,
         win_data: template.data,
         created_at: createdAt.toISOString(),
         user: {
-          nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
-          level: bot.bot_profile?.level || Math.floor(Math.random() * 40) + 10,
-          current_avatar_id: bot.bot_profile?.current_avatar_id,
-          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : { image_url: `/avatars/avatar_${(index % 8) + 1}.jpg` }
+          nickname: bot.profile?.nickname || 'Bot Player',
+          level: bot.profile?.level || Math.floor(Math.random() * 20) + 1,
+          current_avatar_id: bot.profile?.current_avatar_id,
+          avatar: bot.profile?.avatars ? { image_url: bot.profile.avatars.image_url } : undefined
         },
-        likes: Math.floor(Math.random() * 25) + 3,
-        comments: Math.floor(Math.random() * 8) + 1
+        likes: Math.floor(Math.random() * 15) + 1,
+        comments: Math.floor(Math.random() * 3) + 1
       };
     });
   };
