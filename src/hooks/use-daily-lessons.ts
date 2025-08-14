@@ -461,6 +461,18 @@ export function useDailyLessons() {
     return mainLesson || extraLessons[0] || null;
   };
   
+  // Função para obter próxima lição não completada
+  const getNextAvailableLesson = () => {
+    const allLessons = [mainLesson, ...extraLessons].filter(Boolean);
+    return allLessons.find(lesson => !isLessonCompleted(lesson.id)) || null;
+  };
+
+  // Verificar se há lições incompletas
+  const hasIncompleteLesson = () => {
+    const allLessons = [mainLesson, ...extraLessons].filter(Boolean);
+    return allLessons.some(lesson => !isLessonCompleted(lesson.id));
+  };
+  
   // Verificar se há alguma lição disponível
   const hasAnyLesson = mainLesson || extraLessons.length > 0;
 
@@ -487,6 +499,8 @@ export function useDailyLessons() {
     loading,
     shouldShowModal,
     availableLesson: getAvailableLesson(),
+    nextAvailableLesson: getNextAvailableLesson(),
+    hasIncompleteLesson: hasIncompleteLesson(),
     hasAnyLesson,
     markLessonViewed,
     completeLessonQuiz,

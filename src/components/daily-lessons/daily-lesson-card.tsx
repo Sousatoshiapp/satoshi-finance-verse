@@ -17,6 +17,8 @@ export function DailyLessonCard() {
     loading,
     isLessonCompleted,
     availableLesson,
+    nextAvailableLesson,
+    hasIncompleteLesson,
     hasAnyLesson
   } = useDailyLessons();
 
@@ -129,17 +131,17 @@ export function DailyLessonCard() {
 
                 {/* Right side - Main lesson or status */}
                 <div className="ml-2 flex-shrink-0 flex items-center gap-2">
-                  {availableLesson ? (
+                  {nextAvailableLesson ? (
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedLesson(availableLesson.id);
+                        setSelectedLesson(nextAvailableLesson.id);
                       }}
                       size="sm"
                       style={{ backgroundColor: '#ADFF2F', color: '#000000' }}
                       className="hover:opacity-90 px-2 py-1 text-[10px] font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      {isLessonCompleted(availableLesson.id) ? "✓ Ver" : "Começar"}
+                      Começar
                     </Button>
                   ) : (
                     <div className="text-[10px] text-muted-foreground">
