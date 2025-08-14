@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useBotPresenceSimulation } from './useBotPresenceSimulation';
 
 interface AchievementStory {
   id: string;
@@ -29,7 +28,6 @@ interface AchievementStory {
 export function useAchievementStories() {
   const [stories, setStories] = useState<AchievementStory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { onlineBots } = useBotPresenceSimulation();
 
   const loadStories = async () => {
     try {
@@ -113,11 +111,7 @@ export function useAchievementStories() {
         })
         .filter(Boolean) as AchievementStory[];
 
-      // Add simulated bot stories if we have few real stories
-      const botStories = generateBotStories(onlineBots, achievementStories.length);
-      const allStories = [...achievementStories, ...botStories];
-
-      setStories(allStories);
+      setStories(achievementStories);
     } catch (error) {
       console.error('Error loading achievement stories:', error);
       setStories([]);
@@ -143,48 +137,6 @@ export function useAchievementStories() {
   useEffect(() => {
     loadStories();
   }, []);
-
-  // Generate simulated bot achievement stories
-  const generateBotStories = (bots: any[], realStoriesCount: number): AchievementStory[] => {
-    if (realStoriesCount >= 8) return []; // Only add if we need more content
-    
-    const achievements = [
-      { name: 'Quiz Master', rarity: 'rare', badge_icon: '🧠' },
-      { name: 'Speed Demon', rarity: 'epic', badge_icon: '⚡' },
-      { name: 'Knowledge Seeker', rarity: 'common', badge_icon: '📚' },
-      { name: 'Perfect Score', rarity: 'legendary', badge_icon: '💯' },
-      { name: 'Streak Champion', rarity: 'epic', badge_icon: '🔥' },
-      { name: 'Learning Enthusiast', rarity: 'rare', badge_icon: '⭐' }
-    ];
-    
-    return bots.slice(0, Math.min(6, 8 - realStoriesCount)).map((bot, index) => {
-      const achievement = achievements[index % achievements.length];
-      const now = new Date();
-      const createdAt = new Date(now.getTime() - Math.random() * 12 * 60 * 60 * 1000); // Within last 12h
-      const expiresAt = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000);
-      
-      return {
-        id: `bot-story-${bot.id}-${index}`,
-        user_id: bot.bot_id,
-        achievement_id: `achievement-${index}`,
-        story_type: 'achievement' as const,
-        caption: `Acabei de conquistar ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'}`,
-        created_at: createdAt.toISOString(),
-        expires_at: expiresAt.toISOString(),
-        views_count: Math.floor(Math.random() * 30) + 5,
-        user: {
-          nickname: bot.profile?.nickname || 'Bot Player',
-          current_avatar_id: bot.profile?.current_avatar_id,
-          avatar: bot.profile?.avatars ? { image_url: bot.profile.avatars.image_url } : undefined
-        },
-        achievement: {
-          name: achievement.name,
-          rarity: achievement.rarity,
-          badge_icon: achievement.badge_icon
-        }
-      };
-    });
-  };
 
   return {
     stories,

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useBotPresenceSimulation } from './useBotPresenceSimulation';
 
 interface RecentWin {
   id: string;
@@ -31,7 +30,6 @@ interface RecentWin {
 export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streaks' = 'all') {
   const [recentWins, setRecentWins] = useState<RecentWin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { onlineBots } = useBotPresenceSimulation();
 
   const loadRecentWins = async () => {
     try {
@@ -146,11 +144,7 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
         }
       }
 
-      // Add simulated bot wins if we have few real wins
-      const botWins = generateBotWins(onlineBots, filteredWins.length, filter);
-      const allWins = [...filteredWins, ...botWins];
-
-      setRecentWins(allWins.slice(0, 20));
+      setRecentWins(filteredWins.slice(0, 20));
     } catch (error) {
       console.error('Error loading recent wins:', error);
       setRecentWins([]);
@@ -162,58 +156,6 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
   useEffect(() => {
     loadRecentWins();
   }, [filter]);
-
-  // Generate simulated bot wins
-  const generateBotWins = (bots: any[], realWinsCount: number, currentFilter: string): RecentWin[] => {
-    if (realWinsCount >= 15) return []; // Only add if we need more content
-    
-    const winTemplates = {
-      all: [
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'Quiz Bot', score: 850 } },
-        { type: 'achievement_unlock' as const, data: { achievement_name: 'Speed Reader', score: 500 } },
-        { type: 'streak_milestone' as const, data: { streak_days: 7 } },
-        { type: 'quiz_perfect' as const, data: { score: 1000 } },
-        { type: 'level_up' as const, data: { level_reached: 15 } }
-      ],
-      duels: [
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'Quiz Bot', score: 850 } },
-        { type: 'duel_victory' as const, data: { opponent_nickname: 'Speed Bot', score: 920 } }
-      ],
-      achievements: [
-        { type: 'achievement_unlock' as const, data: { achievement_name: 'Speed Reader', score: 500 } },
-        { type: 'level_up' as const, data: { level_reached: 15 } }
-      ],
-      streaks: [
-        { type: 'streak_milestone' as const, data: { streak_days: 7 } },
-        { type: 'streak_milestone' as const, data: { streak_days: 14 } }
-      ]
-    };
-
-    const templates = winTemplates[currentFilter] || winTemplates.all;
-    const botsToUse = bots.slice(0, Math.min(8, 15 - realWinsCount));
-    
-    return botsToUse.map((bot, index) => {
-      const template = templates[index % templates.length];
-      const now = new Date();
-      const createdAt = new Date(now.getTime() - Math.random() * 6 * 60 * 60 * 1000); // Within last 6h
-      
-      return {
-        id: `bot-win-${bot.id}-${index}`,
-        user_id: bot.bot_id,
-        win_type: template.type,
-        win_data: template.data,
-        created_at: createdAt.toISOString(),
-        user: {
-          nickname: bot.profile?.nickname || 'Bot Player',
-          level: bot.profile?.level || Math.floor(Math.random() * 20) + 1,
-          current_avatar_id: bot.profile?.current_avatar_id,
-          avatar: bot.profile?.avatars ? { image_url: bot.profile.avatars.image_url } : undefined
-        },
-        likes: Math.floor(Math.random() * 15) + 1,
-        comments: Math.floor(Math.random() * 3) + 1
-      };
-    });
-  };
 
   return {
     recentWins,

@@ -3,13 +3,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/shared/ui/tabs';
 import { Card, CardContent } from '@/components/shared/ui/card';
 import { 
+  Trophy, 
   Zap, 
   Users, 
+  Sword,
   Sparkles
 } from 'lucide-react';
 import { 
   LazyAchievementStories,
-  LazyRecentWinsFeed
+  LazyBattleRoyaleMode,
+  LazyRecentWinsFeed,
+  LazyWeeklyTournament
 } from './SocialHubSections';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useI18n } from '@/hooks/use-i18n';
@@ -97,7 +101,7 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
 
       {/* Social Tabs with Gen Z Design */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className={`grid w-full grid-cols-2 mb-6 bg-muted/50 backdrop-blur-sm ${isMobile ? 'h-12' : 'h-14'}`}>
+        <TabsList className={`grid w-full grid-cols-4 mb-6 bg-muted/50 backdrop-blur-sm ${isMobile ? 'h-12' : 'h-14'}`}>
           <TabsTrigger 
             value="stories" 
             className={`flex items-center gap-2 ${isMobile ? 'text-xs px-2' : 'text-sm'}`}
@@ -122,6 +126,32 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
               <Zap className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
             </motion.div>
             {!isMobile && <span>Wins</span>}
+          </TabsTrigger>
+          
+          <TabsTrigger 
+            value="battle" 
+            className={`flex items-center gap-2 ${isMobile ? 'text-xs px-2' : 'text-sm'}`}
+          >
+            <motion.div
+              animate={activeTab === 'battle' ? { scale: [1, 1.2, 1] } : {}}
+              transition={{ duration: 0.3 }}
+            >
+              <Sword className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
+            </motion.div>
+            {!isMobile && <span>Battle</span>}
+          </TabsTrigger>
+          
+          <TabsTrigger 
+            value="tournaments" 
+            className={`flex items-center gap-2 ${isMobile ? 'text-xs px-2' : 'text-sm'}`}
+          >
+            <motion.div
+              animate={activeTab === 'tournaments' ? { scale: [1, 1.2, 1] } : {}}
+              transition={{ duration: 0.3 }}
+            >
+              <Trophy className={`${isMobile ? 'w-3 h-3' : 'w-4 h-4'}`} />
+            </motion.div>
+            {!isMobile && <span>Tournaments</span>}
           </TabsTrigger>
         </TabsList>
 
@@ -150,6 +180,21 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
               </Card>
             </TabsContent>
 
+            <TabsContent value="battle" className="mt-0">
+              <Card className="overflow-hidden border-0 bg-gradient-to-br from-card via-card/90 to-muted/30 backdrop-blur-sm">
+                <CardContent className="p-0">
+                  <LazyBattleRoyaleMode />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="tournaments" className="mt-0">
+              <Card className="overflow-hidden border-0 bg-gradient-to-br from-card via-card/90 to-muted/30 backdrop-blur-sm">
+                <CardContent className="p-0">
+                  <LazyWeeklyTournament />
+                </CardContent>
+              </Card>
+            </TabsContent>
           </motion.div>
         </AnimatePresence>
       </Tabs>
