@@ -61,57 +61,59 @@ export function useAchievementStories() {
       // Get user profiles
       const userIds = [...new Set(userAchievements?.map(ua => ua.user_id) || [])];
       
-      if (userIds.length === 0) {
-        setStories([]);
-        return;
+      let profiles = [];
+      let achievementStories: AchievementStory[] = [];
+      
+      if (userIds.length > 0) {
+
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select(`
+            id,
+            nickname,
+            current_avatar_id,
+            avatars (
+              image_url
+            )
+          `)
+          .in('id', userIds);
+
+        if (profilesError) throw profilesError;
+        profiles = profilesData || [];
+
+        // Transform to stories format
+        achievementStories = userAchievements
+          ?.map(userAchievement => {
+            const profile = profiles?.find(p => p.id === userAchievement.user_id);
+            if (!profile || !userAchievement.achievements) return null;
+
+            const achievement = userAchievement.achievements as any;
+            const earnedAt = new Date(userAchievement.earned_at);
+            const expiresAt = new Date(earnedAt.getTime() + 24 * 60 * 60 * 1000);
+
+            return {
+              id: userAchievement.id,
+              user_id: userAchievement.user_id,
+              achievement_id: userAchievement.achievement_id,
+              story_type: 'achievement' as const,
+              caption: `Just unlocked ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'}`,
+              created_at: userAchievement.earned_at,
+              expires_at: expiresAt.toISOString(),
+              views_count: Math.floor(Math.random() * 50) + 5, // Mock views for now
+              user: {
+                nickname: profile.nickname || 'Player',
+                current_avatar_id: profile.current_avatar_id,
+                avatar: profile.avatars ? { image_url: (profile.avatars as any).image_url } : undefined
+              },
+              achievement: {
+                name: achievement.name,
+                rarity: achievement.rarity,
+                badge_icon: achievement.badge_icon
+              }
+            };
+          })
+          .filter(Boolean) as AchievementStory[];
       }
-
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          nickname,
-          current_avatar_id,
-          avatars (
-            image_url
-          )
-        `)
-        .in('id', userIds);
-
-      if (profilesError) throw profilesError;
-
-      // Transform to stories format
-      const achievementStories: AchievementStory[] = userAchievements
-        ?.map(userAchievement => {
-          const profile = profiles?.find(p => p.id === userAchievement.user_id);
-          if (!profile || !userAchievement.achievements) return null;
-
-          const achievement = userAchievement.achievements as any;
-          const earnedAt = new Date(userAchievement.earned_at);
-          const expiresAt = new Date(earnedAt.getTime() + 24 * 60 * 60 * 1000);
-
-          return {
-            id: userAchievement.id,
-            user_id: userAchievement.user_id,
-            achievement_id: userAchievement.achievement_id,
-            story_type: 'achievement' as const,
-            caption: `Just unlocked ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'}`,
-            created_at: userAchievement.earned_at,
-            expires_at: expiresAt.toISOString(),
-            views_count: Math.floor(Math.random() * 50) + 5, // Mock views for now
-            user: {
-              nickname: profile.nickname || 'Player',
-              current_avatar_id: profile.current_avatar_id,
-              avatar: profile.avatars ? { image_url: (profile.avatars as any).image_url } : undefined
-            },
-            achievement: {
-              name: achievement.name,
-              rarity: achievement.rarity,
-              badge_icon: achievement.badge_icon
-            }
-          };
-        })
-        .filter(Boolean) as AchievementStory[];
 
       // Add simulated bot stories if we have few real stories
       const botStories = generateBotStories(onlineBots, achievementStories.length);

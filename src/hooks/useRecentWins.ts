@@ -55,80 +55,81 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
       // Get user profiles for activities
       const userIds = [...new Set(activities?.map(a => a.user_id) || [])];
       
-      if (userIds.length === 0) {
-        setRecentWins([]);
-        return;
-      }
+      let profiles = [];
+      let wins: RecentWin[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select(`
+            id,
+            nickname,
+            level,
+            current_avatar_id,
+            avatars (
+              image_url
+            )
+          `)
+          .in('id', userIds);
 
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          nickname,
-          level,
-          current_avatar_id,
-          avatars (
-            image_url
-          )
-        `)
-        .in('id', userIds);
+        if (profilesError) throw profilesError;
+        profiles = profilesData || [];
 
-      if (profilesError) throw profilesError;
+        // Transform activities to RecentWin format
+        wins = activities
+          ?.map(activity => {
+            const profile = profiles?.find(p => p.id === activity.user_id);
+            if (!profile) return null;
 
-      // Transform activities to RecentWin format
-      const wins: RecentWin[] = activities
-        ?.map(activity => {
-          const profile = profiles?.find(p => p.id === activity.user_id);
-          if (!profile) return null;
+            let winType: RecentWin['win_type'];
+            let winData: RecentWin['win_data'] = {};
 
-          let winType: RecentWin['win_type'];
-          let winData: RecentWin['win_data'] = {};
-
-          // Map activity types to win types
-          const activityData = activity.activity_data as any;
-          switch (activity.activity_type) {
-            case 'debug_mission_completed':
-              if (activityData?.mission_type === 'daily_login') {
-                winType = 'streak_milestone';
-                winData = { streak_days: 1 };
-              } else {
+            // Map activity types to win types
+            const activityData = activity.activity_data as any;
+            switch (activity.activity_type) {
+              case 'debug_mission_completed':
+                if (activityData?.mission_type === 'daily_login') {
+                  winType = 'streak_milestone';
+                  winData = { streak_days: 1 };
+                } else {
+                  winType = 'achievement_unlock';
+                  winData = { 
+                    achievement_name: activityData?.mission_name || 'Mission Completed',
+                    score: activityData?.awarded_xp || 0 
+                  };
+                }
+                break;
+              case 'xp_earned':
+                winType = 'quiz_perfect';
+                winData = { score: activityData?.amount || 0 };
+                break;
+              case 'duel_invite_sent':
+                winType = 'duel_victory';
+                winData = { opponent_nickname: 'Bot Player' };
+                break;
+              default:
                 winType = 'achievement_unlock';
-                winData = { 
-                  achievement_name: activityData?.mission_name || 'Mission Completed',
-                  score: activityData?.awarded_xp || 0 
-                };
-              }
-              break;
-            case 'xp_earned':
-              winType = 'quiz_perfect';
-              winData = { score: activityData?.amount || 0 };
-              break;
-            case 'duel_invite_sent':
-              winType = 'duel_victory';
-              winData = { opponent_nickname: 'Bot Player' };
-              break;
-            default:
-              winType = 'achievement_unlock';
-              winData = { achievement_name: 'Community Activity' };
-          }
+                winData = { achievement_name: 'Community Activity' };
+            }
 
-          return {
-            id: activity.id,
-            user_id: activity.user_id,
-            win_type: winType,
-            win_data: winData,
-            created_at: activity.created_at,
-            user: {
-              nickname: profile.nickname || 'Player',
-              level: profile.level || 1,
-              current_avatar_id: profile.current_avatar_id,
-              avatar: profile.avatars ? { image_url: (profile.avatars as any).image_url } : undefined
-            },
-            likes: Math.floor(Math.random() * 20) + 1, // Mock likes for now
-            comments: Math.floor(Math.random() * 5) + 1 // Mock comments for now
-          };
-        })
-        .filter(Boolean) as RecentWin[];
+            return {
+              id: activity.id,
+              user_id: activity.user_id,
+              win_type: winType,
+              win_data: winData,
+              created_at: activity.created_at,
+              user: {
+                nickname: profile.nickname || 'Player',
+                level: profile.level || 1,
+                current_avatar_id: profile.current_avatar_id,
+                avatar: profile.avatars ? { image_url: (profile.avatars as any).image_url } : undefined
+              },
+              likes: Math.floor(Math.random() * 20) + 1, // Mock likes for now
+              comments: Math.floor(Math.random() * 5) + 1 // Mock comments for now
+            };
+          })
+          .filter(Boolean) as RecentWin[];
+      }
 
       // Apply filter
       let filteredWins = wins;
