@@ -296,19 +296,19 @@ export default function Auth() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-start justify-center safe-area-full px-4 pt-8">
+      <div className="relative z-10 min-h-screen flex items-start justify-center safe-area-full px-4 pt-4">
         <div className="w-full max-w-xs">
           {/* Back Button */}
           <Button
             variant="ghost"
             onClick={() => navigate('/welcome')}
-            className="mb-4 text-muted-foreground hover:text-primary transition-all duration-300 hover:translate-x-1"
+            className="mb-2 text-muted-foreground hover:text-primary transition-all duration-300 hover:translate-x-1"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
 
           {/* Logo */}
-          <div className="text-center mb-2">
+          <div className="text-center mb-1">
             <div className="flex justify-center">
               <img 
                 src="/lovable-uploads/3601a8a7-21e2-403a-aeea-326289b3c5b5.png" 
