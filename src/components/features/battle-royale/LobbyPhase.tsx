@@ -67,7 +67,7 @@ export function LobbyPhase({ session, participants, onStartGame }: LobbyPhasePro
             
             <div className="text-center p-2 casino-card border-purple-500/20">
               <Trophy className="w-3 h-3 text-primary mx-auto mb-1" />
-              <div className="font-semibold text-xs">{session.prize_pool}</div>
+              <div className="font-semibold text-xs">{session.prize_pool_calculated || session.prize_pool}</div>
               <div className="text-[10px] text-muted-foreground">BTZ</div>
             </div>
             

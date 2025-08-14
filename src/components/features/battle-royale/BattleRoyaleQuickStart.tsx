@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-// Simple button component
-const Button = ({ children, onClick, variant, size, className }: any) => (
-  <button 
-    onClick={onClick}
-    className={`px-4 py-2 rounded transition-colors ${className || ''} ${
-      variant === 'outline' ? 'border border-current' : 'bg-casino-gold text-casino-dark'
-    }`}
-  >
-    {children}
-  </button>
-);
-import { Crown, Users, Zap, Target } from 'lucide-react';
+import { Button } from '@/components/shared/ui/button';
+import { Crown, Users, Zap, Target, Coins } from 'lucide-react';
 import { BattleRoyaleMatchmaking } from './BattleRoyaleMatchmaking';
+import { useRealtimePoints } from '@/hooks/use-realtime-points';
+import { Card } from '@/components/shared/ui/card';
 
 interface BattleRoyaleQuickStartProps {
   onSessionJoined: (sessionId: string, sessionCode: string) => void;
@@ -25,8 +17,15 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState('general');
   const [selectedDifficulty, setSelectedDifficulty] = useState('medium');
+  const { points: userBTZ, isLoading: btzLoading } = useRealtimePoints();
+
+  const ENTRY_FEE = 10; // 10 BTZ entry fee
+  const hasEnoughBTZ = userBTZ >= ENTRY_FEE;
 
   const handleQuickStart = (mode: string) => {
+    if (!hasEnoughBTZ && !btzLoading) {
+      return; // Prevent action if insufficient BTZ
+    }
     setSelectedMode(mode);
     setIsSearching(true);
   };
@@ -73,15 +72,42 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
         </p>
       </div>
 
+      {/* Entry Fee Info */}
+      <Card className="casino-glass-card p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Coins className="w-5 h-5 text-casino-gold" />
+            <span className="text-sm font-medium">Entry Fee:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-casino-gold">{ENTRY_FEE} BTZ</span>
+          </div>
+        </div>
+        <div className="mt-2 flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Seu saldo:</span>
+          <span className={`font-medium ${hasEnoughBTZ ? 'text-casino-gold' : 'text-destructive'}`}>
+            {btzLoading ? '...' : `${userBTZ.toFixed(1)} BTZ`}
+          </span>
+        </div>
+        {!hasEnoughBTZ && !btzLoading && (
+          <div className="mt-2 text-xs text-destructive">
+            ⚠️ BTZ insuficiente para entrar na batalha
+          </div>
+        )}
+      </Card>
+
       {/* Mode Selection */}
       <div className="space-y-4">
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: hasEnoughBTZ ? 1.02 : 1 }}
+          whileTap={{ scale: hasEnoughBTZ ? 0.98 : 1 }}
         >
           <Button
             onClick={() => handleQuickStart('solo')}
-            className="w-full h-16 casino-glass-card flex items-center gap-4 text-left border-casino-gold/30 hover:border-casino-gold"
+            disabled={!hasEnoughBTZ || btzLoading}
+            className={`w-full h-16 casino-glass-card flex items-center gap-4 text-left border-casino-gold/30 hover:border-casino-gold transition-opacity ${
+              !hasEnoughBTZ ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             variant="outline"
           >
             <Crown className="w-8 h-8 text-casino-gold" />
@@ -95,12 +121,15 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: hasEnoughBTZ ? 1.02 : 1 }}
+          whileTap={{ scale: hasEnoughBTZ ? 0.98 : 1 }}
         >
           <Button
             onClick={() => handleQuickStart('squad')}
-            className="w-full h-16 casino-glass-card flex items-center gap-4 text-left border-casino-purple/30 hover:border-casino-purple"
+            disabled={!hasEnoughBTZ || btzLoading}
+            className={`w-full h-16 casino-glass-card flex items-center gap-4 text-left border-casino-purple/30 hover:border-casino-purple transition-opacity ${
+              !hasEnoughBTZ ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             variant="outline"
           >
             <Users className="w-8 h-8 text-casino-purple" />
@@ -114,12 +143,15 @@ export const BattleRoyaleQuickStart: React.FC<BattleRoyaleQuickStartProps> = ({
         </motion.div>
 
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: hasEnoughBTZ ? 1.02 : 1 }}
+          whileTap={{ scale: hasEnoughBTZ ? 0.98 : 1 }}
         >
           <Button
             onClick={() => handleQuickStart('chaos')}
-            className="w-full h-16 casino-glass-card flex items-center gap-4 text-left border-destructive/30 hover:border-destructive"
+            disabled={!hasEnoughBTZ || btzLoading}
+            className={`w-full h-16 casino-glass-card flex items-center gap-4 text-left border-destructive/30 hover:border-destructive transition-opacity ${
+              !hasEnoughBTZ ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
             variant="outline"
           >
             <Zap className="w-8 h-8 text-destructive" />

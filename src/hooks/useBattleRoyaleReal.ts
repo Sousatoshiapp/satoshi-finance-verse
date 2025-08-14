@@ -9,13 +9,18 @@ export interface BattleRoyaleSession {
   mode: 'solo' | 'squad' | 'chaos';
   max_players: number;
   current_players: number;
-  status: 'waiting' | 'starting' | 'active' | 'finished';
+  status: 'waiting' | 'starting' | 'active' | 'finished' | 'cancelled';
   current_round: number;
   total_rounds: number;
   topic: string;
   difficulty: string;
   entry_fee: number;
+  entry_fee_amount: number;
   prize_pool: number;
+  prize_pool_calculated: number;
+  auto_cancel_at?: string;
+  minimum_players: number;
+  refund_processed: boolean;
   started_at?: string;
   finished_at?: string;
   questions?: any[];
@@ -87,7 +92,7 @@ export function useBattleRoyaleReal() {
     mode: 'solo' | 'squad' | 'chaos';
     topic: string;
     difficulty: string;
-    entry_fee: number;
+    entry_fee_amount?: number;
     max_players: number;
   }) => {
     if (!profile) return null;
@@ -98,6 +103,7 @@ export function useBattleRoyaleReal() {
       const { data, error } = await supabase.functions.invoke('battle-royale-manager', {
         body: {
           action: 'create_session',
+          entry_fee_amount: 10, // Fixed at 10 BTZ
           ...options
         }
       });
@@ -159,14 +165,19 @@ export function useBattleRoyaleReal() {
       }));
 
       toast({
-        title: "Entrou na Batalha!",
-        description: "Aguardando outros jogadores...",
+        title: "🎮 Entrou na Batalha!",
+        description: `${data.entry_fee} BTZ debitados. Prize Pool: ${data.new_prize_pool} BTZ`,
       });
 
       // Subscribe to session updates
       subscribeToSession(sessionId);
 
-      return true;
+      return { 
+        success: true, 
+        entry_fee: data.entry_fee,
+        new_prize_pool: data.new_prize_pool,
+        remaining_btz: data.remaining_btz
+      };
     } catch (error: any) {
       console.error('Error joining session:', error);
       setState(prev => ({ 
@@ -176,7 +187,7 @@ export function useBattleRoyaleReal() {
       }));
       
       toast({
-        title: "Erro",
+        title: "❌ Erro ao Entrar",
         description: error.message,
         variant: "destructive"
       });

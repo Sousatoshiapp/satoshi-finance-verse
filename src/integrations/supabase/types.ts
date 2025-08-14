@@ -909,18 +909,23 @@ export type Database = {
       }
       battle_royale_sessions: {
         Row: {
+          auto_cancel_at: string | null
           created_at: string
           current_players: number
           current_round: number
           difficulty: string
           elimination_percentage: number
           entry_fee: number
+          entry_fee_amount: number
           finished_at: string | null
           id: string
           max_players: number
+          minimum_players: number
           mode: string
           prize_pool: number
+          prize_pool_calculated: number
           question_time_limit: number
+          refund_processed: boolean
           session_code: string
           started_at: string | null
           status: string
@@ -929,18 +934,23 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          auto_cancel_at?: string | null
           created_at?: string
           current_players?: number
           current_round?: number
           difficulty?: string
           elimination_percentage?: number
           entry_fee?: number
+          entry_fee_amount?: number
           finished_at?: string | null
           id?: string
           max_players?: number
+          minimum_players?: number
           mode: string
           prize_pool?: number
+          prize_pool_calculated?: number
           question_time_limit?: number
+          refund_processed?: boolean
           session_code: string
           started_at?: string | null
           status?: string
@@ -949,18 +959,23 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          auto_cancel_at?: string | null
           created_at?: string
           current_players?: number
           current_round?: number
           difficulty?: string
           elimination_percentage?: number
           entry_fee?: number
+          entry_fee_amount?: number
           finished_at?: string | null
           id?: string
           max_players?: number
+          minimum_players?: number
           mode?: string
           prize_pool?: number
+          prize_pool_calculated?: number
           question_time_limit?: number
+          refund_processed?: boolean
           session_code?: string
           started_at?: string | null
           status?: string
@@ -1014,6 +1029,51 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "battle_royale_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_royale_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          processed_at: string | null
+          session_id: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          processed_at?: string | null
+          session_id: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          processed_at?: string | null
+          session_id?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_royale_transactions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "battle_royale_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_royale_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -9261,6 +9321,10 @@ export type Database = {
         Args: { user_xp: number }
         Returns: number
       }
+      cancel_expired_battle_royale_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       check_duel_limit: {
         Args: { profile_id: string }
         Returns: boolean
@@ -9357,6 +9421,10 @@ export type Database = {
           tie_broken_by: string
           winner_id: string
         }[]
+      }
+      distribute_battle_royale_prizes: {
+        Args: { p_session_id: string }
+        Returns: Json
       }
       dmetaphone: {
         Args: { "": string }
@@ -9673,6 +9741,14 @@ export type Database = {
       }
       process_battle_royale_elimination: {
         Args: { p_round_number: number; p_session_id: string }
+        Returns: Json
+      }
+      process_battle_royale_entry: {
+        Args: { p_session_id: string; p_user_id: string }
+        Returns: Json
+      }
+      process_battle_royale_refunds: {
+        Args: { p_session_id: string }
         Returns: Json
       }
       process_duel_answer: {

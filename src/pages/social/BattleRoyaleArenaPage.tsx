@@ -1,73 +1,48 @@
 import React from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Coins } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
-import { BattleRoyaleArena } from '@/components/features/battle-royale/BattleRoyaleArena';
+import { BattleRoyaleQuickStart } from '@/components/features/battle-royale/BattleRoyaleQuickStart';
 import { FloatingNavbar } from '@/components/shared/floating-navbar';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
+import { useRealtimePoints } from "@/hooks/use-realtime-points";
 
 export default function BattleRoyaleArenaPage() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
+  const { points, isLoading } = useRealtimePoints();
 
-  const mode = (searchParams.get('mode') as 'solo' | 'squad' | 'chaos') || 'solo';
-  const topic = searchParams.get('topic') || 'geral';
-  const difficulty = searchParams.get('difficulty') || 'medio';
-  const sessionId = searchParams.get('sessionId') || undefined;
+  const handleSessionJoined = (sessionId: string, sessionCode: string) => {
+    navigate(`/battle-royale/session/${sessionId}`, { 
+      state: { sessionCode } 
+    });
+  };
 
   return (
-    <div className="min-h-screen casino-futuristic">
-      {/* Header */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className={`casino-card border-purple-500/30 ${isMobile ? 'px-3 pt-16 pb-4' : 'px-4 pt-6 pb-4'}`}
-      >
-        <div className="flex items-center justify-between mb-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/battle-royale')}
-            className="casino-button flex items-center gap-1 p-2"
-          >
-            <ArrowLeft className="w-3 h-3" />
-            {!isMobile && 'Voltar'}
-          </Button>
-          
-          <div className="text-center">
-            <h1 className={`font-bold text-gradient ${isMobile ? 'text-sm' : 'text-base'}`}>
-              Arena Battle Royale
-            </h1>
-            <p className="text-xs text-muted-foreground capitalize">
-              {mode} • {topic}
-            </p>
+    <>
+      <div className="min-h-screen casino-futuristic overflow-hidden">
+        <div className="relative z-10 p-6 pb-40">
+          <div className="flex items-center justify-between mb-8">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate(-1)}
+              className="casino-button border-purple-500/40 text-white bg-black/20 backdrop-blur-sm hover:bg-purple-500/20"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            
+            <div className="casino-btz-display flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-sm rounded-full border border-amber-400/40">
+              <Coins className="h-5 w-5 text-amber-400 casino-coin-glow" />
+              <span className="font-bold text-white">{isLoading ? "..." : points.toFixed(2)}</span>
+              <span className="text-sm text-amber-400">BTZ</span>
+            </div>
           </div>
-          
-          <div className="casino-button px-2 py-1">
-            <span className="text-xs text-warning">1000 BTZ</span>
-          </div>
+
+          <BattleRoyaleQuickStart onSessionJoined={handleSessionJoined} />
         </div>
-      </motion.div>
-
-      {/* Arena */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2 }}
-        className="px-3"
-      >
-        <BattleRoyaleArena 
-          sessionId={sessionId}
-          mode={mode}
-          topic={topic}
-          difficulty={difficulty}
-        />
-      </motion.div>
-
-      {/* Bottom Navigation */}
+      </div>
+      
       <FloatingNavbar />
-    </div>
+    </>
   );
 }

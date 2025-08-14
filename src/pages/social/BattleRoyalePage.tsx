@@ -47,7 +47,8 @@ export default function BattleRoyalePage() {
 
             {/* Action Button */}
             <div className="text-center">
-              <button
+              <Button
+                onClick={() => navigate('/battle-royale/arena')}
                 className="w-full py-2 px-6 font-bold text-sm rounded-lg transition-all duration-300 border-2 hover:brightness-110"
                 style={{ 
                   backgroundColor: 'transparent',
@@ -58,7 +59,7 @@ export default function BattleRoyalePage() {
                 }}
               >
                 ENTRAR NA ARENA
-              </button>
+              </Button>
             </div>
           </div>
         </div>
