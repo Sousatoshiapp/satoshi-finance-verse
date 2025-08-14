@@ -38,8 +38,8 @@ export function QuestionPhase({ question, timeRemaining, onAnswer, round }: Ques
       className="space-y-6"
     >
       {/* Question Header */}
-      <div className="text-center space-y-4">
-        <Badge variant="secondary" className="text-lg px-4 py-2">
+      <div className="text-center space-y-2">
+        <Badge variant="secondary" className="text-xs px-2 py-1">
           Rodada {round}
         </Badge>
         
@@ -49,10 +49,10 @@ export function QuestionPhase({ question, timeRemaining, onAnswer, round }: Ques
           transition={{ duration: 0.5, repeat: isTimeRunningOut ? Infinity : 0 }}
           className="relative"
         >
-          <div className={`text-4xl font-bold ${isTimeRunningOut ? 'text-destructive' : 'text-primary'}`}>
+          <div className={`text-xl font-bold ${isTimeRunningOut ? 'text-destructive' : 'text-primary'}`}>
             {timeRemaining}s
           </div>
-          <div className="w-32 h-2 bg-muted/50 rounded-full mx-auto mt-2 overflow-hidden">
+          <div className="w-24 h-1 bg-muted/50 rounded-full mx-auto mt-1 overflow-hidden">
             <motion.div
               className={`h-full ${isTimeRunningOut ? 'bg-destructive' : 'bg-primary'}`}
               animate={{ width: `${timePercentage}%` }}
@@ -63,15 +63,15 @@ export function QuestionPhase({ question, timeRemaining, onAnswer, round }: Ques
       </div>
 
       {/* Question Card */}
-      <Card className="border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-center text-xl leading-relaxed">
+      <Card className="casino-card border-purple-500/30">
+        <CardHeader className="p-3">
+          <CardTitle className="text-center text-sm leading-relaxed">
             {question.question}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3">
           {/* Answer Options */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-2">
             {question.options.map((option, index) => {
               const letters = ['A', 'B', 'C', 'D'];
               const isSelected = selectedAnswer === option;
@@ -79,25 +79,25 @@ export function QuestionPhase({ question, timeRemaining, onAnswer, round }: Ques
               return (
                 <motion.div
                   key={index}
-                  whileHover={!answered ? { scale: 1.02 } : {}}
-                  whileTap={!answered ? { scale: 0.98 } : {}}
+                  whileHover={!answered ? { scale: 1.01 } : {}}
+                  whileTap={!answered ? { scale: 0.99 } : {}}
                 >
                   <Button
                     variant={isSelected ? "default" : "outline"}
-                    className={`w-full p-6 h-auto text-left justify-start ${
+                    className={`casino-button w-full p-3 h-auto text-left justify-start ${
                       answered ? 'cursor-not-allowed' : 'cursor-pointer'
                     }`}
                     onClick={() => handleAnswer(option)}
                     disabled={answered}
                   >
-                    <div className="flex items-start gap-4 w-full">
+                    <div className="flex items-start gap-2 w-full">
                       <div className={`
-                        w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+                        w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold
                         ${isSelected ? 'bg-primary-foreground text-primary' : 'bg-muted text-muted-foreground'}
                       `}>
                         {letters[index]}
                       </div>
-                      <div className="flex-1 text-sm leading-relaxed">
+                      <div className="flex-1 text-xs leading-relaxed">
                         {option}
                       </div>
                     </div>
@@ -107,38 +107,15 @@ export function QuestionPhase({ question, timeRemaining, onAnswer, round }: Ques
             })}
           </div>
 
-          {/* Power-ups Section (Future Feature) */}
-          <div className="mt-6 p-4 bg-muted/30 rounded-lg border border-dashed">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Zap className="w-4 h-4" />
-                Power-ups disponíveis
-              </div>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm" disabled className="opacity-50">
-                  <Shield className="w-4 h-4 mr-1" />
-                  Escudo
-                </Button>
-                <Button variant="ghost" size="sm" disabled className="opacity-50">
-                  <Clock className="w-4 h-4 mr-1" />
-                  +5s
-                </Button>
-              </div>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Power-ups serão disponibilizados em breve!
-            </p>
-          </div>
-
           {/* Answer Status */}
           {answered && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 text-center p-3 bg-success/10 border border-success/20 rounded-lg"
+              className="mt-2 text-center p-2 casino-card border-green-500/30"
             >
-              <p className="text-sm text-success font-medium">
-                ✓ Resposta enviada! Aguardando outros jogadores...
+              <p className="text-xs text-success font-medium">
+                ✓ Enviado! Aguardando...
               </p>
             </motion.div>
           )}
@@ -146,11 +123,11 @@ export function QuestionPhase({ question, timeRemaining, onAnswer, round }: Ques
       </Card>
 
       {/* Question Info */}
-      <div className="text-center text-sm text-muted-foreground">
-        <Badge variant="outline" className="mr-2">
+      <div className="text-center text-xs text-muted-foreground">
+        <Badge variant="outline" className="text-[10px] mr-1 px-1 py-0">
           {question.category}
         </Badge>
-        <Badge variant="outline">
+        <Badge variant="outline" className="text-[10px] px-1 py-0">
           {question.difficulty}
         </Badge>
       </div>

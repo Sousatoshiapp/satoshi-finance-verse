@@ -60,13 +60,7 @@ export function BattleRoyaleArena({ sessionId, mode, topic, difficulty }: Battle
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-destructive/20 to-warning/20 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-destructive/10 rounded-full blur-3xl animate-pulse delay-1000" />
-      </div>
-
+    <div className="min-h-screen bg-black/40 backdrop-blur-sm relative overflow-hidden">
       {/* Battle Arena UI */}
       <div className="relative z-10">
         {/* Top UI - Session Info */}
@@ -74,28 +68,28 @@ export function BattleRoyaleArena({ sessionId, mode, topic, difficulty }: Battle
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-4 bg-background/80 backdrop-blur-sm border-b"
+            className="p-2 casino-card border-purple-500/30 mx-3 mb-3"
           >
-            <div className="flex items-center justify-between max-w-7xl mx-auto">
-              <div className="flex items-center gap-4">
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Sessão:</span>
-                  <span className="font-mono text-primary ml-2">{battleRoyale.session.session_code}</span>
+            <div className="flex items-center justify-between max-w-4xl mx-auto">
+              <div className="flex items-center gap-2">
+                <div className="text-xs">
+                  <span className="text-muted-foreground">ID:</span>
+                  <span className="font-mono text-primary ml-1">{battleRoyale.session.session_code}</span>
                 </div>
-                <div className="text-sm">
+                <div className="text-xs">
                   <span className="text-muted-foreground">Modo:</span>
-                  <span className="font-semibold ml-2 capitalize">{battleRoyale.session.mode}</span>
+                  <span className="font-semibold ml-1 capitalize">{battleRoyale.session.mode}</span>
                 </div>
-                <div className="text-sm">
+                <div className="text-xs">
                   <span className="text-muted-foreground">Tópico:</span>
-                  <span className="font-semibold ml-2">{battleRoyale.session.topic}</span>
+                  <span className="font-semibold ml-1">{battleRoyale.session.topic}</span>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
-                <div className="text-sm text-center">
-                  <div className="text-2xl font-bold text-primary">{battleRoyale.participants.filter(p => p.is_alive).length}</div>
-                  <div className="text-xs text-muted-foreground">Sobreviventes</div>
+              <div className="flex items-center gap-2">
+                <div className="text-xs text-center">
+                  <div className="text-lg font-bold text-primary">{battleRoyale.participants.filter(p => p.is_alive).length}</div>
+                  <div className="text-[10px] text-muted-foreground">Vivos</div>
                 </div>
                 
                 {battleRoyale.session.status === 'active' && (
@@ -110,8 +104,8 @@ export function BattleRoyaleArena({ sessionId, mode, topic, difficulty }: Battle
         )}
 
         {/* Main Game Area */}
-        <div className="max-w-7xl mx-auto p-4">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="max-w-4xl mx-auto p-3">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
             {/* Left Sidebar - Players Grid */}
             <div className="lg:col-span-1">
               <PlayersGrid 

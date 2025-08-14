@@ -18,34 +18,36 @@ export default function BattleRoyaleArenaPage() {
   const sessionId = searchParams.get('sessionId') || undefined;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen casino-futuristic">
       {/* Header */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${isMobile ? 'px-4 pt-16 pb-6' : 'px-6 pt-8 pb-6'}`}
+        className={`casino-card border-purple-500/30 ${isMobile ? 'px-3 pt-16 pb-4' : 'px-4 pt-6 pb-4'}`}
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/battle-royale')}
-            className="flex items-center gap-2"
+            className="casino-button flex items-center gap-1 p-2"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-3 h-3" />
             {!isMobile && 'Voltar'}
           </Button>
           
           <div className="text-center">
-            <h1 className={`font-bold text-gradient ${isMobile ? 'text-lg' : 'text-xl'}`}>
+            <h1 className={`font-bold text-gradient ${isMobile ? 'text-sm' : 'text-base'}`}>
               Arena Battle Royale
             </h1>
-            <p className="text-sm text-muted-foreground capitalize">
-              Modo: {mode} • Tópico: {topic}
+            <p className="text-xs text-muted-foreground capitalize">
+              {mode} • {topic}
             </p>
           </div>
           
-          <div className="w-16" /> {/* Spacer */}
+          <div className="casino-button px-2 py-1">
+            <span className="text-xs text-warning">1000 BTZ</span>
+          </div>
         </div>
       </motion.div>
 
@@ -54,7 +56,7 @@ export default function BattleRoyaleArenaPage() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className="px-4"
+        className="px-3"
       >
         <BattleRoyaleArena 
           sessionId={sessionId}
