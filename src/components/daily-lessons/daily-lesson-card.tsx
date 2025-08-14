@@ -4,7 +4,7 @@ import { Button } from "@/components/shared/ui/button";
 import { Progress } from "@/components/shared/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/shared/ui/collapsible";
 import { useDailyLessons } from "@/hooks/use-daily-lessons";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { DailyLessonModal } from "./daily-lesson-modal";
 import { CyberpunkEmptyState3D } from "./CyberpunkEmptyState3D";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -15,11 +15,43 @@ export function DailyLessonCard() {
     extraLessons,
     userStreak,
     loading,
-    isLessonCompleted
+    isLessonCompleted,
+    availableLesson,
+    hasAnyLesson
   } = useDailyLessons();
 
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [timeUntilNext, setTimeUntilNext] = useState("");
+
+  // Função para calcular tempo até a próxima lição
+  const getTimeUntilNextLesson = () => {
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const diff = tomorrow.getTime() - now.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours > 0) {
+      return `Próxima lição em ${hours}h ${minutes}min`;
+    }
+    return `Próxima lição em ${minutes}min`;
+  };
+
+  // Timer para atualizar o countdown a cada minuto
+  useEffect(() => {
+    const updateTimer = () => {
+      setTimeUntilNext(getTimeUntilNextLesson());
+    };
+    
+    updateTimer(); // Initial call
+    const timer = setInterval(updateTimer, 60000); // Update every minute
+    
+    return () => clearInterval(timer);
+  }, []);
 
   if (loading) {
     return (
@@ -35,7 +67,7 @@ export function DailyLessonCard() {
     );
   }
 
-  if (!mainLesson && extraLessons.length === 0) {
+  if (!hasAnyLesson) {
     return (
       <Card className="h-20 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
         <div className="h-full flex">
@@ -46,7 +78,7 @@ export function DailyLessonCard() {
               <h3 className="font-semibold text-sm">Pílulas de Conhecimento</h3>
             </div>
             <p className="text-xs text-muted-foreground">
-              Nada por hoje, fam. Volta amanhã que tem mais 🔥
+              {timeUntilNext}
             </p>
           </div>
           
@@ -97,21 +129,21 @@ export function DailyLessonCard() {
 
                 {/* Right side - Main lesson or status */}
                 <div className="ml-2 flex-shrink-0 flex items-center gap-2">
-                  {mainLesson ? (
+                  {availableLesson ? (
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedLesson(mainLesson.id);
+                        setSelectedLesson(availableLesson.id);
                       }}
                       size="sm"
                       style={{ backgroundColor: '#ADFF2F', color: '#000000' }}
                       className="hover:opacity-90 px-2 py-1 text-[10px] font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      {isLessonCompleted(mainLesson.id) ? "✓ Ver" : "Começar"}
+                      {isLessonCompleted(availableLesson.id) ? "✓ Ver" : "Começar"}
                     </Button>
                   ) : (
                     <div className="text-[10px] text-muted-foreground">
-                      Nenhuma lição
+                      {timeUntilNext}
                     </div>
                   )}
                   {isDropdownOpen ? (

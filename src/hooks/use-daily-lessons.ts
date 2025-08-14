@@ -455,6 +455,14 @@ export function useDailyLessons() {
 
   const mainLesson = lessons.find(l => l.is_main_lesson);
   const extraLessons = lessons.filter(l => !l.is_main_lesson);
+  
+  // Função para obter qualquer lição disponível (main ou extra)
+  const getAvailableLesson = () => {
+    return mainLesson || extraLessons[0] || null;
+  };
+  
+  // Verificar se há alguma lição disponível
+  const hasAnyLesson = mainLesson || extraLessons.length > 0;
 
   useEffect(() => {
     const loadData = async () => {
@@ -478,6 +486,8 @@ export function useDailyLessons() {
     userStreak,
     loading,
     shouldShowModal,
+    availableLesson: getAvailableLesson(),
+    hasAnyLesson,
     markLessonViewed,
     completeLessonQuiz,
     markModalShown,
