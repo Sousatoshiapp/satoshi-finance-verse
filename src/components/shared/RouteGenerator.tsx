@@ -60,6 +60,7 @@ const MemeEconomy = lazy(() => import("@/pages/MemeEconomy"));
 // Admin pages
 const Admin = lazy(() => import("@/pages/AdminDashboard"));
 const RealtimeAnalyticsPage = lazy(() => import("@/pages/admin/RealtimeAnalyticsPage"));
+const AdminQuizQuestions = lazy(() => import("@/pages/admin/AdminQuizQuestions"));
 
 // Component mapping
 const componentMap = {
@@ -111,6 +112,7 @@ const componentMap = {
   // Admin pages
   Admin,
   RealtimeAnalyticsPage,
+  AdminQuizQuestions,
 };
 
 export function generateRoutes() {
