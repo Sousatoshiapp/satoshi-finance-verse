@@ -57,9 +57,10 @@ export function QuestionImportTool() {
   const { modules } = useLearningModules();
 
   const downloadTemplate = () => {
-    const template = `question,option_a,option_b,option_c,option_d,correct_answer,explanation,category,difficulty,feedback_a,feedback_b,feedback_c,feedback_d,learning_objectives,estimated_time,question_type,cognitive_level,concepts
-"O que é inflação?","Aumento geral dos preços","Diminuição dos preços","Aumento da produção","Redução do desemprego","Aumento geral dos preços","Inflação é o aumento contínuo e generalizado dos preços de bens e serviços.","Economia","easy","Correto! Inflação é realmente o aumento geral dos preços.","Incorreto. Diminuição dos preços seria deflação.","Incorreto. Aumento da produção não define inflação.","Incorreto. Redução do desemprego não tem relação direta com inflação.","Entender o conceito de inflação; Identificar fatores que causam inflação",30,"multiple_choice","knowledge","Inflação, Valor do Dinheiro no Tempo"
-"Qual é a taxa Selic?","Taxa de câmbio","Taxa básica de juros","Taxa de inflação","Taxa de desemprego","Taxa básica de juros","A taxa Selic é a taxa básica de juros da economia brasileira.","Investimentos","medium","Incorreto. Taxa de câmbio relaciona moedas diferentes.","Correto! A Selic é a taxa básica de juros do país.","Incorreto. Taxa de inflação mede aumento de preços.","Incorreto. Taxa de desemprego mede pessoas sem trabalho.","Compreender o sistema financeiro brasileiro; Identificar tipos de taxas de juros",45,"multiple_choice","comprehension","Juros Compostos, Risco x Retorno"`;
+    const template = `question,option_a,option_b,option_c,option_d,correct_answer,explanation,category,difficulty
+"O que é taxa Selic?","Taxa de câmbio do real","Taxa básica de juros da economia","Taxa de inflação anual","Taxa de desemprego","Taxa básica de juros da economia","A Selic é a taxa básica de juros que influencia toda a economia brasileira.","ABC das Finanças","easy"
+"Qual a principal característica do Bitcoin?","É controlado pelo governo","É uma moeda descentralizada","Não tem valor de mercado","Só funciona no Brasil","É uma moeda descentralizada","Bitcoin é uma criptomoeda descentralizada, sem controle governamental.","Cripto","medium"
+"Como funciona o cartão de crédito?","Desconta direto da conta","Empresta dinheiro para pagamento posterior","É igual ao cartão de débito","Só funciona com dinheiro","Empresta dinheiro para pagamento posterior","O cartão de crédito é um empréstimo que você paga depois na fatura.","Finanças do Dia a Dia","easy"`;
 
     const blob = new Blob([template], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
@@ -133,10 +134,10 @@ export function QuestionImportTool() {
   };
 
   const importQuestions = async () => {
-    if (!file || !selectedModule) {
+    if (!file) {
       toast({
-        title: "Campos obrigatórios",
-        description: "Selecione um arquivo CSV e um módulo",
+        title: "Arquivo obrigatório",
+        description: "Selecione um arquivo CSV",
         variant: "destructive",
       });
       return;
@@ -164,7 +165,7 @@ export function QuestionImportTool() {
         .insert({
           uploaded_by: profile.id,
           file_name: file.name,
-          learning_module_id: selectedModule,
+          learning_module_id: selectedModule || null,
           status: 'processing'
         })
         .select()
@@ -223,7 +224,7 @@ export function QuestionImportTool() {
               explanation: row.explanation || '',
               difficulty: row.difficulty,
               category: row.category || 'Geral',
-              learning_module_id: selectedModule,
+              learning_module_id: selectedModule || null,
               feedback_wrong_answers: feedbackMap,
               difficulty_level: row.difficulty === 'easy' ? 1 : row.difficulty === 'medium' ? 5 : 10,
               learning_objectives: learningObjectives,
@@ -341,12 +342,13 @@ export function QuestionImportTool() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="module">Módulo de Aprendizado</Label>
+            <Label htmlFor="module">Módulo de Aprendizado (Opcional)</Label>
             <Select value={selectedModule} onValueChange={setSelectedModule}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecione um módulo" />
+                <SelectValue placeholder="Selecione um módulo (opcional)" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">Nenhum módulo</SelectItem>
                 {modules.map(module => (
                   <SelectItem key={module.id} value={module.id}>
                     {module.icon} {module.name}
@@ -497,7 +499,7 @@ export function QuestionImportTool() {
       <div className="flex justify-end">
         <Button 
           onClick={importQuestions} 
-          disabled={!file || !selectedModule || importing}
+          disabled={!file || importing}
           size="lg"
         >
           {importing ? "Importando..." : "Importar Questões"}

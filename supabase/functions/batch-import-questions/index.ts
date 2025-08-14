@@ -13,9 +13,6 @@ interface Question {
   explanation?: string;
   category: string;
   difficulty: string;
-  tags?: string[];
-  concepts?: string[];
-  source_material?: string;
 }
 
 serve(async (req) => {
@@ -56,6 +53,12 @@ serve(async (req) => {
           throw new Error('Resposta correta deve estar nas opções');
         }
 
+        // Validar categoria permitida
+        const allowedCategories = ['ABC das Finanças', 'Cripto', 'Finanças do Dia a Dia'];
+        if (!allowedCategories.includes(question.category)) {
+          throw new Error(`Categoria deve ser uma das permitidas: ${allowedCategories.join(', ')}`);
+        }
+
         // Inserir questão
         const { error: insertError } = await supabaseClient
           .from('quiz_questions')
@@ -64,10 +67,8 @@ serve(async (req) => {
             options: question.options,
             correct_answer: question.correct_answer.trim(),
             explanation: question.explanation?.trim(),
-            category: question.category?.trim() || 'Geral',
+            category: question.category?.trim() || 'ABC das Finanças',
             difficulty: question.difficulty?.toLowerCase() || 'medium',
-            tags: question.tags || [],
-            source_material: question.source_material?.trim(),
             is_active: true,
             created_by_admin: true
           });

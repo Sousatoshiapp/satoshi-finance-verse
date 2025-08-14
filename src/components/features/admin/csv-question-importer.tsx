@@ -15,9 +15,6 @@ interface ParsedQuestion {
   explanation?: string;
   category: string;
   difficulty: string;
-  tags?: string[];
-  concepts?: string[];
-  source_material?: string;
 }
 
 export function CSVQuestionImporter() {
@@ -41,26 +38,42 @@ export function CSVQuestionImporter() {
       'correct_answer',
       'explanation',
       'category',
-      'difficulty',
-      'tags',
-      'concepts',
-      'source_material'
+      'difficulty'
     ];
 
     const sampleData = [
       [
-        'Qual é a fórmula básica para calcular juros simples?',
-        'J = C * i * t',
-        'J = C * (1 + i)^t',
-        'J = C + i + t',
-        'J = C / i / t',
-        'J = C * i * t',
-        'Juros simples é calculado multiplicando o capital pela taxa de juros e pelo tempo.',
-        'Matemática Financeira',
-        'easy',
-        'juros;matemática',
-        'juros simples;fórmulas básicas',
-        'Livro de Matemática Financeira - Cap. 1'
+        'O que é taxa Selic?',
+        'Taxa de câmbio do real',
+        'Taxa básica de juros da economia',
+        'Taxa de inflação anual',
+        'Taxa de desemprego',
+        'Taxa básica de juros da economia',
+        'A Selic é a taxa básica de juros que influencia toda a economia brasileira.',
+        'ABC das Finanças',
+        'easy'
+      ],
+      [
+        'Qual a principal característica do Bitcoin?',
+        'É controlado pelo governo',
+        'É uma moeda descentralizada',
+        'Não tem valor de mercado',
+        'Só funciona no Brasil',
+        'É uma moeda descentralizada',
+        'Bitcoin é uma criptomoeda descentralizada, sem controle governamental.',
+        'Cripto',
+        'medium'
+      ],
+      [
+        'Como funciona o cartão de crédito?',
+        'Desconta direto da conta',
+        'Empresta dinheiro para pagamento posterior',
+        'É igual ao cartão de débito',
+        'Só funciona com dinheiro',
+        'Empresta dinheiro para pagamento posterior',
+        'O cartão de crédito é um empréstimo que você paga depois na fatura.',
+        'Finanças do Dia a Dia',
+        'easy'
       ]
     ];
 
@@ -98,10 +111,7 @@ export function CSVQuestionImporter() {
         correct_answer: question.correct_answer,
         explanation: question.explanation,
         category: question.category,
-        difficulty: question.difficulty || 'medium',
-        tags: question.tags ? question.tags.split(';').filter(Boolean) : [],
-        concepts: question.concepts ? question.concepts.split(';').filter(Boolean) : [],
-        source_material: question.source_material
+        difficulty: question.difficulty || 'medium'
       };
     });
   };
@@ -291,7 +301,7 @@ export function CSVQuestionImporter() {
                 <li>Preencha uma questão por linha</li>
                 <li>As opções devem estar nas colunas option_a até option_d</li>
                 <li>A resposta correta deve corresponder exatamente a uma das opções</li>
-                <li>Tags e conceitos devem ser separados por ponto e vírgula (;)</li>
+                <li>Use apenas as categorias: "ABC das Finanças", "Cripto", "Finanças do Dia a Dia"</li>
                 <li>Suporte para até 50.000 questões por importação</li>
               </ul>
             </div>
