@@ -160,80 +160,6 @@ async function joinSession(supabase: any, payload: any) {
       { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
-  const { data: session, error: sessionError } = await supabase
-    .from('battle_royale_sessions')
-    .select('*')
-    .eq('id', session_id)
-    .eq('status', 'waiting')
-    .single();
-
-  if (sessionError || !session) {
-    throw new Error('Session not found or not accepting players');
-  }
-
-  if (session.current_players >= session.max_players) {
-    throw new Error('Session is full');
-  }
-
-  // Check if user already joined
-  const { data: existing } = await supabase
-    .from('battle_royale_participants')
-    .select('id')
-    .eq('session_id', session_id)
-    .eq('user_id', user_id)
-    .single();
-
-  if (existing) {
-    throw new Error('User already joined this session');
-  }
-
-  // Create team if squad mode
-  let team_id = null;
-  if (session.mode === 'squad' && team_name) {
-    const { data: team, error: teamError } = await supabase
-      .from('battle_royale_teams')
-      .insert({
-        session_id,
-        team_name,
-        captain_id: user_id
-      })
-      .select()
-      .single();
-
-    if (teamError) throw teamError;
-    team_id = team.id;
-  }
-
-  // Add participant
-  const { data: participant, error: participantError } = await supabase
-    .from('battle_royale_participants')
-    .insert({
-      session_id,
-      user_id,
-      team_id
-    })
-    .select()
-    .single();
-
-  if (participantError) throw participantError;
-
-  // Update session player count
-  const { error: updateError } = await supabase
-    .from('battle_royale_sessions')
-    .update({ 
-      current_players: session.current_players + 1,
-      prize_pool: session.prize_pool + session.entry_fee
-    })
-    .eq('id', session_id);
-
-  if (updateError) throw updateError;
-
-  console.log('User joined session:', participant);
-
-  return new Response(
-    JSON.stringify({ participant, team_id }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
 }
 
 async function startSession(supabase: any, payload: any) {
@@ -426,6 +352,14 @@ async function finishSession(supabase: any, payload: any) {
         .eq('id', participants[i].id);
     }
 
+    // Calculate and distribute rewards
+    const { error: rewardsError } = await supabase
+      .rpc('calculate_battle_royale_rewards', {
+        p_session_id: session_id
+      });
+
+    if (rewardsError) throw rewardsError;
+
     // Distribute prizes using the database function
     const { data: prizeResult, error: prizeError } = await supabase
       .rpc('distribute_battle_royale_prizes', {
@@ -438,8 +372,16 @@ async function finishSession(supabase: any, payload: any) {
       console.log('Prizes distributed:', prizeResult);
     }
 
+    console.log('Session finished:', { session_id, participants: participants.length });
+
     return new Response(
-      JSON.stringify({ success: true, prizes: prizeResult }),
+      JSON.stringify({ 
+        success: true, 
+        prizes: prizeResult,
+        final_rankings: participants,
+        winner: participants[0],
+        session_id
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error: any) {
@@ -449,33 +391,6 @@ async function finishSession(supabase: any, payload: any) {
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
-    .from('battle_royale_sessions')
-    .update({
-      status: 'finished',
-      finished_at: new Date().toISOString()
-    })
-    .eq('id', session_id);
-
-  if (sessionError) throw sessionError;
-
-  // Calculate and distribute rewards
-  const { error: rewardsError } = await supabase
-    .rpc('calculate_battle_royale_rewards', {
-      p_session_id: session_id
-    });
-
-  if (rewardsError) throw rewardsError;
-
-  console.log('Session finished:', { session_id, participants: participants.length });
-
-  return new Response(
-    JSON.stringify({
-      final_rankings: participants,
-      winner: participants[0],
-      session_id
-    }),
-    { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-  );
 }
 
 // Auto-start sessions that meet criteria
