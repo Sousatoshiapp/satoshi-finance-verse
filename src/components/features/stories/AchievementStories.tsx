@@ -66,23 +66,71 @@ export function AchievementStories() {
 
   const loadStories = async () => {
     try {
-      const { data, error } = await supabase
-        .from('user_achievement_stories')
-        .select(`
-          *,
-          profiles!user_id (
-            nickname,
-            current_avatar_id,
-            avatars (image_url)
-          ),
-          achievements (name, rarity, badge_icon)
-        `)
-        .gte('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (error) throw error;
-      setStories(data || []);
+      // Mock data until database tables are created
+      const mockStories: AchievementStory[] = [
+        {
+          id: '1',
+          user_id: '1',
+          achievement_id: '1',
+          story_type: 'achievement',
+          caption: 'Just unlocked Quiz Master! 100 perfect answers 🔥',
+          created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          expires_at: new Date(Date.now() + 22 * 60 * 60 * 1000).toISOString(),
+          views_count: 45,
+          user: {
+            nickname: 'CryptoGuru',
+            current_avatar_id: '1',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face' }
+          },
+          achievement: {
+            name: 'Quiz Master',
+            rarity: 'epic',
+            badge_icon: '🏆'
+          }
+        },
+        {
+          id: '2',
+          user_id: '2',
+          achievement_id: '2',
+          story_type: 'streak',
+          caption: '30 days straight! Nothing can stop me now! ⚡',
+          created_at: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+          expires_at: new Date(Date.now() + 20 * 60 * 60 * 1000).toISOString(),
+          views_count: 67,
+          user: {
+            nickname: 'QuizMaster',
+            current_avatar_id: '2',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face' }
+          },
+          achievement: {
+            name: 'Streak Legend',
+            rarity: 'legendary',
+            badge_icon: '⚡'
+          }
+        },
+        {
+          id: '3',
+          user_id: '3',
+          achievement_id: '3',
+          story_type: 'level_up',
+          caption: 'Level 25! The grind never stops 💪',
+          created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+          expires_at: new Date(Date.now() + 18 * 60 * 60 * 1000).toISOString(),
+          views_count: 23,
+          user: {
+            nickname: 'StreakKing',
+            current_avatar_id: '3',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face' }
+          },
+          achievement: {
+            name: 'Level Master',
+            rarity: 'rare',
+            badge_icon: '📈'
+          }
+        }
+      ];
+      
+      setStories(mockStories);
     } catch (error) {
       console.error('Erro ao carregar stories:', error);
     }

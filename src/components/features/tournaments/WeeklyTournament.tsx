@@ -79,25 +79,77 @@ export function WeeklyTournament() {
 
   const loadTournaments = async () => {
     try {
-      const { data, error } = await supabase
-        .from('weekly_tournaments')
-        .select(`
-          *,
-          participants:tournament_participants(
-            *,
-            profiles!user_id(
-              nickname,
-              level,
-              current_avatar_id,
-              avatars(image_url)
-            )
-          )
-        `)
-        .in('status', ['upcoming', 'registration', 'active'])
-        .order('start_time', { ascending: true });
-
-      if (error) throw error;
-      setTournaments(data || []);
+      // Mock data until database tables are created
+      const mockTournaments: WeeklyTournament[] = [
+        {
+          id: '1',
+          name: 'Weekly Knowledge Championship',
+          description: 'Test your knowledge across all categories and compete for amazing prizes!',
+          status: 'active',
+          start_time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          end_time: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+          max_participants: 2000,
+          current_participants: 1234,
+          entry_cost: 0,
+          prize_pool: {
+            first: 5000,
+            second: 2500,
+            third: 1500,
+            participation: 1000
+          },
+          tournament_type: 'weekly',
+          registration_deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+          participants: [
+            {
+              id: '1',
+              user_id: '1',
+              tournament_id: '1',
+              current_score: 2850,
+              questions_answered: 45,
+              best_streak: 12,
+              joined_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+              user: {
+                nickname: 'CryptoGuru',
+                level: 15,
+                current_avatar_id: '1',
+                avatar: { image_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face' }
+              }
+            },
+            {
+              id: '2',
+              user_id: '2',
+              tournament_id: '1',
+              current_score: 2740,
+              questions_answered: 42,
+              best_streak: 10,
+              joined_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+              user: {
+                nickname: 'QuizMaster',
+                level: 22,
+                current_avatar_id: '2',
+                avatar: { image_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face' }
+              }
+            },
+            {
+              id: '3',
+              user_id: '3',
+              tournament_id: '1',
+              current_score: 2680,
+              questions_answered: 40,
+              best_streak: 9,
+              joined_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+              user: {
+                nickname: 'StreakKing',
+                level: 18,
+                current_avatar_id: '3',
+                avatar: { image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face' }
+              }
+            }
+          ]
+        }
+      ];
+      
+      setTournaments(mockTournaments);
     } catch (error) {
       console.error('Erro ao carregar torneios:', error);
     }

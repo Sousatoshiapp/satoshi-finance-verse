@@ -58,38 +58,79 @@ export function RecentWinsFeed() {
 
   const loadRecentWins = async () => {
     try {
-      let query = supabase
-        .from('recent_wins_feed')
-        .select(`
-          *,
-          profiles!user_id (
-            nickname,
-            level,
-            current_avatar_id,
-            avatars (image_url)
-          )
-        `)
-        .order('created_at', { ascending: false })
-        .limit(20);
+      // Mock data until database tables are created
+      const mockWins: RecentWin[] = [
+        {
+          id: '1',
+          user_id: '1',
+          win_type: 'duel_victory',
+          win_data: { opponent_nickname: 'Bot Alpha', score: 85 },
+          created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+          user: {
+            nickname: 'CryptoGuru',
+            level: 15,
+            current_avatar_id: '1',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face' }
+          }
+        },
+        {
+          id: '2',
+          user_id: '2',
+          win_type: 'achievement_unlock',
+          win_data: { achievement_name: 'Quiz Master', score: 100 },
+          created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          user: {
+            nickname: 'QuizMaster',
+            level: 22,
+            current_avatar_id: '2',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face' }
+          }
+        },
+        {
+          id: '3',
+          user_id: '3',
+          win_type: 'streak_milestone',
+          win_data: { streak_days: 30 },
+          created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+          user: {
+            nickname: 'StreakKing',
+            level: 18,
+            current_avatar_id: '3',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face' }
+          }
+        },
+        {
+          id: '4',
+          user_id: '4',
+          win_type: 'level_up',
+          win_data: { level_reached: 25 },
+          created_at: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+          user: {
+            nickname: 'LevelMaster',
+            level: 25,
+            current_avatar_id: '4',
+            avatar: { image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face' }
+          }
+        }
+      ];
 
+      // Filter mock data
+      let filteredWins = mockWins;
       if (filter !== 'all') {
         switch (filter) {
           case 'duels':
-            query = query.eq('win_type', 'duel_victory');
+            filteredWins = mockWins.filter(win => win.win_type === 'duel_victory');
             break;
           case 'achievements':
-            query = query.in('win_type', ['achievement_unlock', 'level_up']);
+            filteredWins = mockWins.filter(win => ['achievement_unlock', 'level_up'].includes(win.win_type));
             break;
           case 'streaks':
-            query = query.eq('win_type', 'streak_milestone');
+            filteredWins = mockWins.filter(win => win.win_type === 'streak_milestone');
             break;
         }
       }
-
-      const { data, error } = await query;
-      if (error) throw error;
       
-      setRecentWins(data || []);
+      setRecentWins(filteredWins);
     } catch (error) {
       console.error('Erro ao carregar recent wins:', error);
     } finally {
