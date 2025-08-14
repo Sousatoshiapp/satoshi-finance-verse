@@ -135,11 +135,13 @@ export default function UserProfile() {
           .eq('user_id', profileId)
           .eq('is_public', true),
 
-        // Get quiz sessions for achievements
+        // Get quiz sessions for achievements (LIMITED for performance)
         supabase
           .from('quiz_sessions')
           .select('questions_correct, questions_total')
           .eq('user_id', profileId)
+          .order('created_at', { ascending: false })
+          .limit(100)
       ]);
 
       // Calculate achievements

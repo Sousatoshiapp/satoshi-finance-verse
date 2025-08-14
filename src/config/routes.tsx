@@ -64,6 +64,22 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/messages",
+    component: "Messages",
+    title: "Messages",
+    description: "Direct messages and conversations",
+    category: "main",
+    requiresAuth: true
+  },
+  {
+    path: "/chat/:conversationId",
+    component: "DirectChatWrapper",
+    title: "Chat",
+    description: "Direct chat conversation",
+    category: "main",
+    requiresAuth: true
+  },
+  {
     path: "/store",
     component: "Store",
     title: "Store",
@@ -315,7 +331,7 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
-    path: "/community-feed",
+    path: "/social/community-feed",
     component: "CommunityFeedPage",
     title: "Community Feed",
     description: "Recent wins and community activity",

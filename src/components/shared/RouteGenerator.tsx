@@ -9,6 +9,8 @@ const Leaderboard = lazy(() => import("@/pages/Leaderboard"));
 const Profile = lazy(() => import("@/pages/Profile"));
 const UserProfile = lazy(() => import("@/pages/UserProfile"));
 const Store = lazy(() => import("@/pages/Store"));
+const Messages = lazy(() => import("@/pages/Messages"));
+const DirectChatWrapper = lazy(() => import("@/pages/DirectChatWrapper"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const BeetzInfo = lazy(() => import("@/pages/BeetzInfo"));
 const SubscriptionPlans = lazy(() => import("@/pages/SubscriptionPlans"));
@@ -56,6 +58,8 @@ const componentMap = {
   Profile,
   UserProfile,
   Store,
+  Messages,
+  DirectChatWrapper,
   Settings,
   BeetzInfo,
   SubscriptionPlans,

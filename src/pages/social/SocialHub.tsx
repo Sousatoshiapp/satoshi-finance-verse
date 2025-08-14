@@ -33,7 +33,7 @@ export default function SocialHub() {
       title: "Community Feed",
       description: "Vitórias recentes da comunidade",
       icon: Users,
-      path: "/community-feed",
+      path: "/social/community-feed",
       color: "from-blue-500 to-cyan-500",
       bgColor: "bg-blue-500/10 border-blue-500/30"
     },
