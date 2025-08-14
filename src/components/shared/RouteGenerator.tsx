@@ -1,71 +1,61 @@
-// FASE 2: Ultra Route Generator - Geração otimizada com preload inteligente
-import React from 'react';
-import { Route } from 'react-router-dom';
-import { LazyRoutes } from '@/utils/advanced-lazy-loading';
-import { UltraRouteWrapper } from './UltraRouteWrapper';
-import { routeConfig, RouteConfig } from '@/routes';
-// import { ultraRoutePreloader } from '@/utils/ultra-route-preloader';
+import { lazy } from "react";
+import { Route } from "react-router-dom";
+import { routeConfigs } from "@/config/routes";
 
-// Critical imports - apenas para rotas que precisam ser imediatas
-import TranslationTestPage from '@/pages/TranslationTest';
+// Lazy load all page components
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Quiz = lazy(() => import("@/pages/Quiz"));
+const Leaderboard = lazy(() => import("@/pages/Leaderboard"));
+const Profile = lazy(() => import("@/pages/Profile"));
+const Store = lazy(() => import("@/pages/Store"));
+const Settings = lazy(() => import("@/pages/Settings"));
+const BeetzInfo = lazy(() => import("@/pages/BeetzInfo"));
+const SubscriptionPlans = lazy(() => import("@/pages/SubscriptionPlans"));
+const GamificationDashboard = lazy(() => import("@/pages/GamificationDashboard"));
+const Duels = lazy(() => import("@/pages/Duels"));
+const Tournaments = lazy(() => import("@/pages/Tournaments"));
 
-// FASE 2.1: Ultra route generation com preload automático
+// FASE 1: Social Explosion - Lazy load social pages
+const AchievementStoriesPage = lazy(() => import("@/pages/social/AchievementStoriesPage"));
+const BattleRoyalePage = lazy(() => import("@/pages/social/BattleRoyalePage"));
+const CommunityFeedPage = lazy(() => import("@/pages/social/CommunityFeedPage"));
+const TournamentsPage = lazy(() => import("@/pages/social/TournamentsPage"));
+
+// Component mapping
+const componentMap = {
+  Dashboard,
+  Quiz,
+  Leaderboard,
+  Profile,
+  Store,
+  Settings,
+  BeetzInfo,
+  SubscriptionPlans,
+  GamificationDashboard,
+  Duels,
+  Tournaments,
+  // FASE 1: Social pages
+  AchievementStoriesPage,
+  BattleRoyalePage,
+  CommunityFeedPage,
+  TournamentsPage,
+};
+
 export function generateRoutes() {
-  console.log('🏗️ Gerando rotas...');
-  
-  // FASE 2.2: Warmup crítico no boot - disabled
-  // React.useEffect(() => {
-  //   ultraRoutePreloader.warmupCriticalRoutes();
-  // }, []);
-
-  const routes = routeConfig.map((route: RouteConfig) => {
-    console.log('🛤️ Processando rota:', route.path);
-    // FASE 2.3: Lazy loading otimizado com preload
-    const Component = LazyRoutes[route.element as keyof typeof LazyRoutes];
+  return routeConfigs.map((config) => {
+    const Component = componentMap[config.component as keyof typeof componentMap];
     
     if (!Component) {
-      console.error('❌ Componente não encontrado para rota:', route.path, route.element);
+      console.warn(`Component ${config.component} not found in componentMap`);
       return null;
     }
-    
-    console.log('✅ Componente encontrado para:', route.path);
-    
-    // FASE 2.4: Determinar tipo de rota para skeleton otimizado
-    const routeType = route.path === '/dashboard' ? 'dashboard' :
-                     route.path === '/profile' ? 'profile' :
-                     route.path.includes('/user/') ? 'profile' :
-                     route.path === '/social' ? 'social' :
-                     route.path.includes('/chat/') ? 'social' :
-                     route.path.includes('quiz') ? 'quiz' :
-                     route.path === '/store' ? 'store' :
-                     route.path.includes('leaderboard') ? 'leaderboard' :
-                     'default';
-      
+
     return (
       <Route
-        key={route.path}
-        path={route.path}
-        element={
-          <UltraRouteWrapper
-            requiresAuth={route.requiresAuth}
-            showNavbar={route.showNavbar}
-            adminOnly={route.adminOnly}
-            routeType={routeType}
-          >
-            <Component />
-          </UltraRouteWrapper>
-        }
+        key={config.path}
+        path={config.path}
+        element={<Component />}
       />
     );
-  });
-
-  routes.push(
-    <Route
-      key="/translation-test"
-      path="/translation-test"
-      element={<TranslationTestPage />}
-    />
-  );
-
-  return routes;
+  }).filter(Boolean);
 }

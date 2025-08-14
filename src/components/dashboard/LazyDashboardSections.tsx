@@ -32,6 +32,13 @@ const BtcDuelCard = lazy(() =>
   }))
 );
 
+// FASE 1: Social Explosion Components
+const SocialHub = lazy(() => 
+  import('@/components/dashboard/SocialHub').then(module => ({
+    default: module.SocialHub
+  }))
+);
+
 // Standardized loader for all sections
 const StandardLoader = memo(() => (
   <ProfileStyleLoader size="md" />
@@ -68,8 +75,16 @@ export const LazyBtcDuelCard = memo(() => (
   </Suspense>
 ));
 
+// FASE 1: Social Hub Export
+export const LazySocialHub = memo(() => (
+  <Suspense fallback={<StandardLoader />}>
+    <SocialHub />
+  </Suspense>
+));
+
 LazyDashboardSummary.displayName = 'LazyDashboardSummary';
 LazyQuickActions.displayName = 'LazyQuickActions';
 LazyLeaderboard.displayName = 'LazyLeaderboard';
 LazyDailyMissions.displayName = 'LazyDailyMissions';
 LazyBtcDuelCard.displayName = 'LazyBtcDuelCard';
+LazySocialHub.displayName = 'LazySocialHub';

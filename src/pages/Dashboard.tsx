@@ -26,6 +26,7 @@ import {
   // LazyDailyMissions, // PERFORMANCE: Removido temporariamente - Hook complexo de missões
   // LazyBtcDuelCard // PERFORMANCE: Removido temporariamente - BTC WebSocket causando overhead
 } from "@/components/dashboard/LazyDashboardSections";
+import { SocialHub } from "@/components/dashboard/SocialHub";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { useRealtimePoints } from "@/hooks/use-realtime-points";
 import { useRealtime } from "@/contexts/RealtimeContext";
@@ -571,6 +572,11 @@ export default function Dashboard() {
                 />
               </div>
             </div>
+          </div>
+
+          {/* FASE 1: Social Hub - Entre avatar e quick actions */}
+          <div className="mb-8">
+            <SocialHub />
           </div>
 
           {/* Ranking Semanal de Beetz - Mobile Spacing */}
