@@ -102,10 +102,10 @@ export function ProfileViewsCounter() {
         .limit(5);
 
       const recentViewers = recentViewsData
-        ?.filter(v => v.viewer_profile)
+        ?.filter(v => v.viewer_profile && typeof v.viewer_profile === 'object')
         .map(v => ({
           id: v.viewer_id,
-          nickname: v.viewer_profile?.nickname || 'Usuário',
+          nickname: (v.viewer_profile as any)?.nickname || 'Usuário',
           viewed_at: v.viewed_at
         })) || [];
 

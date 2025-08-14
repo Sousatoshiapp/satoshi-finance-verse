@@ -87,6 +87,31 @@ export const routeConfigs: RouteConfig[] = [
     category: "gamification",
     requiresAuth: true
   },
+  // FASE 2: Avatar 2.0 & Profile Flexing routes
+  {
+    path: "/profile-customization",
+    component: "ProfileCustomization",
+    title: "Personalização Extrema",
+    description: "Avatar 2.0 e personalização de perfil",
+    category: "main",
+    requiresAuth: true
+  },
+  {
+    path: "/hall-of-fame",
+    component: "HallOfFame",
+    title: "Hall da Fama",
+    description: "Rankings e destaques da plataforma",
+    category: "main",
+    requiresAuth: true
+  },
+  {
+    path: "/avatar-editor",
+    component: "AvatarEditor", 
+    title: "Editor de Avatar",
+    description: "Editor completo de avatar estilo Bitmoji",
+    category: "main",
+    requiresAuth: true
+  },
   {
     path: "/beetz-info",
     component: "BeetzInfo",

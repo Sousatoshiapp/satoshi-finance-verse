@@ -34,7 +34,7 @@ interface WeeklyStats {
   topQuizUser: RankingUser | null;
 }
 
-export function HallOfFame() {
+export default function HallOfFame() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('weekly');

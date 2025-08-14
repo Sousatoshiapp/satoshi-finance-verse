@@ -26,6 +26,11 @@ const BattleRoyalePage = lazy(() => import("@/pages/social/BattleRoyalePage"));
 const CommunityFeedPage = lazy(() => import("@/pages/social/CommunityFeedPage"));
 const TournamentsPage = lazy(() => import("@/pages/social/TournamentsPage"));
 
+// FASE 2: Avatar 2.0 & Profile Flexing pages
+const ProfileCustomization = lazy(() => import("@/pages/ProfileCustomization"));
+const HallOfFame = lazy(() => import("@/pages/HallOfFame"));
+const AvatarEditor = lazy(() => import("@/pages/AvatarEditor"));
+
 // Component mapping
 const componentMap = {
   Dashboard,
@@ -49,6 +54,10 @@ const componentMap = {
   BattleRoyalePage,
   CommunityFeedPage,
   TournamentsPage,
+  // FASE 2: Avatar 2.0 & Profile Flexing
+  ProfileCustomization,
+  HallOfFame,
+  AvatarEditor,
 };
 
 export function generateRoutes() {

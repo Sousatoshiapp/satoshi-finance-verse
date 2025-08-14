@@ -51,9 +51,9 @@ export function TitleSelector() {
 
       const titlesWithOwnership = allTitles?.map(title => ({
         ...title,
-        is_owned: ownedTitleIds.includes(title.id) || checkUnlockRequirement(title),
+        is_owned: ownedTitleIds.includes(title.id) || checkUnlockRequirement(title as any),
         is_active: title.id === activeTitleId
-      })) || [];
+      })) as ProfileTitle[] || [];
 
       setTitles(titlesWithOwnership);
       
@@ -262,30 +262,32 @@ export function TitleSelector() {
   return (
     <>
       {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes titleGlow {
-          from { 
-            filter: brightness(1) drop-shadow(0 0 5px currentColor);
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes titleGlow {
+            from { 
+              filter: brightness(1) drop-shadow(0 0 5px currentColor);
+            }
+            to { 
+              filter: brightness(1.3) drop-shadow(0 0 15px currentColor);
+            }
           }
-          to { 
-            filter: brightness(1.3) drop-shadow(0 0 15px currentColor);
-          }
-        }
 
-        @keyframes titlePulse {
-          0%, 100% { 
-            transform: scale(1);
+          @keyframes titlePulse {
+            0%, 100% { 
+              transform: scale(1);
+            }
+            50% { 
+              transform: scale(1.05);
+            }
           }
-          50% { 
-            transform: scale(1.05);
-          }
-        }
 
-        @keyframes titleRainbow {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(360deg); }
-        }
-      `}</style>
+          @keyframes titleRainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+          }
+        `
+      }} />
 
       <Card>
         <CardHeader>

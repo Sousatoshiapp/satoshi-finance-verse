@@ -73,120 +73,90 @@ export function AnimatedAvatarFrame({
   };
 
   return (
-    <>
+    <div 
+      className={cn(
+        'avatar-frame-container rounded-full overflow-hidden relative',
+        sizeClasses[size],
+        frameType === 'diamond' && 'avatar-frame-particles',
+        className
+      )}
+      style={getFrameStyles()}
+    >
+      {children}
+      
       {/* CSS Animations */}
       {mounted && (
-        <style jsx>{`
-          @keyframes avatarPulse {
-            0%, 100% { 
-              transform: scale(1);
-              box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes avatarPulse {
+              0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 15px rgba(205, 127, 50, 0.5);
+              }
+              50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 25px rgba(205, 127, 50, 0.8);
+              }
             }
-            50% { 
-              transform: scale(1.05);
-              box-shadow: 0 0 25px rgba(205, 127, 50, 0.8);
-            }
-          }
 
-          @keyframes avatarGlow {
-            from { 
-              box-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
+            @keyframes avatarGlow {
+              from { 
+                box-shadow: 0 0 20px rgba(192, 192, 192, 0.6);
+              }
+              to { 
+                box-shadow: 0 0 35px rgba(192, 192, 192, 1);
+              }
             }
-            to { 
-              box-shadow: 0 0 35px rgba(192, 192, 192, 1);
-            }
-          }
 
-          @keyframes avatarGoldenPulse {
-            0%, 100% { 
-              box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
-              filter: brightness(1);
+            @keyframes avatarGoldenPulse {
+              0%, 100% { 
+                box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+                filter: brightness(1);
+              }
+              50% { 
+                box-shadow: 0 0 40px rgba(255, 215, 0, 1);
+                filter: brightness(1.2);
+              }
             }
-            50% { 
-              box-shadow: 0 0 40px rgba(255, 215, 0, 1);
-              filter: brightness(1.2);
-            }
-          }
 
-          @keyframes avatarDiamondSparkle {
-            0% { 
-              box-shadow: 0 0 30px rgba(185, 242, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
+            @keyframes avatarDiamondSparkle {
+              0% { 
+                box-shadow: 0 0 30px rgba(185, 242, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
+              }
+              25% { 
+                box-shadow: 0 0 40px rgba(185, 242, 255, 1), inset 0 0 30px rgba(255, 255, 255, 0.5);
+              }
+              50% { 
+                box-shadow: 0 0 35px rgba(255, 255, 255, 0.9), inset 0 0 25px rgba(185, 242, 255, 0.4);
+              }
+              75% { 
+                box-shadow: 0 0 45px rgba(185, 242, 255, 1), inset 0 0 35px rgba(255, 255, 255, 0.6);
+              }
+              100% { 
+                box-shadow: 0 0 30px rgba(185, 242, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
+              }
             }
-            25% { 
-              box-shadow: 0 0 40px rgba(185, 242, 255, 1), inset 0 0 30px rgba(255, 255, 255, 0.5);
-            }
-            50% { 
-              box-shadow: 0 0 35px rgba(255, 255, 255, 0.9), inset 0 0 25px rgba(185, 242, 255, 0.4);
-            }
-            75% { 
-              box-shadow: 0 0 45px rgba(185, 242, 255, 1), inset 0 0 35px rgba(255, 255, 255, 0.6);
-            }
-            100% { 
-              box-shadow: 0 0 30px rgba(185, 242, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.3);
-            }
-          }
 
-          @keyframes avatarRainbow {
-            0% { 
-              filter: hue-rotate(0deg) brightness(1);
+            @keyframes avatarRainbow {
+              0% { 
+                filter: hue-rotate(0deg) brightness(1);
+              }
+              25% { 
+                filter: hue-rotate(90deg) brightness(1.1);
+              }
+              50% { 
+                filter: hue-rotate(180deg) brightness(1.2);
+              }
+              75% { 
+                filter: hue-rotate(270deg) brightness(1.1);
+              }
+              100% { 
+                filter: hue-rotate(360deg) brightness(1);
+              }
             }
-            25% { 
-              filter: hue-rotate(90deg) brightness(1.1);
-            }
-            50% { 
-              filter: hue-rotate(180deg) brightness(1.2);
-            }
-            75% { 
-              filter: hue-rotate(270deg) brightness(1.1);
-            }
-            100% { 
-              filter: hue-rotate(360deg) brightness(1);
-            }
-          }
-
-          .avatar-frame-container {
-            position: relative;
-            display: inline-block;
-          }
-
-          .avatar-frame-particles::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
-            background-size: 10px 10px;
-            border-radius: 50%;
-            animation: particleFloat 3s ease-in-out infinite;
-            pointer-events: none;
-          }
-
-          @keyframes particleFloat {
-            0%, 100% { 
-              opacity: 0.6;
-              transform: rotate(0deg) scale(1);
-            }
-            50% { 
-              opacity: 1;
-              transform: rotate(180deg) scale(1.1);
-            }
-          }
-        `}</style>
+          `
+        }} />
       )}
-
-      <div 
-        className={cn(
-          'avatar-frame-container rounded-full overflow-hidden relative',
-          sizeClasses[size],
-          frameType === 'diamond' && 'avatar-frame-particles',
-          className
-        )}
-        style={getFrameStyles()}
-      >
-        {children}
-      </div>
-    </>
+    </div>
   );
 }

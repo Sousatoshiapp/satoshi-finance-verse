@@ -48,8 +48,8 @@ export function ProfileBannerSelector() {
 
       const bannersWithOwnership = allBanners?.map(banner => ({
         ...banner,
-        is_owned: ownedBannerIds.includes(banner.id) || banner.unlock_requirement?.type === 'default',
-        is_active: banner.id === profile.active_banner_id
+        is_owned: ownedBannerIds.includes(banner.id) || (banner.unlock_requirement && typeof banner.unlock_requirement === 'object' && 'type' in banner.unlock_requirement && (banner.unlock_requirement as any).type === 'default'),
+        is_active: false // Will be updated once we add active_banner_id to profiles
       })) || [];
 
       setBanners(bannersWithOwnership);

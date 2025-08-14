@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/shared/ui/button";
-import { Card } from "@/components/shared/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/shared/ui/card";
 import { Badge } from "@/components/shared/ui/badge";
 import { XPCard } from "@/components/shared/ui/xp-card";
 import { StreakBadge } from "@/components/shared/ui/streak-badge";
@@ -24,7 +24,7 @@ import { getLevelInfo as getStaticLevelInfo } from "@/data/levels";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
 import { useAvatarContext } from "@/contexts/AvatarContext";
 import { useLessonProgress } from "@/hooks/use-lesson-progress";
-import { Crown, Star, Shield, Camera } from "lucide-react";
+import { Crown, Star, Shield, Camera, Palette } from "lucide-react";
 import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
 
@@ -403,20 +403,37 @@ export default function Profile() {
                   }
                 </p>
               </div>
+              <Button 
+                variant={subscription.tier === 'free' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => navigate('/subscription-plans')}
+                className={subscription.tier === 'free' 
+                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white' 
+                  : ''
+                }
+              >
+                {subscription.tier === 'free' ? '⭐ Upgrade' : t('subscription.subscribe')}
+              </Button>
             </div>
-            <Button 
-              variant={subscription.tier === 'free' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => navigate('/subscription-plans')}
-              className={subscription.tier === 'free' 
-                ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white' 
-                : ''
-              }
-            >
-              {subscription.tier === 'free' ? '⭐ Upgrade' : t('subscription.subscribe')}
-            </Button>
-          </div>
-        </Card>
+          </Card>
+
+          {/* FASE 2: Avatar 2.0 Button */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Palette className="h-5 w-5" />
+                Personalização Extrema
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => navigate('/profile-customization')}
+                className="w-full"
+              >
+                Customizar Avatar & Perfil
+              </Button>
+            </CardContent>
+          </Card>
       </div>
       
       <FloatingNavbar />

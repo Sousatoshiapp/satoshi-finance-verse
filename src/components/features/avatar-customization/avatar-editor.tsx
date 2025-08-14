@@ -67,7 +67,7 @@ export function AvatarEditor() {
 
       const itemsWithOwnership = items?.map(item => ({
         ...item,
-        is_owned: ownedItemIds.includes(item.id) || item.unlock_requirement?.type === 'default'
+        is_owned: ownedItemIds.includes(item.id) || (item.unlock_requirement && typeof item.unlock_requirement === 'object' && 'type' in item.unlock_requirement && (item.unlock_requirement as any).type === 'default')
       })) || [];
 
       setAvatarItems(itemsWithOwnership);
@@ -90,7 +90,7 @@ export function AvatarEditor() {
         .single();
 
       if (customization?.avatar_data) {
-        setCurrentCustomization(customization.avatar_data as AvatarCustomization);
+        setCurrentCustomization(customization.avatar_data as any);
       }
     } catch (error) {
       console.error('Error loading customization:', error);
@@ -181,7 +181,7 @@ export function AvatarEditor() {
         .from('avatar_customizations')
         .insert({
           user_id: profile.id,
-          avatar_data: currentCustomization,
+          avatar_data: currentCustomization as any,
           is_active: true
         });
 

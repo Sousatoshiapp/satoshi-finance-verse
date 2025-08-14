@@ -10,7 +10,7 @@ import { ProfileBannerSelector } from '@/components/features/profile-customizati
 import { TitleSelector } from '@/components/features/profile-customization/title-selector';
 import { ProfileViewsCounter } from '@/components/features/profile-customization/profile-views-counter';
 
-export function ProfileCustomization() {
+export default function ProfileCustomization() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('avatar');
 
