@@ -7,10 +7,7 @@ import {
   Zap, 
   Users, 
   Sword,
-  Sparkles,
-  Heart,
-  MessageCircle,
-  Share2
+  Sparkles
 } from 'lucide-react';
 import { 
   LazyAchievementStories,
@@ -29,25 +26,6 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
   const { t } = useI18n();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState('stories');
-  const [interactions, setInteractions] = useState({
-    likes: 0,
-    comments: 0,
-    shares: 0
-  });
-
-  // Gen Z micro-interactions
-  const handleInteraction = (type: 'like' | 'comment' | 'share') => {
-    setInteractions(prev => ({
-      ...prev,
-      [type === 'like' ? 'likes' : type === 'comment' ? 'comments' : 'shares']: 
-        prev[type === 'like' ? 'likes' : type === 'comment' ? 'comments' : 'shares'] + 1
-    }));
-    
-    // Haptic feedback for mobile
-    if (isMobile && 'vibrate' in navigator) {
-      navigator.vibrate(50);
-    }
-  };
 
   const tabVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -63,11 +41,6 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
     }
   };
 
-  const iconVariants = {
-    rest: { scale: 1 },
-    hover: { scale: 1.1, rotate: 5 },
-    tap: { scale: 0.95 }
-  };
 
   return (
     <motion.div
@@ -76,7 +49,7 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
       transition={{ duration: 0.5, delay: 0.2 }}
       className={`relative ${className}`}
     >
-      {/* Gen Z Header with Sparkle Effect */}
+      {/* Social Hub Header */}
       <div className="relative mb-6">
         <motion.div 
           className="flex items-center gap-3 mb-4"
@@ -100,41 +73,12 @@ export const SocialHub = memo(({ className }: SocialHubProps) => {
             Social Hub
           </h2>
           
-          {/* Live interaction indicators */}
-          <div className="flex items-center gap-3 ml-auto">
-            <motion.button
-              variants={iconVariants}
-              initial="rest"
-              whileHover="hover"
-              whileTap="tap"
-              onClick={() => handleInteraction('like')}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Heart className="w-4 h-4" />
-              {interactions.likes}
-            </motion.button>
-            <motion.button
-              variants={iconVariants}
-              initial="rest"
-              whileHover="hover"
-              whileTap="tap"
-              onClick={() => handleInteraction('comment')}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              <MessageCircle className="w-4 h-4" />
-              {interactions.comments}
-            </motion.button>
-            <motion.button
-              variants={iconVariants}
-              initial="rest"
-              whileHover="hover"
-              whileTap="tap"
-              onClick={() => handleInteraction('share')}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Share2 className="w-4 h-4" />
-              {interactions.shares}
-            </motion.button>
+          {/* Community stats */}
+          <div className="flex items-center gap-3 ml-auto text-xs text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4" />
+              <span>1,247 online</span>
+            </div>
           </div>
         </motion.div>
         

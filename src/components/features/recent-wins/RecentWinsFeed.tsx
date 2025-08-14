@@ -48,6 +48,7 @@ export function RecentWinsFeed() {
   const [recentWins, setRecentWins] = useState<RecentWin[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'duels' | 'achievements' | 'streaks'>('all');
+  const [userLikes, setUserLikes] = useState<Set<string>>(new Set());
   const { profile } = useProfile();
 
   useEffect(() => {
