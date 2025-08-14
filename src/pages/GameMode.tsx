@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent } from "@/components/shared/ui/card";
-import { ArrowLeft, Settings, User, Users } from "lucide-react";
+import { ArrowLeft, Settings, User, Users, Sword } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
@@ -35,7 +35,7 @@ export default function GameMode() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleModeSelect = (mode: 'solo' | 'duelo' | 'torneio') => {
+  const handleModeSelect = (mode: 'solo' | 'duelo' | 'torneio' | 'battle-royale') => {
     console.log('🎮 Modo selecionado:', mode);
     setSelectedMode(mode);
     setTimeout(() => {
@@ -51,6 +51,10 @@ export default function GameMode() {
         case 'torneio':
           console.log('🏆 Navegando para torneios...');
           navigate('/tournaments');
+          break;
+        case 'battle-royale':
+          console.log('⚔️ Navegando para Battle Royale...');
+          navigate('/battle-royale');
           break;
       }
     }, 300);
@@ -167,6 +171,25 @@ export default function GameMode() {
                     <span className="text-xs text-muted-foreground text-center">Torneios</span>
                     <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
                       Soon™
+                    </span>
+                  </div>
+                </button>
+
+                {/* Battle Royale */}
+                <button
+                  onClick={() => handleModeSelect('battle-royale')}
+                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card ${
+                    selectedMode === 'battle-royale'
+                      ? 'casino-selected border-red-500 bg-red-500/20 text-white'
+                      : 'border-red-500/30 bg-black/20 text-gray-300 casino-hover hover:border-red-500/60 hover:bg-red-500/10'
+                  }`}
+                  disabled={selectedMode !== null}
+                >
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
+                    <Sword className="h-3 w-3 text-white" />
+                    <span className="text-xs font-medium text-center">Battle Royale</span>
+                    <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-red-400 to-orange-400 text-white rounded-full font-bold animate-pulse">
+                      EPIC
                     </span>
                   </div>
                 </button>
