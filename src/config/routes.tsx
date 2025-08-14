@@ -170,6 +170,14 @@ export const routeConfigs: RouteConfig[] = [
 
   // FASE 1: Social Explosion - New social routes
   {
+    path: "/social",
+    component: "SocialHub",
+    title: "Social Hub",
+    description: "Central hub for all social features",
+    category: "social",
+    requiresAuth: true
+  },
+  {
     path: "/stories",
     component: "AchievementStoriesPage",
     title: "Achievement Stories",

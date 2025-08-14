@@ -18,6 +18,7 @@ const GameMode = lazy(() => import("@/pages/GameMode"));
 const NewFindOpponent = lazy(() => import("@/pages/NewFindOpponent"));
 
 // FASE 1: Social Explosion - Lazy load social pages
+const SocialHub = lazy(() => import("@/pages/social/SocialHub"));
 const AchievementStoriesPage = lazy(() => import("@/pages/social/AchievementStoriesPage"));
 const BattleRoyalePage = lazy(() => import("@/pages/social/BattleRoyalePage"));
 const CommunityFeedPage = lazy(() => import("@/pages/social/CommunityFeedPage"));
@@ -39,6 +40,7 @@ const componentMap = {
   GameMode,
   NewFindOpponent,
   // FASE 1: Social pages
+  SocialHub,
   AchievementStoriesPage,
   BattleRoyalePage,
   CommunityFeedPage,
