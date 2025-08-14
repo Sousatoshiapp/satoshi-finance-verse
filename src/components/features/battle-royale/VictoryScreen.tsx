@@ -19,7 +19,7 @@ export function VictoryScreen({ finalRankings, myParticipant, prizePool }: Victo
       className="text-center space-y-6"
     >
       <Crown className="w-24 h-24 mx-auto text-warning" />
-      <h2 className="text-3xl font-bold">Vitória!</h2>
+      <h2 className="text-3xl font-bold">👑 Vitória!</h2>
       <p className="text-xl">🏆 {winner?.profiles?.nickname} é o campeão!</p>
       <div className="bg-muted/30 p-4 rounded-lg">
         <p className="text-lg">Prêmio: <span className="font-bold text-primary">{prizePool} BTZ</span></p>

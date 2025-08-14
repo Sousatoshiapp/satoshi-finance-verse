@@ -294,7 +294,15 @@ export const routeConfigs: RouteConfig[] = [
     path: "/battle-royale",
     component: "BattleRoyalePage", 
     title: "Battle Royale",
-    description: "Solo and squad battle royale modes",
+    description: "Battle Royale com até 100 jogadores",
+    category: "social",
+    requiresAuth: true
+  },
+  {
+    path: "/battle-royale/arena",
+    component: "BattleRoyaleArenaPage",
+    title: "Arena Battle Royale",
+    description: "Arena de batalha em tempo real",
     category: "social",
     requiresAuth: true
   },

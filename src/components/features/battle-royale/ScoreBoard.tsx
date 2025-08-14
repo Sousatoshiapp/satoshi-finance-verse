@@ -15,7 +15,7 @@ export function ScoreBoard({ participants, myParticipantId }: ScoreBoardProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Trophy className="w-5 h-5 text-warning" />
-        <h3 className="font-semibold text-lg">Ranking</h3>
+        <h3 className="font-semibold text-lg">🏆 Ranking</h3>
       </div>
       <div className="space-y-2">
         {sortedParticipants.slice(0, 10).map((participant, index) => (

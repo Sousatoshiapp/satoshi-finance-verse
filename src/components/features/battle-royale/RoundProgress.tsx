@@ -12,7 +12,7 @@ export function RoundProgress({ currentRound, totalRounds }: RoundProgressProps)
   return (
     <div className="text-center space-y-2">
       <div className="text-sm text-muted-foreground">
-        Rodada {currentRound} de {totalRounds}
+        ⚔️ Rodada {currentRound} de {totalRounds}
       </div>
       <div className="w-32 h-2 bg-muted/50 rounded-full overflow-hidden">
         <motion.div

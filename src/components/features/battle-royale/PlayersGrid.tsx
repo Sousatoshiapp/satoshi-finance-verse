@@ -13,7 +13,7 @@ interface PlayersGridProps {
 export function PlayersGrid({ participants, myParticipantId }: PlayersGridProps) {
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold text-lg">Jogadores ({participants.length})</h3>
+      <h3 className="font-semibold text-lg">🎮 Jogadores ({participants.length})</h3>
       <div className="space-y-2 max-h-96 overflow-y-auto">
         {participants.map((participant) => (
           <motion.div

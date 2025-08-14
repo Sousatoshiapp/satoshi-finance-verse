@@ -23,6 +23,7 @@ const Social = lazy(() => import("@/pages/Social"));
 const SocialHub = lazy(() => import("@/pages/social/SocialHub"));
 const AchievementStoriesPage = lazy(() => import("@/pages/social/AchievementStoriesPage"));
 const BattleRoyalePage = lazy(() => import("@/pages/social/BattleRoyalePage"));
+const BattleRoyaleArenaPage = lazy(() => import("@/pages/social/BattleRoyaleArenaPage"));
 const CommunityFeedPage = lazy(() => import("@/pages/social/CommunityFeedPage"));
 const TournamentsPage = lazy(() => import("@/pages/social/TournamentsPage"));
 
@@ -65,6 +66,7 @@ const componentMap = {
   SocialHub,
   AchievementStoriesPage,
   BattleRoyalePage,
+  BattleRoyaleArenaPage,
   CommunityFeedPage,
   TournamentsPage,
   // FASE 2: Avatar 2.0 & Profile Flexing

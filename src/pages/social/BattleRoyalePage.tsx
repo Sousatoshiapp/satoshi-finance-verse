@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Sword, Users, Zap } from 'lucide-react';
 import { Button } from '@/components/shared/ui/button';
-import { BattleRoyaleMode } from '@/components/features/battle-royale/BattleRoyaleMode';
+import { BattleRoyaleModeSelector } from '@/components/features/battle-royale/BattleRoyaleModeSelector';
 import { FloatingNavbar } from '@/components/shared/floating-navbar';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/hooks/use-i18n';
@@ -29,7 +29,7 @@ export default function BattleRoyalePage() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            {!isMobile && 'Back'}
+            {!isMobile && 'Voltar'}
           </Button>
           
           <motion.div 
@@ -53,44 +53,6 @@ export default function BattleRoyalePage() {
           <div className="w-16" /> {/* Spacer */}
         </div>
 
-        {/* Battle Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid grid-cols-3 gap-4 mb-8"
-        >
-          <motion.div 
-            className="text-center p-3 bg-muted/50 rounded-lg backdrop-blur-sm"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Zap className="w-5 h-5 text-warning mx-auto mb-1" />
-            <div className="text-sm font-semibold">Solo</div>
-            <div className="text-xs text-muted-foreground">1v1v1v1</div>
-          </motion.div>
-          
-          <motion.div 
-            className="text-center p-3 bg-muted/50 rounded-lg backdrop-blur-sm"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Users className="w-5 h-5 text-info mx-auto mb-1" />
-            <div className="text-sm font-semibold">Squad</div>
-            <div className="text-xs text-muted-foreground">2v2v2v2</div>
-          </motion.div>
-          
-          <motion.div 
-            className="text-center p-3 bg-muted/50 rounded-lg backdrop-blur-sm"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Sword className="w-5 h-5 text-destructive mx-auto mb-1" />
-            <div className="text-sm font-semibold">Chaos</div>
-            <div className="text-xs text-muted-foreground">Free for all</div>
-          </motion.div>
-        </motion.div>
-
         {/* Description */}
         <motion.p 
           initial={{ opacity: 0 }}
@@ -98,18 +60,18 @@ export default function BattleRoyalePage() {
           transition={{ delay: 0.3 }}
           className="text-muted-foreground text-center max-w-md mx-auto mb-8"
         >
-          Last person standing wins! Answer questions correctly to eliminate opponents and survive the chaos.
+          Último sobrevivente ganha tudo! Responda questões corretamente para eliminar oponentes e sobreviver ao caos.
         </motion.p>
       </motion.div>
 
-      {/* Full-screen Battle Royale Component */}
+      {/* Battle Royale Mode Selector */}
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.4 }}
         className="px-4"
       >
-        <BattleRoyaleMode />
+        <BattleRoyaleModeSelector />
       </motion.div>
 
       {/* Bottom Navigation */}

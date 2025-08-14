@@ -26,7 +26,7 @@ export function ResultsPhase({ result, myScore }: ResultsPhaseProps) {
       
       <div>
         <h2 className="text-2xl font-bold mb-2">
-          {result.is_correct ? 'Correto!' : 'Incorreto!'}
+          {result.is_correct ? '✅ Correto!' : '❌ Incorreto!'}
         </h2>
         <p className="text-muted-foreground">
           Resposta correta: {result.correct_answer}
