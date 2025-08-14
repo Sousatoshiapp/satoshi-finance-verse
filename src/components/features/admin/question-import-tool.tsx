@@ -348,7 +348,6 @@ export function QuestionImportTool() {
                 <SelectValue placeholder="Selecione um módulo (opcional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Nenhum módulo</SelectItem>
                 {modules.map(module => (
                   <SelectItem key={module.id} value={module.id}>
                     {module.icon} {module.name}
