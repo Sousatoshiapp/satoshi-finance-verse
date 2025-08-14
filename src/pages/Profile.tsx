@@ -23,6 +23,7 @@ import { useI18n } from "@/hooks/use-i18n";
 import { getLevelInfo as getStaticLevelInfo } from "@/data/levels";
 import { useProgressionSystem } from "@/hooks/use-progression-system";
 import { useAvatarContext } from "@/contexts/AvatarContext";
+import { useLessonProgress } from "@/hooks/use-lesson-progress";
 import { Crown, Star, Shield, Camera } from "lucide-react";
 import { ProfileStyleLoader } from "@/components/shared/ui/profile-style-loader";
 
@@ -33,7 +34,6 @@ interface UserProfile {
   level: number;
   xp: number;
   streak: number;
-  completed_lessons: number;
   points: number;
   profile_image_url?: string;
   current_avatar_id?: string;
@@ -63,6 +63,7 @@ export default function Profile() {
   const { subscription } = useSubscription();
   const { t } = useI18n();
   const { getNextLevelXP } = useProgressionSystem();
+  const { completedLessonsCount, progressGoal } = useLessonProgress();
   
 
   useEffect(() => {
@@ -79,9 +80,15 @@ export default function Profile() {
         const { data: supabaseProfile } = await supabase
           .from('profiles')
           .select(`
-            *,
+            id,
+            nickname,
+            level,
+            xp,
+            streak,
+            points,
             profile_image_url,
             current_avatar_id,
+            subscription_tier,
             avatars!current_avatar_id (
               id, name, image_url
             )
@@ -104,7 +111,6 @@ export default function Profile() {
             level: localUser.level || 1,
             xp: localUser.xp || 0,
             streak: localUser.streak || 0,
-            completed_lessons: localUser.completedLessons || 0,
             points: localUser.coins || 0,
             profile_image_url: localUser.profileImageUrl,
             avatar_id: localUser.avatarId
@@ -326,7 +332,7 @@ export default function Profile() {
         {/* Stats Grid */}
         <StatsGrid
           xp={user.xp}
-          completedLessons={user.completed_lessons}
+          completedLessons={completedLessonsCount}
           streak={user.streak}
           points={user.points}
         />
@@ -340,15 +346,15 @@ export default function Profile() {
           />
           
           <Card className="p-4 md:p-6">
-            <h3 className="font-bold text-foreground mb-4">{t('levels.progress')}</h3>
+            <h3 className="font-bold text-foreground mb-4">Progresso Geral</h3>
             <ProgressBar
-              value={user.completed_lessons}
-              max={20}
+              value={completedLessonsCount}
+              max={progressGoal}
               showLabel
               className="mb-3"
             />
             <p className="text-sm text-muted-foreground">
-              {user.completed_lessons} {t('profile.stats.of')} 20 {t('profile.stats.lessonsCompleted')}
+              {completedLessonsCount} de {progressGoal} lições diárias completas
             </p>
           </Card>
         </div>
