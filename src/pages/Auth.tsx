@@ -321,7 +321,7 @@ export default function Auth() {
           {/* Enhanced Auth Card */}
           <Card className="space-card border-primary/30 shadow-glow relative overflow-hidden" style={{height: '80%'}}>
             {/* Card Header with Enhanced Styling */}
-            <CardHeader className="text-center px-4 py-3 relative">
+            <CardHeader className="text-center px-4 py-2 relative">
               <CardTitle className="text-lg font-bold text-gradient mb-1">
                 {isLogin ? t('auth.title.login') : t('auth.title.signup')}
               </CardTitle>
@@ -333,7 +333,7 @@ export default function Auth() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="px-4 pb-3">
+            <CardContent className="px-4 pb-2">
               {showForgotPassword ? (
                 // Forgot Password Form
                 <form onSubmit={handleForgotPassword} className="space-y-4">
