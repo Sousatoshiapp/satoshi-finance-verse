@@ -36,78 +36,42 @@ export const BetConfirmDialog: React.FC<BetConfirmDialogProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="casino-glass-card border-casino-gold/30 max-w-md">
+      <DialogContent className="casino-glass-card border-casino-gold/30 max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-casino-gold flex items-center gap-2">
+          <DialogTitle className="text-casino-gold flex items-center gap-2 text-lg">
             <Trophy className="w-5 h-5" />
-            Confirmar Entrada na Batalha
+            Confirmar Entrada
           </DialogTitle>
-          <DialogDescription>
-            Confirme os detalhes da sua entrada no Battle Royale
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Bet Summary */}
-          <Card className="p-4 bg-background/50">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Modo:</span>
-                <span className="font-bold text-casino-gold capitalize">{mode}</span>
-              </div>
-              
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Entry Fee:</span>
-                <div className="flex items-center gap-1">
-                  <Coins className="w-4 h-4 text-casino-gold" />
-                  <span className="font-bold text-casino-gold">{entryFee} BTZ</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Seu saldo atual:</span>
-                <span className="font-bold">{userBTZ.toFixed(1)} BTZ</span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Saldo após entrada:</span>
-                <span className="font-bold text-casino-purple">{remainingBTZ.toFixed(1)} BTZ</span>
-              </div>
+          {/* Entry Fee Highlight */}
+          <div className="text-center p-4 bg-casino-gold/10 border border-casino-gold/30 rounded-lg">
+            <div className="text-sm text-muted-foreground mb-1">Valor da Aposta</div>
+            <div className="flex items-center justify-center gap-2">
+              <Coins className="w-6 h-6 text-casino-gold" />
+              <span className="text-3xl font-bold text-casino-gold">{entryFee}</span>
+              <span className="text-lg text-casino-gold">BTZ</span>
             </div>
-          </Card>
+            <div className="text-sm text-muted-foreground mt-1 capitalize">Modo: {mode}</div>
+          </div>
 
-          {/* Prize Info */}
-          <Card className="p-4 bg-casino-gold/10 border-casino-gold/30">
-            <div className="text-center space-y-2">
-              <Trophy className="w-8 h-8 text-casino-gold mx-auto" />
-              <h3 className="font-bold text-casino-gold">Prêmios Possíveis</h3>
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                <div>
-                  <div className="font-bold text-casino-gold">1º Lugar</div>
-                  <div className="text-muted-foreground">70% do prize pool</div>
-                </div>
-                <div>
-                  <div className="font-bold text-casino-purple">2º Lugar</div>
-                  <div className="text-muted-foreground">20% do prize pool</div>
-                </div>
-                <div>
-                  <div className="font-bold text-green-400">3º Lugar</div>
-                  <div className="text-muted-foreground">10% do prize pool</div>
-                </div>
-              </div>
+          {/* Balance Info */}
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Saldo atual:</span>
+              <span className="font-medium">{userBTZ.toFixed(1)} BTZ</span>
             </div>
-          </Card>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Saldo após entrada:</span>
+              <span className="font-medium text-casino-purple">{remainingBTZ.toFixed(1)} BTZ</span>
+            </div>
+          </div>
 
-          {/* Warning */}
-          <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-            <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-            <div className="text-sm">
-              <p className="font-medium text-amber-500">Importante:</p>
-              <p className="text-muted-foreground">
-                O valor da aposta será debitado imediatamente. Se a batalha for cancelada 
-                por falta de jogadores, você será reembolsado automaticamente.
-              </p>
-            </div>
+          {/* Compact Warning */}
+          <div className="text-xs text-muted-foreground text-center p-2 bg-amber-500/5 border border-amber-500/20 rounded">
+            <AlertCircle className="w-4 h-4 text-amber-500 mx-auto mb-1" />
+            Valor debitado imediatamente. Reembolso automático se cancelado.
           </div>
         </div>
 
@@ -122,7 +86,7 @@ export const BetConfirmDialog: React.FC<BetConfirmDialogProps> = ({
           <Button 
             onClick={onConfirm}
             disabled={isLoading || remainingBTZ < 0}
-            className="bg-casino-gold hover:bg-casino-gold/90 text-casino-dark"
+            className="bg-[#adff2f] hover:bg-[#adff2f]/90 text-black"
           >
             {isLoading ? (
               <motion.div
