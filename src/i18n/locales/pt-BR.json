@@ -973,7 +973,7 @@
       "resendConfirmation": "Reenviar email de confirmação",
       "socialSeparator": "ou continue com",
       "toggleLogin": "Já é cidadão? Faça login",
-      "toggleSignup": "Novo na cidade? Crie sua conta"
+      "toggleSignup": "Novo na area? Crie sua conta"
     },
     "messages": {
       "loginError": "Erro de Login",

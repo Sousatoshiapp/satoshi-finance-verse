@@ -308,33 +308,25 @@ export default function Auth() {
             {t('auth.buttons.back')}
           </Button>
 
-          {/* Logo and Branding */}
-          <div className="text-center mb-6">
-            <div className="flex justify-center mb-3">
+          {/* Logo */}
+          <div className="text-center mb-4">
+            <div className="flex justify-center mb-2">
               <img 
                 src="/lovable-uploads/3601a8a7-21e2-403a-aeea-326289b3c5b5.png" 
                 alt="Logo" 
-                className="w-16 h-16 object-contain animate-pulse-glow"
+                className="w-12 h-12 object-contain animate-pulse-glow"
               />
-            </div>
-            <div className="flex justify-center space-x-2">
-              <span className="px-2 py-1 text-xs bg-primary/20 text-primary rounded-full border border-primary/30">
-                Neural System
-              </span>
-              <span className="px-2 py-1 text-xs bg-accent/20 text-accent-foreground rounded-full border border-accent/30">
-                8 Districts
-              </span>
             </div>
           </div>
 
           {/* Enhanced Auth Card */}
-          <Card className="space-card border-primary/30 shadow-glow relative overflow-hidden">
+          <Card className="space-card border-primary/30 shadow-glow relative overflow-hidden" style={{height: '80%'}}>
             {/* Card Header with Enhanced Styling */}
-            <CardHeader className="text-center px-4 py-4 relative">
-              <CardTitle className="text-xl font-bold text-gradient mb-1 animate-pulse-glow">
+            <CardHeader className="text-center px-4 py-3 relative">
+              <CardTitle className="text-lg font-bold text-gradient mb-1 animate-pulse-glow">
                 {isLogin ? t('auth.title.login') : t('auth.title.signup')}
               </CardTitle>
-              <CardDescription className="text-muted-foreground text-sm">
+              <CardDescription className="text-muted-foreground text-xs">
                 {isLogin 
                   ? t('auth.description.login')
                   : t('auth.description.signup')
@@ -342,7 +334,7 @@ export default function Auth() {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="px-4 pb-4">
+            <CardContent className="px-4 pb-3">
               {showForgotPassword ? (
                 // Forgot Password Form
                 <form onSubmit={handleForgotPassword} className="space-y-4">
@@ -471,7 +463,7 @@ export default function Auth() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full gradient-primary text-background font-bold py-2.5 game-button hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-primary text-primary-foreground font-bold py-2 hover:bg-primary/90 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-md"
                 >
                   {loading ? (
                     <div className="flex items-center space-x-2">
