@@ -233,11 +233,11 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
       { nickname: 'CriptoMestre', avatar: '/avatars/code-assassin.jpg', level: 28 },
       { nickname: 'BitcoinNinja', avatar: '/avatars/data-miner.jpg', level: 35 },
       { nickname: 'DataMiner', avatar: '/avatars/finance-hacker.jpg', level: 22 },
-      { nickname: 'CodeAssassin', avatar: '/avatars/crypto-analyst.jpg', level: 41 },
-      { nickname: 'FinanceHacker', avatar: '/avatars/crypto-shaman.jpg', level: 30 },
-      { nickname: 'BlockExplorer', avatar: '/avatars/blockchain-guardian.jpg', level: 26 },
-      { nickname: 'CryptoAnalyst', avatar: '/avatars/market-prophet.jpg', level: 33 },
-      { nickname: 'TradingBot', avatar: '/avatars/ghost-trader.jpg', level: 37 },
+      { nickname: 'CodeAssassin', avatar: '/avatars/the-satoshi.jpg', level: 41 },
+      { nickname: 'FinanceHacker', avatar: '/avatars/crypto-analyst.jpg', level: 30 },
+      { nickname: 'BlockExplorer', avatar: '/avatars/block-explorer.jpg', level: 26 },
+      { nickname: 'CryptoAnalyst', avatar: '/avatars/trading-master.jpg', level: 33 },
+      { nickname: 'TradingBot', avatar: '/avatars/defi-pioneer.jpg', level: 37 },
     ];
     
     return Array.from({ length: numWins }, (_, index) => {

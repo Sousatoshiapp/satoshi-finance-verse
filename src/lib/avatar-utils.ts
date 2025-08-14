@@ -1,5 +1,4 @@
 // Avatar utility functions
-import { getAvatarImage } from '@/utils/avatar-images';
 export interface AvatarData {
   profile_image_url?: string | null;
   current_avatar_id?: string | null;
@@ -46,22 +45,17 @@ export function resolveAvatarImage(data: AvatarData, nickname: string = 'U'): Re
   
   // Priority 2: Selected game avatar
   if (data.avatars?.image_url) {
-    // Se for um path /avatars/, resolve para import correto
-    const resolvedUrl = data.avatars.image_url.startsWith('/avatars/') 
-      ? getAvatarImage(data.avatars.image_url)
-      : data.avatars.image_url;
-    
     return {
-      imageUrl: resolvedUrl,
+      imageUrl: data.avatars.image_url,
       fallbackText,
       source: 'avatar'
     };
   }
   
   // Priority 3: UNIVERSAL DEFAULT - sempre usar o mesmo avatar para todos os usuários sem current_avatar_id
-  // Usando 'the-satoshi' como padrão universal - resolve para import correto
+  // Usando 'the-satoshi' como padrão universal
   return {
-    imageUrl: getAvatarImage('/avatars/the-satoshi.jpg'),
+    imageUrl: '/avatars/the-satoshi.jpg',
     fallbackText,
     source: 'default'
   };

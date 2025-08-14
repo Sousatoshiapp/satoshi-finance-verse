@@ -201,11 +201,11 @@ export function useAchievementStories() {
       { nickname: 'CriptoMestre', avatar: '/avatars/code-assassin.jpg' },
       { nickname: 'BitcoinNinja', avatar: '/avatars/data-miner.jpg' },
       { nickname: 'DataMiner', avatar: '/avatars/finance-hacker.jpg' },
-      { nickname: 'CodeAssassin', avatar: '/avatars/crypto-analyst.jpg' },
-      { nickname: 'FinanceHacker', avatar: '/avatars/crypto-shaman.jpg' },
-      { nickname: 'BlockExplorer', avatar: '/avatars/blockchain-guardian.jpg' },
-      { nickname: 'CryptoAnalyst', avatar: '/avatars/market-prophet.jpg' },
-      { nickname: 'TradingBot', avatar: '/avatars/ghost-trader.jpg' },
+      { nickname: 'CodeAssassin', avatar: '/avatars/the-satoshi.jpg' },
+      { nickname: 'FinanceHacker', avatar: '/avatars/crypto-analyst.jpg' },
+      { nickname: 'BlockExplorer', avatar: '/avatars/block-explorer.jpg' },
+      { nickname: 'CryptoAnalyst', avatar: '/avatars/trading-master.jpg' },
+      { nickname: 'TradingBot', avatar: '/avatars/defi-pioneer.jpg' },
     ];
     
     return Array.from({ length: numStories }, (_, index) => {
