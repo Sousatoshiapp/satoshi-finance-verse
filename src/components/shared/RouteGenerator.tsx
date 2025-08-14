@@ -57,6 +57,10 @@ const GuildWars = lazy(() => import("@/pages/GuildWars"));
 const ViralChallenges = lazy(() => import("@/pages/ViralChallenges"));
 const MemeEconomy = lazy(() => import("@/pages/MemeEconomy"));
 
+// Admin pages
+const Admin = lazy(() => import("@/pages/AdminDashboard"));
+const RealtimeAnalyticsPage = lazy(() => import("@/pages/admin/RealtimeAnalyticsPage"));
+
 // Component mapping
 const componentMap = {
   Welcome,
@@ -104,6 +108,9 @@ const componentMap = {
   GuildWars,
   ViralChallenges,
   MemeEconomy,
+  // Admin pages
+  Admin,
+  RealtimeAnalyticsPage,
 };
 
 export function generateRoutes() {

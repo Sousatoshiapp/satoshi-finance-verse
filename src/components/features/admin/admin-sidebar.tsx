@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, DollarSign, Trophy, MessageSquare, 
   Settings, HelpCircle, Bot, Gamepad2, BarChart3, Database,
   Gift, Calendar, Shield, FileText, Zap, Star, Crown,
-  ChevronDown, ChevronRight, LogOut, Building2
+  ChevronDown, ChevronRight, LogOut, Building2, Activity
 } from "lucide-react";
 import { Button } from "@/components/shared/ui/button";
 import { cn } from "@/lib/utils";
@@ -101,6 +101,7 @@ const navigation: NavItem[] = [
     title: "Analytics Avançados",
     icon: BarChart3,
     children: [
+      { title: "Real-Time Analytics", href: "/admin/analytics/realtime", icon: Activity },
       { title: "Funil de Conversão", href: "/admin/analytics/funnel", icon: BarChart3 },
       { title: "Retenção", href: "/admin/analytics/retention", icon: BarChart3 },
       { title: "Cohort Analysis", href: "/admin/analytics/cohort", icon: BarChart3 },

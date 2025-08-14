@@ -378,6 +378,15 @@ export const routeConfigs: RouteConfig[] = [
     category: "admin",
     requiresAuth: true,
     requiresAdmin: true
+  },
+  {
+    path: "/admin/analytics/realtime",
+    component: "RealtimeAnalyticsPage",
+    title: "Real-Time Analytics",
+    description: "Advanced real-time analytics dashboard",
+    category: "admin",
+    requiresAuth: true,
+    requiresAdmin: true
   }
 ];
 
