@@ -164,9 +164,14 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
     loadRecentWins();
   }, [filter]);
 
-  // Generate simulated bot wins
+  // Generate simulated bot wins usando dados reais dos bots
   const generateBotWins = (bots: any[], realWinsCount: number, currentFilter: string): RecentWin[] => {
-    // SEMPRE gerar pelo menos 8 vitórias de bots
+    // Se não há bots reais, não gerar vitórias fictícias
+    if (!bots || bots.length === 0) {
+      return [];
+    }
+    
+    // SEMPRE gerar pelo menos 8 vitórias de bots usando dados reais
     const winTemplates = {
       all: [
         { type: 'duel_victory' as const, data: { opponent_nickname: 'CryptoMaster', score: 850, prize_amount: 150 } },
@@ -200,20 +205,8 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
 
     const templates = winTemplates[currentFilter] || winTemplates.all;
     
-    // Use bots reais ou crie bots fictícios se necessário
-    const availableBots = bots.length > 0 ? bots : Array.from({ length: 10 }, (_, i) => ({
-      id: `fake-bot-${i}`,
-      bot_id: `fake-bot-id-${i}`,
-      bot_profile: {
-        nickname: [`CryptoTrader${i + 1}`, `BitcoinExpert${i + 1}`, `SatoshiLearner${i + 1}`, `BlockchainWiz${i + 1}`, `DeFiMaster${i + 1}`, `CryptoSage${i + 1}`][Math.floor(Math.random() * 6)],
-        level: Math.floor(Math.random() * 50) + 8,
-        points: Math.floor(Math.random() * 5000) + 300,
-        current_avatar_id: `avatar-${i + 1}`,
-        avatars: {
-          image_url: `/avatars/avatar_${(i % 8) + 1}.jpg`
-        }
-      }
-    }));
+    // Usar apenas bots reais do banco de dados
+    const availableBots = bots;
     
     return Array.from({ length: Math.max(8, 15 - realWinsCount) }, (_, index) => {
       const bot = availableBots[index % availableBots.length];
@@ -231,7 +224,7 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
           nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
           level: bot.bot_profile?.level || Math.floor(Math.random() * 40) + 10,
           current_avatar_id: bot.bot_profile?.current_avatar_id,
-          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : { image_url: `/avatars/avatar_${(index % 8) + 1}.jpg` }
+          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : null
         },
         likes: Math.floor(Math.random() * 25) + 3,
         comments: Math.floor(Math.random() * 8) + 1
