@@ -25,7 +25,7 @@ export function useBotPresenceSimulation() {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
-  // Buscar bots reais do banco de dados
+  // Buscar bots reais do banco de dados com fallback robusto
   const fetchOnlineBots = useCallback(async () => {
     if (loading) return; // Prevent concurrent calls
     
@@ -52,14 +52,11 @@ export function useBotPresenceSimulation() {
 
       if (profileError) throw profileError;
 
-      if (profiles && profiles.length > 0) {
-        // Simular presença online para alguns bots
-        const activeBotsCount = Math.min(Math.floor(profiles.length * 0.6), 12);
-        const shuffledProfiles = [...profiles].sort(() => Math.random() - 0.5);
-        const activeBots = shuffledProfiles.slice(0, activeBotsCount);
+      let finalBots: BotPresence[] = [];
 
-        // Mapear bots com dados reais
-        const botsWithProfiles = activeBots.map((profile, index) => ({
+      if (profiles && profiles.length > 0) {
+        // SEMPRE retornar TODOS os bots disponíveis (não limitar por "presença online")
+        const botsWithProfiles = profiles.map((profile, index) => ({
           id: `presence_${profile.id}`,
           bot_id: profile.id,
           personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
@@ -79,15 +76,61 @@ export function useBotPresenceSimulation() {
           }
         }));
 
-        setOnlineBots(botsWithProfiles as BotPresence[]);
-      } else {
-        setOnlineBots([]);
+        finalBots = botsWithProfiles as BotPresence[];
       }
 
+      // Fallback: Se não há bots suficientes, criar alguns estáticos com avatares reais
+      if (finalBots.length < 8) {
+        const fallbackBots = Array.from({ length: 8 - finalBots.length }, (_, index) => ({
+          id: `fallback_bot_${index}`,
+          bot_id: `fallback_${index}`,
+          personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
+          is_online: true,
+          online_probability: 0.8,
+          peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
+          last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+          bot_profile: {
+            nickname: ['CriptoMestre', 'BitcoinNinja', 'DataMiner', 'CodeAssassin', 'FinanceHacker', 'BlockExplorer', 'CryptoAnalyst', 'TradingBot'][index] || `CryptoBot${index}`,
+            level: 15 + Math.floor(Math.random() * 25),
+            profile_image_url: null,
+            points: 500 + Math.floor(Math.random() * 3000),
+            avatars: {
+              name: ['Code Assassin', 'Data Miner', 'Finance Hacker', 'The Satoshi', 'Crypto Analyst', 'Block Explorer', 'Trading Master', 'DeFi Pioneer'][index] || 'Crypto Explorer',
+              image_url: ['/avatars/code-assassin.jpg', '/avatars/data-miner.jpg', '/avatars/finance-hacker.jpg', '/avatars/the-satoshi.jpg', '/avatars/crypto-analyst.jpg', '/avatars/block-explorer.jpg', '/avatars/trading-master.jpg', '/avatars/defi-pioneer.jpg'][index] || '/avatars/the-satoshi.jpg'
+            }
+          }
+        }));
+
+        finalBots = [...finalBots, ...fallbackBots];
+      }
+
+      setOnlineBots(finalBots);
       setLastUpdate(new Date());
     } catch (error) {
       console.error('Erro ao buscar usuários online:', error);
-      setOnlineBots([]);
+      
+      // Fallback completo em caso de erro - garantir que sempre tenha bots
+      const emergencyBots: BotPresence[] = Array.from({ length: 10 }, (_, index) => ({
+        id: `emergency_bot_${index}`,
+        bot_id: `emergency_${index}`,
+        personality_type: ['casual', 'competitive', 'strategic', 'social'][index % 4],
+        is_online: true,
+        online_probability: 0.7,
+        peak_hours: [9, 10, 11, 14, 15, 16, 19, 20, 21],
+        last_activity_at: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+        bot_profile: {
+          nickname: ['CriptoMestre', 'BitcoinNinja', 'DataMiner', 'CodeAssassin', 'FinanceHacker', 'BlockExplorer', 'CryptoAnalyst', 'TradingBot', 'DeFiExpert', 'SatoshiFan'][index],
+          level: 10 + Math.floor(Math.random() * 30),
+          profile_image_url: null,
+          points: 300 + Math.floor(Math.random() * 2500),
+          avatars: {
+            name: ['Code Assassin', 'Data Miner', 'Finance Hacker', 'The Satoshi', 'Crypto Analyst', 'Block Explorer', 'Trading Master', 'DeFi Pioneer', 'Bitcoin Pro', 'Satoshi Fan'][index],
+            image_url: ['/avatars/code-assassin.jpg', '/avatars/data-miner.jpg', '/avatars/finance-hacker.jpg', '/avatars/the-satoshi.jpg', '/avatars/crypto-analyst.jpg', '/avatars/block-explorer.jpg', '/avatars/trading-master.jpg', '/avatars/defi-pioneer.jpg', '/avatars/bitcoin-pro.jpg', '/avatars/satoshi-fan.jpg'][index] || '/avatars/the-satoshi.jpg'
+          }
+        }
+      }));
+      
+      setOnlineBots(emergencyBots);
     } finally {
       setLoading(false);
     }

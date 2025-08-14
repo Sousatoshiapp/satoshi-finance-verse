@@ -164,14 +164,8 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
     loadRecentWins();
   }, [filter]);
 
-  // Generate simulated bot wins usando dados reais dos bots
+  // Generate simulated bot wins com fallback robusto
   const generateBotWins = (bots: any[], realWinsCount: number, currentFilter: string): RecentWin[] => {
-    // Se não há bots reais, não gerar vitórias fictícias
-    if (!bots || bots.length === 0) {
-      return [];
-    }
-    
-    // SEMPRE gerar pelo menos 8 vitórias de bots usando dados reais
     const winTemplates = {
       all: [
         { type: 'duel_victory' as const, data: { opponent_nickname: 'CryptoMaster', score: 850, prize_amount: 150 } },
@@ -205,26 +199,64 @@ export function useRecentWins(filter: 'all' | 'duels' | 'achievements' | 'streak
 
     const templates = winTemplates[currentFilter] || winTemplates.all;
     
-    // Usar apenas bots reais do banco de dados
-    const availableBots = bots;
+    // SEMPRE gerar pelo menos 8 vitórias, com ou sem bots carregados
+    const numWins = Math.max(8, 15 - realWinsCount);
     
-    return Array.from({ length: Math.max(8, 15 - realWinsCount) }, (_, index) => {
-      const bot = availableBots[index % availableBots.length];
+    // Se há bots carregados, usar dados reais
+    if (bots && bots.length > 0) {
+      return Array.from({ length: numWins }, (_, index) => {
+        const bot = bots[index % bots.length];
+        const template = templates[index % templates.length];
+        const now = new Date();
+        const createdAt = new Date(now.getTime() - Math.random() * 8 * 60 * 60 * 1000);
+        
+        return {
+          id: `bot-win-${bot.id || index}-${Date.now()}-${index}`,
+          user_id: bot.bot_id || `real-bot-${index}`,
+          win_type: template.type,
+          win_data: template.data,
+          created_at: createdAt.toISOString(),
+          user: {
+            nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
+            level: bot.bot_profile?.level || Math.floor(Math.random() * 40) + 10,
+            current_avatar_id: bot.bot_profile?.current_avatar_id,
+            avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : null
+          },
+          likes: Math.floor(Math.random() * 25) + 3,
+          comments: Math.floor(Math.random() * 8) + 1
+        };
+      });
+    }
+    
+    // Fallback: Se não há bots carregados, usar dados estáticos com avatares reais
+    const fallbackBotData = [
+      { nickname: 'CriptoMestre', avatar: '/avatars/code-assassin.jpg', level: 28 },
+      { nickname: 'BitcoinNinja', avatar: '/avatars/data-miner.jpg', level: 35 },
+      { nickname: 'DataMiner', avatar: '/avatars/finance-hacker.jpg', level: 22 },
+      { nickname: 'CodeAssassin', avatar: '/avatars/the-satoshi.jpg', level: 41 },
+      { nickname: 'FinanceHacker', avatar: '/avatars/crypto-analyst.jpg', level: 30 },
+      { nickname: 'BlockExplorer', avatar: '/avatars/block-explorer.jpg', level: 26 },
+      { nickname: 'CryptoAnalyst', avatar: '/avatars/trading-master.jpg', level: 33 },
+      { nickname: 'TradingBot', avatar: '/avatars/defi-pioneer.jpg', level: 37 },
+    ];
+    
+    return Array.from({ length: numWins }, (_, index) => {
+      const botData = fallbackBotData[index % fallbackBotData.length];
       const template = templates[index % templates.length];
       const now = new Date();
-      const createdAt = new Date(now.getTime() - Math.random() * 8 * 60 * 60 * 1000); // Within last 8h
+      const createdAt = new Date(now.getTime() - Math.random() * 8 * 60 * 60 * 1000);
       
       return {
-        id: `bot-win-${bot.id || index}-${Date.now()}-${index}`,
-        user_id: bot.bot_id || `fake-bot-${index}`,
+        id: `fallback-win-${index}-${Date.now()}`,
+        user_id: `fallback-bot-${index}`,
         win_type: template.type,
         win_data: template.data,
         created_at: createdAt.toISOString(),
         user: {
-          nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
-          level: bot.bot_profile?.level || Math.floor(Math.random() * 40) + 10,
-          current_avatar_id: bot.bot_profile?.current_avatar_id,
-          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : null
+          nickname: botData.nickname,
+          level: botData.level,
+          current_avatar_id: undefined,
+          avatar: { image_url: botData.avatar }
         },
         likes: Math.floor(Math.random() * 25) + 3,
         comments: Math.floor(Math.random() * 8) + 1

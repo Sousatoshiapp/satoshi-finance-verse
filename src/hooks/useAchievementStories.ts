@@ -146,14 +146,8 @@ export function useAchievementStories() {
     loadStories();
   }, []);
 
-  // Generate simulated bot achievement stories usando dados reais dos bots
+  // Generate simulated bot achievement stories com fallback robusto
   const generateBotStories = (bots: any[], realStoriesCount: number): AchievementStory[] => {
-    // Se não há bots reais, não gerar stories fictícias
-    if (!bots || bots.length === 0) {
-      return [];
-    }
-    
-    // SEMPRE gerar pelo menos 6 stories de bots usando dados reais
     const achievements = [
       { name: 'Mestre Bitcoin', rarity: 'legendary', badge_icon: '₿' },
       { name: 'Trader Expert', rarity: 'epic', badge_icon: '📈' },
@@ -167,19 +161,63 @@ export function useAchievementStories() {
       { name: 'HODLer Supreme', rarity: 'epic', badge_icon: '💎' }
     ];
     
-    // Usar apenas bots reais do banco de dados
-    const availableBots = bots;
+    // SEMPRE gerar pelo menos 6 stories, com ou sem bots carregados
+    const numStories = Math.max(6, 10 - realStoriesCount);
     
-    return Array.from({ length: Math.max(6, 10 - realStoriesCount) }, (_, index) => {
-      const bot = availableBots[index % availableBots.length];
+    // Se há bots carregados, usar dados reais
+    if (bots && bots.length > 0) {
+      return Array.from({ length: numStories }, (_, index) => {
+        const bot = bots[index % bots.length];
+        const achievement = achievements[index % achievements.length];
+        const now = new Date();
+        const createdAt = new Date(now.getTime() - Math.random() * 18 * 60 * 60 * 1000);
+        const expiresAt = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000);
+        
+        return {
+          id: `bot-story-${bot.id || index}-${Date.now()}-${index}`,
+          user_id: bot.bot_id || `real-bot-${index}`,
+          achievement_id: `achievement-${index}`,
+          story_type: 'achievement' as const,
+          caption: `Acabei de conquistar ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'} +${Math.floor(Math.random() * 500) + 100} BTZ`,
+          created_at: createdAt.toISOString(),
+          expires_at: expiresAt.toISOString(),
+          views_count: Math.floor(Math.random() * 60) + 10,
+          user: {
+            nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
+            current_avatar_id: bot.bot_profile?.current_avatar_id,
+            avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : null
+          },
+          achievement: {
+            name: achievement.name,
+            rarity: achievement.rarity,
+            badge_icon: achievement.badge_icon
+          }
+        };
+      });
+    }
+    
+    // Fallback: Se não há bots carregados, usar dados estáticos com avatares reais
+    const fallbackBotData = [
+      { nickname: 'CriptoMestre', avatar: '/avatars/code-assassin.jpg' },
+      { nickname: 'BitcoinNinja', avatar: '/avatars/data-miner.jpg' },
+      { nickname: 'DataMiner', avatar: '/avatars/finance-hacker.jpg' },
+      { nickname: 'CodeAssassin', avatar: '/avatars/the-satoshi.jpg' },
+      { nickname: 'FinanceHacker', avatar: '/avatars/crypto-analyst.jpg' },
+      { nickname: 'BlockExplorer', avatar: '/avatars/block-explorer.jpg' },
+      { nickname: 'CryptoAnalyst', avatar: '/avatars/trading-master.jpg' },
+      { nickname: 'TradingBot', avatar: '/avatars/defi-pioneer.jpg' },
+    ];
+    
+    return Array.from({ length: numStories }, (_, index) => {
+      const botData = fallbackBotData[index % fallbackBotData.length];
       const achievement = achievements[index % achievements.length];
       const now = new Date();
-      const createdAt = new Date(now.getTime() - Math.random() * 18 * 60 * 60 * 1000); // Within last 18h
+      const createdAt = new Date(now.getTime() - Math.random() * 18 * 60 * 60 * 1000);
       const expiresAt = new Date(createdAt.getTime() + 24 * 60 * 60 * 1000);
       
       return {
-        id: `bot-story-${bot.id || index}-${Date.now()}-${index}`,
-        user_id: bot.bot_id || `fake-bot-${index}`,
+        id: `fallback-story-${index}-${Date.now()}`,
+        user_id: `fallback-bot-${index}`,
         achievement_id: `achievement-${index}`,
         story_type: 'achievement' as const,
         caption: `Acabei de conquistar ${achievement.name}! ${achievement.rarity === 'legendary' ? '🔥' : achievement.rarity === 'epic' ? '⚡' : '⭐'} +${Math.floor(Math.random() * 500) + 100} BTZ`,
@@ -187,9 +225,9 @@ export function useAchievementStories() {
         expires_at: expiresAt.toISOString(),
         views_count: Math.floor(Math.random() * 60) + 10,
         user: {
-          nickname: bot.bot_profile?.nickname || `CryptoExplorer${index + 1}`,
-          current_avatar_id: bot.bot_profile?.current_avatar_id,
-          avatar: bot.bot_profile?.avatars ? { image_url: bot.bot_profile.avatars.image_url } : null
+          nickname: botData.nickname,
+          current_avatar_id: undefined,
+          avatar: { image_url: botData.avatar }
         },
         achievement: {
           name: achievement.name,
