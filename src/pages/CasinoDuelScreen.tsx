@@ -135,6 +135,7 @@ export default function CasinoDuelScreen() {
 
   // Separate effect to verify user access and check if duel is already completed
   useEffect(() => {
+    // Only run access verification if we have both duel and profile
     if (currentDuel && profile?.id) {
       // Verify user is part of this duel
       if (currentDuel.player1_id !== profile.id && currentDuel.player2_id !== profile.id) {
@@ -156,6 +157,15 @@ export default function CasinoDuelScreen() {
       }
       
       console.log('🎮 CasinoDuelScreen: Duel status:', currentDuel.status);
+    } else if (currentDuel && !profile) {
+      console.log('⚠️ CasinoDuelScreen: Duel loaded but profile still loading - allowing access temporarily');
+      
+      // Still check if duel is completed even without profile verification
+      if (currentDuel.status === 'completed') {
+        console.log('🏁 CasinoDuelScreen: Duel already completed (without profile check)');
+        navigate(`/duel-result/${duelId}`, { replace: true });
+        return;
+      }
     }
   }, [currentDuel, profile?.id, navigate, duelId]);
 
@@ -196,32 +206,71 @@ export default function CasinoDuelScreen() {
     }, 2000);
   };
 
-  // Identify if current user is player1 or player2
+  // Debug logs for loading states
+  console.log('🔄 CasinoDuelScreen: Current state check:');
+  console.log('  - loading (useCasinoDuels):', loading);
+  console.log('  - currentDuel exists:', !!currentDuel);
+  console.log('  - currentDuel.id:', currentDuel?.id);
+  console.log('  - profile exists:', !!profile);
+  console.log('  - profile.id:', profile?.id);
+  console.log('  - duelId from URL:', duelId);
+
+  // Identify if current user is player1 or player2 (with fallback for profile loading)
   const isPlayer1 = profile?.id === currentDuel?.player1_id;
   const currentUserScore = isPlayer1 ? currentDuel?.player1_score : currentDuel?.player2_score;
   const opponentScore = isPlayer1 ? currentDuel?.player2_score : currentDuel?.player1_score;
   const opponentProfile = isPlayer1 ? currentDuel?.player2_profile : currentDuel?.player1_profile;
 
-  // Show loading if still loading or essential data is missing
-  if (loading || !currentDuel || !profile) {
-    console.log('🔄 CasinoDuelScreen: Loading state - loading:', loading, 'currentDuel:', !!currentDuel, 'profile:', !!profile);
+  console.log('👤 CasinoDuelScreen: User role identification:');
+  console.log('  - isPlayer1:', isPlayer1);
+  console.log('  - currentUserScore:', currentUserScore);
+  console.log('  - opponentScore:', opponentScore);
+  console.log('  - opponentProfile:', opponentProfile?.nickname);
+
+  // If profile is not loaded yet but we have duel data, continue with fallback
+  const shouldShowFallback = !profile && currentDuel;
+  if (shouldShowFallback) {
+    console.log('⚠️ CasinoDuelScreen: Using fallback display while profile loads');
+  }
+
+  // Show loading only if actually loading duels or no duel data
+  if (loading) {
+    console.log('🔄 CasinoDuelScreen: Showing loading - useCasinoDuels is loading');
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
           <CardContent className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-white">
-              {loading 
-                ? 'Carregando duelo...' 
-                : !currentDuel 
-                ? 'Processando dados do duelo...'
-                : 'Carregando perfil...'
-              }
-            </p>
+            <p className="text-white">Carregando duelo...</p>
           </CardContent>
         </Card>
       </div>
     );
+  }
+
+  // Show error if no duel data after loading is complete
+  if (!currentDuel) {
+    console.log('❌ CasinoDuelScreen: No duel data after loading complete');
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
+        <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
+          <CardContent className="text-center">
+            <p className="text-white mb-4">Duelo não encontrado</p>
+            <Button 
+              onClick={() => navigate('/dashboard')}
+              className="bg-primary hover:bg-primary/80"
+            >
+              Voltar ao Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Continue rendering even if profile is still loading (with fallback)
+  if (!profile) {
+    console.log('⚠️ CasinoDuelScreen: Profile still loading, using fallback');
   }
 
   if (!currentQuestion) {
