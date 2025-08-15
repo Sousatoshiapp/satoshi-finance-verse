@@ -93,7 +93,7 @@ export default function NewFindOpponent() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/dashboard')}
             className="casino-button border-purple-500/40 text-white bg-black/20 backdrop-blur-sm hover:bg-purple-500/20"
           >
             <ArrowLeft className="h-4 w-4" />

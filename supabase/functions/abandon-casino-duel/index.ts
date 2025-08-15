@@ -37,9 +37,13 @@ serve(async (req) => {
       });
     }
 
-    // Check if duel is already completed or abandoned
-    if (duel.status !== 'active') {
-      return new Response(JSON.stringify({ error: 'Duel is not active' }), {
+    // Check if duel can be abandoned - allow multiple statuses
+    if (!['active', 'in_progress', 'waiting'].includes(duel.status)) {
+      console.log('❌ Cannot abandon duel with status:', duel.status);
+      return new Response(JSON.stringify({ 
+        error: `Duelo não pode ser abandonado (status: ${duel.status})`,
+        details: 'O duelo já foi finalizado ou não está em andamento'
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       });

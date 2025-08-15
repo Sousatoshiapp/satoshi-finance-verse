@@ -139,13 +139,13 @@ export function EnhancedDuelInterface({
 
           {/* VS e Info Central */}
           <div className="text-center relative">
-            {/* Quit Button */}
+            {/* Quit Button - Melhor posicionamento mobile */}
             <Dialog open={showQuitModal} onOpenChange={setShowQuitModal}>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute -top-8 -left-8 text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-110"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-110 w-10 h-10 sm:w-8 sm:h-8 z-50"
                   onClick={handleQuitClick}
                 >
                   <X className="h-4 w-4" />
@@ -159,14 +159,14 @@ export function EnhancedDuelInterface({
                   </DialogTitle>
                   <DialogDescription className="text-base">
                     Tem certeza que deseja abandonar o duelo? 
-                    <div className="mt-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
-                      <p className="font-semibold text-destructive">
-                        ⚠️ Você perderá seus {betAmount} BTZ apostados!
-                      </p>
-                      <p className="text-sm mt-1 text-muted-foreground">
-                        Seu oponente receberá automaticamente o prêmio do duelo.
-                      </p>
-                    </div>
+                     <div className="mt-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+                       <p className="font-semibold text-destructive">
+                         ⚠️ Você perderá seus {betAmount > 0 ? betAmount : 'seus'} BTZ apostados!
+                       </p>
+                       <p className="text-sm mt-1 text-muted-foreground">
+                         Seu oponente receberá automaticamente o prêmio do duelo.
+                       </p>
+                     </div>
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-2 sm:gap-0">

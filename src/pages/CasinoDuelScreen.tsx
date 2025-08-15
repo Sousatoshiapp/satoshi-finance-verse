@@ -273,11 +273,11 @@ export default function CasinoDuelScreen() {
         });
       }
 
-      // Navigate back after a moment
-      setTimeout(() => navigate('/find-opponent'), 3000);
+      // Navigate back to dashboard after a moment
+      setTimeout(() => navigate('/dashboard'), 3000);
     } catch (error) {
       console.error('Error completing duel:', error);
-      navigate('/find-opponent');
+      navigate('/dashboard');
     }
   };
 
@@ -292,9 +292,15 @@ export default function CasinoDuelScreen() {
         rewardSystem.showIncorrectAnswer("Duelo abandonado!");
         sensoryFeedback.triggerError(document.body);
         
-        // Navigate back to find-opponent after a short delay
+        toast({
+          title: "Duelo Abandonado",
+          description: `Você abandonou o duelo e perdeu ${casinoDuels.currentDuel.bet_amount} BTZ`,
+          variant: "destructive"
+        });
+        
+        // Navigate back to dashboard after a short delay
         setTimeout(() => {
-          navigate('/find-opponent');
+          navigate('/dashboard');
         }, 1500);
       } else {
         toast({
@@ -306,8 +312,8 @@ export default function CasinoDuelScreen() {
     } catch (error) {
       console.error('Error quitting duel:', error);
       toast({
-        title: "Erro",
-        description: "Erro ao abandonar o duelo.",
+        title: "Erro ao Abandonar",
+        description: "Não foi possível abandonar o duelo. Verifique sua conexão.",
         variant: "destructive"
       });
     }
