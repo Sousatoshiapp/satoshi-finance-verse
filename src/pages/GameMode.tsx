@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/shared/ui/button";
 import { Card, CardContent } from "@/components/shared/ui/card";
-import { ArrowLeft, Settings, User, Users, Sword } from "lucide-react";
+import { ArrowLeft, Settings, User, Users, Sword, Trophy } from "lucide-react";
 import { useI18n } from "@/hooks/use-i18n";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ThemeSelectionModal } from "@/components/features/quiz/theme-selection-modal";
@@ -166,6 +166,7 @@ export default function GameMode() {
                   disabled={true}
                 >
                   <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'} ${isMobile ? 'py-1.5' : 'py-2.5'}`}>
+                    <Trophy className="h-4 w-4 text-muted-foreground opacity-60" />
                     <span className="text-sm text-muted-foreground text-center">Torneios</span>
                     <span className="px-2 py-1 text-sm bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
                       Soon™
