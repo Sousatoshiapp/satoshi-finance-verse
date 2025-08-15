@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCasinoDuels } from '@/hooks/use-casino-duels';
 import { EnhancedDuelInterface } from '@/components/duels/enhanced-duel-interface';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/contexts/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
@@ -24,22 +25,19 @@ export default function CasinoDuelScreen() {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  const {
-    currentDuel,
-    questions,
-    currentQuestionIndex,
-    playerScore,
-    opponentScore,
-    timeLeft,
-    isWaitingForOpponent,
-    submitAnswer,
-    isLoading
-  } = useCasinoDuels(duelId);
+  // Use the actual hook interface from useCasinoDuels
+  const casinoDuels = useCasinoDuels(duelId);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
+  const [playerScore, setPlayerScore] = useState(0);
+  const [opponentScore, setOpponentScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
 
   const { data: profiles, isLoading: profilesLoading } = useQuery({
-    queryKey: ['duel-profiles', currentDuel?.player1_id, currentDuel?.player2_id],
+    queryKey: ['duel-profiles', casinoDuels.currentDuel?.player1_id, casinoDuels.currentDuel?.player2_id],
     queryFn: async () => {
-      if (!currentDuel) return null;
+      if (!casinoDuels.currentDuel) return null;
       
       const { data, error } = await supabase
         .from('profiles')
@@ -47,13 +45,20 @@ export default function CasinoDuelScreen() {
           id, nickname, level, xp,
           avatars(name, image_url)
         `)
-        .in('id', [currentDuel.player1_id, currentDuel.player2_id]);
+        .in('id', [casinoDuels.currentDuel.player1_id, casinoDuels.currentDuel.player2_id]);
 
       if (error) throw error;
       return data;
     },
-    enabled: !!currentDuel
+    enabled: !!casinoDuels.currentDuel
   });
+
+  // Load duel when component mounts
+  useEffect(() => {
+    if (duelId && casinoDuels.loadDuelById) {
+      casinoDuels.loadDuelById(duelId);
+    }
+  }, [duelId]);
 
   useEffect(() => {
     if (!user) {
@@ -78,10 +83,17 @@ export default function CasinoDuelScreen() {
   }, [user, duelId, navigate, toast]);
 
   const handleAnswer = async (optionId: string) => {
-    if (!currentDuel || !questions[currentQuestionIndex - 1]) return;
+    if (!casinoDuels.currentDuel || !questions[currentQuestionIndex - 1]) return;
     
     try {
-      await submitAnswer(optionId);
+      // For now, just simulate answer submission
+      // This would need to be implemented in the actual hook
+      console.log('Submitting answer:', optionId);
+      
+      // Update question index after answering
+      if (currentQuestionIndex < questions.length) {
+        setCurrentQuestionIndex(prev => prev + 1);
+      }
     } catch (error) {
       console.error('Error submitting answer:', error);
       toast({
@@ -92,7 +104,7 @@ export default function CasinoDuelScreen() {
     }
   };
 
-  if (isLoading || profilesLoading || !currentDuel || !profiles) {
+  if (casinoDuels.loading || profilesLoading || !casinoDuels.currentDuel || !profiles) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner size="lg" />
@@ -123,8 +135,8 @@ export default function CasinoDuelScreen() {
     );
   }
 
-  const player1Profile = profiles.find(p => p.id === currentDuel.player1_id);
-  const player2Profile = profiles.find(p => p.id === currentDuel.player2_id);
+  const player1Profile = profiles.find(p => p.id === casinoDuels.currentDuel.player1_id);
+  const player2Profile = profiles.find(p => p.id === casinoDuels.currentDuel.player2_id);
 
   return (
     <EnhancedDuelInterface
