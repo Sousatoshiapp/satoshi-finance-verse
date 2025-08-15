@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCasinoDuels } from '@/hooks/use-casino-duels';
@@ -25,8 +24,8 @@ export default function CasinoDuelScreen() {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  // Use the actual hook interface from useCasinoDuels
-  const casinoDuels = useCasinoDuels(duelId);
+  // Use the actual hook interface from useCasinoDuels - no arguments
+  const casinoDuels = useCasinoDuels();
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [playerScore, setPlayerScore] = useState(0);
