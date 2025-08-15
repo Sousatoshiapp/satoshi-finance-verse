@@ -10,7 +10,7 @@ import { CheckCircle, XCircle, Eye, Loader2, AlertCircle } from "lucide-react";
 interface Question {
   id: string;
   question: string;
-  options: unknown;
+  options: any; // JSON field from Supabase
   correct_answer?: string;
   explanation?: string;
   category?: string;
@@ -62,11 +62,24 @@ export function QuestionApprovalInterface() {
   const handleApproveQuestion = async (questionId: string) => {
     setProcessingIds(prev => new Set(prev).add(questionId));
     try {
+      // Get the question to convert options if needed
+      const question = questions.find(q => q.id === questionId);
+      if (!question) throw new Error('Questão não encontrada');
+
+      // Convert options from object to array if needed
+      let optionsArray: string[] = [];
+      if (Array.isArray(question.options)) {
+        optionsArray = question.options;
+      } else if (typeof question.options === 'object' && question.options !== null) {
+        optionsArray = Object.values(question.options);
+      }
+
       const { error } = await supabase
         .from('quiz_questions')
         .update({ 
           approval_status: 'approved',
-          is_approved: true, 
+          is_approved: true,
+          options: optionsArray,
           approved_at: new Date().toISOString(),
           approved_by: (await supabase.auth.getUser()).data.user?.id
         })
@@ -89,7 +102,7 @@ export function QuestionApprovalInterface() {
       console.error('Error approving question:', error);
       toast({
         title: "Erro",
-        description: "Falha ao aprovar questão",
+        description: `Falha ao aprovar questão: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
         variant: "destructive"
       });
     } finally {
@@ -144,17 +157,38 @@ export function QuestionApprovalInterface() {
     setMassProcessing(true);
     try {
       const questionIds = Array.from(selectedQuestions);
-      const { error } = await supabase
-        .from('quiz_questions')
-        .update({ 
-          approval_status: 'approved',
-          is_approved: true, 
-          approved_at: new Date().toISOString(),
-          approved_by: (await supabase.auth.getUser()).data.user?.id
-        })
-        .in('id', questionIds);
+      
+      // Process each question individually to handle options conversion
+      const updatePromises = questionIds.map(async (questionId) => {
+        const question = questions.find(q => q.id === questionId);
+        if (!question) return;
 
-      if (error) throw error;
+        // Convert options from object to array if needed
+        let optionsArray: string[] = [];
+        if (Array.isArray(question.options)) {
+          optionsArray = question.options;
+        } else if (typeof question.options === 'object' && question.options !== null) {
+          optionsArray = Object.values(question.options);
+        }
+
+        return supabase
+          .from('quiz_questions')
+          .update({ 
+            approval_status: 'approved',
+            is_approved: true,
+            options: optionsArray,
+            approved_at: new Date().toISOString(),
+            approved_by: (await supabase.auth.getUser()).data.user?.id
+          })
+          .eq('id', questionId);
+      });
+
+      const results = await Promise.all(updatePromises);
+      const hasErrors = results.some(result => result?.error);
+      
+      if (hasErrors) {
+        throw new Error('Algumas questões não puderam ser aprovadas');
+      }
 
       setQuestions(prev => prev.filter(q => !selectedQuestions.has(q.id)));
       setSelectedQuestions(new Set());
@@ -167,7 +201,7 @@ export function QuestionApprovalInterface() {
       console.error('Error mass approving questions:', error);
       toast({
         title: "Erro",
-        description: "Falha ao aprovar questões em massa",
+        description: `Falha ao aprovar questões em massa: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
         variant: "destructive"
       });
     } finally {
@@ -212,31 +246,47 @@ export function QuestionApprovalInterface() {
     
     setMassProcessing(true);
     try {
-      const questionIds = questions.map(q => q.id);
-      const { error } = await supabase
-        .from('quiz_questions')
-        .update({ 
-          approval_status: 'approved',
-          is_approved: true, 
-          approved_at: new Date().toISOString(),
-          approved_by: (await supabase.auth.getUser()).data.user?.id
-        })
-        .in('id', questionIds);
+      // Process each question individually to handle options conversion
+      const updatePromises = questions.map(async (question) => {
+        // Convert options from object to array if needed
+        let optionsArray: string[] = [];
+        if (Array.isArray(question.options)) {
+          optionsArray = question.options;
+        } else if (typeof question.options === 'object' && question.options !== null) {
+          optionsArray = Object.values(question.options);
+        }
 
-      if (error) throw error;
+        return supabase
+          .from('quiz_questions')
+          .update({ 
+            approval_status: 'approved',
+            is_approved: true,
+            options: optionsArray,
+            approved_at: new Date().toISOString(),
+            approved_by: (await supabase.auth.getUser()).data.user?.id
+          })
+          .eq('id', question.id);
+      });
+
+      const results = await Promise.all(updatePromises);
+      const hasErrors = results.some(result => result?.error);
+      
+      if (hasErrors) {
+        throw new Error('Algumas questões não puderam ser aprovadas');
+      }
 
       setQuestions([]);
       setSelectedQuestions(new Set());
       
       toast({
         title: "Sucesso",
-        description: `Todas as ${questionIds.length} questões aprovadas com sucesso!`,
+        description: `Todas as ${questions.length} questões aprovadas com sucesso!`,
       });
     } catch (error) {
       console.error('Error approving all questions:', error);
       toast({
         title: "Erro",
-        description: "Falha ao aprovar todas as questões",
+        description: `Falha ao aprovar todas as questões: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
         variant: "destructive"
       });
     } finally {
@@ -431,26 +481,37 @@ export function QuestionApprovalInterface() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <h4 className="font-semibold mb-2">Opções:</h4>
-                  <div className="grid gap-2">
-                     {Array.isArray(question.options) ? question.options.map((option: string, index: number) => (
-                       <div
-                         key={index}
-                         className={`p-2 rounded border ${
-                           option === question.correct_answer
-                             ? 'bg-green-500/10 border-green-500/20 text-green-700'
-                             : 'bg-muted'
-                         }`}
-                       >
-                         {String.fromCharCode(65 + index)}) {option}
-                         {option === question.correct_answer && (
-                           <span className="ml-2 text-green-600 font-semibold">✓ Resposta Correta</span>
-                         )}
-                       </div>
-                     )) : <p className="text-muted-foreground">Opções não disponíveis</p>}
-                  </div>
-                </div>
+                 <div>
+                   <h4 className="font-semibold mb-2">Opções:</h4>
+                   <div className="grid gap-2">
+                      {(() => {
+                        // Handle both array and object formats for options
+                        let optionsToRender: string[] = [];
+                        
+                        if (Array.isArray(question.options)) {
+                          optionsToRender = question.options;
+                        } else if (typeof question.options === 'object' && question.options !== null) {
+                          optionsToRender = Object.values(question.options);
+                        }
+                        
+                        return optionsToRender.length > 0 ? optionsToRender.map((option: string, index: number) => (
+                          <div
+                            key={index}
+                            className={`p-2 rounded border ${
+                              option === question.correct_answer
+                                ? 'bg-green-500/10 border-green-500/20 text-green-700'
+                                : 'bg-muted'
+                            }`}
+                          >
+                            {String.fromCharCode(65 + index)}) {option}
+                            {option === question.correct_answer && (
+                              <span className="ml-2 text-green-600 font-semibold">✓ Resposta Correta</span>
+                            )}
+                          </div>
+                        )) : <p className="text-muted-foreground">Opções não disponíveis</p>;
+                      })()}
+                   </div>
+                 </div>
                 
                 {question.explanation && (
                   <div>
