@@ -25,22 +25,22 @@ export function formatQuizQuestion(question: any): FormattedQuizQuestion {
   if (Array.isArray(question.options)) {
     const options: { [key: string]: string } = {};
     const letters = ['a', 'b', 'c', 'd'];
-    let correctAnswerLetter = 'a';
+    let correctAnswerText = question.correct_answer;
 
     question.options.forEach((option: any, index: number) => {
       const letter = letters[index] || String(index);
       
       if (typeof option === 'string') {
         options[letter] = option;
-        // If this matches the correct answer, store the letter
+        // If this matches the correct answer, keep the text
         if (option === question.correct_answer) {
-          correctAnswerLetter = letter;
+          correctAnswerText = option;
         }
       } else if (option && typeof option === 'object') {
         options[letter] = option.text || String(option);
-        // If this option is marked as correct, store the letter
+        // If this option is marked as correct, use its text
         if (option.isCorrect) {
-          correctAnswerLetter = letter;
+          correctAnswerText = option.text || String(option);
         }
       }
     });
@@ -49,7 +49,7 @@ export function formatQuizQuestion(question: any): FormattedQuizQuestion {
       id: String(question.id || Math.random()),
       question: question.question,
       options,
-      correct_answer: correctAnswerLetter
+      correct_answer: correctAnswerText // Keep as full text, not letter
     };
   }
 

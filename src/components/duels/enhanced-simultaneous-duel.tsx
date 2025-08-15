@@ -635,7 +635,6 @@ const EnhancedSimultaneousDuel = memo(({ duel: propDuel, onDuelEnd }: EnhancedSi
         opponentScore={opponentScore}
         playerNickname={currentProfile?.nickname || 'Você'}
         opponentNickname={(currentProfile?.id === currentDuel.player1_id ? player2Profile : player1Profile)?.nickname || 'Oponente'}
-        timeLeft={30}
         isWaitingForOpponent={false}
       />
     );

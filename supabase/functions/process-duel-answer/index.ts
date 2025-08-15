@@ -70,13 +70,16 @@ serve(async (req) => {
     
     const correctAnswerText = currentQuestion.correct_answer;
     
-    console.log('✅ Answer result:', { 
-      selectedAnswer, 
-      correctAnswerText, 
+    console.log('✅ DEFINITIVE Answer Comparison:', { 
+      selectedAnswer: `"${selectedAnswer}"`, 
+      correctAnswerText: `"${correctAnswerText}"`, 
       isCorrect,
+      exactMatch: selectedAnswer === correctAnswerText,
+      trimmedMatch: selectedAnswer?.trim() === correctAnswerText?.trim(),
       bothAreText: typeof selectedAnswer === 'string' && typeof correctAnswerText === 'string',
       selectedLength: selectedAnswer?.length,
-      correctLength: correctAnswerText?.length
+      correctLength: correctAnswerText?.length,
+      caseMatch: selectedAnswer?.toLowerCase() === correctAnswerText?.toLowerCase()
     });
 
     // Update the answer record

@@ -28,7 +28,6 @@ interface EnhancedDuelInterfaceProps {
   opponentScore: number;
   playerNickname: string;
   opponentNickname: string;
-  timeLeft: number;
   isWaitingForOpponent?: boolean;
   onQuitDuel?: () => void;
   betAmount?: number;
@@ -45,7 +44,6 @@ export function EnhancedDuelInterface({
   opponentScore,
   playerNickname,
   opponentNickname,
-  timeLeft,
   isWaitingForOpponent = false,
   onQuitDuel,
   betAmount = 0,
@@ -80,24 +78,14 @@ export function EnhancedDuelInterface({
     onAnswer(optionId);
   };
 
-  // Timer countdown effect is now handled by parent
-  useEffect(() => {
-    if (timeLeft === 0 && !selectedAnswer && !isWaitingForOpponent) {
-      onTimeUp?.();
-    }
-  }, [timeLeft, selectedAnswer, isWaitingForOpponent, onTimeUp]);
+  // Timer is handled entirely by CircularTimer component
 
   // Reset when question changes
   useEffect(() => {
     setSelectedAnswer(null);
   }, [currentQuestion]);
 
-  // Countdown sound and effects
-  useEffect(() => {
-    if (timeLeft <= 5 && timeLeft > 0) {
-      sensoryFeedback.triggerTension(timeLeft);
-    }
-  }, [timeLeft]);
+  // Sound effects are handled by CircularTimer component
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-2 sm:p-4 md:p-6">
@@ -249,7 +237,7 @@ export function EnhancedDuelInterface({
             isActive={!selectedAnswer && !isWaitingForOpponent}
             onTimeUp={onTimeUp || (() => {})}
             onTick={() => {}}
-            onCountdown={() => sensoryFeedback.triggerTension(timeLeft)}
+            onCountdown={() => sensoryFeedback.triggerTension(5)}
             enableCountdownSound={true}
             size={80}
             className="transition-transform hover:scale-105"

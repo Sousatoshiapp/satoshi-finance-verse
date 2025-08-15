@@ -67,31 +67,14 @@ export default function CasinoDuelScreen() {
     }
   }, [duelId]);
 
-  // Timer countdown effect
-  useEffect(() => {
-    if (timeLeft > 0 && !isSubmitting && !showResult) {
-      const timer = setTimeout(() => {
-        setTimeLeft(prev => prev - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (timeLeft === 0 && !isSubmitting && !showResult) {
-      // Time up - submit empty answer (incorrect)
-      handleTimeUp();
-    }
-  }, [timeLeft, isSubmitting, showResult]);
+  // Timer is now handled by CircularTimer component - no local timer needed
 
-  // Reset timer when question changes
+  // Reset response time when question changes
   useEffect(() => {
-    setTimeLeft(30);
     setResponseStartTime(Date.now());
   }, [currentQuestionIndex]);
 
-  // Timer sound effects
-  useEffect(() => {
-    if (timeLeft <= 5 && timeLeft > 0) {
-      sensoryFeedback.triggerTension(timeLeft);
-    }
-  }, [timeLeft, sensoryFeedback]);
+  // Timer sound effects are now handled by CircularTimer component
 
   useEffect(() => {
     if (!user) {
@@ -421,7 +404,6 @@ export default function CasinoDuelScreen() {
             opponentScore={isPlayer1 ? opponentScore : playerScore}
             playerNickname={currentUserProfile?.nickname || 'Você'}
             opponentNickname={opponentProfile?.nickname || 'Oponente'}
-            timeLeft={timeLeft}
             isWaitingForOpponent={isWaitingForOpponent || isSubmitting}
             onQuitDuel={handleQuitDuel}
             betAmount={casinoDuels.currentDuel.bet_amount}
