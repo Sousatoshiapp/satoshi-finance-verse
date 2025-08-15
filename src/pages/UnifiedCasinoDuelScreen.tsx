@@ -33,12 +33,53 @@ export default function UnifiedCasinoDuelScreen() {
   const [responseStartTime, setResponseStartTime] = useState<number>(Date.now());
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
+  // Check if this is a test duel ID
+  const isTestDuel = duelId?.startsWith('test-') || duelId === 'test-123';
+
+  // Mock data for test duels
+  const createMockDuelData = () => ({
+    id: duelId,
+    status: 'active',
+    topic: 'financas',
+    bet_amount: 100,
+    player1_score: 0,
+    player2_score: 0,
+    current_question: 0,
+    created_at: new Date().toISOString(),
+    questions: [],
+    player1_id: 'test-player1-id',
+    player2_id: 'test-player2-id',
+    player1: {
+      id: 'test-player1-id',
+      nickname: 'Você',
+      level: 5,
+      profile_image_url: '/avatars/the-satoshi.jpg',
+      current_avatar_id: null,
+      avatars: null
+    },
+    player2: {
+      id: 'test-player2-id', 
+      nickname: 'Bot Teste',
+      level: 3,
+      profile_image_url: '/avatars/bitcoin-wizard.jpg',
+      current_avatar_id: null,
+      avatars: null
+    }
+  });
+
   // Load duel data
   const { data: duelData, isLoading: duelLoading } = useQuery({
     queryKey: ['casino-duel', duelId],
     queryFn: async () => {
       if (!duelId) return null;
       
+      // Return mock data for test duels
+      if (isTestDuel) {
+        console.log('🧪 [UNIFIED DUEL] Using mock data for test duel:', duelId);
+        return createMockDuelData();
+      }
+      
+      // Fetch real data for actual duels
       const { data, error } = await supabase
         .from('casino_duels')
         .select(`
@@ -148,6 +189,54 @@ export default function UnifiedCasinoDuelScreen() {
       const result = duelEngine.processAnswer(selectedText, responseTime);
       const answerCorrect = result?.isCorrect || false;
       
+      // For test duels, skip edge function and use local result
+      if (isTestDuel) {
+        console.log('🧪 [UNIFIED DUEL] Simulando resposta para duelo teste:', {
+          selectedText,
+          answerCorrect,
+          localResult: result
+        });
+        
+        // Store correctness for visual feedback
+        setIsCorrect(answerCorrect);
+        
+        // Update local score for test
+        if (answerCorrect) {
+          setPlayerScore(prev => prev + 1);
+        }
+        
+        // Trigger feedback based on correctness
+        if (answerCorrect) {
+          sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+          rewardSystem.showCorrectAnswer({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+        } else {
+          sensoryFeedback.triggerError();
+          rewardSystem.showIncorrectAnswer('Resposta Incorreta');
+        }
+        
+        setShowResult(true);
+        
+        // Wait a moment to show result, then move to next question
+        setTimeout(() => {
+          setShowResult(false);
+          setSelectedAnswer(null);
+          setResponseStartTime(Date.now());
+          
+          // Move to next question using the unified engine
+          const hasMoreQuestions = duelEngine.nextQuestion();
+          
+          if (hasMoreQuestions) {
+            setCurrentQuestionIndex(prev => prev + 1);
+          } else {
+            // Duel completed
+            handleDuelComplete();
+          }
+          setIsSubmitting(false);
+        }, 2000);
+        
+        return;
+      }
+      
       console.log('🔍 [UNIFIED DUEL] Submitting to edge function:', {
         duelId: currentDuel.id,
         userId: user?.id,
@@ -230,6 +319,45 @@ export default function UnifiedCasinoDuelScreen() {
     try {
       console.log('🏁 [UNIFIED DUEL] Finalizando duelo:', { playerScore, opponentScore });
       
+      // For test duels, skip edge function and simulate locally
+      if (isTestDuel) {
+        console.log('🧪 [UNIFIED DUEL] Simulando finalização de duelo teste');
+        
+        // Determine if player won
+        const playerFinalScore = playerScore;
+        const opponentFinalScore = opponentScore;
+        const playerWon = playerFinalScore > opponentFinalScore;
+        const isDraw = playerFinalScore === opponentFinalScore;
+        
+        // Trigger appropriate completion effects
+        if (playerWon) {
+          rewardSystem.showPerfectQuiz(playerFinalScore, 1);
+          sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+          
+          toast({
+            title: "🎉 Vitória! (Teste)",
+            description: `Você venceu ${playerFinalScore} x ${opponentFinalScore}!`,
+            variant: "default"
+          });
+        } else if (isDraw) {
+          toast({
+            title: "🤝 Empate! (Teste)",
+            description: `Resultado: ${playerFinalScore} x ${opponentFinalScore}`,
+            variant: "default"
+          });
+        } else {
+          toast({
+            title: "😔 Derrota (Teste)",
+            description: `Você perdeu ${playerFinalScore} x ${opponentFinalScore}`,
+            variant: "destructive"
+          });
+        }
+
+        // Navigate back to dashboard after a moment
+        setTimeout(() => navigate('/dashboard'), 3000);
+        return;
+      }
+      
       const { error } = await supabase.functions.invoke('complete-casino-duel', {
         body: { duelId: currentDuel?.id }
       });
@@ -281,6 +409,24 @@ export default function UnifiedCasinoDuelScreen() {
     if (!currentDuel) return;
     
     try {
+      // For test duels, skip edge function and simulate locally
+      if (isTestDuel) {
+        console.log('🧪 [UNIFIED DUEL] Simulando abandono de duelo teste');
+        
+        // Show feedback
+        rewardSystem.showIncorrectAnswer("Duelo abandonado! (Teste)");
+        sensoryFeedback.triggerError(document.body);
+        
+        toast({
+          title: "Duelo Abandonado (Teste)",
+          description: `Você abandonou o duelo de teste`,
+          variant: "destructive"
+        });
+        
+        setTimeout(() => navigate('/dashboard'), 1500);
+        return;
+      }
+      
       // Call abandon duel function
       const { error } = await supabase.functions.invoke('abandon-casino-duel', {
         body: { duelId: currentDuel.id, userId: user?.id }
