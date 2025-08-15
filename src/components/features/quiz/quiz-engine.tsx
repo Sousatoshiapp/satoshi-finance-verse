@@ -36,6 +36,8 @@ interface QuizQuestion {
 
 interface QuizEngineProps {
   mode: 'solo' | 'duel' | 'tournament' | 'daily_mission' | 'district';
+  category?: string;
+  difficulty?: 'facil' | 'medio' | 'dificil' | 'muito_dificil';
   topicId?: string;
   opponentId?: string;
   tournamentId?: string;
@@ -50,6 +52,8 @@ interface QuizEngineProps {
 
 export function QuizEngine({
   mode = 'solo',
+  category,
+  difficulty,
   questionsCount = 7,
   opponentId,
   tournamentId,
@@ -79,7 +83,8 @@ export function QuizEngine({
   // 🚀 NOVO SISTEMA ADAPTATIVO
   const adaptiveEngine = useAdaptiveQuizEngine({
     mode,
-    category: undefined, // Auto-detectar ou usar parâmetros de URL
+    category,
+    difficulty,
     questionsCount,
     enableDifficultyAdjustment: !useBasicMode, // Adaptativo quando não for básico
     enableRandomization: true // Sempre randomizar

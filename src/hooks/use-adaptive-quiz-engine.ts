@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface AdaptiveQuizConfig {
   mode: 'solo' | 'duel' | 'tournament' | 'daily_mission' | 'district';
   category?: string;
+  difficulty?: 'facil' | 'medio' | 'dificil' | 'muito_dificil';
   initialDifficulty?: 'easy' | 'medium' | 'hard';
   questionsCount: number;
   enableDifficultyAdjustment: boolean;
@@ -42,14 +43,30 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
   const [loading, setLoading] = useState(false);
   const [userLevel, setUserLevel] = useState(1);
 
+  // Mapear dificuldade da URL para formato interno
+  const mapUrlDifficultyToInternal = useCallback((urlDifficulty?: 'facil' | 'medio' | 'dificil' | 'muito_dificil'): 'easy' | 'medium' | 'hard' | undefined => {
+    if (!urlDifficulty) return undefined;
+    switch (urlDifficulty) {
+      case 'facil': return 'easy';
+      case 'medio': return 'medium';
+      case 'dificil': return 'hard';
+      case 'muito_dificil': return 'hard';
+      default: return undefined;  
+    }
+  }, []);
+
   // Determinar dificuldade inicial baseada no nível do usuário
   const getInitialDifficulty = useCallback((): 'easy' | 'medium' | 'hard' => {
+    // Priorizar dificuldade da URL se fornecida
+    const urlDifficulty = mapUrlDifficultyToInternal(config.difficulty);
+    if (urlDifficulty) return urlDifficulty;
+    
     if (config.initialDifficulty) return config.initialDifficulty;
     
     if (userLevel >= 20) return 'hard';
     if (userLevel >= 10) return 'medium';
     return 'easy';
-  }, [config.initialDifficulty, userLevel]);
+  }, [config.initialDifficulty, config.difficulty, userLevel, mapUrlDifficultyToInternal]);
 
   const {
     metrics,
@@ -94,10 +111,10 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
   // Mapear dificuldade para filtros do banco
   const mapDifficultyToFilter = useCallback((difficulty: 'easy' | 'medium' | 'hard'): string => {
     switch (difficulty) {
-      case 'easy': return 'basic';
-      case 'medium': return 'intermediate';
-      case 'hard': return 'advanced';
-      default: return 'basic';
+      case 'easy': return 'easy';
+      case 'medium': return 'medium';
+      case 'hard': return 'hard';
+      default: return 'easy';
     }
   }, []);
 

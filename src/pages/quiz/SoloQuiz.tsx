@@ -84,6 +84,8 @@ export default function SoloQuiz() {
         <div className="min-h-screen">
           <QuizEngine
             mode="solo"
+            category={category}
+            difficulty={difficulty}
             questionsCount={questionsCount}
             useBasicMode={true} // MODO BÁSICO ATIVADO para garantir que questões apareçam
             onComplete={handleQuizComplete}
