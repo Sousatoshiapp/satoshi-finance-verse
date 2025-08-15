@@ -101,21 +101,19 @@ export default function GameMode() {
       <div className="floating-particle particle-4"></div>
       <div className="floating-particle particle-5"></div>
 
-      {/* Main content with proper spacing */}
-      <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col pt-6 px-4 pb-24' : 'p-6'}`}>
-        {/* Header with casino styling - Positioned at the very top */}
-        <div className="flex items-center justify-start mb-8">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="casino-button border-purple-500/40 text-white bg-black/20 backdrop-blur-sm hover:bg-purple-500/20"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </div>
+      {/* Back button positioned absolutely at the top */}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => navigate('/dashboard')}
+        className="absolute top-6 left-4 z-20 casino-button border-purple-500/40 text-white bg-black/20 backdrop-blur-sm hover:bg-purple-500/20"
+      >
+        <ArrowLeft className="h-4 w-4" />
+      </Button>
 
-        <div className={`${isMobile ? 'max-w-sm mx-auto' : 'max-w-md mx-auto'} ${isMobile ? 'space-y-3' : 'space-y-6'}`}>
+      {/* Main content with proper spacing - Centered */}
+      <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-24' : 'p-6 flex items-center justify-center'}`}>
+        <div className={`${isMobile ? 'max-w-lg mx-auto' : 'max-w-xl mx-auto'} ${isMobile ? 'space-y-3' : 'space-y-6'}`}>
 
           {/* Game Mode Selection with casino styling */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
