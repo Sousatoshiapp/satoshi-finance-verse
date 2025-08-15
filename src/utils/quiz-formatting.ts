@@ -75,7 +75,7 @@ export function convertToInterfaceQuestion(question: FormattedQuizQuestion) {
   const options = Object.entries(question.options).map(([key, text]) => ({
     id: key,
     text: text,
-    isCorrect: key === question.correct_answer
+    isCorrect: text === question.correct_answer
   }));
   
   return {
