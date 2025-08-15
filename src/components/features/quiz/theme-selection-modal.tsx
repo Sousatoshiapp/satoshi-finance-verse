@@ -159,7 +159,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                         )}
                         {isMobile && (
                           <p className="text-xs text-gray-400 truncate">
-                            {streak ? `${streak.total_quizzes_completed} quizzes` : category.category}
+                            {category.description}
                           </p>
                         )}
                       </div>
