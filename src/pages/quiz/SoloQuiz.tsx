@@ -87,7 +87,7 @@ export default function SoloQuiz() {
             category={category}
             difficulty={difficulty}
             questionsCount={questionsCount}
-            useBasicMode={true} // MODO BÁSICO ATIVADO para garantir que questões apareçam
+            useBasicMode={false} // SISTEMA ADAPTATIVO ATIVADO
             onComplete={handleQuizComplete}
           />
         </div>
