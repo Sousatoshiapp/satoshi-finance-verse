@@ -6,9 +6,7 @@ import { Button } from "@/components/shared/ui/button";
 import { CircularTimer } from "@/components/duels/circular-timer";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useQuizShuffle } from '@/hooks/use-quiz-shuffle';
-import { useUnifiedSRS } from "@/hooks/use-unified-srs";
-import { useQuestionSelector } from "@/hooks/use-question-selector";
+import { useAdaptiveQuizEngine } from '@/hooks/use-adaptive-quiz-engine';
 import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
@@ -17,8 +15,8 @@ import { useI18n } from "@/hooks/use-i18n";
 // import { LivesCounter } from "./lives-counter"; // Removido
 import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
-// import { LifePurchaseBanner } from "./life-purchase-banner"; // Removido
 import { QuizBTZCard } from "./quiz-btz-card";
+import { AdaptiveQuizIndicator } from "@/components/quiz/adaptive-quiz-indicator";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shared/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,19 +56,14 @@ export function QuizEngine({
   missionId,
   districtId,
   onComplete,
-  useBasicMode = false // MODO BÁSICO por padrão desabilitado
+  useBasicMode = false
 }: QuizEngineProps) {
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showTimeoutModal, setShowTimeoutModal] = useState(false);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState(30);
-  // Estados de vida removidos para simplificar
   const [answeredQuestions, setAnsweredQuestions] = useState<Array<{
     questionId: string;
     selectedAnswer: string;
@@ -82,6 +75,15 @@ export function QuizEngine({
   const { user } = useAuth();
   const { toast } = useToast();
   const { playCountdownSound } = useCustomSounds();
+
+  // 🚀 NOVO SISTEMA ADAPTATIVO
+  const adaptiveEngine = useAdaptiveQuizEngine({
+    mode,
+    category: undefined, // Auto-detectar ou usar parâmetros de URL
+    questionsCount,
+    enableDifficultyAdjustment: !useBasicMode, // Adaptativo quando não for básico
+    enableRandomization: true // Sempre randomizar
+  });
   
   const {
     streak,
@@ -102,16 +104,19 @@ export function QuizEngine({
     getQuizCompletion
   } = useQuizGamification();
 
-  const { getDueQuestions, submitAnswer } = useUnifiedSRS();
-  const { selectQuestions } = useQuestionSelector(); // MODO BÁSICO
   const { } = useAdvancedQuizAudio();
-  const { shuffleQuestions } = useQuizShuffle();
   const { t } = useI18n();
+
+  // Aliases para compatibilidade com código existente
+  const questions = adaptiveEngine.session?.questions || [];
+  const currentIndex = adaptiveEngine.session?.currentIndex || 0;
+  const loading = adaptiveEngine.loading;
 
   const handleContinue = () => {
     console.log('🔄 handleContinue called');
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+    const hasNext = adaptiveEngine.nextQuestion();
+    
+    if (hasNext) {
       setSelectedAnswer(null);
       setShowAnswer(false);
       setTimeLeft(30);
@@ -120,16 +125,13 @@ export function QuizEngine({
     }
   };
 
-  // SIMPLIFIED - Just show timeout modal
   const handleTimeUp = async () => {
-    const question = questions[currentIndex];
+    const question = adaptiveEngine.currentQuestion;
     if (!question) return;
     
-    // SIMPLIFICADO - apenas marcar resposta como incorreta e mostrar modal
-    setShowAnswer(true); // Para parar o timer
+    setShowAnswer(true);
     setShowTimeoutModal(true);
     
-    // Processar no background
     const answeredQuestion = {
       questionId: question.id,
       selectedAnswer: selectedAnswer || 'timeout',
@@ -138,181 +140,29 @@ export function QuizEngine({
     };
     
     setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-    await submitAnswer(question.id, false, 30);
+    
+    // Processar com sistema adaptativo
+    await adaptiveEngine.processAnswer(selectedAnswer || 'timeout', 30);
     await handleWrongAnswer(question.question, question.correct_answer, question.explanation);
   };
 
   useEffect(() => {
     if (user) {
-      fetchUserProfile();
-      fetchQuestions();
+      initializeQuiz();
     }
   }, [mode, questionsCount, user]);
 
-  const fetchUserProfile = async () => {
-    if (!user) return;
-    
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
-      
-    setUserProfile(profile);
-  };
-
-  const fetchQuestions = async () => {
+  const initializeQuiz = async () => {
     try {
-      setLoading(true);
-      
-      console.log('🎯 Modo de busca:', useBasicMode ? 'BÁSICO' : 'SRS');
-      
-      let fetchedQuestions: any[] = [];
-      
-      if (useBasicMode) {
-        // MODO BÁSICO - usa seletor simples que bypassa SRS
-        console.log('🔄 Usando modo básico - buscando questões disponíveis');
-        
-        // Mapear dificuldades do banco para as esperadas pelo selector
-        let selectorDifficulty: 'basic' | 'intermediate' | 'advanced' = 'basic';
-        if (userProfile?.level >= 10) selectorDifficulty = 'intermediate';
-        if (userProfile?.level >= 20) selectorDifficulty = 'advanced';
-        
-        const basicQuestions = await selectQuestions({
-          difficulty: selectorDifficulty,
-          limit: questionsCount,
-          excludeIds: answeredQuestions.map(q => q.questionId)
-        });
-        
-        // Fallback para difficulty mais fácil se necessário
-        if (basicQuestions.length === 0 && selectorDifficulty === 'advanced') {
-          console.log('⬇️ Fallback básico: advanced → intermediate');
-          const fallbackQuestions = await selectQuestions({
-            difficulty: 'intermediate',
-            limit: questionsCount,
-            excludeIds: answeredQuestions.map(q => q.questionId)
-          });
-          fetchedQuestions = fallbackQuestions;
-        } else if (basicQuestions.length === 0 && selectorDifficulty === 'intermediate') {
-          console.log('⬇️ Fallback básico: intermediate → basic');
-          const fallbackQuestions = await selectQuestions({
-            difficulty: 'basic',
-            limit: questionsCount,
-            excludeIds: answeredQuestions.map(q => q.questionId)
-          });
-          fetchedQuestions = fallbackQuestions;
-        } else if (basicQuestions.length === 0) {
-          console.log('⬇️ Fallback básico: sem filtro de dificuldade');
-          const fallbackQuestions = await selectQuestions({
-            limit: questionsCount,
-            excludeIds: answeredQuestions.map(q => q.questionId)
-          });
-          fetchedQuestions = fallbackQuestions;
-        } else {
-          fetchedQuestions = basicQuestions;
-        }
-        
-      } else {
-        // MODO SRS ORIGINAL
-        let difficulty = 'easy';
-        if (userProfile?.level >= 10) difficulty = 'medium';
-        if (userProfile?.level >= 20) difficulty = 'hard';
-
-        console.log('🎯 Buscando questões SRS:', {
-          userLevel: userProfile?.level,
-          selectedDifficulty: difficulty,
-          questionsCount
-        });
-
-        fetchedQuestions = await getDueQuestions(
-          difficulty,
-          questionsCount,
-          answeredQuestions.map(q => q.questionId)
-        );
-        
-        // Implementar fallback de dificuldade para usuários de nível alto
-        if (fetchedQuestions.length === 0 && difficulty === 'hard') {
-          console.log('⬇️ Fallback SRS: hard → medium');
-          fetchedQuestions = await getDueQuestions(
-            'medium',
-            questionsCount,
-            answeredQuestions.map(q => q.questionId)
-          );
-          
-          if (fetchedQuestions.length === 0) {
-            console.log('⬇️ Fallback SRS: medium → easy');
-            fetchedQuestions = await getDueQuestions(
-              'easy',
-              questionsCount,
-              answeredQuestions.map(q => q.questionId)
-            );
-          }
-        } else if (fetchedQuestions.length === 0 && difficulty === 'medium') {
-          console.log('⬇️ Fallback SRS: medium → easy');
-          fetchedQuestions = await getDueQuestions(
-            'easy',
-            questionsCount,
-            answeredQuestions.map(q => q.questionId)
-          );
-        }
-      }
-      
-      console.log('📊 Questões encontradas:', {
-        mode: useBasicMode ? 'BÁSICO' : 'SRS',
-        count: fetchedQuestions.length,
-        samples: fetchedQuestions.slice(0, 2).map(q => ({
-          id: q.id,
-          optionsType: Array.isArray(q.options) ? 'array' : typeof q.options
-        }))
-      });
-      
-      if (fetchedQuestions.length === 0) {
-        console.error('❌ Nenhuma questão encontrada mesmo com fallback');
-        toast({
-          title: t('quizEngine.noQuestionsAvailable'),
-          description: t('quizEngine.couldNotLoadQuestions'),
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      console.log('✅ Questões finais obtidas:', {
-        count: fetchedQuestions.length,
-        firstQuestionOptions: fetchedQuestions[0]?.options
-      });
-      
-      // CORREÇÃO CRÍTICA: Embaralhar DEPOIS da formatação
-      const shuffledQuestions = shuffleQuestions(fetchedQuestions);
-      
-      // Aplicar traduções usando o sistema i18n principal
-      const translatedQuestions = shuffledQuestions.map(question => {
-        const questionKey = question.semantic_key || question.id;
-        const translatedQuestion = t(`quiz.questions.${questionKey}.question`, question.question);
-        const translatedOptions = question.options.map((option, index) => 
-          t(`quiz.questions.${questionKey}.options.${index}`, option)
-        );
-        const translatedCorrectAnswer = t(`quiz.questions.${questionKey}.correct`, question.correct_answer);
-        const translatedExplanation = t(`quiz.questions.${questionKey}.explanation`, question.explanation);
-        
-        return {
-          ...question,
-          question: translatedQuestion,
-          options: translatedOptions,
-          correct_answer: translatedCorrectAnswer,
-          explanation: translatedExplanation
-        };
-      });
-      
-      setQuestions(translatedQuestions);
+      await adaptiveEngine.initializeQuizSession();
+      console.log('✅ Quiz adaptativo inicializado');
     } catch (error) {
-      console.error('Error fetching questions:', error);
+      console.error('❌ Erro ao inicializar quiz:', error);
       toast({
         title: t('common.error'),
         description: t('quizEngine.couldNotLoadQuestions'),
         variant: "destructive"
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -336,26 +186,29 @@ export function QuizEngine({
   const handleSubmit = async () => {
     if (!selectedAnswer || showAnswer) return;
 
-    const question = questions[currentIndex];
+    const question = adaptiveEngine.currentQuestion;
     if (!question) return;
 
     const isCorrect = selectedAnswer === question.correct_answer;
+    const responseTime = 30 - timeLeft;
+    
     console.log("🎯 Quiz Submit:", { isCorrect, selectedAnswer, correctAnswer: question.correct_answer });
     
-    // SIMPLIFICADO - sem vidas
-    setShowAnswer(true); // Para parar o timer
+    setShowAnswer(true);
+    
+    // Processar com sistema adaptativo
+    const result = await adaptiveEngine.processAnswer(selectedAnswer, responseTime * 1000);
     
     if (isCorrect) {
       console.log("✅ Resposta correta - chamando handleCorrectAnswer");
       setScore(prev => prev + 1);
       await handleCorrectAnswer();
       
-      // Continuar automaticamente após delay mínimo
+      // Continuar automaticamente após delay
       setTimeout(() => {
         handleContinue();
       }, 1000);
     } else {
-      // Para resposta errada, apenas processar e mostrar explicação
       await handleWrongAnswer(
         question.question,
         question.correct_answer,
@@ -367,11 +220,15 @@ export function QuizEngine({
       questionId: question.id,
       selectedAnswer,
       isCorrect,
-      timeSpent: 30 - timeLeft
+      timeSpent: responseTime
     };
 
     setAnsweredQuestions(prev => [...prev, answeredQuestion]);
-    await submitAnswer(question.id, isCorrect, 30 - timeLeft);
+    
+    // Log de ajuste de dificuldade
+    if (result?.adjustedDifficulty) {
+      console.log('🎚️ Dificuldade ajustada automaticamente!', adaptiveEngine.sessionStats);
+    }
   };
 
 
@@ -392,21 +249,12 @@ export function QuizEngine({
     }
   };
 
-   const handleTimeoutContinue = () => {
+  const handleTimeoutContinue = () => {
     setShowTimeoutModal(false);
-    
-    if (currentIndex < questions.length - 1) {
-      setCurrentIndex(prev => prev + 1);
-      setSelectedAnswer(null);
-      setShowAnswer(false);
-      setTimeLeft(30);
-    } else {
-      handleQuizComplete();
-    }
+    handleContinue();
   };
 
   const resetQuiz = () => {
-    setCurrentIndex(0);
     setScore(0);
     setShowResults(false);
     setSelectedAnswer(null);
@@ -414,23 +262,20 @@ export function QuizEngine({
     setTimeLeft(30);
     setAnsweredQuestions([]);
     resetGamification();
-    fetchQuestions();
+    adaptiveEngine.resetEngine();
+    initializeQuiz();
   };
 
   const startNewQuiz = () => {
-    // Reset all state for a completely new quiz
-    setCurrentIndex(0);
     setScore(0);
     setShowResults(false);
     setSelectedAnswer(null);
     setShowAnswer(false);
     setTimeLeft(30);
     setAnsweredQuestions([]);
-    // Estados de vida removidos
     resetGamification();
-    
-    // Fetch new questions
-    fetchQuestions();
+    adaptiveEngine.resetEngine();
+    initializeQuiz();
   };
 
   const getBackRoute = () => {
@@ -623,6 +468,13 @@ export function QuizEngine({
           {/* Question Card */}
           <Card className="mb-6">
             <CardContent className="p-4 sm:p-6">
+              {/* Indicador Adaptativo */}
+              {adaptiveEngine.metrics && (
+                <div className="mb-4 flex justify-center">
+                  <AdaptiveQuizIndicator metrics={adaptiveEngine.metrics} />
+                </div>
+              )}
+              
               <h2 className="text-primary font-semibold text-xl sm:text-2xl leading-relaxed mb-6">
                 {currentQuestion.question}
               </h2>
