@@ -1,23 +1,20 @@
+
 import React, { useEffect, useState } from 'react';
 import { useQuizTranslations } from '@/hooks/use-quiz-translations';
 import { useI18n } from '@/hooks/use-i18n';
 import { analyzeQuestionTranslationCoverage } from '@/utils/translation-mapper';
-
-interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  explanation?: string;
-  category: string;
-  difficulty: string;
-}
+import { QuizQuestion } from '@/types/quiz';
 
 const testQuestions: QuizQuestion[] = [
   {
     id: '1',
     question: 'What is the main function of a stock exchange?',
-    options: ['Lend money to companies', 'Facilitate trading of securities', 'Set interest rates', 'Print money'],
+    options: [
+      { id: 'a', text: 'Lend money to companies', isCorrect: false },
+      { id: 'b', text: 'Facilitate trading of securities', isCorrect: true },
+      { id: 'c', text: 'Set interest rates', isCorrect: false },
+      { id: 'd', text: 'Print money', isCorrect: false }
+    ],
     correct_answer: 'Facilitate trading of securities',
     explanation: 'Stock exchanges provide a platform for buying and selling securities.',
     category: 'finance',
@@ -26,7 +23,12 @@ const testQuestions: QuizQuestion[] = [
   {
     id: '2', 
     question: 'What is inflation?',
-    options: ['Price increase', 'Price decrease', 'Currency exchange', 'Interest rate'],
+    options: [
+      { id: 'a', text: 'Price increase', isCorrect: true },
+      { id: 'b', text: 'Price decrease', isCorrect: false },
+      { id: 'c', text: 'Currency exchange', isCorrect: false },
+      { id: 'd', text: 'Interest rate', isCorrect: false }
+    ],
     correct_answer: 'Price increase',
     explanation: 'Inflation is the general increase in prices.',
     category: 'economics',
@@ -35,7 +37,12 @@ const testQuestions: QuizQuestion[] = [
   {
     id: '3',
     question: 'What is diversification in investing?',
-    options: ['Putting all money in one stock', 'Spreading investments across different assets', 'Only buying bonds', 'Avoiding all risks'],
+    options: [
+      { id: 'a', text: 'Putting all money in one stock', isCorrect: false },
+      { id: 'b', text: 'Spreading investments across different assets', isCorrect: true },
+      { id: 'c', text: 'Only buying bonds', isCorrect: false },
+      { id: 'd', text: 'Avoiding all risks', isCorrect: false }
+    ],
     correct_answer: 'Spreading investments across different assets',
     explanation: 'Diversification reduces risk by spreading investments across different assets.',
     category: 'finance', 
@@ -44,7 +51,12 @@ const testQuestions: QuizQuestion[] = [
   {
     id: '4',
     question: 'What is compound interest?',
-    options: ['Interest on principal only', 'Interest on principal and accumulated interest', 'Fixed interest rate', 'Simple interest calculation'],
+    options: [
+      { id: 'a', text: 'Interest on principal only', isCorrect: false },
+      { id: 'b', text: 'Interest on principal and accumulated interest', isCorrect: true },
+      { id: 'c', text: 'Fixed interest rate', isCorrect: false },
+      { id: 'd', text: 'Simple interest calculation', isCorrect: false }
+    ],
     correct_answer: 'Interest on principal and accumulated interest',
     explanation: 'Compound interest is earned on both the principal and previously earned interest.',
     category: 'finance',
@@ -53,7 +65,12 @@ const testQuestions: QuizQuestion[] = [
   {
     id: '5',
     question: 'What is a bull market?',
-    options: ['Declining market prices', 'Rising market prices', 'Stable market prices', 'Volatile market prices'],
+    options: [
+      { id: 'a', text: 'Declining market prices', isCorrect: false },
+      { id: 'b', text: 'Rising market prices', isCorrect: true },
+      { id: 'c', text: 'Stable market prices', isCorrect: false },
+      { id: 'd', text: 'Volatile market prices', isCorrect: false }
+    ],
     correct_answer: 'Rising market prices',
     explanation: 'A bull market is characterized by rising prices and investor optimism.',
     category: 'finance',
@@ -115,7 +132,7 @@ export function RealTranslationTest() {
               <p className="text-sm text-gray-600 mb-2">Original: {testQuestions[index].question}</p>
               <p className="font-medium mb-2">Translated: {question.question}</p>
               <div className="text-sm">
-                <p>Options: {question.options.join(', ')}</p>
+                <p>Options: {question.options.map(opt => opt.text).join(', ')}</p>
                 <p>Correct: {question.correct_answer}</p>
                 <p>Explanation: {question.explanation}</p>
               </div>

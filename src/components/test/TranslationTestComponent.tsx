@@ -1,23 +1,20 @@
+
 import React, { useEffect, useState } from 'react';
 import { useQuizTranslations } from '@/hooks/use-quiz-translations';
 import { useI18n } from '@/hooks/use-i18n';
 import { analyzeQuestionTranslationCoverage } from '@/utils/translation-mapper';
-
-interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  explanation?: string;
-  category: string;
-  difficulty: string;
-}
+import { QuizQuestion } from '@/types/quiz';
 
 const mockQuestions: QuizQuestion[] = [
   {
     id: '1',
     question: 'What is the main function of a stock exchange?',
-    options: ['Lend money to companies', 'Facilitate trading of securities', 'Set interest rates', 'Print money'],
+    options: [
+      { id: 'a', text: 'Lend money to companies', isCorrect: false },
+      { id: 'b', text: 'Facilitate trading of securities', isCorrect: true },
+      { id: 'c', text: 'Set interest rates', isCorrect: false },
+      { id: 'd', text: 'Print money', isCorrect: false }
+    ],
     correct_answer: 'Facilitate trading of securities',
     explanation: 'Stock exchanges provide a platform for buying and selling securities.',
     category: 'finance',
@@ -26,7 +23,12 @@ const mockQuestions: QuizQuestion[] = [
   {
     id: '2', 
     question: 'What is inflation?',
-    options: ['Price increase', 'Price decrease', 'Currency exchange', 'Interest rate'],
+    options: [
+      { id: 'a', text: 'Price increase', isCorrect: true },
+      { id: 'b', text: 'Price decrease', isCorrect: false },
+      { id: 'c', text: 'Currency exchange', isCorrect: false },
+      { id: 'd', text: 'Interest rate', isCorrect: false }
+    ],
     correct_answer: 'Price increase',
     explanation: 'Inflation is the general increase in prices.',
     category: 'economics',
@@ -35,7 +37,12 @@ const mockQuestions: QuizQuestion[] = [
   {
     id: '3',
     question: 'What is the main function of stock exchange?',
-    options: ['Lend money to companies', 'Facilitate trading of securities', 'Set interest rates', 'Print money'],
+    options: [
+      { id: 'a', text: 'Lend money to companies', isCorrect: false },
+      { id: 'b', text: 'Facilitate trading of securities', isCorrect: true },
+      { id: 'c', text: 'Set interest rates', isCorrect: false },
+      { id: 'd', text: 'Print money', isCorrect: false }
+    ],
     correct_answer: 'Facilitate trading of securities',
     explanation: 'Test fuzzy matching.',
     category: 'finance', 
@@ -44,7 +51,12 @@ const mockQuestions: QuizQuestion[] = [
   {
     id: '4',
     question: 'What is a question without translation?',
-    options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+    options: [
+      { id: 'a', text: 'Option 1', isCorrect: true },
+      { id: 'b', text: 'Option 2', isCorrect: false },
+      { id: 'c', text: 'Option 3', isCorrect: false },
+      { id: 'd', text: 'Option 4', isCorrect: false }
+    ],
     correct_answer: 'Option 1',
     explanation: 'This question has no translation.',
     category: 'test',
@@ -106,7 +118,7 @@ export function TranslationTestComponent() {
               <p className="text-sm text-gray-600 mb-2">Original: {mockQuestions[index].question}</p>
               <p className="font-medium mb-2">Translated: {question.question}</p>
               <div className="text-sm">
-                <p>Options: {question.options.join(', ')}</p>
+                <p>Options: {question.options.map(opt => opt.text).join(', ')}</p>
                 <p>Correct: {question.correct_answer}</p>
                 <p>Explanation: {question.explanation}</p>
               </div>
