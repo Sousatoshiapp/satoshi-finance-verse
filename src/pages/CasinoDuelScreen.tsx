@@ -88,7 +88,7 @@ export default function CasinoDuelScreen() {
     return null;
   })();
 
-  // Load duel effect - ALWAYS runs when duelId changes
+  // Load duel effect - only when needed
   useEffect(() => {
     console.log('🔥🔥🔥 CasinoDuelScreen: Component mounted/duelId changed');
     console.log('🔥🔥🔥 CasinoDuelScreen: duelId from URL:', duelId);
@@ -108,34 +108,39 @@ export default function CasinoDuelScreen() {
       return;
     }
 
-    // ALWAYS load the duel, even if we have one (to ensure fresh data)
-    const loadDuel = async () => {
-      console.log('🚀 CasinoDuelScreen: CALLING loadDuelById for:', duelId);
+    // Only load if we don't already have the correct duel OR if we're loading and don't have any duel
+    if (!currentDuel || currentDuel.id !== duelId) {
+      console.log('🚀 CasinoDuelScreen: Need to load duel - currentDuel:', currentDuel?.id, 'needed:', duelId);
       
-      try {
-        const duel = await loadDuelById(duelId);
-        console.log('✅ CasinoDuelScreen: loadDuelById returned:', !!duel);
-        console.log('✅ CasinoDuelScreen: Duel questions count:', duel?.questions?.length || 0);
-        console.log('✅ CasinoDuelScreen: Duel status:', duel?.status);
-        console.log('✅ CasinoDuelScreen: Player1 ID:', duel?.player1_id);
-        console.log('✅ CasinoDuelScreen: Player2 ID:', duel?.player2_id);
+      const loadDuel = async () => {
+        console.log('🚀 CasinoDuelScreen: CALLING loadDuelById for:', duelId);
         
-        if (!duel) {
-          console.log('❌ CasinoDuelScreen: Duel not found, redirecting to dashboard');
+        try {
+          const duel = await loadDuelById(duelId);
+          console.log('✅ CasinoDuelScreen: loadDuelById returned:', !!duel);
+          console.log('✅ CasinoDuelScreen: Duel questions count:', duel?.questions?.length || 0);
+          console.log('✅ CasinoDuelScreen: Duel status:', duel?.status);
+          console.log('✅ CasinoDuelScreen: Player1 ID:', duel?.player1_id);
+          console.log('✅ CasinoDuelScreen: Player2 ID:', duel?.player2_id);
+          
+          if (!duel) {
+            console.log('❌ CasinoDuelScreen: Duel not found, redirecting to dashboard');
+            navigate('/dashboard');
+            return;
+          }
+
+          console.log('🎉 CasinoDuelScreen: Duel loaded successfully');
+        } catch (error) {
+          console.error('❌ CasinoDuelScreen: Error loading duel:', error);
           navigate('/dashboard');
-          return;
         }
+      };
 
-        console.log('🎉 CasinoDuelScreen: Duel loaded successfully');
-      } catch (error) {
-        console.error('❌ CasinoDuelScreen: Error loading duel:', error);
-        navigate('/dashboard');
-      }
-    };
-
-    // Always call loadDuel
-    loadDuel();
-  }, [duelId, loadDuelById, navigate]); // Removed currentDuel from dependencies
+      loadDuel();
+    } else {
+      console.log('✅ CasinoDuelScreen: Duel already loaded, skipping loadDuelById');
+    }
+  }, [duelId, loadDuelById, navigate, currentDuel]); // Added currentDuel back to dependencies
 
   // Separate effect to verify user access and check if duel is already completed
   useEffect(() => {
