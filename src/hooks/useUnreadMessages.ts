@@ -103,7 +103,7 @@ export function useUnreadMessages() {
             .from('profiles')
             .select('nickname, profile_image_url')
             .eq('id', otherUserId)
-            .single();
+            .maybeSingle();
 
           // Get last message
           const { data: lastMessage } = await supabase
@@ -112,7 +112,7 @@ export function useUnreadMessages() {
             .eq('conversation_id', conv.id)
             .order('created_at', { ascending: false })
             .limit(1)
-            .single();
+            .maybeSingle();
 
           return {
             id: conv.id,
@@ -147,7 +147,7 @@ export function useUnreadMessages() {
         .from('profiles')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile) return;
 

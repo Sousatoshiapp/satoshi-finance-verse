@@ -215,14 +215,23 @@ export default function CasinoDuelScreen() {
     }, 2000);
   };
 
-  // Debug logs for loading states
-  console.log('🔄 CasinoDuelScreen: Current state check:');
-  console.log('  - loading (useCasinoDuels):', loading);
-  console.log('  - currentDuel exists:', !!currentDuel);
-  console.log('  - currentDuel.id:', currentDuel?.id);
-  console.log('  - profile exists:', !!profile);
-  console.log('  - profile.id:', profile?.id);
-  console.log('  - duelId from URL:', duelId);
+  // Add specific logs for challenger debugging
+  console.log('🔥 CasinoDuelScreen: CHALLENGER DEBUG - Loading duel:', duelId);
+  console.log('🔥 CasinoDuelScreen: Current loading state:', loading);
+  console.log('🔥 CasinoDuelScreen: Current duel exists:', !!currentDuel);
+  console.log('🔥 CasinoDuelScreen: Profile exists:', !!profile);
+  console.log('🔥 CasinoDuelScreen: Profile ID:', profile?.id);
+  
+  if (currentDuel) {
+    console.log('🔥 CasinoDuelScreen: Duel details:', {
+      id: currentDuel.id,
+      status: currentDuel.status,
+      player1_id: currentDuel.player1_id,
+      player2_id: currentDuel.player2_id,
+      questions_count: currentDuel.questions?.length,
+      current_question_index: currentQuestionIndex
+    });
+  }
 
   // Identify if current user is player1 or player2 (with fallback for profile loading)
   const isPlayer1 = profile?.id === currentDuel?.player1_id;
@@ -244,13 +253,20 @@ export default function CasinoDuelScreen() {
 
   // Show loading only if actually loading duels or no duel data
   if (loading) {
-    console.log('🔄 CasinoDuelScreen: Showing loading - useCasinoDuels is loading');
+    console.log('🔄 CasinoDuelScreen: CHALLENGER - Showing loading screen');
+    console.log('🔄 CasinoDuelScreen: CHALLENGER - Loading state details:', {
+      loading,
+      currentDuel: !!currentDuel,
+      profile: !!profile,
+      duelId
+    });
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
           <CardContent className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-white">Carregando duelo...</p>
+            <p className="text-white/60 text-sm mt-2">ID: {duelId}</p>
           </CardContent>
         </Card>
       </div>
@@ -259,12 +275,19 @@ export default function CasinoDuelScreen() {
 
   // Show error if no duel data after loading is complete
   if (!currentDuel) {
-    console.log('❌ CasinoDuelScreen: No duel data after loading complete');
+    console.log('❌ CasinoDuelScreen: CHALLENGER - No duel data after loading complete');
+    console.log('❌ CasinoDuelScreen: CHALLENGER - Debug info:', {
+      loading,
+      duelId,
+      currentDuel: !!currentDuel,
+      profile: !!profile
+    });
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center">
         <Card className="border-white/10 bg-black/20 backdrop-blur-md p-8">
           <CardContent className="text-center">
             <p className="text-white mb-4">Duelo não encontrado</p>
+            <p className="text-white/60 text-sm mb-4">ID: {duelId}</p>
             <Button 
               onClick={() => navigate('/dashboard')}
               className="bg-primary hover:bg-primary/80"
