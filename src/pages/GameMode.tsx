@@ -113,7 +113,7 @@ export default function GameMode() {
 
       {/* Main content with proper spacing - Centered */}
       <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-24' : 'p-6 flex items-center justify-center'}`}>
-        <div className={`${isMobile ? 'max-w-2xl mx-auto' : 'max-w-2xl mx-auto'} ${isMobile ? 'space-y-4' : 'space-y-7'}`}>
+        <div className={`${isMobile ? 'max-w-4xl mx-auto' : 'max-w-4xl mx-auto'} ${isMobile ? 'space-y-4' : 'space-y-7'}`}>
 
           {/* Game Mode Selection with casino styling */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
