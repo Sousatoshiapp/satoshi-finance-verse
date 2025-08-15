@@ -421,6 +421,23 @@ export const routeConfigs: RouteConfig[] = [
     category: "admin",
     requiresAuth: true,
     requiresAdmin: true
+  },
+  // Duel System Testing
+  {
+    path: "/duel-test",
+    component: "DuelSystemTest",
+    title: "Duel System Test",
+    description: "Test interface for comparing old vs new duel systems",
+    category: "main",
+    requiresAuth: true
+  },
+  {
+    path: "/unified-duel/:duelId",
+    component: "UnifiedCasinoDuelScreen",
+    title: "Unified Duel",
+    description: "New unified duel system",
+    category: "main", 
+    requiresAuth: true
   }
 ];
 

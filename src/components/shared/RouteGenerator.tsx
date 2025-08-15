@@ -53,6 +53,8 @@ const ConceptConnectionsPage = lazy(() => import("@/pages/ConceptConnectionsPage
 const SelectOpponentScreen = lazy(() => import("@/pages/SelectOpponentScreen"));
 const CasinoDuelScreen = lazy(() => import("@/pages/CasinoDuelScreen"));
 const DuelResultScreen = lazy(() => import("@/pages/DuelResultScreen"));
+const UnifiedCasinoDuelScreen = lazy(() => import("@/pages/UnifiedCasinoDuelScreen"));
+const DuelSystemTest = lazy(() => import("@/pages/DuelSystemTest"));
 
 // FASE 4 & 5: New features
 const InfluencerProgram = lazy(() => import("@/pages/InfluencerProgram"));
@@ -111,6 +113,8 @@ const componentMap = {
   SelectOpponentScreen,
   CasinoDuelScreen,
   DuelResultScreen,
+  UnifiedCasinoDuelScreen,
+  DuelSystemTest,
   // FASE 4 & 5: New features
   InfluencerProgram,
   GuildWars,
