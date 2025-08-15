@@ -256,8 +256,10 @@ export default function Dashboard() {
 
   // Handle theme selection
   const handleThemeSelect = useCallback((theme: string) => {
+    console.log('🎯 Dashboard - tema selecionado:', theme);
     setShowThemeModal(false);
-    navigate(`/quiz?theme=${encodeURIComponent(theme)}`);
+    // Usar o mesmo padrão do GameMode para consistência
+    navigate(`/quiz/solo?category=${encodeURIComponent(theme)}&mode=adaptive`);
   }, [navigate]);
 
   // Memoize loading state

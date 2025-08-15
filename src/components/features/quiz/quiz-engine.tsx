@@ -163,8 +163,20 @@ export function QuizEngine({
 
   const initializeQuiz = async () => {
     try {
+      console.log('🚀 [QUIZ DEBUG] Inicializando quiz:', {
+        mode,
+        category,
+        difficulty,
+        questionsCount,
+        useBasicMode
+      });
       await adaptiveEngine.initializeQuizSession();
       console.log('✅ Quiz adaptativo inicializado');
+      console.log('📊 [QUIZ DEBUG] Questões carregadas:', {
+        totalQuestions: questions.length,
+        firstQuestion: questions[0]?.category,
+        allCategories: [...new Set(questions.map(q => q.category))]
+      });
     } catch (error) {
       console.error('❌ Erro ao inicializar quiz:', error);
       toast({
@@ -455,6 +467,12 @@ export function QuizEngine({
               <div className="text-sm sm:text-lg text-muted-foreground">
                 {getModeTitle()}
               </div>
+              {/* DEBUG: Mostrar categoria atual */}
+              {category && (
+                <div className="text-xs text-orange-500 font-medium mt-1">
+                  📂 {category}
+                </div>
+              )}
             </div>
             
             {/* Direita: Vazio para balanceamento */}
@@ -496,6 +514,11 @@ export function QuizEngine({
               <h2 className="text-primary font-semibold text-xl sm:text-2xl leading-relaxed mb-6">
                 {currentQuestion.question}
               </h2>
+              
+              {/* DEBUG: Mostrar categoria da questão atual */}
+              <div className="text-xs text-muted-foreground mb-4 text-center">
+                🏷️ Categoria: <span className="font-medium text-orange-500">{currentQuestion.category}</span>
+              </div>
               
               <div className="space-y-3">
                 {currentQuestion.options.map((option, index) => {
