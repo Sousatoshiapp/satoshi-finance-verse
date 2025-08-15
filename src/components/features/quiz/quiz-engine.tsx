@@ -491,6 +491,7 @@ export function QuizEngine({
             <div className="flex items-center justify-center gap-4 sm:gap-6">
               <QuizBTZCard />
               <CircularTimer
+                key={currentIndex} // Force reset on question change
                 duration={30}
                 isActive={!showAnswer && !loading}
                 onTimeUp={handleTimeUp}
