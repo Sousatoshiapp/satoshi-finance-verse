@@ -2,49 +2,60 @@ import React, { useEffect, useState } from 'react';
 import { useQuizTranslations } from '@/hooks/use-quiz-translations';
 import { useI18n } from '@/hooks/use-i18n';
 import { analyzeQuestionTranslationCoverage } from '@/utils/translation-mapper';
-
-interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  explanation?: string;
-  category: string;
-  difficulty: string;
-}
+import { QuizQuestion } from '@/types/quiz';
 
 const mockQuestions: QuizQuestion[] = [
   {
     id: '1',
     question: 'Quem criou o Bitcoin?',
-    options: ['Satoshi Nakamoto', 'Vitalik Buterin', 'Charlie Lee', 'Roger Ver'],
+    options: [
+      { id: 'a', text: 'Satoshi Nakamoto', isCorrect: true },
+      { id: 'b', text: 'Vitalik Buterin', isCorrect: false },
+      { id: 'c', text: 'Charlie Lee', isCorrect: false },
+      { id: 'd', text: 'Roger Ver', isCorrect: false }
+    ],
     correct_answer: 'Satoshi Nakamoto',
-    explanation: 'Satoshi Nakamoto é o pseudônimo do criador do Bitcoin.',
-    category: 'cryptocurrency',
+    explanation: 'Satoshi Nakamoto é o pseudônimo da pessoa ou grupo que criou o Bitcoin.',
+    category: 'Cripto',
     difficulty: 'easy'
   },
   {
     id: '2', 
+    question: 'O que é blockchain?',
+    options: [
+      { id: 'a', text: 'Uma moeda digital', isCorrect: false },
+      { id: 'b', text: 'Um livro de registros distribuído', isCorrect: true },
+      { id: 'c', text: 'Uma empresa de tecnologia', isCorrect: false },
+      { id: 'd', text: 'Um tipo de investimento', isCorrect: false }
+    ],
+    correct_answer: 'Um livro de registros distribuído',
+    explanation: 'Blockchain é uma tecnologia de livro de registros distribuído e descentralizado.',
+    category: 'Cripto',
+    difficulty: 'medium'
+  },
+  {
+    id: '3',
     question: 'O que é inflação?',
-    options: ['Aumento de preços', 'Diminuição de preços', 'Troca de moeda', 'Taxa de juros'],
+    options: [
+      { id: 'a', text: 'Aumento de preços', isCorrect: true },
+      { id: 'b', text: 'Diminuição de preços', isCorrect: false },
+      { id: 'c', text: 'Troca de moeda', isCorrect: false },
+      { id: 'd', text: 'Taxa de juros', isCorrect: false }
+    ],
     correct_answer: 'Aumento de preços',
     explanation: 'Inflação é o aumento geral de preços.',
     category: 'economics',
     difficulty: 'easy'
   },
   {
-    id: '3',
-    question: 'Quem criou Bitcoin?', // Fuzzy match test
-    options: ['Satoshi Nakamoto', 'Vitalik Buterin', 'Charlie Lee', 'Roger Ver'],
-    correct_answer: 'Satoshi Nakamoto',
-    explanation: 'Test fuzzy matching.',
-    category: 'cryptocurrency', 
-    difficulty: 'easy'
-  },
-  {
     id: '4',
     question: 'O que é uma pergunta sem tradução?',
-    options: ['Opção 1', 'Opção 2', 'Opção 3', 'Opção 4'],
+    options: [
+      { id: 'a', text: 'Opção 1', isCorrect: true },
+      { id: 'b', text: 'Opção 2', isCorrect: false },
+      { id: 'c', text: 'Opção 3', isCorrect: false },
+      { id: 'd', text: 'Opção 4', isCorrect: false }
+    ],
     correct_answer: 'Opção 1',
     explanation: 'Esta pergunta não tem tradução.',
     category: 'test',
@@ -106,7 +117,7 @@ export function TranslationTest() {
               <p className="text-sm text-gray-600 mb-2">Original: {mockQuestions[index].question}</p>
               <p className="font-medium mb-2">Translated: {question.question}</p>
               <div className="text-sm">
-                <p>Options: {question.options.join(', ')}</p>
+                <p>Options: {question.options.map(opt => opt.text).join(', ')}</p>
                 <p>Correct: {question.correct_answer}</p>
                 <p>Explanation: {question.explanation}</p>
               </div>

@@ -3,6 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useProfile } from '@/hooks/use-profile';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { generateDuelQuestions as importedGenerateDuelQuestions } from '@/utils/duel-questions';
+import { QuizQuestion, DuelQuestion } from '@/types/quiz';
 
 export interface CasinoDuel {
   id: string;
@@ -14,7 +16,7 @@ export interface CasinoDuel {
   winner_id?: string;
   player1_score: number;
   player2_score: number;
-  questions: any[];
+  questions: QuizQuestion[];
   current_question: number;
   created_at: string;
   started_at?: string;
@@ -29,20 +31,6 @@ export interface CasinoDuel {
     level: number;
     avatar_url?: string;
   };
-}
-
-export interface DuelQuestion {
-  id: string;
-  question: string;
-  district_id?: string;
-  options: {
-    a: string;
-    b: string;
-    c: string;
-    d: string;
-  };
-  correct_answer: 'a' | 'b' | 'c' | 'd';
-  explanation?: string;
 }
 
 export function useCasinoDuels() {
@@ -149,7 +137,7 @@ export function useCasinoDuels() {
           console.log('🎯 Found opponent:', opponent.user_id);
 
           // Generate questions for the duel using standardized system
-          const questions = await generateDuelQuestions(topic, profile?.level, 1);
+          const questions = await generateDuelQuestionsForCasino(topic, profile?.level, 1);
 
           // Create the duel
           const { data: duelData, error: duelError } = await supabase
@@ -504,11 +492,10 @@ export function useCasinoDuels() {
 }
 
 // Generate questions for a specific topic using the standardized system
-async function generateDuelQuestions(topic: string, playerLevel1?: number, playerLevel2?: number): Promise<DuelQuestion[]> {
+async function generateDuelQuestionsForCasino(topic: string, playerLevel1?: number, playerLevel2?: number): Promise<DuelQuestion[]> {
   try {
-    // Import and use the standardized function
-    const { generateDuelQuestions: getQuestions } = await import('../utils/duel-questions');
-    const standardQuestions = await getQuestions(topic, playerLevel1, playerLevel2);
+    // Use the imported standardized function
+    const standardQuestions = await importedGenerateDuelQuestions(topic, playerLevel1, playerLevel2);
     
     // Convert to the format expected by casino duels
     return standardQuestions.map((q, index) => ({

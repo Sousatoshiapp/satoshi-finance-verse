@@ -1,15 +1,7 @@
 import { useCallback } from 'react';
+import { QuizQuestion } from '@/types/quiz';
 
-export interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  explanation?: string;
-  category: string;
-  difficulty: string;
-  [key: string]: any;
-}
+export type { QuizQuestion };
 
 export const useQuizShuffle = () => {
   // Função para embaralhar as opções de uma questão

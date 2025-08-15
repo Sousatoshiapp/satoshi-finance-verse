@@ -1,15 +1,5 @@
 import { supabase } from "../integrations/supabase/client";
-
-export interface QuizQuestion {
-  id: number;
-  question: string;
-  options: {
-    id: string;
-    text: string;
-    isCorrect: boolean;
-  }[];
-  explanation: string;
-}
+import { QuizQuestion } from '@/types/quiz';
 
 // Mapeamento de tópicos de duelo para categorias da base de dados
 const TOPIC_TO_CATEGORY: Record<string, string> = {
@@ -35,6 +25,7 @@ const FALLBACK_QUESTIONS: QuizQuestion[] = [
       { id: "c", text: "Poupar é desnecessário", isCorrect: false },
       { id: "d", text: "Investir é muito arriscado", isCorrect: false }
     ],
+    correct_answer: "Receitas devem ser maiores que despesas",
     explanation: "A regra fundamental do orçamento é manter as receitas maiores que as despesas."
   },
   {
@@ -46,6 +37,7 @@ const FALLBACK_QUESTIONS: QuizQuestion[] = [
       { id: "c", text: "Recurso para situações inesperadas", isCorrect: true },
       { id: "d", text: "Dinheiro para férias", isCorrect: false }
     ],
+    correct_answer: "Recurso para situações inesperadas",
     explanation: "A reserva de emergência é um fundo para cobrir despesas inesperadas."
   },
   {
@@ -57,6 +49,7 @@ const FALLBACK_QUESTIONS: QuizQuestion[] = [
       { id: "c", text: "Garantir perdas", isCorrect: false },
       { id: "d", text: "Complicar a carteira", isCorrect: false }
     ],
+    correct_answer: "Reduzir os riscos",
     explanation: "A diversificação ajuda a reduzir os riscos distribuindo investimentos em diferentes ativos."
   }
 ];
@@ -117,16 +110,28 @@ async function getQuestionsWithDifficultyFallback(
 
 // Função para formatar questões do banco para o formato esperado
 function formatQuestions(data: any[]): QuizQuestion[] {
-  return data.map((q, index) => ({
-    id: index + 1,
-    question: q.question,
-    options: (typeof q.options === 'string' ? JSON.parse(q.options) : q.options).map((opt: string, optIndex: number) => ({
-      id: String.fromCharCode(97 + optIndex),
-      text: opt,
-      isCorrect: opt === q.correct_answer
-    })),
-    explanation: q.explanation || 'Explicação não disponível'
-  }));
+  return data.map((q, index) => {
+    const optionsArray = typeof q.options === 'string' ? JSON.parse(q.options) : q.options;
+    
+    console.log('🔧 Formatting question:', {
+      id: q.id,
+      question: q.question?.substring(0, 50) + '...',
+      correct_answer: q.correct_answer,
+      options_count: optionsArray?.length
+    });
+    
+    return {
+      id: index + 1,
+      question: q.question,
+      options: optionsArray.map((opt: string, optIndex: number) => ({
+        id: String.fromCharCode(97 + optIndex), // 'a', 'b', 'c', 'd'
+        text: opt,
+        isCorrect: opt === q.correct_answer
+      })),
+      correct_answer: q.correct_answer, // Store the correct answer text
+      explanation: q.explanation || 'Explicação não disponível'
+    };
+  });
 }
 
 export async function generateDuelQuestions(

@@ -16,9 +16,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCasinoDuels } from "@/hooks/use-casino-duels";
 import { useProfile } from "@/hooks/use-profile";
+import { QuizQuestion } from "@/types/quiz";
 
 interface Question {
-  id: string;
+  id: string | number;
   question: string;
   options: {
     a: string;
@@ -26,7 +27,7 @@ interface Question {
     c: string;
     d: string;
   };
-  correct_answer: 'a' | 'b' | 'c' | 'd';
+  correct_answer: 'a' | 'b' | 'c' | 'd' | string;
   explanation?: string;
 }
 
@@ -63,15 +64,15 @@ export default function CasinoDuelScreen() {
     
     // Handle both formats: RPC format and expected format
     if (rawQuestion.options && Array.isArray(rawQuestion.options)) {
-      // RPC format: options is an array
-      const transformedQuestion = {
-        id: rawQuestion.id,
+      // New QuizQuestion format: options is an array of objects
+      const transformedQuestion: Question = {
+        id: String(rawQuestion.id),
         question: rawQuestion.question,
         options: {
-          a: rawQuestion.options[0] || '',
-          b: rawQuestion.options[1] || '',
-          c: rawQuestion.options[2] || '',
-          d: rawQuestion.options[3] || ''
+          a: (typeof rawQuestion.options[0] === 'string') ? rawQuestion.options[0] : rawQuestion.options[0]?.text || '',
+          b: (typeof rawQuestion.options[1] === 'string') ? rawQuestion.options[1] : rawQuestion.options[1]?.text || '',
+          c: (typeof rawQuestion.options[2] === 'string') ? rawQuestion.options[2] : rawQuestion.options[2]?.text || '',
+          d: (typeof rawQuestion.options[3] === 'string') ? rawQuestion.options[3] : rawQuestion.options[3]?.text || ''
         },
         correct_answer: rawQuestion.correct_answer,
         explanation: rawQuestion.explanation
@@ -79,9 +80,15 @@ export default function CasinoDuelScreen() {
       console.log('✅ CasinoDuelScreen: Transformed question:', transformedQuestion);
       return transformedQuestion;
     } else if (rawQuestion.options && typeof rawQuestion.options === 'object') {
-      // Already in expected format
+      // Already in expected format (old DuelQuestion format)
       console.log('✅ CasinoDuelScreen: Question already in correct format');
-      return rawQuestion as Question;
+      return {
+        id: String(rawQuestion.id),
+        question: rawQuestion.question,
+        options: rawQuestion.options,
+        correct_answer: rawQuestion.correct_answer,
+        explanation: rawQuestion.explanation
+      };
     }
     
     console.log('❌ CasinoDuelScreen: Invalid question format:', rawQuestion);
