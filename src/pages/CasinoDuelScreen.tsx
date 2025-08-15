@@ -26,7 +26,6 @@ export default function CasinoDuelScreen() {
   
   // Use the actual hook interface from useCasinoDuels - no arguments
   const casinoDuels = useCasinoDuels();
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [playerScore, setPlayerScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
@@ -82,6 +81,7 @@ export default function CasinoDuelScreen() {
   }, [user, duelId, navigate, toast]);
 
   const handleAnswer = async (optionId: string) => {
+    const questions = casinoDuels.currentDuel?.questions || [];
     if (!casinoDuels.currentDuel || !questions[currentQuestionIndex - 1]) return;
     
     try {
@@ -103,6 +103,8 @@ export default function CasinoDuelScreen() {
     }
   };
 
+  const questions = casinoDuels.currentDuel?.questions || [];
+  
   if (casinoDuels.loading || profilesLoading || !casinoDuels.currentDuel || !profiles) {
     return (
       <div className="min-h-screen flex items-center justify-center">
