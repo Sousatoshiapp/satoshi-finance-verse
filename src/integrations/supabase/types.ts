@@ -5732,6 +5732,7 @@ export type Database = {
       quiz_questions: {
         Row: {
           approval_status: string | null
+          approved_at: string | null
           approved_by: string | null
           author_notes: string | null
           avg_response_time: number | null
@@ -5764,6 +5765,7 @@ export type Database = {
         }
         Insert: {
           approval_status?: string | null
+          approved_at?: string | null
           approved_by?: string | null
           author_notes?: string | null
           avg_response_time?: number | null
@@ -5796,6 +5798,7 @@ export type Database = {
         }
         Update: {
           approval_status?: string | null
+          approved_at?: string | null
           approved_by?: string | null
           author_notes?: string | null
           avg_response_time?: number | null
