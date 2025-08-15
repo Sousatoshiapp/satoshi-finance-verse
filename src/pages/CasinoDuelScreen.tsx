@@ -32,6 +32,7 @@ export default function CasinoDuelScreen() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
 
+  // Simplify profiles query - remove problematic avatar join
   const { data: profiles, isLoading: profilesLoading } = useQuery({
     queryKey: ['duel-profiles', casinoDuels.currentDuel?.player1_id, casinoDuels.currentDuel?.player2_id],
     queryFn: async () => {
@@ -39,10 +40,7 @@ export default function CasinoDuelScreen() {
       
       const { data, error } = await supabase
         .from('profiles')
-        .select(`
-          id, nickname, level, xp,
-          avatars(name, image_url)
-        `)
+        .select('id, nickname, level, xp')
         .in('id', [casinoDuels.currentDuel.player1_id, casinoDuels.currentDuel.player2_id]);
 
       if (error) throw error;
@@ -144,8 +142,8 @@ export default function CasinoDuelScreen() {
       questions={questions.map(convertToInterfaceQuestion)}
       currentQuestion={currentQuestionIndex}
       onAnswer={handleAnswer}
-      playerAvatar={player1Profile?.avatars}
-      opponentAvatar={player2Profile?.avatars}
+      playerAvatar={null}
+      opponentAvatar={null}
       playerScore={playerScore}
       opponentScore={opponentScore}
       playerNickname={player1Profile?.nickname || 'Jogador 1'}
