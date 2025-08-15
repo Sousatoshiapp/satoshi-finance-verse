@@ -80,6 +80,12 @@ export const gameRoutes = [
     showNavbar: false
   },
   {
+    path: "/casino-duel",
+    element: "SelectOpponentScreen",
+    requiresAuth: true,
+    showNavbar: true
+  },
+  {
     path: "/casino-duel/:duelId",
     element: "CasinoDuelScreen",
     requiresAuth: true,
