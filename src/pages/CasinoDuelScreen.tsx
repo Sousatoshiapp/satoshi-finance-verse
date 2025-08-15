@@ -10,11 +10,33 @@ import { useToast } from '@/hooks/use-toast';
 import { QuizQuestion } from '@/types/quiz';
 
 // Convert QuizQuestion to the format expected by EnhancedDuelInterface
-const convertToInterfaceQuestion = (question: QuizQuestion) => {
+const convertToInterfaceQuestion = (question: any) => {
+  let options;
+  
+  if (Array.isArray(question.options)) {
+    // Handle array format - convert to options with proper IDs
+    options = question.options.map((text: string, index: number) => ({
+      id: ['a', 'b', 'c', 'd'][index] || String(index),
+      text: text,
+      isCorrect: text === question.correct_answer
+    }));
+  } else if (typeof question.options === 'object' && question.options !== null) {
+    // Handle object format {a: "text", b: "text", ...}
+    options = Object.entries(question.options).map(([key, text]) => ({
+      id: key,
+      text: text as string,
+      isCorrect: key === question.correct_answer || (text as string) === question.correct_answer
+    }));
+  } else {
+    // Fallback for unexpected formats
+    console.warn('Unexpected options format for question:', question.id);
+    options = [];
+  }
+  
   return {
     id: String(question.id),
     question: question.question,
-    options: question.options
+    options: options
   };
 };
 
