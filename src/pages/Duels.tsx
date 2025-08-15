@@ -168,30 +168,10 @@ export default function Duels() {
   };
 
   if (currentView === 'active' && activeDuel) {
-    return <EnhancedSimultaneousDuel 
-      duel={activeDuel} 
-      onDuelEnd={(result) => {
-        toast({
-          title: result.winner ? "🎉 Vitória!" : result.score === result.opponentScore ? "🤝 Empate!" : "😔 Derrota",
-          description: result.winner ? 
-            `Parabéns! Você venceu por ${result.score} x ${result.opponentScore}!` : 
-            result.score === result.opponentScore ?
-            `Empate! Placar: ${result.score} x ${result.opponentScore}` :
-            `Não foi desta vez. Placar: ${result.score} x ${result.opponentScore}`,
-        });
-        
-        // Clear duel state and return to main view
-        setActiveDuel(null);
-        setCurrentView('main');
-        
-        // Force complete refresh of data
-        setTimeout(() => {
-          loadPendingInvites();
-          checkForActiveDuel();
-          // Remove forced reload - let React handle state updates
-        }, 1000);
-      }} 
-    />;
+    // Redirecionar para o sistema unificado
+    console.log('🔄 Redirecting to unified duel system:', activeDuel.id);
+    navigate(`/unified-duel/${activeDuel.id}`);
+    return null;
   }
 
   if (currentView === 'users') {

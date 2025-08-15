@@ -51,7 +51,7 @@ const ConceptConnectionsPage = lazy(() => import("@/pages/ConceptConnectionsPage
 
 // Duels
 const SelectOpponentScreen = lazy(() => import("@/pages/SelectOpponentScreen"));
-const CasinoDuelScreen = lazy(() => import("@/pages/CasinoDuelScreen"));
+// const CasinoDuelScreen = lazy(() => import("@/pages/CasinoDuelScreen")); // LEGACY - COMENTADO
 const DuelResultScreen = lazy(() => import("@/pages/DuelResultScreen"));
 const UnifiedCasinoDuelScreen = lazy(() => import("@/pages/UnifiedCasinoDuelScreen"));
 const DuelSystemTest = lazy(() => import("@/pages/DuelSystemTest"));
@@ -111,7 +111,7 @@ const componentMap = {
   ConceptConnectionsPage,
   // Duels
   SelectOpponentScreen,
-  CasinoDuelScreen,
+  // CasinoDuelScreen, // LEGACY - COMENTADO
   DuelResultScreen,
   UnifiedCasinoDuelScreen,
   DuelSystemTest,

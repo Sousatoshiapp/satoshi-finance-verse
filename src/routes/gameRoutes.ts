@@ -87,7 +87,7 @@ export const gameRoutes = [
   },
   {
     path: "/casino-duel/:duelId",
-    element: "CasinoDuelScreen",
+    element: "UnifiedCasinoDuelScreen", // MIGRADO PARA SISTEMA UNIFICADO
     requiresAuth: true,
     showNavbar: false
   },

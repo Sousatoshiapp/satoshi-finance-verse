@@ -24,7 +24,7 @@ interface DuelResult {
 export default function DuelResultScreen() {
   const { duelId } = useParams<{ duelId: string }>();
   const navigate = useNavigate();
-  const { currentDuel, loadDuelById } = useCasinoDuels();
+  const { currentDuel } = useCasinoDuels(); // LEGACY HOOK - sem loadDuelById
   const { profile } = useProfile();
   const { showRewardAnimation } = useUnifiedRewards();
   
@@ -40,10 +40,8 @@ export default function DuelResultScreen() {
     }
 
     const loadResult = async () => {
-      // Load duel if not already loaded
-      if (!currentDuel || currentDuel.id !== duelId) {
-        await loadDuelById(duelId);
-      }
+      // LEGACY: Não carrega duelo - sistema antigo desabilitado
+      console.warn('⚠️ DuelResultScreen usando sistema LEGACY - redirecionar para unified system');
       
       // For now, we'll calculate the result based on the current duel data
       // In a real implementation, this would come from the complete-casino-duel edge function
@@ -95,7 +93,7 @@ export default function DuelResultScreen() {
     };
 
     loadResult();
-  }, [duelId, currentDuel, loadDuelById, navigate]);
+  }, [duelId, currentDuel, navigate]);
 
   if (loading || !currentDuel || !result || !profile) {
     return (
