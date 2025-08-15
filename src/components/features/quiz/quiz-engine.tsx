@@ -27,6 +27,16 @@ import { useToast } from "@/hooks/use-toast";
 import confetti from "canvas-confetti";
 import victoryImage from "@/assets/victory-celebration.png";
 
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correct_answer: string;
+  explanation?: string;
+  category: string;
+  difficulty: string;
+}
+
 interface QuizEngineProps {
   mode: 'solo' | 'duel' | 'tournament' | 'daily_mission' | 'district';
   category?: string;
@@ -134,7 +144,7 @@ export function QuizEngine({
     setShowTimeoutModal(true);
     
     const answeredQuestion = {
-      questionId: String(question.id),
+      questionId: question.id,
       selectedAnswer: selectedAnswer || 'timeout',
       isCorrect: false,
       timeSpent: 30
@@ -230,7 +240,7 @@ export function QuizEngine({
     }
 
     const answeredQuestion = {
-      questionId: String(question.id),
+      questionId: question.id,
       selectedAnswer,
       isCorrect,
       timeSpent: responseTime
@@ -514,16 +524,16 @@ export function QuizEngine({
               
               <div className="space-y-3">
                 {currentQuestion.options.map((option, index) => {
-                  const isSelected = selectedAnswer === option.id;
-                  const isCorrect = option.isCorrect;
+                  const isSelected = selectedAnswer === option;
+                  const isCorrect = option === currentQuestion.correct_answer;
                   const isWrong = showAnswer && isSelected && !isCorrect;
                   const shouldShowCorrect = showAnswer && isCorrect;
                   
                   return (
                     <Button
-                      key={option.id}
+                      key={index}
                       variant="outline"
-                      onClick={() => handleOptionSelect(option.id)}
+                      onClick={() => handleOptionSelect(option)}
                       disabled={showAnswer}
                       className={cn(
                         "w-full text-left transition-all duration-300 group hover:shadow-lg",
@@ -535,20 +545,20 @@ export function QuizEngine({
                         // Typography responsiva
                         isMobile ? "text-sm leading-5" : "text-base leading-6",
                         // Estados visuais
-                        selectedAnswer === option.id
+                        selectedAnswer === option
                           ? "bg-primary text-primary-foreground border-primary scale-105 shadow-lg"
                           : "bg-card border-border hover:scale-[1.02] hover:border-primary/50",
                         !selectedAnswer && !showAnswer ? "hover:bg-gradient-to-r hover:from-[#adff2f]/20 hover:to-[#adff2f]/10 hover:text-black hover:border-[#adff2f]" : "",
-                        showAnswer && option.isCorrect
+                        showAnswer && option === currentQuestion.correct_answer
                           ? "bg-green-500 text-white border-green-500 scale-105 shadow-green-200/50 shadow-lg"
-                          : showAnswer && selectedAnswer === option.id && !option.isCorrect
+                          : showAnswer && selectedAnswer === option && option !== currentQuestion.correct_answer
                           ? "bg-red-500 text-white border-red-500 scale-105 shadow-red-200/50 shadow-lg"
                           : ""
                       )}
                     >
                       <div className="flex items-start justify-between w-full gap-2">
                         <span className="flex-1 text-left min-w-0">
-                          {option.text}
+                          {option}
                         </span>
                         {showAnswer && (
                           <span className="text-lg flex-shrink-0 mt-0.5">
@@ -634,7 +644,7 @@ export function QuizEngine({
       <QuizDebugPanel
         category={category}
         currentQuestion={currentQuestion ? {
-          id: String(currentQuestion.id),
+          id: currentQuestion.id,
           category: currentQuestion.category,
           difficulty: currentQuestion.difficulty,
           question: currentQuestion.question
