@@ -113,61 +113,61 @@ export default function GameMode() {
 
       {/* Main content with proper spacing - Centered */}
       <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-24' : 'p-6 flex items-center justify-center'}`}>
-        <div className={`${isMobile ? 'max-w-lg mx-auto' : 'max-w-xl mx-auto'} ${isMobile ? 'space-y-3' : 'space-y-6'}`}>
+        <div className={`${isMobile ? 'max-w-2xl mx-auto' : 'max-w-2xl mx-auto'} ${isMobile ? 'space-y-4' : 'space-y-7'}`}>
 
           {/* Game Mode Selection with casino styling */}
           <Card className="casino-card bg-black/40 backdrop-blur-sm border-purple-500/30">
-            <CardContent className={`${isMobile ? 'p-2' : 'p-3'}`}>
-              <div className={`text-center ${isMobile ? 'mb-3' : 'mb-4'}`}>
-                <h2 className="text-sm font-bold text-white mb-2">
+            <CardContent className={`${isMobile ? 'p-3' : 'p-4'}`}>
+              <div className={`text-center ${isMobile ? 'mb-4' : 'mb-5'}`}>
+                <h2 className="text-base font-bold text-white mb-3">
                   Como você quer arrasar hoje?
                 </h2>
-                <p className="text-muted-foreground text-xs">
+                <p className="text-muted-foreground text-sm">
                   Escolha seu estilo de jogo
                 </p>
               </div>
 
-              <div className={`grid grid-cols-2 ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
+              <div className={`grid grid-cols-2 ${isMobile ? 'gap-2' : 'gap-3'}`}>
                 {/* Modo Solo */}
                 <button
                   onClick={() => handleModeSelect('solo')}
-                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card shadow-lg shadow-purple-500/50 animate-pulse ${
+                  className={`group w-full ${isMobile ? 'p-2' : 'p-2.5'} rounded-lg border-2 transition-all duration-300 casino-topic-card shadow-lg shadow-purple-500/50 animate-pulse ${
                     selectedMode === 'solo'
                       ? 'casino-selected border-purple-500 bg-purple-500/20 text-white shadow-2xl shadow-purple-500/80'
                       : 'border-purple-500/30 bg-black/20 text-gray-300 casino-hover hover:border-purple-500/60 hover:bg-purple-500/10 hover:shadow-lg hover:shadow-purple-500/80'
                   }`}
                   disabled={selectedMode !== null}
                 >
-                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
-                    <User className="h-3 w-3 text-white" />
-                    <span className="text-xs font-medium text-center">Solo Mission</span>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'} ${isMobile ? 'py-1.5' : 'py-2.5'}`}>
+                    <User className="h-4 w-4 text-white" />
+                    <span className="text-sm font-medium text-center">Solo Mission</span>
                   </div>
                 </button>
 
                 {/* Modo Duelo */}
                 <button
                   onClick={() => handleModeSelect('duelo')}
-                  className={`group w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 transition-all duration-300 casino-topic-card shadow-lg shadow-pink-500/50 animate-pulse ${
+                  className={`group w-full ${isMobile ? 'p-2' : 'p-2.5'} rounded-lg border-2 transition-all duration-300 casino-topic-card shadow-lg shadow-pink-500/50 animate-pulse ${
                     selectedMode === 'duelo'
                       ? 'casino-selected border-pink-500 bg-pink-500/20 text-white shadow-2xl shadow-pink-500/80'
                       : 'border-pink-500/30 bg-black/20 text-gray-300 casino-hover hover:border-pink-500/60 hover:bg-pink-500/10 hover:shadow-lg hover:shadow-pink-500/80'
                   }`}
                   disabled={selectedMode !== null}
                 >
-                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
-                    <Users className="h-3 w-3 text-white" />
-                    <span className="text-xs font-medium text-center">Multiplayer</span>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'} ${isMobile ? 'py-1.5' : 'py-2.5'}`}>
+                    <Users className="h-4 w-4 text-white" />
+                    <span className="text-sm font-medium text-center">Multiplayer</span>
                   </div>
                 </button>
 
                 {/* Torneio */}
                 <button
-                  className={`w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30`}
+                  className={`w-full ${isMobile ? 'p-2' : 'p-2.5'} rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30`}
                   disabled={true}
                 >
-                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
-                    <span className="text-xs text-muted-foreground text-center">Torneios</span>
-                    <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'} ${isMobile ? 'py-1.5' : 'py-2.5'}`}>
+                    <span className="text-sm text-muted-foreground text-center">Torneios</span>
+                    <span className="px-2 py-1 text-sm bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
                       Soon™
                     </span>
                   </div>
@@ -175,13 +175,13 @@ export default function GameMode() {
 
                 {/* Battle Royale */}
                 <button
-                  className={`w-full ${isMobile ? 'p-1.5' : 'p-2'} rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30`}
+                  className={`w-full ${isMobile ? 'p-2' : 'p-2.5'} rounded-lg border-2 relative opacity-60 cursor-not-allowed bg-black/20 border-muted-foreground/30`}
                   disabled={true}
                 >
-                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1' : 'gap-1.5'} ${isMobile ? 'py-1' : 'py-2'}`}>
-                    <Sword className="h-3 w-3 text-muted-foreground opacity-60" />
-                    <span className="text-xs text-muted-foreground text-center">Battle Royale</span>
-                    <span className="px-1.5 py-0.5 text-xs bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
+                  <div className={`flex flex-col items-center justify-center ${isMobile ? 'gap-1.5' : 'gap-2'} ${isMobile ? 'py-1.5' : 'py-2.5'}`}>
+                    <Sword className="h-4 w-4 text-muted-foreground opacity-60" />
+                    <span className="text-sm text-muted-foreground text-center">Battle Royale</span>
+                    <span className="px-2 py-1 text-sm bg-gradient-to-r from-orange-400 to-yellow-400 text-black font-bold rounded-full border border-orange-300 shadow-lg shadow-orange-400/50 animate-pulse" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.8))' }}>
                       Soon™
                     </span>
                   </div>
