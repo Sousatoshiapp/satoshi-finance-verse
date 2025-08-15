@@ -21,8 +21,8 @@ interface EnhancedDuelInterfaceProps {
   questions: Question[];
   currentQuestion: number;
   onAnswer: (optionId: string) => void;
-  playerAvatar: any;
-  opponentAvatar: any;
+  playerAvatar: string | null;
+  opponentAvatar: string | null;
   playerScore: number;
   opponentScore: number;
   playerNickname: string;
@@ -31,6 +31,7 @@ interface EnhancedDuelInterfaceProps {
   isWaitingForOpponent?: boolean;
   onQuitDuel?: () => void;
   betAmount?: number;
+  onTimeUp?: () => void;
 }
 
 export function EnhancedDuelInterface({
@@ -47,6 +48,7 @@ export function EnhancedDuelInterface({
   isWaitingForOpponent = false,
   onQuitDuel,
   betAmount = 0,
+  onTimeUp,
 }: EnhancedDuelInterfaceProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const sensoryFeedback = useSensoryFeedback();
@@ -77,11 +79,12 @@ export function EnhancedDuelInterface({
     onAnswer(optionId);
   };
 
-  const handleTimeUp = () => {
-    if (!selectedAnswer && !isWaitingForOpponent) {
-      onAnswer('');
+  // Timer countdown effect is now handled by parent
+  useEffect(() => {
+    if (timeLeft === 0 && !selectedAnswer && !isWaitingForOpponent) {
+      onTimeUp?.();
     }
-  };
+  }, [timeLeft, selectedAnswer, isWaitingForOpponent, onTimeUp]);
 
   // Reset when question changes
   useEffect(() => {
@@ -104,11 +107,19 @@ export function EnhancedDuelInterface({
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg"
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg overflow-hidden"
             >
-              <span className="text-primary-foreground font-bold text-sm sm:text-xl">
-                {playerNickname.charAt(0).toUpperCase()}
-              </span>
+              {playerAvatar ? (
+                <img 
+                  src={playerAvatar} 
+                  alt={playerNickname}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold text-sm sm:text-xl">
+                  {playerNickname.charAt(0).toUpperCase()}
+                </span>
+              )}
             </motion.div>
             <div className="text-center sm:text-left">
               <p className="font-semibold text-xs sm:text-base text-foreground truncate max-w-20 sm:max-w-none">
@@ -199,11 +210,19 @@ export function EnhancedDuelInterface({
           <div className="flex flex-col sm:flex-row-reverse items-center space-y-2 sm:space-y-0 sm:space-x-reverse sm:space-x-4">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg"
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg overflow-hidden"
             >
-              <span className="text-destructive-foreground font-bold text-sm sm:text-xl">
-                {opponentNickname.charAt(0).toUpperCase()}
-              </span>
+              {opponentAvatar ? (
+                <img 
+                  src={opponentAvatar} 
+                  alt={opponentNickname}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-destructive-foreground font-bold text-sm sm:text-xl">
+                  {opponentNickname.charAt(0).toUpperCase()}
+                </span>
+              )}
             </motion.div>
             <div className="text-center sm:text-right">
               <p className="font-semibold text-xs sm:text-base text-foreground truncate max-w-20 sm:max-w-none">

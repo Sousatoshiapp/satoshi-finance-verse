@@ -64,8 +64,9 @@ export default function CasinoDuelScreen() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [responseStartTime, setResponseStartTime] = useState<number>(Date.now());
+  const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
-  // Simplify profiles query - remove problematic avatar join
+  // Enhanced profiles query with avatar data
   const { data: profiles, isLoading: profilesLoading } = useQuery({
     queryKey: ['duel-profiles', casinoDuels.currentDuel?.player1_id, casinoDuels.currentDuel?.player2_id],
     queryFn: async () => {
@@ -73,7 +74,12 @@ export default function CasinoDuelScreen() {
       
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, nickname, level, xp')
+        .select(`
+          id, nickname, level, xp, profile_image_url, current_avatar_id,
+          avatars:avatars!current_avatar_id (
+            name, image_url
+          )
+        `)
         .in('id', [casinoDuels.currentDuel.player1_id, casinoDuels.currentDuel.player2_id]);
 
       if (error) throw error;
@@ -88,6 +94,32 @@ export default function CasinoDuelScreen() {
       casinoDuels.loadDuelById(duelId);
     }
   }, [duelId]);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (timeLeft > 0 && !isSubmitting && !showResult) {
+      const timer = setTimeout(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0 && !isSubmitting && !showResult) {
+      // Time up - submit empty answer (incorrect)
+      handleTimeUp();
+    }
+  }, [timeLeft, isSubmitting, showResult]);
+
+  // Reset timer when question changes
+  useEffect(() => {
+    setTimeLeft(30);
+    setResponseStartTime(Date.now());
+  }, [currentQuestionIndex]);
+
+  // Timer sound effects
+  useEffect(() => {
+    if (timeLeft <= 5 && timeLeft > 0) {
+      sensoryFeedback.triggerTension(timeLeft);
+    }
+  }, [timeLeft, sensoryFeedback]);
 
   useEffect(() => {
     if (!user) {
@@ -110,6 +142,16 @@ export default function CasinoDuelScreen() {
       return;
     }
   }, [user, duelId, navigate, toast]);
+
+  const handleTimeUp = async () => {
+    if (isSubmitting || showResult) return;
+    
+    // Time's up - submit empty answer (automatically incorrect)
+    sensoryFeedback.triggerError();
+    rewardSystem.showIncorrectAnswer('Tempo Esgotado!');
+    
+    await handleAnswer('');
+  };
 
   const handleAnswer = async (optionId: string) => {
     const questions = casinoDuels.currentDuel?.questions || [];
@@ -139,8 +181,11 @@ export default function CasinoDuelScreen() {
 
       if (error) throw error;
 
-      const isCorrect = data?.is_correct || false;
+      const answerCorrect = data?.is_correct || false;
       const newScore = data?.new_score || 0;
+
+      // Store correctness for visual feedback
+      setIsCorrect(answerCorrect);
 
       // Update local score based on whether current user is player1 or player2
       const isPlayer1 = casinoDuels.currentDuel.player1_id === user?.id;
@@ -152,7 +197,7 @@ export default function CasinoDuelScreen() {
       }
 
       // Trigger feedback based on correctness
-      if (isCorrect) {
+      if (answerCorrect) {
         sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
         rewardSystem.showCorrectAnswer({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
       } else {
@@ -281,8 +326,15 @@ export default function CasinoDuelScreen() {
     );
   }
 
-  const player1Profile = profiles.find(p => p.id === casinoDuels.currentDuel.player1_id);
-  const player2Profile = profiles.find(p => p.id === casinoDuels.currentDuel.player2_id);
+  const player1Profile = profiles?.find(p => p.id === casinoDuels.currentDuel.player1_id);
+  const player2Profile = profiles?.find(p => p.id === casinoDuels.currentDuel.player2_id);
+
+  // Resolve avatar URLs with proper fallback
+  const getAvatarUrl = (profile: any) => {
+    if (profile?.profile_image_url) return profile.profile_image_url;
+    if (profile?.avatars?.image_url) return profile.avatars.image_url;
+    return '/avatars/the-satoshi.jpg'; // Default fallback
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
@@ -299,8 +351,8 @@ export default function CasinoDuelScreen() {
             questions={questions.map(convertToInterfaceQuestion)}
             currentQuestion={currentQuestionIndex}
             onAnswer={handleAnswer}
-            playerAvatar={null}
-            opponentAvatar={null}
+            playerAvatar={getAvatarUrl(player1Profile)}
+            opponentAvatar={getAvatarUrl(player2Profile)}
             playerScore={playerScore}
             opponentScore={opponentScore}
             playerNickname={player1Profile?.nickname || 'Jogador 1'}
@@ -309,6 +361,7 @@ export default function CasinoDuelScreen() {
             isWaitingForOpponent={isWaitingForOpponent || isSubmitting}
             onQuitDuel={handleQuitDuel}
             betAmount={casinoDuels.currentDuel.bet_amount}
+            onTimeUp={handleTimeUp}
           />
         </motion.div>
       </AnimatePresence>
@@ -325,7 +378,7 @@ export default function CasinoDuelScreen() {
             <motion.div
               initial={{ y: -20 }}
               animate={{ y: 0 }}
-              className={`p-8 rounded-2xl ${selectedAnswer ? 'bg-green-500' : 'bg-red-500'} text-white text-center shadow-2xl`}
+              className={`p-8 rounded-2xl ${isCorrect ? 'bg-green-500' : 'bg-red-500'} text-white text-center shadow-2xl`}
             >
               <motion.div
                 initial={{ scale: 0 }}
@@ -333,10 +386,10 @@ export default function CasinoDuelScreen() {
                 transition={{ delay: 0.1 }}
                 className="text-4xl mb-4"
               >
-                {selectedAnswer ? '✅' : '❌'}
+                {isCorrect ? '✅' : '❌'}
               </motion.div>
               <h2 className="text-2xl font-bold">
-                {selectedAnswer ? 'Correto!' : 'Incorreto!'}
+                {isCorrect ? 'Correto!' : selectedAnswer === '' ? 'Tempo Esgotado!' : 'Incorreto!'}
               </h2>
             </motion.div>
           </motion.div>
