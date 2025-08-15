@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/shared/ui/card";
 import { Button } from "@/components/shared/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { CircularTimer } from "@/components/duels/circular-timer";
 import { ArrowLeft, Trophy, Clock, Target, Zap } from "lucide-react";
@@ -79,6 +80,7 @@ export function QuizEngine({
   const { user } = useAuth();
   const { toast } = useToast();
   const { playCountdownSound } = useCustomSounds();
+  const isMobile = useIsMobile();
 
   // 🚀 NOVO SISTEMA ADAPTATIVO
   const adaptiveEngine = useAdaptiveQuizEngine({
@@ -498,8 +500,15 @@ export function QuizEngine({
                       onClick={() => handleOptionSelect(option)}
                       disabled={showAnswer}
                       className={cn(
-                        "w-full p-3 sm:p-4 text-left transition-all duration-300 min-h-[45px] leading-relaxed group hover:shadow-lg",
-                        "text-sm sm:text-base break-words hyphens-auto",
+                        "w-full text-left transition-all duration-300 group hover:shadow-lg",
+                        // Padding dinâmico responsivo
+                        isMobile ? "px-3 py-4" : "px-4 py-3",
+                        // Text wrapping avançado
+                        "whitespace-normal word-break break-word hyphens-auto",
+                        "text-wrap-balance overflow-wrap-anywhere",
+                        // Typography responsiva
+                        isMobile ? "text-sm leading-5" : "text-base leading-6",
+                        // Estados visuais
                         selectedAnswer === option
                           ? "bg-primary text-primary-foreground border-primary scale-105 shadow-lg"
                           : "bg-card border-border hover:scale-[1.02] hover:border-primary/50",
@@ -511,10 +520,12 @@ export function QuizEngine({
                           : ""
                       )}
                     >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="flex-1 pr-2 text-left overflow-wrap-anywhere">{option}</span>
+                      <div className="flex items-start justify-between w-full gap-2">
+                        <span className="flex-1 text-left min-w-0">
+                          {option}
+                        </span>
                         {showAnswer && (
-                          <span className="text-lg flex-shrink-0">
+                          <span className="text-lg flex-shrink-0 mt-0.5">
                             {isCorrect ? '✅' : isSelected ? '❌' : ''}
                           </span>
                         )}
