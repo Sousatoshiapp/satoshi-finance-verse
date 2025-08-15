@@ -19,6 +19,7 @@ import { BeetzAnimation } from "./beetz-animation";
 import { StreakAnimation } from "./streak-animation";
 import { QuizBTZCard } from "./quiz-btz-card";
 import { AdaptiveQuizIndicator } from "@/components/quiz/adaptive-quiz-indicator";
+import { QuizDebugPanel } from "@/components/quiz/quiz-debug-panel";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shared/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,6 +77,7 @@ export function QuizEngine({
     isCorrect: boolean;
     timeSpent: number;
   }>>([]);
+  const [debugVisible, setDebugVisible] = useState(false);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -637,6 +639,24 @@ export function QuizEngine({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Quiz Debug Panel */}
+      <QuizDebugPanel
+        category={category}
+        currentQuestion={currentQuestion ? {
+          id: currentQuestion.id,
+          category: currentQuestion.category,
+          difficulty: currentQuestion.difficulty,
+          question: currentQuestion.question
+        } : undefined}
+        sessionStats={adaptiveEngine.sessionStats ? {
+          currentIndex: adaptiveEngine.sessionStats.currentIndex,
+          totalQuestions: adaptiveEngine.sessionStats.totalQuestions,
+          currentDifficulty: adaptiveEngine.sessionStats.currentDifficulty
+        } : undefined}
+        isVisible={debugVisible}
+        onToggle={() => setDebugVisible(!debugVisible)}
+      />
     </div>
   );
 }

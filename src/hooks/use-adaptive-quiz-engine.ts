@@ -124,17 +124,24 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
     count: number,
     excludeIds: string[] = []
   ): Promise<QuizQuestion[]> => {
-    console.log('🎯 Buscando questões adaptativas:', { 
+    console.log('🎯 [ADAPTIVE DEBUG] Buscando questões adaptativas:', { 
       targetDifficulty, 
       count, 
       category: config.category,
-      randomization: config.enableRandomization 
+      randomization: config.enableRandomization,
+      excludeIds: excludeIds.length 
     });
 
     try {
       if (config.enableRandomization) {
         // Usar sistema de randomização total
         const bankDifficulty = mapDifficultyToFilter(targetDifficulty);
+        console.log('🎲 [RANDOMIZER DEBUG] Chamando getRandomizedQuestions:', {
+          category: config.category,
+          difficulty: bankDifficulty,
+          requestedCount: count * 2
+        });
+        
         const questions = await getRandomizedQuestions(
           config.category,
           bankDifficulty,
@@ -142,8 +149,24 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
           excludeIds
         );
         
+        console.log('📋 [RANDOMIZER DEBUG] Questões recebidas:', {
+          total: questions.length,
+          categories: [...new Set(questions.map(q => q.category))],
+          sampleQuestions: questions.slice(0, 2).map(q => ({
+            id: q.id,
+            category: q.category,
+            question: q.question.substring(0, 50) + '...'
+          }))
+        });
+        
         // Retornar apenas a quantidade solicitada
-        return questions.slice(0, count);
+        const finalQuestions = questions.slice(0, count);
+        console.log('✅ [ADAPTIVE DEBUG] Questões finais selecionadas:', {
+          count: finalQuestions.length,
+          categories: [...new Set(finalQuestions.map(q => q.category))]
+        });
+        
+        return finalQuestions;
       } else {
         // Usar sistema adaptativo tradicional
         if (user) {

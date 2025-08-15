@@ -65,7 +65,12 @@ export function useQuestionRandomizer(
     limit: number = 10,
     excludeIds: string[] = []
   ) => {
-    console.log('🔀 Iniciando randomização de questões:', { category, difficulty, limit });
+    console.log('🔀 [RANDOMIZER DEBUG] Iniciando randomização de questões:', { 
+      category, 
+      difficulty, 
+      limit,
+      excludeIds: excludeIds.length 
+    });
 
     try {
       // 1. Buscar todas as questões disponíveis da categoria/dificuldade
@@ -74,19 +79,58 @@ export function useQuestionRandomizer(
         .select('*')
         .eq('is_approved', true);
 
-      if (category) query = query.eq('category', category);
-      if (difficulty) query = query.eq('difficulty', difficulty);
+      console.log('🔍 [RANDOMIZER DEBUG] Aplicando filtros:', {
+        hasCategory: !!category,
+        hasDifficulty: !!difficulty,
+        hasExcludes: excludeIds.length > 0
+      });
+
+      if (category) {
+        console.log('🏷️ [RANDOMIZER DEBUG] Filtrando por categoria:', category);
+        query = query.eq('category', category);
+      }
+      if (difficulty) {
+        console.log('⚡ [RANDOMIZER DEBUG] Filtrando por dificuldade:', difficulty);
+        query = query.eq('difficulty', difficulty);
+      }
       if (excludeIds.length > 0) {
         query = query.not('id', 'in', `(${excludeIds.join(',')})`);
       }
 
       const { data: allQuestions, error } = await query;
 
-      if (error) throw error;
+      console.log('📊 [RANDOMIZER DEBUG] Resultado da query:', {
+        error: !!error,
+        questionsFound: allQuestions?.length || 0,
+        errorMessage: error?.message
+      });
+
+      if (error) {
+        console.error('❌ [RANDOMIZER DEBUG] Erro na query:', error);
+        throw error;
+      }
+      
       if (!allQuestions || allQuestions.length === 0) {
-        console.warn('⚠️ Nenhuma questão encontrada para os critérios');
+        console.warn('⚠️ [RANDOMIZER DEBUG] Nenhuma questão encontrada para os critérios:', {
+          category,
+          difficulty,
+          limit
+        });
         return [];
       }
+
+      // Log das primeiras questões para verificação
+      console.log('📋 [RANDOMIZER DEBUG] Sample das questões encontradas:', {
+        total: allQuestions.length,
+        categories: [...new Set(allQuestions.map(q => q.category))],
+        difficulties: [...new Set(allQuestions.map(q => q.difficulty))],
+        sampleQuestions: allQuestions.slice(0, 3).map(q => ({
+          id: q.id,
+          category: q.category,
+          difficulty: q.difficulty,
+          question: q.question.substring(0, 60) + '...'
+        }))
+      });
 
       console.log('📚 Questões disponíveis:', allQuestions.length);
 
