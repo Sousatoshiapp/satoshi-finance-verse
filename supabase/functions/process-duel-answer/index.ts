@@ -56,57 +56,28 @@ serve(async (req) => {
       throw new Error('Question not found');
     }
 
-    // Check if answer is correct - Enhanced comparison with detailed logs
+    // SIMPLIFIED ANSWER VALIDATION - Como no Quiz Solo que funciona
     console.log('🔍 Processing answer - Selected:', selectedAnswer);
     console.log('🔍 Processing answer - Correct:', currentQuestion.correct_answer);
-    console.log('🔍 Processing answer - Question structure:', JSON.stringify(currentQuestion, null, 2));
     
-    // Handle empty answer case (time up)
+    // Validação simples e direta (EXATAMENTE como o Quiz Solo)
     let isCorrect = false;
     const correctAnswerText = currentQuestion.correct_answer;
     
     if (selectedAnswer && selectedAnswer.trim() !== '') {
-      // Enhanced comparison with normalization
-      const normalizeText = (text: string): string => {
-        return text.replace(/^["']|["']$/g, '').trim();
-      };
+      // Comparação direta e simples - SEM normalizações complexas
+      isCorrect = selectedAnswer === correctAnswerText;
       
-      const normalizedSelected = normalizeText(String(selectedAnswer));
-      const normalizedCorrect = normalizeText(String(correctAnswerText));
-      
-      // Try multiple comparison methods
-      const exactMatch = selectedAnswer === correctAnswerText;
-      const trimmedMatch = normalizedSelected === normalizedCorrect;
-      const caseInsensitiveMatch = normalizedSelected.toLowerCase() === normalizedCorrect.toLowerCase();
-      
-      // Use the most permissive match (case insensitive with normalization)
-      isCorrect = caseInsensitiveMatch;
-      
-      console.log('📝 Enhanced Answer Comparison:', {
-        originalSelected: selectedAnswer,
-        originalCorrect: correctAnswerText,
-        normalizedSelected,
-        normalizedCorrect,
-        exactMatch,
-        trimmedMatch,
-        caseInsensitiveMatch,
-        finalResult: isCorrect
+      console.log('✅ SIMPLE Answer Comparison:', {
+        selectedAnswer,
+        correctAnswerText,
+        isCorrect,
+        exactMatch: selectedAnswer === correctAnswerText
       });
     } else {
       console.log('⏰ Empty answer - timeout or no selection');
+      isCorrect = false;
     }
-    
-    console.log('✅ DEFINITIVE Answer Comparison:', { 
-      selectedAnswer: `"${selectedAnswer}"`, 
-      correctAnswerText: `"${correctAnswerText}"`, 
-      isCorrect,
-      exactMatch: selectedAnswer === correctAnswerText,
-      trimmedMatch: selectedAnswer?.trim() === correctAnswerText?.trim(),
-      bothAreText: typeof selectedAnswer === 'string' && typeof correctAnswerText === 'string',
-      selectedLength: selectedAnswer?.length,
-      correctLength: correctAnswerText?.length,
-      caseMatch: selectedAnswer?.toLowerCase() === correctAnswerText?.toLowerCase()
-    });
 
     // Update the answer record
     const { error: updateError } = await supabase

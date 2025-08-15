@@ -92,15 +92,21 @@ export const gameRoutes = [
     showNavbar: false
   },
   {
+    path: "/unified-duel/:duelId",
+    element: "UnifiedCasinoDuelScreen",
+    requiresAuth: true,
+    showNavbar: false
+  },
+  {
     path: "/duel-result/:duelId",
     element: "DuelResultScreen",
     requiresAuth: true,
     showNavbar: false
   },
   {
-    path: "/select-opponent",
-    element: "SelectOpponentScreen",
+    path: "/duel-test",
+    element: "DuelSystemTest",
     requiresAuth: true,
-    showNavbar: true
-  }
+    showNavbar: false
+  },
 ];
