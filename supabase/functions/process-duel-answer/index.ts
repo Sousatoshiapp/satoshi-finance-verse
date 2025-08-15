@@ -56,19 +56,45 @@ serve(async (req) => {
       throw new Error('Question not found');
     }
 
-    // Check if answer is correct - Simple comparison like Quiz Solo
+    // Check if answer is correct - Enhanced comparison with detailed logs
     console.log('🔍 Processing answer - Selected:', selectedAnswer);
     console.log('🔍 Processing answer - Correct:', currentQuestion.correct_answer);
     console.log('🔍 Processing answer - Question structure:', JSON.stringify(currentQuestion, null, 2));
     
     // Handle empty answer case (time up)
     let isCorrect = false;
-    if (selectedAnswer && selectedAnswer.trim() !== '') {
-      // Direct text comparison - both should be full option texts now
-      isCorrect = selectedAnswer.trim() === currentQuestion.correct_answer?.trim();
-    }
-    
     const correctAnswerText = currentQuestion.correct_answer;
+    
+    if (selectedAnswer && selectedAnswer.trim() !== '') {
+      // Enhanced comparison with normalization
+      const normalizeText = (text: string): string => {
+        return text.replace(/^["']|["']$/g, '').trim();
+      };
+      
+      const normalizedSelected = normalizeText(String(selectedAnswer));
+      const normalizedCorrect = normalizeText(String(correctAnswerText));
+      
+      // Try multiple comparison methods
+      const exactMatch = selectedAnswer === correctAnswerText;
+      const trimmedMatch = normalizedSelected === normalizedCorrect;
+      const caseInsensitiveMatch = normalizedSelected.toLowerCase() === normalizedCorrect.toLowerCase();
+      
+      // Use the most permissive match (case insensitive with normalization)
+      isCorrect = caseInsensitiveMatch;
+      
+      console.log('📝 Enhanced Answer Comparison:', {
+        originalSelected: selectedAnswer,
+        originalCorrect: correctAnswerText,
+        normalizedSelected,
+        normalizedCorrect,
+        exactMatch,
+        trimmedMatch,
+        caseInsensitiveMatch,
+        finalResult: isCorrect
+      });
+    } else {
+      console.log('⏰ Empty answer - timeout or no selection');
+    }
     
     console.log('✅ DEFINITIVE Answer Comparison:', { 
       selectedAnswer: `"${selectedAnswer}"`, 

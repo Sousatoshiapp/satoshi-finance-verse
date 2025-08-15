@@ -105,32 +105,24 @@ export default function CasinoDuelScreen() {
     sensoryFeedback.triggerError();
     rewardSystem.showIncorrectAnswer('Tempo Esgotado!');
     
-    // Pass empty string as selected option ID - the handleAnswer will handle it correctly
+    // Pass empty string for timeout
     await handleAnswer('');
   };
 
-  const handleAnswer = async (selectedOptionId: string) => {
+  const handleAnswer = async (selectedText: string) => {
     const questions = casinoDuels.currentDuel?.questions || [];
     const currentQuestion = questions[currentQuestionIndex - 1];
     
     if (!casinoDuels.currentDuel || !currentQuestion || isSubmitting) return;
     
-    // Get the actual text of the selected option
-    const formattedQuestion = formatQuizQuestion(currentQuestion);
-    const interfaceQuestion = convertToInterfaceQuestion(formattedQuestion);
-    const selectedOption = interfaceQuestion.options.find(opt => opt.id === selectedOptionId);
-    const selectedText = selectedOption?.text || selectedOptionId;
-    
-    console.log('🔥 handleAnswer DEBUG:', {
-      selectedOptionId,
+    console.log('🔥 CasinoDuelScreen.handleAnswer - DEFINITIVO:', {
       selectedText,
       originalQuestion: currentQuestion,
-      formattedQuestion,
-      interfaceQuestion
+      formattedQuestion: formatQuizQuestion(currentQuestion)
     });
     
     setIsSubmitting(true);
-    setSelectedAnswer(selectedOptionId);
+    setSelectedAnswer(selectedText);
     
     const responseTime = Date.now() - responseStartTime;
     
@@ -138,10 +130,10 @@ export default function CasinoDuelScreen() {
       // Trigger immediate feedback
       sensoryFeedback.triggerClick(document.body);
       
-      console.log('🔍 Submitting answer:', {
+      console.log('🔍 Submitting answer - DEFINITIVO:', {
         duelId: casinoDuels.currentDuel.id,
         questionIndex: currentQuestionIndex - 1,
-        selectedAnswer: selectedText, // Send the actual text, not the letter
+        selectedAnswer: selectedText, // Já é o texto correto
         responseTime
       });
 
@@ -151,7 +143,7 @@ export default function CasinoDuelScreen() {
           duelId: casinoDuels.currentDuel.id,
           userId: user?.id,
           questionIndex: currentQuestionIndex - 1,
-          selectedAnswer: selectedText, // Send actual text
+          selectedAnswer: selectedText, // Texto puro, sem conversões
           responseTime
         }
       });

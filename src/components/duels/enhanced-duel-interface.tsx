@@ -21,7 +21,7 @@ interface Question {
 interface EnhancedDuelInterfaceProps {
   questions: Question[];
   currentQuestion: number;
-  onAnswer: (selectedText: string) => void;
+  onAnswer: (selectedText: string) => void; // AGORA recebe texto diretamente
   playerAvatar: string | null;
   opponentAvatar: string | null;
   playerScore: number;
@@ -74,8 +74,18 @@ export function EnhancedDuelInterface({
     // Trigger click feedback
     sensoryFeedback.triggerClick(document.body);
     
+    // Encontrar o texto da opção selecionada
+    const selectedOption = currentQ.options.find(opt => opt.id === optionId);
+    const selectedText = selectedOption?.text || optionId;
+    
+    console.log('🎯 EnhancedDuelInterface.handleAnswer:', {
+      optionId,
+      selectedText,
+      selectedOption
+    });
+    
     setSelectedAnswer(optionId);
-    onAnswer(optionId);
+    onAnswer(selectedText); // Enviar o TEXTO em vez do ID
   };
 
   // Timer is handled entirely by CircularTimer component
