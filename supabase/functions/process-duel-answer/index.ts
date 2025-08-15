@@ -47,53 +47,14 @@ serve(async (req) => {
       throw new Error('Question not found');
     }
 
-    // Check if answer is correct
-    console.log('🔍 DEBUG: Question structure:', JSON.stringify(currentQuestion, null, 2));
-    console.log('🔍 DEBUG: Selected answer (letter):', selectedAnswer);
-    console.log('🔍 DEBUG: Question options:', currentQuestion.options);
+    // Check if answer is correct - Simple comparison like Quiz Solo
+    console.log('🔍 Processing answer - Selected:', selectedAnswer);
+    console.log('🔍 Processing answer - Correct:', currentQuestion.correct_answer);
     
-    let isCorrect = false;
-    let correctAnswerText = '';
+    const isCorrect = selectedAnswer === currentQuestion.correct_answer;
+    const correctAnswerText = currentQuestion.correct_answer;
     
-    // Handle different question formats
-    if (Array.isArray(currentQuestion.options)) {
-      // Format: options is array of objects with {id, text, isCorrect}
-      const selectedOption = currentQuestion.options.find(opt => opt.id === selectedAnswer);
-      const correctOption = currentQuestion.options.find(opt => opt.isCorrect);
-      
-      if (selectedOption && correctOption) {
-        isCorrect = selectedOption.id === correctOption.id || selectedOption.text === correctOption.text;
-        correctAnswerText = correctOption.text;
-      }
-      
-      console.log('🔍 DEBUG: Array format - Selected option:', selectedOption);
-      console.log('🔍 DEBUG: Array format - Correct option:', correctOption);
-    } else if (typeof currentQuestion.options === 'object' && currentQuestion.options !== null) {
-      // Format: options is object with {a, b, c, d} and correct_answer is letter
-      const optionText = currentQuestion.options[selectedAnswer];
-      const correctLetter = currentQuestion.correct_answer;
-      const correctOptionText = currentQuestion.options[correctLetter];
-      
-      isCorrect = selectedAnswer === correctLetter || optionText === correctOptionText;
-      correctAnswerText = correctOptionText || currentQuestion.correct_answer;
-      
-      console.log('🔍 DEBUG: Object format - Option text:', optionText);
-      console.log('🔍 DEBUG: Object format - Correct letter:', correctLetter);
-      console.log('🔍 DEBUG: Object format - Correct option text:', correctOptionText);
-    } else {
-      // Fallback: try direct comparison
-      isCorrect = selectedAnswer === currentQuestion.correct_answer;
-      correctAnswerText = currentQuestion.correct_answer;
-      
-      console.log('🔍 DEBUG: Fallback format - Direct comparison');
-    }
-    
-    console.log('✅ Final answer check:', { 
-      selectedAnswer, 
-      correctAnswerText, 
-      isCorrect,
-      questionFormat: Array.isArray(currentQuestion.options) ? 'array' : typeof currentQuestion.options
-    });
+    console.log('✅ Answer result:', { selectedAnswer, correctAnswerText, isCorrect });
 
     // Update the answer record
     const { error: updateError } = await supabase

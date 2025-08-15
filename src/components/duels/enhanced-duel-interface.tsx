@@ -21,7 +21,7 @@ interface Question {
 interface EnhancedDuelInterfaceProps {
   questions: Question[];
   currentQuestion: number;
-  onAnswer: (optionId: string) => void;
+  onAnswer: (selectedText: string) => void;
   playerAvatar: string | null;
   opponentAvatar: string | null;
   playerScore: number;
@@ -70,14 +70,14 @@ export function EnhancedDuelInterface({
   const currentQ = questions[currentQuestion - 1];
   if (!currentQ) return null;
 
-  const handleAnswer = (optionId: string) => {
+  const handleAnswer = (optionText: string) => {
     if (selectedAnswer || isWaitingForOpponent) return;
     
     // Trigger click feedback
     sensoryFeedback.triggerClick(document.body);
     
-    setSelectedAnswer(optionId);
-    onAnswer(optionId);
+    setSelectedAnswer(optionText);
+    onAnswer(optionText);
   };
 
   // Timer countdown effect is now handled by parent
@@ -291,7 +291,7 @@ export function EnhancedDuelInterface({
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             {currentQ.options.map((option, index) => {
-              const isSelected = selectedAnswer === option.id;
+              const isSelected = selectedAnswer === option.text;
               
               return (
                 <motion.button
@@ -301,14 +301,14 @@ export function EnhancedDuelInterface({
                   transition={{ delay: 0.1 * index, duration: 0.3 }}
                   whileHover={{ scale: selectedAnswer === null && !isWaitingForOpponent ? 1.02 : 1 }}
                   whileTap={{ scale: selectedAnswer === null && !isWaitingForOpponent ? 0.98 : 1 }}
-                  onClick={() => handleAnswer(option.id)}
+                  onClick={() => handleAnswer(option.text)}
                   disabled={selectedAnswer !== null || isWaitingForOpponent}
                   className={`
                     p-4 sm:p-6 rounded-xl text-left transition-all duration-300 font-medium
                     shadow-lg border-2 relative overflow-hidden
                     ${selectedAnswer === null && !isWaitingForOpponent
                       ? 'bg-secondary/60 hover:bg-secondary/80 text-secondary-foreground border-border hover:border-primary/50 hover:shadow-primary/20'
-                      : selectedAnswer === option.id
+                      : selectedAnswer === option.text
                       ? 'bg-primary text-primary-foreground border-primary shadow-primary/30'
                       : 'bg-muted/50 text-muted-foreground border-border opacity-60'
                     }
