@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSensoryFeedback } from '@/hooks/use-sensory-feedback';
 import { useRewardAnimationSystem } from '@/hooks/use-reward-animation-system';
+import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shared/ui/dialog';
+import { Button } from '@/components/shared/ui/button';
+import { X, AlertTriangle } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -25,6 +29,8 @@ interface EnhancedDuelInterfaceProps {
   opponentNickname: string;
   timeLeft: number;
   isWaitingForOpponent?: boolean;
+  onQuitDuel?: () => void;
+  betAmount?: number;
 }
 
 export function EnhancedDuelInterface({
@@ -38,11 +44,25 @@ export function EnhancedDuelInterface({
   playerNickname,
   opponentNickname,
   timeLeft,
-  isWaitingForOpponent = false
+  isWaitingForOpponent = false,
+  onQuitDuel,
+  betAmount = 0,
 }: EnhancedDuelInterfaceProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const sensoryFeedback = useSensoryFeedback();
   const rewardSystem = useRewardAnimationSystem();
+  const [showQuitModal, setShowQuitModal] = useState(false);
+
+  const handleQuitClick = () => {
+    sensoryFeedback.triggerClick(document.body);
+    setShowQuitModal(true);
+  };
+
+  const handleConfirmQuit = () => {
+    sensoryFeedback.triggerError(document.body);
+    onQuitDuel?.();
+    setShowQuitModal(false);
+  };
 
   const currentQ = questions[currentQuestion - 1];
   if (!currentQ) return null;
@@ -106,7 +126,56 @@ export function EnhancedDuelInterface({
           </div>
 
           {/* VS e Info Central */}
-          <div className="text-center">
+          <div className="text-center relative">
+            {/* Quit Button */}
+            <Dialog open={showQuitModal} onOpenChange={setShowQuitModal}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute -top-8 -left-8 text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-110"
+                  onClick={handleQuitClick}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader className="space-y-3">
+                  <DialogTitle className="flex items-center gap-2 text-destructive">
+                    <AlertTriangle className="h-5 w-5" />
+                    Abandonar Duelo
+                  </DialogTitle>
+                  <DialogDescription className="text-base">
+                    Tem certeza que deseja abandonar o duelo? 
+                    <div className="mt-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+                      <p className="font-semibold text-destructive">
+                        ⚠️ Você perderá seus {betAmount} BTZ apostados!
+                      </p>
+                      <p className="text-sm mt-1 text-muted-foreground">
+                        Seu oponente receberá automaticamente o prêmio do duelo.
+                      </p>
+                    </div>
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="gap-2 sm:gap-0">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowQuitModal(false)}
+                    className="flex-1"
+                  >
+                    Continuar Jogando
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={handleConfirmQuit}
+                    className="flex-1"
+                  >
+                    Desistir e Perder Aposta
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
             <motion.div 
               animate={{ 
                 scale: [1, 1.1, 1],

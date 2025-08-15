@@ -35,290 +35,9 @@ export interface CasinoDuel {
 
 export function useCasinoDuels() {
   const [currentDuel, setCurrentDuel] = useState<CasinoDuel | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { profile } = useProfile();
-  const navigate = useNavigate();
-
-  // Find opponent function
-  const findOpponent = async (topic: string, betAmount: number, targetOpponentId?: string) => {
-    if (!profile?.id) {
-      toast.error('Você precisa estar logado para participar de duelos');
-      return null;
-    }
-
-    console.log('🎯 findOpponent: Starting search', { topic, betAmount, targetOpponentId });
-    setIsSearching(true);
-
-    try {
-      // Check if user has enough balance
-      if (betAmount > (profile.points || 0)) {
-        toast.error('BTZ insuficiente para este duelo');
-        return null;
-      }
-
-      // Deduct bet amount first
-      const { error: deductError } = await supabase
-        .from('profiles')
-        .update({ points: profile.points - betAmount })
-        .eq('id', profile.id);
-
-      if (deductError) {
-        console.error('❌ Error deducting bet amount:', deductError);
-        toast.error('Erro ao processar aposta');
-        return null;
-      }
-
-      let duelId: string;
-
-      if (targetOpponentId) {
-        // Create a duel invitation for specific opponent
-        console.log('📩 Creating duel invite for target opponent');
-        
-        const { data: inviteData, error: inviteError } = await supabase
-          .from('duel_invites')
-          .insert({
-            challenger_id: profile.id,
-            challenged_id: targetOpponentId,
-            quiz_topic: topic,
-            bet_amount: betAmount,
-            status: 'pending',
-            expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() // 10 minutes
-          })
-          .select()
-          .single();
-
-        if (inviteError) {
-          console.error('❌ Error creating invite:', inviteError);
-          toast.error('Erro ao criar convite de duelo');
-          
-          // Refund bet amount
-          await supabase
-            .from('profiles')
-            .update({ points: profile.points })
-            .eq('id', profile.id);
-          
-          return null;
-        }
-
-        console.log('✅ Duel invite created:', inviteData.id);
-        toast.success('Convite de duelo enviado!');
-        navigate('/dashboard');
-        return null;
-      } else {
-        // Look for existing opponent in queue or create new duel
-        console.log('🔍 Looking for opponent in queue');
-        
-        const { data: queuedUsers, error: queueError } = await supabase
-          .from('casino_duel_queue')
-          .select('*')
-          .eq('topic', topic)
-          .eq('bet_amount', betAmount)
-          .neq('user_id', profile.id)
-          .gte('expires_at', new Date().toISOString())
-          .limit(1);
-
-        if (queueError) {
-          console.error('❌ Error checking queue:', queueError);
-          toast.error('Erro ao buscar oponente');
-          
-          // Refund bet amount
-          await supabase
-            .from('profiles')
-            .update({ points: profile.points })
-            .eq('id', profile.id);
-          
-          return null;
-        }
-
-        if (queuedUsers && queuedUsers.length > 0) {
-          // Found opponent, create duel
-          const opponent = queuedUsers[0];
-          console.log('🎯 Found opponent:', opponent.user_id);
-
-          // Generate questions for the duel using standardized system
-          const questions = await generateDuelQuestionsForCasino(topic, profile?.level, 1);
-
-          // Create the duel
-          const { data: duelData, error: duelError } = await supabase
-            .from('casino_duels')
-            .insert({
-              player1_id: profile.id,
-              player2_id: opponent.user_id,
-              topic,
-              bet_amount: betAmount,
-              questions: JSON.stringify(questions),
-              status: 'waiting'
-            })
-            .select()
-            .single();
-
-          if (duelError) {
-            console.error('❌ Error creating duel:', duelError);
-            toast.error('Erro ao criar duelo');
-            
-            // Refund bet amount
-            await supabase
-              .from('profiles')
-              .update({ points: profile.points })
-              .eq('id', profile.id);
-            
-            return null;
-          }
-
-          // Remove opponent from queue
-          await supabase
-            .from('casino_duel_queue')
-            .delete()
-            .eq('id', opponent.id);
-
-          console.log('✅ Duel created:', duelData.id);
-          duelId = duelData.id;
-        } else {
-          // No opponent found, add to queue
-          console.log('⏳ No opponent found, adding to queue');
-          
-          const { data: queueData, error: queueAddError } = await supabase
-            .from('casino_duel_queue')
-            .insert({
-              user_id: profile.id,
-              topic,
-              bet_amount: betAmount,
-              expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString() // 5 minutes
-            })
-            .select()
-            .single();
-
-          if (queueAddError) {
-            console.error('❌ Error adding to queue:', queueAddError);
-            toast.error('Erro ao entrar na fila');
-            
-            // Refund bet amount
-            await supabase
-              .from('profiles')
-              .update({ points: profile.points })
-              .eq('id', profile.id);
-            
-            return null;
-          }
-
-          toast.success('Procurando oponente...');
-          
-          // Wait for opponent or timeout
-          const waitForOpponent = new Promise<string | null>((resolve) => {
-            const subscription = supabase
-              .channel('casino_duels')
-              .on(
-                'postgres_changes',
-                {
-                  event: 'INSERT',
-                  schema: 'public',
-                  table: 'casino_duels',
-                  filter: `player2_id=eq.${profile.id}`
-                },
-                (payload) => {
-                  console.log('🎯 Duel created with me as player2:', payload.new);
-                  resolve(payload.new.id);
-                  subscription.unsubscribe();
-                }
-              )
-              .subscribe();
-
-            // Timeout after 5 minutes
-            setTimeout(() => {
-              subscription.unsubscribe();
-              resolve(null);
-            }, 5 * 60 * 1000);
-          });
-
-          duelId = await waitForOpponent;
-          
-          if (!duelId) {
-            console.log('⏰ Search timeout, removing from queue');
-            await supabase
-              .from('casino_duel_queue')
-              .delete()
-              .eq('id', queueData.id);
-            
-            // Refund bet amount
-            await supabase
-              .from('profiles')
-              .update({ points: profile.points })
-              .eq('id', profile.id);
-            
-            toast.error('Tempo limite excedido. Tente novamente.');
-            return null;
-          }
-        }
-      }
-
-      console.log('🎮 Redirecting to duel:', duelId);
-      toast.success('Duelo criado! Redirecionando...');
-      navigate(`/duel/${duelId}`);
-      return duelId;
-
-    } catch (error) {
-      console.error('❌ Error in findOpponent:', error);
-      toast.error('Erro inesperado ao buscar oponente');
-      
-      // Try to refund bet amount
-      if (profile?.id) {
-        await supabase
-          .from('profiles')
-          .update({ points: profile.points })
-          .eq('id', profile.id);
-      }
-      
-      return null;
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const cancelSearch = async () => {
-    if (!profile?.id) return;
-
-    try {
-      // Remove from queue and refund
-      const { error } = await supabase
-        .from('casino_duel_queue')
-        .delete()
-        .eq('user_id', profile.id);
-
-      if (error) {
-        console.error('❌ Error canceling search:', error);
-      }
-
-      setIsSearching(false);
-      toast.info('Busca cancelada');
-    } catch (error) {
-      console.error('❌ Error in cancelSearch:', error);
-    }
-  };
-
-  const addToQueue = async (topic: string, betAmount: number) => {
-    if (!profile?.id) return;
-
-    try {
-      const { error } = await supabase
-        .from('casino_duel_queue')
-        .insert({
-          user_id: profile.id,
-          topic,
-          bet_amount: betAmount,
-          expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString()
-        });
-
-      if (error) {
-        console.error('❌ Error adding to queue:', error);
-        toast.error('Erro ao entrar na fila');
-      } else {
-        toast.success('Adicionado à fila de duelos');
-      }
-    } catch (error) {
-      console.error('❌ Error in addToQueue:', error);
-    }
-  };
+  const [error, setError] = useState<string | null>(null);
+  const { profile, loadProfile } = useProfile();
 
   const submitAnswer = async (duelId: string, questionIndex: number, selectedAnswer: string, responseTime: number) => {
     if (!profile?.id) return null;
@@ -380,9 +99,40 @@ export function useCasinoDuels() {
       }
 
       console.log('✅ Duel completed:', result);
+      
+      // Reload profile to update BTZ balance
+      await loadProfile();
+      
       return result;
     } catch (error) {
       console.error('❌ Error in completeDuel:', error);
+      return null;
+    }
+  };
+
+  const abandonDuel = async (duelId: string) => {
+    try {
+      const { data: result, error } = await supabase.functions.invoke('abandon-casino-duel', {
+        body: { 
+          duelId,
+          userId: profile?.id
+        }
+      });
+
+      if (error) {
+        console.error('❌ Error abandoning duel:', error);
+        return null;
+      }
+
+      console.log('✅ Duel abandoned:', result);
+      
+      // Clear current duel and reload profile
+      setCurrentDuel(null);
+      await loadProfile();
+      
+      return result;
+    } catch (error) {
+      console.error('❌ Error in abandonDuel:', error);
       return null;
     }
   };
@@ -479,106 +229,15 @@ export function useCasinoDuels() {
 
   return {
     currentDuel,
-    isSearching,
     loading,
-    findOpponent,
-    cancelSearch,
-    addToQueue,
+    error,
     submitAnswer,
     completeDuel,
+    abandonDuel,
     setCurrentDuel,
-    loadDuelById
+    loadDuelById,
+    loadProfile,
+    findOpponent: async (topic?: string, betAmount?: number, difficulty?: string) => null,
+    isSearching: false
   };
-}
-
-// Generate questions for a specific topic using the standardized system
-async function generateDuelQuestionsForCasino(topic: string, playerLevel1?: number, playerLevel2?: number): Promise<DuelQuestion[]> {
-  try {
-    // Use the imported standardized function
-    const standardQuestions = await importedGenerateDuelQuestions(topic, playerLevel1, playerLevel2);
-    
-    // Convert to the format expected by casino duels
-    return standardQuestions.map((q, index) => ({
-      id: q.id.toString(),
-      question: q.question,
-      options: {
-        a: q.options[0]?.text || '',
-        b: q.options[1]?.text || '',
-        c: q.options[2]?.text || '',
-        d: q.options[3]?.text || ''
-      },
-      correct_answer: (['a', 'b', 'c', 'd'][q.options.findIndex(opt => opt.isCorrect)] || 'a') as 'a' | 'b' | 'c' | 'd',
-      explanation: q.explanation
-    }));
-  } catch (error) {
-    console.error('Error generating duel questions:', error);
-    // Return fallback questions
-    return getFallbackQuestions();
-  }
-}
-
-// Fallback questions if database fetch fails
-function getFallbackQuestions(): DuelQuestion[] {
-  return [
-    {
-      id: 'fallback-1',
-      question: 'O que é diversificação de investimentos?',
-      options: {
-        a: 'Investir apenas em ações',
-        b: 'Distribuir investimentos em diferentes ativos',
-        c: 'Investir apenas em renda fixa',
-        d: 'Comprar apenas um tipo de ação'
-      },
-      correct_answer: 'b',
-      explanation: 'Diversificação é uma estratégia que reduz riscos distribuindo investimentos em diferentes tipos de ativos.'
-    },
-    {
-      id: 'fallback-2',
-      question: 'O que é inflação?',
-      options: {
-        a: 'Diminuição dos preços',
-        b: 'Aumento geral dos preços',
-        c: 'Estabilidade de preços',
-        d: 'Deflação dos produtos'
-      },
-      correct_answer: 'b',
-      explanation: 'Inflação é o aumento generalizado e contínuo dos preços na economia.'
-    },
-    {
-      id: 'fallback-3',
-      question: 'Para que serve a taxa Selic?',
-      options: {
-        a: 'Controlar a inflação',
-        b: 'Apenas para bancos',
-        c: 'Definir câmbio',
-        d: 'Cobrar impostos'
-      },
-      correct_answer: 'a',
-      explanation: 'A taxa Selic é usada pelo Banco Central para controlar a inflação e influenciar a economia.'
-    },
-    {
-      id: 'fallback-4',
-      question: 'O que é liquidez de um investimento?',
-      options: {
-        a: 'Quanto rende',
-        b: 'Facilidade para resgatar',
-        c: 'Nível de risco',
-        d: 'Valor mínimo'
-      },
-      correct_answer: 'b',
-      explanation: 'Liquidez é a facilidade e rapidez para converter um investimento em dinheiro.'
-    },
-    {
-      id: 'fallback-5',
-      question: 'Qual é a principal função de uma reserva de emergência?',
-      options: {
-        a: 'Investir em ações',
-        b: 'Proteger contra imprevistos',
-        c: 'Comprar supérfluos',
-        d: 'Pagar impostos'
-      },
-      correct_answer: 'b',
-      explanation: 'A reserva de emergência serve para proteger contra gastos inesperados sem comprometer o orçamento.'
-    }
-  ];
 }

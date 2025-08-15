@@ -216,6 +216,38 @@ export default function CasinoDuelScreen() {
     }
   };
 
+  const handleQuitDuel = async () => {
+    if (!casinoDuels.currentDuel) return;
+    
+    try {
+      const result = await casinoDuels.abandonDuel(casinoDuels.currentDuel.id);
+      
+      if (result) {
+        // Show abandonment feedback
+        rewardSystem.showIncorrectAnswer("Duelo abandonado!");
+        sensoryFeedback.triggerError(document.body);
+        
+        // Navigate back to dashboard after a short delay
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1500);
+      } else {
+        toast({
+          title: "Erro",
+          description: "Erro ao abandonar o duelo. Tente novamente.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error quitting duel:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao abandonar o duelo.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const questions = casinoDuels.currentDuel?.questions || [];
   
   if (casinoDuels.loading || profilesLoading || !casinoDuels.currentDuel || !profiles) {
@@ -275,6 +307,8 @@ export default function CasinoDuelScreen() {
             opponentNickname={player2Profile?.nickname || 'Jogador 2'}
             timeLeft={timeLeft}
             isWaitingForOpponent={isWaitingForOpponent || isSubmitting}
+            onQuitDuel={handleQuitDuel}
+            betAmount={casinoDuels.currentDuel.bet_amount}
           />
         </motion.div>
       </AnimatePresence>
