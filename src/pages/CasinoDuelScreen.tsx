@@ -196,6 +196,12 @@ export default function CasinoDuelScreen() {
     }, 2000);
   };
 
+  // Identify if current user is player1 or player2
+  const isPlayer1 = profile?.id === currentDuel?.player1_id;
+  const currentUserScore = isPlayer1 ? currentDuel?.player1_score : currentDuel?.player2_score;
+  const opponentScore = isPlayer1 ? currentDuel?.player2_score : currentDuel?.player1_score;
+  const opponentProfile = isPlayer1 ? currentDuel?.player2_profile : currentDuel?.player1_profile;
+
   // Show loading if still loading or essential data is missing
   if (loading || !currentDuel || !profile) {
     console.log('🔄 CasinoDuelScreen: Loading state - loading:', loading, 'currentDuel:', !!currentDuel, 'profile:', !!profile);
@@ -297,7 +303,7 @@ export default function CasinoDuelScreen() {
                   <User className="h-3 w-3 md:h-5 md:w-5 text-primary" />
                   <span className="font-bold text-white text-xs md:text-base">Você</span>
                 </div>
-                <div className="text-xl md:text-3xl font-bold text-primary">{currentDuel.player1_score}</div>
+                <div className="text-xl md:text-3xl font-bold text-primary">{currentUserScore}</div>
               </div>
 
               {/* VS */}
@@ -313,10 +319,10 @@ export default function CasinoDuelScreen() {
                 <div className="flex items-center justify-center gap-1 md:gap-2 mb-1 md:mb-2">
                   <Users className="h-3 w-3 md:h-5 md:w-5 text-amber-400" />
                   <span className="font-bold text-white text-xs md:text-base">
-                    {currentDuel.player2_profile?.nickname || 'Oponente'}
+                    {opponentProfile?.nickname || 'Oponente'}
                   </span>
                 </div>
-                <div className="text-xl md:text-3xl font-bold text-amber-400">{currentDuel.player2_score}</div>
+                <div className="text-xl md:text-3xl font-bold text-amber-400">{opponentScore}</div>
               </div>
             </div>
           </CardContent>
