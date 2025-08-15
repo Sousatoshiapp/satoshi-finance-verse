@@ -114,7 +114,7 @@ export function useQuestionSelector() {
         console.log('🏷️ Filtrando por categoria:', category);
       }
 
-      const { data, error } = await query.limit(count * 2); // Buscar mais para ter opções
+      const { data, error } = await query.limit(count);
 
       if (error) {
         console.error('❌ Erro ao buscar questões:', error);

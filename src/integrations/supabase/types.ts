@@ -5999,6 +5999,50 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_streaks: {
+        Row: {
+          category: string
+          created_at: string
+          current_streak: number
+          id: string
+          last_quiz_date: string | null
+          longest_streak: number
+          total_quizzes_completed: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_quiz_date?: string | null
+          longest_streak?: number
+          total_quizzes_completed?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_streak?: number
+          id?: string
+          last_quiz_date?: string | null
+          longest_streak?: number
+          total_quizzes_completed?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_quiz_streaks_user"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       security_audit_log: {
         Row: {
           created_at: string

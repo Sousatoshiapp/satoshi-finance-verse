@@ -12,6 +12,7 @@ import { useQuizGamification } from "@/hooks/use-quiz-gamification";
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useCustomSounds } from "@/hooks/use-custom-sounds";
 import { useI18n } from "@/hooks/use-i18n";
+import { useQuizStreak } from "@/hooks/use-quiz-streak";
 // BTZ Counter removido do Quiz Engine para simplificar UI
 // import { LivesCounter } from "./lives-counter"; // Removido
 import { BeetzAnimation } from "./beetz-animation";
@@ -55,7 +56,7 @@ export function QuizEngine({
   mode = 'solo',
   category,
   difficulty,
-  questionsCount = 7,
+  questionsCount = 10,
   opponentId,
   tournamentId,
   missionId,
@@ -113,6 +114,7 @@ export function QuizEngine({
 
   const { } = useAdvancedQuizAudio();
   const { t } = useI18n();
+  const { updateStreakAfterQuiz } = useQuizStreak();
 
   // Aliases para compatibilidade com código existente
   const questions = adaptiveEngine.session?.questions || [];
@@ -243,13 +245,22 @@ export function QuizEngine({
 
   const handleQuizComplete = async () => {
     const results = await getQuizCompletion(score, questions.length);
+    const percentage = Math.round((score / questions.length) * 100);
+    const success = percentage >= 70;
+    
+    // Atualizar streak para modo solo
+    if (mode === 'solo' && category) {
+      console.log('🎯 Atualizando streak após quiz:', { category, success, score, total: questions.length });
+      await updateStreakAfterQuiz(category, success, score, questions.length);
+    }
+    
     setShowResults(true);
     
     if (onComplete) {
       onComplete({
         score,
         totalQuestions: questions.length,
-        percentage: Math.round((score / questions.length) * 100),
+        percentage,
         mode,
         ...results
       });

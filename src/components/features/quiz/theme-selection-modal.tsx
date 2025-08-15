@@ -3,10 +3,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/s
 import { Button } from "@/components/shared/ui/button";
 import { Badge } from "@/components/shared/ui/badge";
 import { cn } from "@/lib/utils";
-import { Lock } from "lucide-react";
+import { Lock, Flame } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { IconSystem } from "@/components/icons/icon-system";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuizStreak } from "@/hooks/use-quiz-streak";
 
 
 interface ThemeSelectionModalProps {
@@ -20,25 +21,25 @@ interface ThemeSelectionModalProps {
 const QUIZ_CATEGORIES = [
   {
     id: "financas_dia_a_dia",
-    name: "Modo Sobrevivência",
-    description: "Finanças aplicadas ao seu cotidiano",
+    name: "Finanças do Dia a Dia",
+    description: "Finanças aplicadas ao seu cotidiano", 
     category: "Finanças do Dia a Dia",
     icon: "💰",
     color: "border-purple-500/30 hover:border-purple-500/60"
   },
   {
-    id: "abc_financas",
-    name: "Treinamento Básico", 
-    description: "ABC das finanças",
+    id: "abc_financas", 
+    name: "ABC das Finanças",
+    description: "Fundamentos financeiros essenciais",
     category: "ABC das Finanças",
     icon: "👓",
     color: "border-pink-500/30 hover:border-pink-500/60"
   },
   {
     id: "cripto",
-    name: "Missão Blockchain",
+    name: "Cripto",
     description: "Tudo sobre o mundo cripto",
-    category: "Cripto",
+    category: "Cripto", 
     icon: "₿",
     color: "border-yellow-500/30 hover:border-yellow-500/60"
   }
@@ -47,6 +48,7 @@ const QUIZ_CATEGORIES = [
 export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSelectionModalProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const isMobile = useIsMobile();
+  const { getStreakForCategory } = useQuizStreak();
 
   const handleCategorySelect = (categoryId: string) => {
     console.log('🎯 Categoria clicada:', categoryId);
@@ -98,6 +100,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
           )}>
             {QUIZ_CATEGORIES.map((category, index) => {
               const isSelected = selectedCategory === category.id;
+              const streak = getStreakForCategory(category.category);
               
               return (
                 <div
@@ -133,12 +136,22 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className={cn(
-                          "font-bold text-white",
-                          isMobile ? "text-sm leading-tight" : "text-lg mb-1"
-                        )}>
-                          {category.name}
-                        </h3>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className={cn(
+                            "font-bold text-white",
+                            isMobile ? "text-sm leading-tight" : "text-lg"
+                          )}>
+                            {category.name}
+                          </h3>
+                          {streak && streak.current_streak > 0 && (
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-orange-500/20">
+                              <Flame className="h-3 w-3 text-orange-500" />
+                              <span className="text-xs font-bold text-orange-500">
+                                {streak.current_streak}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                         {!isMobile && (
                           <p className="text-sm text-gray-300">
                             {category.description}
@@ -146,7 +159,7 @@ export function ThemeSelectionModal({ isOpen, onClose, onSelectTheme }: ThemeSel
                         )}
                         {isMobile && (
                           <p className="text-xs text-gray-400 truncate">
-                            {category.category}
+                            {streak ? `${streak.total_quizzes_completed} quizzes` : category.category}
                           </p>
                         )}
                       </div>
