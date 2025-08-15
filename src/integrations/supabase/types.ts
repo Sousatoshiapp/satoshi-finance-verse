@@ -5668,11 +5668,14 @@ export type Database = {
       }
       questions: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
           difficulty: Database["public"]["Enums"]["quiz_difficulty"]
           explanation: string
           id: string
           is_active: boolean
+          is_approved: boolean | null
           lang: string
           option_a: string
           option_b: string
@@ -5685,11 +5688,14 @@ export type Database = {
           topic: Database["public"]["Enums"]["quiz_topic"]
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           difficulty: Database["public"]["Enums"]["quiz_difficulty"]
           explanation: string
           id?: string
           is_active?: boolean
+          is_approved?: boolean | null
           lang?: string
           option_a: string
           option_b: string
@@ -5702,11 +5708,14 @@ export type Database = {
           topic: Database["public"]["Enums"]["quiz_topic"]
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
           difficulty?: Database["public"]["Enums"]["quiz_difficulty"]
           explanation?: string
           id?: string
           is_active?: boolean
+          is_approved?: boolean | null
           lang?: string
           option_a?: string
           option_b?: string
