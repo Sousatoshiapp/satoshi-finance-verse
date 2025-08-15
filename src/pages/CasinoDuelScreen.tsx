@@ -125,14 +125,17 @@ export default function CasinoDuelScreen() {
     await handleAnswer('');
   };
 
-  const handleAnswer = async (optionId: string) => {
+  const handleAnswer = async (selectedText: string) => {
     const questions = casinoDuels.currentDuel?.questions || [];
     const currentQuestion = questions[currentQuestionIndex - 1];
     
     if (!casinoDuels.currentDuel || !currentQuestion || isSubmitting) return;
     
+    console.log('🔥🔥🔥 CRITICAL handleAnswer: selectedText =', selectedText);
+    console.log('🔥🔥🔥 CRITICAL handleAnswer: currentQuestion =', JSON.stringify(currentQuestion, null, 2));
+    
     setIsSubmitting(true);
-    setSelectedAnswer(optionId);
+    setSelectedAnswer(selectedText);
     
     const responseTime = Date.now() - responseStartTime;
     
@@ -146,7 +149,7 @@ export default function CasinoDuelScreen() {
       console.log('🔍 Submitting answer:', {
         duelId: casinoDuels.currentDuel.id,
         questionIndex: currentQuestionIndex - 1,
-        selectedAnswer: optionId,
+        selectedAnswer: selectedText,
         formattedQuestion
       });
 
@@ -156,7 +159,7 @@ export default function CasinoDuelScreen() {
           duelId: casinoDuels.currentDuel.id,
           userId: user?.id,
           questionIndex: currentQuestionIndex - 1,
-          selectedAnswer: optionId,
+          selectedAnswer: selectedText,
           responseTime
         }
       });
@@ -170,12 +173,21 @@ export default function CasinoDuelScreen() {
       setIsCorrect(answerCorrect);
 
       // Update local score based on whether current user is player1 or player2
-      const isPlayer1 = casinoDuels.currentDuel.player1_id === user?.id;
+      console.log('📊 Score update logic:', {
+        currentUserId: user?.id,
+        player1Id: casinoDuels.currentDuel.player1_id,
+        player2Id: casinoDuels.currentDuel.player2_id,
+        isPlayer1,
+        answerCorrect,
+        newScore
+      });
       
       if (isPlayer1) {
         setPlayerScore(newScore);
+        console.log('📊 Updated player1 score to:', newScore);
       } else {
-        setOpponentScore(newScore);
+        setOpponentScore(newScore);  
+        console.log('📊 Updated player2 score to:', newScore);
       }
 
       // Trigger feedback based on correctness
@@ -220,26 +232,52 @@ export default function CasinoDuelScreen() {
 
   const handleDuelComplete = async () => {
     try {
+      console.log('🏁 Completing duel with scores - Player:', playerScore, 'Opponent:', opponentScore);
+      
       const { error } = await supabase.functions.invoke('complete-casino-duel', {
         body: { duelId: casinoDuels.currentDuel?.id }
       });
 
       if (error) throw error;
 
-      // Trigger completion effects
-      rewardSystem.showPerfectQuiz(playerScore + opponentScore, 1);
-      sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+      // Determine if player won
+      const isPlayer1 = casinoDuels.currentDuel?.player1_id === user?.id;
+      const playerFinalScore = isPlayer1 ? playerScore : opponentScore;
+      const opponentFinalScore = isPlayer1 ? opponentScore : playerScore;
+      const playerWon = playerFinalScore > opponentFinalScore;
+      const isDraw = playerFinalScore === opponentFinalScore;
       
-      toast({
-        title: "Duelo Finalizado!",
-        description: "Resultado calculado com sucesso.",
-        variant: "default"
-      });
+      console.log('🏆 Duel result - Player won:', playerWon, 'Draw:', isDraw);
+
+      // Trigger appropriate completion effects
+      if (playerWon) {
+        rewardSystem.showPerfectQuiz(playerFinalScore, 1);
+        sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+        
+        toast({
+          title: "🎉 Vitória!",
+          description: `Você venceu ${playerFinalScore} x ${opponentFinalScore}!`,
+          variant: "default"
+        });
+      } else if (isDraw) {
+        toast({
+          title: "🤝 Empate!",
+          description: `Resultado: ${playerFinalScore} x ${opponentFinalScore}`,
+          variant: "default"
+        });
+      } else {
+        toast({
+          title: "😔 Derrota",
+          description: `Você perdeu ${playerFinalScore} x ${opponentFinalScore}`,
+          variant: "destructive"
+        });
+      }
 
       // Navigate back after a moment
-      setTimeout(() => navigate('/duels'), 3000);
+      setTimeout(() => navigate('/find-opponent'), 3000);
     } catch (error) {
       console.error('Error completing duel:', error);
+      navigate('/find-opponent');
     }
   };
 
@@ -254,9 +292,9 @@ export default function CasinoDuelScreen() {
         rewardSystem.showIncorrectAnswer("Duelo abandonado!");
         sensoryFeedback.triggerError(document.body);
         
-        // Navigate back to dashboard after a short delay
+        // Navigate back to find-opponent after a short delay
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/find-opponent');
         }, 1500);
       } else {
         toast({
@@ -313,11 +351,40 @@ export default function CasinoDuelScreen() {
 
   // Resolve avatar URLs with proper fallback
   const getAvatarUrl = (profile: any) => {
-    if (profile?.profile_image_url) return profile.profile_image_url;
-    if (profile?.avatars?.image_url) return profile.avatars.image_url;
+    console.log('🖼️ Avatar Debug - Profile:', JSON.stringify(profile, null, 2));
+    
+    if (profile?.profile_image_url) {
+      console.log('🖼️ Avatar: Using profile_image_url:', profile.profile_image_url);
+      return profile.profile_image_url;
+    }
+    
+    // Check if avatars is an array and get the first one
+    if (Array.isArray(profile?.avatars) && profile.avatars.length > 0) {
+      console.log('🖼️ Avatar: Using avatars array:', profile.avatars[0].image_url);
+      return profile.avatars[0].image_url;
+    }
+    
+    // Check if avatars is a single object
+    if (profile?.avatars?.image_url) {
+      console.log('🖼️ Avatar: Using avatars object:', profile.avatars.image_url);
+      return profile.avatars.image_url;
+    }
+    
+    console.log('🖼️ Avatar: Using default fallback');
     return '/avatars/the-satoshi.jpg'; // Default fallback
   };
 
+  const isPlayer1 = casinoDuels.currentDuel?.player1_id === user?.id;
+  const currentUserProfile = isPlayer1 ? player1Profile : player2Profile;
+  const opponentProfile = isPlayer1 ? player2Profile : player1Profile;
+  
+  console.log('🎯 Player identification:', {
+    isPlayer1,
+    currentUserId: user?.id,
+    player1Id: casinoDuels.currentDuel?.player1_id,
+    player2Id: casinoDuels.currentDuel?.player2_id
+  });
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
       <AnimatePresence mode="wait">
@@ -333,12 +400,12 @@ export default function CasinoDuelScreen() {
             questions={questions.map(q => convertToInterfaceQuestion(formatQuizQuestion(q)))}
             currentQuestion={currentQuestionIndex}
             onAnswer={handleAnswer}
-            playerAvatar={getAvatarUrl(player1Profile)}
-            opponentAvatar={getAvatarUrl(player2Profile)}
-            playerScore={playerScore}
-            opponentScore={opponentScore}
-            playerNickname={player1Profile?.nickname || 'Jogador 1'}
-            opponentNickname={player2Profile?.nickname || 'Jogador 2'}
+            playerAvatar={getAvatarUrl(currentUserProfile)}
+            opponentAvatar={getAvatarUrl(opponentProfile)}
+            playerScore={isPlayer1 ? playerScore : opponentScore}
+            opponentScore={isPlayer1 ? opponentScore : playerScore}
+            playerNickname={currentUserProfile?.nickname || 'Você'}
+            opponentNickname={opponentProfile?.nickname || 'Oponente'}
             timeLeft={timeLeft}
             isWaitingForOpponent={isWaitingForOpponent || isSubmitting}
             onQuitDuel={handleQuitDuel}

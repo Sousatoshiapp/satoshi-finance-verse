@@ -24,8 +24,15 @@ export function CircularTimer({
   const [timeLeft, setTimeLeft] = useState(duration);
   
   useEffect(() => {
+    console.log('🔄 CircularTimer: Resetting timer to', duration);
     setTimeLeft(duration); // Reset when duration changes
   }, [duration]);
+  
+  // Reset when key changes (for question transitions)
+  useEffect(() => {
+    console.log('🔄 CircularTimer: Component mounted/key changed, resetting timer');
+    setTimeLeft(duration);
+  }, []);
   
   useEffect(() => {
     if (!isActive) {

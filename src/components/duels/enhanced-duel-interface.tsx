@@ -244,6 +244,7 @@ export function EnhancedDuelInterface({
         {/* Timer Responsivo - CircularTimer */}
         <div className="flex justify-center mb-4 sm:mb-6">
           <CircularTimer
+            key={`timer-${currentQuestion}`} // Force reset on question change
             duration={30}
             isActive={!selectedAnswer && !isWaitingForOpponent}
             onTimeUp={onTimeUp || (() => {})}

@@ -215,14 +215,14 @@ export function useCasinoDuels() {
           nickname: duel.player1.nickname,
           level: duel.player1.level || 1,
           avatar_url: duel.player1.profile_image_url || 
-                     (duel.player1.avatars?.image_url) || 
+                     (Array.isArray(duel.player1.avatars) ? duel.player1.avatars[0]?.image_url : duel.player1.avatars?.image_url) || 
                      '/avatars/the-satoshi.jpg'
         } : undefined,
         player2_profile: duel.player2 ? {
           nickname: duel.player2.nickname,
           level: duel.player2.level || 1,
           avatar_url: duel.player2.profile_image_url || 
-                     (duel.player2.avatars?.image_url) || 
+                     (Array.isArray(duel.player2.avatars) ? duel.player2.avatars[0]?.image_url : duel.player2.avatars?.image_url) || 
                      '/avatars/the-satoshi.jpg'
         } : undefined
       };

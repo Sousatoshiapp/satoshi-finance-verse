@@ -20,6 +20,15 @@ serve(async (req) => {
     const { duelId, userId, questionIndex, selectedAnswer } = await req.json();
     
     console.log('🔄 Processing answer:', { duelId, userId, questionIndex, selectedAnswer });
+    
+    // Additional logging for debugging
+    console.log('📋 Request details:', {
+      selectedAnswerType: typeof selectedAnswer,
+      selectedAnswerLength: selectedAnswer?.length || 0,
+      isEmptyString: selectedAnswer === '',
+      isNull: selectedAnswer === null,
+      isUndefined: selectedAnswer === undefined
+    });
 
     // Get the duel with questions
     const { data: duel, error: duelError } = await supabase
@@ -50,8 +59,14 @@ serve(async (req) => {
     // Check if answer is correct - Simple comparison like Quiz Solo
     console.log('🔍 Processing answer - Selected:', selectedAnswer);
     console.log('🔍 Processing answer - Correct:', currentQuestion.correct_answer);
+    console.log('🔍 Processing answer - Question structure:', JSON.stringify(currentQuestion, null, 2));
     
-    const isCorrect = selectedAnswer === currentQuestion.correct_answer;
+    // Handle empty answer case (time up)
+    let isCorrect = false;
+    if (selectedAnswer && selectedAnswer.trim() !== '') {
+      isCorrect = selectedAnswer.trim() === currentQuestion.correct_answer?.trim();
+    }
+    
     const correctAnswerText = currentQuestion.correct_answer;
     
     console.log('✅ Answer result:', { selectedAnswer, correctAnswerText, isCorrect });
