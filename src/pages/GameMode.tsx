@@ -103,8 +103,8 @@ export default function GameMode() {
 
       {/* Main content with proper spacing */}
       <div className={`relative z-10 w-full ${isMobile ? 'flex-1 flex flex-col justify-center px-4 pb-24' : 'p-6'}`}>
-        {/* Header with casino styling */}
-        <div className={`flex items-center justify-start ${isMobile ? 'mb-3' : 'mb-8'}`}>
+        {/* Header with casino styling - Moved higher up */}
+        <div className={`flex items-center justify-start ${isMobile ? 'mb-1' : 'mb-4'}`}>
           <Button
             variant="outline"
             size="sm"
