@@ -1,11 +1,7 @@
-import { useState, useEffect } from "react";
-import { CircularTimer } from "./circular-timer";
-import { Button } from "@/components/shared/ui/button";
-import { Card, CardContent } from "@/components/shared/ui/card";
-import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
-import { useCustomSounds } from "@/hooks/use-custom-sounds";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useSensoryFeedback } from '@/hooks/use-sensory-feedback';
+import { useRewardAnimationSystem } from '@/hooks/use-reward-animation-system';
 
 interface Question {
   id: string;
@@ -45,197 +41,274 @@ export function EnhancedDuelInterface({
   isWaitingForOpponent = false
 }: EnhancedDuelInterfaceProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [hasAnswered, setHasAnswered] = useState(false);
-  const { playCountdownSound } = useCustomSounds();
+  const sensoryFeedback = useSensoryFeedback();
+  const rewardSystem = useRewardAnimationSystem();
 
-  const question = questions[currentQuestion - 1];
-  const progress = ((currentQuestion - 1) / questions.length) * 100;
-
-  useEffect(() => {
-    // Reset state when question changes
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setHasAnswered(false);
-  }, [currentQuestion]);
+  const currentQ = questions[currentQuestion - 1];
+  if (!currentQ) return null;
 
   const handleAnswer = (optionId: string) => {
-    if (hasAnswered) return;
+    if (selectedAnswer || isWaitingForOpponent) return;
+    
+    // Trigger click feedback
+    sensoryFeedback.triggerClick(document.body);
     
     setSelectedAnswer(optionId);
-    setHasAnswered(true);
-    
-    const selectedOption = question.options.find(opt => opt.id === optionId);
-    const correct = selectedOption?.isCorrect || false;
-    setIsCorrect(correct);
-    setShowResult(true);
-    
-    // Submit answer after brief delay to show result
-    setTimeout(() => {
-      onAnswer(optionId);
-    }, 1500);
+    onAnswer(optionId);
   };
 
   const handleTimeUp = () => {
-    if (!hasAnswered) {
-      setHasAnswered(true);
-      setShowResult(true);
-      setIsCorrect(false);
-      setTimeout(() => {
-        onAnswer(''); // Submit empty answer for timeout
-      }, 1000);
+    if (!selectedAnswer && !isWaitingForOpponent) {
+      onAnswer('');
     }
   };
 
-  if (!question) return null;
+  // Reset when question changes
+  useEffect(() => {
+    setSelectedAnswer(null);
+  }, [currentQuestion]);
+
+  // Countdown sound and effects
+  useEffect(() => {
+    if (timeLeft <= 5 && timeLeft > 0) {
+      sensoryFeedback.triggerTension(timeLeft);
+    }
+  }, [timeLeft]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background p-4">
-      <div className="max-w-4xl mx-auto">
-        {/* Header with Player vs Opponent */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <AvatarDisplayUniversal
-              avatarName={playerAvatar?.name}
-              avatarUrl={playerAvatar?.image_url}
-              nickname={playerNickname}
-              size="md"
-              className="border-2 border-primary"
-            />
-            <div>
-              <p className="font-semibold text-foreground">{playerNickname}</p>
-              <p className="text-2xl font-bold text-primary">{playerScore}</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 p-2 sm:p-4 md:p-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Header responsivo com avatares e scores */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 items-center mb-4 sm:mb-8">
+          {/* Player 1 */}
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg"
+            >
+              <span className="text-primary-foreground font-bold text-sm sm:text-xl">
+                {playerNickname.charAt(0).toUpperCase()}
+              </span>
+            </motion.div>
+            <div className="text-center sm:text-left">
+              <p className="font-semibold text-xs sm:text-base text-foreground truncate max-w-20 sm:max-w-none">
+                {playerNickname}
+              </p>
+              <motion.p 
+                key={playerScore}
+                initial={{ scale: 1.2, color: "hsl(var(--primary))" }}
+                animate={{ scale: 1, color: "hsl(var(--foreground))" }}
+                className="text-lg sm:text-2xl font-bold"
+              >
+                {playerScore}
+              </motion.p>
             </div>
           </div>
 
+          {/* VS e Info Central */}
           <div className="text-center">
-            <CircularTimer
-              duration={30}
-              isActive={!hasAnswered && !isWaitingForOpponent}
-              onTimeUp={handleTimeUp}
-              enableCountdownSound={false}
-              size={80}
-              className="mx-auto mb-2"
-            />
-            <p className="text-sm text-muted-foreground">
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+              className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent"
+            >
+              VS
+            </motion.div>
+            <div className="text-xs sm:text-sm text-muted-foreground">
               {currentQuestion}/{questions.length}
-            </p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="font-semibold text-foreground">{opponentNickname}</p>
-              <p className="text-2xl font-bold text-secondary">{opponentScore}</p>
+          {/* Player 2 */}
+          <div className="flex flex-col sm:flex-row-reverse items-center space-y-2 sm:space-y-0 sm:space-x-reverse sm:space-x-4">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg"
+            >
+              <span className="text-destructive-foreground font-bold text-sm sm:text-xl">
+                {opponentNickname.charAt(0).toUpperCase()}
+              </span>
+            </motion.div>
+            <div className="text-center sm:text-right">
+              <p className="font-semibold text-xs sm:text-base text-foreground truncate max-w-20 sm:max-w-none">
+                {opponentNickname}
+              </p>
+              <motion.p 
+                key={opponentScore}
+                initial={{ scale: 1.2, color: "hsl(var(--destructive))" }}
+                animate={{ scale: 1, color: "hsl(var(--foreground))" }}
+                className="text-lg sm:text-2xl font-bold"
+              >
+                {opponentScore}
+              </motion.p>
             </div>
-            <AvatarDisplayUniversal
-              avatarName={opponentAvatar?.name}
-              avatarUrl={opponentAvatar?.image_url}
-              nickname={opponentNickname}
-              size="md"
-              className="border-2 border-secondary"
+          </div>
+        </div>
+
+        {/* Timer Responsivo */}
+        <div className="flex justify-center mb-4 sm:mb-6">
+          <motion.div 
+            className="relative"
+            animate={{ 
+              scale: timeLeft <= 5 ? [1, 1.1, 1] : 1,
+            }}
+            transition={{ 
+              duration: 0.5,
+              repeat: timeLeft <= 5 ? Infinity : 0
+            }}
+          >
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-muted flex items-center justify-center bg-background/50 backdrop-blur-sm shadow-lg">
+              <span className={`text-xl sm:text-2xl font-bold transition-colors ${
+                timeLeft <= 5 ? 'text-destructive' : 'text-foreground'
+              }`}>
+                {timeLeft}
+              </span>
+            </div>
+            <motion.div 
+              className="absolute top-0 left-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-primary transform -rotate-90"
+              style={{
+                clipPath: `polygon(50% 50%, 50% 0%, ${
+                  50 + 50 * Math.cos((timeLeft / 30) * 2 * Math.PI - Math.PI / 2)
+                }% ${
+                  50 + 50 * Math.sin((timeLeft / 30) * 2 * Math.PI - Math.PI / 2)
+                }%, 50% 50%)`
+              }}
+              animate={{
+                borderColor: timeLeft <= 5 ? ["hsl(var(--primary))", "hsl(var(--destructive))", "hsl(var(--primary))"] : "hsl(var(--primary))"
+              }}
+              transition={{ duration: 1, repeat: timeLeft <= 5 ? Infinity : 0 }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Progress Bar Responsivo */}
+        <div className="mb-4 sm:mb-8 px-2 sm:px-0">
+          <div className="w-full bg-muted rounded-full h-2 sm:h-3 overflow-hidden shadow-inner">
+            <motion.div 
+              className="bg-gradient-to-r from-primary via-accent to-primary h-full rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${(currentQuestion / questions.length) * 100}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             />
           </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="w-full bg-muted rounded-full h-2 mb-8">
-          <motion.div
-            className="bg-gradient-to-r from-primary to-secondary h-2 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
-          />
-        </div>
-
-        {/* Question Card */}
-        <Card className="mb-6 bg-card/80 backdrop-blur-sm border-2">
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold text-center mb-8 text-foreground">
-              {question.question}
-            </h2>
-
-            {isWaitingForOpponent ? (
-              <div className="text-center py-8">
-                <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground animate-spin" />
-                <p className="text-lg text-muted-foreground">
-                  Aguardando oponente responder...
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-4">
-                {question.options.map((option) => (
-                  <motion.div
-                    key={option.id}
-                    whileHover={!hasAnswered ? { scale: 1.02 } : {}}
-                    whileTap={!hasAnswered ? { scale: 0.98 } : {}}
-                  >
-                    <Button
-                      onClick={() => handleAnswer(option.id)}
-                      disabled={hasAnswered}
-                      variant={
-                        showResult && selectedAnswer === option.id
-                          ? option.isCorrect ? "default" : "destructive"
-                          : showResult && option.isCorrect
-                          ? "default"
-                          : "outline"
-                      }
-                      className={`w-full p-6 text-left h-auto justify-start relative transition-all duration-300 ${
-                        showResult && selectedAnswer === option.id
-                          ? option.isCorrect
-                            ? "bg-green-500/20 border-green-500 text-green-700 dark:text-green-300"
-                            : "bg-red-500/20 border-red-500 text-red-700 dark:text-red-300"
-                          : showResult && option.isCorrect
-                          ? "bg-green-500/20 border-green-500 text-green-700 dark:text-green-300"
-                          : ""
-                      }`}
-                    >
-                      <span className="text-lg font-medium mr-4">
-                        {option.id.toUpperCase()})
-                      </span>
-                      <span className="text-lg">{option.text}</span>
-                      
-                      {showResult && (
-                        <AnimatePresence>
-                          {selectedAnswer === option.id ? (
-                            <motion.div
-                              initial={{ scale: 0, opacity: 0 }}
-                              animate={{ scale: 1, opacity: 1 }}
-                              className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                            >
-                              {option.isCorrect ? (
-                                <CheckCircle className="h-6 w-6 text-green-500" />
-                              ) : (
-                                <XCircle className="h-6 w-6 text-red-500" />
-                              )}
-                            </motion.div>
-                          ) : option.isCorrect ? (
-                            <motion.div
-                              initial={{ scale: 0, opacity: 0 }}
-                              animate={{ scale: 1, opacity: 1 }}
-                              className="absolute right-4 top-1/2 transform -translate-y-1/2"
-                            >
-                              <CheckCircle className="h-6 w-6 text-green-500" />
-                            </motion.div>
-                          ) : null}
-                        </AnimatePresence>
-                      )}
-                    </Button>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* VS Indicator */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-4 bg-card/50 backdrop-blur-sm rounded-full px-6 py-3 border">
-            <span className="text-primary font-bold">{playerNickname}</span>
-            <span className="text-xl font-bold text-muted-foreground">VS</span>
-            <span className="text-secondary font-bold">{opponentNickname}</span>
+          <div className="flex justify-between mt-2 text-xs sm:text-sm text-muted-foreground">
+            <span>Progresso</span>
+            <span>{Math.round((currentQuestion / questions.length) * 100)}%</span>
           </div>
         </div>
+
+        {/* Question Card Responsivo */}
+        <motion.div 
+          key={currentQuestion}
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+          transition={{ duration: 0.4 }}
+          className="bg-card/80 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 mb-4 sm:mb-8 shadow-2xl border border-border/20"
+        >
+          <motion.h2 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg sm:text-xl md:text-2xl font-bold text-card-foreground mb-6 sm:mb-8 text-center leading-relaxed px-2"
+          >
+            {currentQ.question}
+          </motion.h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            {currentQ.options.map((option, index) => {
+              const isSelected = selectedAnswer === option.id;
+              
+              return (
+                <motion.button
+                  key={option.id}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 * index, duration: 0.3 }}
+                  whileHover={{ scale: selectedAnswer === null && !isWaitingForOpponent ? 1.02 : 1 }}
+                  whileTap={{ scale: selectedAnswer === null && !isWaitingForOpponent ? 0.98 : 1 }}
+                  onClick={() => handleAnswer(option.id)}
+                  disabled={selectedAnswer !== null || isWaitingForOpponent}
+                  className={`
+                    p-4 sm:p-6 rounded-xl text-left transition-all duration-300 font-medium
+                    shadow-lg border-2 relative overflow-hidden
+                    ${selectedAnswer === null && !isWaitingForOpponent
+                      ? 'bg-secondary/60 hover:bg-secondary/80 text-secondary-foreground border-border hover:border-primary/50 hover:shadow-primary/20'
+                      : selectedAnswer === option.id
+                      ? 'bg-primary text-primary-foreground border-primary shadow-primary/30'
+                      : 'bg-muted/50 text-muted-foreground border-border opacity-60'
+                    }
+                    ${isWaitingForOpponent ? 'cursor-not-allowed' : 'cursor-pointer'}
+                  `}
+                >
+                  <div className="flex items-center space-x-3 relative z-10">
+                    <motion.span 
+                      className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-background/20 flex items-center justify-center text-xs sm:text-sm font-bold"
+                      animate={{
+                        backgroundColor: isSelected ? 'hsl(var(--primary-foreground))' : 'hsl(var(--background) / 0.2)',
+                        color: isSelected ? 'hsl(var(--primary))' : 'inherit'
+                      }}
+                    >
+                      {option.id.toUpperCase()}
+                    </motion.span>
+                    <span className="flex-1 text-sm sm:text-base leading-relaxed">{option.text}</span>
+                  </div>
+                  
+                  {/* Loading effect for selected answer */}
+                  {isSelected && isWaitingForOpponent && (
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20"
+                      animate={{ x: ['-100%', '100%'] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                    />
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Waiting Indicator */}
+        <AnimatePresence>
+          {isWaitingForOpponent && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="text-center"
+            >
+              <div className="inline-flex items-center space-x-3 bg-card/80 backdrop-blur-md rounded-lg px-4 sm:px-6 py-3 border border-border/20 shadow-lg">
+                <div className="flex space-x-1">
+                  <motion.div 
+                    className="w-2 h-2 bg-primary rounded-full"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0 }}
+                  />
+                  <motion.div 
+                    className="w-2 h-2 bg-primary rounded-full"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                  />
+                  <motion.div 
+                    className="w-2 h-2 bg-primary rounded-full"
+                    animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                    transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                  />
+                </div>
+                <span className="text-card-foreground font-medium text-sm sm:text-base">
+                  {selectedAnswer ? 'Processando resposta...' : 'Aguardando oponente...'}
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
