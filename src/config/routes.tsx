@@ -380,6 +380,15 @@ export const routeConfigs: RouteConfig[] = [
     requiresAdmin: true
   },
   {
+    path: "/admin/settings",
+    component: "AdminSettings",
+    title: "Admin Settings",
+    description: "System configuration and settings",
+    category: "admin",
+    requiresAuth: true,
+    requiresAdmin: true
+  },
+  {
     path: "/admin/analytics/realtime",
     component: "RealtimeAnalyticsPage",
     title: "Real-Time Analytics",

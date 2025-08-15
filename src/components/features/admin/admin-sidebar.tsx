@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, DollarSign, Trophy, MessageSquare, 
   Settings, HelpCircle, Bot, Gamepad2, BarChart3, Database,
   Gift, Calendar, Shield, FileText, Zap, Star, Crown,
-  ChevronDown, ChevronRight, LogOut, Building2, Activity
+  ChevronDown, ChevronRight, LogOut, Building2, Activity, CheckCircle
 } from "lucide-react";
 import { Button } from "@/components/shared/ui/button";
 import { cn } from "@/lib/utils";
@@ -47,6 +47,7 @@ const navigation: NavItem[] = [
     icon: HelpCircle,
     children: [
       { title: "Banco de Questões", href: "/admin/quiz/questions", icon: Database },
+      { title: "Aprovar Questões", href: "/admin/quiz/questions?tab=approval", icon: CheckCircle },
       { title: "Categorias", href: "/admin/quiz/categories", icon: HelpCircle },
       { title: "Analytics Quiz", href: "/admin/quiz/analytics", icon: BarChart3 },
     ]

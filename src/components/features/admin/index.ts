@@ -10,6 +10,7 @@ export { BotNicknameUpdater } from './bot-nickname-updater';
 export { BotRealismEnhancer } from './bot-realism-enhancer';
 export { JSONQuestionImporter } from './json-question-importer';
 export { LanguageSelector } from './language-selector';
+export { QuestionApprovalInterface } from './question-approval-interface';
 export { QuestionImportTool } from './question-import-tool';
 export { SingleBotNicknameUpdater as SingleBotUpdater } from './single-bot-updater';
 export { SponsorAccessManager } from './sponsor-access-manager';
