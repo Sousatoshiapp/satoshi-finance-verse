@@ -33,10 +33,10 @@ export class AdaptiveRateLimiter {
   constructor() {
     // Configurações padrão para diferentes ações
     this.setConfig('privacy_safe_presence_check', {
-      baseLimit: 3, // Reduzido de 10 para 3
+      baseLimit: 20, // Aumentado para evitar spam
       timeWindow: 60000, // 1 minuto
-      burstAllowance: 2,
-      adaptiveFactor: 0.5
+      burstAllowance: 10,
+      adaptiveFactor: 0.8
     });
 
     this.setConfig('send_message', {
@@ -280,6 +280,13 @@ export class AdaptiveRateLimiter {
         this.limitsMap.delete(key);
       }
     }
+    console.log(`🔄 [ADAPTIVE RATE LIMIT] Reset all entries for user: ${userId}`);
+  }
+
+  // Method to clear all corrupted stats
+  clearCorruptedStats(): void {
+    this.limitsMap.clear();
+    console.log('🧹 [ADAPTIVE RATE LIMIT] Cleared all corrupted stats');
   }
 }
 

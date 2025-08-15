@@ -112,7 +112,6 @@ export function useP2PNotifications() {
     }
     
     console.log('🔄 P2P Notifications: Setting up stable realtime subscription for profile.id:', profile.id);
-    console.log('🔄 P2P Notifications: Current user nickname:', profile.nickname);
     
     // Use a stable channel name and debounce to prevent constant reconnections
     const channelName = `p2p-stable-${profile.id}`;

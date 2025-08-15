@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useEnhancedSecurity } from './use-enhanced-security';
-import { adaptiveRateLimiter } from '@/lib/adaptive-rate-limiter';
-import { securityMonitor } from '@/lib/security-monitor';
+import { useDebounce } from './use-debounced-callback';
+
+// Import cleanup utility to fix rate limiter issues
+import '../lib/performance-cleanup';
 
 interface PrivacySafePresenceData {
   totalOnlineUsers: number;
@@ -18,59 +20,28 @@ export function usePrivacySafePresence() {
   });
   const [loading, setLoading] = useState(true);
   const { logSecurityAction } = useEnhancedSecurity();
+  
+  const lastFetchRef = useRef<number>(0);
+  const cacheRef = useRef<PrivacySafePresenceData | null>(null);
+  const isInitializedRef = useRef(false);
 
-  useEffect(() => {
-    fetchPresenceData();
+  const fetchPresenceData = useCallback(async () => {
+    const now = Date.now();
     
-    // Set up real-time subscription for presence updates
-    const channel = supabase
-      .channel('privacy-safe-presence')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'user_presence',
-      }, () => {
-        fetchPresenceData();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const fetchPresenceData = async () => {
-    const startTime = performance.now();
+    // Throttle: Don't fetch more than once every 3 seconds
+    if (now - lastFetchRef.current < 3000) {
+      // Return cached data if available
+      if (cacheRef.current) {
+        return;
+      }
+    }
+    
+    lastFetchRef.current = now;
+    
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
       setLoading(false);
-      return;
-    }
-
-    // Verificar rate limit adaptativo e monitoramento de segurança
-    const canProceed = adaptiveRateLimiter.canPerformAction(
-      user.id, 
-      'privacy_safe_presence_check',
-      Math.floor((Date.now() - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24)) // dias desde criação
-    );
-
-    if (!canProceed) {
-      console.warn('Rate limit exceeded for privacy_safe_presence_check');
-      return;
-    }
-
-    // Monitoramento de segurança
-    const isAllowed = securityMonitor.checkRequest({
-      userId: user.id,
-      action: 'privacy_safe_presence_check',
-      userAgent: navigator.userAgent,
-      requestTime: startTime,
-      success: true
-    });
-
-    if (!isAllowed) {
-      console.warn('Security monitor blocked presence check');
       return;
     }
 
@@ -83,42 +54,59 @@ export function usePrivacySafePresence() {
 
       if (statsError) {
         console.error('Error fetching anonymized stats:', statsError);
-        securityMonitor.checkRequest({
-          userId: user.id,
-          action: 'privacy_safe_presence_check',
-          userAgent: navigator.userAgent,
-          requestTime: startTime,
-          success: false
-        });
         return;
       }
 
-      setPresenceData({
+      const newData = {
         totalOnlineUsers: stats?.[0]?.total_online_users || 0,
         totalActiveUsers: stats?.[0]?.total_active_users || 0
-      });
+      };
 
-      // Log success de forma mais inteligente
-      if (Math.random() < 0.1) { // Log apenas 10% das requisições bem-sucedidas
-        logSecurityAction('privacy_safe_presence_check', {
-          totalOnlineUsers: stats?.[0]?.total_online_users || 0,
-          totalActiveUsers: stats?.[0]?.total_active_users || 0
-        });
+      // Only update if data actually changed
+      if (JSON.stringify(newData) !== JSON.stringify(cacheRef.current)) {
+        setPresenceData(newData);
+        cacheRef.current = newData;
+        
+        // Reduced logging
+        if (Math.random() < 0.05) { // Log apenas 5% das requisições bem-sucedidas
+          logSecurityAction('privacy_safe_presence_check', newData);
+        }
       }
 
     } catch (error) {
       console.error('Error in privacy-safe presence:', error);
-      securityMonitor.checkRequest({
-        userId: user.id,
-        action: 'privacy_safe_presence_check',
-        userAgent: navigator.userAgent,
-        requestTime: startTime,
-        success: false
-      });
     } finally {
       setLoading(false);
     }
-  };
+  }, [logSecurityAction]);
+
+  // Debounced fetch function to prevent excessive calls
+  const debouncedFetchPresenceData = useDebounce(fetchPresenceData, 5000);
+
+  useEffect(() => {
+    // Initial fetch only once
+    if (!isInitializedRef.current) {
+      isInitializedRef.current = true;
+      fetchPresenceData();
+    }
+    
+    // Set up real-time subscription with debounced callback
+    const channel = supabase
+      .channel('privacy-safe-presence-optimized')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'user_presence',
+      }, () => {
+        // Use debounced version to prevent spam
+        debouncedFetchPresenceData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [debouncedFetchPresenceData, fetchPresenceData]);
 
   const checkUserAvailability = async (targetUserId: string) => {
     try {
