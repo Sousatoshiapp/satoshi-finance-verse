@@ -21,7 +21,7 @@ interface ThemeSelectionModalProps {
 const QUIZ_CATEGORIES = [
   {
     id: "financas_dia_a_dia",
-    name: "Finanças do Dia a Dia",
+    name: "Modo Sobrevivência",
     description: "Finanças aplicadas ao seu cotidiano", 
     category: "Finanças do Dia a Dia",
     icon: "💰",
@@ -29,7 +29,7 @@ const QUIZ_CATEGORIES = [
   },
   {
     id: "abc_financas", 
-    name: "ABC das Finanças",
+    name: "Treinamento Básico",
     description: "Fundamentos financeiros essenciais",
     category: "ABC das Finanças",
     icon: "👓",
@@ -37,7 +37,7 @@ const QUIZ_CATEGORIES = [
   },
   {
     id: "cripto",
-    name: "Cripto",
+    name: "Missão Blockchain",
     description: "Tudo sobre o mundo cripto",
     category: "Cripto", 
     icon: "₿",
