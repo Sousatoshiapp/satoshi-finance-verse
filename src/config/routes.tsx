@@ -263,6 +263,14 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/casino-duel/:duelId",
+    component: "CasinoDuelScreen",
+    title: "Casino Duel",
+    description: "Participate in a casino-style duel",
+    category: "gamification",
+    requiresAuth: true
+  },
+  {
     path: "/find-opponent",
     component: "FindOpponent",
     title: "Find Opponent",
