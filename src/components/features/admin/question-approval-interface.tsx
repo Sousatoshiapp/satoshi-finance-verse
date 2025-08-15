@@ -155,55 +155,93 @@ export function QuestionApprovalInterface() {
     if (selectedQuestions.size === 0) return;
     
     setMassProcessing(true);
+    const successfulApprovals: string[] = [];
+    const failedApprovals: string[] = [];
+    
     try {
       const questionIds = Array.from(selectedQuestions);
       
       // Process each question individually to handle options conversion
       const updatePromises = questionIds.map(async (questionId) => {
-        const question = questions.find(q => q.id === questionId);
-        if (!question) return;
+        try {
+          const question = questions.find(q => q.id === questionId);
+          if (!question) {
+            failedApprovals.push(questionId);
+            return { error: new Error('Questão não encontrada') };
+          }
 
-        // Convert options from object to array if needed
-        let optionsArray: string[] = [];
-        if (Array.isArray(question.options)) {
-          optionsArray = question.options;
-        } else if (typeof question.options === 'object' && question.options !== null) {
-          optionsArray = Object.values(question.options);
+          // Convert options from object to array if needed
+          let optionsArray: string[] = [];
+          if (Array.isArray(question.options)) {
+            optionsArray = question.options;
+          } else if (typeof question.options === 'object' && question.options !== null) {
+            optionsArray = Object.values(question.options);
+          }
+
+          const result = await supabase
+            .from('quiz_questions')
+            .update({ 
+              approval_status: 'approved',
+              is_approved: true,
+              options: optionsArray,
+              approved_at: new Date().toISOString(),
+              approved_by: (await supabase.auth.getUser()).data.user?.id
+            })
+            .eq('id', questionId);
+
+          if (result.error) {
+            failedApprovals.push(questionId);
+            console.error(`Error approving question ${questionId}:`, result.error);
+          } else {
+            successfulApprovals.push(questionId);
+          }
+          
+          return result;
+        } catch (error) {
+          failedApprovals.push(questionId);
+          console.error(`Error processing question ${questionId}:`, error);
+          return { error };
         }
-
-        return supabase
-          .from('quiz_questions')
-          .update({ 
-            approval_status: 'approved',
-            is_approved: true,
-            options: optionsArray,
-            approved_at: new Date().toISOString(),
-            approved_by: (await supabase.auth.getUser()).data.user?.id
-          })
-          .eq('id', questionId);
       });
 
-      const results = await Promise.all(updatePromises);
-      const hasErrors = results.some(result => result?.error);
+      await Promise.all(updatePromises);
       
-      if (hasErrors) {
-        throw new Error('Algumas questões não puderam ser aprovadas');
+      // Remove only successfully approved questions from the interface
+      if (successfulApprovals.length > 0) {
+        setQuestions(prev => prev.filter(q => !successfulApprovals.includes(q.id)));
+        setSelectedQuestions(prev => {
+          const newSet = new Set(prev);
+          successfulApprovals.forEach(id => newSet.delete(id));
+          return newSet;
+        });
       }
-
-      setQuestions(prev => prev.filter(q => !selectedQuestions.has(q.id)));
-      setSelectedQuestions(new Set());
       
-      toast({
-        title: "Sucesso",
-        description: `${questionIds.length} questão${questionIds.length !== 1 ? 'ões' : ''} aprovada${questionIds.length !== 1 ? 's' : ''} com sucesso!`,
-      });
+      // Show appropriate toast message
+      if (successfulApprovals.length === questionIds.length) {
+        toast({
+          title: "Sucesso",
+          description: `${successfulApprovals.length} questão${successfulApprovals.length !== 1 ? 'ões' : ''} aprovada${successfulApprovals.length !== 1 ? 's' : ''} com sucesso!`,
+        });
+      } else if (successfulApprovals.length > 0) {
+        toast({
+          title: "Aprovação Parcial",
+          description: `${successfulApprovals.length} de ${questionIds.length} questões aprovadas. ${failedApprovals.length} falharam.`,
+          variant: "default"
+        });
+      } else {
+        throw new Error('Nenhuma questão foi aprovada');
+      }
+      
     } catch (error) {
       console.error('Error mass approving questions:', error);
       toast({
         title: "Erro",
-        description: `Falha ao aprovar questões em massa: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+        description: `Falha ao aprovar questões: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
         variant: "destructive"
       });
+      
+      // Reload questions to ensure sync with database
+      loadPendingQuestions();
     } finally {
       setMassProcessing(false);
     }
@@ -245,50 +283,81 @@ export function QuestionApprovalInterface() {
     if (questions.length === 0) return;
     
     setMassProcessing(true);
+    const successfulApprovals: string[] = [];
+    const failedApprovals: string[] = [];
+    
     try {
       // Process each question individually to handle options conversion
       const updatePromises = questions.map(async (question) => {
-        // Convert options from object to array if needed
-        let optionsArray: string[] = [];
-        if (Array.isArray(question.options)) {
-          optionsArray = question.options;
-        } else if (typeof question.options === 'object' && question.options !== null) {
-          optionsArray = Object.values(question.options);
+        try {
+          // Convert options from object to array if needed
+          let optionsArray: string[] = [];
+          if (Array.isArray(question.options)) {
+            optionsArray = question.options;
+          } else if (typeof question.options === 'object' && question.options !== null) {
+            optionsArray = Object.values(question.options);
+          }
+
+          const result = await supabase
+            .from('quiz_questions')
+            .update({ 
+              approval_status: 'approved',
+              is_approved: true,
+              options: optionsArray,
+              approved_at: new Date().toISOString(),
+              approved_by: (await supabase.auth.getUser()).data.user?.id
+            })
+            .eq('id', question.id);
+
+          if (result.error) {
+            failedApprovals.push(question.id);
+            console.error(`Error approving question ${question.id}:`, result.error);
+          } else {
+            successfulApprovals.push(question.id);
+          }
+          
+          return result;
+        } catch (error) {
+          failedApprovals.push(question.id);
+          console.error(`Error processing question ${question.id}:`, error);
+          return { error };
         }
-
-        return supabase
-          .from('quiz_questions')
-          .update({ 
-            approval_status: 'approved',
-            is_approved: true,
-            options: optionsArray,
-            approved_at: new Date().toISOString(),
-            approved_by: (await supabase.auth.getUser()).data.user?.id
-          })
-          .eq('id', question.id);
       });
 
-      const results = await Promise.all(updatePromises);
-      const hasErrors = results.some(result => result?.error);
+      await Promise.all(updatePromises);
       
-      if (hasErrors) {
-        throw new Error('Algumas questões não puderam ser aprovadas');
+      // Remove only successfully approved questions from the interface
+      if (successfulApprovals.length > 0) {
+        setQuestions(prev => prev.filter(q => !successfulApprovals.includes(q.id)));
+        setSelectedQuestions(new Set());
       }
-
-      setQuestions([]);
-      setSelectedQuestions(new Set());
       
-      toast({
-        title: "Sucesso",
-        description: `Todas as ${questions.length} questões aprovadas com sucesso!`,
-      });
+      // Show appropriate toast message
+      if (successfulApprovals.length === questions.length) {
+        toast({
+          title: "Sucesso",
+          description: `Todas as ${successfulApprovals.length} questões aprovadas com sucesso!`,
+        });
+      } else if (successfulApprovals.length > 0) {
+        toast({
+          title: "Aprovação Parcial",
+          description: `${successfulApprovals.length} de ${questions.length} questões aprovadas. ${failedApprovals.length} falharam.`,
+          variant: "default"
+        });
+      } else {
+        throw new Error('Nenhuma questão foi aprovada');
+      }
+      
     } catch (error) {
       console.error('Error approving all questions:', error);
       toast({
         title: "Erro",
-        description: `Falha ao aprovar todas as questões: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+        description: `Falha ao aprovar questões: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
         variant: "destructive"
       });
+      
+      // Reload questions to ensure sync with database
+      loadPendingQuestions();
     } finally {
       setMassProcessing(false);
     }
