@@ -264,7 +264,7 @@ export const routeConfigs: RouteConfig[] = [
   },
   {
     path: "/casino-duel/:duelId",
-    component: "CasinoDuelScreen",
+    component: "UnifiedCasinoDuelScreen",
     title: "Casino Duel",
     description: "Participate in a casino-style duel",
     category: "gamification",

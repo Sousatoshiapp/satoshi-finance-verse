@@ -5,9 +5,10 @@ import { useRewardAnimationSystem } from '@/hooks/use-reward-animation-system';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shared/ui/dialog';
 import { Button } from '@/components/shared/ui/button';
-import { X, AlertTriangle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { CircularTimer } from './circular-timer';
 import { DuelQuestion } from '@/hooks/use-duel-adaptive-engine';
+import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
 
 interface UnifiedDuelInterfaceProps {
   questions: DuelQuestion[];
@@ -91,17 +92,16 @@ export function UnifiedDuelInterface({
               whileHover={{ scale: 1.05 }}
               className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg overflow-hidden"
             >
-              {playerAvatar ? (
-                <img 
-                  src={playerAvatar} 
-                  alt={playerNickname}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-primary-foreground font-bold text-sm sm:text-xl">
-                  {playerNickname.charAt(0).toUpperCase()}
-                </span>
-              )}
+              <AvatarDisplayUniversal
+                nickname={playerNickname}
+                avatarData={{
+                  profile_image_url: playerAvatar,
+                  current_avatar_id: null,
+                  avatars: null
+                }}
+                size="md"
+                className="w-full h-full"
+              />
             </motion.div>
             <div className="text-center sm:text-left">
               <p className="font-semibold text-xs sm:text-base text-foreground truncate max-w-20 sm:max-w-none">
@@ -120,55 +120,6 @@ export function UnifiedDuelInterface({
 
           {/* VS e Info Central */}
           <div className="text-center relative">
-            {/* Quit Button */}
-            <Dialog open={showQuitModal} onOpenChange={setShowQuitModal}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-4 right-4 sm:top-6 sm:right-6 text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-200 hover:scale-110 w-10 h-10 sm:w-8 sm:h-8 z-50"
-                  onClick={handleQuitClick}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader className="space-y-3">
-                  <DialogTitle className="flex items-center gap-2 text-destructive">
-                    <AlertTriangle className="h-5 w-5" />
-                    Abandonar Duelo
-                  </DialogTitle>
-                  <DialogDescription className="text-base">
-                    Tem certeza que deseja abandonar o duelo? 
-                     <div className="mt-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
-                       <p className="font-semibold text-destructive">
-                         ⚠️ Você perderá seus {betAmount > 0 ? betAmount : 'seus'} BTZ apostados!
-                       </p>
-                       <p className="text-sm mt-1 text-muted-foreground">
-                         Seu oponente receberá automaticamente o prêmio do duelo.
-                       </p>
-                     </div>
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter className="gap-2 sm:gap-0">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowQuitModal(false)}
-                    className="flex-1"
-                  >
-                    Continuar Jogando
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={handleConfirmQuit}
-                    className="flex-1"
-                  >
-                    Desistir e Perder Aposta
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
             <motion.div 
               animate={{ 
                 scale: [1, 1.1, 1],
@@ -194,17 +145,16 @@ export function UnifiedDuelInterface({
               whileHover={{ scale: 1.05 }}
               className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-destructive to-destructive/80 flex items-center justify-center shadow-lg overflow-hidden"
             >
-              {opponentAvatar ? (
-                <img 
-                  src={opponentAvatar} 
-                  alt={opponentNickname}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-destructive-foreground font-bold text-sm sm:text-xl">
-                  {opponentNickname.charAt(0).toUpperCase()}
-                </span>
-              )}
+              <AvatarDisplayUniversal
+                nickname={opponentNickname}
+                avatarData={{
+                  profile_image_url: opponentAvatar,
+                  current_avatar_id: null,
+                  avatars: null
+                }}
+                size="md"
+                className="w-full h-full"
+              />
             </motion.div>
             <div className="text-center sm:text-right">
               <p className="font-semibold text-xs sm:text-base text-foreground truncate max-w-20 sm:max-w-none">
@@ -323,6 +273,57 @@ export function UnifiedDuelInterface({
             })}
           </div>
         </motion.div>
+
+        {/* Discrete Quit Button - Below questions */}
+        <div className="text-center mb-4 sm:mb-6">
+          <Dialog open={showQuitModal} onOpenChange={setShowQuitModal}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-200 px-4 py-2"
+                onClick={handleQuitClick}
+              >
+                Abandonar Duelo
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader className="space-y-3">
+                <DialogTitle className="flex items-center gap-2 text-destructive">
+                  <AlertTriangle className="h-5 w-5" />
+                  Abandonar Duelo
+                </DialogTitle>
+                <DialogDescription className="text-base">
+                  Tem certeza que deseja abandonar o duelo? 
+                   <div className="mt-2 p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+                     <p className="font-semibold text-destructive">
+                       ⚠️ Você perderá seus {betAmount > 0 ? betAmount : 'seus'} BTZ apostados!
+                     </p>
+                     <p className="text-sm mt-1 text-muted-foreground">
+                       Seu oponente receberá automaticamente o prêmio do duelo.
+                     </p>
+                   </div>
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowQuitModal(false)}
+                  className="flex-1"
+                >
+                  Continuar Jogando
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleConfirmQuit}
+                  className="flex-1"
+                >
+                  Desistir e Perder Aposta
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
 
         {/* Waiting Indicator */}
         <AnimatePresence>

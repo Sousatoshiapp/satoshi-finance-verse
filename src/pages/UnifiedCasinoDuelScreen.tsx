@@ -10,6 +10,9 @@ import { useToast } from '@/hooks/use-toast';
 import { useSensoryFeedback } from '@/hooks/use-sensory-feedback';
 import { useRewardAnimationSystem } from '@/hooks/use-reward-animation-system';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
+import { resolveAvatarImage } from '@/lib/avatar-utils';
+import { DuelVictoryModal } from '@/components/duels/DuelVictoryModal';
 
 export default function UnifiedCasinoDuelScreen() {
   const { duelId } = useParams();
@@ -32,6 +35,8 @@ export default function UnifiedCasinoDuelScreen() {
   const [showResult, setShowResult] = useState(false);
   const [responseStartTime, setResponseStartTime] = useState<number>(Date.now());
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [showVictoryModal, setShowVictoryModal] = useState(false);
+  const [gameResult, setGameResult] = useState<{ playerWon: boolean; isDraw: boolean } | null>(null);
 
   // Check if this is a test duel ID
   const isTestDuel = duelId?.startsWith('test-') || duelId === 'test-123';
@@ -329,32 +334,16 @@ export default function UnifiedCasinoDuelScreen() {
         const playerWon = playerFinalScore > opponentFinalScore;
         const isDraw = playerFinalScore === opponentFinalScore;
         
+        // Set game result and show victory modal
+        setGameResult({ playerWon, isDraw });
+        setShowVictoryModal(true);
+        
         // Trigger appropriate completion effects
         if (playerWon) {
           rewardSystem.showPerfectQuiz(playerFinalScore, 1);
           sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-          
-          toast({
-            title: "🎉 Vitória! (Teste)",
-            description: `Você venceu ${playerFinalScore} x ${opponentFinalScore}!`,
-            variant: "default"
-          });
-        } else if (isDraw) {
-          toast({
-            title: "🤝 Empate! (Teste)",
-            description: `Resultado: ${playerFinalScore} x ${opponentFinalScore}`,
-            variant: "default"
-          });
-        } else {
-          toast({
-            title: "😔 Derrota (Teste)",
-            description: `Você perdeu ${playerFinalScore} x ${opponentFinalScore}`,
-            variant: "destructive"
-          });
         }
-
-        // Navigate back to dashboard after a moment
-        setTimeout(() => navigate('/dashboard'), 3000);
+        
         return;
       }
       
@@ -373,32 +362,15 @@ export default function UnifiedCasinoDuelScreen() {
       
       console.log('🏆 [UNIFIED DUEL] Resultado:', { playerWon, isDraw, playerFinalScore, opponentFinalScore });
 
+      // Set game result and show victory modal
+      setGameResult({ playerWon, isDraw });
+      setShowVictoryModal(true);
+      
       // Trigger appropriate completion effects
       if (playerWon) {
         rewardSystem.showPerfectQuiz(playerFinalScore, 1);
         sensoryFeedback.triggerSuccess({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-        
-        toast({
-          title: "🎉 Vitória!",
-          description: `Você venceu ${playerFinalScore} x ${opponentFinalScore}!`,
-          variant: "default"
-        });
-      } else if (isDraw) {
-        toast({
-          title: "🤝 Empate!",
-          description: `Resultado: ${playerFinalScore} x ${opponentFinalScore}`,
-          variant: "default"
-        });
-      } else {
-        toast({
-          title: "😔 Derrota",
-          description: `Você perdeu ${playerFinalScore} x ${opponentFinalScore}`,
-          variant: "destructive"
-        });
       }
-
-      // Navigate back to dashboard after a moment
-      setTimeout(() => navigate('/dashboard'), 3000);
     } catch (error) {
       console.error('❌ [UNIFIED DUEL] Erro ao finalizar:', error);
       navigate('/dashboard');
@@ -456,14 +428,24 @@ export default function UnifiedCasinoDuelScreen() {
     }
   };
 
-  // Resolve avatar URLs
+  // Handle victory modal close
+  const handleVictoryModalClose = () => {
+    setShowVictoryModal(false);
+    navigate('/dashboard');
+  };
+
+  // Resolve avatar URLs using the centralized avatar system
   const getAvatarUrl = (profile: any) => {
-    if (profile?.profile_image_url) return profile.profile_image_url;
-    if (Array.isArray(profile?.avatars) && profile.avatars.length > 0) {
-      return profile.avatars[0].image_url;
-    }
-    if (profile?.avatars?.image_url) return profile.avatars.image_url;
-    return '/avatars/the-satoshi.jpg';
+    if (!profile) return '/avatars/the-satoshi.jpg';
+    
+    const avatarData = {
+      profile_image_url: profile?.profile_image_url || null,
+      current_avatar_id: profile?.current_avatar_id || null,
+      avatars: profile?.avatars || null
+    };
+    
+    const resolved = resolveAvatarImage(avatarData, profile?.nickname || 'User');
+    return resolved.imageUrl;
   };
 
   if (duelLoading || duelEngine.loading || !currentDuel || !duelEngine.session) {
@@ -520,6 +502,22 @@ export default function UnifiedCasinoDuelScreen() {
           />
         </motion.div>
       </AnimatePresence>
+      
+      {/* Victory Modal */}
+      {showVictoryModal && gameResult && (
+        <DuelVictoryModal
+          isOpen={showVictoryModal}
+          onClose={handleVictoryModalClose}
+          playerWon={gameResult.playerWon}
+          isDraw={gameResult.isDraw}
+          playerScore={playerScore}
+          opponentScore={opponentScore}
+          playerProfile={currentUserProfile}
+          opponentProfile={opponentProfile}
+          betAmount={currentDuel.bet_amount}
+          isTestDuel={isTestDuel}
+        />
+      )}
       
       {/* Result overlay */}
       <AnimatePresence>
