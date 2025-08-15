@@ -10,21 +10,17 @@ import { CheckCircle, XCircle, Eye, Loader2, AlertCircle } from "lucide-react";
 interface Question {
   id: string;
   question: string;
-  option_a: string;
-  option_b: string;
-  option_c: string;
-  option_d?: string;
+  options: unknown;
   correct_answer?: string;
   explanation?: string;
   category?: string;
   difficulty: string;
-  is_active: boolean;
+  topic?: string;
+  approval_status: string;
   is_approved?: boolean;
   approved_at?: string;
   approved_by?: string;
   created_at: string;
-  topic?: string;
-  lang?: string;
 }
 
 export function QuestionApprovalInterface() {
@@ -43,10 +39,9 @@ export function QuestionApprovalInterface() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('questions')
+        .from('quiz_questions')
         .select('*')
-        .eq('is_active', true)
-        .eq('is_approved', false)
+        .eq('approval_status', 'pending')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -68,8 +63,9 @@ export function QuestionApprovalInterface() {
     setProcessingIds(prev => new Set(prev).add(questionId));
     try {
       const { error } = await supabase
-        .from('questions')
+        .from('quiz_questions')
         .update({ 
+          approval_status: 'approved',
           is_approved: true, 
           approved_at: new Date().toISOString(),
           approved_by: (await supabase.auth.getUser()).data.user?.id
@@ -109,8 +105,8 @@ export function QuestionApprovalInterface() {
     setProcessingIds(prev => new Set(prev).add(questionId));
     try {
       const { error } = await supabase
-        .from('questions')
-        .update({ is_active: false })
+        .from('quiz_questions')
+        .update({ approval_status: 'rejected' })
         .eq('id', questionId);
 
       if (error) throw error;
@@ -149,8 +145,9 @@ export function QuestionApprovalInterface() {
     try {
       const questionIds = Array.from(selectedQuestions);
       const { error } = await supabase
-        .from('questions')
+        .from('quiz_questions')
         .update({ 
+          approval_status: 'approved',
           is_approved: true, 
           approved_at: new Date().toISOString(),
           approved_by: (await supabase.auth.getUser()).data.user?.id
@@ -185,8 +182,8 @@ export function QuestionApprovalInterface() {
     try {
       const questionIds = Array.from(selectedQuestions);
       const { error } = await supabase
-        .from('questions')
-        .update({ is_active: false })
+        .from('quiz_questions')
+        .update({ approval_status: 'rejected' })
         .in('id', questionIds);
 
       if (error) throw error;
@@ -217,8 +214,9 @@ export function QuestionApprovalInterface() {
     try {
       const questionIds = questions.map(q => q.id);
       const { error } = await supabase
-        .from('questions')
+        .from('quiz_questions')
         .update({ 
+          approval_status: 'approved',
           is_approved: true, 
           approved_at: new Date().toISOString(),
           approved_by: (await supabase.auth.getUser()).data.user?.id
@@ -436,7 +434,7 @@ export function QuestionApprovalInterface() {
                 <div>
                   <h4 className="font-semibold mb-2">Opções:</h4>
                   <div className="grid gap-2">
-                     {[question.option_a, question.option_b, question.option_c, question.option_d].filter(Boolean).map((option, index) => (
+                     {Array.isArray(question.options) ? question.options.map((option: string, index: number) => (
                        <div
                          key={index}
                          className={`p-2 rounded border ${
@@ -450,7 +448,7 @@ export function QuestionApprovalInterface() {
                            <span className="ml-2 text-green-600 font-semibold">✓ Resposta Correta</span>
                          )}
                        </div>
-                     ))}
+                     )) : <p className="text-muted-foreground">Opções não disponíveis</p>}
                   </div>
                 </div>
                 
