@@ -161,8 +161,8 @@ export function useDuelMatchmaking() {
 
       if (!profile) throw new Error('Profile not found');
 
-      // Generate random questions for the duel
-      const questions = await generateDuelQuestions(topic);
+      // Generate random questions for the duel with user ID for randomization
+      const questions = await generateDuelQuestions(topic, undefined, undefined, profile.id);
       
       // This hook appears to be using an old pattern - let's redirect to casino duels
       // For now, we'll disable this function as it conflicts with the new system
@@ -183,8 +183,8 @@ export function useDuelMatchmaking() {
 }
 
 // Standalone function to generate duel questions - ATUALIZADO para usar nova API padronizada
-export async function generateDuelQuestions(topic: string, playerLevel1?: number, playerLevel2?: number): Promise<any[]> {
+export async function generateDuelQuestions(topic: string, playerLevel1?: number, playerLevel2?: number, userId?: string): Promise<any[]> {
   // Importar e usar a nova função padronizada
   const { generateDuelQuestions: getQuestions } = await import('../utils/duel-questions');
-  return await getQuestions(topic, playerLevel1, playerLevel2);
+  return await getQuestions(topic, playerLevel1, playerLevel2, userId);
 }

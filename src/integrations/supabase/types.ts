@@ -8460,6 +8460,33 @@ export type Database = {
           },
         ]
       }
+      user_question_history: {
+        Row: {
+          context_type: string
+          created_at: string
+          id: string
+          question_id: string
+          seen_at: string
+          user_id: string
+        }
+        Insert: {
+          context_type?: string
+          created_at?: string
+          id?: string
+          question_id: string
+          seen_at?: string
+          user_id: string
+        }
+        Update: {
+          context_type?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+          seen_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_question_progress: {
         Row: {
           concept_mastery: number | null
@@ -9416,6 +9443,10 @@ export type Database = {
       cleanup_inactive_users: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      cleanup_old_question_history: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       complete_btc_duel: {
         Args: { p_duel_id: string; p_final_price: number }

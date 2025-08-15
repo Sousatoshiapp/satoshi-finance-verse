@@ -62,30 +62,127 @@ function determineDuelDifficulty(playerLevel1: number = 1, playerLevel2: number 
   return 'easy';
 }
 
-// Função para buscar questões com fallback de dificuldade
-async function getQuestionsWithDifficultyFallback(
+// Função para obter questões já vistas pelo usuário
+async function getUserSeenQuestions(userId: string, contextType: string = 'duel', daysBack: number = 7): Promise<string[]> {
+  const { data: seenQuestions, error } = await supabase
+    .from('user_question_history')
+    .select('question_id')
+    .eq('user_id', userId)
+    .eq('context_type', contextType)
+    .gte('seen_at', new Date(Date.now() - (daysBack * 24 * 60 * 60 * 1000)).toISOString());
+    
+  if (error) {
+    console.error('❌ Error fetching seen questions:', error);
+    return [];
+  }
+  
+  return seenQuestions.map(q => q.question_id);
+}
+
+// Função para registrar questões vistas
+async function recordSeenQuestions(userId: string, questionIds: string[], contextType: string = 'duel'): Promise<void> {
+  try {
+    const records = questionIds.map(questionId => ({
+      user_id: userId,
+      question_id: questionId,
+      context_type: contextType
+    }));
+    
+    const { error } = await supabase
+      .from('user_question_history')
+      .insert(records);
+      
+    if (error) {
+      console.error('❌ Error recording seen questions:', error);
+    } else {
+      console.log(`✅ Recorded ${questionIds.length} questions as seen for user ${userId}`);
+    }
+  } catch (error) {
+    console.error('❌ Error in recordSeenQuestions:', error);
+  }
+}
+
+// Função para buscar questões com randomização completa e anti-repetição
+async function getRandomizedQuestionsWithHistory(
   category: string, 
   targetDifficulty: string, 
-  limit: number = 5
+  userId?: string,
+  limit: number = 5,
+  contextType: string = 'duel'
 ): Promise<any[]> {
-  console.log('🔍 Trying to find questions:', { category, targetDifficulty, limit });
+  console.log('🎯 Getting randomized questions:', { category, targetDifficulty, limit, userId });
   
-  // Tentar buscar questões na dificuldade desejada primeiro
+  // Obter questões já vistas pelo usuário (se userId fornecido)
+  let seenQuestionIds: string[] = [];
+  if (userId) {
+    seenQuestionIds = await getUserSeenQuestions(userId, contextType);
+    console.log(`📋 User has seen ${seenQuestionIds.length} questions recently`);
+  }
+  
+  // Tentar buscar questões na dificuldade desejada primeiro, com randomização
   for (const difficulty of DIFFICULTY_FALLBACK) {
     if (DIFFICULTY_FALLBACK.indexOf(difficulty) < DIFFICULTY_FALLBACK.indexOf(targetDifficulty)) {
       continue; // Pular dificuldades mais altas que a desejada
     }
     
-    const { data: questions, error } = await supabase
+    console.log(`🔍 Searching for questions with difficulty: ${difficulty}`);
+    
+    // Primeira tentativa: questões não vistas
+    let query = supabase
+      .from('quiz_questions')
+      .select('*')
+      .eq('category', category)
+      .eq('difficulty', difficulty);
+      
+    // Excluir questões já vistas se houver usuário
+    if (userId && seenQuestionIds.length > 0) {
+      query = query.not('id', 'in', `(${seenQuestionIds.join(',')})`);
+    }
+    
+    // Buscar um pool maior e randomizar
+    const poolSize = Math.max(limit * 3, 15); // Pool 3x maior que o necessário
+    let { data: questions, error } = await query
+      .limit(poolSize)
+      .order('id', { ascending: false }); // Ordenação temporária para depois randomizar
+      
+    if (!error && questions && questions.length > 0) {
+      // Randomizar as questões no JavaScript
+      const shuffledQuestions = shuffleArray([...questions]);
+      const selectedQuestions = shuffledQuestions.slice(0, limit);
+      
+      console.log(`✅ Found ${selectedQuestions.length} fresh questions with difficulty: ${difficulty}`);
+      
+      // Registrar questões como vistas
+      if (userId) {
+        const questionIds = selectedQuestions.map(q => q.id);
+        await recordSeenQuestions(userId, questionIds, contextType);
+      }
+      
+      return selectedQuestions;
+    }
+    
+    // Se não encontrou questões novas suficientes, buscar todas (incluindo já vistas)
+    console.log(`🔄 Not enough fresh questions, including previously seen...`);
+    const { data: allQuestions, error: allError } = await supabase
       .from('quiz_questions')
       .select('*')
       .eq('category', category)
       .eq('difficulty', difficulty)
-      .limit(limit);
-
-    if (!error && questions && questions.length > 0) {
-      console.log(`✅ Found ${questions.length} questions with difficulty: ${difficulty}`);
-      return questions;
+      .limit(poolSize);
+      
+    if (!allError && allQuestions && allQuestions.length > 0) {
+      const shuffledQuestions = shuffleArray([...allQuestions]);
+      const selectedQuestions = shuffledQuestions.slice(0, limit);
+      
+      console.log(`✅ Found ${selectedQuestions.length} questions (including seen) with difficulty: ${difficulty}`);
+      
+      // Registrar questões como vistas
+      if (userId) {
+        const questionIds = selectedQuestions.map(q => q.id);
+        await recordSeenQuestions(userId, questionIds, contextType);
+      }
+      
+      return selectedQuestions;
     }
     
     console.log(`⚠️ No questions found for difficulty: ${difficulty}`);
@@ -93,19 +190,53 @@ async function getQuestionsWithDifficultyFallback(
   
   // Se não encontrou nenhuma questão, tentar sem filtro de dificuldade
   console.log('🔄 Trying without difficulty filter...');
-  const { data: anyQuestions, error } = await supabase
+  let query = supabase
     .from('quiz_questions')
     .select('*')
-    .eq('category', category)
-    .limit(limit);
+    .eq('category', category);
+    
+  if (userId && seenQuestionIds.length > 0) {
+    query = query.not('id', 'in', `(${seenQuestionIds.join(',')})`);
+  }
+  
+  const { data: anyQuestions, error } = await query.limit(15);
   
   if (!error && anyQuestions && anyQuestions.length > 0) {
-    console.log(`✅ Found ${anyQuestions.length} questions without difficulty filter`);
-    return anyQuestions;
+    const shuffledQuestions = shuffleArray([...anyQuestions]);
+    const selectedQuestions = shuffledQuestions.slice(0, limit);
+    
+    console.log(`✅ Found ${selectedQuestions.length} questions without difficulty filter`);
+    
+    // Registrar questões como vistas
+    if (userId) {
+      const questionIds = selectedQuestions.map(q => q.id);
+      await recordSeenQuestions(userId, questionIds, contextType);
+    }
+    
+    return selectedQuestions;
   }
   
   console.log('❌ No questions found at all for category:', category);
   return [];
+}
+
+// Função Fisher-Yates para embaralhar array
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Função legacy mantida para compatibilidade
+async function getQuestionsWithDifficultyFallback(
+  category: string, 
+  targetDifficulty: string, 
+  limit: number = 5
+): Promise<any[]> {
+  return getRandomizedQuestionsWithHistory(category, targetDifficulty, undefined, limit);
 }
 
 // Função para formatar questões do banco para o formato esperado
@@ -134,13 +265,15 @@ function formatQuestions(data: any[]): QuizQuestion[] {
   });
 }
 
+// Nova função principal com sistema completo de randomização
 export async function generateDuelQuestions(
   quizTopic: string, 
   playerLevel1?: number, 
-  playerLevel2?: number
+  playerLevel2?: number,
+  userId?: string
 ): Promise<QuizQuestion[]> {
   try {
-    console.log('🎯 Generating duel questions for topic:', quizTopic);
+    console.log('🎯 Generating duel questions for topic:', quizTopic, 'userId:', userId);
     
     // Mapear tópico para categoria
     const category = TOPIC_TO_CATEGORY[quizTopic.toLowerCase()] || 'Finanças do Dia a Dia';
@@ -150,12 +283,19 @@ export async function generateDuelQuestions(
     const targetDifficulty = determineDuelDifficulty(playerLevel1, playerLevel2);
     console.log('🎚️ Target difficulty:', targetDifficulty);
     
-    // Buscar questões com fallback de dificuldade
-    const questionsData = await getQuestionsWithDifficultyFallback(category, targetDifficulty, 5);
+    // Buscar questões com sistema completo de randomização
+    const questionsData = await getRandomizedQuestionsWithHistory(
+      category, 
+      targetDifficulty, 
+      userId,
+      5, // limit
+      'duel' // context
+    );
     
     if (questionsData.length > 0) {
       const questions = formatQuestions(questionsData);
-      console.log('✅ Successfully loaded real questions:', questions.length);
+      console.log('✅ Successfully loaded randomized questions:', questions.length);
+      console.log('🎲 Question IDs:', questions.map(q => `${q.id} - ${q.question.substring(0, 30)}...`));
       return questions;
     }
     
@@ -168,4 +308,13 @@ export async function generateDuelQuestions(
     console.log('🔄 Using fallback questions due to error');
     return FALLBACK_QUESTIONS;
   }
+}
+
+// Função legacy mantida para compatibilidade com código existente
+export async function generateDuelQuestionsLegacy(
+  quizTopic: string, 
+  playerLevel1?: number, 
+  playerLevel2?: number
+): Promise<QuizQuestion[]> {
+  return generateDuelQuestions(quizTopic, playerLevel1, playerLevel2);
 }
