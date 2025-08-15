@@ -8,7 +8,7 @@ export const monetizationRoutes = [
   {
     path: "/subscription-plans",
     element: "SubscriptionPlans",
-    requiresAuth: false,
+    requiresAuth: true,
     showNavbar: true
   },
   {
