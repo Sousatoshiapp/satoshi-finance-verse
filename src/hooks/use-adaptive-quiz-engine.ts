@@ -4,6 +4,8 @@ import { useQuestionRandomizer } from './use-question-randomizer';
 import { useQuestionSelector } from './use-question-selector';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { formatQuizQuestions } from '@/utils/quiz-formatting';
+import { QuizQuestion } from '@/types/quiz';
 
 export interface AdaptiveQuizConfig {
   mode: 'solo' | 'duel' | 'tournament' | 'daily_mission' | 'district';
@@ -13,16 +15,6 @@ export interface AdaptiveQuizConfig {
   questionsCount: number;
   enableDifficultyAdjustment: boolean;
   enableRandomization: boolean;
-}
-
-export interface QuizQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correct_answer: string;
-  explanation?: string;
-  category: string;
-  difficulty: string;
 }
 
 export interface QuizSession {
@@ -159,11 +151,12 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
           }))
         });
         
-        // Retornar apenas a quantidade solicitada
-        const finalQuestions = questions.slice(0, count);
+        // Retornar apenas a quantidade solicitada com formatação aplicada
+        const finalQuestions = formatQuizQuestions(questions.slice(0, count));
         console.log('✅ [ADAPTIVE DEBUG] Questões finais selecionadas:', {
           count: finalQuestions.length,
-          categories: [...new Set(finalQuestions.map(q => q.category))]
+          categories: [...new Set(finalQuestions.map(q => q.category))],
+          formattedOptions: finalQuestions[0]?.options ? 'array format' : 'missing options'
         });
         
         return finalQuestions;
@@ -171,7 +164,7 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
         // Usar sistema adaptativo tradicional
         if (user) {
           const questions = await selectAdaptiveQuestions(user.id, count, config.category);
-          return shuffleExistingQuestions(questions);
+          return formatQuizQuestions(shuffleExistingQuestions(questions));
         }
         return [];
       }
@@ -278,7 +271,7 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
         console.log('🔄 Buscando questões com nova dificuldade...');
         
         const remainingCount = session.questions.length - session.currentIndex - 1;
-        const usedIds = session.questions.map(q => q.id);
+        const usedIds = session.questions.map(q => String(q.id));
         
         const newQuestions = await fetchAdaptiveQuestions(
           toDifficulty,
