@@ -25,8 +25,10 @@ export function formatQuizQuestion(question: any): QuizQuestion {
       .map(key => ({
         id: key,
         text: formattedQuestion.options[key],
-        isCorrect: key === formattedQuestion.correct_answer
+        isCorrect: formattedQuestion.options[key] === formattedQuestion.correct_answer
       }));
+
+    console.log(`Quiz formatting: Question ${formattedQuestion.id} - ${convertedOptions.filter(o => o.isCorrect).length} correct options found`);
 
     return {
       ...formattedQuestion,
