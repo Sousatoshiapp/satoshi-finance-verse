@@ -1,0 +1,802 @@
+[
+  {
+    "question": "Te mandam DM: \"sou do banco, me passa o código do app agora\". Você…",
+    "options": ["Pede pra ligar por um número qualquer", "Ignora e fala com o banco no canal oficial", "Responde com o código", "Clica no link e troca a senha ali"],
+    "correct_answer": "Ignora e fala com o banco no canal oficial",
+    "explanation": "Banco real nunca pede código por DM/Zap. Fale só pelos canais oficiais.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Mensagem no SMS: \"seu prêmio expira hoje, clique pra resgatar\". Qual a boa?",
+    "options": ["Manda seus dados por 'garantia'", "Clica e preenche tudo", "Não clica em nada e apaga", "Reenvia pra todo mundo ver"],
+    "correct_answer": "Não clica em nada e apaga",
+    "explanation": "Prêmio sem você participar é golpe. Não clique, não preencha.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "WhatsApp de \"suporte\" pedindo sua senha. O certo é…",
+    "options": ["Mandar só a metade da senha", "Nunca dar senha; falar com o banco pelo app oficial", "Gravar áudio com a senha", "Responder depois do expediente"],
+    "correct_answer": "Nunca dar senha; falar com o banco pelo app oficial",
+    "explanation": "Senha é sua. Suporte real não pede senha/código.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Link dizendo \"sua conta será bloqueada em 1h\". Você…",
+    "options": ["Manda foto do cartão pra provar", "Responde com seus dados", "Acessa só pelo app/site oficial e verifica por lá", "Clica no link e faz login"],
+    "correct_answer": "Acessa só pelo app/site oficial e verifica por lá",
+    "explanation": "Urgência é truque de golpe. Abra o app oficial e confira por lá.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "QR Code colado por cima no restaurante. Qual é a jogada segura?",
+    "options": ["Pedir PIX a um desconhecido", "Confirmar no caixa ou usar o app do banco direto", "Pagar qualquer QR que aparecer", "Tirar o adesivo e colar de novo"],
+    "correct_answer": "Confirmar no caixa ou usar o app do banco direto",
+    "explanation": "QR adulterado desvia o pagamento. Confirme a chave antes de pagar.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "\"Dobro do dinheiro garantido em 24h!\". Você…",
+    "options": ["Pede empréstimo pra investir", "Chama a família inteira", "Vende tudo e entra", "Cai fora, é cilada"],
+    "correct_answer": "Cai fora, é cilada",
+    "explanation": "Promessa mágica = golpe. Não existe retorno alto garantido.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Perfil do amigo clonado pedindo dinheiro \"urgente\". Você…",
+    "options": ["Pede fotos de documento", "Liga pra pessoa de verdade e confirma", "Manda PIX parcelado", "Transfere e confere depois"],
+    "correct_answer": "Liga pra pessoa de verdade e confirma",
+    "explanation": "Cheque por outro canal. Golpistas clonam perfis pra apressar você.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Boleto enviado por e‑mail com nome estranho. O passo certo é…",
+    "options": ["Encaminhar pro grupo da família", "Conferir no app/portal oficial antes de pagar", "Pagar pra não perder o desconto", "Imprimir e pagar no caixa"],
+    "correct_answer": "Conferir no app/portal oficial antes de pagar",
+    "explanation": "Boleto pode ser falsificado. Valide no emissor oficial.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Wi‑Fi público pedindo login do banco. Você…",
+    "options": ["Manda seus dados no formulário", "Entra mesmo assim rapidinho", "Tira print do cartão", "Sai do Wi‑Fi e usa rede segura/app oficial"],
+    "correct_answer": "Sai do Wi‑Fi e usa rede segura/app oficial",
+    "explanation": "Nunca faça login bancário em Wi‑Fi público. Use rede segura.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "E‑mail com anexo \"nota fiscal\" de desconhecido. Qual atitude?",
+    "options": ["Não abrir; apagar ou marcar como phishing", "Reenviar pro financeiro", "Abrir porque é 'nota'", "Responder com seu CPF"],
+    "correct_answer": "Não abrir; apagar ou marcar como phishing",
+    "explanation": "Anexos suspeitos instalam malware. Delete e reporte.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Golpe do falso suporte pedindo 'acesso remoto'. O certo é…",
+    "options": ["Mandar seu token", "Aceitar pra 'resolver rápido'", "Dar acesso e trocar senha depois", "Recusar e encerrar a conversa"],
+    "correct_answer": "Recusar e encerrar a conversa",
+    "explanation": "Acesso remoto entrega controle do seu aparelho. Nunca permita.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Anúncio: \"cartão sem consulta, limite altíssimo na hora\". Você…",
+    "options": ["Envia selfie do documento", "Manda vídeo com assinatura", "Desconfia e pesquisa no Reclame Aqui/BC", "Paga taxa pra liberar"],
+    "correct_answer": "Desconfia e pesquisa no Reclame Aqui/BC",
+    "explanation": "Oferta boa demais com taxa antecipada é golpe clássico.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Rifa online pedindo depósito na chave de pessoa física. Você…",
+    "options": ["Checa a origem e só paga se for confiável", "Passa seus dados completos", "Paga e vê depois", "Manda foto do cartão"],
+    "correct_answer": "Checa a origem e só paga se for confiável",
+    "explanation": "Verifique quem recebe. Desconfie de pressa e informalidade.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Marketplace: vendedor pede 'frete por fora' via PIX. O correto é…",
+    "options": ["Mandar sinal adiantado", "Combinar por DM", "Pagar só dentro da plataforma oficial", "Enviar dados do cartão"],
+    "correct_answer": "Pagar só dentro da plataforma oficial",
+    "explanation": "Pague dentro da plataforma para ter proteção.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "SMS dizendo que 'seu PIX foi agendado'. Você não fez nada. O que faz?",
+    "options": ["Clica pra 'cancelar agora'", "Responde o SMS", "Liga pro número do SMS", "Abre o app oficial e verifica; não clica no link"],
+    "correct_answer": "Abre o app oficial e verifica; não clica no link",
+    "explanation": "Verifique no app. Links no SMS podem ser isca de phishing.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Seu salário caiu. Qual a primeira jogada inteligente?",
+    "options": ["Comprar itens que 'mereço'", "Pagar contas fixas e separar uma parte pra guardar", "Esperar acabar pra ver", "Chamar o rolê"],
+    "correct_answer": "Pagar contas fixas e separar uma parte pra guardar",
+    "explanation": "Pague o essencial e guarde antes de gastar.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Promo relâmpago grita no app: 'só hoje!'. Você…",
+    "options": ["Pega no crédito e vê depois", "Compra pra não 'perder'", "Manda link pra galera comprar também", "Vê se já planejou comprar e compara preço"],
+    "correct_answer": "Vê se já planejou comprar e compara preço",
+    "explanation": "Compre só o que já estava no plano, não por impulso.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Amigo diz: 'parcelar é sempre melhor'. Verdade?",
+    "options": ["Melhor com juros altos", "Nunca parcelar nada", "Só se não tiver juros e couber no orçamento", "Sim, sempre"],
+    "correct_answer": "Só se não tiver juros e couber no orçamento",
+    "explanation": "Sem juros e com controle, ok. Com juros vira dívida cara.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Fatura do cartão chegou. O que evitar 100%?",
+    "options": ["Conferir as compras", "Negociar se apertou", "Pagar a fatura inteira", "Pagar só o mínimo e empurrar o resto"],
+    "correct_answer": "Pagar só o mínimo e empurrar o resto",
+    "explanation": "Mínimo aciona rotativo: juros altos. Fuja.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Como cortar gastos sem sofrer?",
+    "options": ["Parar de sair pra sempre", "Vender tudo", "Cortar comida", "Cancelar assinaturas que não usa e reduzir supérfluos"],
+    "correct_answer": "Cancelar assinaturas que não usa e reduzir supérfluos",
+    "explanation": "Corte o que não agrega. Pequenas mudanças somam.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Lista de compras serve pra…",
+    "options": ["Ganhar status no mercado", "Encher o carrinho", "Evitar impulso e focar no que precisa", "Comprar tudo 'porque sim'"],
+    "correct_answer": "Evitar impulso e focar no que precisa",
+    "explanation": "Lista te protege de promoções caça‑cliques.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Meta de gasto diário faz o quê?",
+    "options": ["Só atrapalha", "Aumenta vontade de gastar", "Dá dor de cabeça", "Segura o ritmo e evita estourar no mês"],
+    "correct_answer": "Segura o ritmo e evita estourar no mês",
+    "explanation": "Limites diários ajudam a manter o controle.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Dinheiro caiu, conta subiu'. A tradução é…",
+    "options": ["Compre a prazo", "Gaste tudo rápido", "Organize o mês: contas primeiro, desejos depois", "Ignore boletos"],
+    "correct_answer": "Organize o mês: contas primeiro, desejos depois",
+    "explanation": "Priorize o essencial; o resto vem depois.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Cartão extra pra amigo é…",
+    "options": ["Forma de ganhar milhas", "Jeito de emprestar limite", "Prova de amizade", "Risco de dor de cabeça e dívida no seu nome"],
+    "correct_answer": "Risco de dor de cabeça e dívida no seu nome",
+    "explanation": "Você vira responsável por compras que não fez.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Frete grátis acima de X reais. O que fazer?",
+    "options": ["Dividir com desconhecidos", "Comprar só se já precisava e comparar o preço total", "Aproveitar 'porque sim'", "Adicionar itens inúteis"],
+    "correct_answer": "Comprar só se já precisava e comparar o preço total",
+    "explanation": "Frete grátis não é desculpa pra gastar mais.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Compre agora, pense depois'. Boa?",
+    "options": ["Funciona sempre", "Genial", "Péssima: pense antes, pesquise e planeje", "Só em promoções"],
+    "correct_answer": "Péssima: pense antes, pesquise e planeje",
+    "explanation": "Pensar antes salva seu bolso do arrependimento.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Pagar à vista': por que pode ser vantajoso?",
+    "options": ["É pior que parcelar", "Costuma dar desconto e evita dívida", "Diminui garantia", "Nunca vale"],
+    "correct_answer": "Costuma dar desconto e evita dívida",
+    "explanation": "À vista geralmente custa menos e fecha a conta na hora.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Como evitar 'vazamentos' no orçamento?",
+    "options": ["Rastrear gastos pequenos do dia a dia", "Anotar só compras grandes", "Ver só o extrato anual", "Ignorar o café/lanche"],
+    "correct_answer": "Rastrear gastos pequenos do dia a dia",
+    "explanation": "Pequenos gastos somados viram um rombo.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Qual a boa pra não torrar com delivery?",
+    "options": ["Comparar e pedir o mais caro", "Assinar todos apps", "Definir limite semanal e cozinhar mais vezes", "Pedir todo dia"],
+    "correct_answer": "Definir limite semanal e cozinhar mais vezes",
+    "explanation": "Limite + cozinha salvam seu orçamento.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "PIX parcelado: quando faz sentido?",
+    "options": ["Quando a pressa bate", "Nunca", "Sempre", "Quando cabe no orçamento e não há juros escondidos"],
+    "correct_answer": "Quando cabe no orçamento e não há juros escondidos",
+    "explanation": "Use com consciência: parcelar pode ter custo.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Pagar a si mesmo primeiro' significa…",
+    "options": ["Gastar e ver depois", "Guardar uma parte assim que o dinheiro entra", "Investir só quando ficar rico", "Guardar só se sobrar"],
+    "correct_answer": "Guardar uma parte assim que o dinheiro entra",
+    "explanation": "Priorize guardar antes de gastar.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Reserva de emergência é…",
+    "options": ["Empréstimo rápido", "Limite do cartão", "Dinheiro guardado pros imprevistos", "Cupom de desconto"],
+    "correct_answer": "Dinheiro guardado pros imprevistos",
+    "explanation": "Sem reserva, qualquer problema vira dívida.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Dinheiro parado perde valor porque…",
+    "options": ["É só impressão", "O banco 'some' com ele", "O cartão zera sozinho", "A inflação come o poder de compra"],
+    "correct_answer": "A inflação come o poder de compra",
+    "explanation": "Inflação = mesma grana compra menos no futuro.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Investir todo mês é tipo…",
+    "options": ["Jogar na loteria", "Tentar adivinhar o futuro", "Comer a reserva", "Plantar e regar: cresce com o tempo"],
+    "correct_answer": "Plantar e regar: cresce com o tempo",
+    "explanation": "Constância vence 'sorte do dia'.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Começar cedo ajuda por quê?",
+    "options": ["Juros compostos trabalham por mais tempo", "Para usar limite", "Porque é hype", "Pra postar no feed"],
+    "correct_answer": "Juros compostos trabalham por mais tempo",
+    "explanation": "Tempo + constância = efeito bola de neve.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Risco e retorno são…",
+    "options": ["Inimigos eternos", "Coisa de rico", "Iguais sempre", "Primos: mais retorno potencial, mais risco"],
+    "correct_answer": "Primos: mais retorno potencial, mais risco",
+    "explanation": "Não existe retorno alto garantido sem risco.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Não colocar todos os ovos na mesma cesta' quer dizer…",
+    "options": ["Ignorar metas", "Vender sempre na queda", "Diversificar pra reduzir tombo", "Comprar tudo igual"],
+    "correct_answer": "Diversificar pra reduzir tombo",
+    "explanation": "Espalhar reduz impacto se algo vai mal.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comparar taxas e tarifas serve pra…",
+    "options": ["Pagar menos e render mais", "Perder tempo", "Só pra quem é expert", "Dar status"],
+    "correct_answer": "Pagar menos e render mais",
+    "explanation": "Taxas menores deixam mais grana pra você.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardando R$10 por semana por 5 anos, você…",
+    "options": ["Fica rico em 1 mês", "Junta uma boa grana e cria disciplina", "Perde dinheiro", "Não muda nada"],
+    "correct_answer": "Junta uma boa grana e cria disciplina",
+    "explanation": "Hábito > valor inicial. Constância é tudo.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Investir com objetivo claro ajuda porque…",
+    "options": ["Evita qualquer risco", "Você sabe quanto, como e por quanto tempo", "Elimina boletos", "Vira jogo de sorte"],
+    "correct_answer": "Você sabe quanto, como e por quanto tempo",
+    "explanation": "Objetivo dá direção e evita bagunça.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Se oferecerem 'retorno fixo altíssimo e garantido', você…",
+    "options": ["Manda documentos", "Indica amigos", "Diz não e pesquisa a empresa", "Assina agora"],
+    "correct_answer": "Diz não e pesquisa a empresa",
+    "explanation": "Promessa mágica = perigo. Pesquise sempre.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Reinvestir os ganhos' significa…",
+    "options": ["Trocar por cupons", "Aplicar os rendimentos de novo", "Pausar o investimento", "Sacar e gastar"],
+    "correct_answer": "Aplicar os rendimentos de novo",
+    "explanation": "Reinvestir acelera o efeito dos juros compostos.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Emergência aconteceu. O que NÃO fazer com investimento de longo prazo?",
+    "options": ["Vender tudo no pânico", "Cortar supérfluos", "Negociar despesas", "Usar a reserva"],
+    "correct_answer": "Vender tudo no pânico",
+    "explanation": "Plano de longo prazo não é caixa de emergência.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardar só o que sobra no fim do mês…",
+    "options": ["Quase nunca sobra; guarde antes", "Funciona sempre", "Dá no mesmo", "É melhor que guardar antes"],
+    "correct_answer": "Quase nunca sobra; guarde antes",
+    "explanation": "Inverta a ordem: guarde primeiro.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Para começar, o melhor investimento é…",
+    "options": ["O mais 'da moda'", "O mais arriscado", "O que o influencer disse", "Aquele que você entende e cabe no seu bolso"],
+    "correct_answer": "Aquele que você entende e cabe no seu bolso",
+    "explanation": "Entender > hype. Comece simples e consciente.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Cashback é tipo…",
+    "options": ["Um pedaço do seu dinheiro voltando pra você", "Cupom escondido", "Pontos que nunca expiram", "Brinde surpresa"],
+    "correct_answer": "Um pedaço do seu dinheiro voltando pra você",
+    "explanation": "Dinheiro de volta: use com consciência.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comprovante de pagamento serve pra…",
+    "options": ["Pedir empréstimo", "Aumentar limite", "Ganhar desconto", "Provar que você pagou"],
+    "correct_answer": "Provar que você pagou",
+    "explanation": "Guarde pra resolver qualquer divergência.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Boleto tem 'vencimento'. Se passar da data…",
+    "options": ["Fica mais barato", "Pode ter multa e juros", "Vira cashback", "Some do sistema"],
+    "correct_answer": "Pode ter multa e juros",
+    "explanation": "Pague no prazo pra não pagar a mais.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "No débito, o dinheiro…",
+    "options": ["Vem no fim do mês", "Dobra sozinho", "Gera pontos infinitos", "Sai na hora da conta"],
+    "correct_answer": "Sai na hora da conta",
+    "explanation": "Débito = saldo agora. Crédito = fatura depois.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "No crédito, você…",
+    "options": ["Paga agora", "Não precisa pagar", "Recebe dinheiro", "Paga depois na fatura"],
+    "correct_answer": "Paga depois na fatura",
+    "explanation": "Crédito adia, não perdoa. Controle a fatura.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Prioridade financeira' significa…",
+    "options": ["O que os amigos compram", "O que brilha mais", "O que vem antes no orçamento", "O que está em promoção"],
+    "correct_answer": "O que vem antes no orçamento",
+    "explanation": "Priorize o essencial e as metas.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Gastar em silêncio, pagar gritando' quer dizer…",
+    "options": ["Que dívida escondida explode depois", "Que fatura some", "Que pagar é opcional", "Que luxo é legal"],
+    "correct_answer": "Que dívida escondida explode depois",
+    "explanation": "Anote os gastos pra nada te surpreender.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comparar preços em mais de um lugar…",
+    "options": ["É perda de tempo", "Economiza sem virar pão‑duro", "Só confunde", "Estraga a compra"],
+    "correct_answer": "Economiza sem virar pão‑duro",
+    "explanation": "Pesquisa é seu superpoder de consumidor.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Assinaturas esquecidas…",
+    "options": ["Vêm de graça", "Valem pela nostalgia", "Dão status", "Vazam dinheiro todo mês"],
+    "correct_answer": "Vazam dinheiro todo mês",
+    "explanation": "Revise e cancele o que não usa.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Dinheiro não aceita desaforo' significa…",
+    "options": ["Se você ignora, ele some", "Se gasta, ele volta", "Se investe, ele foge", "Se guarda, ele briga"],
+    "correct_answer": "Se você ignora, ele some",
+    "explanation": "Cuide bem: planeje, acompanhe, ajuste.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Meta de curto prazo é…",
+    "options": ["Prêmio secreto", "Sonho distante", "Objetivo pra atingir logo", "Coisa de rico"],
+    "correct_answer": "Objetivo pra atingir logo",
+    "explanation": "Metas próximas mantêm foco e motivação.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Meta de longo prazo é…",
+    "options": ["Bônus do cartão", "Coisa de sorte", "Compra por impulso", "Objetivo pra construir aos poucos"],
+    "correct_answer": "Objetivo pra construir aos poucos",
+    "explanation": "Longo prazo pede constância e paciência.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Dinheiro fácil' em anúncio é…",
+    "options": ["Oportunidade única", "Clickbait financeiro", "Parceria oficial", "Programa do governo"],
+    "correct_answer": "Clickbait financeiro",
+    "explanation": "Se é bom demais, desconfie primeiro.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Juntar moedas no cofrinho…",
+    "options": ["Só serve pra criança", "É inútil", "Cria hábito e ajuda no começo", "Dá azar"],
+    "correct_answer": "Cria hábito e ajuda no começo",
+    "explanation": "Hábito vem primeiro; valores crescem depois.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardar recibos e notas…",
+    "options": ["Enche a gaveta à toa", "Diminui impostos", "Evita dor de cabeça em trocas e garantias", "Não serve pra nada"],
+    "correct_answer": "Evita dor de cabeça em trocas e garantias",
+    "explanation": "Comprovante é prova. Simples e útil.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Você gasta R$ 5 no café todo dia. O que isso mostra no fim do ano?",
+    "options": ["Que café não conta", "Que pequenos gastos viram grande dinheiro", "Que é igual a zero", "Que só rico economiza"],
+    "correct_answer": "Que pequenos gastos viram grande dinheiro",
+    "explanation": "Consistência (boa ou ruim) soma no tempo—olhe o total anual.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardar R$ 10 por semana por 5 anos mostra que…",
+    "options": ["Melhor deixar pra depois", "É perda de tempo", "Só rico guarda", "Disciplina vence impulso"],
+    "correct_answer": "Disciplina vence impulso",
+    "explanation": "Pequenos valores + tempo = resultado real.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Investir todo mês e reinvestir ganhos é…",
+    "options": ["A mesma coisa que poupar", "Golpe novo", "Só pra experts", "Modo turbo dos juros compostos"],
+    "correct_answer": "Modo turbo dos juros compostos",
+    "explanation": "Reinvestir acelera o crescimento.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Começar hoje, não mês que vem, significa…",
+    "options": ["Menos segurança", "Mais ansiedade", "Resultado igual", "Mais tempo pro dinheiro trabalhar"],
+    "correct_answer": "Mais tempo pro dinheiro trabalhar",
+    "explanation": "Tempo é o melhor aliado dos seus objetivos.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Planejar antes de comprar online ajuda a…",
+    "options": ["Fugir de armadilhas e fretes isca", "Ganhar status", "Ignorar orçamento", "Comprar mais"],
+    "correct_answer": "Fugir de armadilhas e fretes isca",
+    "explanation": "Planeje o carrinho: precisa mesmo? melhor preço?",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Golpe do 'pix por engano': pedem devolução rápida. Você…",
+    "options": ["Liga pro número do golpista", "Confere no app se recebeu mesmo antes de devolver", "Devolve na hora", "Manda dobro 'por cuidado'"],
+    "correct_answer": "Confere no app se recebeu mesmo antes de devolver",
+    "explanation": "Cheque o extrato: sem entrada real, não devolva nada.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comprar porque 'todo mundo tem' é…",
+    "options": ["Jeito de economizar", "Meta financeira", "Caminho pra gastar além do seu plano", "Estratégia de investimento"],
+    "correct_answer": "Caminho pra gastar além do seu plano",
+    "explanation": "Seu bolso, suas regras. Não siga a manada.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Gastar tudo no início do mês…",
+    "options": ["Organiza a vida", "Dá mais milhas", "Deixa o resto do mês no sufoco", "É melhor"],
+    "correct_answer": "Deixa o resto do mês no sufoco",
+    "explanation": "Planeje a semana e evite picos de gasto.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Anotar os gastos no dia…",
+    "options": ["Diminui o limite", "Traz golpes", "É frescura", "Evita surpresas na fatura"],
+    "correct_answer": "Evita surpresas na fatura",
+    "explanation": "Registrar dá consciência e controle.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Eu mereço' toda compra…",
+    "options": ["Vira desculpa pra estourar o orçamento", "É tática de economia", "Aumenta salário", "Multiplica dinheiro"],
+    "correct_answer": "Vira desculpa pra estourar o orçamento",
+    "explanation": "Merecer tudo todo dia sai caro. Escolha suas batalhas.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Desconto progressivo (leve 3 pague 2) é bom quando…",
+    "options": ["Sempre", "Você já ia comprar essa quantidade", "Quando o site pisca", "Quando for novidade"],
+    "correct_answer": "Você já ia comprar essa quantidade",
+    "explanation": "Desconto funciona quando precisa de verdade.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Cartão de loja oferecendo 'primeira compra com desconto'…",
+    "options": ["Pegue dois cartões", "Só aceite se precisar e couber no seu orçamento", "Passe tudo no crédito", "Aceite sempre"],
+    "correct_answer": "Só aceite se precisar e couber no seu orçamento",
+    "explanation": "Cartões extras pedem disciplina. Nada de acumular por impulso.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Empurraram garantia estendida cara. O que fazer?",
+    "options": ["Ignorar preço", "Comparar o custo e o risco real antes de aceitar", "Assinar tudo", "Aceitar no susto"],
+    "correct_answer": "Comparar o custo e o risco real antes de aceitar",
+    "explanation": "Nem toda garantia vale a pena—decida com calma.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Notificação de 'compra suspeita' no cartão. Você…",
+    "options": ["Publica no story", "Ignora", "Manda senha por e‑mail", "Confere no app e bloqueia se não reconhecer"],
+    "correct_answer": "Confere no app e bloqueia se não reconhecer",
+    "explanation": "Aja rápido no canal oficial e conteste a compra.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Pix agendado por engano que você não fez. Passo certo?",
+    "options": ["Responder o e‑mail", "Verificar no app e cancelar por lá", "Clicar no link do SMS", "Mandar dados"],
+    "correct_answer": "Verificar no app e cancelar por lá",
+    "explanation": "Controle sempre dentro do app oficial.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Antes de assinar um serviço, o passo de ouro é…",
+    "options": ["Ver se cabe no orçamento e comparar planos", "Pagar o anual às cegas", "Assinar e ver depois", "Pedir cartão novo"],
+    "correct_answer": "Ver se cabe no orçamento e comparar planos",
+    "explanation": "Planeje a assinatura: precisa, cabe e é o melhor preço?",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Frete grátis' te seduz, mas a regra é…",
+    "options": ["Ignorar o orçamento", "Olhar o total: produto + frete + necessidade real", "Comprar mais pra 'compensar'", "Pagar por impulso"],
+    "correct_answer": "Olhar o total: produto + frete + necessidade real",
+    "explanation": "Total da compra é o que importa—não a etiqueta do frete.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Aplicativo novo pedindo permissões demais. Você…",
+    "options": ["Aceita tudo", "Autoriza acesso ao SMS", "Entrega contatos", "Revisa as permissões e baixa só app confiável"],
+    "correct_answer": "Revisa as permissões e baixa só app confiável",
+    "explanation": "Menos permissões, menos porta pra golpes.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Salário extra (13º/PLR) é chance de…",
+    "options": ["Quitar dívidas e turbinar a reserva", "Fazer dívidas novas", "Comprar por impulso", "Assinar tudo"],
+    "correct_answer": "Quitar dívidas e turbinar a reserva",
+    "explanation": "Use extras pra fortalecer sua base financeira.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Compra online: loja sem CNPJ/contato. Qual o sinal?",
+    "options": ["Ousadia", "Frete astral", "Preço mágico", "Bandeira vermelha—pesquise antes de pagar"],
+    "correct_answer": "Bandeira vermelha—pesquise antes de pagar",
+    "explanation": "Transparência e reputação importam. Pesquise sempre.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Data de vencimento da fatura existe pra…",
+    "options": ["Ganhar desconto automático", "Aumentar limite", "Pagar quando quiser", "Você pagar no prazo sem juros"],
+    "correct_answer": "Você pagar no prazo sem juros",
+    "explanation": "Respeite o vencimento pra não cair no rotativo.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Antes de comprar em 'drop limitado', a pergunta é…",
+    "options": ["Qual cor bomba no feed", "Qual influencer indicou", "Eu preciso mesmo ou é hype?", "Qual cartão usar"],
+    "correct_answer": "Eu preciso mesmo ou é hype?",
+    "explanation": "Hype não paga boleto; necessidade vem primeiro.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Notificações do banco no celular servem pra…",
+    "options": ["Deixar o celular bonito", "Viralizar prints", "Ganhar cashback automático", "Acompanhar gastos em tempo real"],
+    "correct_answer": "Acompanhar gastos em tempo real",
+    "explanation": "Alertas ajudam a detectar problemas na hora.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comparar preço por litro/quilo ajuda a…",
+    "options": ["Evitar garantia", "Ganhar brinde", "Descobrir o que realmente está mais barato", "Achar a embalagem mais bonita"],
+    "correct_answer": "Descobrir o que realmente está mais barato",
+    "explanation": "Preço por unidade revela o melhor custo‑benefício.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comprar no impulso do 'eu mereço' todo dia é…",
+    "options": ["Atalho pra estourar o orçamento", "Tática de economia", "Jeito de ganhar milhas infinitas", "Ok sempre que der vontade"],
+    "correct_answer": "Atalho pra estourar o orçamento",
+    "explanation": "Use com moderação; desejo sem plano vira dívida.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardar 10% do que entra é…",
+    "options": ["Pouco demais pra valer", "Um bom começo pra criar hábito", "Perda de tempo", "Coisa de rico"],
+    "correct_answer": "Um bom começo pra criar hábito",
+    "explanation": "Hábito > valor; comece pequeno e constante.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Meta com data definida…",
+    "options": ["Só pressiona", "Diminui salário", "Te ajuda a agir e medir progresso", "Estraga a surpresa"],
+    "correct_answer": "Te ajuda a agir e medir progresso",
+    "explanation": "Prazo transforma desejo em plano.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Quando a promoção manda 'só hoje!!!', lembre…",
+    "options": ["Mude de meta", "Compre qualquer coisa", "Use crédito até zerar", "Promo boa é a de algo que você já queria"],
+    "correct_answer": "Promo boa é a de algo que você já queria",
+    "explanation": "Planejamento vence urgência fake.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Golpe do 'comprovante falso' no PIX: como se proteger?",
+    "options": ["Pedir foto do cartão", "Aceitar áudio como prova", "Confiar no print", "Verificar no extrato se entrou de verdade"],
+    "correct_answer": "Verificar no extrato se entrou de verdade",
+    "explanation": "Só vale o que aparece no seu extrato real.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardar o 13º/PLR todo em um dia de compras…",
+    "options": ["É obrigatório", "Cresce o salário", "Dá sorte", "Mata a chance de organizar a vida"],
+    "correct_answer": "Mata a chance de organizar a vida",
+    "explanation": "Use extras pra quitar dívidas e fortalecer a reserva.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Antes de emprestar dinheiro a amigo…",
+    "options": ["Veja se cabe no orçamento e combine por escrito", "Empreste sempre", "Faça PIX e esqueça", "Passe seu cartão"],
+    "correct_answer": "Veja se cabe no orçamento e combine por escrito",
+    "explanation": "Se decidir emprestar, combine regras claras.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "App de finanças ajuda a…",
+    "options": ["Pagar menos impostos", "Ganhar bônus secreto", "Ver para onde o dinheiro está indo", "Aumentar salário"],
+    "correct_answer": "Ver para onde o dinheiro está indo",
+    "explanation": "Visão clara dos gastos muda seu jogo.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Promoção com 'juros 0%' exige…",
+    "options": ["Confiar e assinar", "Pedir outro cartão", "Checar se não embutiram no preço", "Comprar dobrado"],
+    "correct_answer": "Checar se não embutiram no preço",
+    "explanation": "Compare o preço à vista vs. parcelado.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Comprar usado em bom estado…",
+    "options": ["Perde valor emocional", "Pode economizar muito com responsabilidade", "Cancela garantia legal", "É sempre furada"],
+    "correct_answer": "Pode economizar muito com responsabilidade",
+    "explanation": "Pesquise reputação e estado do produto.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardou um valor todo mês por um ano. O aprendizado é…",
+    "options": ["Só valores grandes contam", "Sem app não funciona", "Hábito e consistência batem impulso", "Só com milhas rende"],
+    "correct_answer": "Hábito e consistência batem impulso",
+    "explanation": "A constância constrói o resultado.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Antes de aceitar aumento de limite…",
+    "options": ["Confirme se precisa e se controla a fatura", "Use pra viajar hoje", "Passe tudo no crédito", "Aceite sempre"],
+    "correct_answer": "Confirme se precisa e se controla a fatura",
+    "explanation": "Limite alto sem controle vira cilada.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Cancelar o que você não usa mais…",
+    "options": ["É perrengue inútil", "Diminui status", "Anula milhas", "É dinheiro voltando pro seu bolso"],
+    "correct_answer": "É dinheiro voltando pro seu bolso",
+    "explanation": "Assinaturas esquecidas drenam seu orçamento.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Guardar comprovantes por um tempo…",
+    "options": ["Dá azar", "É mania", "Evita dor de cabeça em trocas", "Aumenta tarifas"],
+    "correct_answer": "Evita dor de cabeça em trocas",
+    "explanation": "Prova salva discussões depois.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "Golpe do 'funcionário que vem retirar seu cartão'. Você…",
+    "options": ["Faz selfie com o golpista", "Entrega sem senha", "Nunca entrega cartão a ninguém", "Entrega com senha"],
+    "correct_answer": "Nunca entrega cartão a ninguém",
+    "explanation": "Banco real não recolhe cartão na sua casa.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  },
+  {
+    "question": "'Quero começar, mas tenho pouco'. O caminho é…",
+    "options": ["Viver no limite", "Esperar ficar rico", "Copiar aposta do amigo", "Começar pequeno e manter a constância"],
+    "correct_answer": "Começar pequeno e manter a constância",
+    "explanation": "Começar > perfeito. Hábito é o que cresce.",
+    "category": "ABC das Finanças",
+    "difficulty": "easy"
+  }
+]

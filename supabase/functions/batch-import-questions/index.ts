@@ -69,8 +69,7 @@ serve(async (req) => {
             explanation: question.explanation?.trim(),
             category: question.category?.trim() || 'ABC das Finanças',
             difficulty: question.difficulty?.toLowerCase() || 'medium',
-            is_active: true,
-            created_by_admin: true
+            is_active: true
           });
 
         if (insertError) {
