@@ -8,7 +8,7 @@ export { BotAchievementManager } from './bot-achievement-manager';
 export { BotNicknameManager } from './bot-nickname-manager';
 export { BotNicknameUpdater } from './bot-nickname-updater';
 export { BotRealismEnhancer } from './bot-realism-enhancer';
-export { CSVQuestionImporter } from './csv-question-importer';
+export { JSONQuestionImporter } from './json-question-importer';
 export { LanguageSelector } from './language-selector';
 export { QuestionImportTool } from './question-import-tool';
 export { SingleBotNicknameUpdater as SingleBotUpdater } from './single-bot-updater';
