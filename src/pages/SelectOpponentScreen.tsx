@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
-import { useCasinoDuels } from "@/hooks/use-casino-duels";
+import { useDuels } from "@/hooks/use-duels";
 import { Search, Users, Shuffle, ArrowLeft, Swords, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
@@ -46,7 +46,7 @@ export default function SelectOpponentScreen() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile } = useProfile();
-  const { findOpponent, isSearching } = useCasinoDuels();
+  const { createDuelChallenge, loading } = useDuels();
   const { toast } = useToast();
   
   const state = location.state as LocationState;
@@ -297,7 +297,13 @@ export default function SelectOpponentScreen() {
     if (!profile?.id || !state) return;
 
     try {
-      await findOpponent(state.topic, state.betAmount, opponentId);
+      const result = await createDuelChallenge(opponentId, state.betAmount);
+      if (result?.success) {
+        toast({
+          title: "Convite Enviado!",
+          description: `Desafio enviado para duelo sobre ${state.topic}`,
+        });
+      }
     } catch (error) {
       console.error('Error creating duel:', error);
       toast({
@@ -330,7 +336,13 @@ export default function SelectOpponentScreen() {
       setSearchingOpponent(false);
       
       // Use the specific opponent ID found by the modal
-      await findOpponent(state.topic, state.betAmount, opponent.id);
+      const result = await createDuelChallenge(opponent.id, state.betAmount);
+      if (result?.success) {
+        toast({
+          title: "Duelo Criado!",
+          description: `Desafio enviado para ${opponent.nickname}`,
+        });
+      }
       console.log('✅ Duel creation completed and navigation should happen automatically');
       
     } catch (error) {
@@ -392,7 +404,7 @@ export default function SelectOpponentScreen() {
             <Button
               size="sm"
               onClick={onChallenge}
-              disabled={isSearching}
+              disabled={loading}
               className="bg-orange-500 hover:bg-orange-600 text-white text-xs px-2 py-1 h-auto"
             >
               <Swords className="h-3 w-3 mr-1" />
@@ -579,7 +591,7 @@ export default function SelectOpponentScreen() {
           <CardContent className="space-y-3 p-3 pt-0">
             <Button
               onClick={handleRandomMatch}
-              disabled={isSearching || searchingOpponent}
+              disabled={loading || searchingOpponent}
               className="w-full font-bold py-2 text-black border-2 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: '#adff2f',
@@ -587,7 +599,7 @@ export default function SelectOpponentScreen() {
                 color: 'black'
               }}
             >
-              {(isSearching || searchingOpponent) ? (
+              {(loading || searchingOpponent) ? (
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2"></div>
                   Procurando Oponente...
