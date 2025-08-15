@@ -122,20 +122,32 @@ export default function CasinoDuelScreen() {
     sensoryFeedback.triggerError();
     rewardSystem.showIncorrectAnswer('Tempo Esgotado!');
     
+    // Pass empty string as selected option ID - the handleAnswer will handle it correctly
     await handleAnswer('');
   };
 
-  const handleAnswer = async (selectedText: string) => {
+  const handleAnswer = async (selectedOptionId: string) => {
     const questions = casinoDuels.currentDuel?.questions || [];
     const currentQuestion = questions[currentQuestionIndex - 1];
     
     if (!casinoDuels.currentDuel || !currentQuestion || isSubmitting) return;
     
-    console.log('🔥🔥🔥 CRITICAL handleAnswer: selectedText =', selectedText);
-    console.log('🔥🔥🔥 CRITICAL handleAnswer: currentQuestion =', JSON.stringify(currentQuestion, null, 2));
+    // Get the actual text of the selected option
+    const formattedQuestion = formatQuizQuestion(currentQuestion);
+    const interfaceQuestion = convertToInterfaceQuestion(formattedQuestion);
+    const selectedOption = interfaceQuestion.options.find(opt => opt.id === selectedOptionId);
+    const selectedText = selectedOption?.text || selectedOptionId;
+    
+    console.log('🔥 handleAnswer DEBUG:', {
+      selectedOptionId,
+      selectedText,
+      originalQuestion: currentQuestion,
+      formattedQuestion,
+      interfaceQuestion
+    });
     
     setIsSubmitting(true);
-    setSelectedAnswer(selectedText);
+    setSelectedAnswer(selectedOptionId);
     
     const responseTime = Date.now() - responseStartTime;
     
@@ -143,14 +155,11 @@ export default function CasinoDuelScreen() {
       // Trigger immediate feedback
       sensoryFeedback.triggerClick(document.body);
       
-      // Format question consistently before submission
-      const formattedQuestion = formatQuizQuestion(currentQuestion);
-      
       console.log('🔍 Submitting answer:', {
         duelId: casinoDuels.currentDuel.id,
         questionIndex: currentQuestionIndex - 1,
-        selectedAnswer: selectedText,
-        formattedQuestion
+        selectedAnswer: selectedText, // Send the actual text, not the letter
+        responseTime
       });
 
       // Submit answer to edge function
@@ -159,7 +168,7 @@ export default function CasinoDuelScreen() {
           duelId: casinoDuels.currentDuel.id,
           userId: user?.id,
           questionIndex: currentQuestionIndex - 1,
-          selectedAnswer: selectedText,
+          selectedAnswer: selectedText, // Send actual text
           responseTime
         }
       });
@@ -444,7 +453,7 @@ export default function CasinoDuelScreen() {
                 {isCorrect ? '✅' : '❌'}
               </motion.div>
               <h2 className="text-2xl font-bold">
-                {isCorrect ? 'Correto!' : selectedAnswer === '' ? 'Tempo Esgotado!' : 'Incorreto!'}
+                {isCorrect ? 'Correto!' : selectedAnswer === '' || selectedAnswer === null ? 'Tempo Esgotado!' : 'Incorreto!'}
               </h2>
             </motion.div>
           </motion.div>

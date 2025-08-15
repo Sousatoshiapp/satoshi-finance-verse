@@ -64,12 +64,20 @@ serve(async (req) => {
     // Handle empty answer case (time up)
     let isCorrect = false;
     if (selectedAnswer && selectedAnswer.trim() !== '') {
+      // Direct text comparison - both should be full option texts now
       isCorrect = selectedAnswer.trim() === currentQuestion.correct_answer?.trim();
     }
     
     const correctAnswerText = currentQuestion.correct_answer;
     
-    console.log('✅ Answer result:', { selectedAnswer, correctAnswerText, isCorrect });
+    console.log('✅ Answer result:', { 
+      selectedAnswer, 
+      correctAnswerText, 
+      isCorrect,
+      bothAreText: typeof selectedAnswer === 'string' && typeof correctAnswerText === 'string',
+      selectedLength: selectedAnswer?.length,
+      correctLength: correctAnswerText?.length
+    });
 
     // Update the answer record
     const { error: updateError } = await supabase
