@@ -85,10 +85,10 @@ export function useQuestionSelector() {
     }
   }, []);
 
-  const selectAdaptiveQuestions = useCallback(async (userId: string, count: number = 10) => {
+  const selectAdaptiveQuestions = useCallback(async (userId: string, count: number = 10, category?: string) => {
     setLoading(true);
     try {
-      console.log('🔍 Buscando questões adaptativas para usuário:', userId);
+      console.log('🔍 Buscando questões adaptativas para usuário:', userId, 'categoria:', category);
       
       // Buscar progresso do usuário para questões adaptativas
       const { data: progressData, error: progressError } = await supabase
@@ -102,12 +102,19 @@ export function useQuestionSelector() {
 
       console.log('📊 Progresso encontrado:', progressData?.length || 0, 'questões');
 
-      // Algoritmo simples de seleção adaptativa
-      const { data, error } = await supabase
+      // Algoritmo simples de seleção adaptativa com filtro de categoria
+      let query = supabase
         .from('quiz_questions')
         .select('*')
-        .eq('is_approved', true)
-        .limit(count * 2); // Buscar mais para ter opções
+        .eq('is_approved', true);
+
+      // Adicionar filtro de categoria se fornecido
+      if (category) {
+        query = query.eq('category', category);
+        console.log('🏷️ Filtrando por categoria:', category);
+      }
+
+      const { data, error } = await query.limit(count * 2); // Buscar mais para ter opções
 
       if (error) {
         console.error('❌ Erro ao buscar questões:', error);
@@ -135,7 +142,7 @@ export function useQuestionSelector() {
       if (selectedQuestions.length === 0) {
         console.warn('⚠️ Nenhuma questão selecionada! Tentando fallback...');
         // Fallback: usar seleção normal se adaptive falhar
-        return await selectQuestions({ limit: count });
+        return await selectQuestions({ limit: count, category });
       }
 
       const formattedQuestions: Question[] = selectedQuestions.map(q => ({

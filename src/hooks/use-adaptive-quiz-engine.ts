@@ -147,7 +147,7 @@ export function useAdaptiveQuizEngine(config: AdaptiveQuizConfig) {
       } else {
         // Usar sistema adaptativo tradicional
         if (user) {
-          const questions = await selectAdaptiveQuestions(user.id, count);
+          const questions = await selectAdaptiveQuestions(user.id, count, config.category);
           return shuffleExistingQuestions(questions);
         }
         return [];
