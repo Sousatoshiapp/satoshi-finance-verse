@@ -24,8 +24,11 @@ export function CircularTimer({
   const [timeLeft, setTimeLeft] = useState(duration);
   
   useEffect(() => {
+    setTimeLeft(duration); // Reset when duration changes
+  }, [duration]);
+  
+  useEffect(() => {
     if (!isActive) {
-      setTimeLeft(duration);
       return;
     }
 
@@ -34,8 +37,8 @@ export function CircularTimer({
       return;
     }
 
-    // Tocar som de contagem regressiva aos 10 segundos (apenas se habilitado)
-    if (timeLeft === 10 && enableCountdownSound) {
+    // Tocar som de contagem regressiva aos 5 segundos (apenas se habilitado)
+    if (timeLeft <= 5 && timeLeft > 0 && enableCountdownSound) {
       onCountdown?.();
     }
 
@@ -50,7 +53,7 @@ export function CircularTimer({
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [timeLeft, isActive, duration, onTimeUp, onTick, onCountdown]);
+  }, [timeLeft, isActive, onTimeUp, onTick, onCountdown, enableCountdownSound]);
 
   const progress = timeLeft / duration;
   const circumference = 2 * Math.PI * (size / 2 - 8);

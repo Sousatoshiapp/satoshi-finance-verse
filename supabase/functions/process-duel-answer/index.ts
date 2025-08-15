@@ -62,7 +62,7 @@ serve(async (req) => {
       const correctOption = currentQuestion.options.find(opt => opt.isCorrect);
       
       if (selectedOption && correctOption) {
-        isCorrect = selectedOption.text === correctOption.text;
+        isCorrect = selectedOption.id === correctOption.id || selectedOption.text === correctOption.text;
         correctAnswerText = correctOption.text;
       }
       
@@ -74,7 +74,7 @@ serve(async (req) => {
       const correctLetter = currentQuestion.correct_answer;
       const correctOptionText = currentQuestion.options[correctLetter];
       
-      isCorrect = selectedAnswer === correctLetter;
+      isCorrect = selectedAnswer === correctLetter || optionText === correctOptionText;
       correctAnswerText = correctOptionText || currentQuestion.correct_answer;
       
       console.log('🔍 DEBUG: Object format - Option text:', optionText);

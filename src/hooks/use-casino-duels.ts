@@ -146,8 +146,18 @@ export function useCasinoDuels() {
         .from('casino_duels')
         .select(`
           *,
-          player1:profiles!casino_duels_player1_id_fkey(id, nickname, current_avatar_id),
-          player2:profiles!casino_duels_player2_id_fkey(id, nickname, current_avatar_id)
+          player1:profiles!casino_duels_player1_id_fkey(
+            id, nickname, level, profile_image_url, current_avatar_id,
+            avatars:avatars!current_avatar_id (
+              name, image_url
+            )
+          ),
+          player2:profiles!casino_duels_player2_id_fkey(
+            id, nickname, level, profile_image_url, current_avatar_id,
+            avatars:avatars!current_avatar_id (
+              name, image_url
+            )
+          )
         `)
         .eq('id', duelId)
         .single();
@@ -203,13 +213,17 @@ export function useCasinoDuels() {
         completed_at: duel.completed_at,
         player1_profile: duel.player1 ? {
           nickname: duel.player1.nickname,
-          level: 1,
-          avatar_url: undefined
+          level: duel.player1.level || 1,
+          avatar_url: duel.player1.profile_image_url || 
+                     (duel.player1.avatars?.image_url) || 
+                     '/avatars/the-satoshi.jpg'
         } : undefined,
         player2_profile: duel.player2 ? {
           nickname: duel.player2.nickname,
-          level: 1,
-          avatar_url: undefined
+          level: duel.player2.level || 1,
+          avatar_url: duel.player2.profile_image_url || 
+                     (duel.player2.avatars?.image_url) || 
+                     '/avatars/the-satoshi.jpg'
         } : undefined
       };
 

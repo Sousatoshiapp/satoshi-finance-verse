@@ -11,37 +11,9 @@ import { QuizQuestion } from '@/types/quiz';
 import { useSensoryFeedback } from '@/hooks/use-sensory-feedback';
 import { useRewardAnimationSystem } from '@/hooks/use-reward-animation-system';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatQuizQuestion, convertToInterfaceQuestion } from '@/utils/quiz-formatting';
 
-// Convert QuizQuestion to the format expected by EnhancedDuelInterface
-const convertToInterfaceQuestion = (question: any) => {
-  let options;
-  
-  if (Array.isArray(question.options)) {
-    // Handle array format - convert to options with proper IDs
-    options = question.options.map((text: string, index: number) => ({
-      id: ['a', 'b', 'c', 'd'][index] || String(index),
-      text: text,
-      isCorrect: text === question.correct_answer
-    }));
-  } else if (typeof question.options === 'object' && question.options !== null) {
-    // Handle object format {a: "text", b: "text", ...}
-    options = Object.entries(question.options).map(([key, text]) => ({
-      id: key,
-      text: text as string,
-      isCorrect: key === question.correct_answer || (text as string) === question.correct_answer
-    }));
-  } else {
-    // Fallback for unexpected formats
-    console.warn('Unexpected options format for question:', question.id);
-    options = [];
-  }
-  
-  return {
-    id: String(question.id),
-    question: question.question,
-    options: options
-  };
-};
+// Process questions through formatting utilities to ensure consistency
 
 export default function CasinoDuelScreen() {
   const { duelId } = useParams();
@@ -168,6 +140,16 @@ export default function CasinoDuelScreen() {
       // Trigger immediate feedback
       sensoryFeedback.triggerClick(document.body);
       
+      // Format question consistently before submission
+      const formattedQuestion = formatQuizQuestion(currentQuestion);
+      
+      console.log('🔍 Submitting answer:', {
+        duelId: casinoDuels.currentDuel.id,
+        questionIndex: currentQuestionIndex - 1,
+        selectedAnswer: optionId,
+        formattedQuestion
+      });
+
       // Submit answer to edge function
       const { data, error } = await supabase.functions.invoke('process-duel-answer', {
         body: {
@@ -348,7 +330,7 @@ export default function CasinoDuelScreen() {
           className="h-full"
         >
           <EnhancedDuelInterface
-            questions={questions.map(convertToInterfaceQuestion)}
+            questions={questions.map(q => convertToInterfaceQuestion(formatQuizQuestion(q)))}
             currentQuestion={currentQuestionIndex}
             onAnswer={handleAnswer}
             playerAvatar={getAvatarUrl(player1Profile)}

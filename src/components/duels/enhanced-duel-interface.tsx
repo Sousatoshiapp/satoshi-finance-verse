@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/shared/ui/dialog';
 import { Button } from '@/components/shared/ui/button';
 import { X, AlertTriangle } from 'lucide-react';
+import { CircularTimer } from './circular-timer';
 
 interface Question {
   id: string;
@@ -240,40 +241,18 @@ export function EnhancedDuelInterface({
           </div>
         </div>
 
-        {/* Timer Responsivo */}
+        {/* Timer Responsivo - CircularTimer */}
         <div className="flex justify-center mb-4 sm:mb-6">
-          <motion.div 
-            className="relative"
-            animate={{ 
-              scale: timeLeft <= 5 ? [1, 1.1, 1] : 1,
-            }}
-            transition={{ 
-              duration: 0.5,
-              repeat: timeLeft <= 5 ? Infinity : 0
-            }}
-          >
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-muted flex items-center justify-center bg-background/50 backdrop-blur-sm shadow-lg">
-              <span className={`text-xl sm:text-2xl font-bold transition-colors ${
-                timeLeft <= 5 ? 'text-destructive' : 'text-foreground'
-              }`}>
-                {timeLeft}
-              </span>
-            </div>
-            <motion.div 
-              className="absolute top-0 left-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-primary transform -rotate-90"
-              style={{
-                clipPath: `polygon(50% 50%, 50% 0%, ${
-                  50 + 50 * Math.cos((timeLeft / 30) * 2 * Math.PI - Math.PI / 2)
-                }% ${
-                  50 + 50 * Math.sin((timeLeft / 30) * 2 * Math.PI - Math.PI / 2)
-                }%, 50% 50%)`
-              }}
-              animate={{
-                borderColor: timeLeft <= 5 ? ["hsl(var(--primary))", "hsl(var(--destructive))", "hsl(var(--primary))"] : "hsl(var(--primary))"
-              }}
-              transition={{ duration: 1, repeat: timeLeft <= 5 ? Infinity : 0 }}
-            />
-          </motion.div>
+          <CircularTimer
+            duration={30}
+            isActive={!selectedAnswer && !isWaitingForOpponent}
+            onTimeUp={onTimeUp || (() => {})}
+            onTick={() => {}}
+            onCountdown={() => sensoryFeedback.triggerTension(timeLeft)}
+            enableCountdownSound={true}
+            size={80}
+            className="transition-transform hover:scale-105"
+          />
         </div>
 
         {/* Progress Bar Responsivo */}
