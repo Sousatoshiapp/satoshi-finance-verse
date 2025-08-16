@@ -140,7 +140,7 @@ export function DuelInviteModal({ invite, open, onClose, onResponse }: DuelInvit
 
         console.log('🎮 Redirecionando para duelo...');
         setTimeout(() => {
-          navigate(`/casino-duel/${duelId}`);
+          navigate(`/unified-duel/${duelId}`);
         }, 1500);
         return;
 
