@@ -85,6 +85,8 @@ export function SimpleDuelQuizEngine({
   const [questions, setQuestions] = useState<DuelQuestion[]>([]);
   const [isUpdatingScore, setIsUpdatingScore] = useState(false);
   const [initializationId, setInitializationId] = useState<string | null>(null);
+  const [isDuelCompleted, setIsDuelCompleted] = useState(false);
+  const [totalQuestions, setTotalQuestions] = useState(0);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -204,6 +206,7 @@ export function SimpleDuelQuizEngine({
     if (duelData && duelData.questions && Array.isArray(duelData.questions)) {
       console.log('📚 [SIMPLE DUEL] Loading questions:', duelData.questions.length);
       setQuestions(duelData.questions);
+      setTotalQuestions(duelData.questions.length); // Preserve total count
     }
   }, [duelData]);
 
@@ -240,11 +243,13 @@ export function SimpleDuelQuizEngine({
 
   // Polling system for real duels to sync opponent scores
   useEffect(() => {
-    if (!duelData || isTestDuel || duelData.status === 'completed') return;
+    if (!duelData || isTestDuel || duelData.status === 'completed' || isDuelCompleted) return;
 
     console.log('🔄 [SIMPLE DUEL] Starting polling for real duel:', duelData.id);
     
     const pollInterval = setInterval(async () => {
+      if (isUpdatingScore || isDuelCompleted) return; // Skip polling during score updates
+      
       try {
         const { data: updatedDuel, error } = await supabase
           .from('casino_duels')
@@ -257,12 +262,12 @@ export function SimpleDuelQuizEngine({
           return;
         }
 
-        if (updatedDuel && user && !isUpdatingScore) {
+        if (updatedDuel && user && !isUpdatingScore && !isDuelCompleted) {
           const isPlayer1 = duelData.player1_id === user.id;
           const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
           const newOpponentScore = isPlayer1 ? updatedDuel.player2_score : updatedDuel.player1_score;
           
-          // PHASE 3: Only update opponent score via polling - NEVER player score or current_question
+          // Only update opponent score via polling - NEVER player score or current_question
           if (newOpponentScore !== opponentScore) {
             console.log(`🔄 [PHASE 3] ${playerType} Opponent score updated:`, {
               old: opponentScore,
@@ -273,12 +278,10 @@ export function SimpleDuelQuizEngine({
             setOpponentScore(newOpponentScore);
           }
           
-          // PHASE 3: Do NOT update current_question via polling - causes reinitialization loop
-          // The currentIndex is controlled locally by the player's progress
-          
           // Check if duel is completed by opponent
-          if (updatedDuel.status === 'completed' && duelData.status !== 'completed') {
+          if (updatedDuel.status === 'completed' && !isDuelCompleted) {
             console.log(`🏁 [EMERGENCY] ${playerType} Duel completed by opponent`);
+            setIsDuelCompleted(true); // Prevent multiple triggers
             setTimeout(() => handleDuelComplete(), 1000);
           }
         }
@@ -291,7 +294,7 @@ export function SimpleDuelQuizEngine({
       console.log('🛑 [SIMPLE DUEL] Stopping polling for duel:', duelData.id);
       clearInterval(pollInterval);
     };
-  }, [duelData, user, isTestDuel]);
+  }, [duelData, user, isTestDuel, isUpdatingScore, isDuelCompleted, opponentScore, playerScore, currentIndex]);
 
   // Bot simulation for test duels
   useEffect(() => {
@@ -405,8 +408,17 @@ export function SimpleDuelQuizEngine({
         const isPlayer1 = duelData.player1_id === user?.id;
         const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         
-        // INCREMENTAL SCORE: Calculate based on current database state, not local state
-        let currentDbScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
+        // Get fresh database state for incremental scoring
+        const { data: freshData } = await supabase
+          .from('casino_duels')
+          .select('player1_score, player2_score')
+          .eq('id', duelData.id)
+          .single();
+        
+        const currentDbScore = freshData 
+          ? (isPlayer1 ? freshData.player1_score : freshData.player2_score)
+          : (isPlayer1 ? duelData.player1_score : duelData.player2_score);
+        
         const newScore = isCorrect ? currentDbScore + 1 : currentDbScore;
         
         console.log(`🚨 [EMERGENCY] ${playerType} SCORE CALCULATION:`, {
@@ -470,10 +482,10 @@ export function SimpleDuelQuizEngine({
           console.error(`❌ [EMERGENCY] ${playerType} Exception during score update:`, err);
           setPlayerScore(currentDbScore);
         } finally {
-          // Release lock after longer timeout to prevent conflicts
+          // Release lock with debounce to prevent race conditions
           setTimeout(() => {
             setIsUpdatingScore(false);
-          }, 500);
+          }, 300); // Shorter timeout for better responsiveness
         }
       }
       
@@ -492,17 +504,25 @@ export function SimpleDuelQuizEngine({
   };
 
   const handleDuelComplete = async () => {
+    if (isDuelCompleted) {
+      console.log('🔒 [EMERGENCY] Duel already completed, skipping...');
+      return;
+    }
+    
+    setIsDuelCompleted(true); // Prevent multiple calls
+    
     try {
       console.log('🚨 [EMERGENCY] FINAL SCORE VALIDATION:', { 
         playerScore, 
         opponentScore, 
-        totalQuestions: questions.length,
+        totalQuestions: totalQuestions || questions.length,
         duelId: duelData?.id 
       });
       
       // PHASE 4: EMERGENCY - Get final scores directly from database for accuracy
       let finalPlayerScore = playerScore;
       let finalOpponentScore = opponentScore;
+      const finalTotalQuestions = totalQuestions || questions.length;
       
       if (!isTestDuel && duelData) {
         try {
@@ -527,14 +547,14 @@ export function SimpleDuelQuizEngine({
         }
       }
       
-      const percentage = Math.round((finalPlayerScore / questions.length) * 100);  
+      const percentage = finalTotalQuestions > 0 ? Math.round((finalPlayerScore / finalTotalQuestions) * 100) : 0;  
       const playerWon = finalPlayerScore > finalOpponentScore;
       const isDraw = finalPlayerScore === finalOpponentScore;
       
       const results = {
         playerScore: finalPlayerScore,
         opponentScore: finalOpponentScore,
-        totalQuestions: questions.length,
+        totalQuestions: finalTotalQuestions,
         percentage,
         playerWon,
         isDraw,
@@ -575,6 +595,7 @@ export function SimpleDuelQuizEngine({
       }
     } catch (error) {
       console.error('❌ [EMERGENCY] Erro crítico ao finalizar duelo:', error);
+      setIsDuelCompleted(false); // Reset on error
       navigate('/dashboard');
     }
   };
