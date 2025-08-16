@@ -435,7 +435,15 @@ export function SimpleDuelQuizEngine({
       const playerWon = playerScore > opponentScore;
       const isDraw = playerScore === opponentScore;
       
-      setShowResults(true);
+      console.log('🏆 [SIMPLE DUEL] Calling onComplete with results:', {
+        playerScore,
+        opponentScore,
+        totalQuestions: questions.length,
+        percentage,
+        playerWon,
+        isDraw,
+        mode: 'duel'
+      });
       
       if (onComplete) {
         onComplete({
@@ -447,6 +455,9 @@ export function SimpleDuelQuizEngine({
           isDraw,
           mode: 'duel'
         });
+        console.log('✅ [SIMPLE DUEL] onComplete called successfully');
+      } else {
+        console.warn('⚠️ [SIMPLE DUEL] onComplete is not provided!');
       }
     } catch (error) {
       console.error('❌ Erro ao finalizar duelo:', error);
@@ -520,6 +531,9 @@ export function SimpleDuelQuizEngine({
     );
   }
 
+  // LEGACY RESULTS SCREEN DISABLED - DuelScreen now handles the modal
+  // This was causing conflicts with the DuelVictoryModal
+  /*
   if (showResults) {
     const percentage = Math.round((playerScore / questions.length) * 100);
     const playerWon = playerScore > opponentScore;
@@ -572,6 +586,7 @@ export function SimpleDuelQuizEngine({
       </div>
     );
   }
+  */
 
   const currentQuestion = questions[currentIndex];
   const progress = ((currentIndex + 1) / questions.length) * 100;
