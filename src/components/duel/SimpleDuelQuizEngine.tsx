@@ -402,31 +402,22 @@ export function SimpleDuelQuizEngine({
           console.log(`🎯 [TEST SCORE] Updated to: ${newScore}`);
         }
       } else {
-        // PHASE 4: EMERGENCY FIX - Block all updates during submission to prevent race conditions
+        // PHASE 4: SCORE FIX - Use local playerScore for incremental calculation
         setIsUpdatingScore(true);
         
         const isPlayer1 = duelData.player1_id === user?.id;
         const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         
-        // Get fresh database state for incremental scoring
-        const { data: freshData } = await supabase
-          .from('casino_duels')
-          .select('player1_score, player2_score')
-          .eq('id', duelData.id)
-          .single();
+        // CRITICAL FIX: Use local playerScore instead of fetching from database
+        // This prevents the score from always resetting to 1
+        const newScore = isCorrect ? playerScore + 1 : playerScore;
         
-        const currentDbScore = freshData 
-          ? (isPlayer1 ? freshData.player1_score : freshData.player2_score)
-          : (isPlayer1 ? duelData.player1_score : duelData.player2_score);
-        
-        const newScore = isCorrect ? currentDbScore + 1 : currentDbScore;
-        
-        console.log(`🚨 [EMERGENCY] ${playerType} SCORE CALCULATION:`, {
+        console.log(`🚨 [SCORE FIX] ${playerType} INCREMENTAL CALCULATION:`, {
           isCorrect,
-          currentDbScore,
+          currentPlayerScore: playerScore,
           newScore,
           questionIndex: currentIndex,
-          localPlayerScore: playerScore
+          increment: isCorrect ? 1 : 0
         });
         
         // Update local state immediately for UI responsiveness
@@ -446,11 +437,11 @@ export function SimpleDuelQuizEngine({
             .eq('id', duelData.id);
 
           if (error) {
-            console.error(`❌ [EMERGENCY] ${playerType} Database update failed:`, error);
-            // Revert to current database state
-            setPlayerScore(currentDbScore);
+            console.error(`❌ [SCORE FIX] ${playerType} Database update failed:`, error);
+            // Revert to previous score on error
+            setPlayerScore(playerScore);
           } else {
-            console.log(`✅ [EMERGENCY] ${playerType} Score updated: ${currentDbScore} → ${newScore}`);
+            console.log(`✅ [SCORE FIX] ${playerType} Score updated: ${playerScore} → ${newScore}`);
             
             // Refresh duel data to sync all states
             setTimeout(async () => {
@@ -465,7 +456,7 @@ export function SimpleDuelQuizEngine({
                   const refreshedPlayerScore = isPlayer1 ? refreshedDuel.player1_score : refreshedDuel.player2_score;
                   const refreshedOpponentScore = isPlayer1 ? refreshedDuel.player2_score : refreshedDuel.player1_score;
                   
-                  console.log(`🔄 [EMERGENCY] ${playerType} Scores synced:`, {
+                  console.log(`🔄 [SCORE FIX] ${playerType} Final sync:`, {
                     player: refreshedPlayerScore,
                     opponent: refreshedOpponentScore
                   });
@@ -479,8 +470,8 @@ export function SimpleDuelQuizEngine({
             }, 200);
           }
         } catch (err) {
-          console.error(`❌ [EMERGENCY] ${playerType} Exception during score update:`, err);
-          setPlayerScore(currentDbScore);
+          console.error(`❌ [SCORE FIX] ${playerType} Exception during score update:`, err);
+          // Keep current score on exception
         } finally {
           // Release lock with debounce to prevent race conditions
           setTimeout(() => {
