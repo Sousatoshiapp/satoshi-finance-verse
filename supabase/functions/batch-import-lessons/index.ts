@@ -49,12 +49,10 @@ serve(async (req) => {
     };
 
     const validCategories = [
-      'Investimentos',
-      'Criptomoedas', 
-      'Economia Pessoal',
-      'Mercado Financeiro',
-      'Educação Financeira',
-      'Finanças do Dia a Dia'
+      'curiosidades',
+      'dicas', 
+      'historias',
+      'glossario'
     ];
 
     for (let i = 0; i < lessons.length; i++) {

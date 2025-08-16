@@ -37,7 +37,7 @@ export function JSONLessonImporter() {
       {
         title: "Introdução aos Investimentos",
         content: "Os investimentos são uma forma de fazer seu dinheiro trabalhar para você. Nesta lição, você aprenderá os conceitos básicos sobre como começar a investir de forma segura e inteligente.",
-        category: "Investimentos",
+        category: "dicas",
         quiz_question: "Qual é o principal objetivo dos investimentos?",
         quiz_options: [
           "Gastar dinheiro rapidamente",
@@ -54,7 +54,7 @@ export function JSONLessonImporter() {
       {
         title: "Diversificação de Carteira",
         content: "A diversificação é uma estratégia que consiste em distribuir seus investimentos entre diferentes tipos de ativos para reduzir riscos e maximizar retornos.",
-        category: "Investimentos",
+        category: "curiosidades",
         quiz_question: "Por que a diversificação é importante?",
         quiz_options: [
           "Para aumentar os riscos",
@@ -114,7 +114,7 @@ export function JSONLessonImporter() {
         return {
           title: lesson.title,
           content: lesson.content,
-          category: lesson.category || 'Educação Financeira',
+          category: lesson.category || 'dicas',
           quiz_question: lesson.quiz_question,
           quiz_options: lesson.quiz_options,
           correct_answer: lesson.correct_answer,
@@ -372,7 +372,7 @@ export function JSONLessonImporter() {
             <li>• O arquivo deve ser um JSON válido contendo um array de lições</li>
             <li>• Cada lição deve ter: title, content, quiz_question, quiz_options (4 opções), correct_answer (0-3)</li>
             <li>• lesson_date deve estar no formato YYYY-MM-DD</li>
-            <li>• Categorias válidas: Investimentos, Criptomoedas, Economia Pessoal, Mercado Financeiro, Educação Financeira, Finanças do Dia a Dia</li>
+            <li>• Categorias válidas: curiosidades, dicas, historias, glossario</li>
             <li>• Apenas uma lição principal (is_main_lesson: true) por data é permitida</li>
             <li>• Lições duplicadas (mesmo título e data) serão rejeitadas</li>
           </ul>
