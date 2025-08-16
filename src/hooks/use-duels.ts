@@ -46,7 +46,8 @@ export function useDuels() {
         .insert({
           challenger_id: profile.id,
           challenged_id: challengedId,
-          quiz_topic: 'general'
+          quiz_topic: 'general',
+          bet_amount: betAmount
         })
         .select()
         .single();
@@ -78,42 +79,36 @@ export function useDuels() {
     setLoading(true);
     try {
       if (action === 'accept') {
-        // Update invite status
-        const { error: updateError } = await supabase
-          .from('duel_invites')
-          .update({ status: 'accepted' })
-          .eq('id', inviteId);
+        // Use the create_duel_with_invite function for consistency
+        const { data: result, error: rpcError } = await supabase.rpc('create_duel_with_invite', {
+          p_invite_id: inviteId,
+          p_challenger_id: profile.id
+        });
 
-        if (updateError) throw updateError;
+        if (rpcError) throw rpcError;
 
-        // Get invite details to create duel
-        const { data: inviteDetails } = await supabase
-          .from('duel_invites')
-          .select('challenger_id, challenged_id, quiz_topic')
-          .eq('id', inviteId)
-          .single();
-
-        // Create the actual duel
-        const { data: duelData, error: duelError } = await supabase
-          .from('duels')
-          .insert({
-            invite_id: inviteId,
-            player1_id: inviteDetails?.challenger_id,
-            player2_id: inviteDetails?.challenged_id,
-            quiz_topic: inviteDetails?.quiz_topic || 'general',
-            questions: []
-          })
-          .select()
-          .single();
-
-        if (duelError) throw duelError;
+        // Parse result - the RPC returns a jsonb object
+        const resultData = result;
+        let duelId: string;
+        
+        if (typeof resultData === 'string') {
+          duelId = resultData;
+        } else if (resultData && typeof resultData === 'object' && (resultData as any).duel_id) {
+          duelId = (resultData as any).duel_id;
+        } else {
+          throw new Error('Formato de resposta inválido da RPC');
+        }
+        
+        if (!duelId) {
+          throw new Error('ID do duelo não encontrado na resposta');
+        }
 
         toast({
           title: t('duel.challenge.accepted'),
           description: t('duel.challenge.acceptedDesc'),
         });
 
-        return { success: true, duel_id: duelData.id };
+        return { success: true, duel_id: duelId };
       } else if (action === 'reject') {
         const { error } = await supabase
           .from('duel_invites')
@@ -192,22 +187,20 @@ export function useDuels() {
     if (!profile?.id) return;
 
     try {
+      // Use casino_duels table which is the current standard
       const { data, error } = await supabase
-        .from('duels')
+        .from('casino_duels')
         .select(`
           *,
-          duel_invites!invite_id (
-            challenger_id,
-            challenged_id,
-            status
-          )
+          player1:profiles!casino_duels_player1_id_fkey(nickname, current_avatar_id, avatars(name, image_url)),
+          player2:profiles!casino_duels_player2_id_fkey(nickname, current_avatar_id, avatars(name, image_url))
         `)
         .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // Transform data to match Duel interface (for now just set empty array)
+      // Transform data to match Duel interface (simplified for now)
       setDuels([]);
     } catch (error) {
       console.error('Error loading duels:', error);
@@ -238,8 +231,8 @@ export function useDuels() {
         {
           event: '*',
           schema: 'public',
-          table: 'duels',
-          filter: `or(challenger_id.eq.${profile.id},challenged_id.eq.${profile.id})`
+          table: 'casino_duels',
+          filter: `or(player1_id.eq.${profile.id},player2_id.eq.${profile.id})`
         },
         () => {
           loadDuels();
@@ -250,7 +243,7 @@ export function useDuels() {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'duel_answers'
+          table: 'casino_duel_answers'
         },
         () => {
           if (currentDuel) {
