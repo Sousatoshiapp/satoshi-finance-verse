@@ -271,6 +271,22 @@ export function SimpleDuelQuizEngine({
         const initialPlayerScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
         const initialOpponentScore = isPlayer1 ? duelData.player2_score : duelData.player1_score;
         
+        // 🔍 INITIALIZATION DEBUG - Log player detection during initialization
+        console.log(`🔍 [INITIALIZATION] Debugging player detection during init:`, {
+          duelId: duelData.id,
+          'duelData.player1_id': duelData.player1_id,
+          'duelData.player2_id': duelData.player2_id,
+          'user.id': user.id,
+          isPlayer1,
+          playerType,
+          'duelData.player1_score': duelData.player1_score,
+          'duelData.player2_score': duelData.player2_score,
+          initialPlayerScore: `${playerType} gets ${initialPlayerScore}`,
+          initialOpponentScore: `Opponent gets ${initialOpponentScore}`,
+          'player1_id type': typeof duelData.player1_id,
+          'user.id type': typeof user.id
+        });
+        
         setPlayerScore(initialPlayerScore);
         setOpponentScore(initialOpponentScore);
         setCurrentIndex(duelData.current_question || 0);
@@ -457,6 +473,21 @@ export function SimpleDuelQuizEngine({
         const isPlayer1 = duelData.player1_id === user?.id;
         const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         
+        // 🔍 PLAYER DETECTION DEBUG - Log exact values for comparison
+        console.log(`🔍 [PLAYER DETECTION] Debugging player identification:`, {
+          duelId: duelData.id,
+          'duelData.player1_id': duelData.player1_id,
+          'duelData.player2_id': duelData.player2_id,
+          'user?.id': user?.id,
+          'user object': user,
+          isPlayer1,
+          playerType,
+          'IDs match player1': duelData.player1_id === user?.id,
+          'IDs match player2': duelData.player2_id === user?.id,
+          'player1_id type': typeof duelData.player1_id,
+          'user.id type': typeof user?.id
+        });
+        
         // DEFINITIVE FIX: Use local playerScore for incremental calculation
         // Store previous score for proper error reversion
         const previousScore = playerScore;
@@ -473,10 +504,18 @@ export function SimpleDuelQuizEngine({
         // Update local state immediately for UI responsiveness
         setPlayerScore(newScore);
         
-        // Prepare update payload
+        // Prepare update payload - DEBUG the field being updated
         const updateData = isPlayer1
           ? { player1_score: newScore }
           : { player2_score: newScore };
+          
+        console.log(`🎯 [UPDATE PAYLOAD] ${playerType} Database update:`, {
+          updateData,
+          willUpdateField: isPlayer1 ? 'player1_score' : 'player2_score',
+          newValue: newScore,
+          isPlayer1,
+          playerType
+        });
 
         try {
           const { error } = await supabase
