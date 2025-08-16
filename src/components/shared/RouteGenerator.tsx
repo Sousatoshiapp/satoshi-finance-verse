@@ -23,6 +23,7 @@ const Tournaments = lazy(() => import("@/pages/Tournaments"));
 const SatoshiCity = lazy(() => import("@/pages/SatoshiCity"));
 const GameMode = lazy(() => import("@/pages/GameMode"));
 const NewFindOpponent = lazy(() => import("@/pages/NewFindOpponent"));
+const DuelScreen = lazy(() => import("@/pages/duel/DuelScreen"));
 
 // FASE 1: Social Explosion - Lazy load social pages
 const Social = lazy(() => import("@/pages/Social"));
@@ -90,6 +91,7 @@ const componentMap = {
   SatoshiCity,
   GameMode,
   NewFindOpponent,
+  DuelScreen,
   // FASE 1: Social pages
   Social,
   SocialHub,
