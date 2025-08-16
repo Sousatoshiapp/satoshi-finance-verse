@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import confetti from "canvas-confetti";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
+import { useProfile } from "@/hooks/use-profile";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { resolveAvatarImage } from "@/lib/avatar-utils";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shared/ui/alert-dialog";
@@ -63,10 +64,12 @@ interface DuelData {
   };
 }
 
-export function SimpleDuelQuizEngine({
-  duelId,
-  onComplete
-}: SimpleDuelQuizEngineProps) {
+export default function SimpleDuelQuizEngine({ duelId, onComplete }: SimpleDuelQuizEngineProps) {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { data: profile } = useProfile();
+  const isMobile = useIsMobile();
+  
   // DEEP DEBUG: Track component mount/unmount
   useEffect(() => {
     const mountId = `mount-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -109,9 +112,6 @@ export function SimpleDuelQuizEngine({
   const [isDuelCompleted, setIsDuelCompleted] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState(0);
 
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const isMobile = useIsMobile();
   const { playCorrectSound, playWrongSound, playCashRegisterSound } = useAdvancedQuizAudio();
   const { showCorrectAnswer, showIncorrectAnswer } = useRewardAnimationSystem();
 
@@ -259,52 +259,30 @@ export function SimpleDuelQuizEngine({
     }
   }, [duelData]);
 
-  // Set scores from duel data (PHASE 2: TRULY ONLY ONCE with unique ID)
+  // Set scores from duel data - FIXED: Use Profile ID for correct player detection
   useEffect(() => {
-    if (duelData && user && !isUpdatingScore) {
-      const duelInitId = `${duelData.id}-${user.id}`;
+    if (duelData && profile && !isUpdatingScore) {
+      const duelInitId = `${duelData.id}-${profile.id}`;
       
       // Only initialize if this specific duel hasn't been initialized yet
       if (initializationId !== duelInitId) {
-        const isPlayer1 = duelData.player1_id === user.id;
+        // ✅ DEFINITIVE FIX: Compare Profile IDs (not Auth User IDs)
+        const isPlayer1 = duelData.player1_id === profile.id;
         const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         const initialPlayerScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
         const initialOpponentScore = isPlayer1 ? duelData.player2_score : duelData.player1_score;
         
-        // 🔍 INITIALIZATION DEBUG - Log player detection during initialization
-        console.log(`🔍 [INITIALIZATION] Debugging player detection during init:`, {
-          duelId: duelData.id,
-          'duelData.player1_id': duelData.player1_id,
-          'duelData.player2_id': duelData.player2_id,
-          'user.id': user.id,
-          isPlayer1,
-          playerType,
-          'duelData.player1_score': duelData.player1_score,
-          'duelData.player2_score': duelData.player2_score,
-          initialPlayerScore: `${playerType} gets ${initialPlayerScore}`,
-          initialOpponentScore: `Opponent gets ${initialOpponentScore}`,
-          'player1_id type': typeof duelData.player1_id,
-          'user.id type': typeof user.id
-        });
-        
         setPlayerScore(initialPlayerScore);
         setOpponentScore(initialOpponentScore);
         setCurrentIndex(duelData.current_question || 0);
+        setTotalQuestions(duelData.questions?.length || 0);
+        setQuestions(duelData.questions || []);
         setInitializationId(duelInitId);
         
-        console.log(`🎯 [PHASE 2] ${playerType} INITIALIZATION COMPLETE:`, {
-          duelId: duelData.id,
-          playerType,
-          playerScore: initialPlayerScore,
-          opponentScore: initialOpponentScore,
-          currentQuestion: duelData.current_question || 0,
-          initId: duelInitId
-        });
-      } else {
-        console.log(`🔒 [PHASE 2] Skipping re-initialization for ${duelData.id}`);
+        console.log(`✅ [FIXED] ${playerType} initialized correctly with Profile ID`);
       }
     }
-  }, [duelData, user, isUpdatingScore, initializationId]);
+  }, [duelData, profile, initializationId, isUpdatingScore]);
 
   // Polling system for real duels to sync opponent scores
   useEffect(() => {
@@ -327,26 +305,21 @@ export function SimpleDuelQuizEngine({
           return;
         }
 
-        if (updatedDuel && user && !isUpdatingScore && !isDuelCompleted) {
-          const isPlayer1 = duelData.player1_id === user.id;
+        if (updatedDuel && profile && !isUpdatingScore && !isDuelCompleted) {
+          const isPlayer1 = duelData.player1_id === profile.id;
           const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
           const newOpponentScore = isPlayer1 ? updatedDuel.player2_score : updatedDuel.player1_score;
           
           // Only update opponent score via polling - NEVER player score or current_question
           if (newOpponentScore !== opponentScore) {
-            console.log(`🔄 [PHASE 3] ${playerType} Opponent score updated:`, {
-              old: opponentScore,
-              new: newOpponentScore,
-              playerScore: playerScore, // This should NEVER change via polling
-              currentIndex // This should NEVER change via polling
-            });
+            console.log(`🔄 [SYNC] ${playerType} Opponent score updated via polling`);
             setOpponentScore(newOpponentScore);
           }
           
           // Check if duel is completed by opponent
           if (updatedDuel.status === 'completed' && !isDuelCompleted) {
-            console.log(`🏁 [EMERGENCY] ${playerType} Duel completed by opponent`);
-            setIsDuelCompleted(true); // Prevent multiple triggers
+            console.log(`🏁 [SYNC] ${playerType} Duel completed by opponent`);
+            setIsDuelCompleted(true);
             setTimeout(() => handleDuelComplete(), 1000);
           }
         }
@@ -356,10 +329,10 @@ export function SimpleDuelQuizEngine({
     }, 3000); // Poll every 3 seconds
 
     return () => {
-      console.log('🛑 [SIMPLE DUEL] Stopping polling for duel:', duelData.id);
+      console.log('🛑 [SYNC] Stopping polling for duel:', duelData.id);
       clearInterval(pollInterval);
     };
-  }, [duelData, user, isTestDuel, isUpdatingScore, isDuelCompleted, opponentScore, playerScore, currentIndex]);
+  }, [duelData, profile, isTestDuel, isUpdatingScore, isDuelCompleted, opponentScore, playerScore, currentIndex]);
 
   // Bot simulation for test duels
   useEffect(() => {
@@ -467,55 +440,28 @@ export function SimpleDuelQuizEngine({
           console.log(`🎯 [TEST SCORE] Updated to: ${newScore}`);
         }
       } else {
-        // PHASE 4: SCORE FIX - Use local playerScore for incremental calculation
+        // ✅ DEFINITIVE FIX: Use Profile ID for correct player detection
         setIsUpdatingScore(true);
         
-        const isPlayer1 = duelData.player1_id === user?.id;
+        if (!profile) {
+          console.error('Profile not loaded, cannot update score');
+          return;
+        }
+        
+        const isPlayer1 = duelData.player1_id === profile.id;
         const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         
-        // 🔍 PLAYER DETECTION DEBUG - Log exact values for comparison
-        console.log(`🔍 [PLAYER DETECTION] Debugging player identification:`, {
-          duelId: duelData.id,
-          'duelData.player1_id': duelData.player1_id,
-          'duelData.player2_id': duelData.player2_id,
-          'user?.id': user?.id,
-          'user object': user,
-          isPlayer1,
-          playerType,
-          'IDs match player1': duelData.player1_id === user?.id,
-          'IDs match player2': duelData.player2_id === user?.id,
-          'player1_id type': typeof duelData.player1_id,
-          'user.id type': typeof user?.id
-        });
-        
-        // DEFINITIVE FIX: Use local playerScore for incremental calculation
-        // Store previous score for proper error reversion
+        // Calculate new score using local state
         const previousScore = playerScore;
         const newScore = isCorrect ? playerScore + 1 : playerScore;
-        
-        console.log(`🚨 [DEFINITIVE] ${playerType} INCREMENTAL CALCULATION:`, {
-          isCorrect,
-          previousScore,
-          newScore,
-          questionIndex: currentIndex,
-          increment: isCorrect ? 1 : 0
-        });
         
         // Update local state immediately for UI responsiveness
         setPlayerScore(newScore);
         
-        // Prepare update payload - DEBUG the field being updated
+        // Prepare correct database update payload
         const updateData = isPlayer1
           ? { player1_score: newScore }
           : { player2_score: newScore };
-          
-        console.log(`🎯 [UPDATE PAYLOAD] ${playerType} Database update:`, {
-          updateData,
-          willUpdateField: isPlayer1 ? 'player1_score' : 'player2_score',
-          newValue: newScore,
-          isPlayer1,
-          playerType
-        });
 
         try {
           const { error } = await supabase
@@ -524,22 +470,15 @@ export function SimpleDuelQuizEngine({
             .eq('id', duelData.id);
 
           if (error) {
-            console.error(`❌ [DEFINITIVE] ${playerType} Database update failed:`, error);
-            // FIXED: Revert to actual previous score
+            console.error(`Score update failed for ${playerType}:`, error);
             setPlayerScore(previousScore);
-          } else {
-            console.log(`✅ [DEFINITIVE] ${playerType} Score updated: ${previousScore} → ${newScore}`);
-            // REMOVED: No unnecessary refresh - trust local state
+            return;
           }
-        } catch (err) {
-          console.error(`❌ [DEFINITIVE] ${playerType} Exception during score update:`, err);
-          // FIXED: Revert to actual previous score on exception
+        } catch (error) {
+          console.error(`Unexpected error updating score for ${playerType}:`, error);
           setPlayerScore(previousScore);
         } finally {
-          // Release lock with shorter timeout for better responsiveness
-          setTimeout(() => {
-            setIsUpdatingScore(false);
-          }, 100);
+          setIsUpdatingScore(false);
         }
       }
       
@@ -792,7 +731,7 @@ export function SimpleDuelQuizEngine({
 
   const currentQuestion = questions[currentIndex];
   const progress = ((currentIndex + 1) / questions.length) * 100;
-  const isPlayer1 = duelData?.player1_id === user?.id;
+  const isPlayer1 = duelData?.player1_id === profile?.id;
   const currentUserProfile = isPlayer1 ? duelData.player1 : duelData.player2;
   const opponentProfile = isPlayer1 ? duelData.player2 : duelData.player1;
 

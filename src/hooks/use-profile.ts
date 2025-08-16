@@ -1,56 +1,37 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
-export interface UserProfile {
+interface Profile {
   id: string;
   user_id: string;
   nickname: string;
-  level: number;
-  xp: number;
-  points: number;
-  streak: number;
-  avatar_id?: string;
-  profile_image_url?: string;
-  subscription_tier: 'free' | 'pro' | 'elite';
-  created_at: string;
-  updated_at: string;
-  kyc_status?: 'pending' | 'approved' | 'rejected';
-  persona_inquiry_id?: string;
-  kyc_completed_at?: string;
+  // Add other profile fields as needed
 }
 
 export function useProfile() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
-  const loadProfile = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data } = await supabase
+  const { user } = useAuth();
+  
+  return useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async (): Promise<Profile | null> => {
+      if (!user?.id) return null;
+      
+      const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, user_id, nickname')
         .eq('user_id', user.id)
         .single();
-
-      if (data) {
-        setProfile(data);
+      
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return null;
       }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    profile,
-    loading,
-    loadProfile
-  };
+      
+      return data;
+    },
+    enabled: !!user?.id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1
+  });
 }

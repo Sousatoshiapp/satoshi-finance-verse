@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { SimpleDuelQuizEngine } from '@/components/duel/SimpleDuelQuizEngine';
+import SimpleDuelQuizEngine from '@/components/duel/SimpleDuelQuizEngine';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useToast } from '@/hooks/use-toast';
@@ -52,7 +52,7 @@ export default function DuelScreen() {
   
   // Data hooks
   const { duel, loading: duelLoading } = useDuelData(duelId);
-  const { profile: currentUserProfile } = useProfile();
+  const { data: currentUserProfile } = useProfile();
   
   console.log('🏁 DuelScreen montado!');
   console.log('📍 URL atual:', window.location.href);
