@@ -84,6 +84,7 @@ export function SimpleDuelQuizEngine({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [questions, setQuestions] = useState<DuelQuestion[]>([]);
   const [isUpdatingScore, setIsUpdatingScore] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -206,9 +207,9 @@ export function SimpleDuelQuizEngine({
     }
   }, [duelData]);
 
-  // Set scores from duel data (only initial load)
+  // Set scores from duel data (ONLY ONCE on initial load)
   useEffect(() => {
-    if (duelData && user && !isUpdatingScore) {
+    if (duelData && user && !isInitialized && !isUpdatingScore) {
       const isPlayer1 = duelData.player1_id === user.id;
       const initialPlayerScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
       const initialOpponentScore = isPlayer1 ? duelData.player2_score : duelData.player1_score;
@@ -216,14 +217,16 @@ export function SimpleDuelQuizEngine({
       setPlayerScore(initialPlayerScore);
       setOpponentScore(initialOpponentScore);
       setCurrentIndex(duelData.current_question || 0);
+      setIsInitialized(true);
       
-      console.log('📊 [SIMPLE DUEL] Initial scores set:', {
+      console.log('📊 [SIMPLE DUEL] Initial scores set (ONE TIME ONLY):', {
         playerScore: initialPlayerScore,
         opponentScore: initialOpponentScore,
-        currentQuestion: duelData.current_question
+        currentQuestion: duelData.current_question || 0,
+        initialized: true
       });
     }
-  }, [duelData, user, isUpdatingScore]);
+  }, [duelData, user, isInitialized, isUpdatingScore]);
 
   // Polling system for real duels to sync opponent scores
   useEffect(() => {
