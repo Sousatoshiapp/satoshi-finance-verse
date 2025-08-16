@@ -69,52 +69,7 @@ export function DailyLessonCard() {
     );
   }
 
-  if (!hasAnyLesson) {
-    return (
-      <Card className="min-h-24 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
-        <div className="h-full flex">
-          {/* Lado esquerdo - Texto melhorado */}
-          <div className="flex-1 p-3 flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-sm">💸</span>
-              <h3 className="font-semibold text-sm">Pílulas de Conhecimento</h3>
-            </div>
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-orange-600 dark:text-orange-400">
-                📅 Sem lições hoje
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {timeUntilNext}
-              </p>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="h-6 px-2 text-xs mt-1 border-purple-300 hover:bg-purple-100 dark:border-purple-700 dark:hover:bg-purple-900/50"
-                onClick={() => {
-                  // TODO: Implementar navegação para lições anteriores
-                  console.log('Ver lições anteriores');
-                }}
-              >
-                📚 Ver anteriores
-              </Button>
-            </div>
-          </div>
-          
-          {/* Lado direito - 3D Cyberpunk */}
-          <div className="w-20 h-full">
-            <Suspense fallback={
-              <div className="w-full h-full bg-gradient-to-br from-purple-900/20 to-cyan-900/20 flex items-center justify-center">
-                <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
-              </div>
-            }>
-              <CyberpunkEmptyState3D />
-            </Suspense>
-          </div>
-        </div>
-      </Card>
-    );
-  }
-
+  // Always render the card with collapsible behavior
   const completedLessons = [mainLesson, ...extraLessons].filter(l => l && isLessonCompleted(l.id)).length;
   const totalLessons = [mainLesson, ...extraLessons].filter(Boolean).length;
   const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
@@ -154,11 +109,15 @@ export function DailyLessonCard() {
                         setSelectedLesson(nextAvailableLesson.id);
                       }}
                       size="sm"
-                      style={{ backgroundColor: '#ADFF2F', color: '#000000' }}
+                      style={{ backgroundColor: '#adff2f', color: '#000000' }}
                       className="hover:opacity-90 px-2 py-1 text-[10px] font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      Começar
+                      Ver
                     </Button>
+                  ) : !hasAnyLesson ? (
+                    <div className="text-[10px] text-orange-600 dark:text-orange-400">
+                      Sem lições hoje
+                    </div>
                   ) : (
                     <div className="text-[10px] text-muted-foreground">
                       {timeUntilNext}
@@ -177,26 +136,59 @@ export function DailyLessonCard() {
           <CollapsibleContent>
             <CardContent className="px-3 pb-3 pt-0">
               <div className="space-y-3 text-xs">
-                {/* Informações sobre recompensas */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-2">💰 Ganhos por Lição</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Visualizar lição:</span>
-                      <span className="font-medium text-blue-600 dark:text-blue-400">+1 XP</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Quiz correto:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">+10 XP + 0,5 BTZ</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Quiz incorreto:</span>
-                      <span className="font-medium text-red-600 dark:text-red-400">+1 XP apenas</span>
-                    </div>
+                {!hasAnyLesson ? (
+                  /* Estado quando não há lições */
+                  <div className="text-center p-4 bg-muted/30 rounded-lg">
+                    <div className="text-4xl mb-2 animate-bounce">📚</div>
+                    <h4 className="font-medium text-sm text-foreground mb-1">
+                      Sem lições hoje
+                    </h4>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Novas lições estarão disponíveis em breve!
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {timeUntilNext}
+                    </p>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    {/* Informações sobre recompensas */}
+                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <h4 className="font-semibold text-blue-700 dark:text-blue-300 mb-2">💰 Ganhos por Lição</h4>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Visualizar lição:</span>
+                          <span className="font-medium text-blue-600 dark:text-blue-400">+1 XP</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Quiz correto:</span>
+                          <span className="font-medium text-green-600 dark:text-green-400">+10 XP + 0,5 BTZ</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Quiz incorreto:</span>
+                          <span className="font-medium text-red-600 dark:text-red-400">+1 XP apenas</span>
+                        </div>
+                      </div>
+                    </div>
 
-                {/* Informações sobre streak */}
+                    {/* Progresso do dia */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-3 rounded-lg border border-green-200 dark:border-green-800">
+                      <h4 className="font-semibold text-green-700 dark:text-green-300 mb-2">📊 Progresso Hoje</h4>
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Lições completas:</span>
+                          <span className="font-medium text-green-600 dark:text-green-400">{completedLessons}/{totalLessons}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Tempo estimado:</span>
+                          <span className="font-medium text-green-600 dark:text-green-400">2-3 min cada</span>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {/* Informações sobre streak - sempre mostrar se existir */}
                 {userStreak && (
                   <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 p-3 rounded-lg border border-orange-200 dark:border-orange-800">
                     <h4 className="font-semibold text-orange-700 dark:text-orange-300 mb-2">🔥 Sequência Atual</h4>
@@ -206,27 +198,12 @@ export function DailyLessonCard() {
                         <span className="font-medium text-orange-600 dark:text-orange-400">{userStreak.current_streak}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Melhor sequência:</span>
-                        <span className="font-medium text-orange-600 dark:text-orange-400">{userStreak.current_streak}</span>
+                        <span className="text-muted-foreground">Total de lições:</span>
+                        <span className="font-medium text-orange-600 dark:text-orange-400">{userStreak.total_lessons_completed}</span>
                       </div>
                     </div>
                   </div>
                 )}
-
-                {/* Progresso do dia */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-3 rounded-lg border border-green-200 dark:border-green-800">
-                  <h4 className="font-semibold text-green-700 dark:text-green-300 mb-2">📊 Progresso Hoje</h4>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Lições completas:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">{completedLessons}/{totalLessons}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Tempo estimado:</span>
-                      <span className="font-medium text-green-600 dark:text-green-400">2-3 min cada</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </CardContent>
           </CollapsibleContent>
