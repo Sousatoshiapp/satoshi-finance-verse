@@ -84,7 +84,7 @@ export function SimpleDuelQuizEngine({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [questions, setQuestions] = useState<DuelQuestion[]>([]);
   const [isUpdatingScore, setIsUpdatingScore] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [initializationId, setInitializationId] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -207,26 +207,36 @@ export function SimpleDuelQuizEngine({
     }
   }, [duelData]);
 
-  // Set scores from duel data (ONLY ONCE on initial load)
+  // Set scores from duel data (PHASE 2: TRULY ONLY ONCE with unique ID)
   useEffect(() => {
-    if (duelData && user && !isInitialized && !isUpdatingScore) {
-      const isPlayer1 = duelData.player1_id === user.id;
-      const initialPlayerScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
-      const initialOpponentScore = isPlayer1 ? duelData.player2_score : duelData.player1_score;
+    if (duelData && user && !isUpdatingScore) {
+      const duelInitId = `${duelData.id}-${user.id}`;
       
-      setPlayerScore(initialPlayerScore);
-      setOpponentScore(initialOpponentScore);
-      setCurrentIndex(duelData.current_question || 0);
-      setIsInitialized(true);
-      
-      console.log('📊 [SIMPLE DUEL] Initial scores set (ONE TIME ONLY):', {
-        playerScore: initialPlayerScore,
-        opponentScore: initialOpponentScore,
-        currentQuestion: duelData.current_question || 0,
-        initialized: true
-      });
+      // Only initialize if this specific duel hasn't been initialized yet
+      if (initializationId !== duelInitId) {
+        const isPlayer1 = duelData.player1_id === user.id;
+        const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
+        const initialPlayerScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
+        const initialOpponentScore = isPlayer1 ? duelData.player2_score : duelData.player1_score;
+        
+        setPlayerScore(initialPlayerScore);
+        setOpponentScore(initialOpponentScore);
+        setCurrentIndex(duelData.current_question || 0);
+        setInitializationId(duelInitId);
+        
+        console.log(`🎯 [PHASE 2] ${playerType} INITIALIZATION COMPLETE:`, {
+          duelId: duelData.id,
+          playerType,
+          playerScore: initialPlayerScore,
+          opponentScore: initialOpponentScore,
+          currentQuestion: duelData.current_question || 0,
+          initId: duelInitId
+        });
+      } else {
+        console.log(`🔒 [PHASE 2] Skipping re-initialization for ${duelData.id}`);
+      }
     }
-  }, [duelData, user, isInitialized, isUpdatingScore]);
+  }, [duelData, user, isUpdatingScore, initializationId]);
 
   // Polling system for real duels to sync opponent scores
   useEffect(() => {
@@ -249,26 +259,26 @@ export function SimpleDuelQuizEngine({
 
         if (updatedDuel && user && !isUpdatingScore) {
           const isPlayer1 = duelData.player1_id === user.id;
+          const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
           const newOpponentScore = isPlayer1 ? updatedDuel.player2_score : updatedDuel.player1_score;
           
-          // CRÍTICO: Só atualiza opponent score via polling - nunca o player score
-          // O player score é controlado localmente para evitar race conditions
+          // PHASE 3: Only update opponent score via polling - NEVER player score or current_question
           if (newOpponentScore !== opponentScore) {
-            console.log('🔄 [POLLING] Opponent score updated:', {
+            console.log(`🔄 [PHASE 3] ${playerType} Opponent score updated:`, {
               old: opponentScore,
-              new: newOpponentScore
+              new: newOpponentScore,
+              playerScore: playerScore, // This should NEVER change via polling
+              currentIndex // This should NEVER change via polling
             });
             setOpponentScore(newOpponentScore);
           }
           
-          // Update current question if changed
-          if (updatedDuel.current_question !== duelData.current_question) {
-            console.log('🔄 [POLLING] Current question updated:', updatedDuel.current_question);
-          }
+          // PHASE 3: Do NOT update current_question via polling - causes reinitialization loop
+          // The currentIndex is controlled locally by the player's progress
           
           // Check if duel is completed by opponent
           if (updatedDuel.status === 'finished' && duelData.status !== 'finished') {
-            console.log('🏁 [POLLING] Duel finished by opponent');
+            console.log(`🏁 [PHASE 3] ${playerType} Duel finished by opponent`);
             setTimeout(() => handleDuelComplete(), 1000);
           }
         }
@@ -389,23 +399,31 @@ export function SimpleDuelQuizEngine({
           console.log(`🎯 [TEST SCORE] Updated to: ${newScore}`);
         }
       } else {
-        // For real duels, update in database with better error handling
+        // PHASE 4: Real duels - update in database with race condition protection
         setIsUpdatingScore(true);
         
         const isPlayer1 = duelData.player1_id === user?.id;
+        const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         const newScore = isCorrect ? playerScore + 1 : playerScore;
         
-        console.log(`🎯 [SCORE UPDATE] Player: ${isPlayer1 ? 'P1' : 'P2'}, Current: ${playerScore}, New: ${newScore}, Correct: ${isCorrect}`);
+        console.log(`🎯 [PHASE 4] ${playerType} SCORE UPDATE:`, {
+          current: playerScore,
+          new: newScore,
+          correct: isCorrect,
+          questionIndex: currentIndex,
+          initId: initializationId
+        });
         
         // Update local state FIRST to prevent polling conflicts
         if (isCorrect) {
           setPlayerScore(newScore);
         }
         
-        // Update duel in database
+        // PHASE 3: Do NOT update current_question in database - causes polling loop
+        // Only update the player's score - current_question is managed locally
         const updateData = isPlayer1 
-          ? { player1_score: newScore, current_question: currentIndex + 1 }
-          : { player2_score: newScore, current_question: currentIndex + 1 };
+          ? { player1_score: newScore }
+          : { player2_score: newScore };
 
         try {
           const { error } = await supabase
@@ -414,22 +432,25 @@ export function SimpleDuelQuizEngine({
             .eq('id', duelData.id);
 
           if (error) {
-            console.error('❌ Erro ao atualizar duelo:', error);
+            console.error(`❌ [PHASE 4] ${playerType} Database update failed:`, error);
             // Revert local state if database update failed
             if (isCorrect) {
               setPlayerScore(playerScore);
             }
           } else {
-            console.log('✅ [SCORE UPDATE] Database updated successfully');
+            console.log(`✅ [PHASE 4] ${playerType} Database updated successfully - score only`);
           }
         } catch (err) {
-          console.error('❌ Exception during score update:', err);
+          console.error(`❌ [PHASE 4] ${playerType} Exception during score update:`, err);
           // Revert local state if database update failed
           if (isCorrect) {
             setPlayerScore(playerScore);
           }
         } finally {
-          setIsUpdatingScore(false);
+          // PHASE 4: Add timeout to prevent race conditions
+          setTimeout(() => {
+            setIsUpdatingScore(false);
+          }, 100);
         }
       }
       

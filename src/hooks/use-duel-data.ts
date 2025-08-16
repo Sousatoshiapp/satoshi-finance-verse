@@ -22,6 +22,7 @@ export function useDuelData(duelId: string | undefined) {
   const [duel, setDuel] = useState<DuelData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     if (!duelId) {
@@ -30,9 +31,12 @@ export function useDuelData(duelId: string | undefined) {
       return;
     }
 
-    console.log('🔍 Carregando dados do duelo:', duelId);
-    loadDuelData();
-  }, [duelId]);
+    // Only load once - prevent re-initialization on every change
+    if (!initialized) {
+      console.log('🔍 [PHASE 1] Loading duel data ONCE:', duelId);
+      loadDuelData();
+    }
+  }, [duelId, initialized]);
 
   const loadDuelData = async () => {
     try {
@@ -73,8 +77,9 @@ export function useDuelData(duelId: string | undefined) {
         return;
       }
 
-      console.log('✅ Dados do duelo carregados:', duelData);
+      console.log('✅ [PHASE 1] Initial duel data loaded:', duelData);
       setDuel(duelData);
+      setInitialized(true); // Mark as initialized to prevent re-loading
     } catch (err) {
       console.error('❌ Erro inesperado ao carregar duelo:', err);
       setError('Erro inesperado ao carregar duelo');
