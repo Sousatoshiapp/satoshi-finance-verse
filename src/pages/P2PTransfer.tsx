@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/shared/ui/tabs";
 import { Button } from "@/components/shared/ui/button";
+import { ArrowLeft } from "lucide-react";
 import { SendBTZ } from "@/components/features/p2p-transfer/SendBTZ";
 import { ReceiveBTZ } from "@/components/features/p2p-transfer/ReceiveBTZ";
 import { TransferHistory } from "@/components/features/p2p-transfer/TransferHistory";
@@ -38,6 +39,19 @@ export default function P2PTransfer() {
 
   return (
     <div className="container mx-auto px-4 py-6">
+      {/* Header with back button */}
+      <div className="flex items-center gap-4 mb-6">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Voltar
+        </Button>
+      </div>
+
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold">{t('p2p.title')}</h1>
         <p className="text-muted-foreground">{t('p2p.subtitle')}</p>
