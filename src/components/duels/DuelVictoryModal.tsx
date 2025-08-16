@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Crown, Star, Coins, TrendingUp } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/shared/ui/dialog';
 import { Button } from '@/components/shared/ui/button';
 import { AvatarDisplayUniversal } from '@/components/shared/avatar-display-universal';
+import { useAdvancedQuizAudio } from '@/hooks/use-advanced-quiz-audio';
+import confetti from 'canvas-confetti';
 
 interface DuelVictoryModalProps {
   isOpen: boolean;
@@ -30,6 +32,42 @@ export function DuelVictoryModal({
   betAmount,
   isTestDuel = false
 }: DuelVictoryModalProps) {
+  const { playCorrectSound, playWrongSound, playCashRegisterSound } = useAdvancedQuizAudio();
+
+  useEffect(() => {
+    if (isOpen) {
+      // Play appropriate sound based on result
+      if (playerWon) {
+        playCorrectSound(2); // Higher intensity for victory
+        playCashRegisterSound(); // Money sound for BTZ gain
+        
+        // Victory confetti
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+        
+        // Additional confetti burst after delay
+        setTimeout(() => {
+          confetti({
+            particleCount: 50,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 }
+          });
+          confetti({
+            particleCount: 50,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 }
+          });
+        }, 250);
+      } else if (!isDraw) {
+        playWrongSound(); // Defeat sound
+      }
+    }
+  }, [isOpen, playerWon, isDraw, playCorrectSound, playWrongSound, playCashRegisterSound]);
   const getResultTitle = () => {
     if (isDraw) return '🤝 Empate!';
     return playerWon ? '🎉 Vitória!' : '😔 Derrota';

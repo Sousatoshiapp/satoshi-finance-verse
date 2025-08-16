@@ -1,10 +1,13 @@
-import React, { useEffect, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { SimpleDuelQuizEngine } from '@/components/duel/SimpleDuelQuizEngine';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { DuelVictoryModal } from '@/components/duels/DuelVictoryModal';
+import { useDuelData } from '@/hooks/use-duel-data';
+import { useProfile } from '@/hooks/use-profile';
 
 function DuelErrorFallback({ error, resetErrorBoundary }: any) {
   console.error('🚨 ERRO CRÍTICO NO DUELO:', error);
@@ -43,6 +46,14 @@ export default function DuelScreen() {
   const { toast } = useToast();
   const navigate = useNavigate();
   
+  // Modal state
+  const [showVictoryModal, setShowVictoryModal] = useState(false);
+  const [duelResults, setDuelResults] = useState<any>(null);
+  
+  // Data hooks
+  const { duel, loading: duelLoading } = useDuelData(duelId);
+  const { profile: currentUserProfile } = useProfile();
+  
   console.log('🏁 DuelScreen montado!');
   console.log('📍 URL atual:', window.location.href);
   console.log('🆔 Duel ID:', duelId);
@@ -80,9 +91,33 @@ export default function DuelScreen() {
 
   const handleDuelComplete = (results: any) => {
     console.log('✅ Duel completed:', results);
-    // Navegar para dashboard ou página de resultados
+    setDuelResults(results);
+    setShowVictoryModal(true);
+  };
+
+  const handleCloseVictoryModal = () => {
+    setShowVictoryModal(false);
     navigate('/dashboard');
   };
+
+  // Determine current user ID
+  const currentUserId = currentUserProfile?.id;
+  
+  // Get player profiles
+  const playerProfile = currentUserProfile;
+  const opponentProfile = duel ? 
+    (duel.player1_id === currentUserId ? duel.player2_profile : duel.player1_profile) 
+    : null;
+    
+  // Calculate results
+  const playerWon = duelResults?.playerWon;
+  const isDraw = duelResults?.isDraw;
+  const betAmount = duel?.bet_amount || 0;
+  
+  // Calculate winner_id for consistency
+  const winnerId = isDraw ? null : (playerWon ? currentUserId : (
+    duel ? (duel.player1_id === currentUserId ? duel.player2_id : duel.player1_id) : null
+  ));
 
   return (
     <ErrorBoundary
@@ -100,6 +135,21 @@ export default function DuelScreen() {
             duelId={duelId}
             onComplete={handleDuelComplete}
           />
+          
+          {/* Victory Modal */}
+          {showVictoryModal && duelResults && (
+            <DuelVictoryModal
+              isOpen={showVictoryModal}
+              onClose={handleCloseVictoryModal}
+              playerWon={playerWon}
+              isDraw={isDraw}
+              playerScore={duelResults.playerScore || 0}
+              opponentScore={duelResults.opponentScore || 0}
+              playerProfile={playerProfile}
+              opponentProfile={opponentProfile}
+              betAmount={betAmount}
+            />
+          )}
         </div>
       </Suspense>
     </ErrorBoundary>
