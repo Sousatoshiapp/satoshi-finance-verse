@@ -71,17 +71,33 @@ export function DailyLessonCard() {
 
   if (!hasAnyLesson) {
     return (
-      <Card className="h-20 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
+      <Card className="min-h-24 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-800 overflow-hidden">
         <div className="h-full flex">
-          {/* Lado esquerdo - Texto */}
+          {/* Lado esquerdo - Texto melhorado */}
           <div className="flex-1 p-3 flex flex-col justify-center">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-sm">💸</span>
               <h3 className="font-semibold text-sm">Pílulas de Conhecimento</h3>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {timeUntilNext}
-            </p>
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-orange-600 dark:text-orange-400">
+                📅 Sem lições hoje
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {timeUntilNext}
+              </p>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="h-6 px-2 text-xs mt-1 border-purple-300 hover:bg-purple-100 dark:border-purple-700 dark:hover:bg-purple-900/50"
+                onClick={() => {
+                  // TODO: Implementar navegação para lições anteriores
+                  console.log('Ver lições anteriores');
+                }}
+              >
+                📚 Ver anteriores
+              </Button>
+            </div>
           </div>
           
           {/* Lado direito - 3D Cyberpunk */}
