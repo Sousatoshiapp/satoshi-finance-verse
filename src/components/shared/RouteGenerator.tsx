@@ -23,7 +23,7 @@ const Tournaments = lazy(() => import("@/pages/Tournaments"));
 const SatoshiCity = lazy(() => import("@/pages/SatoshiCity"));
 const GameMode = lazy(() => import("@/pages/GameMode"));
 const NewFindOpponent = lazy(() => import("@/pages/NewFindOpponent"));
-const DuelScreen = lazy(() => import("@/pages/duel/DuelScreen"));
+const DuelScreen = lazy(() => import("@/pages/duel/DuelScreenTest")); // TESTE TEMPORÁRIO
 
 // FASE 1: Social Explosion - Lazy load social pages
 const Social = lazy(() => import("@/pages/Social"));
@@ -130,14 +130,20 @@ const componentMap = {
 };
 
 export function generateRoutes() {
+  console.log('🔍 Gerando rotas. Total de configs:', routeConfigs.length);
+  
   return routeConfigs.map((config) => {
+    console.log(`📍 Processando rota: ${config.path} -> ${config.component}`);
+    
     const Component = componentMap[config.component as keyof typeof componentMap];
     
     if (!Component) {
-      console.warn(`Component ${config.component} not found in componentMap`);
+      console.warn(`❌ Component ${config.component} not found in componentMap`);
+      console.log('📋 ComponentMap disponível:', Object.keys(componentMap));
       return null;
     }
 
+    console.log(`✅ Rota ${config.path} mapeada com sucesso`);
     return (
       <Route
         key={config.path}
