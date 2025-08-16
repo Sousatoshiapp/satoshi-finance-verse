@@ -239,6 +239,14 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true
   },
   {
+    path: "/p2p-transfer",
+    component: "P2PTransfer",
+    title: "P2P Transfer",
+    description: "Peer-to-peer cryptocurrency transfers",
+    category: "main",
+    requiresAuth: true
+  },
+  {
     path: "/game-mode",
     component: "GameMode",
     title: "Game Mode",
