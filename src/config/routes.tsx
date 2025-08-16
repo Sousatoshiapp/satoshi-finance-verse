@@ -430,6 +430,15 @@ export const routeConfigs: RouteConfig[] = [
     requiresAuth: true,
     requiresAdmin: true
   },
+  {
+    path: "/admin/daily-lessons",
+    component: "AdminDailyLessons",
+    title: "Admin Daily Lessons",
+    description: "Manage daily lessons and import JSON data",
+    category: "admin",
+    requiresAuth: true,
+    requiresAdmin: true
+  },
   // Duel System Testing
   {
     path: "/duel-test",

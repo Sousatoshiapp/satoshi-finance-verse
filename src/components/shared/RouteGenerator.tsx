@@ -69,6 +69,7 @@ const Admin = lazy(() => import("@/pages/AdminDashboard"));
 const AdminSettings = lazy(() => import("@/pages/AdminSettings"));
 const RealtimeAnalyticsPage = lazy(() => import("@/pages/admin/RealtimeAnalyticsPage"));
 const AdminQuizQuestions = lazy(() => import("@/pages/admin/AdminQuizQuestions"));
+const AdminDailyLessons = lazy(() => import("@/pages/admin/AdminDailyLessons"));
 
 // Component mapping
 const componentMap = {
@@ -129,6 +130,7 @@ const componentMap = {
   AdminSettings,
   RealtimeAnalyticsPage,
   AdminQuizQuestions,
+  AdminDailyLessons,
 };
 
 export function generateRoutes() {
