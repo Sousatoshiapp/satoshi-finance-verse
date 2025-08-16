@@ -17,6 +17,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
 import { useRewardAnimationSystem } from "@/hooks/use-reward-animation-system";
 import { WrongAnswerModal } from "./WrongAnswerModal";
+import { deepDuelSystemDebug } from "@/utils/duel-system-debug-enhanced";
 
 interface DuelQuestion {
   id: string;
@@ -66,6 +67,26 @@ export function SimpleDuelQuizEngine({
   duelId,
   onComplete
 }: SimpleDuelQuizEngineProps) {
+  // DEEP DEBUG: Track component mount/unmount
+  useEffect(() => {
+    const mountId = `mount-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    deepDuelSystemDebug.trackComponentLifecycle('SimpleDuelQuizEngine', 'COMPONENT_MOUNT', {
+      duelId,
+      mountId,
+      timestamp: new Date().toISOString(),
+      hasOnComplete: !!onComplete
+    });
+
+    return () => {
+      deepDuelSystemDebug.trackComponentLifecycle('SimpleDuelQuizEngine', 'COMPONENT_UNMOUNT', {
+        duelId,
+        mountId,
+        timestamp: new Date().toISOString()
+      });
+    };
+  }, []); // Empty dependency array - runs only on mount/unmount
+
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showTimeoutModal, setShowTimeoutModal] = useState(false);
@@ -201,12 +222,40 @@ export function SimpleDuelQuizEngine({
     enabled: !!duelId
   });
 
-  // Initialize questions when duel data is loaded
+  // Initialize questions when duel data is loaded with ENHANCED DEBUG
   useEffect(() => {
+    deepDuelSystemDebug.trackComponentLifecycle('SimpleDuelQuizEngine', 'QUESTIONS_INIT_START', {
+      duelData: !!duelData,
+      hasQuestions: !!(duelData?.questions),
+      questionsType: typeof duelData?.questions,
+      questionsLength: duelData?.questions?.length || 0,
+      isArray: Array.isArray(duelData?.questions)
+    });
+
     if (duelData && duelData.questions && Array.isArray(duelData.questions)) {
       console.log('📚 [SIMPLE DUEL] Loading questions:', duelData.questions.length);
+      
+      // DEEP DEBUG: Analyze questions state
+      const analysis = deepDuelSystemDebug.analyzeQuestionsState(
+        duelData.questions, 
+        duelData.questions.length, 
+        0
+      );
+      
       setQuestions(duelData.questions);
       setTotalQuestions(duelData.questions.length); // Preserve total count
+      
+      deepDuelSystemDebug.trackComponentLifecycle('SimpleDuelQuizEngine', 'QUESTIONS_INIT_SUCCESS', {
+        questionsLoaded: duelData.questions.length,
+        totalQuestionsSet: duelData.questions.length,
+        analysis
+      });
+    } else {
+      deepDuelSystemDebug.trackComponentLifecycle('SimpleDuelQuizEngine', 'QUESTIONS_INIT_FAILED', {
+        duelData: !!duelData,
+        questions: duelData?.questions,
+        reason: !duelData ? 'NO_DUEL_DATA' : !duelData.questions ? 'NO_QUESTIONS' : 'NOT_ARRAY'
+      });
     }
   }, [duelData]);
 
@@ -478,6 +527,15 @@ export function SimpleDuelQuizEngine({
     setIsDuelCompleted(true); // Prevent multiple calls
     
     try {
+      // DEEP DEBUG: Track completion state
+      deepDuelSystemDebug.trackComponentLifecycle('SimpleDuelQuizEngine', 'DUEL_COMPLETE_START', {
+        playerScore,
+        opponentScore,
+        totalQuestions,
+        questionsLength: questions.length,
+        duelId: duelData?.id
+      });
+      
       console.log('🚨 [EMERGENCY] FINAL SCORE VALIDATION:', { 
         playerScore, 
         opponentScore, 
@@ -485,20 +543,39 @@ export function SimpleDuelQuizEngine({
         duelId: duelData?.id 
       });
       
+      // ENHANCED FIX: Better fallback logic for totalQuestions
+      let finalTotalQuestions = totalQuestions;
+      if (finalTotalQuestions === 0) {
+        finalTotalQuestions = questions.length;
+        console.warn('⚠️ [FALLBACK] totalQuestions was 0, using questions.length:', finalTotalQuestions);
+      }
+      
+      // ADDITIONAL SAFETY: Ensure we never divide by zero
+      if (finalTotalQuestions === 0) {
+        console.error('🚨 [CRITICAL] Both totalQuestions and questions.length are 0!');
+        finalTotalQuestions = 1; // Prevent division by zero
+      }
+      
       // DEFINITIVE FIX: Use ONLY local scores - no database fetch needed
-      // This prevents score reset and ensures incremental scoring works
       const finalPlayerScore = playerScore;
       const finalOpponentScore = opponentScore;
-      const finalTotalQuestions = totalQuestions || questions.length;
+      
+      // DEEP DEBUG: Analyze percentage calculation
+      const percentageAnalysis = deepDuelSystemDebug.analyzePercentageCalculation(
+        finalPlayerScore,
+        totalQuestions,
+        questions.length
+      );
       
       console.log('✅ [DEFINITIVE] Using LOCAL scores for final calculation:', {
         finalPlayerScore,
         finalOpponentScore,
         finalTotalQuestions,
-        source: 'LOCAL_STATE_ONLY'
+        source: 'LOCAL_STATE_ONLY',
+        percentageAnalysis
       });
       
-      const percentage = finalTotalQuestions > 0 ? Math.round((finalPlayerScore / finalTotalQuestions) * 100) : 0;  
+      const percentage = finalTotalQuestions > 0 ? Math.round((finalPlayerScore / finalTotalQuestions) * 100) : 0;
       const playerWon = finalPlayerScore > finalOpponentScore;
       const isDraw = finalPlayerScore === finalOpponentScore;
       
