@@ -60,23 +60,27 @@ function DuelWaitingScreen({
   }, [duelReady, countdown]);
 
   const checkDuelStatus = async () => {
+    console.log('🔍 Verificando status do duelo:', duelId);
     try {
       for (let attempt = 0; attempt < 10; attempt++) {
+        console.log(`🔄 Tentativa ${attempt + 1} de buscar duelo na tabela casino_duels`);
         const { data: duel, error } = await supabase
-          .from('duels')
+          .from('casino_duels')
           .select(`
             *,
-            player1:profiles!duels_player1_id_fkey(
+            player1_profile:profiles!casino_duels_player1_id_fkey(
               id, nickname, level, xp,
-              avatars(name, image_url)
+              current_avatar_id,
+              avatars:current_avatar_id(name, image_url)
             ),
-            player2:profiles!duels_player2_id_fkey(
+            player2_profile:profiles!casino_duels_player2_id_fkey(
               id, nickname, level, xp,
-              avatars(name, image_url)
+              current_avatar_id,
+              avatars:current_avatar_id(name, image_url)
             )
           `)
           .eq('id', duelId)
-          .eq('status', 'active')
+          .in('status', ['waiting', 'active'])
           .single();
 
         if (error && error.code !== 'PGRST116') {
@@ -85,6 +89,7 @@ function DuelWaitingScreen({
         }
 
         if (duel) {
+          console.log('✅ Duelo encontrado:', duel);
           setDuelData(duel);
           
           const { data: { user } } = await supabase.auth.getUser();
@@ -97,7 +102,9 @@ function DuelWaitingScreen({
 
             if (profile) {
               const isPlayer1 = duel.player1_id === profile.id;
-              const opponent = isPlayer1 ? duel.player2 : duel.player1;
+              console.log(`🎭 Usuário é player1: ${isPlayer1}`);
+              const opponent = isPlayer1 ? duel.player2_profile : duel.player1_profile;
+              console.log('👤 Dados do oponente:', opponent);
               setOpponentData(opponent);
             }
           }
@@ -112,9 +119,10 @@ function DuelWaitingScreen({
         }
       }
 
+      console.log('❌ Duelo não encontrado após 10 tentativas');
       toast({
         title: "Erro",
-        description: "Não foi possível encontrar o duelo. Redirecionando...",
+        description: `Não foi possível encontrar o duelo ${duelId}. Redirecionando...`,
         variant: "destructive"
       });
       navigate('/duels');
@@ -130,6 +138,7 @@ function DuelWaitingScreen({
   };
 
   const handleStart = () => {
+    console.log('🚀 Iniciando duelo:', duelId);
     if (onStart) {
       onStart();
     } else {
@@ -148,7 +157,7 @@ function DuelWaitingScreen({
       "criptomoedas": "Criptomoedas",
       "economia": "Economia"
     };
-    return topicsMap[propTopic || duelData?.quiz_topic] || propTopic || duelData?.quiz_topic || "Finanças";
+    return topicsMap[propTopic || duelData?.topic] || propTopic || duelData?.topic || "Finanças";
   };
 
   return (

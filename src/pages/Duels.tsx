@@ -63,14 +63,16 @@ export default function Duels() {
       if (!profile) return;
 
       for (let attempt = 0; attempt < 8; attempt++) {
+        console.log(`🔍 Tentativa ${attempt + 1} de buscar duelo ativo na tabela casino_duels`);
         const { data: duel } = await supabase
-          .from('duels')
+          .from('casino_duels')
           .select('*')
           .or(`player1_id.eq.${profile.id},player2_id.eq.${profile.id}`)
-          .eq('status', 'active')
+          .in('status', ['waiting', 'active'])
           .single();
 
         if (duel) {
+          console.log('✅ Duelo ativo encontrado:', duel);
           setActiveDuel(duel);
           setCurrentView('active');
           return;
@@ -168,9 +170,9 @@ export default function Duels() {
   };
 
   if (currentView === 'active' && activeDuel) {
-    // Redirecionar para o sistema unificado
-    console.log('🔄 Redirecting to unified duel system:', activeDuel.id);
-    navigate(`/unified-duel/${activeDuel.id}`);
+    // Redirecionar para o DuelScreenIntermediate temporariamente
+    console.log('🔄 Redirecting to intermediate duel screen:', activeDuel.id);
+    navigate(`/duel/${activeDuel.id}`);
     return null;
   }
 

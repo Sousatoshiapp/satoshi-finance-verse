@@ -5,7 +5,7 @@ export class BotAI {
     try {
       // Buscar o duelo atual
       const { data: duel } = await supabase
-        .from('duels')
+        .from('casino_duels')
         .select('*')
         .eq('id', duelId)
         .single();
@@ -29,7 +29,7 @@ export class BotAI {
 
       // Obter pergunta atual do bot
       const isPlayer1 = botProfileId === duel.player1_id;
-      const botCurrentQuestion = isPlayer1 ? duel.player1_current_question : duel.player2_current_question;
+      const botCurrentQuestion = duel.current_question || 1;
       
       // Verificar se bot ainda precisa responder esta pergunta
       const questionsArray = Array.isArray(duel.questions) ? duel.questions : [];
@@ -72,7 +72,7 @@ export class BotAI {
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'duels',
+          table: 'casino_duels',
           filter: `id=eq.${duelId}`
         },
         async (payload) => {
@@ -88,11 +88,10 @@ export class BotAI {
               .single();
 
             const questionsArray = Array.isArray(duel.questions) ? duel.questions : [];
-            const player1Answers = Array.isArray(duel.player1_answers) ? duel.player1_answers : [];
+            const currentQuestion = duel.current_question || 1;
             
             if (player1Profile?.is_bot && 
-                duel.player1_current_question <= questionsArray.length &&
-                player1Answers.length < duel.player1_current_question) {
+                currentQuestion <= questionsArray.length) {
               // Player1 bot precisa responder
               setTimeout(() => {
                 this.handleBotResponse(duelId, player1Profile.id);
@@ -105,12 +104,9 @@ export class BotAI {
               .select('id, is_bot')
               .eq('id', duel.player2_id)
               .single();
-
-            const player2Answers = Array.isArray(duel.player2_answers) ? duel.player2_answers : [];
             
             if (player2Profile?.is_bot && 
-                duel.player2_current_question <= questionsArray.length &&
-                player2Answers.length < duel.player2_current_question) {
+                currentQuestion <= questionsArray.length) {
               // Player2 bot precisa responder
               setTimeout(() => {
                 this.handleBotResponse(duelId, player2Profile.id);

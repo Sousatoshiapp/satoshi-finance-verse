@@ -154,35 +154,60 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
       const profileId = userProfileId;
       
       if (updatedInvite.status === 'accepted') {
-        console.log('✅ Convite aceito:', updatedInvite.id);
-        
-        // Aguardar um pouco para garantir que o duelo foi criado
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Buscar por duelo criado na tabela casino_duels
-        const { data: duel } = await supabase
-          .from('casino_duels')
-          .select('id')
-          .eq('player1_id', updatedInvite.challenger_id)
-          .eq('player2_id', updatedInvite.challenged_id)
-          .eq('status', 'waiting')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
+          console.log('✅ Convite aceito, buscando duelo criado...', updatedInvite.id);
+          console.log('🔍 Challenger ID:', updatedInvite.challenger_id);
+          console.log('🔍 Challenged ID:', updatedInvite.challenged_id);
+          
+          // Aguardar um pouco para garantir que o duelo foi criado
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Buscar por duelo criado na tabela casino_duels
+          const { data: duel, error: duelError } = await supabase
+            .from('casino_duels')
+            .select('id, status, player1_id, player2_id')
+            .eq('player1_id', updatedInvite.challenger_id)
+            .eq('player2_id', updatedInvite.challenged_id)
+            .eq('status', 'waiting')
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
 
-        if (duel) {
-          console.log('🎮 Casino duelo encontrado para o challenger:', duel.id);
-          toast({
-            title: "🎉 Convite Aceito!",
-            description: "Seu convite foi aceito! Entrando no duelo...",
-          });
+          if (duelError) {
+            console.error('❌ Erro ao buscar duelo:', duelError);
+          }
 
-          setTimeout(() => {
-            window.location.href = `/duel/${duel.id}`;
-          }, 1500);
-        } else {
-          console.log('⏳ Casino duelo ainda não criado, aguardando...');
-        }
+          if (duel) {
+            console.log('🎮 Casino duelo encontrado:', duel);
+            toast({
+              title: "🎉 Convite Aceito!",
+              description: "Seu convite foi aceito! Entrando no duelo...",
+            });
+
+            setTimeout(() => {
+              console.log('🚀 Redirecionando para duelo:', duel.id);
+              window.location.href = `/duel/${duel.id}`;
+            }, 1500);
+          } else {
+            console.log('⏳ Casino duelo ainda não criado, aguardando...');
+            // Tentar buscar novamente após mais tempo
+            setTimeout(async () => {
+              const { data: retryDuel } = await supabase
+                .from('casino_duels')
+                .select('id')
+                .eq('player1_id', updatedInvite.challenger_id)
+                .eq('player2_id', updatedInvite.challenged_id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+              
+              if (retryDuel) {
+                console.log('🎮 Duelo encontrado na segunda tentativa:', retryDuel.id);
+                window.location.href = `/duel/${retryDuel.id}`;
+              } else {
+                console.log('❌ Duelo ainda não foi criado após segunda tentativa');
+              }
+            }, 3000);
+          }
       } else if (updatedInvite.status === 'rejected') {
         console.log('❌ Convite recusado:', updatedInvite.id);
         
@@ -262,29 +287,31 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
         // Subscription para criação de casino duels (quando challenger)
         const duelChannel = supabase
           .channel(`casino-duel-status-${user.id}`)
-          .on(
-            'postgres_changes',
-            {
-              event: 'INSERT',
-              schema: 'public',
-              table: 'casino_duels',
-              filter: `player1_id=eq.${profile.id}`
-            },
-            async (payload) => {
-              console.log('🎮 Novo casino duelo detectado para challenger:', payload.new);
-              
-              toast({
-                title: "🎯 Duelo iniciado!",
-                description: "Entrando no duelo...",
-                duration: 2000
-              });
-              
-              // Redirect to casino duel screen
-              setTimeout(() => {
-                navigate(`/duel/${payload.new.id}`);
-              }, 1000);
-            }
-          )
+           .on(
+             'postgres_changes',
+             {
+               event: 'INSERT',
+               schema: 'public',
+               table: 'casino_duels',
+               filter: `player1_id=eq.${profile.id}`
+             },
+             async (payload) => {
+               console.log('🎮 Novo casino duelo detectado para challenger (player1):', payload.new);
+               console.log('🆔 Duelo ID:', payload.new.id);
+               
+               toast({
+                 title: "🎯 Duelo iniciado!",
+                 description: "Entrando no duelo...",
+                 duration: 2000
+               });
+               
+               // Redirect to casino duel screen
+               setTimeout(() => {
+                 console.log('🚀 Navegando para duelo como challenger:', payload.new.id);
+                 navigate(`/duel/${payload.new.id}`);
+               }, 1000);
+             }
+           )
           .on(
             'postgres_changes',
             {
@@ -293,21 +320,23 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
               table: 'casino_duels',
               filter: `player1_id=eq.${profile.id}`
             },
-            async (payload) => {
-              if (payload.new.status === 'active') {
-                console.log('🎮 Casino duelo ativado para challenger:', payload.new);
-                
-                toast({
-                  title: "🎯 Duelo ativo!",
-                  description: "Entrando no duelo...",
-                  duration: 2000
-                });
-                
-                setTimeout(() => {
-                  navigate(`/duel/${payload.new.id}`);
-                }, 1000);
-              }
-            }
+             async (payload) => {
+               if (payload.new.status === 'active') {
+                 console.log('🎮 Casino duelo ativado para challenger (player1):', payload.new);
+                 console.log('🆔 Duelo ID ativo:', payload.new.id);
+                 
+                 toast({
+                   title: "🎯 Duelo ativo!",
+                   description: "Entrando no duelo...",
+                   duration: 2000
+                 });
+                 
+                 setTimeout(() => {
+                   console.log('🚀 Navegando para duelo ativo como challenger:', payload.new.id);
+                   navigate(`/duel/${payload.new.id}`);
+                 }, 1000);
+               }
+             }
           )
           .subscribe();
 
