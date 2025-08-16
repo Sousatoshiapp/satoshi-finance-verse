@@ -627,7 +627,7 @@ export function DuelQuizEngine({
           {/* Player */}
           <div className="flex items-center gap-3">
             <AvatarDisplayUniversal 
-              src={getAvatarUrl(currentUserProfile)}
+              avatarUrl={getAvatarUrl(currentUserProfile)}
               nickname={currentUserProfile?.nickname || 'Você'}
               size="md"
             />
@@ -647,7 +647,7 @@ export function DuelQuizEngine({
               <div className="text-xs text-muted-foreground font-bold">{opponentScore} pontos</div>
             </div>
             <AvatarDisplayUniversal 
-              src={getAvatarUrl(opponentProfile)}
+              avatarUrl={getAvatarUrl(opponentProfile)}
               nickname={opponentProfile?.nickname || 'Oponente'}
               size="md"
             />
@@ -783,13 +783,14 @@ export function DuelQuizEngine({
       {/* Animations */}
       {showBeetzAnimation && (
         <BeetzAnimation 
+          isVisible={showBeetzAnimation}
           amount={earnedBTZ} 
           onComplete={hideBeetzAnimation} 
         />
       )}
       {showStreakAnimation && (
         <StreakAnimation 
-          streak={streak} 
+          isVisible={showStreakAnimation}
           onComplete={hideStreakAnimation} 
         />
       )}
