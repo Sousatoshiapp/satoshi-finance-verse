@@ -85,15 +85,22 @@ export const gameRoutes = [
     requiresAuth: true,
     showNavbar: true
   },
+  // ROTAS ANTIGAS DE DUELO COMENTADAS - SISTEMA MIGRADO
+  // {
+  //   path: "/casino-duel/:duelId",
+  //   element: "UnifiedCasinoDuelScreen", // LEGACY
+  //   requiresAuth: true,
+  //   showNavbar: false
+  // },
+  // {
+  //   path: "/unified-duel/:duelId", 
+  //   element: "UnifiedCasinoDuelScreen", // LEGACY
+  //   requiresAuth: true,
+  //   showNavbar: false
+  // },
   {
-    path: "/casino-duel/:duelId",
-    element: "UnifiedCasinoDuelScreen", // MIGRADO PARA SISTEMA UNIFICADO
-    requiresAuth: true,
-    showNavbar: false
-  },
-  {
-    path: "/unified-duel/:duelId",
-    element: "UnifiedCasinoDuelScreen",
+    path: "/duel/:duelId",
+    element: "DuelScreen", // NOVO SISTEMA BASEADO NO QUIZ SOLO
     requiresAuth: true,
     showNavbar: false
   },

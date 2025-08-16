@@ -178,7 +178,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
           });
 
           setTimeout(() => {
-            window.location.href = `/unified-duel/${duel.id}`;
+            window.location.href = `/duel/${duel.id}`;
           }, 1500);
         } else {
           console.log('⏳ Casino duelo ainda não criado, aguardando...');
@@ -281,7 +281,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
               
               // Redirect to casino duel screen
               setTimeout(() => {
-                navigate(`/unified-duel/${payload.new.id}`);
+                navigate(`/duel/${payload.new.id}`);
               }, 1000);
             }
           )
@@ -304,7 +304,7 @@ export function GlobalDuelInviteProvider({ children }: GlobalDuelInviteProviderP
                 });
                 
                 setTimeout(() => {
-                  navigate(`/unified-duel/${payload.new.id}`);
+                  navigate(`/duel/${payload.new.id}`);
                 }, 1000);
               }
             }
