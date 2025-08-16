@@ -83,6 +83,7 @@ export function SimpleDuelQuizEngine({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [questions, setQuestions] = useState<DuelQuestion[]>([]);
+  const [isUpdatingScore, setIsUpdatingScore] = useState(false);
 
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -205,21 +206,24 @@ export function SimpleDuelQuizEngine({
     }
   }, [duelData]);
 
-  // Set scores from duel data
+  // Set scores from duel data (only initial load)
   useEffect(() => {
-    if (duelData && user) {
+    if (duelData && user && !isUpdatingScore) {
       const isPlayer1 = duelData.player1_id === user.id;
-      setPlayerScore(isPlayer1 ? duelData.player1_score : duelData.player2_score);
-      setOpponentScore(isPlayer1 ? duelData.player2_score : duelData.player1_score);
+      const initialPlayerScore = isPlayer1 ? duelData.player1_score : duelData.player2_score;
+      const initialOpponentScore = isPlayer1 ? duelData.player2_score : duelData.player1_score;
+      
+      setPlayerScore(initialPlayerScore);
+      setOpponentScore(initialOpponentScore);
       setCurrentIndex(duelData.current_question || 0);
       
-      console.log('📊 [SIMPLE DUEL] Scores updated:', {
-        playerScore: isPlayer1 ? duelData.player1_score : duelData.player2_score,
-        opponentScore: isPlayer1 ? duelData.player2_score : duelData.player1_score,
+      console.log('📊 [SIMPLE DUEL] Initial scores set:', {
+        playerScore: initialPlayerScore,
+        opponentScore: initialOpponentScore,
         currentQuestion: duelData.current_question
       });
     }
-  }, [duelData, user]);
+  }, [duelData, user, isUpdatingScore]);
 
   // Polling system for real duels to sync opponent scores
   useEffect(() => {
@@ -240,31 +244,29 @@ export function SimpleDuelQuizEngine({
           return;
         }
 
-        if (updatedDuel && user) {
+        if (updatedDuel && user && !isUpdatingScore) {
           const isPlayer1 = duelData.player1_id === user.id;
           const newOpponentScore = isPlayer1 ? updatedDuel.player2_score : updatedDuel.player1_score;
-          const newPlayerScore = isPlayer1 ? updatedDuel.player1_score : updatedDuel.player2_score;
           
-          // Only update if scores actually changed
-          if (newOpponentScore !== (isPlayer1 ? duelData.player2_score : duelData.player1_score)) {
+          // CRÍTICO: Só atualiza opponent score via polling - nunca o player score
+          // O player score é controlado localmente para evitar race conditions
+          if (newOpponentScore !== opponentScore) {
             console.log('🔄 [POLLING] Opponent score updated:', {
-              old: isPlayer1 ? duelData.player2_score : duelData.player1_score,
+              old: opponentScore,
               new: newOpponentScore
             });
             setOpponentScore(newOpponentScore);
           }
           
-          if (newPlayerScore !== (isPlayer1 ? duelData.player1_score : duelData.player2_score)) {
-            console.log('🔄 [POLLING] Player score updated:', {
-              old: isPlayer1 ? duelData.player1_score : duelData.player2_score,
-              new: newPlayerScore
-            });
-            setPlayerScore(newPlayerScore);
-          }
-          
           // Update current question if changed
           if (updatedDuel.current_question !== duelData.current_question) {
             console.log('🔄 [POLLING] Current question updated:', updatedDuel.current_question);
+          }
+          
+          // Check if duel is completed by opponent
+          if (updatedDuel.status === 'finished' && duelData.status !== 'finished') {
+            console.log('🏁 [POLLING] Duel finished by opponent');
+            setTimeout(() => handleDuelComplete(), 1000);
           }
         }
       } catch (error) {
@@ -379,16 +381,20 @@ export function SimpleDuelQuizEngine({
       if (isTestDuel) {
         // For test duels, just update locally
         if (isCorrect) {
-          setPlayerScore(prev => prev + 1);
+          const newScore = playerScore + 1;
+          setPlayerScore(newScore);
+          console.log(`🎯 [TEST SCORE] Updated to: ${newScore}`);
         }
       } else {
-        // For real duels, update in database
+        // For real duels, update in database with better error handling
+        setIsUpdatingScore(true);
+        
         const isPlayer1 = duelData.player1_id === user?.id;
         const newScore = isCorrect ? playerScore + 1 : playerScore;
         
-        console.log(`🎯 [SCORE CALC] Player: ${isPlayer1 ? 'P1' : 'P2'}, Current: ${playerScore}, New: ${newScore}, Correct: ${isCorrect}`);
+        console.log(`🎯 [SCORE UPDATE] Player: ${isPlayer1 ? 'P1' : 'P2'}, Current: ${playerScore}, New: ${newScore}, Correct: ${isCorrect}`);
         
-        // Update local state first
+        // Update local state FIRST to prevent polling conflicts
         if (isCorrect) {
           setPlayerScore(newScore);
         }
@@ -398,18 +404,29 @@ export function SimpleDuelQuizEngine({
           ? { player1_score: newScore, current_question: currentIndex + 1 }
           : { player2_score: newScore, current_question: currentIndex + 1 };
 
-        const { error } = await supabase
-          .from('casino_duels')
-          .update(updateData)
-          .eq('id', duelData.id);
+        try {
+          const { error } = await supabase
+            .from('casino_duels')
+            .update(updateData)
+            .eq('id', duelData.id);
 
-        if (error) {
-          console.error('❌ Erro ao atualizar duelo:', error);
-        } else {
-          // Update local scores
-          if (isCorrect) {
-            setPlayerScore(newScore);
+          if (error) {
+            console.error('❌ Erro ao atualizar duelo:', error);
+            // Revert local state if database update failed
+            if (isCorrect) {
+              setPlayerScore(playerScore);
+            }
+          } else {
+            console.log('✅ [SCORE UPDATE] Database updated successfully');
           }
+        } catch (err) {
+          console.error('❌ Exception during score update:', err);
+          // Revert local state if database update failed
+          if (isCorrect) {
+            setPlayerScore(playerScore);
+          }
+        } finally {
+          setIsUpdatingScore(false);
         }
       }
       
@@ -429,38 +446,51 @@ export function SimpleDuelQuizEngine({
 
   const handleDuelComplete = async () => {
     try {
-      console.log('🏁 [SIMPLE DUEL] Finalizando duelo:', { playerScore, opponentScore });
+      console.log('🏁 [SIMPLE DUEL] Finalizando duelo:', { playerScore, opponentScore, totalQuestions: questions.length });
       
-      const percentage = Math.round((playerScore / questions.length) * 100);
+      // Wait a moment to ensure all scores are synced
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const percentage = Math.round((playerScore / questions.length) * 100);  
       const playerWon = playerScore > opponentScore;
       const isDraw = playerScore === opponentScore;
       
-      console.log('🏆 [SIMPLE DUEL] Calling onComplete with results:', {
+      const results = {
         playerScore,
         opponentScore,
         totalQuestions: questions.length,
         percentage,
         playerWon,
         isDraw,
-        mode: 'duel'
-      });
+        mode: 'duel' as const
+      };
+      
+      console.log('🏆 [SIMPLE DUEL] Results calculated:', results);
+      
+      // Mark duel as completed in database for real duels
+      if (!isTestDuel && duelData) {
+        const isPlayer1 = duelData.player1_id === user?.id;
+        const { error } = await supabase
+          .from('casino_duels')
+          .update({ status: 'finished' })
+          .eq('id', duelData.id);
+          
+        if (error) {
+          console.error('❌ Error marking duel as finished:', error);
+        }
+      }
       
       if (onComplete) {
-        onComplete({
-          playerScore,
-          opponentScore,
-          totalQuestions: questions.length,
-          percentage,
-          playerWon,
-          isDraw,
-          mode: 'duel'
-        });
+        console.log('📤 [SIMPLE DUEL] Calling onComplete...');
+        onComplete(results);
         console.log('✅ [SIMPLE DUEL] onComplete called successfully');
       } else {
-        console.warn('⚠️ [SIMPLE DUEL] onComplete is not provided!');
+        console.error('⚠️ [SIMPLE DUEL] onComplete callback não foi fornecido!');
+        // Fallback: navigate directly if no callback
+        navigate('/dashboard');
       }
     } catch (error) {
-      console.error('❌ Erro ao finalizar duelo:', error);
+      console.error('❌ Erro crítico ao finalizar duelo:', error);
       navigate('/dashboard');
     }
   };
