@@ -173,7 +173,11 @@ export function DuelVictoryModal({
                 </div>
               </div>
               
-              <div className="text-2xl font-bold">
+              <div className={`text-2xl font-bold ${
+                playerScore > opponentScore ? 'text-duel-winner' : 
+                playerScore < opponentScore ? 'text-duel-loser' : 
+                'text-foreground'
+              }`}>
                 {playerScore}
               </div>
             </div>
@@ -194,7 +198,11 @@ export function DuelVictoryModal({
                   </div>
                 </div>
                 
-                <div className="text-2xl font-bold">
+                <div className={`text-2xl font-bold ${
+                  opponentScore > playerScore ? 'text-duel-winner' : 
+                  opponentScore < playerScore ? 'text-duel-loser' : 
+                  'text-foreground'
+                }`}>
                   {opponentScore}
                 </div>
               </div>
@@ -235,24 +243,10 @@ export function DuelVictoryModal({
             <Button 
               onClick={onClose}
               className="w-full"
-              variant={playerWon ? "default" : "secondary"}
+              variant="default"
             >
-              {playerWon ? 'Continuar Jogando!' : 'Voltar ao Dashboard'}
+              Voltar ao Dashboard
             </Button>
-            
-            {!playerWon && !isDraw && (
-              <Button 
-                onClick={() => {
-                  onClose();
-                  // Navigate to duels page
-                  window.location.href = '/duels';
-                }}
-                variant="outline"
-                className="w-full"
-              >
-                Tentar Novamente
-              </Button>
-            )}
           </motion.div>
         </motion.div>
       </DialogContent>

@@ -47,6 +47,10 @@ All colors MUST be HSL.
     --beetz: 15 80% 45%;
     --timer: 84 100% 59%;
     
+    /* Duel result colors */
+    --duel-winner: 84 100% 59%; /* #adff2f aproximado em HSL */
+    --duel-loser: 0 84% 60%; /* vermelho */
+    
     /* Jogar Button Special Effects */
     --jogar-glow-color: 173 255 47; /* #adff2f em RGB */
     
@@ -94,6 +98,11 @@ All colors MUST be HSL.
     --border: 220 13% 18%;
     --input: 220 13% 18%;
     --ring: 81 100% 59%;
+    
+    /* Duel result colors for dark mode */
+    --duel-winner: 84 100% 59%;
+    --duel-loser: 0 84% 60%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

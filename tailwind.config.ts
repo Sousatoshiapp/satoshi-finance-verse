@@ -77,7 +77,9 @@ export default {
 				experience: 'hsl(var(--experience))',
 				streak: 'hsl(var(--streak))',
 				beetz: 'hsl(var(--beetz))',
-				achievement: 'hsl(var(--achievement))'
+				achievement: 'hsl(var(--achievement))',
+				'duel-winner': 'hsl(var(--duel-winner))',
+				'duel-loser': 'hsl(var(--duel-loser))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

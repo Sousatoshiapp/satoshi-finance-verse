@@ -56,21 +56,24 @@ serve(async (req) => {
       betAmount: duel.bet_amount 
     });
 
-    // Calculate BTZ transfers
+    // Calculate BTZ transfers (bets were already debited at start)
     const betAmount = duel.bet_amount;
     let player1BtzChange = 0;
     let player2BtzChange = 0;
 
     if (winnerId === duel.player1_id) {
-      // Player 1 wins
-      player1BtzChange = betAmount; // Winner gets the bet back + opponent's bet
-      player2BtzChange = -betAmount; // Loser loses their bet
+      // Player 1 wins: gets both bets (already debited at start)
+      player1BtzChange = betAmount * 2; // Winner gets both bets
+      player2BtzChange = 0; // Loser keeps nothing (already debited)
     } else if (winnerId === duel.player2_id) {
-      // Player 2 wins
-      player1BtzChange = -betAmount; // Loser loses their bet
-      player2BtzChange = betAmount; // Winner gets the bet back + opponent's bet
+      // Player 2 wins: gets both bets (already debited at start)
+      player1BtzChange = 0; // Loser keeps nothing (already debited)
+      player2BtzChange = betAmount * 2; // Winner gets both bets
+    } else {
+      // Tie: both get their bets back (refund)
+      player1BtzChange = betAmount;
+      player2BtzChange = betAmount;
     }
-    // If tie, no BTZ transfer (both get their bets back - already deducted, so no change)
 
     // Update player points
     if (player1BtzChange !== 0) {
