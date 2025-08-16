@@ -67,7 +67,7 @@ interface DuelData {
 export default function SimpleDuelQuizEngine({ duelId, onComplete }: SimpleDuelQuizEngineProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
   const isMobile = useIsMobile();
   
   // DEEP DEBUG: Track component mount/unmount

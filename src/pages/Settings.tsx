@@ -312,21 +312,21 @@ export default function Settings() {
           <div className="space-y-4">
             <p className="text-muted-foreground">{t('kyc.subtitle')}</p>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+               <div className="flex items-center gap-2">
                 <Shield className="w-4 h-4" />
                 <span className="text-sm">
-                  {profile?.kyc_status === 'approved' ? t('kyc.approved') : 
-                   profile?.kyc_status === 'pending' ? t('kyc.pending') : 
+                  {(profile as any)?.kyc_status === 'approved' ? t('kyc.approved') : 
+                   (profile as any)?.kyc_status === 'pending' ? t('kyc.pending') : 
                    t('kyc.required')}
                 </span>
               </div>
               <Badge variant={
-                profile?.kyc_status === 'approved' ? 'default' : 
-                profile?.kyc_status === 'pending' ? 'secondary' : 
+                (profile as any)?.kyc_status === 'approved' ? 'default' : 
+                (profile as any)?.kyc_status === 'pending' ? 'secondary' : 
                 'destructive'
               }>
-                {profile?.kyc_status === 'approved' ? t('kyc.approved') : 
-                 profile?.kyc_status === 'pending' ? t('kyc.pending') : 
+                {(profile as any)?.kyc_status === 'approved' ? t('kyc.approved') : 
+                 (profile as any)?.kyc_status === 'pending' ? t('kyc.pending') : 
                  t('kyc.required')}
               </Badge>
             </div>
@@ -335,11 +335,11 @@ export default function Settings() {
                 title: "Verificação em breve!",
                 description: "Esta funcionalidade será lançada em uma próxima versão."
               })}
-              disabled={profile?.kyc_status === 'approved'}
+              disabled={(profile as any)?.kyc_status === 'approved'}
               className="w-full"
-              variant={profile?.kyc_status === 'approved' ? 'outline' : 'default'}
+              variant={(profile as any)?.kyc_status === 'approved' ? 'outline' : 'default'}
             >
-              {profile?.kyc_status === 'approved' ? t('kyc.approved') : t('kyc.verifyIdentity')}
+              {(profile as any)?.kyc_status === 'approved' ? t('kyc.approved') : t('kyc.verifyIdentity')}
             </Button>
           </div>
         </Card>

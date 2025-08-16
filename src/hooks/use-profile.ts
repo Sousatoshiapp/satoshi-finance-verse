@@ -6,20 +6,25 @@ interface Profile {
   id: string;
   user_id: string;
   nickname: string;
+  points?: number;
+  level?: number;
+  xp?: number;
+  streak?: number;
+  profile_image_url?: string;
   // Add other profile fields as needed
 }
 
 export function useProfile() {
   const { user } = useAuth();
   
-  return useQuery({
+  const query = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async (): Promise<Profile | null> => {
       if (!user?.id) return null;
       
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, user_id, nickname')
+        .select('id, user_id, nickname, points, level, xp, streak, profile_image_url')
         .eq('user_id', user.id)
         .single();
       
@@ -28,10 +33,18 @@ export function useProfile() {
         return null;
       }
       
-      return data;
+      return data as Profile;
     },
     enabled: !!user?.id,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 1
   });
+
+  // Return the old interface for backward compatibility
+  return {
+    profile: query.data,
+    loading: query.isLoading,
+    error: query.error,
+    loadProfile: query.refetch
+  };
 }

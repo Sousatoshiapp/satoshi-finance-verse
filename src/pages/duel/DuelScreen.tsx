@@ -52,7 +52,7 @@ export default function DuelScreen() {
   
   // Data hooks
   const { duel, loading: duelLoading } = useDuelData(duelId);
-  const { data: currentUserProfile } = useProfile();
+  const { profile: currentUserProfile } = useProfile();
   
   console.log('🏁 DuelScreen montado!');
   console.log('📍 URL atual:', window.location.href);

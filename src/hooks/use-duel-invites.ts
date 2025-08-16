@@ -19,7 +19,7 @@ export interface DuelInvite {
 }
 
 export function useDuelInvites() {
-  const { data: profile } = useProfile();
+  const { profile } = useProfile();
 
   const fetchInvites = async (): Promise<DuelInvite[]> => {
     if (!profile?.id) return [];
