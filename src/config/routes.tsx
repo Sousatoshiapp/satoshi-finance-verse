@@ -438,6 +438,14 @@ export const routeConfigs: RouteConfig[] = [
     description: "New unified duel system",
     category: "main", 
     requiresAuth: true
+  },
+  {
+    path: "/duel/:duelId",
+    component: "DuelScreen",
+    title: "Duel",
+    description: "Player vs player duel",
+    category: "gamification",
+    requiresAuth: true
   }
 ];
 
