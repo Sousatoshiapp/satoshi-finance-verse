@@ -229,8 +229,102 @@ export function DuelQuizEngine({
       const isPlayer1 = duelData.player1_id === user.id;
       setPlayerScore(isPlayer1 ? duelData.player1_score : duelData.player2_score);
       setOpponentScore(isPlayer1 ? duelData.player2_score : duelData.player1_score);
+      
+      console.log('📊 [DUEL] Scores updated:', {
+        playerScore: isPlayer1 ? duelData.player1_score : duelData.player2_score,
+        opponentScore: isPlayer1 ? duelData.player2_score : duelData.player1_score,
+        currentQuestion: duelData.current_question
+      });
     }
   }, [duelData, user]);
+
+  // Polling system for real duels to sync opponent scores
+  useEffect(() => {
+    if (!duelData || isTestDuel || duelData.status === 'finished') return;
+
+    console.log('🔄 [DUEL] Starting polling for real duel:', duelData.id);
+    
+    const pollInterval = setInterval(async () => {
+      try {
+        const { data: updatedDuel, error } = await supabase
+          .from('casino_duels')
+          .select('player1_score, player2_score, current_question, status')
+          .eq('id', duelData.id)
+          .single();
+
+        if (error) {
+          console.error('❌ [POLLING] Error fetching duel updates:', error);
+          return;
+        }
+
+        if (updatedDuel && user) {
+          const isPlayer1 = duelData.player1_id === user.id;
+          const newOpponentScore = isPlayer1 ? updatedDuel.player2_score : updatedDuel.player1_score;
+          const newPlayerScore = isPlayer1 ? updatedDuel.player1_score : updatedDuel.player2_score;
+          
+          // Only update if scores actually changed
+          if (newOpponentScore !== (isPlayer1 ? duelData.player2_score : duelData.player1_score)) {
+            console.log('🔄 [POLLING] Opponent score updated:', {
+              old: isPlayer1 ? duelData.player2_score : duelData.player1_score,
+              new: newOpponentScore
+            });
+            setOpponentScore(newOpponentScore);
+          }
+          
+          if (newPlayerScore !== (isPlayer1 ? duelData.player1_score : duelData.player2_score)) {
+            console.log('🔄 [POLLING] Player score updated:', {
+              old: isPlayer1 ? duelData.player1_score : duelData.player2_score,
+              new: newPlayerScore
+            });
+            setPlayerScore(newPlayerScore);
+          }
+          
+          // Update current question if changed
+          if (updatedDuel.current_question !== duelData.current_question) {
+            console.log('🔄 [POLLING] Current question updated:', updatedDuel.current_question);
+          }
+        }
+      } catch (error) {
+        console.error('❌ [POLLING] Polling error:', error);
+      }
+    }, 3000); // Poll every 3 seconds
+
+    return () => {
+      console.log('🛑 [DUEL] Stopping polling for duel:', duelData.id);
+      clearInterval(pollInterval);
+    };
+  }, [duelData, user, isTestDuel]);
+
+  // Bot simulation for test duels
+  useEffect(() => {
+    if (!isTestDuel || !duelData || currentIndex >= questions.length) return;
+
+    console.log('🤖 [BOT] Starting bot simulation for question:', currentIndex);
+
+    // Bot responds after 2-6 seconds with 75% accuracy
+    const botResponseTime = Math.random() * 4000 + 2000; // 2-6 seconds
+    const botAccuracy = 0.75; // 75% accuracy
+    
+    const botTimer = setTimeout(() => {
+      const currentQuestion = questions[currentIndex];
+      if (!currentQuestion) return;
+
+      const willBotAnswer = Math.random() < botAccuracy;
+      const botGotCorrect = willBotAnswer;
+      
+      if (botGotCorrect) {
+        setOpponentScore(prev => {
+          const newScore = prev + 1;
+          console.log('🤖 [BOT] Bot got question correct! New opponent score:', newScore);
+          return newScore;
+        });
+      } else {
+        console.log('🤖 [BOT] Bot got question wrong. Opponent score remains:', opponentScore);
+      }
+    }, botResponseTime);
+
+    return () => clearTimeout(botTimer);
+  }, [currentIndex, isTestDuel, questions, duelData]);
 
   const initializeDuel = async () => {
     try {
