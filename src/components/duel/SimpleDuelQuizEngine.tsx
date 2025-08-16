@@ -408,25 +408,24 @@ export function SimpleDuelQuizEngine({
         const isPlayer1 = duelData.player1_id === user?.id;
         const playerType = isPlayer1 ? 'PLAYER1' : 'PLAYER2';
         
-        // CRITICAL FIX: Use local playerScore instead of fetching from database
-        // This prevents the score from always resetting to 1
+        // DEFINITIVE FIX: Use local playerScore for incremental calculation
+        // Store previous score for proper error reversion
+        const previousScore = playerScore;
         const newScore = isCorrect ? playerScore + 1 : playerScore;
         
-        console.log(`🚨 [SCORE FIX] ${playerType} INCREMENTAL CALCULATION:`, {
+        console.log(`🚨 [DEFINITIVE] ${playerType} INCREMENTAL CALCULATION:`, {
           isCorrect,
-          currentPlayerScore: playerScore,
+          previousScore,
           newScore,
           questionIndex: currentIndex,
           increment: isCorrect ? 1 : 0
         });
         
         // Update local state immediately for UI responsiveness
-        if (isCorrect) {
-          setPlayerScore(newScore);
-        }
+        setPlayerScore(newScore);
         
-        // Update database with atomic transaction
-        const updateData = isPlayer1 
+        // Prepare update payload
+        const updateData = isPlayer1
           ? { player1_score: newScore }
           : { player2_score: newScore };
 
@@ -437,46 +436,22 @@ export function SimpleDuelQuizEngine({
             .eq('id', duelData.id);
 
           if (error) {
-            console.error(`❌ [SCORE FIX] ${playerType} Database update failed:`, error);
-            // Revert to previous score on error
-            setPlayerScore(playerScore);
+            console.error(`❌ [DEFINITIVE] ${playerType} Database update failed:`, error);
+            // FIXED: Revert to actual previous score
+            setPlayerScore(previousScore);
           } else {
-            console.log(`✅ [SCORE FIX] ${playerType} Score updated: ${playerScore} → ${newScore}`);
-            
-            // Refresh duel data to sync all states
-            setTimeout(async () => {
-              try {
-                const { data: refreshedDuel } = await supabase
-                  .from('casino_duels')
-                  .select('player1_score, player2_score')
-                  .eq('id', duelData.id)
-                  .single();
-                
-                if (refreshedDuel) {
-                  const refreshedPlayerScore = isPlayer1 ? refreshedDuel.player1_score : refreshedDuel.player2_score;
-                  const refreshedOpponentScore = isPlayer1 ? refreshedDuel.player2_score : refreshedDuel.player1_score;
-                  
-                  console.log(`🔄 [SCORE FIX] ${playerType} Final sync:`, {
-                    player: refreshedPlayerScore,
-                    opponent: refreshedOpponentScore
-                  });
-                  
-                  setPlayerScore(refreshedPlayerScore);
-                  setOpponentScore(refreshedOpponentScore);
-                }
-              } catch (err) {
-                console.error(`❌ [EMERGENCY] Failed to refresh scores:`, err);
-              }
-            }, 200);
+            console.log(`✅ [DEFINITIVE] ${playerType} Score updated: ${previousScore} → ${newScore}`);
+            // REMOVED: No unnecessary refresh - trust local state
           }
         } catch (err) {
-          console.error(`❌ [SCORE FIX] ${playerType} Exception during score update:`, err);
-          // Keep current score on exception
+          console.error(`❌ [DEFINITIVE] ${playerType} Exception during score update:`, err);
+          // FIXED: Revert to actual previous score on exception
+          setPlayerScore(previousScore);
         } finally {
-          // Release lock with debounce to prevent race conditions
+          // Release lock with shorter timeout for better responsiveness
           setTimeout(() => {
             setIsUpdatingScore(false);
-          }, 300); // Shorter timeout for better responsiveness
+          }, 100);
         }
       }
       
@@ -510,33 +485,18 @@ export function SimpleDuelQuizEngine({
         duelId: duelData?.id 
       });
       
-      // PHASE 4: EMERGENCY - Get final scores directly from database for accuracy
-      let finalPlayerScore = playerScore;
-      let finalOpponentScore = opponentScore;
+      // DEFINITIVE FIX: Use ONLY local scores - no database fetch needed
+      // This prevents score reset and ensures incremental scoring works
+      const finalPlayerScore = playerScore;
+      const finalOpponentScore = opponentScore;
       const finalTotalQuestions = totalQuestions || questions.length;
       
-      if (!isTestDuel && duelData) {
-        try {
-          const { data: finalDuel } = await supabase
-            .from('casino_duels')
-            .select('player1_score, player2_score')
-            .eq('id', duelData.id)
-            .single();
-          
-          if (finalDuel) {
-            const isPlayer1 = duelData.player1_id === user?.id;
-            finalPlayerScore = isPlayer1 ? finalDuel.player1_score : finalDuel.player2_score;
-            finalOpponentScore = isPlayer1 ? finalDuel.player2_score : finalDuel.player1_score;
-            
-            console.log('✅ [EMERGENCY] Final scores from database:', {
-              player: finalPlayerScore,
-              opponent: finalOpponentScore
-            });
-          }
-        } catch (error) {
-          console.error('❌ [EMERGENCY] Failed to get final scores:', error);
-        }
-      }
+      console.log('✅ [DEFINITIVE] Using LOCAL scores for final calculation:', {
+        finalPlayerScore,
+        finalOpponentScore,
+        finalTotalQuestions,
+        source: 'LOCAL_STATE_ONLY'
+      });
       
       const percentage = finalTotalQuestions > 0 ? Math.round((finalPlayerScore / finalTotalQuestions) * 100) : 0;  
       const playerWon = finalPlayerScore > finalOpponentScore;
