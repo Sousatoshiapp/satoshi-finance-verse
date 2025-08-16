@@ -95,5 +95,11 @@ export const adminRoutes = [
     element: "AdminMonetization",
     requiresAuth: true,
     showNavbar: false
+  },
+  {
+    path: "/admin/daily-lessons",
+    element: "AdminDailyLessons",
+    requiresAuth: true,
+    showNavbar: false
   }
 ];

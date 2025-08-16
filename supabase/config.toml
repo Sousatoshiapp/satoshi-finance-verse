@@ -6,5 +6,8 @@ verify_jwt = false
 [functions.generate-batch-questions]
 verify_jwt = true
 
+[functions.batch-import-lessons]
+verify_jwt = true
+
 [functions.send-social-notification]
 verify_jwt = false

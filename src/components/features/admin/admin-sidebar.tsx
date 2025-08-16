@@ -49,6 +49,7 @@ const navigation: NavItem[] = [
       { title: "Banco de Questões", href: "/admin/quiz/questions", icon: Database },
       { title: "Aprovar Questões", href: "/admin/quiz/questions?tab=approval", icon: CheckCircle },
       { title: "Categorias", href: "/admin/quiz/categories", icon: HelpCircle },
+      { title: "Lições Diárias", href: "/admin/daily-lessons", icon: Calendar },
       { title: "Analytics Quiz", href: "/admin/quiz/analytics", icon: BarChart3 },
     ]
   },

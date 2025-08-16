@@ -9,6 +9,7 @@ export { BotNicknameManager } from './bot-nickname-manager';
 export { BotNicknameUpdater } from './bot-nickname-updater';
 export { BotRealismEnhancer } from './bot-realism-enhancer';
 export { JSONQuestionImporter } from './json-question-importer';
+export { JSONLessonImporter } from './json-lesson-importer';
 export { LanguageSelector } from './language-selector';
 export { QuestionApprovalInterface } from './question-approval-interface';
 export { QuestionImportTool } from './question-import-tool';
