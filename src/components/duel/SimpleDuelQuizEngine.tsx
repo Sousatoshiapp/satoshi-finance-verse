@@ -8,13 +8,15 @@ import { ArrowLeft, Trophy, Clock, Target, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
 import confetti from "canvas-confetti";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingSpinner } from "@/components/shared/ui/loading-spinner";
 import { AvatarDisplayUniversal } from "@/components/shared/avatar-display-universal";
 import { resolveAvatarImage } from "@/lib/avatar-utils";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/shared/ui/alert-dialog";
+import { useAdvancedQuizAudio } from "@/hooks/use-advanced-quiz-audio";
+import { useRewardAnimationSystem } from "@/hooks/use-reward-animation-system";
+import { WrongAnswerModal } from "./WrongAnswerModal";
 
 interface DuelQuestion {
   id: string;
@@ -67,6 +69,13 @@ export function SimpleDuelQuizEngine({
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showTimeoutModal, setShowTimeoutModal] = useState(false);
+  const [showWrongAnswerModal, setShowWrongAnswerModal] = useState(false);
+  const [wrongAnswerData, setWrongAnswerData] = useState<{
+    question: string;
+    userAnswer: string;
+    correctAnswer: string;
+    explanation?: string;
+  } | null>(null);
   const [playerScore, setPlayerScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
@@ -77,8 +86,9 @@ export function SimpleDuelQuizEngine({
 
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { playCorrectSound, playWrongSound, playCashRegisterSound } = useAdvancedQuizAudio();
+  const { showCorrectAnswer, showIncorrectAnswer } = useRewardAnimationSystem();
 
   // Check if this is a test duel ID
   const isTestDuel = duelId?.startsWith('test-') || duelId === 'test-123';
@@ -243,23 +253,39 @@ export function SimpleDuelQuizEngine({
     
     setShowAnswer(true);
     
-    // Update scores locally
+    // Handle feedback with audio and visual effects
     try {
+      if (isCorrect) {
+        // Play success sound and show animation
+        playCorrectSound(1);
+        showCorrectAnswer({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+        
+        // Trigger confetti for correct answer
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      } else {
+        // Play wrong sound and show animation
+        playWrongSound();
+        showIncorrectAnswer(currentQuestion.correct_answer);
+        
+        // Prepare wrong answer modal data
+        setWrongAnswerData({
+          question: currentQuestion.question,
+          userAnswer: selectedAnswer,
+          correctAnswer: currentQuestion.correct_answer,
+          explanation: currentQuestion.explanation
+        });
+        setShowWrongAnswerModal(true);
+      }
+
+      // Update scores locally
       if (isTestDuel) {
         // For test duels, just update locally
         if (isCorrect) {
           setPlayerScore(prev => prev + 1);
-          toast({
-            title: "Correto! ✅",
-            description: "Você ganhou 1 ponto!",
-            variant: "default"
-          });
-        } else {
-          toast({
-            title: "Incorreto ❌",
-            description: `A resposta correta era: ${currentQuestion.correct_answer}`,
-            variant: "destructive"
-          });
         }
       } else {
         // For real duels, update in database
@@ -278,46 +304,25 @@ export function SimpleDuelQuizEngine({
 
         if (error) {
           console.error('❌ Erro ao atualizar duelo:', error);
-          toast({
-            title: "Erro",
-            description: "Erro ao atualizar duelo. Tente novamente.",
-            variant: "destructive"
-          });
         } else {
           // Update local scores
           if (isCorrect) {
             setPlayerScore(newScore);
-            toast({
-              title: "Correto! ✅",
-              description: "Você ganhou 1 ponto!",
-              variant: "default"
-            });
-          } else {
-            toast({
-              title: "Incorreto ❌",
-              description: `A resposta correta era: ${currentQuestion.correct_answer}`,
-              variant: "destructive"
-            });
           }
         }
       }
       
     } catch (error) {
       console.error('❌ Erro ao processar resposta:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao processar resposta. Tente novamente.",
-        variant: "destructive"
-      });
     }
 
     setIsSubmitting(false);
     
-    // Continue automatically after correct answer, or wait for manual continue after wrong answer
+    // Continue automatically after correct answer, or wait for modal interaction after wrong answer
     if (isCorrect) {
       setTimeout(() => {
         handleContinue();
-      }, 1500);
+      }, 2000); // Give more time to see the confetti
     }
   };
 
@@ -357,22 +362,18 @@ export function SimpleDuelQuizEngine({
     if (!duelData) return;
     
     try {
-      toast({
-        title: "Duelo Abandonado",
-        description: `Você abandonou o duelo`,
-        variant: "destructive"
-      });
-      
-      setTimeout(() => navigate('/dashboard'), 1500);
-      
+      // Just navigate back without toast
+      navigate('/dashboard');
     } catch (error) {
       console.error('❌ Erro ao abandonar duelo:', error);
-      toast({
-        title: "Erro ao Abandonar",
-        description: "Não foi possível abandonar o duelo. Tente novamente.",
-        variant: "destructive"
-      });
+      navigate('/dashboard');
     }
+  };
+
+  const handleWrongAnswerContinue = () => {
+    setShowWrongAnswerModal(false);
+    setWrongAnswerData(null);
+    handleContinue();
   };
 
   // Resolve avatar URLs using the centralized avatar system
@@ -677,6 +678,19 @@ export function SimpleDuelQuizEngine({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Wrong Answer Modal */}
+      {wrongAnswerData && (
+        <WrongAnswerModal
+          open={showWrongAnswerModal}
+          onClose={() => setShowWrongAnswerModal(false)}
+          question={wrongAnswerData.question}
+          userAnswer={wrongAnswerData.userAnswer}
+          correctAnswer={wrongAnswerData.correctAnswer}
+          explanation={wrongAnswerData.explanation}
+          onContinue={handleWrongAnswerContinue}
+        />
+      )}
     </div>
   );
 }
