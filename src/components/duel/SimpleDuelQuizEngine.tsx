@@ -384,7 +384,14 @@ export function SimpleDuelQuizEngine({
       } else {
         // For real duels, update in database
         const isPlayer1 = duelData.player1_id === user?.id;
-        const newScore = isCorrect ? (isPlayer1 ? duelData.player1_score + 1 : duelData.player2_score + 1) : (isPlayer1 ? duelData.player1_score : duelData.player2_score);
+        const newScore = isCorrect ? playerScore + 1 : playerScore;
+        
+        console.log(`🎯 [SCORE CALC] Player: ${isPlayer1 ? 'P1' : 'P2'}, Current: ${playerScore}, New: ${newScore}, Correct: ${isCorrect}`);
+        
+        // Update local state first
+        if (isCorrect) {
+          setPlayerScore(newScore);
+        }
         
         // Update duel in database
         const updateData = isPlayer1 
