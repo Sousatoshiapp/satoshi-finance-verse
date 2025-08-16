@@ -1,6 +1,6 @@
 import React, { useEffect, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { DuelQuizEngine } from '@/components/duel/DuelQuizEngine';
+import { SimpleDuelQuizEngine } from '@/components/duel/SimpleDuelQuizEngine';
 import { LoadingSpinner } from '@/components/shared/ui/loading-spinner';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useToast } from '@/hooks/use-toast';
@@ -96,7 +96,7 @@ export default function DuelScreen() {
         </div>
       }>
         <div className="min-h-screen">
-          <DuelQuizEngine
+          <SimpleDuelQuizEngine
             duelId={duelId}
             onComplete={handleDuelComplete}
           />
