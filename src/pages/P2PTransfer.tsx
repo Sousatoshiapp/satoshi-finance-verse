@@ -52,10 +52,6 @@ export default function P2PTransfer() {
         </Button>
       </div>
 
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold">{t('p2p.title')}</h1>
-        <p className="text-muted-foreground">{t('p2p.subtitle')}</p>
-      </div>
 
       {isKYCRequired ? (
         <div className="max-w-md mx-auto text-center p-8">
